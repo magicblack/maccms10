@@ -1,0 +1,66 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no">
+    <title>{$obj.topic_name}专题详情- {$maccms.site_name}</title>
+    <meta name="keywords" content="{$obj.topic_name}电影专题,{$obj.topic_name}电视剧专题,{$obj.topic_name}综艺专题,{$obj.topic_name}动漫专题,{$obj.topic_name}推荐专题" />
+    <meta name="description" content="本站提供{$obj.topic_name},最新最全精品专题数据" />
+    {include file="public/include"}
+</head>
+<body>
+{include file="public/head"}
+<!--当前位置-->
+<header class="g_header2">
+    <a href="javascript:MAC.GoBack()"><i class="moreArrow2"></i>返回</a>
+    专题视频
+    <label for="navSwitch" href="javascript:;" class="s_c mac_user"><i class="i_user"><span></span></i></label>
+    <label for="navSwitch" href="javascript:;" class="s_r s_bt"><i class="i_bread"><span></span></i></label>
+</header>
+<!--专题-->
+<div class="zhuanti-con">
+    <ul>
+        <li><div class="play-img"><img src="{$obj.topic_pic|mac_url_img}" alt="{$obj.topic_name}" /></div>
+            <div class="play-txt">
+                <h2>{$obj.topic_name}</h2>
+                <p class="juqing">专题介绍：{$obj.topic_content}.</a></p>
+            </div>
+        </li>
+    </ul>
+</div>
+<!--专题视频-->
+<div class="fn-clear" id="channel-box">
+    <!-- 左侧影视 -->
+    <section class="box">
+        <section class="title"><i class="iLine"></i>
+            <h2>专题视频</h2>
+            <span class="r">本专题共“{$obj.vod_list|count}”部视频</span>
+        </section>
+        <div class="box_con">
+            <ul class="img-list dis">
+                {maccms:foreach name="$obj.vod_list"}
+                <li><a href="{:mac_url_vod_detail($vo)}" title="{$vo.vod_name}"><span><img src="{:mac_url_img($vo.vod_pic)}" alt="{$vo.vod_name}"/></span><h2>{$vo.vod_name}</h2><p>{$vo.vod_actor}</p><i>{$vo.vod_remarks}</i><em></em></a></li>
+                {/maccms:foreach}
+            </ul>
+        </div>
+    </section>
+    <!-- 右侧文章 -->
+    <div class="box">
+        <div class="title"><i class="iLine"></i>
+            <h2 class="mar">本专题最新文章</h2>
+        </div>
+        <div class="box_news pianyi">
+            <ul>
+                {maccms:foreach name="$obj.art_list"}
+                <li><a href="{:mac_url_art_detail($vo)}" title="{$vo.art_name}">{$vo.art_name}</a></li>
+                {/maccms:foreach}
+                <div class="clear"></div>
+            </ul>
+        </div>
+    </div>
+</div>
+
+{include file="public/foot"}
+</body>
+</html>
+

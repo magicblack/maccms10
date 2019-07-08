@@ -1,0 +1,207 @@
+/*****************************************
+* 作 者：老大哥
+* 版 本：1.0 
+* 概 要：网站公共样式
+*****************************************/
+
+/*-----------------------------------------公共样式-----------------------------------------*/
+* {margin:0; padding:0;}
+body {font-family:"Microsoft Yahei",Simsun,sans-serif;font-size: 14px;color: #666;line-height:22px;}
+h1,h2,h3,h4,h5,h6{ font-size:16px; font-weight:normal;}
+h1 a:hover{ font-size:16px; font-weight:bold; line-height:45px;color:#ffe0a2;}
+img{border:none;vertical-align:middle;}
+ul,ol,li {list-style:none;}
+a:link,a:visited,a:active{text-decoration:none;color:#666; font-size:14px;}
+a:hover{text-decoration:none;color:#1989da; font-size:14px;} 
+.block{margin:0 auto; padding:0;}
+.clear{ clear:both;}
+.clear2{ clear:both; height:5px;}
+.marg{ margin:0 auto; width:1000px;clear:both;}
+.l{ float:left}
+.r{ float:right}
+input{font-family:"Microsoft Yahei",Simsun,sans-serif;font-size: 14px;}
+/*-----------------------------------------以上只为本地测试 上线时可删除以上全部样式-----------------------------------------*/
+
+/* 左侧会员导航菜单 */
+#member{width:1000px;margin:20px auto;font-size:14px;}
+.fn-clear:after{visibility:hidden;display:block;font-size:0;content:" ";clear:both;height:0}
+#member #left{background:#f7f7f7;border-right:1px #e2e2e2 solid;width:200px;min-height:670px;float:left;}
+#member #left .tou{text-align:center;padding:15px 0;border-bottom:1px #e2e2e2 solid;}
+#member #left .tou img{width:89px;height:89px;}
+#member #left .tou p{padding-top:5px;}
+#member #left ul{text-align:center;}
+#member #left ul li{border-bottom:1px #e2e2e2 solid;}
+#member #left ul li a{line-height:45px;height:45px; display:block;}
+#member #left ul li a:hover{color:#3577CE;}
+#member #left ul .hover{background:#fff;border-left:4px #3577CE solid;text-indent:-4px;width:197px;}
+#member #left ul .hover a{color:#000;}
+
+/* 右侧内容 */
+#member #right{width:770px;float:right;padding-top:20px;}
+#member #right h2{font-size:20px;line-height:30px;}
+#member #right .kuang{background:#e2e2e2;padding:0 20px;line-height:30px;display:inline-block;border-radius:3px;}
+#member #right .member-input{background:#f7f7f7;padding:0 10px;border:1px #ddd solid;height: 28px;width: 250px;}
+#member #right .search-button{background:#f9644e;border:none;border-radius:3px;width:150px;line-height:36px;cursor: pointer;text-align:center;color:#fff;margin-top:15px;margin-right:10px;}
+#member #right .fen{color:#fc2954}/* 粉色字体颜色 */
+#member #right .lan2{color:#3577ce;}/* 蓝色字体颜色 */
+/* tab切换 */
+#member #right #tab{margin:10px 0;}
+#member #right .list ul{border-right:1px #e2e2e2 solid;display:inline-block;}
+#member #right .list li{float: left;border-left:1px #e2e2e2 solid;border-bottom:1px #e2e2e2 solid;border-top:1px #e2e2e2 solid;line-height:36px; padding:0 20px;cursor: pointer;}
+#member #right .list li:hover{color: #3577CE;}
+#member #right .list li.cur{background: #3577CE;color:#fff;}
+#member #right #listCon{padding:10px;}
+#member #right #listCon div{line-height:40px;position:absolute;opacity:0;filter:alpha(opacity=0);}
+#member #right #listCon div.cur{opacity:1;filter:alpha(opacity=100);z-index:999;}
+
+#member #right #listCon .tishi img{width:20px;padding:0 5px 0 10px}
+#member #right #listCon .tishi2 img{width:20px;padding:0 5px 0 0}
+#member #right #listCon .xiang{width:110px;display:inline-block;text-align:right;padding-right:5px;}
+#member #right #listCon .wjmm {margin-bottom: -24px;display: inline-block;overflow: hidden;}
+
+#member #right .quanxian{background:#f7f7f7;margin:10px 0 15px;width:100px;text-align:center;border:1px #e2e2e2 solid;display: inline-block;}
+#member #right .you{display: inline-block;line-height:30px;height:30px;background:#5fb878 url(../images/member/duigou.png)no-repeat 61px center;background-size:29px 26px;color:#fff;width:82px;padding-left:10px;margin-left:20px;}
+#member #right .wu{display: inline-block;line-height:30px;height:30px;background:#e2e2e2 url(../images/member/cha.png)no-repeat 61px center;background-size:29px 26px;width:82px;padding-left:10px;margin-left:20px;}
+
+#member #right .table{background:#e2e2e2;}
+#member #right .table .pad{padding-left:10px;}
+#member #right .table .delete{border:1px #e2e2e2 solid;padding:2px 10px;}
+#member #right .gong{margin:10px 0;border:1px #e2e2e2 solid;border-right:none;display:inline-block;height:36px;}
+#member #right .gong a{border-right:1px #e2e2e2 solid;padding:0 15px;line-height:36px;height:36px;display:inline-block;}
+
+#member #right .member-page{margin:20px auto;text-align:center;}
+#member #right .page-input{background:#fff;text-align:center;border:1px #ddd solid;height: 28px;width:50px;}
+#member #right .page-button{border:1px #ddd solid;background:#fff;width:50px;line-height:28px;cursor: pointer;text-align:center;color:#333;}
+#member #right .member-page span,#member #right .member-page a{background:#fff;text-align:center;border:1px #ddd solid;padding:5px 15px;}
+#member #right .member-page em{font-style:normal;margin:0 8px;}
+#member #right .member-page .current{background:#3577ce;border:1px #ddd solid; color:#fff;}
+
+.line40{line-height:40px;}
+#member #right .shengji{margin-top:15px;}
+#member #right .shengji a{border-radius:3px;width:160px;line-height:40px;text-align:center;color:#fff;margin-right:15px;display:inline-block;}
+#member #right .huang{background:#f2854c;}
+#member #right .lan{background:#36b1c0;}
+#member #right .hong{background:#f2395b;}
+#member #right .zi{background:#853f8a;}
+#member #right .hui{color:#b3b3b3;}
+
+#member #right .jifen-input{background:#fff;text-align:center;border:1px #ddd solid;height: 28px;width:120px;}
+#member #right .jifen2-button{background:#ff6600;border:none;border-radius:3px;width:120px;line-height:36px;cursor: pointer;text-align:center;color:#fff;margin-top:10px;margin-left:85px;}
+
+
+/* header */
+.header{
+    height: 85px;
+    padding: 10px 0 0 0;
+    overflow: hidden;
+    margin-bottom: -40px;
+    background-color: #161616;
+}
+/* i-logo */
+.logo{
+    width: 157px;
+    height: 42px;
+    overflow: hidden;
+    float: left;
+}
+.nav{
+    float: right;
+    height: 31px;
+    overflow: hidden;
+    padding: 7px 10px 0 80px;
+}
+.nav-item{
+    float: left;
+    height: 31px;
+    overflow: hidden;
+    padding-left: 10px;
+
+}
+.nav-link{
+    display: block;
+    _float: left;
+    height: 30px;
+    line-height: 30px;
+    overflow: hidden;
+    font-size: 14px;
+    padding: 0 15px;
+    background-color: #eee;
+    border-bottom: 1px solid #1e1e1e;
+    border-radius: 2px;
+}
+
+/* footer */
+.footer{
+    border-top: 2px solid #2d2d2d;
+    margin-top: 10px;
+    background: #ececec;
+    line-height: 24px;
+    text-align: center;
+    padding-bottom: 30px;
+}
+.foot-nav{
+    color: #333;
+    height: 24px;
+    overflow: hidden;
+    margin: 15px 0 10px 0;
+}
+.foot-nav a{ margin: 0 10px;}
+
+
+.layout {
+    width: 1200px;
+    margin: 0 auto;
+}
+
+.clearfix:after{ content:'\20'; display:block; overflow:hidden; height:0; clear:both;}
+
+input, button, select, textarea {
+    outline: none;
+    font-family: microsoft yahei;
+}
+
+.w150 {
+    width: 150px !important;
+}
+.mt10 {
+    margin-top: 10px;
+}
+.mr10 {
+    margin-right: 10px;
+}
+.btn-brand {
+    display: inline-block;
+    background: #fa4646;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+    padding: 5px 10px;
+    border-radius: 3px;
+}
+
+.i-pers {
+    background: url(../images/member/pers.png) no-repeat;
+}
+
+/*register member*/
+.reg-w{float: left;padding: 40px 110px 40px 200px;font-size: 14px;}
+.reg-w form h4{font-weight: normal;color: #585858;margin:30px 0 20px; }
+.reg-w form .reg-group{position:relative;border: 1px solid #ddd;width: 418px;margin-bottom: 25px;}
+.reg-w form .reg-group label{display: inline-block;height: 52px;line-height: 52px;padding-left: 20px;margin-right: 16px;min-width: 105px;    box-sizing: border-box;letter-spacing: 3px;}
+.reg-w form .reg-group .reg-control{width:260px;vertical-align: text-bottom;border: none;}
+.reg-group2{margin-bottom: 10px;}
+.reg-send{position:absolute;right:2px;top:2px;display: inline-block;width: 100px;height: 48px;line-height: 48px;text-align: center;background-color:#f0f0f0; color: #585858;border: none;cursor: pointer;}
+.reg-send:hover{background-color: #f6f6f6;}
+.reg-w form .btn-sub{width: 418px;border-radius: 0;padding: 15px 0;margin-top: 50px;}
+.reg-another{float: left;margin-top:70px;padding-left:120px;padding-top:5px;height: 430px;border-left: 1px solid #ddd;line-height: 50px;}
+.reg-another a{display: block;font-size: 14px;}
+.reg-another a i{display:inline-block;width:37px;height:37px;vertical-align: middle;margin-right: 10px;}
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,29 @@
+{include file="../../../application/convert/view/index/head" /}
+<style type="text/css">
+    .layui-table td, .layui-table th{text-align:left;}
+    .layui-table tbody tr.no{background-color:#f00;color:#fff;}
+</style>
+<div class="install-box">
+    <fieldset class="layui-elem-field layui-field-title">
+        <legend>数据转换信息</legend>
+    </fieldset>
+    <form class="layui-form layui-form-pane" action="" method="post">
+        <div class="layui-form-item layui-form-text">
+            <label class="layui-form-label">返回信息</label>
+            <div class="layui-input-block" style="height:400px;">
+                <textarea id="notice" placeholder="" class="layui-textarea" style="height:100%"></textarea>
+            </div>
+        </div>
+
+        <div class="step-btns">
+            <a href="?step=2" class="layui-btn layui-btn-primary layui-btn-big fl">返回上一步</a>
+            <a href="/admin.php" class="layui-btn  layui-btn-big fr">进入后台</a>
+        </div>
+    </form>
+</div>
+{include file="../../../application/convert/view/index/foot" /}
+<script type="text/javascript">
+    function showmessage(message) {
+        document.getElementById('notice').innerHTML += message + '\r\n';
+    }
+</script>

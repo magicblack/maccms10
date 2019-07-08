@@ -1,0 +1,149 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no">
+    <title>{$maccms.site_name}</title>
+    <meta name="keywords" content="{$maccms.site_keywords}" />
+    <meta name="description" content="{$maccms.site_description}" />
+    {include file="public/include"}
+    <script src="{$maccms.path_tpl}js/jquery.glide.js"></script>
+    <script type="text/javascript">
+        //var jq=jQuery.noConflict();
+    </script>
+</head>
+<body>
+{include file="public/head"}
+<header class="g_header">
+    <h1 class="s_l g_logo"><a href="{$maccms.path}"><img src="{$maccms.site_logo|mac_url_img}"></a></h1>
+    <label for="navSwitch" href="javascript:;" class="s_c mac_user"><i class="i_user"><span></span></i></label>
+    <label for="navSwitch" href="javascript:;" class="s_r s_bt"><i class="i_bread"><span></span></i></label>
+</header>
+<!-- banner 开始 -->
+<div class="slider">
+    <ul class="slides">
+        {maccms:vod num="5" level="9" order="desc" by="time"}
+        <li class="slide"><div class="boxb"><a href="{:mac_url_vod_detail($vo)}" title="{$vo.vod_name}  {$vo.vod_remarks}"><img src="{$vo.vod_pic_slide}" alt="{$vo.vod_name}  {$vo.vod_remarks}"/></a></div></li>
+        {/maccms:vod}
+    </ul>
+</div>
+<script type="text/javascript">
+    var glide = $('.slider').glide({
+        //autoplay:true,//是否自动播放 默认值 true如果不需要就设置此值
+        animationTime:500, //动画过度效果，只有当浏览器支持CSS3的时候生效
+        arrows:true, //是否显示左右导航器
+        arrowsWrapperClass: "arrowsWrapper",//滑块箭头导航器外部DIV类名
+        arrowMainClass: "slider-arrow",//滑块箭头公共类名
+        arrowRightClass:"slider-arrow--right",//滑块右箭头类名
+        arrowLeftClass:"slider-arrow--left",//滑块左箭头类名
+        arrowRightText:">",//定义左右导航器文字或者符号也可以是类
+        arrowLeftText:"<",
+        nav:true, //主导航器也就是本例中显示的小方块
+        navCenter:true, //主导航器位置是否居中
+        navClass:"slider-nav",//主导航器外部div类名
+        navItemClass:"slider-nav__item", //本例中小方块的样式
+        navCurrentItemClass:"slider-nav__item--current" //被选中后的样式
+    });
+</script>
+<!-- 图标导航 -->
+<nav class="menuNavList">
+    {maccms:type ids="parent" order="asc" by="sort"}
+    <a href="{:mac_url_type($vo)}"><i class="menuNavIcon {switch name="$vo.type_id" }{case value="1"}dyIcon{/case}{case value="2"}dsjIcon{/case}{case value="3"}zyIcon{/case}{case value="4"}dmIcon{/case}{case value="5"}dspIcon{/case}{/switch}"></i><span class="sTit">{$vo.type_name}</span></a>
+    {/maccms:type}
+    <a href="{:mac_url('map/index')}"><i class="menuNavIcon bdIcon"></i><span class="sTit">排行</span></a>
+</nav>
+<!-- 最新电影资源 -->
+<section class="box">
+    <section class="title"><i class="iLine"></i>
+        <h2>最新电影</h2>
+        {maccms:type ids="1" order="asc" by="sort"}
+        <a href="{:mac_url_type($vo)}"><em>更多</em></a>
+        {/maccms:type}
+    </section>
+    <div class="box_con">
+        <ul class="img-list dis">
+            {maccms:vod num="12" type="1" order="desc" by="time"}
+            <li><a href="{:mac_url_vod_detail($vo)}" title="{$vo.vod_name}"><span><img src="{:mac_url_img($vo.vod_pic)}" alt="{$vo.vod_name}"/></span><h2>{$vo.vod_name}</h2><p>{$vo.vod_actor}</p><i>{$vo.vod_version}</i><em></em></a></li>
+            {/maccms:vod}
+        </ul>
+    </div>
+</section>
+<!--最新电视剧资源-->
+<div class="box">
+    <div class="title"><i class="iLine"></i>
+        <h2>最新电视剧</h2>
+        {maccms:type ids="2" order="asc" by="sort"}
+        <a href="{:mac_url_type($vo)}"><em>更多</em></a>
+        {/maccms:type}
+    </div>
+    <div class="box_con">
+        <ul class="img-list dis">
+            {maccms:vod num="12" type="2" order="desc" by="time"}
+            <li><a href="{:mac_url_vod_detail($vo)}" title="{$vo.vod_name}"><span><img src="{:mac_url_img($vo.vod_pic)}" alt="{$vo.vod_name}"/></span><h2>{$vo.vod_name}</h2><p>{$vo.vod_actor}</p><i>连载{$vo.vod_serial}集 / 共{$vo.vod_total}集</i><em></em></a></li>
+            {/maccms:vod}
+        </ul>
+    </div>
+</div>
+<!--最新动画片资源-->
+<div class="box">
+    <div class="title"><i class="iLine"></i>
+        <h2 class="mar">最新动画片</h2>
+        {maccms:type ids="4" order="asc" by="sort"}
+        <a href="{:mac_url_type($vo)}"><em>更多</em></a>
+        {/maccms:type}
+    </div>
+    <div class="box_con">
+        <ul class="img-list dis">
+            {maccms:vod num="12" type="4" order="desc" by="time"}
+            <li><a href="{:mac_url_vod_detail($vo)}" title="{$vo.vod_name}"><span><img src="{:mac_url_img($vo.vod_pic)}" alt="{$vo.vod_name}"/></span><h2>{$vo.vod_name}</h2><p>{$vo.vod_actor}</p><i>连载{$vo.vod_serial}集 / 共{$vo.vod_total}集</i><em></em></a></li>
+            {/maccms:vod}
+        </ul>
+    </div>
+</div>
+<!--最新综艺节目资源-->
+<div class="box">
+    <div class="title"><i class="iLine"></i>
+        <h2 class="mar">最新综艺节目</h2>
+        {maccms:type ids="3" order="asc" by="sort"}
+        <a href="{:mac_url_type($vo)}"><em>更多</em></a>
+        {/maccms:type}
+    </div>
+    <div class="box_con">
+        <ul class="img-list dis">
+            {maccms:vod num="12" type="3" order="desc" by="time"}
+            <li><a href="{:mac_url_vod_detail($vo)}" title="{$vo.vod_name}"><span><img src="{:mac_url_img($vo.vod_pic)}" alt="{$vo.vod_name}"/></span><h2>{$vo.vod_name}</h2><p>{$vo.vod_actor}</p><i>连载{$vo.vod_serial}期</i><em></em></a></li>
+            {/maccms:vod}
+        </ul>
+    </div>
+</div>
+<!--最新影视资讯-->
+<div class="box">
+    <div class="title"><i class="iLine"></i>
+        <h2 class="mar">最新影视资讯</h2>
+        {maccms:type ids="5" order="asc" by="sort"}
+        <a href="{:mac_url_type($vo)}"><em>更多</em></a>
+        {/maccms:type}
+    </div>
+    <div class="box_news pianyi">
+        <ul>
+            {maccms:art num="12" type="5" order="desc" by="time"}
+            <li><a href="{:mac_url_art_detail($vo)}" title="{$vo.art_name}">{$vo.art_name}</a></li>
+            {/maccms:art}
+            <div class="clear"></div>
+        </ul>
+    </div>
+</div>
+<!-- 友情链接 -->
+<div id="link" class="block">
+    <div id="title">友情链接 LINK</div>
+    <ul>
+        <li><a href="http://www.maccms.com" target="_blank">苹果CMS</a></li>
+        {maccms:link num="10" order="desc" by="id"}
+        <li><a href="{$vo.link_url}" target="_blank">{$vo.link_name}</a></li>
+        {/maccms:link}
+        <div class="clear"></div>
+    </ul>
+</div>
+{include file="public/foot"}
+</body>
+</html>

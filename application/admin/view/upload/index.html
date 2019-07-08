@@ -1,0 +1,7 @@
+<body style="margin:0px;padding:0px;text-align:left">
+<form name="form" enctype="multipart/form-data" action="{:url('upload/upload')}" method="post">
+    <input type="hidden" name="path" value="{$path}">
+    <input type="hidden" name="id" value="{$id}">
+    <input type="file" id="file1" name="file1" style="width: 200px; height: 25px;">
+    <input type="submit" name="submit" class="input" value="上传">
+</form>

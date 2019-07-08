@@ -1,0 +1,99 @@
+﻿<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>{$maccms.site_name}</title>
+    {include file="public/include"}
+</head>
+<body>
+{include file="public/head"}
+<!--当前位置-->
+<header class="g_header2">
+    <a href="javascript:MAC.GoBack()"><i class="moreArrow2"></i>返回</a>
+    综合排行榜
+    <label for="navSwitch" href="javascript:;" class="s_r s_bt"><i class="i_bread"><span></span></i></label>
+</header>
+<!-- 电影排行榜 -->
+<div class="top-item-box">
+    <div class="ui-title fn-clear">电影排行榜</div>
+    <div class="ui-cnt fn-clear">
+        <div class="top-item"><h5>总评分排行榜</h5>
+            <ul class="top-list fn-clear">
+                {maccms:vod num="10" type="1" order="desc" by="score"}
+                <li><a href="{:mac_url_vod_detail($vo)}"><span class="num {if condition="$key elt 3"}stress{/if}">{$key}.</span>        <span class="tit">{$vo.vod_name}</span></a></li>
+                {/maccms:vod}
+            </ul>
+        </div>
+        <div class="top-item"><h5>总人气排行榜</h5>
+            <ul class="top-list fn-clear">
+                {maccms:vod num="10" type="1" order="desc" by="hits_month"}
+                <li><a href="{:mac_url_vod_detail($vo)}"><span class="num {if condition="$key elt 3"}stress{/if}">{$key}.</span>        <span class="tit">{$vo.vod_name}</span></a></li>
+                {/maccms:vod}
+            </ul>
+        </div>
+    </div>
+</div>
+<!-- 电视剧排行榜 -->
+<div class="top-item-box">
+    <div class="ui-title fn-clear">电视剧排行榜</div>
+    <div class="ui-cnt fn-clear">
+        <div class="top-item"><h5>总评分排行榜</h5>
+            <ul class="top-list fn-clear">
+                {maccms:vod num="10" type="2" order="desc" by="score"}
+                <li><a href="{:mac_url_vod_detail($vo)}"><span class="num {if condition="$key elt 3"}stress{/if}">{$key}.</span>        <span class="tit">{$vo.vod_name}</span></a></li>
+                {/maccms:vod}
+            </ul>
+        </div>
+        <div class="top-item"><h5>总人气排行榜</h5>
+            <ul class="top-list fn-clear">
+                {maccms:vod num="10" type="2" order="desc" by="hits_month"}
+                <li><a href="{:mac_url_vod_detail($vo)}"><span class="num {if condition="$key elt 3"}stress{/if}">{$key}.</span>        <span class="tit">{$vo.vod_name}</span></a></li>
+                {/maccms:vod}
+            </ul>
+        </div>
+    </div>
+</div>
+<!-- 经典动漫排行榜 -->
+<div class="top-item-box">
+    <div class="ui-title fn-clear">经典动漫排行榜</div>
+    <div class="ui-cnt fn-clear">
+        <div class="top-item"><h5>总评分排行榜</h5>
+            <ul class="top-list fn-clear">
+                {maccms:vod num="10" type="4" order="desc" by="score"}
+                <li><a href="{:mac_url_vod_detail($vo)}"><span class="num {if condition="$key elt 3"}stress{/if}">{$key}.</span>        <span class="tit">{$vo.vod_name}</span></a></li>
+                {/maccms:vod}
+            </ul>
+        </div>
+        <div class="top-item"><h5>总人气排行榜</h5>
+            <ul class="top-list fn-clear">
+                {maccms:vod num="10" type="4" order="desc" by="hits_month"}
+                <li><a href="{:mac_url_vod_detail($vo)}"><span class="num {if condition="$key elt 3"}stress{/if}">{$key}.</span>        <span class="tit">{$vo.vod_name}</span></a></li>
+                {/maccms:vod}
+            </ul>
+        </div>
+    </div>
+</div>
+<!-- 综艺娱乐排行榜 -->
+<div class="top-item-box">
+    <div class="ui-title fn-clear">综艺娱乐排行榜</div>
+    <div class="ui-cnt fn-clear">
+        <div class="top-item"><h5>总评分排行榜</h5>
+            <ul class="top-list fn-clear">
+                {maccms:vod num="10" type="3" order="desc" by="score"}
+                <li><a href="{:mac_url_vod_detail($vo)}"><span class="num {if condition="$key elt 3"}stress{/if}">{$key}.</span>        <span class="tit">{$vo.vod_name}</span></a></li>
+                {/maccms:vod}
+            </ul>
+        </div>
+        <div class="top-item"><h5>总人气排行榜</h5>
+            <ul class="top-list fn-clear">
+                {maccms:vod num="10" type="3" order="desc" by="hits_month"}
+                <li><a href="{:mac_url_vod_detail($vo)}"><span class="num {if condition="$key elt 3"}stress{/if}">{$key}.</span>        <span class="tit">{$vo.vod_name}</span></a></li>
+                {/maccms:vod}
+            </ul>
+        </div>
+    </div>
+</div>
+
+{include file="public/foot"}
+</body>
+</html>

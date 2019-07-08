@@ -1,0 +1,5 @@
+<div class="mac_score" data-id="{$vod_id}{$art_id}{$topic_id}" data-mid="{$maccms.mid}">
+    <div><strong>我要评分(感谢参与评分，发表您的观点)</strong></div>
+    <div class="score_info">共 <strong class="score_num"> 0 </strong> 个人评分， 平均分 <strong class="score_pjf"> 0 </strong>， 总得分 <strong class="score_all"> 0 </strong></div>
+    <div><input type="radio" name="score" class="rating1" value="1"><label>1</label><input type="radio" name="score" class="rating2" value="2"><label>2</label><input type="radio" name="score" class="rating3" value="3"><label>3</label><input type="radio" name="score" class="rating4" value="4"><label>4</label><input type="radio" name="score" class="rating5" value="5"><label>5</label><input type="radio" name="score" class="rating6" value="6"><label>6</label><input type="radio" name="score" class="rating7" value="7"><label>7</label><input type="radio" name="score" class="rating8" value="8"><label>8</label><input type="radio" name="score" class="rating9" value="9"><label>9</label><input type="radio" name="score" class="rating10" value="10"><label>10</label>&nbsp;<input type="button" value=" 评 分 " class="score_btn"></div>
+</div>

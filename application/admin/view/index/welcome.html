@@ -1,0 +1,58 @@
+{include file="../../../application/admin/view/public/head" /}
+<div class="page-container">
+    <?php $pass="<strong class='green'>√</strong>";$error="<strong class='red'>×</strong>";?>
+
+    <blockquote class="layui-elem-quote layui-quote-nm mt10">
+        <p class="f-20 text-success">请不要修改系统文件，以免升级出现故障！请在遵守法律的前提下使用程序，否则后果自负！</p>
+        <p>登录次数：{$info.admin_login_num}  上次登录IP：{$info.admin_last_login_ip|long2ip}  上次登录时间：{$info.admin_last_login_time|mac_day}</p>
+    </blockquote>
+
+    <table class="layui-table" >
+        <thead>
+        <tr>
+            <th colspan="4" scope="col">服务器当前日期【<?php echo date('Y-m-d'); ?>】</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td width="15%">操作系统</td>
+            <td width="30%"><?php echo PHP_OS ?></td>
+            <td width="15%">脚本解释引擎</td>
+            <td width="30%"><?php echo $_SERVER['SERVER_SOFTWARE'] ?></td>
+        </tr>
+        <tr>
+            <td>安装目录</td>
+            <td><?php echo $_SERVER['DOCUMENT_ROOT'] ?></td>
+            <td>服务器 (IP/端口) </td>
+            <td><?php echo $_SERVER['HTTP_HOST'] ?></td>
+        </tr>
+        <tr>
+            <td>PHP版本</td>
+            <td><?php echo PHP_VERSION ?></td>
+            <td>允许最大上传文件</td>
+            <td><?php echo get_cfg_var("file_uploads") ? get_cfg_var("upload_max_filesize") : $error;?></td>
+        </tr>
+        <tr>
+            <td>CURL支持</td>
+            <td><?php $curl = @curl_version();echo $curl['version'] ? $curl['version'] : $error; ?></td>
+            <td>GD图形处理扩展库版本</td>
+            <td><?php $gd = @gd_info(); echo $gd['GD Version'] ? $gd['GD Version'] : $error;?></td>
+        </tr>
+        <tr>
+            <td>ThinkPHP框架版本</td>
+            <td><?php echo THINK_VERSION; ?></td>
+            <td>脚本超时时间</td>
+            <td><?php $t = ini_get("max_execution_time"); echo $t;?>秒</td>
+        </tr>
+        <tr>
+            <td colspan="4">当前版本：<span class="layui-badge">{$version.code}</span> 授权类型：<span class="layui-badge">{$version.license}</span></td>
+        </tr>
+        </tbody>
+    </table>
+    {if condition="$update_sql"}
+    <table class="tbinfo pleft layui-table" ><thead><th colspan="4">更新提示【<a target="_blank" href="http://www.maccms.com/doc/v10/log.html">查看更新记录</a>】</th></thead><tr><td colspan="4"><font class="tif s20">提示，发现本地有数据库升级脚本？是否执行升级操作！执行完毕后将自动删除脚本！</font><a class="j-iframe" title="点击进升级数据库脚本" data-href="../update/step2.html"><font class="tit s20">【点击进升级数据库脚本】</font></a> </td></tr></table>
+    {/if}
+</div>
+{include file="../../../application/admin/view/public/foot" /}
+</body>
+</html>

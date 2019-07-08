@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>{$title} - 苹果CMS</title>
+    <link rel="stylesheet" href="__STATIC__/layui/css/layui.css">
+    <link rel="stylesheet" href="__STATIC__/css/admin_style.css">
+    <script>
+        var ROOT_PATH = "__ROOT__", ADMIN_PATH="{$_SERVER['SCRIPT_NAME']}";
+        var maccms ="{$maccms|json_encode}";
+    </script>
+</head>
+<body>
+link标签：<br>
+{maccms:link num="3" start="0" type="all" order="asc" by="sort"}
+{$key}->{$vo.link_id}->{$vo.link_name}<br>
+{/maccms:link}
+<br>
+
+area标签：<br>
+{maccms:area num="4" order="desc"}
+{$key}->{$vo.area_name}<br>
+{/maccms:area}
+<br>
+
+lang标签：<br>
+{maccms:lang num="4" order="desc"}
+{$key}->{$vo.lang_name}<br>
+{/maccms:lang}
+<br>
+
+area标签：<br>
+{maccms:year num="4" order="desc"}
+{$key}->{$vo.area_name}<br>
+{/maccms:year}
+<br>
+
+class标签：<br>
+{maccms:class num="4" order="desc"}
+{$key}->{$vo.class_name}<br>
+{/maccms:class}
+<br>
+
+version标签：<br>
+{maccms:version num="4" order="desc"}
+{$key}->{$vo.version_name}<br>
+{/maccms:version}
+<br>
+
+state标签：<br>
+{maccms:state num="4" order="desc"}
+{$key}->{$vo.state_name}<br>
+{/maccms:state}
+<br>
+
+letter标签：<br>
+{maccms:letter num="4" order="desc" by=""}
+{$key}->{$vo.letter_name}<br>
+{/maccms:letter}
+<br>
+
+gbook标签：<br>
+{maccms:gbook num="4" paging="no" order="desc" by=""}
+{$key}->{$vo.gbook_name}<br>
+{/maccms:gbook}
+<br>
+
+comment标签：<br>
+{maccms:comment num="4" paging="yes" order="desc" by=""}
+{$key}->{$vo.comment_name}<br>
+{/maccms:comment}
+<br>
+
+page分页：<br>
+<div class="mac_pages">
+    <div class="page_tip">共{$__PAGING__.record_total}条数据,当前{$__PAGING__.page_current}/{$__PAGING__.page_total}页</div>
+    <div class="page_info">
+        <a class="page_link" href="{$__PAGING__.page_url|str_replace='PAGELINK',1,###}" title="首页">首页</a>
+        <a class="page_link" href="{$__PAGING__.page_url|str_replace='PAGELINK',$__PAGING__.page_prev,###}" title="上一页">上一页</a>
+        {maccms:foreach name="$__PAGING__.page_num" id="num"}
+        {if condition="$__PAGING__['page_current'] eq $num"}
+        <a class="page_link page_current" href="javascript:;" title="第{$num}页">{$num}</a>
+        {else}
+        <a class="page_link" href="{$__PAGING__.page_url|str_replace='PAGELINK',$num,###}" title="第{$num}页" >{$num}</a>
+        {/if}
+        {/maccms:foreach}
+        <a class="page_link" href="{$__PAGING__.page_url|str_replace='PAGELINK',$__PAGING__.page_next,###}" title="下一页">下一页</a>
+        <a class="page_link" href="{$__PAGING__.page_url|str_replace='PAGELINK',$__PAGING__.page_total,###}" title="尾页">尾页</a>
+
+        <input class="page_input" type="text" placeholder="页码"  id="page" autocomplete="off" style="width:40px">
+        <button class="page_btn mac_page_go" type="button" data-url="{$__PAGING__.page_url}" data-total="{$__PAGING__.page_total}" data-sp="{$__PAGING__.page_sp}">GO</button>
+    </div>
+</div>
+
+<br>
+
+type标签：<br>
+{maccms:type num="4" mid="vod" ids="" order="asc" by="id"}
+{$key}->{$vo.type_name}<br>
+{/maccms:type}
+<br>
+
+
+topic标签：<br>
+{maccms:topic num="4" paging="no" ids="" level="" order="asc" by="id"}
+{$key}->{$vo.topic_name}<br>
+{/maccms:topic}
+<br>
+
+art标签：<br>
+{maccms:art num="4" paging="no" ids="" type="" topic="" level="" order="asc" by="id"}
+{$key}->{$vo.art_name}<br>
+{/maccms:art}
+<br>
+
+
+vod标签：<br>
+{maccms:vod num="4" paging="no" ids="" type="" topic="" level="" order="asc" by="id"}
+{$key}->{$vo.vod_name}<br>
+{/maccms:vod}
+<br>
+
+
+
+for标签：<br>
+{maccms:for start="1" end="5" comparison="elt" step="1" name="key"}
+{$key}<br>
+{/maccms:for}
+<br>
+
+
+

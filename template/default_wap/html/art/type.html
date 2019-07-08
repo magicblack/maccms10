@@ -1,0 +1,38 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no">
+    <title>{$obj.type_title} - {$maccms.site_name}</title>
+    <meta name="keywords" content="{$obj.type_key}" />
+    <meta name="description" content="{$obj.type_des}" />
+    {include file="public/include"}
+</head>
+<body>
+{include file="public/head"}
+
+<header class="g_header2">
+    <a href="javascript:MAC.GoBack()"><i class="moreArrow2"></i>返回</a>
+    {$obj.type_name}
+    <label for="navSwitch" href="javascript:;" class="s_c mac_user"><i class="i_user"><span></span></i></label>
+    <label for="navSwitch" href="javascript:;" class="s_r s_bt"><i class="i_bread"><span></span></i></label>
+</header>
+<!--文章列表-->
+<div class="wenzhang">
+    <div class="vodlist_l">
+        <ul class="pianyi">
+            {maccms:art num="30" paging="yes" type="current" order="desc" by="time"}
+            <li><a href="{:mac_url_art_detail($vo)}">[{$vo.art_time|date='Y-m-d',###}]{$vo.art_name}</a></li>
+            {/maccms:art}
+        </ul>
+        <div class="pages">
+            {include file="public/paging"}
+        </div>
+    </div>
+
+</div>
+
+{include file="public/foot"}
+</body>
+</html>
+

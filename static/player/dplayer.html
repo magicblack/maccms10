@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>dplayer播放器</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+	<meta http-equiv="X-UA-Compatible" content="IE=11" />
+	<meta content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no" id="viewport" name="viewport">
+	<style type="text/css">
+	html,body{width:100%;height:100%; padding:0; margin:0;}
+	#playerCnt{width:100%;height:100%;}
+	</style>
+	<link rel="stylesheet" href="/static/player/dplayer/DPlayer.min.css">
+	<script type="text/javascript" src="/static/player/dplayer/flv.min.js"></script>
+	<script type="text/javascript" src="/static/player/dplayer/hls.min.js"></script>
+	<script type="text/javascript" src="/static/player/dplayer/dash.all.min.js"></script>
+	<script type="text/javascript" src="/static/player/dplayer/webtorrent.min.js"></script>
+	<script type="text/javascript" src="/static/player/dplayer/DPlayer.min.js"></script>
+</head>
+<body marginwidth="0" marginheight="0">
+<div id="playerCnt"></div>
+<script type="text/javascript">
+    var type='normal';
+    var live=false;
+    if(parent.MacPlayer.PlayUrl.indexOf('.m3u8')>-1){
+        type='hls';
+        live=true;
+    }
+    else if(parent.MacPlayer.PlayUrl.indexOf('magnet:')>-1){
+        type='webtorrent';
+    }
+    else if(parent.MacPlayer.PlayUrl.indexOf('.flv')>-1){
+        type='flv';
+    }
+    else if(parent.MacPlayer.PlayUrl.indexOf('.mpd')>-1){
+        type='dash';
+    }
+
+    var dp = new DPlayer({
+        container: document.getElementById('playerCnt'),
+        autoplay: true,
+        screenshot: false,
+        video: {
+            url: parent.MacPlayer.PlayUrl,
+            live: live,
+            type:type
+        },
+        contextmenu: [
+
+        ]
+    });
+    
+    dp.on('ended',function(){
+　　　　if(parent.MacPlayer.PlayLinkNext!=''){
+            top.location.href = parent.MacPlayer.PlayLinkNext;
+        }
+　　});
+    
+	try{
+		//document.getElementById('playerCnt').style.height = parent.MacPlayer.Height + 'px';
+	}
+	catch(e){}
+</script>
+</body>
+</html>

@@ -1,0 +1,40 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no">
+    <title>{$maccms.site_name}</title>
+    {include file="public/include"}
+</head>
+<body>
+{include file="public/head"}
+<!--当前位置-->
+<header class="g_header2">
+    <a href="javascript:MAC.GoBack()"><i class="moreArrow2"></i>返回</a>
+    最新更新
+    <label for="navSwitch" href="javascript:;" class="s_c mac_user"><i class="i_user"><span></span></i></label>
+    <label for="navSwitch" href="javascript:;" class="s_r s_bt"><i class="i_bread"><span></span></i></label>
+</header>
+<!--列表部分-->
+<div class="ui-box ui-qire fn-clear" id="qire-lasted">
+    <div class="ui-title fn-clear">
+        <h2>最近100个更新</h2>
+        <div class="lasted-time fn-right">更新时间</div>
+    </div>
+    <div class="ui-cnt">
+        <ul class="lasted-list fn-clear">
+            {maccms:vod num="100" order="desc" by="time"}
+            <li><div class="lasted-num fn-left">∷</div>
+                <div class="lasted-tit fn-left">
+                    <h5 class="show-tipinfo"><a href="{:mac_url_vod_detail($vo)}">{$vo.vod_name}</a><em>/</em>{if condition="$vo.vod_serial gt 0"}第{$vo.vod_serial}集/共{$vo.vod_total}集{else/}{$vo.vod_version}{/if}</h5>
+                </div>
+                <div class="lasted-time fn-right">{$vo.vod_time|date='Y-m-d H:i:s',###}</div>
+            </li>
+            {/maccms:vod}
+        </ul>
+    </div>
+</div>
+
+{include file="public/foot"}
+</body>
+</html>

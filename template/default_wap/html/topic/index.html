@@ -1,0 +1,42 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no">
+    <title>专题首页 - 精品专题 - 推荐专题 - {$maccms.site_name}</title>
+    <meta name="keywords" content="电影专题,电视剧专题,综艺专题,动漫专题,推荐专题,专题收录" />
+    <meta name="description" content="本站提供最新最全精品专题数据" />
+    {include file="public/include"}
+    {include file="public/include"}
+</head>
+<body>
+{include file="public/head"}
+<!--当前位置-->
+<header class="g_header2">
+    <a href="javascript:MAC.GoBack()"><i class="moreArrow2"></i>返回</a>
+    专题列表
+    <label for="navSwitch" href="javascript:;" class="s_c mac_user"><i class="i_user"><span></span></i></label>
+    <label for="navSwitch" href="javascript:;" class="s_r s_bt"><i class="i_bread"><span></span></i></label>
+</header>
+<!--专题-->
+<div class="zhuanti-list">
+    <ul>
+        {maccms:topic num="10" paging="yes" order="desc" by="time"}
+        <li><a class="play-img" href="{:mac_url_topic_detail($vo)}"><img src="{$vo.topic_pic|mac_url_img}" alt="{$vo.topic_name}" /></a>
+            <div class="play-txt">
+                <h2><a href="内页.html">{$vo.topic_name}</a></h2>
+                <p class="juqing">专题介绍：{$vo.topic_blurb}……<a class="link detail-desc" href="{:mac_url_topic_detail($vo)}">【详细剧情】</a></p>
+            </div>
+        </li>
+        {/maccms:topic}
+    </ul>
+    <!-- 分页 -->
+    <div class="ui-bar list-page fn-clear">
+        {include file="public/paging"}
+    </div>
+</div>
+
+{include file="public/foot"}
+</body>
+</html>
+

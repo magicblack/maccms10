@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width = device-width ,initial-scale = 1,minimum-scale = 1,maximum-scale = 1,user-scalable =no,"/>
+	<title>找回密码 - {$maccms.site_name}</title>
+	{include file="user/include" /}
+</head>
+<body>
+<!--子页顶部-->
+<div class="zy-search zy-tit">
+	<div class="sch-w clearfix">
+		<a class="go-back" href="#"><img src="{$maccms.path_tpl}images/user/go-back.png"></a>
+		<div class="tit">
+			{$param['ac_text']}找回密码
+		</div>
+	</div>
+</div>
+<div class="form-w">
+	<!--修改密码-->
+	<form method="post" action="" id="fm">
+		<div class="form-control clearfix">
+			<input class="fl" type="text" id="to" name="to" placeholder="请输入您绑定的{$param['ac_text']}">
+			<span class="fr"></span>
+		</div>
+		<div class="form-control clearfix">
+			<input type="text" name="verify" required placeholder="验证码">
+			<div class="pwd_img"><img id="vcode" src="{:url('verify/index')}" onClick="this.src=this.src+'?'" /></div>
+		</div>
+		<input type="button" class="btn-brand" id="btn_send" value="发送验证码">
+	</form>
+	<form method="post" action="" id="fm2">
+		<div class="form-control clearfix">
+			<input class="fl" type="text" id="code" name="code" placeholder="请输入验证码">
+			<span class="fr"></span>
+		</div>
+		<div class="form-control clearfix">
+			<input type="password" id="user_pwd" name="user_pwd" placeholder="新密码" value="">
+		</div>
+		<div class="form-control clearfix">
+			<input type="password" id="user_pwd2" name="user_pwd2" placeholder="确认密码" value="">
+		</div>
+		<input type="button" class="btn-brand" id="btn_submit" value="重置密码">
+	</form>
+
+
+	<div class="log-btn clearfix">
+		<a class="a-gry" href="{:url('user/findpass_msg')}?ac=phone">【绑定手机找回密码】</a>&nbsp;&nbsp;
+		<a class="a-gry" href="{:url('user/findpass_msg')}?ac=email">【绑定邮箱找回密码】</a>&nbsp;&nbsp;
+		<a class="a-gry" href="{:url('user/findpass')}">【密码问题找回密码】</a>&nbsp;&nbsp;
+	</div>
+</div>
+
+<script>
+	$(".go-back").click(function () {
+		var ref = document.referrer;
+		location.href=ref;
+	});
+
+    $('#btn_send').click(function() {
+        if ($('#to').val()  == '') { alert('请输入邮箱地址！'); $("#to").focus(); return false; }
+
+        $.ajax({
+            url: "{:url('user/findpass_msg')}",
+            type: "post",
+            dataType: "json",
+            data: $('#fm').serialize(),
+            beforeSend: function () {
+                $("#btn_submit").css("background","#fd6a6a").val("loading...");
+            },
+            success: function (r) {
+                alert(r.msg);
+            },
+            complete: function () {
+                $('#verify').click();
+                $("#btn_send").css("background","#fa4646").val("发送邮件");
+            }
+        });
+    });
+
+    $('#btn_submit').click(function() {
+        if ($('#to').val()  == '') { alert('请输入{$param["ac_text"]}'); $("#to").focus(); return false; }
+        if ($('#code').val()  == '') { alert('请输入验证码！'); $("#code").focus(); return false; }
+        if ($('#user_pwd').val()  == '') { alert('请输入新密码！'); $("#user_pwd").focus(); return false; }
+        if ($('#user_pwd2').val()  == '') { alert('请输入确认密码！'); $("#user_pwd2").focus(); return false; }
+        if ($('#user_pwd').val()  != $('#user_pwd2').val() ) { alert('二次密码不一致！'); $("#user_pwd2").focus(); return false; }
+
+        var data= {ac:'{$param["ac"]}',to:$('#to').val(),code:$('#code').val(),user_pwd:$('#user_pwd').val(),user_pwd2:$('#user_pwd2').val()};
+        $.ajax({
+            url: "{:url('user/findpass_reset')}",
+            type: "post",
+            dataType: "json",
+            data: data,
+            beforeSend: function () {
+                $("#btn_submit").css("background","#fd6a6a").val("loading...");
+            },
+            success: function (r) {
+                alert(r.msg);
+            },
+            complete: function () {
+                $("#btn_submit").css("background","#fa4646").val("重置密码");
+            }
+        });
+	});
+
+
+</script>
+{include file="user/foot" /}
+</body>
+</html>

@@ -1,0 +1,601 @@
+
+/*****************************************
+* by：金刚狼 qq：834023388                
+* version：1.0                           
+* Description：明星库样式  专业开高端影视模板 
+*****************************************/
+em, i {
+    font-style: normal;
+}
+a {
+    text-decoration: none;
+    color: #333;
+}
+ .clearfix:after, .flow-list .item-wi .pic-group:after, .flow-list .item-wi .extra:after, .box-info .txt-con .attr-list li.full:after {
+    content: "";
+    display: block;
+    clear: both;
+    visibility: hidden;
+    height: 0;
+    font-size: 0;
+    line-height: 0;
+    overflow: hidden;
+}
+.dattop {
+    margin-top: 20px;
+}
+
+.main#latest-focus{ margin: 5px auto 30px;}
+
+
+.datll_com .picList {
+	position: relative;
+	overflow: hidden;
+	position: relative;
+	height: 210px
+}
+.datll_com .picList .txt {
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	width: 100%;
+	height: 100px;
+	overflow: hidden;
+	background: url(../images/mask_txtBg_100.png) 0 bottom repeat-x;
+	_background: none;
+_filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(src='../images/mask_txtBgIe6_100.png');
+	_bottom: -1px
+}
+.datll_com .picList .txt .sTit {
+	line-height: 24px;
+	height: 24px;
+	display: block;
+	overflow: hidden;
+	color: #fff;
+	padding: 48px 10px 0;
+	font-size: 20px
+}
+.datll_com .picList .txt .pTxt {
+	font-size: 12px;
+	line-height: 20px;
+	color: #ccc;
+	padding: 2px 10px 0
+}
+.datll_com .picList li {
+	position: absolute
+}
+.datll_com .picList .liA {
+    width: 238px;
+    height: 211px;
+    top: 0;
+    left: 10px;
+    float: left;
+    position: relative;
+    padding: 0px 4px;
+}
+.datll_com .picList .liB, .datll_com .picList .liC, .datll_com .picList .liE, .datll_com .picList .liF {
+	width: 150px;
+	height: 105px;
+	top: 0;
+	left: 232px;
+}
+.datll_com .picList .liC {
+	top: 106px;
+	left: 232px;
+}
+.datll_com .picList .liD {
+	width: 155px;
+	height: 210px;
+	top: 0;
+	left: 384px;
+}
+.datll_com .picList .liE {
+	top: 0;
+	left: 542px;
+}
+.datll_com .picList .liF {
+	top: 106px;
+	left: 542px;
+}
+.datll_com .picList .liG {
+	top: 0;
+	left: 695px;
+}
+.datll_com .picList .liH {
+	top: 107px;
+	left: 695px;
+}
+.datll_com .picList .liI {
+	width: 151px;
+	height: 212px;
+	top: 0;
+	right: 0px;
+}
+.datll_com .picList .liA .pic {
+	width: 230px;
+	height: 210px;
+}
+.datll_com .picList .liB .pic, .datll_com .picList .liC .pic, .datll_com .picList .liE .pic, .datll_com .picList .liF .pic, .datll_com .picList .liG .pic, .datll_com .picList .liH .pic {
+	width: 151px;
+	height: 105px;
+}
+.datll_com .picList .liD .pic, .datll_com .picList .liI .pic {
+	width: 156px;
+	height: 210px;
+}
+
+
+
+.hotStartList {margin-top:10px;}
+.mod_a .th_a {
+    height: 40px;
+    overflow: hidden;
+    line-height: 40px;
+}
+.mod_a .th_a .sMark {
+       font-size: 18px;
+    color: #4c8fe8;
+}
+.globalPicTxt .pic img {
+	vertical-align: top;
+	width: 100%;
+	height: 100%;
+	display: block
+}
+
+
+.hotStartList .lists {
+	border: 1px solid #e5e5e5;
+	margin-left: -1px;
+	margin-top: -1px;
+	position: relative;
+	z-index: 5;
+	overflow: hidden;
+	float: left;
+	display: inline;
+	background-color: #fff
+}
+.hotStartList .lists:hover, .hotStartList .hover {
+	border-color: #bfdfff;
+	background-color: #f7fbff;
+	z-index: 10
+}
+
+
+
+.hotStartList .sListTit {
+	line-height: 24px;
+	height: 24px;
+	display: block;
+	overflow: hidden;
+	color: #666;
+	font-size: 16px
+}
+.hotStartList .sListTit a {
+	color: #333
+}
+.hotStartList .sListTit a:hover {
+	color: #f30
+}
+
+.pic110 li {
+	width: 110px;
+	float: left;
+	display: inline
+}
+.pic110 li .pic img {
+	width: 100%;
+	height: 100%;
+	display: block
+}
+.pic110 li .sTit, .pic110 li .sDes {
+	text-align: center
+}
+.pic110 li .sDes {
+	color: #666
+}
+.globalPicTxt .sTit, .globalPicTxt .sTit_24 {
+    font-size: 14px;
+    line-height: 24px;
+    height: 24px;
+    overflow: hidden;
+    display: block;
+    padding-top: 5px;
+}
+.pic110 li .pic {
+    width: 104px;
+    height: 149px;
+}
+.globalPicTxt .sTit a:hover, .globalPicTxt .sTit_24 a:hover {
+    color: #f30;
+}
+
+
+.rightBottomPop .globalPicTxt .pic .introTxt50 span {
+	font-size: 14px
+}
+.globalPicTxt .pic {
+	position: relative;
+	overflow: hidden
+}
+.globalPicTxt .pic img {
+	vertical-align: top;
+	width: 100%;
+	height: 100%;
+	display: block
+}
+.globalPicTxt .pic .pIntro {
+	background: url(../images/titPngBg.png) 0 0 repeat;
+	_background: none;
+_filter:progid:DXImageTransform.Microsoft.gradient(startColorstr=#7F000000, endColorstr=#7F000000);
+	height: 20px;
+	line-height: 20px;
+	margin-top: -20px;
+	position: relative;
+	z-index: 5;
+	color: #fff
+}
+.globalPicTxt .pic .pIntro span {
+	display: block;
+	padding: 0 10px;
+	font-size: 12px
+}
+.globalPicTxt .pic .introTxt50 {
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	width: 100%;
+	height: 50px;
+	overflow: hidden;
+	background: url(../images/mask_txtBg_50.png) 0 bottom repeat-x;
+	_background: none;
+_filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(src='../images/mask_txtBgIe6_50.png');
+	_bottom: -1px;
+	z-index: 5;
+	color: #fff
+}
+.globalPicTxt .pic .introTxt50 span {
+	display: block;
+	padding: 26px 10px 0;
+	font-size: 12px;
+	overflow: hidden;
+	line-height: 24px;
+	height: 24px
+}
+.globalPicTxt .pic .introTxt100 {
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	width: 100%;
+	height: 100px;
+	overflow: hidden;
+	background: url(../images/mask_txtBg_100.png) 0 bottom repeat-x;
+	_background: none;
+_filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(src='../images/mask_txtBgIe6_100.png');
+	_bottom: -1px;
+	z-index: 5;
+	color: #fff
+}
+.globalPicTxt .pic .pRightBottom {
+	background: url(../images/titPngBg.png) 0 0 repeat;
+	_background: none;
+_filter:progid:DXImageTransform.Microsoft.gradient(startColorstr=#7F000000, endColorstr=#7F000000);
+	height: 18px;
+	line-height: 18px;
+	position: absolute;
+	bottom: 0;
+	right: 0;
+	overflow: hidden;
+	z-index: 5;
+	color: #fff
+}
+.globalPicTxt .pic .pRightBottom em {
+	padding: 0 8px;
+	font-size: 12px
+}
+.globalPicTxt .pic .pRightTop {
+	background: url(../images/titPngBg.png) 0 0 repeat;
+	_background: none;
+_filter:progid:DXImageTransform.Microsoft.gradient(startColorstr=#7F000000, endColorstr=#7F000000);
+	height: 20px;
+	line-height: 20px;
+	position: absolute;
+	top: 0;
+	right: 0;
+	overflow: hidden;
+	z-index: 5;
+	color: #fff
+}
+.globalPicTxt .pic .pRightTop span {
+	padding: 0 5px;
+	font-size: 11px;
+	display: block
+}
+.globalPicTxt .pic .pRightTop span em {
+	color: #ff3399;
+	padding-right: 3px;
+	font-size: 14px
+}
+.globalPicTxt .sDes {
+	font-size: 12px;
+	color: #999;
+	font-family: \5B8B\4F53;
+	display: block;
+	line-height: 18px;
+	height: 18px;
+	overflow: hidden;
+	width: 100%;
+	position: relative;
+	zoom: 1
+}
+.globalPicTxt .sDes em {
+	display: inline-block;
+	white-space: nowrap;
+*position:relative;
+*zoom:1
+}
+.globalPicTxt .sDes em a {
+	color: #999
+}
+.globalPicTxt .sDes em a:hover {
+	color: #f30
+}
+.globalPicTxt .sDes .emName {
+	background: url(../images/liveMap.v2.png) -89px -185px no-repeat;
+	float: left;
+	padding-left: 15px;
+	width: 70px;
+	line-height: 18px;
+	height: 18px;
+	overflow: hidden;
+	white-space: normal
+}
+.globalPicTxt .sDes .emGame {
+	float: right;
+	color: #ff6600;
+	font-weight: 700;
+	text-align: right;
+	width: 90px;
+	line-height: 18px;
+	height: 18px;
+	overflow: hidden;
+	white-space: normal
+}
+.globalPicTxt .sDes .emGame a {
+	color: #ff6600
+}
+.globalPicTxt .sDes .emGame a:hover {
+	color: #ff6600;
+	text-decoration: none
+}
+.globalPicTxt .sDes_36 {
+	font-size: 12px;
+	color: #999;
+	font-family: \5B8B\4F53;
+	display: block;
+	line-height: 18px;
+	height: 36px;
+	overflow: hidden;
+	width: 100%;
+	position: relative;
+	zoom: 1
+}
+.globalPicTxt .sTit a, .globalPicTxt .sTit_24 a {
+    color: #2371c8;
+}
+
+.channel-item.btop{margin-top: 15px;}
+.box_con{}
+.box_con ul{}
+.box_con>ul>li{
+    width: 159px;
+    float: left;
+    margin: 16px 7.0px 0 0;
+    }
+.box_con>ul>li>a{}
+.box_con>ul>li>a h3{
+    font-size: 15px;
+    color: #333;
+    text-align: center;
+    line-height: 40px;
+    height: 40px;
+    overflow: hidden;
+}
+.box_con>ul>li>a>span{
+    width: 160px;
+    height: 200px;
+    display: block;
+    overflow: hidden;
+    }
+.box_con>ul>li>a>span img{    width: 100%;
+    display: block;}
+
+/*明星内容页：*/
+.detail-info .info dl.jianjie{height: auto;}
+.tab-nav {
+    border-bottom: 2px solid #e6e6e6;
+    font-size: 18px;
+    color: #666;
+    height: 48px;
+    line-height: 48px;
+}
+.tab-nav li {
+    float: left;
+    margin-right: 34px;
+    height: 47px;
+    line-height: 47px;
+}
+.tab-nav .layui-this a, .tab-nav li a:hover {
+    color: #0d9aff;
+    padding-bottom: 0;
+    border-bottom: 3px solid #0d9aff;
+}
+.layui-tab-brief>.layui-tab-more li.layui-this:after, .layui-tab-brief>.layui-tab-title .layui-this:after{    border: 0;
+    border-radius: 0;
+    border-bottom: 0;}
+
+.tab-nav li a {
+    float: left;
+    padding: 0 10px 3px;
+    position: relative;
+    margin-bottom: -2px;
+}
+
+.panel-hd {
+    height: 54px;
+    line-height: 54px;
+}
+.panel-hd .title {
+    font-size: 24px;
+    font-weight: normal;
+    float: left;
+}
+.panel-hd .extend {
+    float: left;
+}
+.panel-hd .extend .more {
+    color: #666;
+    font-size: 12px;
+    margin-left: 5px;
+    height: 16px;
+    line-height: 16px;
+    margin-top: 24px;
+    float: left;
+}
+
+.panel-hd .extend .more .txt {
+    cursor: pointer;
+    float: left;
+}
+.panel-hd .extend .more .arrow {
+    width: 0;
+    height: 0;
+    line-height: 0;
+    border: 4px dashed transparent;
+    border-left-style: solid;
+    border-left-color: #8c8c8c;
+    margin-left: 3px;
+    float: left;
+    margin-top: 4px;
+}
+.panel-bd {
+    overflow: hidden;
+}
+
+.pic180_240 li, .pic180_100 li {
+    width: 180px;
+    float: left;
+    margin-right: 15px;
+    margin-bottom: 20px;
+}
+.pic180_240 li .pic {
+    height: 240px;
+}
+
+.pic180_240 li .pic, .pic180_100 li .pic {
+    width: 180px;
+}
+.v_picTxt .pic {
+    position: relative;
+    overflow: hidden;
+    zoom: 1;
+}
+.pic {
+    background: #f5f5f5 url(../images/noPicDefaultTit_m.png) center center no-repeat;
+}
+.v_picTxt .pic img {
+    vertical-align: top;
+    width: 100%;
+    height: 100%;
+    display: block;
+}
+
+img {
+    vertical-align: middle;
+}
+.v_picTxt .pic .pRightBottom {
+    background: url(../images/titPngBg.png) 0 0 repeat;
+    _background: none;
+    _filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#7F000000,endColorstr=#7F000000);
+    height: 20px;
+    line-height: 20px;
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    overflow: hidden;
+    z-index: 5;
+    color: #fff;
+}
+.v_picTxt .pic .pRightBottom em {
+    padding: 0 5px;
+    font-size: 12px;
+}
+
+a.aPlayBtn, a.aPlayBtn_m, a.aPlayBtn_s {
+    background: url(../images/fillBg.png) 0 0 repeat;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 20;
+    display: block;
+    height: 100%;
+    width: 100%;
+    opacity: 0;
+    -moz-transition: "opacity 0.3s";
+    -webkit-transition: "opacity 0.3s";
+    transition: "opacity 0.3s";
+}
+a.aPlayBtn i, a.aPlayBtn_m i, a.aPlayBtn_s i {
+    height: 100%;
+    width: 100%;
+    display: block;
+    cursor: pointer;
+}
+
+.v_picTxt .txtPadding {
+    padding: 0 10px 5px;
+    background: #fff;
+}
+
+.v_picTxt .txt .sTit, .v_picTxt .txtPadding .sTit {
+    line-height: 24px;
+    height: 24px;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+.v_picTxt .txt .sTit, .v_picTxt .txt .sTit_40, .v_picTxt .txtPadding .sTit, .v_picTxt .txtPadding .sTit_40 {
+    overflow: hidden;
+    display: block;
+    width: 100%;
+    padding-top: 7px;
+}
+.v_picTxt .txt .sTit .emTit, .v_picTxt .txtPadding .sTit .emTit {
+    float: left;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.pic180_240 li .sTit .emTit, .pic180_100 li .sTit .emTit {
+    width: 135px;
+}
+
+.ulDetailIntro {
+    padding-top: 10px;
+}
+
+.ulDetailIntro li {
+    width: 32%;
+    float: left;
+    line-height: 30px;
+    height: 30px;
+    overflow: hidden;
+    padding-right: 1%;
+}
+.ulDetailIntro li .sTit {
+    width: 76px;
+    float: left;
+    color: #666;
+}
+
+.layui-tab-item .vodlist_l{    width: 627px;
+}

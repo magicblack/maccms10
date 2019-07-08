@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width = device-width ,initial-scale = 1,minimum-scale = 1,maximum-scale = 1,user-scalable =no,"/>
+	<title>升级会员组 - {$maccms.site_name}</title>
+	{include file="user/include" /}
+</head>
+
+<body style="background: #fff;">
+<!--子页顶部-->
+<div class="zy-search zy-tit">
+	<div class="sch-w clearfix">
+		<a class="go-back" href="#"><img src="{$maccms.path_tpl}images/user/go-back.png"></a>
+		<div class="tit">
+			我要升级
+		</div>
+	</div>
+</div>
+
+<div class="wrap list-top" style="border-top: 1px solid #ececec;">
+	<span class="ml10">会员组：[{$obj.group.group_name}] 积分：[{$obj.user_points}] 期限：{if condition="$obj.group_id lt 3"}[无限期]{else}[{$obj.user_end_time|mac_day}]{/if}</span>
+</div>
+<div class="information-w">
+	<!--个人信息-->
+	<form method="post" id="fm">
+		<ul class="clearfix">
+			{volist name="group_list" id="vo"}
+			{if condition="$vo.group_id gt 2 && $vo.group_status eq 1"}
+				<li class="no-bg"><span class="tit">会员组：{$vo.group_name}</span><span></span></li>
+				<li class="no-bg"><span class="tit"></span><span class="grade" data-id="{$vo.group_id}" data-name="{$vo.group_name}" data-points="{$vo.group_points_day}" data-long="day">包天：{$vo.group_points_day}积分</span></li>
+				<li class="no-bg"><span class="tit"></span><span class="grade" data-id="{$vo.group_id}" data-name="{$vo.group_name}"  data-points="{$vo.group_points_week}" data-long="week">包周：{$vo.group_points_week}积分</span></li>
+				<li class="no-bg"><span class="tit"></span><span class="grade" data-id="{$vo.group_id}" data-name="{$vo.group_name}"  data-points="{$vo.group_points_month}" data-long="month">包月：{$vo.group_points_month}积分</span></li>
+				<li class="no-bg"><span class="tit"></span><span class="grade" data-id="{$vo.group_id}" data-name="{$vo.group_name}"  data-points="{$vo.group_points_year}" data-long="year">包年：{$vo.group_points_year}积分</span></li>
+			{/if}
+			{/volist}
+			<li><a class="btn-brand" href="javascript:;" style="width: 70%">点击需要的会员组和时长进行购买升级</a></li>
+		</ul>
+	</form>
+</div>
+
+
+<!--loading start-->
+<div class="loading_box"></div>
+<!--loading end-->
+
+<script>
+
+	$(".go-back").click(function () {
+		var ref = document.referrer;
+		location.href=ref;
+	});
+
+	$('.grade').click(function(){
+		var that=$(this);
+		var group_id = that.attr('data-id');
+		var group_name = that.attr('data-name');
+		var long = that.attr('data-long');
+		var points = that.attr('data-points');
+
+		if(confirm('确定要升级到【'+group_name+'】吗,需要花费【'+points+'】积分')) {
+			$.ajax({
+				url: "{:url('user/upgrade')}",
+				type: "post",
+				dataType: "json",
+				data: {group_id: group_id,long:long },
+				beforeSend: function () {
+					$("#btn_submit").css("background","#fd6a6a").val("loading...");
+				},
+				success: function (r) {
+					alert(r.msg);
+					if (r.code == 1) {
+						location.reload();
+					}
+				},
+				complete: function () {
+					$("#btn_submit").css("background","#fa4646").val("提交");
+				}
+			});
+		}
+	});
+
+</script>
+</body>
+</html>

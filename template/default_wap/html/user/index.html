@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width = device-width ,initial-scale = 1,minimum-scale = 1,maximum-scale = 1,user-scalable =no,"/>
+	<title>个人中心 - {$maccms.site_name}</title>
+	{include file="user/include" /}
+</head>
+
+<body>
+<!--个人中心-->
+<div class="wrap mb80">
+	<div class="member-top">
+		<div class="cont-w">
+			<div class="cont">
+				<div>
+					<img class="face" src="{$obj.user_portrait|mac_default='static/images/touxiang.png'|mac_url_img}">
+					<p>{$obj.user_name}</p>
+				</div>
+				<div class="meb-info clearfix">
+					<span>会员组：{$obj.group.group_name}</span>
+					<span>积分：{$obj.user_points}</span>
+					<span>期限：{if condition="$obj.group_id lt 3"}永久{else}{$obj.user_end_time|date='Y-m-d',###}{/if}</span>
+					<span>电话：{$obj.user_phone}</span>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="member-main">
+		<ul>
+			<li><a href="{:url('user/info')}"><i class="mb-user"></i>我的资料</a></li>
+			<li><a href="{:url('user/favs')}"><i class="mb-collect"></i>我的收藏</a></li>
+			<li><a href="{:url('user/plays')}"><i class="mb-myorder"></i>我的播放</a></li>
+			<li><a href="{:url('user/downs')}"><i class="mb-myorder"></i>我的下载</a></li>
+			<li><a href="{:url('user/buy')}"><i class="mb-credit"></i>购买会员</a></li>
+			<li><a href="{:url('user/upgrade')}"><i class="mb-credit"></i>升级会员组</a></li>
+			<li><a href="{:url('user/orders')}"><i class="mb-credit"></i>充值记录</a></li>
+			<li><a href="{:url('user/plog')}"><i class="mb-credit"></i>积分记录</a></li>
+			<li><a href="{:url('user/cash')}"><i class="mb-credit"></i>提现记录</a></li>
+			<li><a href="{:url('user/reward')}"><i class="mb-credit"></i>三级分销</a></li>
+			{if $GLOBALS['config']['user']['invite_reg_points'] gt 0}
+			<li>推广注册链接：<input id="url" value="{$maccms.http_type}{$maccms.site_url}{:mac_url('user/reg')}?uid={$obj.user_id}" size="70" style="width:80%;"></li>
+			{/if}
+			{if $GLOBALS['config']['user']['invite_visit_points'] gt 0}
+			<li>推广访问链接：<input id="url2" value="{$maccms.http_type}{$maccms.site_url}{:mac_url('user/visit')}?uid={$obj.user_id}" size="70" style="width:80%;"></li>
+			{/if}
+		</ul>
+	</div>
+	<a class="btn-brand" href="{:url('index/index')}" style="width: 40%; float:left;margin-left: 20px; ">返回首页</a>
+	<a class="btn-brand" href="{:url('user/logout')}" style="width: 40%;float:right;margin-right: 20px;">退出登录</a>
+</div>
+
+<!--loading start-->
+<div class="loading_box"></div>
+<!--loading end-->
+<script>
+	$(".face").imageUpload({
+		formAction: "{:url('user/portrait')}",
+		inputFileName:'file',
+		browseButtonValue: '修改头像',
+		browseButtonClass:'btn btn-default btn-xs',
+		automaticUpload: true,
+		hideDeleteButton: true,
+		hover:true
+	})
+	$(".face").on("imageUpload.uploadFailed", function (ev, err) {
+		alert(err);
+	});
+</script>
+</body>
+</html>

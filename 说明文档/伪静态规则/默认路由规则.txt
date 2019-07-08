@@ -1,0 +1,43 @@
+map   => map/index
+rss   => rss/index
+
+index-<page?>   => index/index
+
+gbook-<page?>   => gbook/index
+gbook$   => gbook/index
+
+topic-<page?>   => topic/index
+topic$  => topic/index
+topicdetail-<id>   => topic/detail
+
+actor-<page?>   => actor/index
+actor$ => actor/index
+actordetail-<id>   => actor/detail
+actorshow/<area?>-<blood?>-<by?>-<letter?>-<level?>-<order?>-<page?>-<sex?>-<starsign?>   => actor/show
+
+role-<page?>   => role/index
+role$ => role/index
+roledetail-<id>   => role/detail
+roleshow/<by?>-<letter?>-<level?>-<order?>-<page?>-<rid?>   => role/show
+
+
+vodtype/<id>-<page?>   => vod/type
+vodtype/<id>   => vod/type
+voddetail/<id>   => vod/detail
+vodrss-<id>   => vod/rss
+vodplay/<id>-<sid>-<nid>   => vod/play
+voddown/<id>-<sid>-<nid>   => vod/down
+vodshow/<id>-<area?>-<by?>-<class?>-<lang?>-<letter?>-<level?>-<order?>-<page?>-<state?>-<tag?>-<year?>   => vod/show
+vodsearch/<wd?>-<actor?>-<area?>-<by?>-<class?>-<director?>-<lang?>-<letter?>-<level?>-<order?>-<page?>-<state?>-<tag?>-<year?>   => vod/search
+
+
+arttype/<id>-<page?>   => art/type
+arttype/<id>   => art/type
+artshow-<id>   => art/show
+artdetail-<id>-<page?>   => art/detail
+artdetail-<id>   => art/detail
+artrss-<id>-<page>   => art/rss
+artshow/<id>-<by?>-<class?>-<level?>-<letter?>-<order?>-<page?>-<tag?>   => art/show
+artsearch/<wd?>-<by?>-<class?>-<level?>-<letter?>-<order?>-<page?>-<tag?>   => art/search
+
+label-<file> => label/index
