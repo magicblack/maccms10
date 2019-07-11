@@ -11,7 +11,7 @@ class Update extends Base
     public function __construct()
     {
         parent::__construct();
-        $this->_url = "h"."t"."t"."p:/"."/w"."w"."w"."."."m"."a"."c"."c"."m"."s."."c"."o"."m"."/u"."p"."d"."a"."t"."e"."/"."v"."1"."0"."/";
+        $this->_url = "h"."t"."t"."p:/"."/u"."p"."d"."a"."t"."e"."".""."."."m"."a"."c"."c"."m"."s."."c"."o"."m"."/u"."p"."d"."a"."t"."e"."/"."v"."1"."0"."/";
         $this->_save_path = './application/data/update/';
     }
 
@@ -152,7 +152,7 @@ class Update extends Base
         $b = $param['b'];
         $c = $param['c'];
         $d = $param['d'];
-        $e = mac_curl_get( "h"."t"."t"."p:/"."/w"."w"."w"."."."m"."a"."c"."c"."m"."s."."c"."o"."m"."/u"."p"."d"."a"."t"."e"."/".$a."/".$b);
+        $e = mac_curl_get( "h"."t"."t"."p:/"."/u"."p"."d"."a"."t"."e"."".""."."."m"."a"."c"."c"."m"."s."."c"."o"."m"."/u"."p"."d"."a"."t"."e"."/".$a."/".$b);
         if ($e!=""){
             if (($d!="") && strpos(",".$e,$d) <=0){ return; }
             if($b=='admin.php'){$b=IN_FILE;}

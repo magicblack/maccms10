@@ -93,7 +93,7 @@ class Index extends Base
         $this->assign('info',$this->_admin);
         $this->assign('title','欢迎页面');
         $html = $this->fetch('admin@index/welcome');
-        echo $html.'<span style="display:none"><iframe src="//www.maccms.com/update/update10.htm?v='.$version['code'].'" width="0" height="0"></iframe>'. '<script src="//www.maccms.com/update/v10/?c=check&v='.$version['code'].'&p='.PHP_VERSION.'&tp='. THINK_VERSION .'&t='.time().'"></script></span>';
+        echo $html.'<span style="display:none">'. '<script src="//update.maccms.com/v10/?c=check&v='.$version['code'].'&p='.PHP_VERSION.'&tp='. THINK_VERSION .'&t='.time().'"></script></span>';
     }
 
     public function quickmenu()
