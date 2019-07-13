@@ -2,11 +2,11 @@
 
 <div class="page-container">
         <form class="layui-form layui-form-pane" action="">
-            <div class="layui-tab">
+            <div class="layui-tab" lay-filter="tb1">
                 <ul class="layui-tab-title">
-                    <li class="layui-this">视频API设置</li>
-                    <li>文章API设置</li>
-                    <li>演员API设置</li>
+                    <li class="layui-this" lay-id="configapi_1">视频API设置</li>
+                    <li lay-id="configapi_2">文章API设置</li>
+                    <li lay-id="configapi_3">演员API设置</li>
                 </ul>
                 <div class="layui-tab-content">
                     <div class="layui-tab-item layui-show">
@@ -226,8 +226,23 @@
 </div>
 
 {include file="../../../application/admin/view/public/foot" /}
+<script type="text/javascript" src="__STATIC__/js/jquery.cookie.js"></script>
 <script type="text/javascript">
+    layui.use(['element', 'form', 'layer'], function() {
+        var element = layui.element
+            ,form = layui.form
+            , layer = layui.layer;
 
+
+        element.on('tab(tb1)', function(){
+            $.cookie('configapi_tab', this.getAttribute('lay-id'));
+        });
+
+        if( $.cookie('configapi_tab') !=null ) {
+            element.tabChange('tb1', $.cookie('configapi_tab'));
+        }
+
+    });
 </script>
 
 </body>

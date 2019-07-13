@@ -5,11 +5,11 @@
     <div class="showpic" style="display:none;"><img class="showpic_img" width="120" height="160"></div>
 
     <form class="layui-form layui-form-pane" action="">
-        <div class="layui-tab">
+        <div class="layui-tab" lay-filter="tb1">
             <ul class="layui-tab-title">
-                <li class="layui-this">基本设置</li>
-                <li>性能优化</li>
-                <li>预留参数</li>
+                <li class="layui-this" lay-id="config_1">基本设置</li>
+                <li lay-id="config_2">性能优化</li>
+                <li lay-id="config_3">预留参数</li>
             </ul>
             <div class="layui-tab-content">
 
@@ -472,12 +472,14 @@
 </div>
 
 {include file="../../../application/admin/view/public/foot" /}
+<script type="text/javascript" src="__STATIC__/js/jquery.cookie.js"></script>
 <script type="text/javascript">
     layui.use(['form','upload', 'layer'], function(){
         // 操作对象
-        var form = layui.form
-                , layer = layui.layer
-                , upload = layui.upload;
+        var element = layui.element
+            ,form = layui.form
+            , layer = layui.layer
+            , upload = layui.upload;
 
         form.on('radio(cache_type)',function(data){
             $('.row_cache_server').hide();
@@ -486,6 +488,13 @@
            }
         });
 
+        element.on('tab(tb1)', function(){
+            $.cookie('config_tab', this.getAttribute('lay-id'));
+        });
+
+        if( $.cookie('config_tab') !=null ) {
+            element.tabChange('tb1', $.cookie('config_tab'));
+        }
 
         upload.render({
             elem: '.layui-upload'

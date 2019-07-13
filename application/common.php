@@ -1323,7 +1323,7 @@ function mac_url($model,$param=[],$info=[])
     ksort($param); 
 
     $config = $GLOBALS['config'];
-    $replace_from = ['{id}','{en}','{page}','{type_id}','{type_en}','{type_pid}','{type_pen}','{year}','{month}','{day}','{sid}','{nid}'];
+    $replace_from = ['{id}','{en}','{page}','{type_id}','{type_en}','{type_pid}','{type_pen}','{md5}','{year}','{month}','{day}','{sid}','{nid}'];
     $replace_to = [];
     $page_sp = $config['path']['page_sp'];
     $path = '';
@@ -1394,6 +1394,9 @@ function mac_url($model,$param=[],$info=[])
                 if(substr($path,strlen($path)-1,1)=='/'){
                     $path .= 'index';
                 }
+                if(strpos($path,'{md5}')!==false){
+                    $replace_to[] = md5($info['type_id']);
+                }
                 if($param['page'] !=''){
                     $path .= $page_sp . $param['page'];
                 }
@@ -1405,34 +1408,37 @@ function mac_url($model,$param=[],$info=[])
             break;
         case 'vod/detail':
             $replace_to = [$info['vod_id'],$info['vod_en'],'',
-                $info['type_id'],$info['type']['type_en'],$info['type_1']['type_id'],$info['type_1']['type_en'],
-                date('Y',$info['vod_time']),date('m',$info['vod_time']),date('d',$info['vod_time'])
+                $info['type_id'],$info['type']['type_en'],$info['type_1']['type_id'],$info['type_1']['type_en']
             ];
             if($config['view']['vod_detail'] == 2){
                 $path = $config['path' ]['vod_detail'];
                 if(substr($path,strlen($path)-1,1)=='/'){
                     $path .= 'index';
                 }
+                if(strpos($path,'{md5}')!==false){
+                    $replace_to[] = md5($info['vod_id']);
+                }
             }
             else{
                 $id = $config['rewrite']['vod_id'] ==1 ? 'vod_en' : 'vod_id';
                 $url = url($model,['id'=> $info[$id] ]);
             }
-
+            $replace_to = array_merge($replace_to,[date('Y',$info['vod_time']),date('m',$info['vod_time']),date('d',$info['vod_time'])]);
             break;
         case 'vod/play':
             $replace_to = [
                 $info['vod_id'],$info['vod_en'],'',
                 $info['type_id'],$info['type']['type_en'],$info['type_1']['type_id'],$info['type_1']['type_en'],
-                date('Y',$info['vod_time']),date('m',$info['vod_time']),date('d',$info['vod_time']),
-                $param['sid'],$param['nid'],
+
             ];
             if($config['view']['vod_play'] >=2){
                 $path = $config['path' ]['vod_play'];
                 if(substr($path,strlen($path)-1,1)=='/'){
                     $path .= 'index';
                 }
-
+                if(strpos($path,'{md5}')!==false){
+                    $replace_to[] = md5($info['vod_id']);
+                }
                 if($config['view']['vod_play'] ==2){
                     $path.= '.'. $config['path']['suffix'];
                     $path .= '?'.$info['vod_id'] . '-' . $param['sid'] . '-' . $param['nid'] ;
@@ -1450,18 +1456,20 @@ function mac_url($model,$param=[],$info=[])
                 $id = $config['rewrite']['vod_id'] ==1 ? 'vod_en' : 'vod_id';
                 $url = url($model,['id'=>$info[$id],'sid'=>$param['sid'],'nid'=>$param['nid']]);
             }
+            $replace_to = array_merge($replace_to,[date('Y',$info['vod_time']),date('m',$info['vod_time']),date('d',$info['vod_time']),$param['sid'],$param['nid']]);
             break;
         case 'vod/down':
             $replace_to = [
                 $info['vod_id'],$info['vod_en'],'',
-                $info['type_id'],$info['type']['type_en'],$info['type_1']['type_id'],$info['type_1']['type_en'],
-                date('Y',$info['vod_time']),date('m',$info['vod_time']),date('d',$info['vod_time']),
-                $param['sid'],$param['nid'],
+                $info['type_id'],$info['type']['type_en'],$info['type_1']['type_id'],$info['type_1']['type_en']
             ];
             if($config['view']['vod_down'] == 2){
                 $path = $config['path' ]['vod_down'];
                 if(substr($path,strlen($path)-1,1)=='/'){
                     $path .= 'index';
+                }
+                if(strpos($path,'{md5}')!==false){
+                    $replace_to[] = md5($info['vod_id']);
                 }
                 if($config['view']['vod_down'] ==3){
                     $path .= $config['path']['page_sp'] . $param['sid'] . $config['path']['page_sp'] . $param['nid'] ;
@@ -1474,22 +1482,26 @@ function mac_url($model,$param=[],$info=[])
                 $id = $config['rewrite']['vod_id'] ==1 ? 'vod_en' : 'vod_id';
                 $url = url($model,['id'=>$info[$id],'sid'=>$param['sid'],'nid'=>$param['nid']]);
             }
+            $replace_to = array_merge($replace_to,[date('Y',$info['vod_time']),date('m',$info['vod_time']),date('d',$info['vod_time']),$param['sid'],$param['nid']]);
             break;
         case 'vod/role':
             $replace_to = [$info['vod_id'],$info['vod_en'],'',
-                $info['type_id'],$info['type']['type_en'],$info['type_1']['type_id'],$info['type_1']['type_en'],
-                date('Y',$info['vod_time']),date('m',$info['vod_time']),date('d',$info['vod_time'])
+                $info['type_id'],$info['type']['type_en'],$info['type_1']['type_id'],$info['type_1']['type_en']
             ];
             if($config['view']['vod_role'] == 2){
                 $path = $config['path' ]['vod_role'];
                 if(substr($path,strlen($path)-1,1)=='/'){
                     $path .= 'index';
                 }
+                if(strpos($path,'{md5}')!==false){
+                    $replace_to[] = md5($info['vod_id']);
+                }
             }
             else{
                 $id = $config['rewrite']['vod_id'] ==1 ? 'vod_en' : 'vod_id';
                 $url = url($model,['id'=>$info[$id]]);
             }
+            $replace_to = array_merge($replace_to,[date('Y',$info['vod_time']),date('m',$info['vod_time']),date('d',$info['vod_time'])]);
             break;
         case 'art/type':
             $replace_to = [$info['type_id'],$info['type_en'],$param['page'],
@@ -1499,6 +1511,9 @@ function mac_url($model,$param=[],$info=[])
                 $path = $config['path']['art_type'];
                 if(substr($path,strlen($path)-1,1)=='/'){
                     $path .= 'index';
+                }
+                if(strpos($path,'{md5}')!==false){
+                    $replace_to[] = md5($info['type_id']);
                 }
                 if($param['page']!=''){
                     $path .= $page_sp . $param['page'];
@@ -1512,13 +1527,15 @@ function mac_url($model,$param=[],$info=[])
         case 'art/detail':
             $replace_to = [
                 $info['art_id'],$info['art_en'],'',
-                $info['type_id'],$info['type']['type_en'],$info['type_1']['type_id'],$info['type_1']['type_en'],
-                date('Y',$info['art_time']),date('m',$info['art_time']),date('d',$info['art_time']),
+                $info['type_id'],$info['type']['type_en'],$info['type_1']['type_id'],$info['type_1']['type_en']
             ];
             if($config['view']['art_detail'] == 2){
                 $path = $config['path' ]['art_detail'];
                 if(substr($path,strlen($path)-1,1)=='/'){
                     $path .= 'index';
+                }
+                if(strpos($path,'{md5}')!==false){
+                    $replace_to[] = md5($info['art_id']);
                 }
                 if($param['page']>1 || $param['page'] =='PAGELINK'){
                     $path .= $page_sp . $param['page'];
@@ -1528,6 +1545,7 @@ function mac_url($model,$param=[],$info=[])
                 $id = $config['rewrite']['art_id'] ==1 ? 'art_en' : 'art_id';
                 $url = url($model,['id'=>$info[$id],'page'=>$param['page']]);
             }
+            $replace_to = array_merge($replace_to,[date('Y',$info['art_time']),date('m',$info['art_time']),date('d',$info['art_time'])]);
             break;
         case 'topic/index':
             if($config['view']['topic_index'] == 2){
@@ -1544,11 +1562,14 @@ function mac_url($model,$param=[],$info=[])
             }
             break;
         case 'topic/detail':
-            $replace_to = [$info['topic_id'],$info['topic_en']];
+            $replace_to = [$info['topic_id'],$info['topic_en'],'','','','',''];
             if($config['view']['topic_detail'] == 2){
                 $path = $config['path' ]['topic_detail'];
                 if(substr($path,strlen($path)-1,1)=='/'){
                     $path .= 'index';
+                }
+                if(strpos($path,'{md5}')!==false){
+                    $replace_to[] = md5($info['topic_id']);
                 }
             }
             else{
@@ -1571,11 +1592,14 @@ function mac_url($model,$param=[],$info=[])
             }
             break;
         case 'actor/detail':
-            $replace_to = [$info['actor_id'],$info['actor_en']];
+            $replace_to = [$info['actor_id'],$info['actor_en'],'','','','',''];
             if($config['view']['actor_detail'] == 2){
                 $path = $config['path' ]['actor_detail'];
                 if(substr($path,strlen($path)-1,1)=='/'){
                     $path .= 'index';
+                }
+                if(strpos($path,'{md5}')!==false){
+                    $replace_to[] = md5($info['actor_id']);
                 }
             }
             else{
@@ -1598,25 +1622,14 @@ function mac_url($model,$param=[],$info=[])
             }
             break;
         case 'role/detail':
-            $replace_to = [$info['role_id'],$info['actor_en']];
+            $replace_to = [$info['role_id'],$info['actor_en'],'','','','',''];
             if($config['view']['role_detail'] == 2){
                 $path = $config['path' ]['role_detail'];
                 if(substr($path,strlen($path)-1,1)=='/'){
                     $path .= 'index';
                 }
-            }
-            else{
-                $id = $config['rewrite']['role_id'] ==1 ? 'role_en' : 'role_id';
-                $url = url($model,['id'=>$info[$id]]);
-            }
-            break;
-
-        case 'role/detail':
-            $replace_to = [$info['role_id'],$info['role_en']];
-            if($config['view']['role_detail'] == 2){
-                $path = $config['path' ]['role_detail'];
-                if(substr($path,strlen($path)-1,1)=='/'){
-                    $path .= 'index';
+                if(strpos($path,'{md5}')!==false){
+                    $replace_to[] = md5($info['role_id']);
                 }
             }
             else{

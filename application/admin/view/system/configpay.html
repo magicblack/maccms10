@@ -2,12 +2,12 @@
 
 <div class="page-container">
     <form class="layui-form layui-form-pane" action="">
-        <div class="layui-tab">
+        <div class="layui-tab" lay-filter="tb1">
             <ul class="layui-tab-title">
-                <li class="layui-this">在线支付设置</li>
-                <li class="">卡密</li>
+                <li class="layui-this" lay-id="configpay_1">在线支付设置</li>
+                <li lay-id="configpay_2">卡密</li>
                 {volist name="ext_list" id="vo"}
-                <li class="" data-key="{$key}">{$vo}</li>
+                <li data-key="{$key}" lay-id="configpay_{$i+2}">{$vo}</li>
                 {/volist}
                 
             </ul>
@@ -71,8 +71,21 @@
 </div>
 
 {include file="../../../application/admin/view/public/foot" /}
+<script type="text/javascript" src="__STATIC__/js/jquery.cookie.js"></script>
 <script type="text/javascript">
-    $(function(){
+    layui.use(['element', 'form', 'layer'], function() {
+        var element = layui.element
+            ,form = layui.form
+            , layer = layui.layer;
+
+
+        element.on('tab(tb1)', function(){
+            $.cookie('configpay_tab', this.getAttribute('lay-id'));
+        });
+
+        if( $.cookie('configpay_tab') !=null ) {
+            element.tabChange('tb1', $.cookie('configpay_tab'));
+        }
 
     });
 </script>
