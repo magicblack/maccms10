@@ -395,8 +395,10 @@ class Collect extends Base {
         $config = $config['vod'];
 
         $type_list = model('Type')->getCache('type_list');
-
         $filter_arr = explode(',',$config['filter']);
+        $pse_name =  mac_txt_explain($config['namewords']);
+        $pse_rnd = explode('#',$config['words']);
+        $pse_syn = mac_txt_explain($config['thesaurus']);
 
         foreach($data['data'] as $k=>$v){
             $color='red';
@@ -480,11 +482,14 @@ class Collect extends Base {
                     $v['vod_score'] = round($v['vod_score_all'] / $v['vod_score_num'], 1);
                 }
 
+                if ($config['psename'] == 1) {
+                    $v['vod_name'] = mac_rep_pse_syn($pse_name, $v['vod_name']);
+                }
                 if ($config['psernd'] == 1) {
-                    $v['vod_content'] = mac_rep_pse_rnd($config['words'], $v['vod_content']);
+                    $v['vod_content'] = mac_rep_pse_rnd($pse_rnd, $v['vod_content']);
                 }
                 if ($config['psesyn'] == 1) {
-                    $v['vod_content'] = mac_rep_pse_syn($config['thesaurus'], $v['vod_content']);
+                    $v['vod_content'] = mac_rep_pse_syn($pse_syn, $v['vod_content']);
                 }
 
                 if(empty($v['vod_blurb'])){
@@ -939,9 +944,10 @@ class Collect extends Base {
         $config = config('maccms.collect');
         $config = $config['art'];
 
-
         $type_list = model('Type')->getCache('type_list');
         $filter_arr = explode(',',$config['filter']);
+        $pse_rnd = explode('#',$config['words']);
+        $pse_syn = mac_txt_explain($config['thesaurus']);
 
         foreach($data['data'] as $k=>$v){
             $color='red';
@@ -1011,10 +1017,10 @@ class Collect extends Base {
                 }
 
                 if ($config['psernd'] == 1) {
-                    $v['art_content'] = mac_rep_pse_rnd($config['words'], $v['art_content']);
+                    $v['art_content'] = mac_rep_pse_rnd($pse_rnd, $v['art_content']);
                 }
                 if ($config['psesyn'] == 1) {
-                    $v['art_content'] = mac_rep_pse_syn($config['thesaurus'], $v['art_content']);
+                    $v['art_content'] = mac_rep_pse_syn($pse_syn, $v['art_content']);
                 }
 
                 if(empty($v['art_blurb'])){
@@ -1237,7 +1243,10 @@ class Collect extends Base {
 
         $config = config('maccms.collect');
         $config = $config['actor'];
+
         $filter_arr = explode(',',$config['filter']);
+        $pse_rnd = explode('#',$config['words']);
+        $pse_syn = mac_txt_explain($config['thesaurus']);
 
         foreach($data['data'] as $k=>$v){
 
@@ -1302,10 +1311,10 @@ class Collect extends Base {
                 }
 
                 if ($config['psernd'] == 1) {
-                    $v['actor_content'] = mac_rep_pse_rnd($config['words'], $v['actor_content']);
+                    $v['actor_content'] = mac_rep_pse_rnd($pse_rnd, $v['actor_content']);
                 }
                 if ($config['psesyn'] == 1) {
-                    $v['actor_content'] = mac_rep_pse_syn($config['thesaurus'], $v['actor_content']);
+                    $v['actor_content'] = mac_rep_pse_syn($pse_syn, $v['actor_content']);
                 }
 
                 if(empty($v['actor_blurb'])){
@@ -1492,7 +1501,10 @@ class Collect extends Base {
 
         $config = config('maccms.collect');
         $config = $config['role'];
+
         $filter_arr = explode(',',$config['filter']);
+        $pse_rnd = explode('#',$config['words']);
+        $pse_syn = mac_txt_explain($config['thesaurus']);
 
         foreach($data['data'] as $k=>$v){
 
@@ -1557,10 +1569,10 @@ class Collect extends Base {
                 }
 
                 if ($config['psernd'] == 1) {
-                    $v['role_content'] = mac_rep_pse_rnd($config['words'], $v['role_content']);
+                    $v['role_content'] = mac_rep_pse_rnd($pse_rnd, $v['role_content']);
                 }
                 if ($config['psesyn'] == 1) {
-                    $v['role_content'] = mac_rep_pse_syn($config['thesaurus'], $v['role_content']);
+                    $v['role_content'] = mac_rep_pse_syn($pse_syn, $v['role_content']);
                 }
 
                 $where = [];

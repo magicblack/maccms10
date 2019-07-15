@@ -1,4 +1,8 @@
 {include file="../../../application/admin/view/public/head" /}
+<style>
+    .layui-form-pane .layui-form-label { width:140px; }
+    .layui-form-pane .layui-input-block { margin-left:140px; }
+</style>
 <div class="page-container">
     <form class="layui-form layui-form-pane" action="">
         <div class="layui-tab" lay-filter="tb1">
@@ -73,6 +77,14 @@
                     <div class="layui-form-mid layui-word-aux">将自动过滤扩分类名称里的[片,剧],例如动作片会变为动作;欧美剧会变成欧美;</div>
                 </div>
 
+                <div class="layui-form-item">
+                    <label class="layui-form-label">名称同义词替换：</label>
+                    <div class="layui-input-inline">
+                        <input type="radio" name="collect[vod][psename]" value="0" title="关闭" {if condition="$config['collect']['vod']['psename'] neq 1"}checked {/if}>
+                        <input type="radio" name="collect[vod][psename]" value="1" title="开启" {if condition="$config['collect']['vod']['psename'] eq 1"}checked {/if}>
+                    </div>
+                    <div class="layui-form-mid layui-word-aux">自动转换名称同义词，降低重复率。例如:第1季=第一季;</div>
+                </div>
                 <div class="layui-form-item">
                     <label class="layui-form-label">介绍随机插入语句：</label>
                     <div class="layui-input-inline">
@@ -425,64 +437,70 @@
 
             <div class="layui-tab-item">
                 <blockquote class="layui-elem-quote layui-quote-nm">
-                    同义词：每行一个，不要有空行，格式：要替换=替换后，不允许出现#号。<br>
+                    同义词库：每行一个，不要有空行，格式：要替换=替换后，不允许出现#号。<br>
                     随机词库：字符段一般20条左右即可，可以是笑话小故事，也可以加入超链接。<br>
-                    此项功能影响采集性能，请不要一次加入太多词条 。适当的伪原创有助于搜索引擎收录。该功能只在新增数据时有效。<br>
-                    不使用替换功能请在【采集参数设置中禁用】。
+                    此项功能影响采集性能，请不要一次加入太多词条 。适当的伪原创有助于搜索引擎收录。<br>
+                    不使用词库功能请在【采集参数设置中禁用】。
                 </blockquote>
 
+                <div class="layui-form-item">
+                    <label class="layui-form-label">视频名称同义库：</label>
+                    <div class="layui-input-block">
+                        <textarea name="collect[vod][namewords]" class="layui-textarea">{$config['collect']['vod']['namewords']|mac_replace_text}</textarea>
+                    </div>
+                </div>
 
                 <div class="layui-form-item">
-                    <label class="layui-form-label">视频同义词库：</label>
+                    <label class="layui-form-label">视频介绍同义词库：</label>
                     <div class="layui-input-block">
                         <textarea name="collect[vod][thesaurus]" class="layui-textarea">{$config['collect']['vod']['thesaurus']|mac_replace_text}</textarea>
                     </div>
                 </div>
 
                 <div class="layui-form-item">
-                    <label class="layui-form-label">视频随机词库：</label>
+                    <label class="layui-form-label">视频介绍随机词库：</label>
                     <div class="layui-input-block">
                         <textarea name="collect[vod][words]" class="layui-textarea">{$config['collect']['vod']['words']|mac_replace_text}</textarea>
                     </div>
                 </div>
 
                 <div class="layui-form-item">
-                    <label class="layui-form-label">文章同义词库：</label>
+                    <label class="layui-form-label">文章介绍同义词库：</label>
                     <div class="layui-input-block">
                         <textarea name="collect[art][thesaurus]" class="layui-textarea">{$config['collect']['art']['thesaurus']|mac_replace_text}</textarea>
                     </div>
                 </div>
 
                 <div class="layui-form-item">
-                    <label class="layui-form-label">文章随机词库：</label>
+                    <label class="layui-form-label">文章介绍随机词库：</label>
                     <div class="layui-input-block">
                         <textarea name="collect[art][words]" class="layui-textarea">{$config['collect']['art']['words']|mac_replace_text}</textarea>
                     </div>
                 </div>
 
                 <div class="layui-form-item">
-                    <label class="layui-form-label">明星同义词库：</label>
+                    <label class="layui-form-label">明星介绍同义词库：</label>
                     <div class="layui-input-block">
                         <textarea name="collect[actor][thesaurus]" class="layui-textarea">{$config['collect']['actor']['thesaurus']|mac_replace_text}</textarea>
                     </div>
                 </div>
 
                 <div class="layui-form-item">
-                    <label class="layui-form-label">明星随机词库：</label>
+                    <label class="layui-form-label">明星介绍随机词库：</label>
                     <div class="layui-input-block">
                         <textarea name="collect[actor][words]" class="layui-textarea">{$config['collect']['actor']['words']|mac_replace_text}</textarea>
                     </div>
                 </div>
 
                 <div class="layui-form-item">
-                    <label class="layui-form-label">角色同义词库：</label>
+                    <label class="layui-form-label">角色介绍同义词库：</label>
                     <div class="layui-input-block">
                         <textarea name="collect[role][thesaurus]" class="layui-textarea">{$config['collect']['role']['thesaurus']|mac_replace_text}</textarea>
                     </div>
                 </div>
 
                 <div class="layui-form-item">
-                    <label class="layui-form-label">角色随机词库：</label>
+                    <label class="layui-form-label">角色介绍随机词库：</label>
                     <div class="layui-input-block">
                         <textarea name="collect[role][words]" class="layui-textarea">{$config['collect']['role']['words']|mac_replace_text}</textarea>
                     </div>

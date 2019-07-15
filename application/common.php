@@ -722,17 +722,14 @@ function mac_interface_type()
     return $data;
 }
 
-function mac_rep_pse_rnd($pse,$txt,$id=0)
+function mac_rep_pse_rnd($psearr,$txt,$id=0)
 {
     if(empty($txt)){ $txt=""; }
     if(empty($id)){
         $id = crc32($txt);
     }
-    $pse = str_replace([chr(13),chr(10)],"",$pse);
-    $psearr = explode('#',$pse);
     $i=count($psearr)+1;
     $j=mb_strpos($txt,"<br>");
-
 
     if ($j==0){ $j=mb_strpos($txt,"<br/>"); }
     if ($j==0){ $j=mb_strpos($txt,"<br />"); }
@@ -749,21 +746,24 @@ function mac_rep_pse_rnd($pse,$txt,$id=0)
     return $res;
 }
 
-function mac_rep_pse_syn($pse,$txt)
+function mac_txt_explain($txt)
+{
+    $txtarr = explode('#',$txt);
+    $data=[];
+    foreach($txtarr as $k=>$v){
+        list($from, $to) = explode('=', $v);
+        $data['from'][] = $from;
+        $data['to'][] = $to;
+    }
+    return $data;
+}
+
+function mac_rep_pse_syn($psearr,$txt)
 {
     if(empty($txt)){ $txt=""; }
-
-    $pse = str_replace([chr(13),chr(10)],"",$pse);
-    $psearr = explode('#',$pse);
-
-    foreach($psearr as $a){
-        if(!empty($a)){
-            $one = explode('=',$a);
-            $txt = str_replace($one[0],$one[1],$txt);
-            unset($one);
-        }
+    if(is_array($psearr['from']) && is_array($psearr['to'])){
+        $txt = str_replace($psearr['from'],$psearr['to'],$txt);
     }
-    unset($psearr);
     return $txt;
 }
 
