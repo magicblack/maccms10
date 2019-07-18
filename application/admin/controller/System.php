@@ -526,6 +526,8 @@ class System extends Base
             $config_new['collect']['actor']['inrule'] = ',' . join(',', $config_new['collect']['actor']['inrule']);
             $config_new['collect']['actor']['uprule'] = ',' . join(',', $config_new['collect']['actor']['uprule']);
 
+            $config_new['collect']['vod']['namewords'] = mac_replace_text($config_new['collect']['vod']['namewords'], 2);
+
             $config_new['collect']['vod']['thesaurus'] = mac_replace_text($config_new['collect']['vod']['thesaurus'], 2);
             $config_new['collect']['vod']['words'] = mac_replace_text($config_new['collect']['vod']['words'], 2);
             $config_new['collect']['art']['thesaurus'] = mac_replace_text($config_new['collect']['art']['thesaurus'], 2);
