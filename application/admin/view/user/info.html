@@ -36,7 +36,7 @@
                 </select>
             </div>
         </div>
-
+        {if condition="$info.user_id neq ''"}
         <div class="layui-form-item">
             <label class="layui-form-label">头像：</label>
             <div class="layui-input-inline w500 upload">
@@ -46,6 +46,7 @@
                 <button type="button" class="layui-btn layui-upload" lay-data="{data:{thumb:0,thumb_class:''}}" id="upload1">上传图片</button>
             </div>
         </div>
+        {/if}
 
         <div class="layui-form-item" >
             <label class="layui-form-label">昵称：</label>

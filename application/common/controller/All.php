@@ -8,6 +8,7 @@ class All extends Controller
     var $_ref;
     var $_cl;
     var $_ac;
+    var $_tsp;
 
     public function __construct()
     {
@@ -15,6 +16,7 @@ class All extends Controller
         $this->_ref = mac_get_refer();
         $this->_cl = request()->controller();
         $this->_ac = request()->action();
+        $this->_tsp = date('Ymd');
     }
 
     protected function load_page_cache($tpl)
@@ -422,7 +424,7 @@ class All extends Controller
         }
         else {
             $this->assign('player_data', '<script type="text/javascript">var player_data=' . json_encode($player_info) . '</script>');
-            $this->assign('player_js', '<script type="text/javascript" src="' . MAC_PATH . 'static/js/playerconfig.js"></script><script type="text/javascript" src="' . MAC_PATH . 'static/js/player.js"></script>');
+            $this->assign('player_js', '<script type="text/javascript" src="' . MAC_PATH . 'static/js/playerconfig.js?t='.$this->_tsp.'"></script><script type="text/javascript" src="' . MAC_PATH . 'static/js/player.js?t='.$this->_tsp.'"></script>');
         }
         $this->label_comment();
         return $info;

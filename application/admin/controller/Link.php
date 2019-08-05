@@ -96,4 +96,55 @@ class Link extends Base
         $this->success($res['msg']);
     }
 
+    public function check()
+    {
+        $id = input('id');
+        $where=[];
+        $where['link_id'] = ['eq',$id];
+        $res = model('Link')->infoData($where);
+
+        if($res['code']>1){
+            return json($res);
+        }
+
+        $url = $res['info']['link_url'];
+
+        $site_url = $GLOBALS['config']['site']['site_url'];
+        $site_wapurl = $GLOBALS['config']['site']['site_wapurl'];
+
+        $html = mac_curl_get($url);
+
+        $res=[];
+        $res['code'] = 1;
+        $res['msg'] = '';
+        $msg='';
+        $code = 1;
+
+        $ok = '友链正常';
+        $err = '友链异常';
+
+        $msg .= '['.$site_url.']';
+        if(strpos($html,$site_url)!==false){
+            $code=1;
+            $msg .=$ok;
+        }
+        else{
+            $code=101;
+            $msg .=$err;
+        }
+
+        $msg .= '，['.$site_wapurl.']';
+        if(strpos($html,$site_wapurl)!==false){
+            $code =1;
+            $msg .=$ok;
+        }
+        else{
+            $code=101;
+            $msg .=$err;
+        }
+        $res['msg'] = $msg;
+
+        return json($res);
+    }
+
 }

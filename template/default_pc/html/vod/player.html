@@ -32,7 +32,7 @@
             {if condition="$user.group.group_id eq 1"}
                 <p><a href="{:url('user/login')}" target="_blank">马上登录</a></p>
             {else/}
-                <p><a href="{:url('user/buy')}" target="_blank">马上充值</a> <a href="javascript:;" onclick="window.parent.MAC.User.BuyPopedom(this)" data-id="{$obj.vod_id}" data-sid="{$param.sid}" data-nid="{$param.nid}" data-type="4">确认购买</a></p>
+                <p><a href="{:url('user/buy')}" target="_blank">马上充值</a> <a href="javascript:;" onclick="window.parent.MAC.User.BuyPopedom(this)" data-id="{$obj.vod_id}" data-sid="{$param.sid}" data-nid="{$param.nid}" data-type="4" data-mid="1">确认购买</a></p>
             {/if}
             {/if}
 

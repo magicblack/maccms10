@@ -1666,13 +1666,12 @@ function mac_url($model,$param=[],$info=[])
     }
     else{
         if(ENTRANCE!='index'){
-            $sto='';
+            $sto= MAC_PATH ;
             if($config['rewrite']['status']==0){
-                $sto = '/index.php';
+                $sto = MAC_PATH .'index.php/';
             }
-
             if(!empty(IN_FILE)){
-                $url = str_replace(IN_FILE,$sto,$url);
+                $url = str_replace(IN_FILE.'/',$sto,$url);
                 $url = str_replace(ENTRANCE.'/','',$url);
             }
         }

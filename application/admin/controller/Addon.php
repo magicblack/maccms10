@@ -108,13 +108,27 @@ class Addon extends Base
             if (isset($onlineaddons[$v['name']])) {
                 $v = array_merge($onlineaddons[$v['name']], $v);
             } else {
-                $v['category_id'] = 0;
-                $v['flag'] = '';
-                $v['banner'] = '';
-                $v['image'] = '';
-                $v['donateimage'] = '';
-                $v['demourl'] = '';
-                $v['price'] = '0.00';
+                if(!isset($v['category_id'])) {
+                    $v['category_id'] = 0;
+                }
+                if(!isset($v['flag'])) {
+                    $v['flag'] = '';
+                }
+                if(!isset($v['banner'])) {
+                    $v['banner'] = '';
+                }
+                if(!isset($v['image'])) {
+                    $v['image'] = '';
+                }
+                if(!isset($v['donateimage'])) {
+                    $v['donateimage'] = '';
+                }
+                if(!isset($v['demourl'])) {
+                    $v['demourl'] = '';
+                }
+                if(!isset($v['price'])) {
+                    $v['price'] = '0.00';
+                }
             }
             $v['url'] = addon_url($v['name']);
             $v['createtime'] = filemtime(ADDON_PATH . $v['name']);

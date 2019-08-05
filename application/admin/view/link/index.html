@@ -30,7 +30,7 @@
                 <th >名称</th>
                 <th >地址</th>
                 <th >logo</th>
-                <th width="80">操作</th>
+                <th width="130">操作</th>
             </tr>
             </thead>
 
@@ -49,6 +49,7 @@
                 <td><input type="input" name="link_url[]" value="{$vo.link_url}" class="layui-input"></td>
                 <td><input type="input" name="link_logo[]" value="{$vo.link_logo}" class="layui-input"></td>
                 <td>
+                    <a class="layui-badge-rim j-ajax" data-href="{:url('check?id='.$vo['link_id'])}" refresh="no" href="javascript:;" title="检测">检测</a>
                     <a class="layui-badge-rim j-iframe" data-href="{:url('info?id='.$vo['link_id'])}" href="javascript:;" title="编辑">编辑</a>
                     <a class="layui-badge-rim j-tr-del" data-href="{:url('del?ids='.$vo['link_id'])}" href="javascript:;" title="删除">删除</a>
                 </td>

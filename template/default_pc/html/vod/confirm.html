@@ -27,7 +27,7 @@
 			<a href="javascript:;" class="mac_user" target="_blank">马上登录</a>
 			{else/}
 			<a href="{:url('user/buy')}" target="_blank">马上充值</a>
-			<a href="javascript:;" onclick="MAC.User.BuyPopedom(this)" data-id="{$obj.vod_id}" data-sid="{$param.sid}" data-nid="{$param.nid}" data-mid="1" data-type="{if condition="$obj.player_info.flag eq 'play'"}4{else/}5{/if}">确认购买</a>
+			<a href="javascript:;" onclick="MAC.User.BuyPopedom(this)" data-id="{$obj.vod_id}" data-sid="{$param.sid}" data-nid="{$param.nid}" data-mid="1" data-type="{if condition="$obj.player_info.flag eq 'play'"}4{else/}5{/if}" data-mid="1">确认购买</a>
 			{/if}
 		</p>
 	</div>

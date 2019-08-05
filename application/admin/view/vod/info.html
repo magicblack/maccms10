@@ -582,7 +582,7 @@
                 if (txt != '') {
                     txt += "\r\n";
                 }
-                $(obj).parent().parent().find('textarea').val(txt + res.data.file);
+                $(obj).parent().parent().find('textarea').val(txt + ROOT_PATH + "/" + res.data.file);
             }
         });
 
@@ -607,7 +607,8 @@
                         if (txt != '') {
                             txt += "\r\n";
                         }
-                        $(obj).parent().parent().find('textarea').val(txt + res.data.file);
+
+                        $(obj).parent().parent().find('textarea').val(txt + ROOT_PATH + "/" +res.data.file);
                     }
                 });
             });
