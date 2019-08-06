@@ -101,6 +101,15 @@
                 </div>
 
                 <div class="layui-form-item">
+                    <label class="layui-form-label">地址二更规则：</label>
+                    <div class="layui-input-inline">
+                        <input type="radio" name="collect[vod][urlrole]" value="0" title="替换" {if condition="$config['collect']['vod']['urlrole'] neq 1"}checked {/if}>
+                        <input type="radio" name="collect[vod][urlrole]" value="1" title="合并" {if condition="$config['collect']['vod']['urlrole'] eq 1"}checked {/if}>
+                    </div>
+                    <div class="layui-form-mid layui-word-aux">二次更新地址遇到同类型播放器。替换：只保留新提交的地址。合并：整合原有地址和新地址去重。</div>
+                </div>
+
+                <div class="layui-form-item">
                     <label class="layui-form-label">
                         入库重复规则：</label>
                     <div class="layui-input-block">
@@ -141,10 +150,8 @@
                         <input type="checkbox" lay-skin="primary" name="collect[vod][uprule][]" value="u" title="总集数" {if condition="strpos($config['collect']['vod']['uprule'],'u') !==false"}checked {/if}>
                         <input type="checkbox" lay-skin="primary" name="collect[vod][uprule][]" value="v" title="完结状态" {if condition="strpos($config['collect']['vod']['uprule'],'v') !==false"}checked {/if}>
 
-
                     </div>
                 </div>
-
 
                 <div class="layui-form-item">
                     <label class="layui-form-label">数据过滤：</label>

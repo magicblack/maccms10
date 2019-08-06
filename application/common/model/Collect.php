@@ -656,6 +656,14 @@ class Collect extends Base {
                                     } else {
                                         $color = 'green';
                                         $des .= '播放组(' . $cj_play_from . ')，更新ok。';
+                                        if ($config['urlrole'] == 1) {
+                                            $tmp1 = explode('#',$arr1[$play_key]);
+                                            $tmp2 = explode('#',$cj_play_url);
+                                            $tmp1 = array_merge($tmp1,$tmp2);
+                                            $tmp1 = array_unique($tmp1);
+                                            $cj_play_url = join('#',$tmp1);
+                                            unset($tmp1,$tmp2);
+                                        }
                                         $arr1[$play_key] = $cj_play_url;
                                         $ec=true;
                                     }
