@@ -120,4 +120,10 @@ class Vod extends Base
         return $this->label_fetch('vod/rss');
     }
 
+    public function plot()
+    {
+        $info = $this->label_vod_detail();
+        return $this->label_fetch('vod/plot');
+    }
+
 }

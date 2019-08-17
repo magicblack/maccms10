@@ -100,6 +100,7 @@ return array(
         '47' => array("show"=>1,'name' => '已锁定视频', 'controller' => 'vod',		'action' => 'data', 'param'=>'lock=1'),
         '48' => array("show"=>1,'name' => '未审核视频', 'controller' => 'vod',		'action' => 'data', 'param'=>'status=0'),
         '481' => array("show"=>1,'name' => '需积分视频', 'controller' => 'vod',		'action' => 'data', 'param'=>'points=1'),
+        '481' => array("show"=>1,'name' => '有分集剧情', 'controller' => 'vod',		'action' => 'data', 'param'=>'plot=1'),
 
         '49' => array("show"=>1,'name' => '批量操作视频', 'controller' => 'vod',		'action' => 'batch'),
         '491' => array("show"=>1,'name' => '重名视频数据', 'controller' => 'vod',		'action' => 'data', 'param'=>'repeat=1'),

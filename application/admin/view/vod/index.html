@@ -141,7 +141,13 @@
                         <option value="1" {if condition="$param['copyright'] eq '1'"}selected {/if}>已开启</option>
                     </select>
                 </div>
-
+                <div class="layui-input-inline w150">
+                    <select name="plot">
+                        <option value="">选择分集剧情</option>
+                        <option value="0" {if condition="$param['plot'] eq '0'"}selected {/if}>没有</option>
+                        <option value="1" {if condition="$param['plot'] eq '1'"}selected {/if}>有</option>
+                    </select>
+                </div>
                 <div class="layui-input-inline w150">
                     <select name="order">
                         <option value="">选择排序</option>
@@ -213,6 +219,7 @@
                     {if condition="$vo.vod_lock eq 1"} <span class="layui-badge">锁定</span>{/if}
                     {if condition="$vo.vod_isend eq 0 && $vo.vod_serial neq ''"} <span class="layui-badge layui-bg-blue">连载{$vo.vod_serial}</span>{/if}
                     {if condition="$vo.vod_remarks neq ''"} <span class="layui-badge layui-bg-orange">{$vo.vod_remarks}</span>{/if}
+                    {if condition="$vo.vod_plot eq 1"} <span class="layui-badge layui-bg-cyan">剧情</span>{/if}
                 </td>
                 <td>{$vo.vod_hits}</td>
                 <td>{$vo.vod_score}</td>

@@ -1,4 +1,10 @@
 <?php
+/*2019.1000.1007*/
+if(empty($col_list[$pre.'vod']['vod_plot'])){
+    $sql .= "ALTER TABLE `mac_vod` ADD `vod_plot` tinyint( 1 )  NOT NULL DEFAULT '0',ADD `vod_plot_name`  mediumtext  NOT NULL ,ADD `vod_plot_detail` mediumtext  NOT NULL ;";
+    $sql .="\r";
+}
+
 /*2019.02.21.1001*/
 if(empty($col_list[$pre.'user']['user_reg_ip'])){
     $sql .= "ALTER TABLE  `mac_user` ADD  `user_reg_ip` INT( 10 ) unsigned NOT NULL DEFAULT  '0' AFTER  `user_reg_time`;";

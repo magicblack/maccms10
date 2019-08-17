@@ -11,6 +11,7 @@
             <ul class="layui-tab-title ">
                 <li class="layui-this">基本信息</a></li>
                 <li>其他信息</li>
+                <li>剧情信息</li>
                 {notempty name="info.vod_id"}
                 <li>角色信息</li>
                 {/notempty}
@@ -303,6 +304,7 @@
                     <script>
                         var players_arr_len = {$vod_play_list|count};
                         var downers_arr_len = {$vod_down_list|count};
+                        var plot_arr_len = {$vod_plot_list|count};
                     </script>
 
                     <div id="player_list" class="contents">
@@ -468,6 +470,27 @@
                     </div>
 
                     </div>
+
+                <div class="layui-tab-item">
+                    <div id="plot_list" class="contents">
+                        {volist name="$vod_plot_list" id="vo"}
+                        <div class="layui-form-item" data-i="{$key}">
+                            <label class="layui-form-label">剧情{$key}：</label>
+                            <div class="layui-input-inline w500"><input type="text" name="vod_plot_name[]" class="layui-input" value="{$vo.name}" placeholder="剧情标题"></div>
+                            <div class="layui-input-inline w400 p10"><a href="javascript:void(0)" class="j-editor-clear">清空</a>&nbsp;<a href="javascript:void(0)" class="j-editor-remove">删除</a>&nbsp;<a href="javascript:void(0)" class="j-editor-up">上移</a>&nbsp;<a href="javascript:void(0)" class="j-editor-down">下移</a><br></div>
+                            <div class="p10 m20"> </div>
+                            <div class="layui-input-block "><textarea id="vod_plot_detail{$key}" name="vod_plot_detail[]" type="text/plain" style="width:100%;height:150px">{$vo.detail|mac_str_correct=###,'#',chr(13)}</textarea></div>
+                        </div>
+                        {/volist}
+                    </div>
+                    <div class="layui-form-item">
+                        <label class=""><button class="layui-btn radius j-plot-add" type="button">添加一集剧情</button></label>
+                        <div class="layui-input-block">
+
+                        </div>
+                    </div>
+                </div>
+
 
                 <div class="layui-tab-item">
                     <div class="layui-form-item">
@@ -854,6 +877,11 @@
 
             form.render('select');
             initUpload('down');
+        });
+        $('.j-plot-add').on('click',function(){
+            plot_arr_len++;
+            var tpl='<div class="layui-form-item" data-i="'+plot_arr_len+'"><label class="layui-form-label">剧情'+(plot_arr_len)+'：</label><div class="layui-input-inline w500"><input type="text" name="vod_plot_name[]" class="layui-input" placeholder="剧情标题"></div><div class="layui-input-inline w400 p10"><a href="javascript:void(0)" class="j-editor-clear">清空</a>&nbsp;<a href="javascript:void(0)" class="j-editor-remove">删除</a>&nbsp;<a href="javascript:void(0)" class="j-editor-up">上移</a>&nbsp;<a href="javascript:void(0)" class="j-editor-down">下移</a>&nbsp;</div><div class="p10 m20"></div><div class="layui-input-block"><textarea id="vod_content'+(plot_arr_len)+'" name="vod_plot_detail[]" class="layui-textarea" style="width:99%;height:250px"></textarea></div></div>';
+            $("#plot_list").append(tpl);
         });
 
         if(players_arr_len==0 && downers_arr_len==0) {

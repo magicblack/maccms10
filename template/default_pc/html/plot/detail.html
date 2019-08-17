@@ -1,0 +1,63 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>{$obj.vod_name}详情介绍-{$obj.vod_name}在线观看-{$obj.vod_name}迅雷下载 - {$maccms.site_name}</title>
+    <meta name="keywords" content="{$obj.vod_name}在线收看,{$obj.vod_name}迅雷下载" />
+    <meta name="description" content="{$obj.vod_name}剧情:{$obj.vod_blurb}" />
+    {include file="public/include"}
+</head>
+<body>
+{include file="public/head"}
+<!--当前位置-->
+<div class="bread-crumb-nav fn-clear">
+    <ul class="bread-crumbs">
+        <li class="home"><a href="{$maccms.path}">首页</a></li><li><a href="{:mac_url_type($obj.type_1)}">{$obj.type_1.type_name}</a></li>
+        <li><a href="{:mac_url_type($obj.type)}">{$obj.type.type_name}</a></li>
+        <li>{$obj.vod_name}在线点播{$obj.vod_nmae}迅雷下载</li>
+        <li class="back"><a href="javascript:MAC.GoBack()">返回上一页</a></li>
+    </ul>
+</div>
+
+<!-- 剧情介绍 -->
+<div class="ui-box marg" id="juqing" >
+    <div class="ui-title">
+        <h3>{$obj['vod_plot_list'][$param['page']]['name']} 分集剧情</h3>
+    </div>
+    <div class="tjuqing">
+        {$obj['vod_plot_list'][$param['page']]['detail']}
+    </div>
+    <div class="">
+        <div class="mac_pages">
+            <div class="page_info">
+                {if condition="$obj['vod_plot_list'][$param['page'] -1 ]['name'] neq ''"}
+                <a class="page_link" href="{:mac_url_plot_detail($obj,['page'=>$param['page']-1])}" title="上一集剧情">{$obj['vod_plot_list'][$param['page'] -1 ]['name']}</a>
+                {/if}
+
+                {if condition="$obj['vod_plot_list'][$param['page'] +1 ]['name'] neq ''"}
+                <a class="page_link" href="{:mac_url_plot_detail($obj,['page'=>$param['page']+1])}" title="下一集剧情">{$obj['vod_plot_list'][$param['page'] +1 ]['name']}</a>
+                {/if}
+
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--猜你喜欢-->
+<div class="ui-box marg">
+    <div class="ui-title">
+        <h2>喜欢看<strong>“{$obj.vod_name}”</strong>的人也喜欢</h2>
+    </div>
+    <div class="box_con">
+        <ul class="img-list dis">
+            {maccms:vod num="6" type="current" order="desc" by="time"}
+            <li><a href="{:mac_url_vod_detail($vo)}" title="{$vo.vod_name}"><img src="{:mac_url_img($vo.vod_pic)}" alt="{$vo.vod_name}"/><h2>{$vo.vod_name}</h2><p></p><i>{$vo.vod_version}</i><em></em></a></li>
+            {/maccms:vod}
+        </ul>
+    </div>
+</div>
+
+{include file="public/foot"}
+</body>
+</html>

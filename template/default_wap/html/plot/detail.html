@@ -1,0 +1,44 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no">
+    <title>{$obj.vod_name}分集剧情介绍-{$obj.vod_name}在线观看-{$obj.vod_name}迅雷下载 - {$maccms.site_name}</title>
+    <meta name="keywords" content="{$obj.vod_name}在线收看,{$obj.vod_name}迅雷下载" />
+    <meta name="description" content="{$obj.vod_name}剧情:{$obj.vod_blurb}" />
+    {include file="public/include"}
+</head>
+<body>
+{include file="public/head"}
+<header class="g_header2">
+    <a href="javascript:MAC.GoBack()"><i class="moreArrow2"></i>返回</a>
+     分集剧情详情
+    <label for="navSwitch" href="javascript:;" class="s_c mac_user"><i class="i_user"><span></span></i></label>
+    <label for="navSwitch" href="javascript:;" class="s_r s_bt"><i class="i_bread"><span></span></i></label>
+</header>
+
+
+<section class="box">
+    <section class="title"><i class="iLine"></i><h2>{$obj['vod_plot_list'][$param['page']]['name']}</h2></section>
+    <div class="box_con">
+        {$obj['vod_plot_list'][$param['page']]['detail']}
+    </div>
+</section>
+
+
+    <div class="mac_pages">
+        <div class="page_info">
+            {if condition="$obj['vod_plot_list'][$param['page'] -1 ]['name'] neq ''"}
+            <a class="page_link" href="{:mac_url_plot_detail($obj,['page'=>$param['page']-1])}" title="上一集剧情">{$obj['vod_plot_list'][$param['page'] -1 ]['name']}</a>
+            {/if}
+
+            {if condition="$obj['vod_plot_list'][$param['page'] +1 ]['name'] neq ''"}
+            <a class="page_link" href="{:mac_url_plot_detail($obj,['page'=>$param['page']+1])}" title="下一集剧情">{$obj['vod_plot_list'][$param['page'] +1 ]['name']}</a>
+            {/if}
+        </div>
+    </div>
+
+
+{include file="public/foot"}
+</body>
+</html>

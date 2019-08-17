@@ -18,6 +18,7 @@
   │      └─topic    专题模块模板目录
   │      └─user     用户中心模块模板目录
   │      └─vod      视频模块模板目录
+  │      └─plot     分集剧情模块模板目录
   │─tempalte/2/  模板2
   │─...
   │─template/n/  模板N
@@ -71,6 +72,7 @@ vod/downer_pwd.html      验证密码页
 vod/search.html      视频搜索页面
 vod/type.html        视频分类页面
 vod/show.html        视频分类筛选页
+vod/plot.html        视频分集剧情列表
 │
 user/ajax_info.html   用户弹出层登录详情
 user/ajax_login.html  用户弹出层登录界面
@@ -95,7 +97,9 @@ user/popedom.html     用户中心-权限列表
 user/reg.html         用户中心-注册
 user/reward.html     用户中心-分销记录
 user/upgrade.html     用户中心-会员升级
-
+│
+plot/index.html        分集剧情首页
+plot/detail.html       分集剧情详情页
 
 ========全局标签=======
 {$maccms.site_name}网站名称
@@ -332,7 +336,8 @@ hits总点击量 大于一千 gt 1000, 小于一千 lt 1000，区间一千二千
 paging是否分页yes
 pageurl分页地址
 cachetime自定义缓存时间单位秒
-
+isend是否连载完毕   0,1
+plot是否包含分集剧情 0,1
 
 {maccms:vod num="10" paging="no" type="all" order="asc" by="sort"}
    内部同下方，{$obj.改为{$vo.开头即可
@@ -420,6 +425,10 @@ cachetime自定义缓存时间单位秒
 {$obj.vod_down_server} 下载服务器组
 {$obj.vod_down_note} 下载备注
 {$obj.vod_down_url} 下载地址
+{$obj.vod_plot} 是否包含分集剧情
+{$obj.vod_plot_name} 分集剧情名称
+{$obj.vod_plot_detail} 分集剧情详情
+
 {:mac_url_vod_detail($obj)}  视频详情页链接
 {:mac_url_vod_play($obj,['sid'=>1,'nid'=>1])}   视频播放页链接
 {:mac_url_vod_play($obj,'first')}   视频播放页第一条链接
@@ -541,7 +550,13 @@ cachetime自定义缓存时间单位秒
 
 
 
+=======视频分集剧情页独有标签=======
+{$obj['vod_plot_list'][$param['page']]['name']} 分集剧情名称
+{$obj['vod_plot_list'][$param['page']]['detail']} 分集剧情详情
 
+mac_url_plot_detail($obj,['page'=>1])  分集剧情详情页地址
+mac_url_plot_index()  分集剧情首页，建议放一些热门剧包含剧情分类的数据
+mac_url_vod_plot($obj)   某个视频的分集剧情列表
 
 
 =======文章列表标签=======

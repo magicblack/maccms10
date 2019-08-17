@@ -139,6 +139,7 @@ class Vod extends Base {
         $not = $lp['not'];
         $cachetime = $lp['cachetime'];
         $isend = $lp['isend'];
+        $plot = $lp['plot'];
 
         $page = 1;
         $where=[];
@@ -403,6 +404,10 @@ class Vod extends Base {
         if(!empty($director)) {
             $where['vod_director'] = ['like',mac_like_arr($director),'OR'];
         }
+        if(in_array($plot,['0','1'])){
+            $where['vod_plot'] = $plot;
+        }
+
         if(defined('ENTRANCE') && ENTRANCE == 'index' && $GLOBALS['config']['app']['popedom_filter'] ==1){
             $type_ids = mac_get_popedom_filter($GLOBALS['user']['group']['group_type']);
             if(!empty($type_ids)){
@@ -481,6 +486,9 @@ class Vod extends Base {
             }
             if (!empty($info['vod_down_from'])) {
                 $info['vod_down_list'] = mac_play_list($info['vod_down_from'], $info['vod_down_url'], $info['vod_down_server'], $info['vod_down_note'], 'down');
+            }
+            if (!empty($info['vod_plot_name'])) {
+                $info['vod_plot_list'] = mac_plot_list($info['vod_plot_name'], $info['vod_plot_detail']);
             }
 
             //分类
@@ -562,6 +570,16 @@ class Vod extends Base {
             $data['vod_down_server']='';
             $data['vod_down_note']='';
             $data['vod_down_url']='';
+        }
+
+        if(!empty($data['vod_plot_name'])) {
+            $data['vod_plot'] = 1;
+            $data['vod_plot_name'] = join('$$$', $data['vod_plot_name']);
+            $data['vod_plot_detail'] = join('$$$', $data['vod_plot_detail']);
+        }else{
+            $data['vod_plot'] = 0;
+            $data['vod_plot_name']='';
+            $data['vod_plot_detail']='';
         }
 
         if($data['uptime']==1){

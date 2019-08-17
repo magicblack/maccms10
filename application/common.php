@@ -1016,6 +1016,30 @@ function mac_art_list($art_title,$art_note,$art_content)
     return $res_list;
 }
 
+function mac_plot_list($vod_plot_name,$vod_plot_detail)
+{
+    $vod_plot_name_list = [];
+    $vod_plot_detail_list = [];
+
+    if(!empty($vod_plot_name)) {
+        $vod_plot_name_list = explode('$$$', $vod_plot_name);
+    }
+    if(!empty($vod_plot_detail)) {
+        $vod_plot_detail_list = explode('$$$', $vod_plot_detail);
+    }
+
+    $res_list = [];
+    foreach($vod_plot_name_list as $k=>$v){
+
+        $res_list[$k + 1] = [
+                'name' => $vod_plot_name_list[$k],
+                'detail' => $vod_plot_detail_list[$k],
+        ];
+    }
+    return $res_list;
+
+}
+
 function mac_play_list($vod_play_from,$vod_play_url,$vod_play_server,$vod_play_note,$flag='play')
 {
     $vod_play_from_list = [];
@@ -1503,6 +1527,26 @@ function mac_url($model,$param=[],$info=[])
             }
             $replace_to = array_merge($replace_to,[date('Y',$info['vod_time']),date('m',$info['vod_time']),date('d',$info['vod_time'])]);
             break;
+        case 'vod/plot':
+            $replace_to = [
+                $info['vod_id'],$info['vod_en'],'',
+                $info['type_id'],$info['type']['type_en'],$info['type_1']['type_id'],$info['type_1']['type_en']
+            ];
+            if($config['view']['vod_plot'] == 2){
+                $path = $config['path' ]['vod_plot'];
+                if(substr($path,strlen($path)-1,1)=='/'){
+                    $path .= 'index';
+                }
+                if(strpos($path,'{md5}')!==false){
+                    $replace_to[] = md5($info['vod_id']);
+                }
+            }
+            else{
+                $id = $config['rewrite']['vod_id'] ==1 ? 'vod_en' : 'vod_id';
+                $url = url($model,['id'=>$info[$id],'page'=>$param['page']]);
+            }
+            $replace_to = array_merge($replace_to,[date('Y',$info['vod_time']),date('m',$info['vod_time']),date('d',$info['vod_time'])]);
+            break;
         case 'art/type':
             $replace_to = [$info['type_id'],$info['type_en'],$param['page'],
                 $info['type_id'],$info['type']['type_en'],$info['type_1']['type_id'],$info['type_1']['type_en'],
@@ -1637,6 +1681,43 @@ function mac_url($model,$param=[],$info=[])
                 $url = url($model,['id'=>$info[$id]]);
             }
             break;
+        case 'plot/index':
+            if($config['view']['plot_index'] == 2){
+                $path = $config['path' ]['plot_index'];
+                if(substr($path,strlen($path)-1,1)=='/'){
+                    $path .= 'index';
+                }
+                if($param['page']>1 || $param['page'] =='PAGELINK'){
+                    $path .= $page_sp . $param['page'];
+                }
+            }
+            else{
+                $url = url($model,['page'=>$param['page']]);
+            }
+            break;
+        case 'plot/detail':
+            $replace_to = [
+                $info['vod_id'],$info['vod_en'],'',
+                $info['type_id'],$info['type']['type_en'],$info['type_1']['type_id'],$info['type_1']['type_en']
+            ];
+            if($config['view']['plot_detail'] == 2){
+                $path = $config['path' ]['plot_detail'];
+                if(substr($path,strlen($path)-1,1)=='/'){
+                    $path .= 'index';
+                }
+                if(strpos($path,'{md5}')!==false){
+                    $replace_to[] = md5($info['vod_id']);
+                }
+                if($param['page']>1 || $param['page'] =='PAGELINK'){
+                    $path .= $page_sp . $param['page'];
+                }
+            }
+            else{
+                $id = $config['rewrite']['vod_id'] ==1 ? 'vod_en' : 'vod_id';
+                $url = url($model,['id'=>$info[$id],'page'=>$param['page']]);
+            }
+            $replace_to = array_merge($replace_to,[date('Y',$info['vod_time']),date('m',$info['vod_time']),date('d',$info['vod_time'])]);
+            break;
         case 'gbook/index':
             $url = url($model,['page'=>$param['page']]);
             break;
@@ -1766,7 +1847,18 @@ function mac_url_actor_detail($info)
 {
     return mac_url('actor/detail',[],$info);
 }
-
+function mac_url_plot_index($param=[])
+{
+    return mac_url('plot/index',['page'=>$param['page']]);
+}
+function mac_url_plot_detail($info,$param=[])
+{
+    return mac_url('plot/detail',['page'=>$param['page']],$info);
+}
+function mac_url_vod_plot($info,$param=[])
+{
+    return mac_url('vod/plot',[],$info);
+}
 function mac_url_art_detail($info,$param=[])
 {
     return mac_url('art/detail',['page'=>$param['page']],$info);
@@ -1775,6 +1867,7 @@ function mac_url_art_search($param)
 {
     return mac_url('art/search',$param);
 }
+
 function mac_url_vod_detail($info)
 {
     return mac_url('vod/detail',[],$info);

@@ -43,6 +43,10 @@ class Vod extends Base
         if(!empty($param['lang'])){
             $where['vod_lang'] = ['eq',$param['lang']];
         }
+        if(in_array($param['plot'],['0','1'])){
+            $where['vod_plot'] = ['eq',$param['plot']];
+        }
+
         if(!empty($param['url'])){
             if($param['url']==1){
                 $where['vod_play_url'] = '';
@@ -429,6 +433,7 @@ class Vod extends Base
         //播放组、下载租
         $this->assign('vod_play_list',$info['vod_play_list']);
         $this->assign('vod_down_list',$info['vod_down_list']);
+        $this->assign('vod_plot_list',$info['vod_plot_list']);
 
         $this->assign('title','视频信息');
         return $this->fetch('admin@vod/info');

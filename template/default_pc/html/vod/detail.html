@@ -139,7 +139,7 @@
 <!-- 剧情介绍 -->
 <div class="ui-box marg" id="juqing" >
     <div class="ui-title">
-        <h3>剧情介绍</h3>
+        <h3>剧情介绍 {if condition="$obj.vod_plot eq 1"}<a href="{:mac_url_vod_plot($obj)}">[查看分集剧情]</a>{/if}</h3>
     </div>
     <div class="tjuqing">
         {$obj.vod_content|mac_url_content_img}

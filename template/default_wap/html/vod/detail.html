@@ -92,7 +92,7 @@
                 <dl class="fn-left"><dt>时间：</dt><dd><span>{$obj.vod_time|date='Y-m-d H:i:s',###}</span></dd></dl>
                 <dl class="fn-right"><dt>年份：</dt><dd><span>{$obj.vod_year|mac_url_create='year'}</span></dd></dl>
             </div>
-            <div class="tjuqing"><span>剧情：</span><p>{$obj.vod_content}&hellip;</p></div>
+            <div class="tjuqing"><span>剧情：</span>{if condition="$obj.vod_plot eq 1"}<a href="{:mac_url_vod_plot($obj)}">[查看分集剧情]</a>{/if}<p>{$obj.vod_content}&hellip;</p></div>
             <div class="fenx info"><dt>分享给朋友：</dt><dd><div class="bdsharebuttonbox"><a href="#" class="bds_weixin" data-cmd="weixin" title="分享到微信"></a><a href="#" class="bds_sqq" data-cmd="sqq" title="分享到QQ好友"></a><a href="#" class="bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a><a href="#" class="bds_renren" data-cmd="renren" title="分享到人人网"></a><a href="#" class="bds_douban" data-cmd="douban" title="分享到豆瓣网"></a><a href="#" class="bds_tieba" data-cmd="tieba" title="分享到百度贴吧"></a><a href="#" class="bds_qzone" data-cmd="qzone" title="分享到QQ空间"></a><a href="#" class="bds_tqq" data-cmd="tqq" title="分享到腾讯微博"></a><a href="#" class="bds_tqf" data-cmd="tqf" title="分享到腾讯朋友"></a><a href="#" class="bds_more" data-cmd="more"></a></div>
                 <script>window._bd_share_config={"common":{"bdSnsKey":{},"bdText":"","bdMini":"1","bdMiniList":false,"bdPic":"","bdStyle":"1","bdSize":"24"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];</script></dd></div>
         </div>
