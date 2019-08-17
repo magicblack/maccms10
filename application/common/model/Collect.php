@@ -797,7 +797,11 @@ class Collect extends Base {
                         if (strpos(',' . $config['uprule'], 'v')!==false && !empty($v['vod_isend']) && $v['vod_isend']!=$info['vod_isend']) {
                             $update['vod_isend'] = $v['vod_isend'];
                         }
-
+                        if (strpos(',' . $config['uprule'], 'w')!==false && !empty($v['vod_plot_name']) && $v['vod_plot_name']!=$info['vod_plot_name']) {
+                            $update['vod_plot'] = 1;
+                            $update['vod_plot_name'] = $v['vod_plot_name'];
+                            $update['vod_plot_detail'] = $v['vod_plot_detail'];
+                        }
 
                         if(count($update)>0){
                             $update['vod_time'] = time();
