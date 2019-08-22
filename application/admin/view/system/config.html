@@ -315,6 +315,15 @@
                 </div>
 
                 <div class="layui-form-item">
+                    <label class="layui-form-label">防红防封跳转：</label>
+                    <div class="layui-input-inline">
+                        <input type="radio" name="app[browser_junmp]" value="0" title="关闭" {if condition="$config['app']['browser_junmp'] eq 0"}checked {/if}>
+                        <input type="radio" name="app[browser_junmp]" value="1" title="开启" {if condition="$config['app']['browser_junmp'] eq 1"}checked {/if}>
+                    </div>
+                    <div class="layui-form-mid layui-word-aux">使用微信、QQ访问将直接显示跳转提示页面</div>
+                </div>
+
+                <div class="layui-form-item">
                     <label class="layui-form-label">采集间隔：</label>
                     <div class="layui-input-inline">
                         <input type="text" name="app[collect_timespan]" placeholder="建议设置为3秒以上" value="{$config['app']['collect_timespan']}" class="layui-input w150">

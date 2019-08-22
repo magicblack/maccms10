@@ -9,6 +9,7 @@ class All extends Controller
     var $_cl;
     var $_ac;
     var $_tsp;
+    var $_url;
 
     public function __construct()
     {
@@ -67,6 +68,7 @@ class All extends Controller
         $maccms['actor_extend_area'] = $GLOBALS['config']['app']['actor_extend_area'];
 
         $maccms['http_type'] = $GLOBALS['http_type'];
+        $maccms['http_url'] = $GLOBALS['http_type']. ''.$_SERVER['SERVER_NAME'].':'.$_SERVER["SERVER_PORT"].$_SERVER["REQUEST_URI"];
 
         if(!empty($GLOBALS['mid'])) {
             $maccms['mid'] = $GLOBALS['mid'];

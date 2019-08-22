@@ -460,10 +460,18 @@ class Collect extends Base {
                 $v['vod_class'] = mac_format_text($v['vod_class']);
                 $v['vod_tag'] = mac_format_text($v['vod_tag']);
 
+                $v['vod_plot_name'] = (string)$v['vod_plot_name'];
+                $v['vod_plot_detail'] = (string)$v['vod_plot_detail'];
+
+                if(!empty($v['vod_plot_name'])){
+                    $v['vod_plot_name'] = trim($v['vod_plot_name'],'$$$');
+                }
+                if(!empty($v['vod_plot_detail'])){
+                    $v['vod_plot_detail'] = trim($v['vod_plot_detail'],'$$$');
+                }
                 if(empty($v['vod_isend']) && !empty($v['vod_serial'])){
                     $v['vod_isend'] = 0;
                 }
-
                 if($config['hits_start']>0 && $config['hits_end']>0) {
                     $v['vod_hits'] = rand($config['hits_start'], $config['hits_end']);
                     $v['vod_hits_day'] = rand($config['hits_start'], $config['hits_end']);

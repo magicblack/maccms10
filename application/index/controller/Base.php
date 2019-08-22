@@ -13,6 +13,7 @@ class Base extends All
         parent::__construct();
         $this->check_site_status();
         $this->label_maccms();
+        $this->check_browser_jump();
         $this->label_user();
     }
 
@@ -49,6 +50,16 @@ class Base extends All
         }
     }
 
+    protected function check_browser_jump()
+    {
+        if (ENTRANCE=='index' && $GLOBALS['config']['app']['browser_junmp'] == 1) {
+            $agent = $_SERVER['HTTP_USER_AGENT'];
+            if(strpos($agent, 'QQ/')||strpos($agent, 'MicroMessenger')!==false){
+                echo $this->fetch('public/browser');
+                die;
+            }
+        }
+    }
     protected function check_user_popedom($type_id,$popedom,$param=[],$flag='',$info=[],$trysee=0)
     {
         $user = $GLOBALS['user'];
