@@ -68,8 +68,8 @@ class All extends Controller
         $maccms['actor_extend_area'] = $GLOBALS['config']['app']['actor_extend_area'];
 
         $maccms['http_type'] = $GLOBALS['http_type'];
-        $maccms['http_url'] = $GLOBALS['http_type']. ''.$_SERVER['SERVER_NAME'].':'.$_SERVER["SERVER_PORT"].$_SERVER["REQUEST_URI"];
-
+        $maccms['http_url'] = $GLOBALS['http_type']. ''.$_SERVER['SERVER_NAME'].($_SERVER["SERVER_PORT"]==80 ? '' : ':'.$_SERVER["SERVER_PORT"]).$_SERVER["REQUEST_URI"];
+        
         if(!empty($GLOBALS['mid'])) {
             $maccms['mid'] = $GLOBALS['mid'];
         }
