@@ -71,6 +71,8 @@ return array(
 
         '36' => array("show"=>1,'name' => '附件管理', 'controller' => 'images',		'action' => 'index'),
         '3601' => array("show"=>0,'name' => '--附件删除', 'controller' => 'images',		'action' => 'del'),
+        '3602' => array("show"=>0,'name' => '--同步图片选项', 'controller' => 'images',		'action' => 'opt'),
+        '3603' => array("show"=>0,'name' => '--同步图片方法', 'controller' => 'images',		'action' => 'sync'),
     )),
 
     '4' => array('name' => '视频', 'icon' => 'xe639', 'sub' => array(
