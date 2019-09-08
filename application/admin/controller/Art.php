@@ -258,8 +258,15 @@ class Art extends Base
         if(!empty($ids) && in_array($col,['art_status','art_lock','art_level','art_hits','type_id'])){
             $where=[];
             $where['art_id'] = ['in',$ids];
+            $update = [];
             if(empty($start)) {
-                $res = model('Art')->fieldData($where, $col, $val);
+                $update[$col] = $val;
+                if($col == 'type_id'){
+                    $type_list = model('Type')->getCache();
+                    $id1 = intval($type_list[$val]['type_pid']);
+                    $update['type_id_1'] = $id1;
+                }
+                $res = model('Art')->fieldData($where, $update);
             }
             else{
                 if(empty($end)){$end = 9999;}
@@ -267,7 +274,8 @@ class Art extends Base
                 foreach($ids as $k=>$v){
                     $val = rand($start,$end);
                     $where['art_id'] = ['eq',$v];
-                    $res = model('Art')->fieldData($where, $col, $val);
+                    $update[$col] = $val;
+                    $res = model('Art')->fieldData($where, $update);
                 }
             }
             if($res['code']>1){

@@ -31,7 +31,7 @@ class Gbook extends Base
         $param = mac_param_url();
         $this->assign('param',$param);
         $this->assign('gbook',$GLOBALS['config']['gbook']);
-        return $this->label_fetch('gbook/ajax');
+        return $this->label_fetch('gbook/ajax',0,'json');
     }
 
     public function report()

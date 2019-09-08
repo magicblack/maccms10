@@ -629,15 +629,13 @@ class Vod extends Base {
         return ['code'=>1,'msg'=>'删除成功'];
     }
 
-    public function fieldData($where,$col,$val)
+    public function fieldData($where,$update)
     {
-        if(!isset($col) || !isset($val)){
+        if(!is_array($update)){
             return ['code'=>1001,'msg'=>'参数错误'];
         }
 
-        $data = [];
-        $data[$col] = $val;
-        $res = $this->allowField(true)->where($where)->update($data);
+        $res = $this->allowField(true)->where($where)->update($update);
         if($res===false){
             return ['code'=>1001,'msg'=>'设置失败：'.$this->getError() ];
         }

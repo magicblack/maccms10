@@ -31,7 +31,7 @@ class Comment extends Base
 		$param = mac_param_url();
         $this->assign('param',$param);
         $this->assign('comment',$GLOBALS['config']['comment']);
-        return $this->label_fetch('comment/ajax');
+        return $this->label_fetch('comment/ajax',0,'json');
 	}
 
 	public function saveData() {
