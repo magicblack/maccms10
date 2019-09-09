@@ -16,6 +16,7 @@ return array(
 
     '2' => array('name' => '系统', 'icon' => 'xe62e', 'sub' => array(
         '21' => array("show"=>1,'name' => '网站参数配置', 'controller' => 'system',				'action' => 'config'),
+        '210' => array("show"=>1,"name" => 'SEO参数配置', 'controller' => 'system',			'action' => 'configseo'),
         '211' => array("show"=>1,"name" => '会员参数配置', 'controller' => 'system',			'action' => 'configuser'),
         '212' => array("show"=>1,"name" => '评论留言配置', 'controller' => 'system',			'action' => 'configcomment'),
         '213' => array("show"=>1,"name" => '附件参数配置', 'controller' => 'system',			'action' => 'configupload'),

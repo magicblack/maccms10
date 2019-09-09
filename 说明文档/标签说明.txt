@@ -157,6 +157,24 @@ $GLOBALS['config']['play'] 播放器配置
 $GLOBALS['config']['urlsend'] url推送配置
 $GLOBALS['config']['sms'] 短信配置
 $GLOBALS['config']['extra'] 自定义参数配置
+$GLOBALS['config']['seo'] SEO参数配置
+
+------------------SEO参数信息------------------------------
+{$maccms.seo.vod.name}  视频首页SEO标题
+{$maccms.seo.vod.key}  视频首页SEO关键字
+{$maccms.seo.vod.des}  视频首页SEO描述
+{$maccms.seo.art.name}  文章首页SEO标题
+{$maccms.seo.art.key}  文章首页SEO关键字
+{$maccms.seo.art.des}  文章首页SEO描述
+{$maccms.seo.actor.name}  演员首页SEO标题
+{$maccms.seo.actor.key}  演员首页SEO关键字
+{$maccms.seo.actor.des}  演员首页SEO描述
+{$maccms.seo.role.name}  角色首页SEO标题
+{$maccms.seo.role.key}  角色首页SEO关键字
+{$maccms.seo.role.des}  角色首页SEO描述
+{$maccms.seo.plot.name}  剧情首页SEO标题
+{$maccms.seo.plot.key}  剧情首页SEO关键字
+{$maccms.seo.plot.des}  剧情首页SEO描述
 
 ------------------下方高能------------------------------
 $GLOBALS['type_id']  当前分类页ID，在（分类页，筛选页，内容页，播放页，下载页都有值）

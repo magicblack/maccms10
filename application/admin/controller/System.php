@@ -594,7 +594,26 @@ class System extends Base
         return $this->fetch('admin@system/configplay');
     }
 
+    public function configseo()
+    {
+        if (Request()->isPost()) {
+            $config = input();
+            $config_new['seo'] = $config['seo'];
 
+            $config_old = config('maccms');
+            $config_new = array_merge($config_old, $config_new);
+
+            $res = mac_arr2file(APP_PATH . 'extra/maccms.php', $config_new);
+            if ($res === false) {
+                return $this->error('保存失败，请重试!');
+            }
+            return $this->success('保存成功!');
+        }
+
+        $this->assign('config', config('maccms'));
+        $this->assign('title', 'SEO参数配置');
+        return $this->fetch('admin@system/configseo');
+    }
 
 
 }

@@ -74,7 +74,8 @@ class All extends Controller
 
         $maccms['http_type'] = $GLOBALS['http_type'];
         $maccms['http_url'] = $GLOBALS['http_type']. ''.$_SERVER['SERVER_NAME'].($_SERVER["SERVER_PORT"]==80 ? '' : ':'.$_SERVER["SERVER_PORT"]).$_SERVER["REQUEST_URI"];
-        
+        $maccms['seo'] = $GLOBALS['config']['seo'];
+
         if(!empty($GLOBALS['mid'])) {
             $maccms['mid'] = $GLOBALS['mid'];
         }
