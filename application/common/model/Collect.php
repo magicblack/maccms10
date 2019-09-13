@@ -1486,7 +1486,8 @@ class Collect extends Base {
         else{
             $url .='&';
         }
-        $html = mac_curl_get($url) . base64_decode($param['param']);
+        $url .= http_build_query($url_param).base64_decode($param['param']);
+        $html = mac_curl_get($url);
         if(empty($html)){
             return ['code'=>1001, 'msg'=>'连接API资源库失败，通常为服务器网络不稳定或禁用了采集'];
         }

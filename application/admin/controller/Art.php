@@ -47,8 +47,8 @@ class Art extends Base
 
         if(!empty($param['repeat'])){
             if($param['page'] ==1){
-                Db::query('DROP TABLE IF EXISTS '.config('database.prefix').'tmpart');
-                Db::query('CREATE TABLE IF NOT EXISTS `'.config('database.prefix').'tmpart` as (SELECT min(art_id)as id1,art_name as name1 FROM '.config('database.prefix').'art GROUP BY name1 HAVING COUNT(name1)>1)');
+                Db::execute('DROP TABLE IF EXISTS '.config('database.prefix').'tmpart');
+                Db::execute('CREATE TABLE IF NOT EXISTS `'.config('database.prefix').'tmpart` as (SELECT min(art_id)as id1,art_name as name1 FROM '.config('database.prefix').'art GROUP BY name1 HAVING COUNT(name1)>1)');
             }
             $order='art_name asc';
             $res = model('Art')->listRepeatData($where,$order,$param['page'],$param['limit']);
