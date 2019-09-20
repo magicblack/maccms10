@@ -271,6 +271,9 @@ CREATE TABLE `mac_collect` (
   `collect_appid` varchar(30) NOT NULL DEFAULT '' ,
   `collect_appkey` varchar(30) NOT NULL DEFAULT '' ,
   `collect_param` varchar(100) NOT NULL DEFAULT '' ,
+  `collect_filter` tinyint(1) unsigned NOT NULL DEFAULT '0' ,
+  `collect_filter_from` varchar(255) NOT NULL DEFAULT '' ,
+  `collect_opt` tinyint(1) unsigned NOT NULL DEFAULT '0' ,
   PRIMARY KEY (`collect_id`)
 ) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 ;
 

@@ -1,4 +1,11 @@
 <?php
+
+/*2019.1000.1011*/
+if(empty($col_list[$pre.'collect']['collect_filter'])){
+    $sql .= "ALTER TABLE `mac_collect` ADD `collect_filter` tinyint( 1 )  NOT NULL DEFAULT '0',ADD `collect_filter_from`  VARCHAR( 255 )  NOT NULL DEFAULT  '',ADD `collect_opt` tinyint( 1 )  NOT NULL DEFAULT '0';";
+    $sql .="\r";
+}
+
 /*2019.1000.1007*/
 if(empty($col_list[$pre.'vod']['vod_plot'])){
     $sql .= "ALTER TABLE `mac_vod` ADD `vod_plot` tinyint( 1 )  NOT NULL DEFAULT '0',ADD `vod_plot_name`  mediumtext  NOT NULL ,ADD `vod_plot_detail` mediumtext  NOT NULL ;";

@@ -32,12 +32,38 @@
         <div class="layui-form-item">
             <label class="layui-form-label">资源类型：</label>
             <div class="layui-input-block">
-                <input name="collect_mid" type="radio" value="1" title="视频" {if condition="$info['collect_mid'] eq 1"}checked {/if}>
-                <input name="collect_mid" type="radio" value="2" title="文章" {if condition="$info['collect_mid'] eq 2"}checked {/if}>
-                <input name="collect_mid" type="radio" value="8" title="演员" {if condition="$info['collect_mid'] eq 8"}checked {/if}>
+                <input name="collect_mid" lay-filter="collect_mid" type="radio" value="1" title="视频" {if condition="$info['collect_mid'] eq 1"}checked {/if}>
+                <input name="collect_mid" lay-filter="collect_mid" type="radio" value="2" title="文章" {if condition="$info['collect_mid'] eq 2"}checked {/if}>
+                <input name="collect_mid" lay-filter="collect_mid" type="radio" value="8" title="演员" {if condition="$info['collect_mid'] eq 8"}checked {/if}>
             </div>
         </div>
 
+        <div class="layui-form-item">
+            <label class="layui-form-label">数据操作：</label>
+            <div class="layui-input-block">
+                <input name="collect_opt" type="radio" value="0" title="新增+更新" {if condition="$info['collect_opt'] eq 0"}checked {/if}>
+                <input name="collect_opt" type="radio" value="1" title="新增" {if condition="$info['collect_opt'] eq 1"}checked {/if}>
+                <input name="collect_opt" type="radio" value="2" title="更新" {if condition="$info['collect_opt'] eq 2"}checked {/if}>
+            </div>
+            <div class="layui-form-mid layui-word-aux" style="">提示信息：如果某个资源作为副资源不想新增数据，可以只勾选更新。</div>
+        </div>
+
+        <div class="layui-form-item row_filer" {if condition="$info['collect_mid'] neq '1'"} style="display:none;" {/if}>
+            <label class="layui-form-label">地址过滤：</label>
+            <div class="layui-input-block">
+                <input name="collect_filter" type="radio" value="0" title="不过滤" {if condition="$info['collect_filter'] eq 0"}checked {/if}>
+                <input name="collect_filter" type="radio" value="1" title="新增+更新" {if condition="$info['collect_filter'] eq 1"}checked {/if}>
+                <input name="collect_filter" type="radio" value="1" title="新增" {if condition="$info['collect_filter'] eq 2"}checked {/if}>
+                <input name="collect_filter" type="radio" value="2" title="更新" {if condition="$info['collect_filter'] eq 3"}checked {/if}>
+            </div>
+        </div>
+        <div class="layui-form-item row_filer" {if condition="$info['collect_mid'] neq '1'"} style="display:none;" {/if}>
+            <label class="layui-form-label">过滤代码：</label>
+            <div class="layui-input-block">
+                <input type="text" class="layui-input" value="{$info.collect_filter_from}" placeholder="" id="collect_filter_from" name="collect_filter_from">
+            </div>
+            <div class="layui-form-mid layui-word-aux" style="margin-left:110px; ">过滤提示：多组地址的资源开启白名单后只会入库指定代码的地址。比如 youku,iqiyi</div>
+        </div>
         <div class="layui-form-item center">
             <div class="layui-input-block">
                 <button class="layui-btn layui-btn-normal" type="button" id="btnTest" >测 试</button>
@@ -92,6 +118,13 @@
                 }
             });
 
+        });
+
+        form.on('radio(collect_mid)',function(data){
+            $('.row_filer').hide();
+            if(data.value=='1'){
+                $('.row_filer').show();
+            }
         });
 
     });
