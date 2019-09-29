@@ -336,7 +336,7 @@ CREATE TABLE `mac_group` (
   `group_id` smallint(6) NOT NULL AUTO_INCREMENT,
   `group_name` varchar(30) NOT NULL DEFAULT '' ,
   `group_status` tinyint(1) unsigned NOT NULL DEFAULT '1' ,
-  `group_type` varchar(255) NOT NULL DEFAULT '' ,
+  `group_type` text NOT NULL,
   `group_popedom` text NOT NULL,
   `group_points_day` smallint(6) unsigned NOT NULL DEFAULT '0' ,
   `group_points_week` smallint(6) NOT NULL DEFAULT '0' ,

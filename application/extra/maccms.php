@@ -61,6 +61,7 @@ return array (
     'search_art_rule' => 'art_en|art_sub',
     'copyright_status' => '1',
     'copyright_notice' => '该视频由于版权限制，暂不提供播放。',
+    'browser_junmp' => '0',
     'collect_timespan' => '3',
     'pagesize' => '20',
     'makesize' => '30',
@@ -177,9 +178,9 @@ return array (
   ),
   'interface' => 
   array (
-    'status' => 0,
+    'status' => '1',
     'pass' => 'TBAKOMRQBCCQCBLK',
-    'vodtype' => '动作=动作片',
+    'vodtype' => '动作片=动作',
     'arttype' => '头条=头条',
   ),
   'pay' => 
@@ -230,12 +231,15 @@ return array (
       'pic' => '0',
       'tag' => '0',
       'class_filter' => '1',
-      'psernd' => '1',
-      'psesyn' => '1',
+      'psename' => '1',
+      'psernd' => '0',
+      'psesyn' => '0',
+      'urlrole' => '0',
       'inrule' => ',f,g',
       'uprule' => ',a',
       'filter' => '色戒,色即是空',
-      'thesaurus' => '',
+      'namewords' => '第1季=第一季#第2季=第二季#第3季=第三季#第4季=第四季',
+      'thesaurus' => ' =',
       'words' => '',
     ),
     'art' => 
@@ -248,8 +252,8 @@ return array (
       'score' => '1',
       'pic' => '0',
       'tag' => '0',
-      'psernd' => '1',
-      'psesyn' => '1',
+      'psernd' => '0',
+      'psesyn' => '0',
       'inrule' => ',b',
       'uprule' => ',a,d',
       'filter' => '无奈的人',
@@ -498,5 +502,38 @@ label-<file> => label/index',
   ),
   'extra' => 
   array (
+  ),
+  'seo' => 
+  array (
+    'vod' => 
+    array (
+      'name' => '视频首页',
+      'key' => '短视频,搞笑视频,视频分享,免费视频,在线视频,预告片',
+      'des' => '提供最新最快的视频分享数据',
+    ),
+    'art' => 
+    array (
+      'name' => '文章首页',
+      'key' => '新闻资讯,娱乐新闻,八卦娱乐,狗仔队,重大事件',
+      'des' => '提供最新最快的新闻资讯',
+    ),
+    'actor' => 
+    array (
+      'name' => '演员首页',
+      'key' => '大陆明星,港台明星,日韩明星,欧美明星,最火明星',
+      'des' => '明星个人信息介绍',
+    ),
+    'role' => 
+    array (
+      'name' => '角色首页',
+      'key' => '电影角色,电视剧角色,动漫角色,综艺角色',
+      'des' => '角色人物介绍',
+    ),
+    'plot' => 
+    array (
+      'name' => '剧情首页',
+      'key' => '剧情连载,剧情更新,剧情前瞻,剧情完结',
+      'des' => '提供最新的剧情信息',
+    ),
   ),
 );

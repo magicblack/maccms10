@@ -58,7 +58,7 @@ return array (
     array (
     ),
   ),
-  'index-<page>' => 
+  'index-<page?>' => 
   array (
     0 => 'index/index',
     1 => 
@@ -68,7 +68,7 @@ return array (
     array (
     ),
   ),
-  'gbook-<page>' => 
+  'gbook-<page?>' => 
   array (
     0 => 'gbook/index',
     1 => 
@@ -218,7 +218,7 @@ return array (
     array (
     ),
   ),
-  'voddetail-<id>' => 
+  'voddetail/<id>' => 
   array (
     0 => 'vod/detail',
     1 => 

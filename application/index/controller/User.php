@@ -698,6 +698,9 @@ class User extends Base
 
         $where = [];
         $where['user_id'] = $GLOBALS['user']['user_id'];
+        if(in_array($param['mid'],['1','2','3','8'])){
+            $where['ulog_mid'] = $param['mid'];
+        }
         $where['ulog_type'] = 2;
         $order = 'ulog_time desc';
         $res = model('Ulog')->listData($where, $order, $param['page'], $param['limit']);
@@ -708,6 +711,32 @@ class User extends Base
         $pages = mac_page_param($res['total'], $param['limit'], $param['page'], url('user/favs', ['page' => 'PAGELINK']));
         $this->assign('__PAGING__', $pages);
         return $this->fetch('user/favs');
+    }
+
+    public function ulog()
+    {
+        $param = input();
+        $param['page'] = intval($param['page']) < 1 ? 1 : intval($param['page']);
+        $param['limit'] = intval($param['limit']) < 20 ? 20 : intval($param['limit']);
+
+        $where = [];
+        $where['user_id'] = $GLOBALS['user']['user_id'];
+        if(in_array($param['mid'],['1','2','3','8'])){
+            $where['ulog_mid'] = $param['mid'];
+        }
+        if(in_array($param['type'],['1','2','3','4','5'])){
+            $where['ulog_type'] = $param['type'];
+        }
+
+        $order = 'ulog_time desc';
+        $res = model('Ulog')->listData($where, $order, $param['page'], $param['limit']);
+
+        $this->assign('param',$param);
+        $this->assign('list', $res['list']);
+        $this->assign('title', '我的记录');
+        $pages = mac_page_param($res['total'], $param['limit'], $param['page'], url('user/ulog', ['page' => 'PAGELINK']));
+        $this->assign('__PAGING__', $pages);
+        return $this->fetch('user/ulog');
     }
 
     public function ulog_del()

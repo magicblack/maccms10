@@ -885,7 +885,7 @@ function mac_get_user_flag_text($data)
 
 function mac_get_ulog_mid_text($data)
 {
-    $arr = [1=>'视频',2=>'文章',3=>'专题'];
+    $arr = [1=>'视频',2=>'文章',3=>'专题',8=>'明星'];
     return $arr[$data];
 }
 
