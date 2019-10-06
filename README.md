@@ -4,9 +4,7 @@
 
 ## 官方信息
 
-官方网站：http://www.maccms.com   因不可抗因素暂时关闭中，预计20年5月恢复。
-
-开发作者：MagicBlack  人称：老王    原QQ暂时无法使用请不要联系。
+官方网站：http://www.maccms.com   
 
 软件著作权证书号：2018SR947830
 
