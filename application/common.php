@@ -835,13 +835,13 @@ function mac_unescape($str)
 /*特殊字段的值转换*/
 function mac_get_mid_text($data)
 {
-    $arr = [1=>'视频',2=>'文章',3=>'专题',4=>'评论',5=>'留言',6=>'用户中心',7=>'自定义页面',8=>'明星',9=>'角色'];
+    $arr = [1=>'视频',2=>'文章',3=>'专题',4=>'评论',5=>'留言',6=>'用户中心',7=>'自定义页面',8=>'明星',9=>'角色',10=>'剧情'];
     return $arr[$data];
 }
 function mac_get_mid($controller)
 {
     $controller=strtolower($controller);
-    $arr = ['vod'=>1,'art'=>2,'topic'=>3,'comment'=>4,'gbook'=>5,'user'=>6,'label'=>7,'actor'=>8,'role'=>9];
+    $arr = ['vod'=>1,'art'=>2,'topic'=>3,'comment'=>4,'gbook'=>5,'user'=>6,'label'=>7,'actor'=>8,'role'=>9,'plot'=>10];
     return $arr[$controller];
 }
 function mac_get_aid($controller,$action='')
@@ -850,7 +850,7 @@ function mac_get_aid($controller,$action='')
     $action=strtolower($action);
     $key = $controller.'/'.$action;
 
-    $arr=['index'=>1,'map'=>2,'rss'=>3,'gbook'=>4,'comment'=>5,'user'=>6,'label'=>7,'vod'=>10,'art'=>20,'topic'=>30,'actor'=>80,'role'=>90];
+    $arr=['index'=>1,'map'=>2,'rss'=>3,'gbook'=>4,'comment'=>5,'user'=>6,'label'=>7,'vod'=>10,'art'=>20,'topic'=>30,'actor'=>80,'role'=>90,'plot'=>100];
     $res = $arr[$controller];
 
     $arr=[
@@ -859,6 +859,7 @@ function mac_get_aid($controller,$action='')
         'topic/search'=>33,'topic/detail'=>34,
         'actor/show'=>82,'actor/search'=>83,'actor/detail'=>84,
         'role/show'=>92,'role/search'=>93,'role/detail'=>94,
+        'plot/search'=>103,'plot/detail'=>104,
     ];
     if(!empty($arr[$key])){
         $res= $arr[$key];
