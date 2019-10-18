@@ -1,5 +1,8 @@
 {include file="../../../application/admin/view/public/head" /}
 <div class="page-container p10">
+
+    <div class="showpic" style="display:none;"><img class="showpic_img" width="120" height="160"></div>
+    
     <form class="layui-form layui-form-pane" method="post" action="">
         <input type="hidden" name="type_id" value="{$info.type_id}">
         <blockquote class="layui-elem-quote layui-quote-nm">
@@ -107,6 +110,31 @@
         </div>
 
         <div class="layui-form-item">
+            <label class="layui-form-label">分类图标：</label>
+            <div class="layui-input-inline w600">
+                <input type="text" name="type_logo" placeholder="图片地址或路径" value="{$info['type_logo']}" class="layui-input upload-input">
+            </div>
+            <div class="layui-input-inline ">
+                <button type="button" class="layui-btn layui-upload" lay-data="{data:{thumb:0,thumb_class:'type_logo'}}" id="upload1">上传图片</button>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">分类封面：</label>
+            <div class="layui-input-inline w600">
+                <input type="text" name="type_pic" placeholder="图片地址或路径" value="{$info['type_pic']}" class="layui-input upload-input">
+            </div>
+            <div class="layui-input-inline ">
+                <button type="button" class="layui-btn layui-upload" lay-data="{data:{thumb:0,thumb_class:'type_pic'}}" id="upload1">上传图片</button>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">跳转URL：</label>
+            <div class="layui-input-block">
+                <input type="text" class="layui-input" value="{$info.type_jumpurl}" placeholder="" id="type_jumpurl" name="type_jumpurl">
+            </div>
+        </div>
+
+        <div class="layui-form-item">
             <label class="layui-form-label">扩展分类：</label>
             <div class="layui-input-block">
                 <input type="text" class="layui-input" value="{$info.type_extend.class}" placeholder="多个用,号连接" name="type_extend[class]">
@@ -191,11 +219,50 @@
             $('input[name="type_tpl_down"]').val(type_tpl_down);
         }
     }
-    layui.use(['form', 'layer'], function () {
+    layui.use(['form','upload', 'layer'], function () {
         // 操作对象
         var form = layui.form
                 , layer = layui.layer
+                , upload = layui.upload
                 , $ = layui.jquery;
+
+        upload.render({
+            elem: '.layui-upload'
+            ,url: "{:url('upload/upload')}?flag=type"
+            ,method: 'post'
+            ,before: function(input) {
+                layer.msg('文件上传中...', {time:3000000});
+            },done: function(res, index, upload) {
+                var obj = this.item;
+                if (res.code == 0) {
+                    layer.msg(res.msg);
+                    return false;
+                }
+                layer.closeAll();
+                var input = $(obj).parent().parent().find('.upload-input');
+                if ($(obj).attr('lay-type') == 'image') {
+                    input.siblings('img').attr('src', res.data.file).show();
+                }
+                input.val(res.data.file);
+
+                if(res.data.thumb_class !=''){
+                    $('.'+ res.data.thumb_class).val(res.data.thumb[0].file);
+                }
+            }
+        });
+
+        $('.upload-input').hover(function (e){
+            var e = window.event || e;
+            var imgsrc = $(this).val();
+            if(imgsrc.trim()==""){ return; }
+            var left = e.clientX+document.body.scrollLeft+20;
+            var top = e.clientY+document.body.scrollTop+20;
+            $(".showpic").css({left:left,top:top,display:""});
+            if(imgsrc.indexOf('://')<0){ imgsrc = ROOT_PATH + '/' + imgsrc;	} else{ imgsrc = imgsrc.replace('mac:','http:'); }
+            $(".showpic_img").attr("src", imgsrc);
+        },function (e){
+            $(".showpic").css("display","none");
+        });
 
         // 验证
         form.verify({

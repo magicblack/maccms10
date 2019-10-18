@@ -138,7 +138,7 @@ class Ulog extends Base {
             return ['code'=>1001,'msg'=>'参数错误：'.$validate->getError() ];
         }
 
-        if($data['user_id']==0 || !in_array($data['ulog_mid'],['1','2','3']) || !in_array($data['ulog_type'],['1','2','3','4','5']) ) {
+        if($data['user_id']==0 || !in_array($data['ulog_mid'],['1','2','3','8']) || !in_array($data['ulog_type'],['1','2','3','4','5']) ) {
             return ['code'=>1002,'msg'=>'参数非法'];
         }
 

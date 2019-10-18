@@ -176,6 +176,8 @@ class User extends Base
             }
         }
 
+
+
         $fields = [];
         $fields['user_name'] = $data['user_name'];
         $fields['user_pwd'] = md5($data['user_pwd']);
@@ -199,7 +201,12 @@ class User extends Base
             $update['user_phone'] = '';
             $where2=[];
             $where2['user_phone'] = $param['to'];
-            $this->where($where2)->update($update);
+
+            $row = $this->where($where2)->find();
+            if (!empty($row)) {
+                return ['code' => 1011, 'msg' => '手机号已被使用，请更换'];
+            }
+            //$this->where($where2)->update($update);
         }
         elseif($config['user']['reg_email_sms'] == '1'){
             $param['type'] = 3;
@@ -213,7 +220,12 @@ class User extends Base
             $update['user_email'] = '';
             $where2=[];
             $where2['user_email'] = $param['to'];
-            $this->where($where2)->update($update);
+
+            $row = $this->where($where2)->find();
+            if (!empty($row)) {
+                return ['code' => 1012, 'msg' => '邮箱已被使用，请更换'];
+            }
+            //$this->where($where2)->update($update);
         }
 
         $res = $this->insert($fields);

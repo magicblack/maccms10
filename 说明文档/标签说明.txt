@@ -274,6 +274,9 @@ cachetime自定义缓存时间单位秒
 {$obj.type_des}描述信息
 {$obj.type_title}标题
 {$obj.type_extend}扩展配置json
+{$obj.type_logo}分类图标
+{$obj.type_pic}分类封面
+{$obj.type_jumpurl}跳转url
 {:mac_url_type($obj)} 分类链接
 
 =======专题列表标签=======

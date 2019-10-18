@@ -1,5 +1,11 @@
 <?php
 
+/*2019.1000.1017*/
+if(empty($col_list[$pre.'type']['type_logo'])){
+    $sql .= "ALTER TABLE `mac_type` ADD `type_logo`  VARCHAR( 255 )  NOT NULL DEFAULT  '',ADD `type_pic`  VARCHAR( 255 )  NOT NULL DEFAULT  '',ADD `type_jumpurl`  VARCHAR( 150 )  NOT NULL DEFAULT  '';";
+    $sql .="\r";
+}
+
 /*2019.1000.1011*/
 if(empty($col_list[$pre.'collect']['collect_filter'])){
     $sql .= "ALTER TABLE `mac_collect` ADD `collect_filter` tinyint( 1 )  NOT NULL DEFAULT '0',ADD `collect_filter_from`  VARCHAR( 255 )  NOT NULL DEFAULT  '',ADD `collect_opt` tinyint( 1 )  NOT NULL DEFAULT '0';";
