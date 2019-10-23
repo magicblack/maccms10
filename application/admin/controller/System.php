@@ -52,6 +52,13 @@ class System extends Base
         if (Request()->isPost()) {
             $config = input();
 
+            $validate = \think\Loader::validate('System');
+            if(!$validate->check($config)){
+                return $this->error($validate->getError());
+            }
+            unset($config['__token__']);
+
+
             $ads_dir='ads';
             $mob_ads_dir='ads';
             $path = ROOT_PATH .'template/'.$config['site']['template_dir'].'/info.ini';

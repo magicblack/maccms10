@@ -14,7 +14,9 @@ class Link extends Base
         $param['page'] = intval($param['page']) <1 ? 1 : $param['page'];
         $param['limit'] = intval($param['limit']) <1 ? $this->_pagesize : $param['limit'];
         $where=[];
+
         if(!empty($param['wd'])){
+            $param['wd'] = htmlspecialchars($param['wd']);
             $where['link_name'] = ['like','%'.$param['wd'].'%'];
         }
 

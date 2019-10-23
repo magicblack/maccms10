@@ -16,6 +16,7 @@ class Admin extends Base
         $param['limit'] = intval($param['limit']) <1 ? $this->_pagesize : $param['limit'];
         $where=[];
         if(!empty($param['wd'])){
+            $param['wd'] = htmlspecialchars($param['wd']);
             $where['admin_name'] = ['like','%'.$param['wd'].'%'];
         }
 
@@ -29,6 +30,9 @@ class Admin extends Base
 
         $param['page'] = '{page}';
         $param['limit'] = '{limit}';
+
+        $this->assign('admin',$this->_admin);
+
         $this->assign('param',$param);
         $this->assign('title','管理员管理');
         return $this->fetch('admin@admin/index');
@@ -96,6 +100,12 @@ class Admin extends Base
         if(!empty($ids)){
             $where=[];
             $where['admin_id'] = ['in',$ids];
+            if(!is_array($ids)) {
+                $ids = explode(',', $ids);
+            }
+            if(in_array($this->_admin['admin_id'],$ids)){
+                return $this->error('禁止删除当前登录账号');
+            }
             $res = model('Admin')->delData($where);
             if($res['code']>1){
                 return $this->error($res['msg']);

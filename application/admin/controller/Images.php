@@ -20,7 +20,7 @@ class Images extends Base
         }
 
         if(substr($path,0,7) != "@upload") { $path = "@upload"; }
-        if(count( explode("..@",$path) ) > 2) {
+        if(count( explode("..@",$path) ) > 1) {
             $this->error('非法目录请求');
             return;
         }
@@ -109,16 +109,17 @@ class Images extends Base
         if(!empty($fname)){
             foreach($fname as $a){
                 $a = str_replace('\\','/',$a);
-                if( (substr($a,0,7) != "/upload") || count( explode("./",$a) ) > 2) {
+
+                if( (substr($a,0,8) != "./upload") || count( explode("./",$a) ) > 2) {
 
                 }
                 else{
                     $a = mac_convert_encoding($a,"UTF-8","GB2312");
-                    if(file_exists('.'.$a)){ @unlink('.'.$a); }
+                    if(file_exists($a)){ @unlink($a); }
                 }
             }
         }
-        mac_redirect($this->_ref);
+        return $this->success('删除成功');
     }
 
     public function sync()

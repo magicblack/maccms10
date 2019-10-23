@@ -27,7 +27,11 @@
 
             {volist name="list" id="vo"}
             <tr>
-                <td><input type="checkbox" name="ids[]" value="{$vo.admin_id}" class="layui-checkbox checkbox-ids" lay-skin="primary"></td>
+                <td>
+                    {if condition="$admin['admin_id'] neq $vo['admin_id']"}
+                    <input type="checkbox" name="ids[]" value="{$vo.admin_id}" class="layui-checkbox checkbox-ids" lay-skin="primary">
+                    {/if}
+                </td>
                 <td>{$vo.admin_id}</td>
                 <td>{$vo.admin_name}</td>
                 <td>
@@ -38,7 +42,9 @@
                 <td>{$vo.admin_login_num}</td>
                 <td>
                     <a class="layui-badge-rim j-iframe" data-href="{:url('info?id='.$vo['admin_id'])}" href="javascript:;" title="编辑">编辑</a>
+                    {if condition="$admin['admin_id'] neq $vo['admin_id']"}
                     <a class="layui-badge-rim j-tr-del" data-href="{:url('del?ids='.$vo['admin_id'])}" href="javascript:;" title="删除">删除</a>
+                    {/if}
                 </td>
             </tr>
             {/volist}

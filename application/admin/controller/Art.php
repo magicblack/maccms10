@@ -41,7 +41,7 @@ class Art extends Base
             }
         }
         if(!empty($param['wd'])){
-            $param['wd'] = urldecode($param['wd']);
+            $param['wd'] = htmlspecialchars($param['wd']);
             $where['art_name'] = ['like','%'.$param['wd'].'%'];
         }
 
@@ -116,6 +116,7 @@ class Art extends Base
                 }
             }
             if(!empty($param['wd'])){
+                $param['wd'] = htmlspecialchars($param['wd']);
                 $where['art_name'] = ['like','%'.$param['wd'].'%'];
             }
 

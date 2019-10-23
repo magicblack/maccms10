@@ -27,7 +27,7 @@
             {volist name="files" id="vo"}
             <tr>
                 {if condition="$vo.isfile eq 1"}
-                <th><input type="checkbox" name="ids[]" value="{$vo.path}" class="layui-checkbox checkbox-ids" lay-skin="primary"> <a href="{$vo.path}" target="_blank">{$vo.name}</a></th>
+                <th><input type="checkbox" name="ids[]" value=".{$vo.path}" class="layui-checkbox checkbox-ids" lay-skin="primary"> <a href="{$vo.path}" target="_blank">{$vo.name}</a></th>
                 <td>{$vo.size}</td>
                 <td>{$vo.time|mac_day=color}</td>
                 {else}

@@ -38,7 +38,7 @@ class Role extends Base
             }
         }
         if(!empty($param['wd'])){
-            $param['wd'] = urldecode($param['wd']);
+            $param['wd'] = htmlspecialchars($param['wd']);
             $where['role_name'] = ['like','%'.$param['wd'].'%'];
         }
 

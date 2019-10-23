@@ -70,7 +70,7 @@ class Vod extends Base
             $where['vod_weekday'] = ['like','%'.$param['weekday'].'%'];
         }
         if(!empty($param['wd'])){
-            $param['wd'] = urldecode($param['wd']);
+            $param['wd'] = htmlspecialchars($param['wd']);
             $where['vod_name|vod_actor'] = ['like','%'.$param['wd'].'%'];
         }
         if(!empty($param['player'])){
@@ -218,6 +218,7 @@ class Vod extends Base
                 }
             }
             if(!empty($param['wd'])){
+                $param['wd'] = htmlspecialchars($param['wd']);
                 $where['vod_name'] = ['like','%'.$param['wd'].'%'];
             }
 
@@ -434,6 +435,7 @@ class Vod extends Base
         $this->assign('vod_play_list',$info['vod_play_list']);
         $this->assign('vod_down_list',$info['vod_down_list']);
         $this->assign('vod_plot_list',$info['vod_plot_list']);
+
 
         $this->assign('title','视频信息');
         return $this->fetch('admin@vod/info');

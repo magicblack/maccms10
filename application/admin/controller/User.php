@@ -23,7 +23,7 @@ class User extends Base
             $where['group_id'] = $param['group'];
         }
         if(!empty($param['wd'])){
-            $param['wd'] = urldecode($param['wd']);
+            $param['wd'] = htmlspecialchars($param['wd']);
             $where['user_name'] = ['like','%'.$param['wd'].'%'];
         }
 
@@ -76,7 +76,7 @@ class User extends Base
         }
 
         if(!empty($param['wd'])){
-            $param['wd'] = urldecode($param['wd']);
+            $param['wd'] = htmlspecialchars($param['wd']);
             $where['user_name'] = ['like','%'.$param['wd'].'%'];
         }
 
