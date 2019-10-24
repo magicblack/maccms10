@@ -183,7 +183,11 @@ class Base extends All
                     }
                     $res = model('Ulog')->infoData($where);
 
-                    if($res['code'] == 1) {
+
+                    if(2 == 1) {
+
+                    }
+                    elseif($points>0 && $res['code'] == 1) {
 
                     }
                     elseif( $group['group_id'] <=2 && $points <= intval($user['user_points']) ){
@@ -192,6 +196,7 @@ class Base extends All
                     elseif( $group['group_id'] <3 && $points > intval($user['user_points']) ){
                         return ['code'=>5002,'msg'=>'对不起,观看此页面数据需要[' . $points . ']积分，您还剩下[' . $user['user_points'] . ']积分，请先充值！','trysee'=>$trysee];
                     }
+
                 }
             }
         }
