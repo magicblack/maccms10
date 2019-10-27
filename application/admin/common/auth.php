@@ -3,7 +3,7 @@ return array(
 
     '1' => array('name' => '首页', 'icon' => 'xe625', 'sub' => array(
         '11' => array("show"=>1,"name" => '欢迎页面', 'controller' => 'index', 'action' => 'welcome'),
-        '12' => array("show"=>1,"name" => '快捷菜单配置', 'controller' => 'index', 'action' => 'quickmenu'),
+        '12' => array("show"=>1,"name" => '自定义菜单配置', 'controller' => 'index', 'action' => 'quickmenu'),
 
         '1001' => array("show"=>0,"name" => '--切换布局', 'controller' => 'index', 'action' => 'iframe'),
         '1002' => array("show"=>0,"name" => '--清理缓存', 'controller' => 'index', 'action' => 'clear'),
