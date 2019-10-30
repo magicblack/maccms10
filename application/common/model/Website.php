@@ -115,6 +115,7 @@ class Website extends Base {
 
         $order = $lp['order'];
         $by = $lp['by'];
+        $type = $lp['type'];
         $ids = $lp['ids'];
         $paging = $lp['paging'];
         $pageurl = $lp['pageurl'];
@@ -153,6 +154,9 @@ class Website extends Base {
         $param = mac_param_url();
         if($paging=='yes') {
             $totalshow = 1;
+            if(!empty($param['id'])) {
+                //$type = intval($param['id']);
+            }
             if(!empty($param['ids'])){
                 $ids = $param['ids'];
             }
@@ -194,8 +198,19 @@ class Website extends Base {
                 $pageurl = 'website/index';
             }
             $param['page'] = 'PAGELINK';
-            $pageurl = mac_url($pageurl,$param);
-
+            if($pageurl=='website/type' || $pageurl=='website/show'){
+                $type = intval( $GLOBALS['type_id'] );
+                $type_list = model('Type')->getCache('type_list');
+                $type_info = $type_list[$type];
+                $flag='type';
+                if($pageurl == 'website/show'){
+                    $flag='show';
+                }
+                $pageurl = mac_url_type($type_info,$param,$flag);
+            }
+            else{
+                $pageurl = mac_url($pageurl,$param);
+            }
         }
 
         $where['website_status'] = ['eq',1];
@@ -231,6 +246,26 @@ class Website extends Base {
         if(!empty($time)){
             $s = intval(strtotime($time));
             $where['website_time'] =['gt',$s];
+        }
+        if(!empty($type)) {
+            if($type=='current'){
+                $type = intval( $GLOBALS['type_id'] );
+            }
+            if($type!='all') {
+                $tmp_arr = explode(',', $type);
+                $type_list = model('Type')->getCache('type_list');
+                $type = [];
+                foreach ($type_list as $k2 => $v2) {
+                    if (in_array($v2['type_id'] . '', $tmp_arr) || in_array($v2['type_pid'] . '', $tmp_arr)) {
+                        $type[] = $v2['type_id'];
+                    }
+                }
+                $type = array_unique($type);
+                $where['type_id'] = ['in', implode(',', $type)];
+            }
+        }
+        if(!empty($tid)) {
+            $where['type_id|type_id_1'] = ['eq',$tid];
         }
         if(!empty($hitsmonth)){
             $tmp = explode(' ',$hitsmonth);
@@ -347,6 +382,12 @@ class Website extends Base {
                 return ['code' => 1002, 'msg' => '获取数据失败'];
             }
             $info = $info->toArray();
+            //分类
+            if (!empty($info['type_id'])) {
+                $type_list = model('Type')->getCache('type_list');
+                $info['type'] = $type_list[$info['type_id']];
+                $info['type_1'] = $type_list[$info['type']['type_pid']];
+            }
             if($GLOBALS['config']['app']['cache_core']==1) {
                 Cache::set($key, $info);
             }
@@ -367,6 +408,10 @@ class Website extends Base {
         Cache::rm($key);
         $key = 'website_detail_'.$data['website_id'].'_'.$data['website_en'];
         Cache::rm($key);
+
+        $type_list = model('Type')->getCache('type_list');
+        $type_info = $type_list[$data['type_id']];
+        $data['type_id_1'] = $type_info['type_pid'];
 
         if(empty($data['website_en'])){
             $data['website_en'] = Pinyin::get($data['website_name']);
