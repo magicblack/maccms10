@@ -19,6 +19,7 @@
   │      └─user     用户中心模块模板目录
   │      └─vod      视频模块模板目录
   │      └─plot     分集剧情模块模板目录
+  │      └─website  网址导航模块模板目录
   │─tempalte/2/  模板2
   │─...
   │─template/n/  模板N
@@ -100,6 +101,23 @@ user/upgrade.html     用户中心-会员升级
 │
 plot/index.html        分集剧情首页
 plot/detail.html       分集剧情详情页
+|
+actor/index.html        演员首页
+actor/detail.html       演员详情页
+actor/search.html       演员网址搜索页
+actor/show.html       演员筛选页
+actor/type.html       演员分类页
+|
+role/index.html        角色首页
+role/detail.html       角色详情页
+role/show.html         角色筛选页
+│
+website/index.html        网址导航首页
+website/detail.html       网址详情页
+website/search.html       网址搜索页
+website/show.html       网址筛选页
+website/type.html       网址分类页
+
 
 ========全局标签=======
 {$maccms.site_name}网站名称
@@ -177,12 +195,14 @@ $GLOBALS['config']['seo'] SEO参数配置
 {$maccms.seo.plot.name}  剧情首页SEO标题
 {$maccms.seo.plot.key}  剧情首页SEO关键字
 {$maccms.seo.plot.des}  剧情首页SEO描述
-
+{$maccms.seo.website.name}  网址导航首页SEO标题
+{$maccms.seo.website.key}  网址导航首页SEO关键字
+{$maccms.seo.website.des}  网址导航首页SEO描述
 ------------------下方高能------------------------------
 $GLOBALS['type_id']  当前分类页ID，在（分类页，筛选页，内容页，播放页，下载页都有值）
 $GLOBALS['type_pid']  当前分类页父ID，在（分类页，筛选页，内容页，播放页，下载页都有值）
 
-{$maccms.mid}模块id，1=>'视频',2=>'文章',3=>'专题',4=>'评论',5=>'留言',6=>'用户中心',7=>'自定义页面',8=>'明星',9=>'角色',10=>'剧情'
+{$maccms.mid}模块id，1=>'视频',2=>'文章',3=>'专题',4=>'评论',5=>'留言',6=>'用户中心',7=>'自定义页面',8=>'演员',9=>'角色',10=>'剧情',11=>'网址'
 
 {$maccms.aid}当前系统页面id
 首页1
@@ -213,9 +233,11 @@ rss3
 专题搜索33
 专题详情34
 
-明星首页80
-明星搜索83
-明星详情84
+演员首页80
+演员分类81
+演员筛选82
+演员搜索83
+演员详情84
 
 角色首页90
 角色搜索93
@@ -224,6 +246,13 @@ rss3
 剧情首页100
 剧情搜索103
 剧情想请104
+
+网址导航首页110
+网址导航分类111
+网址导航筛选112
+网址导航搜索113
+网址导航详情114
+
 ------------------------------------------------
 设计首页幻灯片的时候，建议统一调用推荐值为9的数据~
 
@@ -822,19 +851,20 @@ rid关联数据id
     </script>
 
 
-=======明星列表标签=======
+=======演员列表标签=======
 order排列顺序desc倒序，asc正序
 by排序依据  id, time,time_add,score,hits,hits_day,hits_week,hits_month,up,down,level,rnd,in
 start从第几条开始
 num获取条数
 ids指定id 多个逗号连接
 not不抱含id 多个逗号链接
+type指定获取分类数据 all所有；1,2,3指定
 area指定地区
 sex指定性别 男 女
 letter指定首字母
 level指定推荐值 支持多个  1,2
 area指定地区 支持多个  大陆,香港
-name指定明星支持多个  刘德华,周华健
+name指定演员支持多个  刘德华,周华健
 blood指定血型支持多个  A型,B型
 starsign指定星座支持多个  处女座,天蝎座,白羊座
 timeadd添加时间 一天前 -1 day，一周前-1 week，一月前-1 month，一小时前-1 hour
@@ -851,8 +881,10 @@ cachetime自定义缓存时间单位秒
 {maccms:actor num="10" paging="no" area="大陆" order="asc" by="sort"}
    内部同下方，{$obj.改为{$vo.开头即可
 {/maccms:actor}
-=======明星内容页独有标签=======
-{$obj.actor_id} 明星id
+=======演员内容页独有标签=======
+{$obj.actor_id} 演员id
+{$obj.type_id} 分类id
+{$obj.type_id_1} 一级分类id
 {$obj.actor_name} 姓名
 {$obj.actor_en} 拼音
 {$obj.actor_alias} 别名
@@ -864,6 +896,8 @@ cachetime自定义缓存时间单位秒
 {$obj.actor_pic} 图片
 {$obj.actor_blurb} 简介
 {$obj.actor_remarks} 备注
+{$obj.actor_tag} tags
+{$obj.actor_class} 扩展分类
 {$obj.actor_area} 地区
 {$obj.actor_height} 身高
 {$obj.actor_weight} 体重
@@ -886,7 +920,7 @@ cachetime自定义缓存时间单位秒
 {$obj.actor_tpl} 自定义模板
 {$obj.actor_jumpurl} 跳转url
 {$obj.actor_content} 详情
-{$obj|mac_url_actor_detail} 获取明星详情页链接
+{$obj|mac_url_actor_detail} 获取演员详情页链接
 
 
 
@@ -929,7 +963,7 @@ cachetime自定义缓存时间单位秒
 {$obj.role_color} 高亮颜色
 {$obj.role_actor} 演员名称
 {$obj.role_remarks} 备注
-{$obj.role_remarks} 图片
+{$obj.role_pic} 图片
 {$obj.role_sort} 排序
 {$obj.role_level} 推荐值
 {$obj.role_up} 顶数
@@ -946,6 +980,68 @@ cachetime自定义缓存时间单位秒
 {$obj.role_content} 详情
 {$obj|mac_url_role_detail} 获取角色详情页链接
 
+
+=======网址列表标签=======
+order排列顺序desc倒序，asc正序
+by排序依据  id, time,time_add,score,hits,hits_day,hits_week,hits_month,up,down,level,rnd
+start从第几条开始
+num获取条数
+ids指定id 多个逗号连接
+not不抱含id 多个逗号链接
+type指定获取分类数据 all所有；1,2,3指定
+letter指定首字母
+level指定推荐值 支持多个  1,2
+area指定地区 支持多个  大陆,香港
+lang指定语言 支持多个  英语,西班牙语
+timeadd添加时间 一天前 -1 day，一周前-1 week，一月前-1 month，一小时前-1 hour
+timehits点击时间 一天前 -1 day，一周前-1 week，一月前-1 month，一小时前-1 hour
+time更新时间 一天前 -1 day，一周前-1 week，一月前-1 month，一小时前-1 hour
+hitsmonth月点击量 大于一千 gt 1000, 小于一千 lt 1000，区间一千二千之间 between 1000,2000
+hitsweek周点击量 大于一千 gt 1000, 小于一千 lt 1000，区间一千二千之间 between 1000,2000
+hitsday日点击量 大于一千 gt 1000, 小于一千 lt 1000，区间一千二千之间 between 1000,2000
+hits总点击量 大于一千 gt 1000, 小于一千 lt 1000，区间一千二千之间 between 1000,2000
+paging是否分页yes
+pageurl分页地址
+cachetime自定义缓存时间单位秒
+
+{maccms:website num="10" paging="no" order="asc" by="sort"}
+   内部同下方，{$obj.改为{$vo.开头即可
+{/maccms:website}
+=======角色内容页独有标签=======
+{$obj.website_id} 网址id
+{$obj.type_id} 分类id
+{$obj.type_id_1} 一级分类id
+{$obj.website_name} 网址名
+{$obj.website_sub} 副标
+{$obj.website_en} 拼音
+{$obj.website_jumpurl} 跳转url
+{$obj.website_status} 状态
+{$obj.website_lock} 锁定
+{$obj.website_letter} 首字母
+{$obj.website_color} 高亮颜色
+{$obj.website_remarks} 备注
+{$obj.website_tag} tags
+{$obj.website_class} 扩展分类
+{$obj.website_pic} 截图
+{$obj.website_logo} logo
+{$obj.website_sort} 排序
+{$obj.website_level} 推荐值
+{$obj.website_up} 顶数
+{$obj.website_down} 踩数
+{$obj.website_score} 平均分
+{$obj.website_score_all} 总评分
+{$obj.website_score_num} 评分次数
+{$obj.website_time} 更新时间
+{$obj.website_time_add} 添加时间
+{$obj.website_time_hits} 点击时间
+{$obj.website_time_make} 生成时间
+{$obj.website_referer} 总来路
+{$obj.website_referer_day} 日来路
+{$obj.website_referer_week} 周来路
+{$obj.website_referer_month} 月来路
+{$obj.website_tpl} 自定义模板
+{$obj.website_content} 详情
+{$obj|mac_url_website_detail} 获取网址详情页链接
 
 
 =======常用处理函数=======

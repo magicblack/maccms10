@@ -140,7 +140,6 @@ class Provide extends Base
         return $flag=='xml' ? $res_xml : $res_json;
     }
 
-
     public function vod_json($res)
     {
         $type_list = model('Type')->getCache('type_list');
@@ -201,8 +200,6 @@ class Provide extends Base
         }
         return $res;
     }
-
-
 
     public function vod_xml($res)
     {
@@ -405,7 +402,6 @@ class Provide extends Base
         exit;
     }
 
-
     public function actor()
     {
         if($GLOBALS['config']['api']['actor']['status'] != 1){
@@ -445,7 +441,9 @@ class Provide extends Base
                 $where['actor_id'] = ['in', $this->_param['ids']];
             }
             if (!empty($this->_param['t'])) {
-                $where['actor_area'] = $this->_param['t'];
+                if (empty($GLOBALS['config']['api']['actor']['typefilter']) || strpos($GLOBALS['config']['api']['actor']['typefilter'], $this->_param['t']) !== false) {
+                    $where['type_id'] = $this->_param['t'];
+                }
             }
             if (!empty(intval($this->_param['h']))) {
                 $todaydate = date('Y-m-d', strtotime('+1 days'));
@@ -467,7 +465,7 @@ class Provide extends Base
             }
 
             $order = 'actor_time desc';
-            $field = 'actor_id,actor_name,actor_en,actor_area,actor_time,actor_alias,actor_sex,actor_pic';
+            $field = 'actor_id,actor_name,type_id,"" as type_name,actor_en,actor_area,actor_time,actor_alias,actor_sex,actor_pic';
 
             if ($this->_param['ac'] == 'detail') {
                 $field = '*';
@@ -482,7 +480,8 @@ class Provide extends Base
 
             $type_list = model('Type')->getCache('type_list');
             foreach ($res['list'] as $k => &$v) {
-
+                $type_info = $type_list[$v['type_id']];
+                $v['type_name'] = $type_info['type_name'];
                 $v['actor_time'] = date('Y-m-d H:i:s', $v['actor_time']);
 
                 if (substr($v["actor_pic"], 0, 4) == "mac:") {
@@ -500,13 +499,23 @@ class Provide extends Base
 
             if ($this->_param['ac'] != 'detail') {
                 $class = [];
-                $tmp_list = explode(',', $GLOBALS['config']['app']['actor_extend_area']);
+                $typefilter = explode(',', $GLOBALS['config']['api']['actor']['typefilter']);
 
-                foreach ($tmp_list as $k => &$v) {
-                    $class[] = ['type_id' => $v, 'type_name' => $v];
+                foreach ($type_list as $k => &$v) {
+                    if ($v['type_mid'] == 8) {
+
+                        if (!empty($GLOBALS['config']['api']['actor']['typefilter'])) {
+                            if (in_array($v['type_id'], $typefilter)) {
+                                $class[] = ['type_id' => $v['type_id'], 'type_name' => $v['type_name']];
+                            }
+                        } else {
+                            $class[] = ['type_id' => $v['type_id'], 'type_name' => $v['type_name']];
+                        }
+                    }
                 }
                 $res['class'] = $class;
             }
+
             $html = json_encode($res);
 
             if($cache_time>0) {
@@ -517,5 +526,239 @@ class Provide extends Base
         exit;
     }
 
+    public function role()
+    {
+        if($GLOBALS['config']['api']['role']['status'] != 1){
+            echo 'closed';die;
+        }
+
+        if($GLOBALS['config']['api']['role']['charge'] == 1) {
+            $h = $_SERVER['REMOTE_ADDR'];
+            if (!$h) {
+                echo '域名未授权！';
+                exit;
+            }
+            else {
+                $auth = $GLOBALS['config']['api']['role']['auth'];
+                $auths = array();
+                if(!empty($auth)){
+                    $auths = explode('#',$auth);
+                    foreach($auths as $k=>$v){
+                        $auths[$k] = gethostbyname(trim($v));
+                    }
+                }
+                if($h != 'localhost' && $h != '127.0.0.1') {
+                    if(!in_array($h, $auths)){
+                        echo '域名未授权！';
+                        exit;
+                    }
+                }
+            }
+        }
+
+        $cache_time = intval($GLOBALS['config']['api']['role']['cachetime']);
+        $cach_name = 'api_role_'.md5(http_build_query($this->_param));
+        $html = Cache::get($cach_name);
+        if(empty($html) || $cache_time==0) {
+            $where = [];
+            if (!empty($this->_param['ids'])) {
+                $where['role_id'] = ['in', $this->_param['ids']];
+            }
+            if (!empty($this->_param['t'])) {
+                if (empty($GLOBALS['config']['api']['role']['typefilter']) || strpos($GLOBALS['config']['api']['role']['typefilter'], $this->_param['t']) !== false) {
+                    $where['type_id'] = $this->_param['t'];
+                }
+            }
+            if (!empty(intval($this->_param['h']))) {
+                $todaydate = date('Y-m-d', strtotime('+1 days'));
+                $tommdate = date('Y-m-d', strtotime('-' . $this->_param['h'] . ' hours'));
+
+                $todayunix = strtotime($todaydate);
+                $tommunix = strtotime($tommdate);
+
+                $where['role_time'] = [['gt', $tommunix], ['lt', $todayunix]];
+            }
+            if (!empty($this->_param['wd'])) {
+                $where['role_name'] = ['like', '%' . $this->_param['wd'] . '%'];
+            }
+            if (!empty($GLOBALS['config']['api']['role']['datafilter'])) {
+                $where['_string'] = $GLOBALS['config']['api']['role']['datafilter'];
+            }
+            if (empty(intval($this->_param['pg']))) {
+                $this->_param['pg'] = 1;
+            }
+
+            $order = 'role_time desc';
+            $field = 'role_id,role_name,role_rid,role_en,role_actor,role_time,role_pic';
+
+            if ($this->_param['ac'] == 'detail') {
+                $field = '*';
+            }
+
+            $res = model('role')->listData($where, $order, $this->_param['pg'], $GLOBALS['config']['api']['role']['pagesize'], 0, $field, 1);
+
+            if ($res['code'] > 1) {
+                echo $res['msg'];
+                exit;
+            }
+
+            foreach ($res['list'] as $k => &$v) {
+                $v['role_time'] = date('Y-m-d H:i:s', $v['role_time']);
+                $v['vod_name'] = $v['data']['vod_name'];
+                $v['vod_director'] = $v['data']['vod_director'];
+                unset($v['data']);
+                if (substr($v["role_pic"], 0, 4) == "mac:") {
+                    $v["role_pic"] = str_replace('mac:', 'http:', $v["role_pic"]);
+                } elseif (!empty($v["role_pic"]) && substr($v["role_pic"], 0, 4) != "http" && substr($v["role_pic"], 0, 2) != "//") {
+                    $v["role_pic"] = $GLOBALS['config']['api']['role']['imgurl'] . $v["role_pic"];
+                }
+
+                if ($this->_param['ac'] == 'detail') {
+
+                } else {
+
+                }
+            }
+
+            if ($this->_param['ac'] != 'detail') {
+                $class = [];
+                $typefilter = explode(',', $GLOBALS['config']['api']['role']['typefilter']);
+
+                $res['class'] = $class;
+            }
+
+            $html = json_encode($res);
+
+            if($cache_time>0) {
+                Cache::set($cach_name, $html, $cache_time);
+            }
+        }
+        echo $html;
+        exit;
+    }
+
+    public function website()
+    {
+        if($GLOBALS['config']['api']['website']['status'] != 1){
+            echo 'closed';die;
+        }
+
+        if($GLOBALS['config']['api']['website']['charge'] == 1) {
+            $h = $_SERVER['REMOTE_ADDR'];
+            if (!$h) {
+                echo '域名未授权！';
+                exit;
+            }
+            else {
+                $auth = $GLOBALS['config']['api']['website']['auth'];
+                $auths = array();
+                if(!empty($auth)){
+                    $auths = explode('#',$auth);
+                    foreach($auths as $k=>$v){
+                        $auths[$k] = gethostbyname(trim($v));
+                    }
+                }
+                if($h != 'localhost' && $h != '127.0.0.1') {
+                    if(!in_array($h, $auths)){
+                        echo '域名未授权！';
+                        exit;
+                    }
+                }
+            }
+        }
+
+        $cache_time = intval($GLOBALS['config']['api']['website']['cachetime']);
+        $cach_name = 'api_website_'.md5(http_build_query($this->_param));
+        $html = Cache::get($cach_name);
+        if(empty($html) || $cache_time==0) {
+            $where = [];
+            if (!empty($this->_param['ids'])) {
+                $where['website_id'] = ['in', $this->_param['ids']];
+            }
+            if (!empty($this->_param['t'])) {
+                if (empty($GLOBALS['config']['api']['website']['typefilter']) || strpos($GLOBALS['config']['api']['website']['typefilter'], $this->_param['t']) !== false) {
+                    $where['type_id'] = $this->_param['t'];
+                }
+            }
+            if (!empty(intval($this->_param['h']))) {
+                $todaydate = date('Y-m-d', strtotime('+1 days'));
+                $tommdate = date('Y-m-d', strtotime('-' . $this->_param['h'] . ' hours'));
+
+                $todayunix = strtotime($todaydate);
+                $tommunix = strtotime($tommdate);
+
+                $where['website_time'] = [['gt', $tommunix], ['lt', $todayunix]];
+            }
+            if (!empty($this->_param['wd'])) {
+                $where['website_name'] = ['like', '%' . $this->_param['wd'] . '%'];
+            }
+            if (!empty($GLOBALS['config']['api']['website']['datafilter'])) {
+                $where['_string'] = $GLOBALS['config']['api']['website']['datafilter'];
+            }
+            if (empty(intval($this->_param['pg']))) {
+                $this->_param['pg'] = 1;
+            }
+
+            $order = 'website_time desc';
+            $field = 'website_id,website_name,type_id,"" as type_name,website_en,website_time,website_area,website_lang,website_pic';
+
+            if ($this->_param['ac'] == 'detail') {
+                $field = '*';
+            }
+
+            $res = model('website')->listData($where, $order, $this->_param['pg'], $GLOBALS['config']['api']['website']['pagesize'], 0, $field, 0);
+
+            if ($res['code'] > 1) {
+                echo $res['msg'];
+                exit;
+            }
+
+            $type_list = model('Type')->getCache('type_list');
+            foreach ($res['list'] as $k => &$v) {
+                $type_info = $type_list[$v['type_id']];
+                $v['type_name'] = $type_info['type_name'];
+                $v['website_time'] = date('Y-m-d H:i:s', $v['website_time']);
+
+                if (substr($v["website_pic"], 0, 4) == "mac:") {
+                    $v["website_pic"] = str_replace('mac:', 'http:', $v["website_pic"]);
+                } elseif (!empty($v["website_pic"]) && substr($v["website_pic"], 0, 4) != "http" && substr($v["website_pic"], 0, 2) != "//") {
+                    $v["website_pic"] = $GLOBALS['config']['api']['website']['imgurl'] . $v["website_pic"];
+                }
+
+                if ($this->_param['ac'] == 'detail') {
+
+                } else {
+
+                }
+            }
+
+            if ($this->_param['ac'] != 'detail') {
+                $class = [];
+                $typefilter = explode(',', $GLOBALS['config']['api']['website']['typefilter']);
+
+                foreach ($type_list as $k => &$v) {
+                    if ($v['type_mid'] == 11) {
+
+                        if (!empty($GLOBALS['config']['api']['website']['typefilter'])) {
+                            if (in_array($v['type_id'], $typefilter)) {
+                                $class[] = ['type_id' => $v['type_id'], 'type_name' => $v['type_name']];
+                            }
+                        } else {
+                            $class[] = ['type_id' => $v['type_id'], 'type_name' => $v['type_name']];
+                        }
+                    }
+                }
+                $res['class'] = $class;
+            }
+
+            $html = json_encode($res);
+
+            if($cache_time>0) {
+                Cache::set($cach_name, $html, $cache_time);
+            }
+        }
+        echo $html;
+        exit;
+    }
 
 }

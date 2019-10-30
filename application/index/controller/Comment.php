@@ -68,7 +68,7 @@ class Comment extends Base
         }
         $param['comment_content']= htmlentities(mac_filter_words($param['comment_content']));
 
-        if(!in_array($param['comment_mid'],['1','2','3','8','9'])){
+        if(!in_array($param['comment_mid'],['1','2','3','8','9','11'])){
             return ['code'=>1006,'msg'=>'模型mid错误'];
         }
 

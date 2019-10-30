@@ -84,7 +84,6 @@ class Collect extends Base
         return $this->error('参数错误');
     }
 
-
     public function union()
     {
         $collect_break_vod = Cache::get('collect_break_vod');
@@ -131,6 +130,12 @@ class Collect extends Base
             return $this->art($param);
         } elseif ($param['mid'] == '8') {
             return $this->actor($param);
+        }
+        elseif ($param['mid'] == '9') {
+            return $this->role($param);
+        }
+        elseif ($param['mid'] == '11') {
+            return $this->website($param);
         }
     }
 
@@ -296,7 +301,6 @@ class Collect extends Base
         model('Collect')->art_data($param,$res );
     }
 
-
     public function actor($param)
     {
         if($param['ac'] != 'list'){
@@ -308,6 +312,24 @@ class Collect extends Base
         }
 
         if($param['ac'] == 'list'){
+
+            $bind_list = config('bind');
+            $type_list = model('Type')->getCache('type_list');
+
+            foreach($res['type'] as $k=>$v){
+                $key = $param['cjflag'] . '_' . $v['type_id'];
+                $res['type'][$k]['isbind'] = 0;
+                $local_id = intval($bind_list[$key]);
+                if( $local_id>0 ){
+                    $res['type'][$k]['isbind'] = 1;
+                    $res['type'][$k]['local_type_id'] = $local_id;
+                    $type_name = $type_list[$local_id]['type_name'];
+                    if(empty($type_name)){
+                        $type_name = '未知分类';
+                    }
+                    $res['type'][$k]['local_type_name'] = $type_name;
+                }
+            }
 
             $this->assign('page',$res['page']);
             $this->assign('type',$res['type']);
@@ -332,6 +354,103 @@ class Collect extends Base
 
     public function role($param)
     {
+        if ($param['ac'] != 'list') {
+            Cache::set('collect_break_role', url('collect/api') . '?' . http_build_query($param));
+        }
+        $res = model('Collect')->role($param);
+        if ($res['code'] > 1) {
+            return $this->error($res['msg']);
+        }
 
+        if ($param['ac'] == 'list') {
+
+            $bind_list = config('bind');
+            $type_list = model('Type')->getCache('type_list');
+
+            foreach ($res['type'] as $k => $v) {
+                $key = $param['cjflag'] . '_' . $v['type_id'];
+                $res['type'][$k]['isbind'] = 0;
+                $local_id = intval($bind_list[$key]);
+                if ($local_id > 0) {
+                    $res['type'][$k]['isbind'] = 1;
+                    $res['type'][$k]['local_type_id'] = $local_id;
+                    $type_name = $type_list[$local_id]['type_name'];
+                    if (empty($type_name)) {
+                        $type_name = '未知分类';
+                    }
+                    $res['type'][$k]['local_type_name'] = $type_name;
+                }
+            }
+
+            $this->assign('page', $res['page']);
+            $this->assign('type', $res['type']);
+            $this->assign('list', $res['data']);
+
+            $this->assign('total', $res['page']['recordcount']);
+            $this->assign('page', $res['page']['page']);
+            $this->assign('limit', $res['page']['pagesize']);
+
+            $param['page'] = '{page}';
+            $param['limit'] = '{limit}';
+            $this->assign('param', $param);
+
+            $this->assign('param_str', http_build_query($param));
+
+            return $this->fetch('admin@collect/role');
+        }
+
+        mac_echo('<style type="text/css">body{font-size:12px;color: #333333;line-height:21px;}span{font-weight:bold;color:#FF0000}</style>');
+        model('Collect')->role_data($param,$res );
+    }
+
+    public function website($param)
+    {
+        if ($param['ac'] != 'list') {
+            Cache::set('collect_break_website', url('collect/api') . '?' . http_build_query($param));
+        }
+        $res = model('Collect')->website($param);
+        if ($res['code'] > 1) {
+            return $this->error($res['msg']);
+        }
+
+        if ($param['ac'] == 'list') {
+
+            $bind_list = config('bind');
+            $type_list = model('Type')->getCache('type_list');
+
+            foreach ($res['type'] as $k => $v) {
+                $key = $param['cjflag'] . '_' . $v['type_id'];
+                $res['type'][$k]['isbind'] = 0;
+                $local_id = intval($bind_list[$key]);
+                if ($local_id > 0) {
+                    $res['type'][$k]['isbind'] = 1;
+                    $res['type'][$k]['local_type_id'] = $local_id;
+                    $type_name = $type_list[$local_id]['type_name'];
+                    if (empty($type_name)) {
+                        $type_name = '未知分类';
+                    }
+                    $res['type'][$k]['local_type_name'] = $type_name;
+                }
+            }
+
+            $this->assign('page', $res['page']);
+            $this->assign('type', $res['type']);
+            $this->assign('list', $res['data']);
+
+            $this->assign('total', $res['page']['recordcount']);
+            $this->assign('page', $res['page']['page']);
+            $this->assign('limit', $res['page']['pagesize']);
+
+            $param['page'] = '{page}';
+            $param['limit'] = '{limit}';
+            $this->assign('param', $param);
+
+            $this->assign('param_str', http_build_query($param));
+
+            return $this->fetch('admin@collect/website');
+        }
+
+        mac_echo('<style type="text/css">body{font-size:12px;color: #333333;line-height:21px;}span{font-weight:bold;color:#FF0000}</style>');
+        model('Collect')->website_data($param,$res );
     }
 }

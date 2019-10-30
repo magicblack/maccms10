@@ -31,7 +31,7 @@ return array(
         '291' => array("show"=>1,"name" => '邮件发送配置', 'controller' => 'system',			'action' => 'configemail'),
         '292' => array("show"=>1,"name" => '短信发送配置', 'controller' => 'system',			'action' => 'configsms'),
 
-        '2910' => array("show"=>1,"name" => '定时任务', 'controller' => 'timming',	'action' => 'index'),
+        '2910' => array("show"=>1,"name" => '定时任务配置', 'controller' => 'timming',	'action' => 'index'),
         '2911' => array("show"=>0,'name' => '--定时任务信息维护', 'controller' => 'type',		'action' => 'info'),
         '2912' => array("show"=>0,'name' => '--定时任务删除', 'controller' => 'type',		'action' => 'del'),
         '2913' => array("show"=>0,'name' => '--定时任务状态', 'controller' => 'type',		'action' => 'field'),
@@ -75,6 +75,22 @@ return array(
         '3602' => array("show"=>0,'name' => '--同步图片选项', 'controller' => 'images',		'action' => 'opt'),
         '3603' => array("show"=>0,'name' => '--同步图片方法', 'controller' => 'images',		'action' => 'sync'),
     )),
+
+    '5' => array('name' => '文章', 'icon' => 'xe616', 'sub' => array(
+
+        '51' => array("show"=>1,'name' => '文章数据', 'controller' => 'art',		'action' => 'data'),
+        '5101' => array("show"=>0,'name' => '--文章信息维护', 'controller' => 'art',		'action' => 'info'),
+        '5102' => array("show"=>0,'name' => '--文章删除', 'controller' => 'art',		'action' => 'del'),
+        '5103' => array("show"=>0,'name' => '--文章状态', 'controller' => 'art',		'action' => 'field'),
+
+        '52' => array("show"=>1,'name' => '添加文章', 'controller' => 'art',		'action' => 'info'),
+        '53' => array("show"=>1,'name' => '已锁定文章', 'controller' => 'art',		'action' => 'data','param'=>'lock=1'),
+        '54' => array("show"=>1,'name' => '未审核文章', 'controller' => 'art',		'action' => 'data','param'=>'status=0'),
+
+        '59' => array("show"=>1,'name' => '批量操作文章', 'controller' => 'art',		'action' => 'batch'),
+        '591' => array("show"=>1,'name' => '重名文章数据', 'controller' => 'art',		'action' => 'data', 'param'=>'repeat=1'),
+    )),
+
 
     '4' => array('name' => '视频', 'icon' => 'xe639', 'sub' => array(
         '41' => array("show"=>1,'name' => '服务器组', 'controller' => 'vodserver',		'action' => 'index'),
@@ -121,19 +137,20 @@ return array(
         '4964' => array("show"=>0,'name' => '添加角色', 'controller' => 'role',		'action' => 'info'),
     )),
 
-    '5' => array('name' => '文章', 'icon' => 'xe616', 'sub' => array(
 
-        '51' => array("show"=>1,'name' => '文章数据', 'controller' => 'art',		'action' => 'data'),
-        '5101' => array("show"=>0,'name' => '--文章信息维护', 'controller' => 'art',		'action' => 'info'),
-        '5102' => array("show"=>0,'name' => '--文章删除', 'controller' => 'art',		'action' => 'del'),
-        '5103' => array("show"=>0,'name' => '--文章状态', 'controller' => 'art',		'action' => 'field'),
+    '12' => array('name' => '网址', 'icon' => 'xe616', 'sub' => array(
 
-        '52' => array("show"=>1,'name' => '添加文章', 'controller' => 'art',		'action' => 'info'),
-        '53' => array("show"=>1,'name' => '已锁定文章', 'controller' => 'art',		'action' => 'data','param'=>'lock=1'),
-        '54' => array("show"=>1,'name' => '未审核文章', 'controller' => 'art',		'action' => 'data','param'=>'status=0'),
+        '121' => array("show"=>1,'name' => '网址数据', 'controller' => 'website',		'action' => 'data'),
+        '12101' => array("show"=>0,'name' => '--网址信息维护', 'controller' => 'website',		'action' => 'info'),
+        '12102' => array("show"=>0,'name' => '--网址删除', 'controller' => 'website',		'action' => 'del'),
+        '12103' => array("show"=>0,'name' => '--网址状态', 'controller' => 'website',		'action' => 'field'),
 
-        '59' => array("show"=>1,'name' => '批量操作文章', 'controller' => 'art',		'action' => 'batch'),
-        '591' => array("show"=>1,'name' => '重名文章数据', 'controller' => 'art',		'action' => 'data', 'param'=>'repeat=1'),
+        '122' => array("show"=>1,'name' => '添加网址', 'controller' => 'website',		'action' => 'info'),
+        '123' => array("show"=>1,'name' => '已锁定网址', 'controller' => 'website',		'action' => 'data','param'=>'lock=1'),
+        '124' => array("show"=>1,'name' => '未审核网址', 'controller' => 'website',		'action' => 'data','param'=>'status=0'),
+
+        '129' => array("show"=>1,'name' => '批量操作网址', 'controller' => 'website',		'action' => 'batch'),
+        '1291' => array("show"=>1,'name' => '重名网址数据', 'controller' => 'website',		'action' => 'data', 'param'=>'repeat=1'),
     )),
 
     '6' => array('name' => '用户', 'icon' => 'xe62c', 'sub' => array(

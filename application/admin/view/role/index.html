@@ -58,7 +58,7 @@
 
         <div class="layui-btn-group">
             {if condition="$param.select eq 1 && $param.rid neq ''"}
-            <a data-href="{:url('info')}?tab={$param.tab}&rid={$param.rid}" data-full="" class="layui-btn layui-btn-primary j-iframe"><i class="layui-icon">&#xe654;</i>添加</a>
+            <a data-href="{:url('info')}?tab={$param.tab}&rid={$param.rid}" data-full="1" class="layui-btn layui-btn-primary j-iframe"><i class="layui-icon">&#xe654;</i>添加</a>
             {/if}
             <a data-href="{:url('del')}" class="layui-btn layui-btn-primary j-page-btns confirm"><i class="layui-icon">&#xe640;</i>删除</a>
             <a data-href="{:url('index/select')}?tab=role&col=role_level&tpl=select_level&url=role/field" data-width="270" data-height="100" data-checkbox="1" class="layui-btn layui-btn-primary j-select"><i class="layui-icon">&#xe620;</i>推荐</a>
@@ -99,7 +99,7 @@
                 <td><a data-href="{:url('index/select')}?tab=role&col=role_level&tpl=select_level&url=role/field&ids={$vo.role_id}" data-width="270" data-height="100" class=" j-select"><span class="layui-badge layui-bg-orange">{$vo.role_level}</span></a></td>
                 <td>{$vo.role_time|mac_day=color}</td>
                 <td>
-                    <a class="layui-badge-rim j-iframe" data-full="" data-href="{:url('info?id='.$vo['role_id'])}" href="javascript:;" title="编辑">编辑</a>
+                    <a class="layui-badge-rim j-iframe" data-full="1" data-href="{:url('info?id='.$vo['role_id'])}" href="javascript:;" title="编辑">编辑</a>
                     <a class="layui-badge-rim j-tr-del" data-href="{:url('del?ids='.$vo['role_id'])}" href="javascript:;" title="删除">删除</a>
                 </td>
             </tr>

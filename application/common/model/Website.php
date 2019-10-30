@@ -4,9 +4,9 @@ use think\Db;
 use think\Cache;
 use app\common\util\Pinyin;
 
-class Role extends Base {
+class Website extends Base {
     // 设置数据表（不含前缀）
-    protected $name = 'role';
+    protected $name = 'website';
 
     // 定义时间戳字段名
     protected $createTime = '';
@@ -17,10 +17,10 @@ class Role extends Base {
     protected $insert     = [];
     protected $update     = [];
 
-    public function getRoleStatusTextAttr($val,$data)
+    public function getWebsiteStatusTextAttr($val,$data)
     {
         $arr = [0=>'禁用',1=>'启用'];
-        return $arr[$data['role_status']];
+        return $arr[$data['website_status']];
     }
 
     public function countData($where)
@@ -44,26 +44,66 @@ class Role extends Base {
         if($totalshow==1) {
             $total = $this->where($where)->count();
         }
-        $list = Db::name('Role')->field($field)->where($where)->order($order)->limit($limit_str)->select();
-        $vod_list=[];
-        if($addition==1){
-            $vod_ids=[];
-            foreach($list as $k=>$v){
-                $vod_ids[$v['role_rid']] = $v['role_rid'];
-            }
-            $where2=[];
-            $where2['vod_id'] = ['in', implode(',',$vod_ids)];
-            $tmp_list = model('Vod')->listData($where2,'vod_id desc',1,999,0);
-            //$tmp_list = Db::name('Vod')->field('vod_id,vod_name,vod_en,type_id,type_id_1')->where($where2)->select();
-            foreach($tmp_list['list'] as $k=>$v){
-                $vod_list[$v['vod_id']] = $v;
-            }
-        }
+        $list = Db::name('Website')->field($field)->where($where)->where($where2)->orderRaw($order)->limit($limit_str)->select();
+        //分类
+        $type_list = model('Type')->getCache('type_list');
+        //用户组
+        $group_list = model('Group')->getCache('group_list');
+
         foreach($list as $k=>$v){
             if($addition==1){
-                $list[$k]['data'] = $vod_list[$v['role_rid']];
+                if(!empty($v['type_id'])) {
+                    $list[$k]['type'] = $type_list[$v['type_id']];
+                    $list[$k]['type_1'] = $type_list[$list[$k]['type']['type_pid']];
+                }
+                if(!empty($v['group_id'])) {
+                    $list[$k]['group'] = $group_list[$v['group_id']];
+                }
             }
         }
+        return ['code'=>1,'msg'=>'数据列表','page'=>$page,'pagecount'=>ceil($total/$limit),'limit'=>$limit,'total'=>$total,'list'=>$list];
+    }
+
+    public function listRepeatData($where,$order,$page=1,$limit=20,$start=0,$field='*',$addition=1)
+    {
+        if(!is_array($where)){
+            $where = json_decode($where,true);
+        }
+        $limit_str = ($limit * ($page-1) + $start) .",".$limit;
+
+        $total = $this
+            ->join('tmpwebsite t','t.name1 = website_name')
+            ->where($where)
+            ->count();
+
+        $list = $this
+            ->join('tmpwebsite t','t.name1 = website_name')
+            ->field($field)
+            ->where($where)
+            ->order($order)
+            ->limit($limit_str)
+            ->select();
+
+        //dump($where);die;
+        //echo $this->getLastSql();die;
+        //分类
+        $type_list = model('Type')->getCache('type_list');
+        //用户组
+        $group_list = model('Group')->getCache('group_list');
+
+        foreach($list as $k=>$v){
+            if($addition==1){
+                if(!empty($v['type_id'])) {
+                    $list[$k]['type'] = $type_list[$v['type_id']];
+                    $list[$k]['type_1'] = $type_list[$list[$k]['type']['type_pid']];
+                }
+                if(!empty($v['group_id'])) {
+                    $list[$k]['group'] = $group_list[$v['group_id']];
+                }
+            }
+        }
+
+
         return ['code'=>1,'msg'=>'数据列表','page'=>$page,'pagecount'=>ceil($total/$limit),'limit'=>$limit,'total'=>$total,'list'=>$list];
     }
 
@@ -80,9 +120,9 @@ class Role extends Base {
         $pageurl = $lp['pageurl'];
         $level = $lp['level'];
         $wd = $lp['wd'];
-        $actor = $lp['actor'];
         $name = $lp['name'];
-        $rid = $lp['rid'];
+        $area = $lp['area'];
+        $lang = $lp['lang'];
         $letter = $lp['letter'];
         $start = intval(abs($lp['start']));
         $num = intval(abs($lp['num']));
@@ -113,18 +153,25 @@ class Role extends Base {
         $param = mac_param_url();
         if($paging=='yes') {
             $totalshow = 1;
-
-            if(!empty($param['rid'])) {
-                $rid = intval($param['rid']);
-            }
             if(!empty($param['ids'])){
                 $ids = $param['ids'];
             }
             if(!empty($param['level'])) {
-                $level = $param['level'];
+                if($param['level']=='all'){
+                    $level = '1,2,3,4,5,6,7,8,9';
+                }
+                else{
+                    $level = $param['level'];
+                }
             }
             if(!empty($param['letter'])) {
                 $letter = $param['letter'];
+            }
+            if(!empty($param['area'])) {
+                $area = $param['area'];
+            }
+            if(!empty($param['lang'])) {
+                $lang = $param['lang'];
             }
             if(!empty($param['wd'])) {
                 $wd = $param['wd'];
@@ -144,94 +191,95 @@ class Role extends Base {
                 }
             }
             if(empty($pageurl)){
-                $pageurl = 'role/index';
+                $pageurl = 'website/index';
             }
             $param['page'] = 'PAGELINK';
             $pageurl = mac_url($pageurl,$param);
 
         }
 
-        $where['role_status'] = ['eq',1];
+        $where['website_status'] = ['eq',1];
         if(!empty($level)) {
             if($level=='all'){
                 $level = '1,2,3,4,5,6,7,8,9';
             }
-            $where['role_level'] = ['in',explode(',',$level)];
+            $where['website_level'] = ['in',explode(',',$level)];
         }
         if(!empty($ids)) {
             if($ids!='all'){
-                $where['role_id'] = ['in',explode(',',$ids)];
+                $where['website_id'] = ['in',explode(',',$ids)];
             }
         }
         if(!empty($not)){
-            $where['role_id'] = ['not in',explode(',',$not)];
+            $where['website_id'] = ['not in',explode(',',$not)];
         }
         if(!empty($letter)){
             if(substr($letter,0,1)=='0' && substr($letter,2,1)=='9'){
                 $letter='0,1,2,3,4,5,6,7,8,9';
             }
-            $where['role_letter'] = ['in',explode(',',$letter)];
+            $where['website_letter'] = ['in',explode(',',$letter)];
         }
-        if(!empty($rid)) {
-            $where['role_rid'] = ['eq',$rid];
-        }
+
         if(!empty($timeadd)){
             $s = intval(strtotime($timeadd));
-            $where['role_time_add'] =['gt',$s];
+            $where['website_time_add'] =['gt',$s];
         }
         if(!empty($timehits)){
             $s = intval(strtotime($timehits));
-            $where['role_time_hits'] =['gt',$s];
+            $where['website_time_hits'] =['gt',$s];
         }
         if(!empty($time)){
             $s = intval(strtotime($time));
-            $where['role_time'] =['gt',$s];
+            $where['website_time'] =['gt',$s];
         }
         if(!empty($hitsmonth)){
             $tmp = explode(' ',$hitsmonth);
             if(count($tmp)==1){
-                $where['role_hits_month'] = ['gt', $tmp];
+                $where['website_hits_month'] = ['gt', $tmp];
             }
             else{
-                $where['role_hits_month'] = [$tmp[0],$tmp[1]];
+                $where['website_hits_month'] = [$tmp[0],$tmp[1]];
             }
         }
         if(!empty($hitsweek)){
             $tmp = explode(' ',$hitsweek);
             if(count($tmp)==1){
-                $where['role_hits_week'] = ['gt', $tmp];
+                $where['website_hits_week'] = ['gt', $tmp];
             }
             else{
-                $where['role_hits_week'] = [$tmp[0],$tmp[1]];
+                $where['website_hits_week'] = [$tmp[0],$tmp[1]];
             }
         }
         if(!empty($hitsday)){
             $tmp = explode(' ',$hitsday);
             if(count($tmp)==1){
-                $where['role_hits_day'] = ['gt', $tmp];
+                $where['website_hits_day'] = ['gt', $tmp];
             }
             else{
-                $where['role_hits_day'] = [$tmp[0],$tmp[1]];
+                $where['website_hits_day'] = [$tmp[0],$tmp[1]];
             }
         }
         if(!empty($hits)){
             $tmp = explode(' ',$hits);
             if(count($tmp)==1){
-                $where['role_hits'] = ['gt', $tmp];
+                $where['website_hits'] = ['gt', $tmp];
             }
             else{
-                $where['role_hits'] = [$tmp[0],$tmp[1]];
+                $where['website_hits'] = [$tmp[0],$tmp[1]];
             }
         }
-        if(!empty($actor)){
-            $where['role_actor'] = ['in',explode(',',$actor) ];
+
+        if(!empty($area)){
+            $where['website_area'] = ['in',explode(',',$area) ];
+        }
+        if(!empty($lang)){
+            $where['website_lang'] = ['in',explode(',',$lang) ];
         }
         if(!empty($name)){
-            $where['role_name'] = ['in',explode(',',$name) ];
+            $where['website_name'] = ['in',explode(',',$name) ];
         }
-
         if(!empty($wd)) {
-            $where['role_name|role_en'] = ['like', '%' . $wd . '%'];
+            $where['website_name|website_en'] = ['like', '%' . $wd . '%'];
         }
         if($by=='rnd'){
             $data_count = $this->countData($where);
@@ -245,21 +293,31 @@ class Role extends Base {
             $order = 'desc';
         }
 
-        if(!in_array($by, ['id', 'time','time_add','score','hits','hits_day','hits_week','hits_month','up','down','level','rnd'])) {
+        if(!in_array($by, ['id', 'time','time_add','score','hits','hits_day','hits_week','hits_month','up','down','level','rnd','in'])) {
             $by = 'time';
         }
         if(!in_array($order, ['asc', 'desc'])) {
             $order = 'desc';
         }
-        $order= 'role_'.$by .' ' . $order;
+
         $where_cache = $where;
         if(!empty($randi)){
-            unset($where_cache['role_id']);
+            unset($where_cache['website_id']);
             $where_cache['order'] = 'rnd';
         }
 
-        $cach_name = $GLOBALS['config']['app']['cache_flag']. '_' . md5('role_listcache_'.http_build_query($where_cache).'_'.$order.'_'.$page.'_'.$num.'_'.$start.'_'.$pageurl);
 
+        if($by=='in' && !empty($name) ){
+            $order = ' find_in_set(website_name, \''.$name.'\'  ) ';
+        }
+        else{
+            if($by=='in' && empty($name) ){
+                $by = 'time';
+            }
+            $order= 'website_'.$by .' ' . $order;
+        }
+
+        $cach_name = $GLOBALS['config']['app']['cache_flag']. '_' .md5('website_listcache_'.http_build_query($where_cache).'_'.$order.'_'.$page.'_'.$num.'_'.$start.'_'.$pageurl);
         $res = Cache::get($cach_name);
         if($GLOBALS['config']['app']['cache_core']==0 || empty($res)) {
             $res = $this->listData($where,$order,$page,$num,$start,'*',1,$totalshow);
@@ -267,7 +325,7 @@ class Role extends Base {
             if(intval($cachetime)>0){
                 $cache_time = $cachetime;
             }
-            if($GLOBALS['config']['app']['cache_core']==1) {
+            if($GLOBALS['config']['app']['cache_core']==1){
                 Cache::set($cach_name, $res, $cache_time);
             }
         }
@@ -281,23 +339,14 @@ class Role extends Base {
         if(empty($where) || !is_array($where)){
             return ['code'=>1001,'msg'=>'参数错误'];
         }
-        $key = 'role_detail_'.$where['role_id'][1].'_'.$where['role_en'][1];
+        $key = 'website_detail_'.$where['website_id'][1].'_'.$where['website_en'][1];
         $info = Cache::get($key);
-        if($GLOBALS['config']['app']['cache_core']==0 || $cache==0 || empty($info['role_id'])) {
+        if($GLOBALS['config']['app']['cache_core']==0 || $cache==0 || empty($info['website_id'])) {
             $info = $this->field($field)->where($where)->find();
             if (empty($info)) {
                 return ['code' => 1002, 'msg' => '获取数据失败'];
             }
             $info = $info->toArray();
-            $info['data'] = [];
-            if(!empty($info['role_rid'])){
-                $where2=[];
-                $where2['vod_id'] = ['eq', $info['role_rid']];
-                $vod_info = model('Vod')->infoData($where2);
-                if($vod_info['code'] == 1){
-                    $info['data'] = $vod_info['info'];
-                }
-            }
             if($GLOBALS['config']['app']['cache_core']==1) {
                 Cache::set($key, $info);
             }
@@ -307,39 +356,44 @@ class Role extends Base {
 
     public function saveData($data)
     {
-        $validate = \think\Loader::validate('Role');
+        $validate = \think\Loader::validate('Website');
         if(!$validate->check($data)){
             return ['code'=>1001,'msg'=>'参数错误：'.$validate->getError() ];
         }
 
-        $key = 'role_detail_'.$data['role_id'];
+        $key = 'website_detail_'.$data['website_id'];
         Cache::rm($key);
-        $key = 'role_detail_'.$data['role_en'];
+        $key = 'website_detail_'.$data['website_en'];
         Cache::rm($key);
-        $key = 'role_detail_'.$data['role_id'].'_'.$data['role_en'];
+        $key = 'website_detail_'.$data['website_id'].'_'.$data['website_en'];
         Cache::rm($key);
 
-
-        if(empty($data['role_en'])){
-            $data['role_en'] = Pinyin::get($data['role_name']);
+        if(empty($data['website_en'])){
+            $data['website_en'] = Pinyin::get($data['website_name']);
         }
 
-        if(empty($data['role_letter'])){
-            $data['role_letter'] = strtoupper(substr($data['role_en'],0,1));
+        if(empty($data['website_letter'])){
+            $data['website_letter'] = strtoupper(substr($data['website_en'],0,1));
         }
+
         if($data['uptime']==1){
-            $data['role_time'] = time();
+            $data['website_time'] = time();
         }
-        unset($data['uptime']);
+        if($data['uptag']==1){
+            $data['website_tag'] = mac_get_tag($data['website_name'], $data['website_content']);
+        }
 
-        if(!empty($data['role_id'])){
+        unset($data['uptime']);
+        unset($data['uptag']);
+
+        if(!empty($data['website_id'])){
             $where=[];
-            $where['role_id'] = ['eq',$data['role_id']];
+            $where['website_id'] = ['eq',$data['website_id']];
             $res = $this->allowField(true)->where($where)->update($data);
         }
         else{
-            $data['role_time_add'] = time();
-            $data['role_time'] = time();
+            $data['website_time_add'] = time();
+            $data['website_time'] = time();
             $res = $this->allowField(true)->insert($data);
         }
         if(false === $res){
@@ -357,35 +411,51 @@ class Role extends Base {
         $list = $this->where($where)->select();
         $path = './';
         foreach($list as $k=>$v){
-            if(file_exists($path.$v['role_pic'])){
-                unlink($path.$v['role_pic']);
+            if(file_exists($path.$v['website_pic'])){
+                unlink($path.$v['website_pic']);
             }
         }
         return ['code'=>1,'msg'=>'删除成功'];
     }
 
-    public function fieldData($where,$col,$val)
+    public function fieldData($where,$update)
     {
-        if(!isset($col) || !isset($val)){
+        if(!is_array($update)){
             return ['code'=>1001,'msg'=>'参数错误'];
         }
-
-        $data = [];
-        $data[$col] = $val;
-        $res = $this->allowField(true)->where($where)->update($data);
+        $res = $this->allowField(true)->where($where)->update($update);
         if($res===false){
             return ['code'=>1001,'msg'=>'设置失败：'.$this->getError() ];
         }
 
-        $list = $this->field('role_id,role_name,role_en')->where($where)->select();
+        $list = $this->field('website_id,website_name,website_en')->where($where)->select();
         foreach($list as $k=>$v){
-            $key = 'role_detail_'.$v['role_id'];
+            $key = 'website_detail_'.$v['website_id'];
             Cache::rm($key);
-            $key = 'role_detail_'.$v['role_en'];
+            $key = 'website_detail_'.$v['website_en'];
             Cache::rm($key);
         }
 
         return ['code'=>1,'msg'=>'设置成功'];
+    }
+
+    public function updateToday($flag='art')
+    {
+        $today = strtotime(date('Y-m-d'));
+        $where = [];
+        $where['website_time'] = ['gt',$today];
+        if($flag=='type'){
+            $ids = $this->where($where)->column('type_id');
+        }
+        else{
+            $ids = $this->where($where)->column('website_id');
+        }
+        if(empty($ids)){
+            $ids = [];
+        }else{
+            $ids = array_unique($ids);
+        }
+        return ['code'=>1,'msg'=>'获取成功','data'=> join(',',$ids) ];
     }
 
 }

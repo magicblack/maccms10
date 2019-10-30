@@ -66,7 +66,7 @@
     <form class="layui-form layui-form-pane" action="?step=5" method="post">
         <input type="hidden" name="install_dir" value="{$install_dir}">
         <fieldset class="layui-elem-field layui-field-title">
-            <legend>管理账号设置</legend>
+            <legend>其他设置</legend>
         </fieldset>
         <div class="layui-form-item">
             <label class="layui-form-label">管理员账号</label>
@@ -81,6 +81,14 @@
                 <input type="password" class="layui-input" name="password" lay-verify="title">
             </div>
             <div class="layui-form-mid layui-word-aux">保证密码最少6位</div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">初始化数据</label>
+            <div class="layui-input-inline w200" >
+                <input type="radio" name="initdata" value="1" title="创建" checked="">
+                <input type="radio" name="initdata" value="0" title="不创建" >
+            </div>
+            <div class="layui-form-mid layui-word-aux">是否创建基础分类数据</div>
         </div>
         <div class="step-btns">
             <a href="?step=2" class="layui-btn layui-btn-primary layui-btn-big fl">返回上一步</a>

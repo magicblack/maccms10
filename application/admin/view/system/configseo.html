@@ -9,6 +9,7 @@
                     <li lay-id="configseo_3">演员首页SEO</li>
                     <li lay-id="configseo_4">角色首页SEO</li>
                     <li lay-id="configseo_5">剧情首页SEO</li>
+                    <li lay-id="configseo_6">网址首页SEO</li>
                 </ul>
                 <div class="layui-tab-content">
                     <div class="layui-tab-item layui-show">
@@ -151,6 +152,36 @@
                                 描述：</label>
                             <div class="layui-input-block">
                                 <input type="text" name="seo[plot][des]" placeholder="描述description" value="{$config['seo']['plot']['des']}" class="layui-input">
+                            </div>
+                        </div>
+
+                    </div>
+
+
+                    <div class="layui-tab-item">
+                        <blockquote class="layui-elem-quote layui-quote-nm">
+                            提示信息：<br>
+                            网址首页 website/index
+                        </blockquote>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">
+                                标题：</label>
+                            <div class="layui-input-block">
+                                <input type="text" name="seo[website][name]" placeholder="标题title" value="{$config['seo']['website']['name']}" class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">
+                                关键字：</label>
+                            <div class="layui-input-block">
+                                <input type="text" name="seo[website][key]" placeholder="关键字keywords" value="{$config['seo']['website']['key']}" class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">
+                                描述：</label>
+                            <div class="layui-input-block">
+                                <input type="text" name="seo[website][des]" placeholder="描述description" value="{$config['seo']['website']['des']}" class="layui-input">
                             </div>
                         </div>
 

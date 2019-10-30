@@ -89,6 +89,15 @@ class Receive extends Base
             echo json_encode(['code'=>2002,'msg'=>'性别必须err'],JSON_UNESCAPED_UNICODE);
             exit;
         }
+        if(empty($info['type_id']) && empty($info['type_name'])){
+            echo json_encode(['code'=>2003,'msg'=>'分类名称和分类id至少填写1项err'],JSON_UNESCAPED_UNICODE);
+            exit;
+        }
+
+        $inter = mac_interface_type();
+        if(empty($info['type_id'])) {
+            $info['type_id'] = $inter['actortype'][$info['type_name']];
+        }
         $data['data'][] = $info;
         $res = model('Collect')->actor_data([],$data,0);
         echo json_encode($res,JSON_UNESCAPED_UNICODE);
@@ -113,6 +122,28 @@ class Receive extends Base
 
         $data['data'][] = $info;
         $res = model('Collect')->role_data([],$data,0);
+        echo json_encode($res,JSON_UNESCAPED_UNICODE);
+    }
+
+    public function website()
+    {
+        $info = $this->_param;
+
+        if(empty($info['website_name'])){
+            echo json_encode(['code'=>2001,'msg'=>'名称必须err'],JSON_UNESCAPED_UNICODE);
+            exit;
+        }
+        if(empty($info['type_id']) && empty($info['type_name'])){
+            echo json_encode(['code'=>2002,'msg'=>'分类名称和分类id至少填写1项err'],JSON_UNESCAPED_UNICODE);
+            exit;
+        }
+
+        $inter = mac_interface_type();
+        if(empty($info['type_id'])) {
+            $info['type_id'] = $inter['websitetype'][$info['type_name']];
+        }
+        $data['data'][] = $info;
+        $res = model('Collect')->website_data([],$data,0);
         echo json_encode($res,JSON_UNESCAPED_UNICODE);
     }
 }

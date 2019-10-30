@@ -141,6 +141,7 @@ class Index extends Controller
         $account = input('post.account');
         $password = input('post.password');
         $install_dir = input('post.install_dir');
+        $initdata = input('post.initdata');
 
         $config = include APP_PATH.'database.php';
         if (empty($config['hostname']) || empty($config['database']) || empty($config['username'])) {
@@ -189,11 +190,30 @@ class Index extends Controller
                     try {
                         Db::execute($v);
                     } catch(\Exception $e) {
-                        return $this->error('导入SQL失败，请检查install.sql的语句是否正确。'. $e);
+                        return $this->error('导入表结构SQL失败，请检查install.sql的语句是否正确。'. $e);
                     }
                 }
             }
         }
+        //初始化数据
+        if($initdata=='1'){
+            $sql_file = APP_PATH.'install/sql/initdata.sql';
+            if (file_exists($sql_file)) {
+                $sql = file_get_contents($sql_file);
+                $sql_list = mac_parse_sql($sql, 0, ['mac_' => $config['prefix']]);
+                if ($sql_list) {
+                    $sql_list = array_filter($sql_list);
+                    foreach ($sql_list as $v) {
+                        try {
+                            Db::execute($v);
+                        } catch(\Exception $e) {
+                            return $this->error('导入初始化数据SQL失败，请检查initdata.sql的语句是否正确。'. $e);
+                        }
+                    }
+                }
+            }
+        }
+
         // 注册管理员账号
         $data = [
             'admin_name' => $account,

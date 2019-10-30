@@ -8,7 +8,7 @@
             {volist name="type" id="vo"}
             <div class="layui-input-inline w150 m5">
                 <a href="javascript:;" data-id="{$vo.type_id}" class="select_type">{$vo.type_name}</a>
-                <a id="{$param['cjflag']}_{$vo.type_id}" data-href="{:url('index/select')}?tab=actor&col={$param['cjflag']}_{$vo.type_id}&ids=1&tpl=select_type&refresh=no&url=collect/bind" data-width="270" data-height="100" class="j-select" >
+                <a id="{$param['cjflag']}_{$vo.type_id}" data-href="{:url('index/select')}?tab=website&col={$param['cjflag']}_{$vo.type_id}&ids=1&tpl=select_type&refresh=no&url=collect/bind" data-width="270" data-height="100" class="j-select" >
                     {if condition="$vo.isbind eq 1"}
                     <span class="red">[{$vo.local_type_name}]</span>
                     {else}
@@ -39,18 +39,18 @@
                 <th width="25"><input type="checkbox" lay-skin="primary" lay-filter="allChoose"></th>
                 <th >名称</th>
                 <th width="60">分类</th>
-                <th width="60">性别</th>
+                <th width="60">地区</th>
                 <th width="140">时间</th>
             </tr>
             </thead>
 
             {volist name="list" id="vo"}
             <tr>
-                <td><input type="checkbox" name="ids[]" value="{$vo.actor_id}" class="layui-checkbox checkbox-ids" lay-skin="primary"></td>
-                <td>{$vo.actor_name}</td>
+                <td><input type="checkbox" name="ids[]" value="{$vo.website_id}" class="layui-checkbox checkbox-ids" lay-skin="primary"></td>
+                <td>{$vo.website_name}</td>
                 <td>{$vo.type_name}</td>
-                <td>{$vo.actor_sex}</td>
-                <td>{$vo.actor_time|mac_day=color}</td>
+                <td>{$vo.website_area}</td>
+                <td>{$vo.website_time|mac_day=color}</td>
             </tr>
             {/volist}
             </tbody>

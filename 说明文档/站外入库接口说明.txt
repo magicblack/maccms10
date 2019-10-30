@@ -14,7 +14,16 @@
    点击测试，输入验证密码，何必要信息测试入库。
 
 接口必要信息是：
-   商品名称， 分类ID 或 分类名称 （如果同时存在以 分类ID为准）
+   名称， 分类ID 或 分类名称 （如果同时存在以 分类ID为准）
+
+入库接口地址
+视频/api.php/receive/vod；
+文章/api.php/receive/art；
+演员/api.php/receive/actor；
+角色/api.php/receive/role；
+网址/api.php/receive/website；
+
+
 
 
 

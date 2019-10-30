@@ -10,7 +10,7 @@
                         <option value="1" {if condition="$param['mid'] eq '1'"}selected {/if}>视频</option>
                         <option value="2" {if condition="$param['mid'] eq '2'"}selected {/if}>文章</option>
                         <option value="3" {if condition="$param['mid'] eq '3'"}selected {/if}>专题</option>
-                        <option value="8" {if condition="$param['mid'] eq '8'"}selected {/if}>明星</option>
+                        <option value="8" {if condition="$param['mid'] eq '8'"}selected {/if}>演员</option>
                     </select>
                 </div>
                 <div class="layui-input-inline w150">
@@ -58,7 +58,7 @@
                 <td><input type="checkbox" name="ids[]" value="{$vo.ulog_id}" class="layui-checkbox checkbox-ids" lay-skin="primary"></td>
                 <td>{$vo.ulog_id}</td>
                 <td>[{$vo.user_id}]{$vo.user_name}</td>
-                <td>{$vo.ulog_mid|mac_get_ulog_mid_text}</td>
+                <td>{$vo.ulog_mid|mac_get_mid_text}</td>
                 <td>{$vo.ulog_type|mac_get_ulog_type_text}</td>
                 <td>{$vo.ulog_points}</td>
                 <td>{$vo.ulog_rid} {if condition="$vo.ulog_sid gt 0"}-{$vo.ulog_sid}{/if}{if condition="$vo.ulog_nid gt 0"}-{$vo.ulog_nid}{/if}</td>

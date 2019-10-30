@@ -10,16 +10,26 @@ topic-<page?>   => topic/index
 topic$  => topic/index
 topicdetail-<id>   => topic/detail
 
+actortype/<id>-<page?>   => actor/type
+actortype/<id>   => actor/type
 actor-<page?>   => actor/index
 actor$ => actor/index
 actordetail-<id>   => actor/detail
-actorshow/<area?>-<blood?>-<by?>-<letter?>-<level?>-<order?>-<page?>-<sex?>-<starsign?>   => actor/show
+actorshow/<id>-<area?>-<blood?>-<by?>-<letter?>-<level?>-<order?>-<page?>-<sex?>-<starsign?>   => actor/show
+actorsearch/<wd?>-<area?>-<blood?>-<by?>-<letter?>-<level?>-<order?>-<page?>-<sex?>-<starsign?>   => actor/search
 
 role-<page?>   => role/index
 role$ => role/index
 roledetail-<id>   => role/detail
 roleshow/<by?>-<letter?>-<level?>-<order?>-<page?>-<rid?>   => role/show
 
+websitetype/<id>-<page?>   => website/type
+websitetype/<id>   => website/type
+website-<page?>   => website/index
+website$ => website/index
+websitedetail-<id>   => website/detail
+websiteshow/<id>-<area?>-<by?>-<class?>-<lang?>-<letter?>-<level?>-<order?>-<page?>-<tag?>   => website/show
+websitesearch/<wd?>-<area?>-<by?>-<class?>-<lang?>-<letter?>-<level?>-<order?>-<page?>-<tag?>   => website/search
 
 vodtype/<id>-<page?>   => vod/type
 vodtype/<id>   => vod/type

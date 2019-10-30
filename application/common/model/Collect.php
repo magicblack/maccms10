@@ -80,6 +80,7 @@ class Collect extends Base {
         }
         return ['code'=>1,'msg'=>'ok'];
     }
+
     public function vod($param)
     {
         if($param['type'] == '1'){
@@ -115,6 +116,10 @@ class Collect extends Base {
         return $this->role_json($param);
     }
 
+    public function website($param)
+    {
+        return $this->website_json($param);
+    }
 
     public function vod_xml_replace($url)
     {
@@ -925,7 +930,6 @@ class Collect extends Base {
         }
     }
 
-
     public function art_json($param)
     {
         $url_param = [];
@@ -1247,7 +1251,6 @@ class Collect extends Base {
         }
     }
 
-
     public function actor_json($param)
     {
         $url_param = [];
@@ -1287,14 +1290,34 @@ class Collect extends Base {
         $array_page['recordcount'] = $json['total'];
         $array_page['url'] = $url;
 
+        $type_list = model('Type')->getCache('type_list');
+        $bind_list = config('bind');
+
         $key = 0;
         $array_data = [];
         foreach($json['list'] as $key=>$v){
             $array_data[$key] = $v;
+            $bind_key = $param['cjflag'] .'_'.$v['type_id'];
+            if($bind_list[$bind_key] >0){
+                $array_data[$key]['type_id'] = $bind_list[$bind_key];
+            }
+            else{
+                $array_data[$key]['type_id'] = 0;
+            }
         }
 
+        $array_type = [];
+        $key=0;
+        //分类列表
+        if($param['ac'] == 'list'){
+            foreach($json['class'] as $k=>$v){
+                $array_type[$key]['type_id'] = $v['type_id'];
+                $array_type[$key]['type_name'] = $v['type_name'];
+                $key++;
+            }
+        }
 
-        $res = ['code'=>1, 'msg'=>'ok', 'page'=>$array_page, 'data'=>$array_data ];
+        $res = ['code'=>1, 'msg'=>'ok', 'page'=>$array_page, 'type'=>$array_type, 'data'=>$array_data ];
         return $res;
     }
 
@@ -1307,6 +1330,7 @@ class Collect extends Base {
         $config = config('maccms.collect');
         $config = $config['actor'];
 
+        $type_list = model('Type')->getCache('type_list');
         $filter_arr = explode(',',$config['filter']);
         $pse_rnd = explode('#',$config['words']);
         $pse_syn = mac_txt_explain($config['thesaurus']);
@@ -1318,7 +1342,10 @@ class Collect extends Base {
             $msg='';
             $tmp='';
 
-            if(empty($v['actor_name']) || empty($v['actor_sex'])) {
+            if($v['type_id'] ==0){
+                $des = '分类未绑定，跳过err';
+            }
+            elseif(empty($v['actor_name']) || empty($v['actor_sex'])) {
                 $des = '数据不完整actor_name,actor_sex必须，跳过err';
             }
             elseif( mac_array_filter($filter_arr,$v['actor_name'])!==false) {
@@ -1333,6 +1360,7 @@ class Collect extends Base {
                     }
                 }
 
+                $v['type_id_1'] = intval($type_list[$v['type_id']]['type_pid']);
                 $v['actor_en'] = Pinyin::get($v['actor_name']);
                 $v['actor_letter'] = strtoupper(substr($v['actor_en'],0,1));
                 $v['actor_time_add'] = time();
@@ -1388,6 +1416,9 @@ class Collect extends Base {
                 $where['actor_name'] = $v['actor_name'];
                 if (strpos($config['inrule'], 'b')!==false) {
                     $where['actor_sex'] = $v['actor_sex'];
+                }
+                if (strpos($config['inrule'], 'c')!==false) {
+                    $where['type_id'] = $v['type_id'];
                 }
 
                 $info = model('Actor')->where($where)->find();
@@ -1505,7 +1536,6 @@ class Collect extends Base {
             }
         }
     }
-
 
     public function role_json($param)
     {
@@ -1779,6 +1809,290 @@ class Collect extends Base {
             } else {
                 if ($data['page']['page'] >= $data['page']['pagecount']) {
                     Cache::rm('collect_break_role');
+                    mac_echo("数据采集完成");
+                    unset($param['page']);
+                    $param['ac'] = 'list';
+                    $url = url('api') . '?' . http_build_query($param);
+                    mac_jump($url, $GLOBALS['config']['app']['collect_timespan']);
+                } else {
+                    $param['page'] = intval($data['page']['page']) + 1;
+                    $url = url('api') . '?' . http_build_query($param);
+                    mac_jump($url, $GLOBALS['config']['app']['collect_timespan']);
+                }
+            }
+        }
+    }
+
+    public function website_json($param)
+    {
+        $url_param = [];
+        $url_param['ac'] = $param['ac'];
+        $url_param['t'] = $param['t'];
+        $url_param['pg'] = is_numeric($param['page']) ? $param['page'] : '';
+        $url_param['h'] = $param['h'];
+        $url_param['ids'] = $param['ids'];
+        $url_param['wd'] = $param['wd'];
+
+        if($param['ac']!='list'){
+            $url_param['ac'] = 'detail';
+        }
+
+        $url = $param['cjurl'];
+        if(strpos($url,'?')===false){
+            $url .='?';
+        }
+        else{
+            $url .='&';
+        }
+        $url .= http_build_query($url_param).base64_decode($param['param']);
+        $html = mac_curl_get($url);
+        if(empty($html)){
+            return ['code'=>1001, 'msg'=>'连接API资源库失败，通常为服务器网络不稳定或禁用了采集'];
+        }
+
+        $json = json_decode($html,true);
+        if(!$json){
+            return ['code'=>1002, 'msg'=>'JSON格式不正确，不支持采集'];
+        }
+
+        $array_page = [];
+        $array_page['page'] = $json['page'];
+        $array_page['pagecount'] = $json['pagecount'];
+        $array_page['pagesize'] = $json['limit'];
+        $array_page['recordcount'] = $json['total'];
+        $array_page['url'] = $url;
+
+        $type_list = model('Type')->getCache('type_list');
+        $bind_list = config('bind');
+
+        $key = 0;
+        $array_data = [];
+        foreach($json['list'] as $key=>$v){
+            $array_data[$key] = $v;
+            $bind_key = $param['cjflag'] .'_'.$v['type_id'];
+            if($bind_list[$bind_key] >0){
+                $array_data[$key]['type_id'] = $bind_list[$bind_key];
+            }
+            else{
+                $array_data[$key]['type_id'] = 0;
+            }
+        }
+
+        $array_type = [];
+        $key=0;
+        //分类列表
+        if($param['ac'] == 'list'){
+            foreach($json['class'] as $k=>$v){
+                $array_type[$key]['type_id'] = $v['type_id'];
+                $array_type[$key]['type_name'] = $v['type_name'];
+                $key++;
+            }
+        }
+
+        $res = ['code'=>1, 'msg'=>'ok', 'page'=>$array_page, 'type'=>$array_type, 'data'=>$array_data ];
+        return $res;
+    }
+
+    public function website_data($param,$data,$show=1)
+    {
+        if($show==1) {
+            mac_echo('当前采集任务<strong class="green">' . $data['page']['page'] . '</strong>/<span class="green">' . $data['page']['pagecount'] . '</span>页 采集地址&nbsp;' . $data['page']['url'] . '');
+        }
+
+        $config = config('maccms.collect');
+        $config = $config['website'];
+
+        $type_list = model('Type')->getCache('type_list');
+        $filter_arr = explode(',',$config['filter']);
+        $pse_rnd = explode('#',$config['words']);
+        $pse_syn = mac_txt_explain($config['thesaurus']);
+
+        foreach($data['data'] as $k=>$v){
+
+            $color='red';
+            $des='';
+            $msg='';
+            $tmp='';
+
+            if($v['type_id'] ==0){
+                $des = '分类未绑定，跳过err';
+            }
+            elseif(empty($v['website_name'])) {
+                $des = '数据不完整website_name必须，跳过err';
+            }
+            elseif( mac_array_filter($filter_arr,$v['website_name'])!==false) {
+                $des = '数据在过滤单中，跳过err';
+            }
+            else {
+                unset($v['website_id']);
+
+                foreach($v as $k2=>$v2){
+                    if(strpos($k2,'_content')===false) {
+                        $v[$k2] = strip_tags($v2);
+                    }
+                }
+
+                $v['type_id_1'] = intval($type_list[$v['type_id']]['type_pid']);
+                $v['website_en'] = Pinyin::get($v['website_name']);
+                $v['website_letter'] = strtoupper(substr($v['website_en'],0,1));
+                $v['website_time_add'] = time();
+                $v['website_time'] = time();
+                $v['website_status'] = intval($config['status']);
+                $v['website_lock'] = intval($v['website_lock']);
+                if(!empty($v['website_status'])) {
+                    $v['website_status'] = intval($v['website_status']);
+                }
+                $v['website_level'] = intval($v['website_level']);
+                $v['website_hits'] = intval($v['website_hits']);
+                $v['website_hits_day'] = intval($v['website_hits_day']);
+                $v['website_hits_week'] = intval($v['website_hits_week']);
+                $v['website_hits_month'] = intval($v['website_hits_month']);
+
+                $v['website_up'] = intval($v['website_up']);
+                $v['website_down'] = intval($v['website_down']);
+
+                $v['website_score'] = floatval($v['website_score']);
+                $v['website_score_all'] = intval($v['website_score_all']);
+                $v['website_score_num'] = intval($v['website_score_num']);
+
+                if($config['hits_start']>0 && $config['hits_end']>0) {
+                    $v['website_hits'] = rand($config['hits_start'], $config['hits_end']);
+                    $v['website_hits_day'] = rand($config['hits_start'], $config['hits_end']);
+                    $v['website_hits_week'] = rand($config['hits_start'], $config['hits_end']);
+                    $v['website_hits_month'] = rand($config['hits_start'], $config['hits_end']);
+                }
+
+                if($config['updown_start']>0 && $config['updown_end']){
+                    $v['website_up'] = rand($config['updown_start'], $config['updown_end']);
+                    $v['website_down'] = rand($config['updown_start'], $config['updown_end']);
+                }
+
+                if($config['score']==1) {
+                    $v['website_score_num'] = rand(1, 1000);
+                    $v['website_score_all'] = $v['website_score_num'] * rand(1, 10);
+                    $v['website_score'] = round($v['website_score_all'] / $v['website_score_num'], 1);
+                }
+
+                if ($config['psernd'] == 1) {
+                    $v['website_content'] = mac_rep_pse_rnd($pse_rnd, $v['website_content']);
+                }
+                if ($config['psesyn'] == 1) {
+                    $v['website_content'] = mac_rep_pse_syn($pse_syn, $v['website_content']);
+                }
+
+                if(empty($v['website_blurb'])){
+                    $v['website_blurb'] = mac_substring( strip_tags($v['website_content']) ,100);
+                }
+
+                $where = [];
+                $where['website_name'] = $v['website_name'];
+
+                if (strpos($config['inrule'], 'b')!==false) {
+                    $where['type_id'] = $v['type_id'];
+                }
+
+                $info = model('Website')->where($where)->find();
+                if (!$info) {
+                    $tmp = $this->syncImages($config['pic'],$v['website_pic'],'website');
+                    $v['website_pic'] = $tmp['pic'];
+                    $msg = $tmp['msg'];
+                    $res = model('Website')->insert($v);
+                    if($res===false){
+
+                    }
+                    $color ='green';
+                    $des= '新加入库，成功。';
+                } else {
+
+                    if(empty($config['uprule'])){
+                        $des = '没有设置任何二次更新项目，跳过。';
+                    }
+                    elseif ($info['website_lock'] == 1) {
+                        $des = '数据已经锁定，跳过。';
+                    }
+                    else {
+                        unset($v['website_time_add']);
+                        $rc=true;
+                        if($rc){
+                            $update=[];
+
+                            if(strpos(','.$config['uprule'],'a')!==false && !empty($v['website_content']) && $v['website_content']!=$info['website_content']){
+                                $update['website_content'] = $v['website_content'];
+                            }
+                            if(strpos(','.$config['uprule'],'b')!==false && !empty($v['website_blurb']) && $v['website_blurb']!=$info['website_blurb']){
+                                $update['website_blurb'] = $v['website_blurb'];
+                            }
+                            if(strpos(','.$config['uprule'],'c')!==false && !empty($v['website_remarks']) && $v['website_remarks']!=$info['website_remarks']){
+                                $update['website_remarks'] = $v['website_remarks'];
+                            }
+                            if(strpos(','.$config['uprule'],'d')!==false && !empty($v['website_jumpurl']) && $v['website_jumpurl']!=$info['website_jumpurl']){
+                                $update['website_jumpurl'] = $v['website_jumpurl'];
+                            }
+                            if(strpos(','.$config['uprule'],'e')!==false && (substr($info["website_pic"], 0, 4) == "http" ||empty($info['website_pic']) ) && $v['website_pic']!=$info['website_pic'] ){
+                                $tmp = $this->syncImages($config['pic'],$v['website_pic'],'website');
+                                $update['website_pic'] =$tmp['pic'];
+                                $msg =$tmp['msg'];
+                            }
+
+                            if(count($update)>0){
+                                $update['website_time'] = time();
+                                $where = [];
+                                $where['website_id'] = $info['website_id'];
+                                $res = model('Website')->where($where)->update($update);
+                                $color = 'green';
+                                if($res===false){
+
+                                }
+                            }
+                            else{
+                                $des = '无需更新。';
+                            }
+                        }
+
+                    }
+                }
+            }
+            if($show==1) {
+                mac_echo( ($k + 1) . $v['website_name'] . "<font color=$color>" .$des .'</font>'. $msg . '');
+            }
+            else{
+                return ['code'=>($color=='red' ? 1001 : 1),'msg'=> $v['website_name'] .' '.$des ];
+            }
+        }
+
+        if(ENTRANCE=='api'){
+            Cache::rm('collect_break_website');
+            if ($data['page']['page'] < $data['page']['pagecount']) {
+                $param['page'] = intval($data['page']['page']) + 1;
+                $res = $this->actor($param);
+                if($res['code']>1){
+                    return $this->error($res['msg']);
+                }
+                $this->website_data($param,$res );
+            }
+            mac_echo("数据采集完成");
+            die;
+        }
+
+        if(empty($GLOBALS['config']['app']['collect_timespan'])){
+            $GLOBALS['config']['app']['collect_timespan'] = 3;
+        }
+
+        if($show==1) {
+            if ($param['ac'] == 'cjsel') {
+                Cache::rm('collect_break_website');
+                mac_echo("数据采集完成");
+                unset($param['ids']);
+                $param['ac'] = 'list';
+                $url = url('api') . '?' . http_build_query($param);
+                $ref = $_SERVER["HTTP_REFERER"];
+                if(!empty($ref)){
+                    $url = $ref;
+                }
+                mac_jump($url, $GLOBALS['config']['app']['collect_timespan']);
+            } else {
+                if ($data['page']['page'] >= $data['page']['pagecount']) {
+                    Cache::rm('collect_break_website');
                     mac_echo("数据采集完成");
                     unset($param['page']);
                     $param['ac'] = 'list';

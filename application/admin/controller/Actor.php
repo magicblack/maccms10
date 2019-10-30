@@ -17,6 +17,9 @@ class Actor extends Base
         $param['limit'] = intval($param['limit']) < 1 ? $this->_pagesize : $param['limit'];
 
         $where = [];
+        if (!empty($param['type'])) {
+            $where['type_id'] = ['eq', $param['type']];
+        }
         if (!empty($param['level'])) {
             $where['actor_level'] = ['eq', $param['level']];
         }
@@ -52,6 +55,9 @@ class Actor extends Base
         $param['limit'] = '{limit}';
         $this->assign('param', $param);
 
+        $type_tree = model('Type')->getCache('type_tree');
+        $this->assign('type_tree', $type_tree);
+
         $this->assign('title', '演员管理');
         return $this->fetch('admin@actor/index');
     }
@@ -75,6 +81,8 @@ class Actor extends Base
         $info = $res['info'];
         $this->assign('info',$info);
 
+        $type_tree = model('Type')->getCache('type_tree');
+        $this->assign('type_tree', $type_tree);
 
         $this->assign('title','演员信息');
         return $this->fetch('admin@actor/info');
@@ -107,11 +115,18 @@ class Actor extends Base
         $end = $param['end'];
 
 
-        if(!empty($ids) && in_array($col,['actor_status','actor_lock','actor_level','actor_hits'])){
+        if(!empty($ids) && in_array($col,['actor_status','actor_lock','actor_level','type_id','actor_hits'])){
             $where=[];
+            $update = [];
             $where['actor_id'] = ['in',$ids];
-            if(empty($start)) {
-                $res = model('Actor')->fieldData($where, $col, $val);
+            if(empty($start)){
+                $update[$col] = $val;
+                if($col == 'type_id'){
+                    $type_list = model('Type')->getCache();
+                    $id1 = intval($type_list[$val]['type_pid']);
+                    $update['type_id_1'] = $id1;
+                }
+                $res = model('Actor')->fieldData($where, $update);
             }
             else{
                 if(empty($end)){$end = 9999;}
@@ -119,7 +134,8 @@ class Actor extends Base
                 foreach($ids as $k=>$v){
                     $val = rand($start,$end);
                     $where['actor_id'] = ['eq',$v];
-                    $res = model('Actor')->fieldData($where, $col, $val);
+                    $update[$col] = $val;
+                    $res = model('Actor')->fieldData($where, $update);
                 }
             }
             if($res['code']>1){

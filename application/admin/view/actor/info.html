@@ -19,6 +19,19 @@
                 <div class="layui-form-item">
                     <label class="layui-form-label">参数：</label>
                     <div class="layui-input-inline w150">
+                        <select name="type_id" lay-filter="type_id">
+                            <option value="">请选择分类</option>
+                            {volist name="type_tree" id="vo"}
+                            {if condition="$vo.type_mid eq 8"}
+                            <option value="{$vo.type_id}" {if condition="$info.type_id eq $vo.type_id"}selected{/if}>{$vo.type_name}</option>
+                            {volist name="$vo.child" id="ch"}
+                            <option value="{$ch.type_id}" {if condition="$info.type_id eq $ch.type_id"}selected{/if}>&nbsp;|&nbsp;&nbsp;&nbsp;|—{$ch.type_name}</option>
+                            {/volist}
+                            {/if}
+                            {/volist}
+                        </select>
+                    </div>
+                    <div class="layui-input-inline w150">
                             <select name="actor_level">
                                 <option value="0">请选择推荐</option>
                                 <option value="9" {if condition="$info.actor_level eq 9"}selected{/if}>推荐9-幻灯</option>
@@ -135,6 +148,24 @@
                         </div>
                     </div>
 
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">TAG：</label>
+                        <div class="layui-input-inline w500">
+                            <input type="text" class="layui-input" value="{$info.actor_tag}" placeholder="" name="actor_tag">
+                        </div>
+                        <div class="layui-input-inline w120">
+                            <input type="checkbox" name="uptag" title="自动生成" value="1" class="layui-checkbox checkbox-ids" lay-skin="primary">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">扩展分类：</label>
+                        <div class="layui-input-inline w500">
+                            <input type="text" class="layui-input" value="{$info.actor_class}" placeholder="" id="actor_class" name="actor_class">
+                        </div>
+                        <div class="layui-input-inline w500 actor_class_label">
+
+                        </div>
+                    </div>
                 <div class="layui-form-item">
                     <label class="layui-form-label">图片：</label>
                     <div class="layui-input-inline w400 upload">
@@ -255,6 +286,26 @@
             }
         });
 
+        $(document).on("click", ".extend", function(){
+            $id = $(this).attr('data-id');
+            if($id == 'actor_class'||$id == 'actor_keywords'){
+                $val = $("input[id='"+$id+"']").val();
+                if($val!=''){
+                    $val = $val+',';
+                }
+                if($val.indexOf($(this).text())>-1){
+                    return;
+                }
+                $("input[id='"+$id+"']").val($val+$(this).text());
+            }else{
+                $("input[id='"+$id+"']").val($(this).text());
+            }
+        });
+
+        form.on('select(type_id)', function(data){
+            getExtend(data.value);
+        });
+
         upload.render({
             elem: '.layui-upload'
             ,url: "{:url('upload/upload')}?flag=actor"
@@ -307,7 +358,29 @@
 
         var ue = editor_getEditor('actor_content');
     });
-    
+
+    function getExtend(id){
+        $.post("{:url('type/extend')}", {id:id}, function(res) {
+
+            if (res.code == 1) {
+                $.each(res.data, function(key, value){
+                    $('.actor_'+key+"_label").html('');
+                    if(value != ''){
+                        $.each(value, function(key2, value2){
+                            $(".actor_"+key+"_label").append('<a class="layui-btn layui-btn-xs extend" href="javascript:;" data-id="actor_'+key+'">'+value2+'</a>');
+                        });
+                    }
+                });
+            }
+        });
+    }
+
+    {if condition="$info.actor_id gt 0"}
+    setTimeout(function () {
+        getExtend('{$info.type_id}')
+    },1000);
+    {/if}
+
 </script>
 
 </body>

@@ -29,7 +29,7 @@ class Art extends Base
     public function ajax_show()
     {
         $info = $this->label_type();
-        return $this->label_fetch('vod/ajax_show');
+        return $this->label_fetch('art/ajax_show');
     }
 
     public function search()

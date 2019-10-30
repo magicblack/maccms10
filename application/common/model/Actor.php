@@ -45,8 +45,16 @@ class Actor extends Base {
             $total = $this->where($where)->count();
         }
         $list = Db::name('Actor')->field($field)->where($where)->where($where2)->orderRaw($order)->limit($limit_str)->select();
-        foreach($list as $k=>$v){
+        //分类
+        $type_list = model('Type')->getCache('type_list');
 
+        foreach($list as $k=>$v){
+            if($addition==1){
+                if(!empty($v['type_id'])) {
+                    $list[$k]['type'] = $type_list[$v['type_id']];
+                    $list[$k]['type_1'] = $type_list[$list[$k]['type']['type_pid']];
+                }
+            }
         }
         return ['code'=>1,'msg'=>'数据列表','page'=>$page,'pagecount'=>ceil($total/$limit),'limit'=>$limit,'total'=>$total,'list'=>$list];
     }
@@ -59,6 +67,7 @@ class Actor extends Base {
 
         $order = $lp['order'];
         $by = $lp['by'];
+        $type = $lp['type'];
         $ids = $lp['ids'];
         $paging = $lp['paging'];
         $pageurl = $lp['pageurl'];
@@ -99,6 +108,9 @@ class Actor extends Base {
         $param = mac_param_url();
         if($paging=='yes') {
             $totalshow = 1;
+            if(!empty($param['id'])) {
+                //$type = intval($param['id']);
+            }
             if(!empty($param['ids'])){
                 $ids = $param['ids'];
             }
@@ -147,7 +159,19 @@ class Actor extends Base {
                 $pageurl = 'actor/index';
             }
             $param['page'] = 'PAGELINK';
-            $pageurl = mac_url($pageurl,$param);
+            if($pageurl=='actor/type' || $pageurl=='actor/show'){
+                $type = intval( $GLOBALS['type_id'] );
+                $type_list = model('Type')->getCache('type_list');
+                $type_info = $type_list[$type];
+                $flag='type';
+                if($pageurl == 'actor/show'){
+                    $flag='show';
+                }
+                $pageurl = mac_url_type($type_info,$param,$flag);
+            }
+            else{
+                $pageurl = mac_url($pageurl,$param);
+            }
 
         }
 
@@ -187,6 +211,26 @@ class Actor extends Base {
         if(!empty($time)){
             $s = intval(strtotime($time));
             $where['actor_time'] =['gt',$s];
+        }
+        if(!empty($type)) {
+            if($type=='current'){
+                $type = intval( $GLOBALS['type_id'] );
+            }
+            if($type!='all') {
+                $tmp_arr = explode(',', $type);
+                $type_list = model('Type')->getCache('type_list');
+                $type = [];
+                foreach ($type_list as $k2 => $v2) {
+                    if (in_array($v2['type_id'] . '', $tmp_arr) || in_array($v2['type_pid'] . '', $tmp_arr)) {
+                        $type[] = $v2['type_id'];
+                    }
+                }
+                $type = array_unique($type);
+                $where['type_id'] = ['in', implode(',', $type)];
+            }
+        }
+        if(!empty($tid)) {
+            $where['type_id|type_id_1'] = ['eq',$tid];
         }
         if(!empty($hitsmonth)){
             $tmp = explode(' ',$hitsmonth);
@@ -307,6 +351,12 @@ class Actor extends Base {
                 return ['code' => 1002, 'msg' => '获取数据失败'];
             }
             $info = $info->toArray();
+            //分类
+            if (!empty($info['type_id'])) {
+                $type_list = model('Type')->getCache('type_list');
+                $info['type'] = $type_list[$info['type_id']];
+                $info['type_1'] = $type_list[$info['type']['type_pid']];
+            }
             if($GLOBALS['config']['app']['cache_core']==1) {
                 Cache::set($key, $info);
             }
@@ -328,6 +378,10 @@ class Actor extends Base {
         $key = 'actor_detail_'.$data['actor_id'].'_'.$data['actor_en'];
         Cache::rm($key);
 
+        $type_list = model('Type')->getCache('type_list');
+        $type_info = $type_list[$data['type_id']];
+        $data['type_id_1'] = $type_info['type_pid'];
+
         if(empty($data['actor_en'])){
             $data['actor_en'] = Pinyin::get($data['actor_name']);
         }
@@ -335,11 +389,15 @@ class Actor extends Base {
         if(empty($data['actor_letter'])){
             $data['actor_letter'] = strtoupper(substr($data['actor_en'],0,1));
         }
-
+        if($data['uptag']==1){
+            $data['actor_tag'] = mac_get_tag($data['actor_name'], $data['actor_content']);
+        }
         if($data['uptime']==1){
             $data['actor_time'] = time();
         }
         unset($data['uptime']);
+        unset($data['uptag']);
+
         if(!empty($data['actor_id'])){
             $where=[];
             $where['actor_id'] = ['eq',$data['actor_id']];
@@ -372,15 +430,13 @@ class Actor extends Base {
         return ['code'=>1,'msg'=>'删除成功'];
     }
 
-    public function fieldData($where,$col,$val)
+    public function fieldData($where,$update)
     {
-        if(!isset($col) || !isset($val)){
+        if(!is_array($update)){
             return ['code'=>1001,'msg'=>'参数错误'];
         }
 
-        $data = [];
-        $data[$col] = $val;
-        $res = $this->allowField(true)->where($where)->update($data);
+        $res = $this->allowField(true)->where($where)->update($update);
         if($res===false){
             return ['code'=>1001,'msg'=>'设置失败：'.$this->getError() ];
         }

@@ -15,9 +15,7 @@
                         2.本地分类在前,采集分类在后(动作片=动作);<br>
                         3.不要有多余的空行;<br>
                         4.视频播放器、备注、地址、服务器组、文章分页等多页数据连接符都是$$$<br>
-                        4.视频入库接口地址/api.php/receive/vod；文章入库接口地址/api.php/receive/art；<br>
-                        5.明星入库接口地址/api.php/receive/actor；角色入库接口地址/api.php/receive/role；<br>
-
+                        5.入库接口地址 视频/api.php/receive/vod；文章/api.php/receive/art； 演员/api.php/receive/actor；角色/api.php/receive/role；网址/api.php/receive/website；<br>
                     </blockquote>
 
                 <div class="layui-form-item">
@@ -37,12 +35,20 @@
 
                 <div class="layui-form-item">
                     <label class="layui-form-label">视频分类转换：</label>
-                    <div class="layui-input-inline" style="width:400px;!important;">
+                    <div class="layui-input-inline" style="width:230px;!important;">
                         <textarea name="interface[vodtype]" class="layui-textarea" rows="20" >{$config['interface']['vodtype']|mac_replace_text}</textarea>
                     </div>
                     <label class="layui-form-label">文章分类转换：</label>
-                    <div class="layui-input-inline" style="width:400px;!important;">
+                    <div class="layui-input-inline" style="width:230px;!important;">
                         <textarea name="interface[arttype]" class="layui-textarea" rows="20" >{$config['interface']['arttype']|mac_replace_text}</textarea>
+                    </div>
+                    <label class="layui-form-label">演员分类转换：</label>
+                    <div class="layui-input-inline" style="width:230px;!important;">
+                        <textarea name="interface[actortype]" class="layui-textarea" rows="20" >{$config['interface']['actortype']|mac_replace_text}</textarea>
+                    </div>
+                    <label class="layui-form-label">网址分类转换：</label>
+                    <div class="layui-input-inline" style="width:230px;!important;">
+                        <textarea name="interface[websitetype]" class="layui-textarea" rows="20" >{$config['interface']['websitetype']|mac_replace_text}</textarea>
                     </div>
                 </div>
 

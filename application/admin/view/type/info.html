@@ -14,9 +14,10 @@
             <label class="layui-form-label">类型：</label>
             <div class="layui-input-inline ">
                     <select id="type_mid" name="type_mid" lay-filter="type_mid">
-
-                        <option value="1" {if condition="$info['type_mid'] == '1'"}selected {/if}>视频</option>
-                        <option value="2" {if condition="$info['type_mid'] == '2'"}selected {/if}>文章</option>
+                        <option value="1" {if condition="$info['type_mid'] == '1' || ($info.type_id eq 0 && $infop['type_mid'] == '1')"}selected {/if}>视频</option>
+                        <option value="2" {if condition="$info['type_mid'] == '2' || ($info.type_id eq 0 && $infop['type_mid'] == '2')"}selected {/if}>文章</option>
+                        <option value="8" {if condition="$info['type_mid'] == '8' || ($info.type_id eq 0 && $infop['type_mid'] == '8')"}selected {/if}>演员</option>
+                        <option value="11" {if condition="$info['type_mid'] == '11' || ($info.type_id eq 0 && $infop['type_mid'] == '11')"}selected {/if}>网址</option>
                     </select>
             </div>
         </div>
@@ -159,7 +160,7 @@
             </div>
         </div>
         <div class="layui-form-item vod-list" {if condition="$info.type_mid neq '1'"} style="display:none" {/if}>
-            <label class="layui-form-label">扩展明星：</label>
+            <label class="layui-form-label">扩展演员：</label>
             <div class="layui-input-block">
                 <input type="text" class="layui-input" value="{$info.type_extend.star}" placeholder="多个用,号连接" name="type_extend[star]">
             </div>
@@ -203,7 +204,7 @@
         var type_tpl_play = 'play.html';
         var type_tpl_down = 'down.html';
 
-        if(flag == 2){
+        if(flag != 1){
             $(".vod-list").hide();
             type_tpl_play = '';
             type_tpl_down = '';

@@ -62,7 +62,12 @@ class Type extends Base
         $where['type_id'] = ['eq',$id];
         $res = model('Type')->infoData($where);
 
+        $where=[];
+        $where['type_id'] = ['eq',$pid];
+        $resp = model('Type')->infoData($where);
+
         $this->assign('info',$res['info']);
+        $this->assign('infop',$resp['info']);
         $this->assign('pid',$pid);
 
         $where=[];

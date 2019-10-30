@@ -1,18 +1,31 @@
 ﻿
-
 api接口仅供提供数据，可以直接在苹果CMS后台联盟采集中加入-并提供给他人采集。
 
 联盟资源分配唯一标识ID，用来区别绑定分类，这个ID一般由苹果CMS官方提供，不可随意修改设置，否则造成入库分类错乱。
 视频接口同时支持老板xml格式的数据，增加参数 &at=xml即可。
 
-1,视频列表地址http://域名/api.php/provide/vod/?ac=list
-2,视频详情地址http://域名/api.php/provide/vod/?ac=detail
-视频同样支持老板xml格式的数据
-api.php/provide/vod/at/xml/?ac=list
-api.php/provide/vod/at/xml/?ac=detail
+1,视频部分
+列表http://域名/api.php/provide/vod/?ac=list
+详情http://域名/api.php/provide/vod/?ac=detail
+同样支持老板xml格式的数据
+列表api.php/provide/vod/at/xml/?ac=list
+详情api.php/provide/vod/at/xml/?ac=detail
 
-3,文章列表地址http://域名/api.php/provide/art/?ac=list
-4,文章详情地址http://域名/api.php/provide/art/?ac=detail
+2,文章部分
+列表http://域名/api.php/provide/art/?ac=list
+详情http://域名/api.php/provide/art/?ac=detail
+
+3,演员部分
+列表http://域名/api.php/provide/actor/?ac=list
+详情http://域名/api.php/provide/actor/?ac=detail
+
+4,角色部分
+列表http://域名/api.php/provide/role/?ac=list
+详情http://域名/api.php/provide/role/?ac=detail
+
+5,网址部分
+列表http://域名/api.php/provide/website/?ac=list
+详情http://域名/api.php/provide/website/?ac=detail
 
 列表数据格式：
 

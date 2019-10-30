@@ -209,7 +209,7 @@ class Art extends Base {
                 $type_list = model('Type')->getCache('type_list');
                 $type_info = $type_list[$type];
                 $flag='type';
-                if($pageurl == 'vod/show'){
+                if($pageurl == 'art/show'){
                     $flag='show';
                 }
                 $pageurl = mac_url_type($type_info,$param,$flag);

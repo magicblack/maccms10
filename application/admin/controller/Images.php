@@ -166,6 +166,13 @@ class Images extends Base
             $col_pic=$param['col']==2 ? 'role_content' :'role_pic';
             $col_time='role_time';
         }
+        elseif($param['tab']=='website'){
+            $tab='website';
+            $col_id ='website_id';
+            $col_name ='website_name';
+            $col_pic=$param['col']==2 ? 'website_content' :'website_pic';
+            $col_time='website_time';
+        }
         else{
             return $this->error('参数错误');
         }

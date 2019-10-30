@@ -341,6 +341,13 @@
                                 <option value="1" {if condition="$config['rewrite']['role_id'] eq 1"}selected{/if}>拼音</option>
                             </select>
                         </div>
+                        <label class="layui-form-label">网址ID：</label>
+                        <div class="layui-input-inline w100">
+                            <select name="rewrite[website_id]" >
+                                <option value="0" {if condition="$config['rewrite']['website_id'] eq 0"}selected{/if}>数字ID</option>
+                                <option value="1" {if condition="$config['rewrite']['website_id'] eq 1"}selected{/if}>拼音</option>
+                            </select>
+                        </div>
 
 
                     </div>

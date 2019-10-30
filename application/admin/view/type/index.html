@@ -37,7 +37,9 @@
                 <td>
                     <input type="checkbox" name="status" {if condition="$vo['type_status'] eq 1"}checked{/if} value="{$vo['type_status']}" lay-skin="switch" lay-filter="switchStatus" lay-text="正常|关闭" data-href="{:url('field?col=type_status&ids='.$vo['type_id'])}">
                 </td>
-                <td>{if condition="$vo.type_mid eq 1"} <span class="label label-success radius	">视频</span>{else}<span class="label label-danger radius">文章</span>{/if}</td>
+                <td>
+                    <span class="label label-success radius	">{$vo.type_mid|mac_get_mid_text}</span>
+                </td>
                 <td><input type="input" name="type_sort_{$vo.type_id}" value="{$vo.type_sort}" class="layui-input"></td>
                 <td><input type="input" name="type_name_{$vo.type_id}" value="{$vo.type_name}" class="layui-input"></td>
                 <td><input type="input" name="type_en_{$vo.type_id}" value="{$vo.type_en}" class="layui-input"></td>
@@ -57,7 +59,9 @@
                 <td>
                     <input type="checkbox" name="status" {if condition="$ch['type_status'] eq 1"}checked{/if} value="{$ch['type_status']}" lay-skin="switch" lay-filter="switchStatus" lay-text="正常|关闭" data-href="{:url('field?col=type_status&ids='.$ch['type_id'])}">
                 </td>
-                <td>{if condition="$ch.type_mid eq 1"} <span class="label label-success radius	">视频</span>{else}<span class="label label-danger radius">文章</span>{/if}</td>
+                <td>
+                    <span class="label label-success radius	">{$ch.type_mid|mac_get_mid_text}</span>
+                </td>
                 <td><input type="input" name="type_sort_{$ch.type_id}" value="{$ch.type_sort}" class="layui-input"></td>
                 <td><input type="input" name="type_name_{$ch.type_id}" value="{$ch.type_name}" class="layui-input"></td>
                 <td><input type="input" name="type_en_{$ch.type_id}" value="{$ch.type_en}" class="layui-input"></td>

@@ -183,6 +183,12 @@ class Index extends Base
         if($tab=='art'){
             $mid = 2;
         }
+        elseif($tab=='actor'){
+            $mid=8;
+        }
+        elseif($tab=='website'){
+            $mid=11;
+        }
         $this->assign('mid',$mid);
 
         if($tpl=='select_type'){

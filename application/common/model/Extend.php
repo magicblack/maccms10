@@ -69,7 +69,7 @@ class Extend extends Base {
             $data['tpoic_min'] = model('Topic')->min('topic_id');
 
 
-            //明星库
+            //演员库
             $where = [];
             $where['actor_status'] = ['eq',1];
             $tmp = model('Actor')->where($where)->count();
