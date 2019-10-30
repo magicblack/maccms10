@@ -691,6 +691,9 @@ function mac_interface_type()
         $config = config('maccms.interface');
         $vodtype = str_replace([chr(10),chr(13)],['','#'],$config['vodtype']);
         $arttype = str_replace([chr(10),chr(13)],['','#'],$config['arttype']);
+        $actortype = str_replace([chr(10),chr(13)],['','#'],$config['actortype']);
+        $websitetype = str_replace([chr(10),chr(13)],['','#'],$config['websitetype']);
+
         $data =[];
         $type_arr = explode('#',$vodtype);
         foreach($type_arr as $k=>$v){
@@ -702,6 +705,18 @@ function mac_interface_type()
         foreach($type_arr as $k=>$v){
             list($from, $to) = explode('=', $v);
             $data['arttype'][$to] = $from;
+        }
+
+        $type_arr = explode('#',$actortype);
+        foreach($type_arr as $k=>$v){
+            list($from, $to) = explode('=', $v);
+            $data['actortype'][$to] = $from;
+        }
+
+        $type_arr = explode('#',$websitetype);
+        foreach($type_arr as $k=>$v){
+            list($from, $to) = explode('=', $v);
+            $data['websitetype'][$to] = $from;
         }
 
         think\Cache::set($key,$data);
@@ -718,6 +733,12 @@ function mac_interface_type()
     }
     foreach($data['arttype'] as $k=>$v){
         $data['arttype'][$k] = (int)$type_names[$v];
+    }
+    foreach($data['actortype'] as $k=>$v){
+        $data['actortype'][$k] = (int)$type_names[$v];
+    }
+    foreach($data['websitetype'] as $k=>$v){
+        $data['websitetype'][$k] = (int)$type_names[$v];
     }
     return $data;
 }

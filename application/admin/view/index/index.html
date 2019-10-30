@@ -8,7 +8,7 @@
     }
     .layui-tab-content{padding:0 0 0 10px;height:100%;}
     .layui-tab-item{height:100%;}
-    .layui-nav-tree .layui-nav-child a{height:38px;line-height: 38px;}
+    .layui-nav-tree .layui-nav-child a{height:35px;line-height: 35px;}
     .footer{position:fixed;left:0;bottom:0;z-index:998;}
 </style>
 <div class="layui-layout layui-layout-admin">
@@ -51,7 +51,13 @@
 
                     <dl class="layui-nav-child">
                         {volist name="v['sub']" id="vv" key="kk"}
-                        <dd><a class="admin-nav-item" data-id="{$key}{$kk}" href="{$vv['url']}"><i class="{$vv['icon']}"></i> {$vv['name']}</a></dd>
+                        <dd>
+                            {if condition="($vv['url'] !=='###')"}
+                            <a class="admin-nav-item" data-id="{$key}{$kk}" href="{$vv['url']}"><i class="{$vv['icon']}"></i> {$vv['name']}</a>
+                            {else}
+                            <hr class="layui-bg-gray">
+                            {/if}
+                        </dd>
                         {/volist}
                     </dl>
                     </li>

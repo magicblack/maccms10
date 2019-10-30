@@ -76,6 +76,9 @@ class Index extends Base
                 elseif(substr($one[1],0,1) =='/'){
 
                 }
+                elseif(strpos($one[1],'###')!==false || strpos($one[1],'javascript:')!==false){
+
+                }
                 else{
                     $one[1] = url($one[1]);
                 }
