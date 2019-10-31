@@ -38,7 +38,7 @@ class Actor extends Base
             }
         }
         if(!empty($param['wd'])){
-            $param['wd'] = htmlspecialchars($param['wd']);
+            $param['wd'] = htmlspecialchars(urldecode($param['wd']));
             $where['actor_name'] = ['like','%'.$param['wd'].'%'];
         }
 

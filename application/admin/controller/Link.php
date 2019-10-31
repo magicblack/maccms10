@@ -16,7 +16,7 @@ class Link extends Base
         $where=[];
 
         if(!empty($param['wd'])){
-            $param['wd'] = htmlspecialchars($param['wd']);
+            $param['wd'] = htmlspecialchars(urldecode($param['wd']));
             $where['link_name'] = ['like','%'.$param['wd'].'%'];
         }
 

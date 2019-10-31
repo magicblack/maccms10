@@ -23,7 +23,7 @@ class Card extends Base
             $where['card_use_status'] = ['eq',$param['use_status']];
         }
         if(!empty($param['wd'])){
-            $param['wd'] = htmlspecialchars($param['wd']);
+            $param['wd'] = htmlspecialchars(urldecode($param['wd']));
             $where['card_no'] = ['like','%'.$param['wd'].'%'];
         }
         if(isset($param['time'])){

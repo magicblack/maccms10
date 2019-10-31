@@ -20,7 +20,7 @@ class Topic extends Base
             $where['topic_status'] = ['eq',$param['status']];
         }
         if(!empty($param['wd'])){
-            $param['wd'] = htmlspecialchars($param['wd']);
+            $param['wd'] = htmlspecialchars(urldecode($param['wd']));
             $where['topic_name'] = ['like','%'.$param['wd'].'%'];
         }
 

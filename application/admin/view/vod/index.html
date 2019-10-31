@@ -205,7 +205,7 @@
                 <th width="30">浏览</th>
                 <th width="80">播放器</th>
                 <th width="120">更新时间</th>
-                <th width="80">操作</th>
+                <th width="130">操作</th>
             </tr>
             </thead>
 
@@ -230,6 +230,7 @@
                 <td>
                     <a class="layui-badge-rim j-iframe" data-full="1" data-href="{:url('info?id='.$vo['vod_id'])}" href="javascript:;" title="编辑">编辑</a>
                     <a class="layui-badge-rim j-tr-del" data-href="{:url('del?ids='.$vo['vod_id'])}" href="javascript:;" title="删除">删除</a>
+                    <a class="layui-badge-rim j-iframe" data-full="1"  data-href="{:url('role/data?select=1&tab=vod&rid='.$vo['vod_id'])}" href="javascript:;" title="角色">角色</a>
                 </td>
             </tr>
             {/volist}

@@ -70,7 +70,7 @@ class Vod extends Base
             $where['vod_weekday'] = ['like','%'.$param['weekday'].'%'];
         }
         if(!empty($param['wd'])){
-            $param['wd'] = htmlspecialchars($param['wd']);
+            $param['wd'] = htmlspecialchars(urldecode($param['wd']));
             $where['vod_name|vod_actor'] = ['like','%'.$param['wd'].'%'];
         }
         if(!empty($param['player'])){
@@ -218,7 +218,7 @@ class Vod extends Base
                 }
             }
             if(!empty($param['wd'])){
-                $param['wd'] = htmlspecialchars($param['wd']);
+                $param['wd'] = htmlspecialchars(urldecode($param['wd']));
                 $where['vod_name'] = ['like','%'.$param['wd'].'%'];
             }
 

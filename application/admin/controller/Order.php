@@ -22,7 +22,7 @@ class Order extends Base
             $where['o.user_id'] = ['eq',$param['uid'] ];
         }
         if(!empty($param['wd'])){
-            $param['wd'] = htmlspecialchars($param['wd']);
+            $param['wd'] = htmlspecialchars(urldecode($param['wd']));
             $where['order_code'] = ['like','%'.$param['wd'].'%'];
         }
 

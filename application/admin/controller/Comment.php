@@ -34,7 +34,7 @@ class Comment extends Base
             }
         }
         if(!empty($param['wd'])){
-            $param['wd'] = htmlspecialchars($param['wd']);
+            $param['wd'] = htmlspecialchars(urldecode($param['wd']));
             $where['comment_name|comment_content'] = ['like','%'.$param['wd'].'%'];
         }
 

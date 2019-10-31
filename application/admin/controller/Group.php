@@ -18,7 +18,7 @@ class Group extends Base
             $where['group_status'] = ['eq',$param['status']];
         }
         if(!empty($param['wd'])){
-            $param['wd'] = htmlspecialchars($param['wd']);
+            $param['wd'] = htmlspecialchars(urldecode($param['wd']));
             $where['group_name'] = ['like','%'.$param['wd'].'%'];
         }
 

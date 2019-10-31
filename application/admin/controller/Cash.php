@@ -22,7 +22,7 @@ class Cash extends Base
             $where['user_id'] = ['eq',$param['uid'] ];
         }
         if(!empty($param['wd'])){
-            $param['wd'] = htmlspecialchars($param['wd']);
+            $param['wd'] = htmlspecialchars(urldecode($param['wd']));
             $where['cash_bank_no'] = ['like','%'.$param['wd'].'%' ];
         }
 
