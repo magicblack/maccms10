@@ -24,7 +24,7 @@
     <div class="news">
         <h1>{$obj.art_name} - {$obj.art_page_list[$param['page']]['title']}</h1>
         <div class="source"> 来源：{$obj.art_from}&nbsp;&nbsp;&nbsp;发布时间：{$obj.art_time|date='Y-m-d H:i:s',###}&nbsp;&nbsp;&nbsp;浏览次数：{$obj.art_hits}</div>
-        <div class="content">{$obj.art_page_list[$param['page']]['content']}</div>
+        <div class="content">{$obj.art_page_list[$param['page']]['content']|mac_url_content_img}</div>
         <div class="writer">若本站收录的文章侵犯了您的权益，请联系我们删除侵权内容！</div>
         <div class="">
             {include file="public/paging"}

@@ -24,7 +24,22 @@
             <h3>{$obj['vod_name']}分集剧情</h3>
         </div>
         <div class="tjuqing">
-            {volist name="$obj['vod_plot_list']" id="vo"}
+            {php}
+            //分集剧情列表分页操作
+            $__LIST__=[];
+            $__LIST__['total'] = count($obj['vod_plot_list']); //数据总数
+            $__LIST__['limit'] = 10; //每页条数
+            $__LIST__['page'] = $param['page']; //当前页码
+            $__LIST__['pageurl'] = mac_url_vod_plot($obj,['page' => 'PAGELINK']);
+            $__LIST__['half'] = 5; //页码显示数
+            $__PAGING__ = mac_page_param($__LIST__['total'],$__LIST__['limit'],$__LIST__['page'],$__LIST__['pageurl'],$__LIST__['half']); //获取分页数据
+            $start = (intval($param['page'])-1) * $__LIST__['limit']; //计算起始页数
+            if($start<0){
+                $start=0;
+            }
+            $vod_plot_list = array_slice($obj['vod_plot_list'],$start,$__LIST__['limit']); //获取当前页码的数据
+            {/php}
+            {volist name="$vod_plot_list" id="vo"}
             <div>
                 <div style="padding-top:10px;">
                     <a class="page_link" href="{:mac_url_plot_detail($obj,['page'=>$key])}" title="{$vo.name}"><b>{$vo.name}</b></a>
@@ -35,6 +50,10 @@
                 </div>
             </div>
             {/volist}
+        </div>
+        <!-- 分页 -->
+        <div class="ui-bar list-page fn-clear">
+            {include file="public/paging"}
         </div>
     </div>
 

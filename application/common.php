@@ -1542,7 +1542,7 @@ function mac_url($model,$param=[],$info=[])
             break;
         case 'vod/plot':
             $replace_to = [
-                $info['vod_id'],$info['vod_en'],'',
+                $info['vod_id'],$info['vod_en'],$param['page'],
                 $info['type_id'],$info['type']['type_en'],$info['type_1']['type_id'],$info['type_1']['type_en']
             ];
             if($config['view']['vod_plot'] == 2){
@@ -1552,6 +1552,9 @@ function mac_url($model,$param=[],$info=[])
                 }
                 if(strpos($path,'{md5}')!==false){
                     $replace_to[] = md5($info['vod_id']);
+                }
+                if($param['page']!=''){
+                    $path .= $page_sp . $param['page'];
                 }
             }
             else{
@@ -1946,7 +1949,7 @@ function mac_url_plot_detail($info,$param=[])
 }
 function mac_url_vod_plot($info,$param=[])
 {
-    return mac_url('vod/plot',[],$info);
+    return mac_url('vod/plot',$param,$info);
 }
 function mac_url_website_index($param=[])
 {
