@@ -1901,6 +1901,12 @@ function mac_url_type($info,$param=[],$flag='type')
     else if($info['type_mid'] == 2) {
         $tab ='art';
     }
+    else if($info['type_mid'] == 8) {
+        $tab ='actor';
+    }
+    else if($info['type_mid'] == 11) {
+        $tab ='website';
+    }
     if(empty($param['id'])){
         $param['id'] = $info['type_id'];
     }
