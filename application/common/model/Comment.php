@@ -44,6 +44,7 @@ class Comment extends Base {
 
             $where2=[];
             $where2['comment_pid'] = $v['comment_id'];
+            $where2['comment_status'] = ['eq',1];
             $sub = Db::name('Comment')->where($where2)->order($order)->select();
             $list[$k]['sub'] = $sub;
             foreach($sub as $k2=>$v2){
@@ -78,6 +79,12 @@ class Comment extends Base {
                 $where3=[];
                 $where3['role_id'] = ['eq',$v['comment_rid']];
                 $vod = model('Role')->infoData($where3);
+                $list[$k]['data'] = $vod['info'];
+            }
+            elseif($v['comment_mid'] == 11){
+                $where3=[];
+                $where3['website_id'] = ['eq',$v['comment_rid']];
+                $vod = model('Website')->infoData($where3);
                 $list[$k]['data'] = $vod['info'];
             }
         }

@@ -428,7 +428,7 @@ class Collect extends Base {
                         $v[$k2] = strip_tags($v2);
                     }
                 }
-
+                $v['vod_name'] = trim($v['vod_name']);
                 $v['type_id_1'] = intval($type_list[$v['type_id']]['type_pid']);
                 $v['vod_en'] = Pinyin::get($v['vod_name']);
                 $v['vod_letter'] = strtoupper(substr($v['vod_en'],0,1));
@@ -1038,7 +1038,7 @@ class Collect extends Base {
                         $v[$k2] = strip_tags($v2);
                     }
                 }
-
+                $v['art_name'] = trim($v['art_name']);
                 $v['type_id_1'] = intval($type_list[$v['type_id']]['type_pid']);
                 $v['art_en'] = Pinyin::get($v['art_name']);
                 $v['art_letter'] = strtoupper(substr($v['art_en'],0,1));
@@ -1359,7 +1359,7 @@ class Collect extends Base {
                         $v[$k2] = strip_tags($v2);
                     }
                 }
-
+                $v['actor_name'] = trim($v['actor_name']);
                 $v['type_id_1'] = intval($type_list[$v['type_id']]['type_pid']);
                 $v['actor_en'] = Pinyin::get($v['actor_name']);
                 $v['actor_letter'] = strtoupper(substr($v['actor_en'],0,1));
@@ -1931,7 +1931,7 @@ class Collect extends Base {
                         $v[$k2] = strip_tags($v2);
                     }
                 }
-
+                $v['website_name'] = trim($v['website_name']);
                 $v['type_id_1'] = intval($type_list[$v['type_id']]['type_pid']);
                 $v['website_en'] = Pinyin::get($v['website_name']);
                 $v['website_letter'] = strtoupper(substr($v['website_en'],0,1));
