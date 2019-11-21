@@ -169,7 +169,9 @@ class Make extends Base
         $link = 'index.html';
         $this->buildHtml($link,'./', 'index/index');
         $this->echoLink($link,'/'.$link);
-        mac_jump( url('make/opt'),3 );
+        if(ENTRANCE=='admin'){
+            mac_jump( url('make/opt'),3 );
+        }
         exit;
     }
 
@@ -181,7 +183,9 @@ class Make extends Base
         $link = 'map.html';
         $this->buildHtml($link,'./','map/index');
         $this->echoLink($link,'/'.$link);
-        mac_jump( url('make/opt'),3 );
+        if(ENTRANCE=='admin') {
+            mac_jump(url('make/opt'), 3);
+        }
         exit;
     }
 
@@ -210,7 +214,9 @@ class Make extends Base
             $this->buildHtml($link,'./','rss/'.$this->_param['ac2']);
             $this->echoLink($link,$link);
         }
-        mac_jump( url('make/opt'),3 );
+        if(ENTRANCE=='admin') {
+            mac_jump(url('make/opt'), 3);
+        }
         exit;
     }
 
@@ -255,12 +261,16 @@ class Make extends Base
         if ($num>=count($ids)){
             if(empty($this->_param['jump'])){
                 $this->echoLink('分类页生成完毕');
-                mac_jump( url('make/opt') ,3);
+                if(ENTRANCE=='admin') {
+                    mac_jump(url('make/opt'), 3);
+                }
                 exit;
             }
             else{
                 $this->echoLink('分类页生成完毕，稍后继续生成首页');
-                mac_jump( url('make/index',['jump'=>1]) ,3);
+                if(ENTRANCE=='admin') {
+                    mac_jump(url('make/index', ['jump' => 1]), 3);
+                }
                 exit;
             }
         }
@@ -323,7 +333,9 @@ class Make extends Base
             $url = url('make/make') .'?'. http_build_query($this->_param);
 
             $this->echoLink('【'.$type_info['type_name'].'】列表页生成完毕，稍后继续');
-            mac_jump( $url ,3);
+            if(ENTRANCE=='admin') {
+                mac_jump($url, 3);
+            }
             exit;
         }
 
@@ -380,7 +392,9 @@ class Make extends Base
             $this->echoLink('让服务器休息一会，稍后继续');
         }
         $url = url('make/make') .'?'. http_build_query($this->_param);
-        mac_jump( $url ,3);
+        if(ENTRANCE=='admin') {
+            mac_jump($url, 3);
+        }
     }
 
     public function topic_index()
@@ -432,7 +446,9 @@ class Make extends Base
 
         if($start > $page_count){
             $this->echoLink('专题列表生成完毕');
-            mac_jump( url('make/opt') ,3);
+            if(ENTRANCE=='admin') {
+                mac_jump(url('make/opt'), 3);
+            }
             exit;
         }
 
@@ -460,7 +476,9 @@ class Make extends Base
 
         if($this->_param['start'] >= $page_count){
             $this->echoLink('专题列表生成完毕');
-            mac_jump( url('make/opt') ,3);
+            if(ENTRANCE=='admin') {
+                mac_jump(url('make/opt'), 3);
+            }
             exit;
         }
         else{
@@ -468,8 +486,9 @@ class Make extends Base
             $this->echoLink('让服务器休息一会，稍后继续');
         }
         $url = url('make/make') .'?'. http_build_query($this->_param);
-
-        mac_jump( $url ,3);
+        if(ENTRANCE=='admin') {
+            mac_jump($url, 3);
+        }
     }
 
     public function topic_info()
@@ -519,12 +538,16 @@ class Make extends Base
             Db::name('topic')->where(['topic_id'=>['in',$ids]])->update(['topic_time_make'=>time()]);
         }
         if($this->_param['ref'] ==1 && !empty($_SERVER["HTTP_REFERER"])){
-            mac_jump($_SERVER["HTTP_REFERER"],2);
+            if(ENTRANCE=='admin'){
+                mac_jump($_SERVER["HTTP_REFERER"],2);
+            }
             die;
         }
 
         $this->echoLink('专题内容页生成完毕');
-        mac_jump( url('make/opt') ,3);
+        if(ENTRANCE=='admin'){
+            mac_jump( url('make/opt') ,3);
+        }
     }
 
 
@@ -583,12 +606,16 @@ class Make extends Base
 
                 if(empty($this->_param['jump'])){
                     $this->echoLink('内容页生成完毕1');
-                    mac_jump( url('make/opt') ,3);
+                    if(ENTRANCE=='admin'){
+                        mac_jump( url('make/opt') ,3);
+                    }
                     exit;
                 }
                 else{
                     $this->echoLink('内容页生成完毕，稍后继续生成分类页');
-                    mac_jump( url('make/make',['jump'=>1,'ac'=>'type','tab'=>$this->_param['tab'], $this->_param['tab'].'type'=> join(',',$type_ids) ,'ac2'=>'day']) ,3);
+                    if(ENTRANCE=='admin'){
+                        mac_jump( url('make/make',['jump'=>1,'ac'=>'type','tab'=>$this->_param['tab'], $this->_param['tab'].'type'=> join(',',$type_ids) ,'ac2'=>'day']) ,3);
+                    }
                     exit;
                 }
             }
@@ -631,7 +658,9 @@ class Make extends Base
             $where[$this->_param['tab'].'_time_make'] = ['exp',  Db::raw(' < '. $this->_param['tab'].'_time')];
             if($start > $page_count){
                 $this->echoLink('内容页生成完毕4');
-                mac_jump( url('make/opt') ,3);
+                if(ENTRANCE=='admin'){
+                    mac_jump( url('make/opt') ,3);
+                }
                 exit;
             }
         }
@@ -662,7 +691,9 @@ class Make extends Base
             $this->echoLink('【'.$type_name.'】内容页生成完毕，稍后继续');
 
             if($this->_param['ac2'] =='nomake' ){
-                mac_jump( url('make/opt') ,3);
+                if(ENTRANCE=='admin'){
+                    mac_jump( url('make/opt') ,3);
+                }
                 die;
             }
             else{
@@ -677,7 +708,9 @@ class Make extends Base
             $url = url('make/make') .'?'. http_build_query($this->_param);
 
 
-            mac_jump( $url ,3);
+            if(ENTRANCE=='admin'){
+                mac_jump( $url ,3);
+            }
             exit;
         }
 
@@ -814,7 +847,9 @@ class Make extends Base
             Db::name($this->_param['tab'])->where([$this->_param['tab'].'_id'=>['in',$update_ids]])->update([$this->_param['tab'].'_time_make'=>time()]);
         }
         if($this->_param['ref'] ==1 && !empty($_SERVER["HTTP_REFERER"])){
-            mac_jump($_SERVER["HTTP_REFERER"],2);
+            if(ENTRANCE=='admin'){
+                mac_jump($_SERVER["HTTP_REFERER"],2);
+            }
             die;
         }
 
@@ -841,7 +876,9 @@ class Make extends Base
         }
         $url = url('make/make') .'?'. http_build_query($this->_param);
 
-        mac_jump( $url ,3);
+        if(ENTRANCE=='admin'){
+            mac_jump( $url ,3);
+        }
     }
 
 
@@ -872,7 +909,9 @@ class Make extends Base
         }
 
         $this->echoLink('自定义页生成完毕');
-        mac_jump( url('make/opt') ,3);
+        if(ENTRANCE=='admin'){
+            mac_jump( url('make/opt') ,3);
+        }
     }
 
 

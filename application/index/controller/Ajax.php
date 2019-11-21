@@ -82,12 +82,16 @@ class Ajax extends Base
     {
         $mid = $this->_param['mid'];
         $wd = $this->_param['wd'];
-        if( $wd=='' || !in_array($mid,['1','2','3','8','9']) ) {
+        $limit = intval($this->_param['limit']);
+
+        if( $wd=='' || !in_array($mid,['1','2','3','8','9','11']) ) {
             return json(['code'=>1001,'msg'=>'参数错误']);
         }
-        $mids = [1=>'vod',2=>'art',3=>'topic',8=>'actor',9=>'role'];
+        $mids = [1=>'vod',2=>'art',3=>'topic',8=>'actor',9=>'role',11=>'website'];
         $pre = $mids[$mid];
-
+        if($limit<1){
+            $limit = 20;
+        }
         $where = [];
         $where[$pre.'_name|'.$pre.'_en'] = ['like','%'.$wd.'%'];
         $order = $pre.'_id desc';
@@ -95,7 +99,7 @@ class Ajax extends Base
 
         $url = mac_url_search(['wd'=>'mac_wd'],$pre);
 
-        $res = model($pre)->listData($where,$order,1,20,0,$field);
+        $res = model($pre)->listData($where,$order,1,$limit,0,$field);
         if($res['code']==1) {
             foreach ($res['list'] as $k => $v) {
                 $res['list'][$k]['pic'] = mac_url_img($v['pic']);

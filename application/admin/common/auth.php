@@ -223,9 +223,9 @@ return array(
         '9105' => array("show"=>0,'name' => '--采集文章', 'controller' => 'collect',		'action' => 'art'),
         '92' => array("show"=>0,'name' => '定时挂机', 'controller' => 'collect',		'action' => 'timing'),
 
-        '93' => array("show"=>1,'name' => '自定义资源库', 'controller' => 'collect',		'action' => 'index'),
-        '9301' => array("show"=>0,'name' => '--自定义资源库信息维护', 'controller' => 'collect',		'action' => 'info'),
-        '9302' => array("show"=>0,'name' => '--自定义资源库删除', 'controller' => 'collect',		'action' => 'del'),
+        '93' => array("show"=>1,'name' => '自定义资源', 'controller' => 'collect',		'action' => 'index'),
+        '9301' => array("show"=>0,'name' => '--自定义资源信息维护', 'controller' => 'collect',		'action' => 'info'),
+        '9302' => array("show"=>0,'name' => '--自定义资源删除', 'controller' => 'collect',		'action' => 'del'),
 
         '94' => array("show"=>1,'name' => '自定义规则', 'controller' => 'cj',		'action' => 'index'),
         '9401' => array("show"=>0,'name' => '--自定义规则信息维护', 'controller' => 'cj',		'action' => 'info'),
