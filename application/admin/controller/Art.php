@@ -193,7 +193,6 @@ class Art extends Base
     {
         if (Request()->isPost()) {
             $param = input('post.');
-            $param['art_content'] = str_replace( $GLOBALS['config']['upload']['protocol'].':','mac:',$param['art_content']);
             $res = model('Art')->saveData($param);
             if($res['code']>1){
                 return $this->error($res['msg']);

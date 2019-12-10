@@ -386,7 +386,6 @@ class Vod extends Base
     {
         if (Request()->isPost()) {
             $param = input('post.');
-            $param['vod_content'] = str_replace( $GLOBALS['config']['upload']['protocol'].':','mac:',$param['vod_content']);
             $res = model('Vod')->saveData($param);
             if($res['code']>1){
                 return $this->error($res['msg']);

@@ -66,4 +66,9 @@ class Website extends Base
         return $this->label_fetch('website/rss');
     }
 
+    public function saveData()
+    {
+
+    }
+
 }

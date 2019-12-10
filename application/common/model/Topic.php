@@ -355,6 +355,23 @@ class Topic extends Base {
         if(empty($data['topic_en'])){
             $data['topic_en'] = Pinyin::get($data['topic_name']);
         }
+
+        if(!empty($data['topic_content'])) {
+            $pattern_src = '/<img[\s\S]*?src\s*=\s*[\"|\'](.*?)[\"|\'][\s\S]*?>/';
+            @preg_match_all($pattern_src, $data['topic_content'], $match_src1);
+            if (!empty($match_src1)) {
+                foreach ($match_src1[1] as $v1) {
+                    $v2 = str_replace($GLOBALS['config']['upload']['protocol'] . ':', 'mac:', $v1);
+                    $data['topic_content'] = str_replace($v1, $v2, $data['topic_content']);
+                }
+            }
+            unset($match_src1);
+        }
+
+        if(empty($data['topic_blurb'])){
+            $data['topic_blurb'] = mac_substring( strip_tags($data['topic_content']) ,100);
+        }
+
         if($data['uptime']==1){
             $data['topic_time'] = time();
         }

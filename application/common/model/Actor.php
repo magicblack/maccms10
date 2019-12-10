@@ -389,6 +389,23 @@ class Actor extends Base {
         if(empty($data['actor_letter'])){
             $data['actor_letter'] = strtoupper(substr($data['actor_en'],0,1));
         }
+
+        if(!empty($data['actor_content'])) {
+            $pattern_src = '/<img[\s\S]*?src\s*=\s*[\"|\'](.*?)[\"|\'][\s\S]*?>/';
+            @preg_match_all($pattern_src, $data['actor_content'], $match_src1);
+            if (!empty($match_src1)) {
+                foreach ($match_src1[1] as $v1) {
+                    $v2 = str_replace($GLOBALS['config']['upload']['protocol'] . ':', 'mac:', $v1);
+                    $data['actor_content'] = str_replace($v1, $v2, $data['actor_content']);
+                }
+            }
+            unset($match_src1);
+        }
+
+        if(empty($data['actor_blurb'])){
+            $data['actor_blurb'] = mac_substring( strip_tags($data['actor_content']) ,100);
+        }
+
         if($data['uptag']==1){
             $data['actor_tag'] = mac_get_tag($data['actor_name'], $data['actor_content']);
         }

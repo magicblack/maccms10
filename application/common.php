@@ -344,6 +344,53 @@ function mac_send_mail($to, $title, $body,$conf=[]) {
     return $mail->send();
 }
 
+function mac_check_back_link($url)
+{
+    $res=[];
+    $res['code'] = 0;
+    $res['msg'] = '参数错误';
+
+    if(empty($url)){
+        return json($res);
+    }
+
+    $url = $res['info']['link_url'];
+    $site_url = $GLOBALS['config']['site']['site_url'];
+    $site_wapurl = $GLOBALS['config']['site']['site_wapurl'];
+
+    $html = mac_curl_get($url);
+
+    $msg = '';
+    $code = 1;
+
+    $ok = '反链正常';
+    $err = '反链异常';
+
+    $msg .= '['.$site_url.']';
+    if(strpos($html,$site_url)!==false){
+        $code=1;
+        $msg .=$ok;
+    }
+    else{
+        $code=101;
+        $msg .=$err;
+    }
+
+    $msg .= '，['.$site_wapurl.']';
+    if(strpos($html,$site_wapurl)!==false){
+        $code =1;
+        $msg .=$ok;
+    }
+    else{
+        $code=101;
+        $msg .=$err;
+    }
+    $res['code'] = $code;
+    $res['msg'] = $msg;
+
+    return $res;
+}
+
 function mac_list_to_tree($list, $pk='id',$pid = 'pid',$child = 'child',$root=0)
 {
     $tree = array();

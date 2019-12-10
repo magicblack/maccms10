@@ -107,6 +107,11 @@ class All extends Controller
             if($res['code'] == 1){
                 $user = $res['info'];
             }
+            else{
+                cookie('user_id','0');
+                cookie('user_name','游客');
+                cookie('user_check','');
+            }
         }
         else{
             $group_list = model('Group')->getCache();

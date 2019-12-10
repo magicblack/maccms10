@@ -110,7 +110,7 @@
                 <th width="30">推荐</th>
                 <th width="30">浏览</th>
                 <th width="120">更新时间</th>
-                <th width="80">操作</th>
+                <th width="130">操作</th>
             </tr>
             </thead>
 
@@ -126,6 +126,7 @@
                 <td>{if condition="$vo.ismake eq 1"}<a target="_blank" class="layui-badge layui-bg-green " href="{:mac_url_website_detail($vo)}">Y</a>{else/}<a class="layui-badge" href="{:url('make/make?ac=info&tab=website')}?ids={$vo.website_id}&ref=1">N</a>{/if}</td>
                 <td>{$vo.website_time|mac_day=color}</td>
                 <td>
+                    <a class="layui-badge-rim j-ajax" data-href="{:url('index/check_back_link')}?url={$vo['website_jumpurl']}" refresh="no" href="javascript:;" title="检测">检测</a>
                     <a class="layui-badge-rim j-iframe" data-full="1" data-href="{:url('info?id='.$vo['website_id'])}" href="javascript:;" title="编辑">编辑</a>
                     <a class="layui-badge-rim j-tr-del" data-href="{:url('del?ids='.$vo['website_id'])}" href="javascript:;" title="删除">删除</a>
                 </td>

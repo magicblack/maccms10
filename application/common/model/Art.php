@@ -449,16 +449,21 @@ class Art extends Base {
             $data['art_letter'] = strtoupper(substr($data['art_en'],0,1));
         }
 
-        if(!empty($data['art_content'])){
-            $data['art_content'] = join('$$$',$data['art_content']);
-            $data['art_title'] = join('$$$',$data['art_title']);
-            $data['art_note'] = join('$$$',$data['art_note']);
-        }
-        if(empty($data['art_pic']) && !empty($data['art_content'])){
+        if(!empty($data['art_content'])) {
+            $data['art_content'] = join('$$$', $data['art_content']);
+            $data['art_title'] = join('$$$', $data['art_title']);
+            $data['art_note'] = join('$$$', $data['art_note']);
+
             $pattern_src = '/<img[\s\S]*?src\s*=\s*[\"|\'](.*?)[\"|\'][\s\S]*?>/';
-            $pma = @preg_match_all($pattern_src, $data['art_content'], $match_src1);
-            if(!empty($match_src1)){
-                $data['art_pic'] = (string)$match_src1[1][0];
+            @preg_match_all($pattern_src, $data['art_content'], $match_src1);
+            if (!empty($match_src1)) {
+                foreach ($match_src1[1] as $v1) {
+                    $v2 = str_replace($GLOBALS['config']['upload']['protocol'] . ':', 'mac:', $v1);
+                    $data['art_content'] = str_replace($v1, $v2, $data['art_content']);
+                }
+                if (empty($data['art_pic'])) {
+                    $data['art_pic'] = (string)$match_src1[1][0];
+                }
             }
             unset($match_src1);
         }
@@ -466,7 +471,6 @@ class Art extends Base {
         if(empty($data['art_blurb'])){
             $data['art_blurb'] = mac_substring( str_replace('$$$','', strip_tags($data['art_content'])),100);
         }
-
 
         if($data['uptime']==1){
             $data['art_time'] = time();

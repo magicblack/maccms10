@@ -534,6 +534,18 @@ class Vod extends Base {
             $data['vod_letter'] = strtoupper(substr($data['vod_en'],0,1));
         }
 
+        if(!empty($data['vod_content'])) {
+            $pattern_src = '/<img[\s\S]*?src\s*=\s*[\"|\'](.*?)[\"|\'][\s\S]*?>/';
+            @preg_match_all($pattern_src, $data['vod_content'], $match_src1);
+            if (!empty($match_src1)) {
+                foreach ($match_src1[1] as $v1) {
+                    $v2 = str_replace($GLOBALS['config']['upload']['protocol'] . ':', 'mac:', $v1);
+                    $data['vod_content'] = str_replace($v1, $v2, $data['vod_content']);
+                }
+            }
+            unset($match_src1);
+        }
+
         if(empty($data['vod_blurb'])){
             $data['vod_blurb'] = mac_substring( strip_tags($data['vod_content']) ,100);
         }

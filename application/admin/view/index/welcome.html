@@ -23,23 +23,23 @@
         <tr>
             <td>安装目录</td>
             <td><?php echo $_SERVER['DOCUMENT_ROOT'] ?></td>
-            <td>服务器 (IP/端口) </td>
+            <td>服务器IP/端口</td>
             <td><?php echo $_SERVER['HTTP_HOST'] ?></td>
         </tr>
         <tr>
             <td>PHP版本</td>
             <td><?php echo PHP_VERSION ?></td>
-            <td>允许最大上传文件</td>
+            <td>最大上传文件</td>
             <td><?php echo get_cfg_var("file_uploads") ? get_cfg_var("upload_max_filesize") : $error;?></td>
         </tr>
         <tr>
             <td>CURL支持</td>
             <td><?php $curl = @curl_version();echo $curl['version'] ? $curl['version'] : $error; ?></td>
-            <td>GD图形处理扩展库版本</td>
+            <td>GD图形版本</td>
             <td><?php $gd = @gd_info(); echo $gd['GD Version'] ? $gd['GD Version'] : $error;?></td>
         </tr>
         <tr>
-            <td>ThinkPHP框架版本</td>
+            <td>ThinkPHP版本</td>
             <td><?php echo THINK_VERSION; ?></td>
             <td>脚本超时时间</td>
             <td><?php $t = ini_get("max_execution_time"); echo $t;?>秒</td>

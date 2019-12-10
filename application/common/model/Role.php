@@ -327,6 +327,19 @@ class Role extends Base {
         if(empty($data['role_letter'])){
             $data['role_letter'] = strtoupper(substr($data['role_en'],0,1));
         }
+
+        if(!empty($data['role_content'])) {
+            $pattern_src = '/<img[\s\S]*?src\s*=\s*[\"|\'](.*?)[\"|\'][\s\S]*?>/';
+            @preg_match_all($pattern_src, $data['role_content'], $match_src1);
+            if (!empty($match_src1)) {
+                foreach ($match_src1[1] as $v1) {
+                    $v2 = str_replace($GLOBALS['config']['upload']['protocol'] . ':', 'mac:', $v1);
+                    $data['role_content'] = str_replace($v1, $v2, $data['role_content']);
+                }
+            }
+            unset($match_src1);
+        }
+
         if($data['uptime']==1){
             $data['role_time'] = time();
         }

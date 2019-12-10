@@ -157,6 +157,13 @@ class Index extends Base
         return $this->success('解锁成功');
     }
 
+    public function check_back_link()
+    {
+        $param = input();
+        $res = mac_check_back_link($param['url']);
+        return json($res);
+    }
+
     public function select()
     {
         $param = input();

@@ -50,7 +50,6 @@ class Topic extends Base
     {
         if (Request()->isPost()) {
             $param = input('post.');
-            $param['topic_content'] = str_replace( $GLOBALS['config']['upload']['protocol'].':','mac:',$param['topic_content']);
             $res = model('Topic')->saveData($param);
             if($res['code']>1){
                 return $this->error($res['msg']);
