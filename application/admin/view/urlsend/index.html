@@ -50,6 +50,9 @@
                     <input type="button" value="当天角色" class="layui-btn layui-btn-primary" onclick="post('ac=baidu_push&ac2=today&mid=9');">
                     <input type="button" value="全部角色" class="layui-btn layui-btn-primary" onclick="post('ac=baidu_push&ac2=all&mid=9');">
                     <hr class="layui-bg-gray">
+                    <input type="button" value="当天网址导航" class="layui-btn layui-btn-primary" onclick="post('ac=baidu_push&ac2=today&mid=11');">
+                    <input type="button" value="全部网址导航" class="layui-btn layui-btn-primary" onclick="post('ac=baidu_push&ac2=all&mid=11');">
+                    <hr class="layui-bg-gray">
                     {if condition="$urlsend_break_baidu_push neq ''"}
                     <a href="{$urlsend_break_baidu_push}" class="layui-btn layui-btn-danger ">【进入断点继续推送】</a>
                     {/if}
@@ -71,6 +74,9 @@
                     <hr class="layui-bg-gray">
                     <input type="button" value="当天角色" class="layui-btn layui-btn-primary" onclick="post('ac=baidu_bear&ac2=today&type=realtime&mid=9');">
                     <input type="button" value="全部角色" class="layui-btn layui-btn-primary" onclick="post('ac=baidu_bear&ac2=all&type=batch&mid=9');">
+                    <hr class="layui-bg-gray">
+                    <input type="button" value="当天网址导航" class="layui-btn layui-btn-primary" onclick="post('ac=baidu_bear&ac2=today&type=realtime&mid=11');">
+                    <input type="button" value="全部网址导航" class="layui-btn layui-btn-primary" onclick="post('ac=baidu_bear&ac2=all&type=batch&mid=11');">
                     <hr class="layui-bg-gray">
                     {if condition="$urlsend_break_baidu_bear neq ''"}
                     <a href="{$urlsend_break_baidu_bear}" class="layui-btn layui-btn-danger ">【进入断点继续推送】</a>

@@ -174,6 +174,24 @@ class Urlsend extends Base
                 $fun = 'mac_url_role_detail';
                 $res = model('Role')->listData($where,$order,$this->_param['page'],$this->_param['limit']);
                 break;
+            case 11:
+                $where['website_status'] = ['eq',1];
+
+                if($ac2=='today'){
+                    $where['website_time_add'] = ['gt',$today];
+
+                }
+                if(!empty($ids)){
+                    $where['website_id'] = ['in',$ids];
+                }
+                elseif(!empty($data)){
+                    $where['website_id'] = ['gt', $data];
+                }
+                $col = 'website';
+                $order = 'website_id asc';
+                $fun = 'mac_url_website_detail';
+                $res = model('Website')->listData($where,$order,$this->_param['page'],$this->_param['limit']);
+                break;
         }
 
         if(empty($res['list'])){

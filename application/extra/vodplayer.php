@@ -6,7 +6,7 @@ return array (
     'from' => 'dplayer',
     'show' => 'DPlayer-H5播放器',
     'des' => 'dplayer.js.org',
-    'target' => '_blank',
+    'target' => '_self',
     'ps' => '0',
     'parse' => '',
     'sort' => '908',
@@ -73,5 +73,18 @@ return array (
     'ps' => '0',
     'tip' => '无需安装任何插件',
     'id' => 'swf',
+  ),
+  'flv' => 
+  array (
+    'status' => '1',
+    'from' => 'flv',
+    'show' => 'Flv文件',
+    'des' => 'flv',
+    'target' => '_self',
+    'ps' => '0',
+    'parse' => '',
+    'sort' => '902',
+    'tip' => '无需安装任何插件	',
+    'id' => 'flv',
   ),
 );

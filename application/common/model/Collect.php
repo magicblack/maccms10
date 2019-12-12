@@ -1695,6 +1695,7 @@ class Collect extends Base {
 
                 if($blend===false){
                     $vod_info = model('Vod')->where($where2)->find();
+
                 }
                 else{
                     $vod_info = model('Vod')->where($where2)
@@ -1710,7 +1711,7 @@ class Collect extends Base {
                 }
                 else {
                     $v['role_rid'] = $vod_info['vod_id'];
-
+                    $where['role_rid'] = $vod_info['vod_id'];
                     $info = model('Role')->where($where)->find();
                     if (!$info) {
                         $tmp = $this->syncImages($config['pic'], $v['role_pic'], 'role');
