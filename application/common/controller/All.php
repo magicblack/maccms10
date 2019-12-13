@@ -195,6 +195,24 @@ class All extends Controller
         return $info;
     }
 
+    protected function label_website_detail($info=[])
+    {
+        $param = mac_param_url();
+        $this->assign('param',$param);
+        if(empty($info)) {
+            $res = mac_label_website_detail($param);
+            if ($res['code'] > 1) {
+                return $this->error($res['msg']);
+            }
+            $info = $res['info'];
+        }
+        $this->assign('obj',$info);
+        $comment = config('maccms.comment');
+        $this->assign('comment',$comment);
+
+        return $info;
+    }
+
     protected function label_topic_index($total='')
     {
         $param = mac_param_url();

@@ -50,19 +50,19 @@ class Website extends Base
 
     public function detail()
     {
-        $info = $this->label_art_detail();
+        $info = $this->label_website_detail();
         return $this->label_fetch( mac_tpl_fetch('website',$info['website_tpl'],'detail') );
     }
 
     public function ajax_detail()
     {
-        $info = $this->label_art_detail();
+        $info = $this->label_website_detail();
         return $this->label_fetch('website/ajax_detail');
     }
 
     public function rss()
     {
-        $info = $this->label_art_detail();
+        $info = $this->label_website_detail();
         return $this->label_fetch('website/rss');
     }
 

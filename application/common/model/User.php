@@ -648,7 +648,7 @@ class User extends Base
             $msg = $sign.'的会员您好，'.$GLOBALS['user']['user_name'].'。'.$type_des.'验证码为：'. $code .',请在5分钟内完成验证。' ;
             $msg = str_replace(['[用户]','[类型]','[时长]','[验证码]'],[$GLOBALS['user']['user_name'],$type_des,'5',$code],$msg);
 
-            $res_send = mac_send_mail($to, $sign.$title, $sign.$msg);
+            $res_send = mac_send_mail($to, $sign.$title, $msg);
             if($res_send){
                 $r=1;
             }
