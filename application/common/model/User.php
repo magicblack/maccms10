@@ -304,6 +304,9 @@ class User extends Base
         $data = [];
         $data['user_id'] = $GLOBALS['user']['user_id'];
         $data['user_name'] = $GLOBALS['user']['user_name'];
+        if(!empty($param['user_nick_name'])){
+            $data['user_nick_name'] = htmlspecialchars(urldecode(trim($param['user_nick_name'])));
+        }
         $data['user_qq'] = htmlspecialchars(urldecode(trim($param['user_qq'])));
         $data['user_question'] = htmlspecialchars(urldecode(trim($param['user_question'])));
         $data['user_answer'] = htmlspecialchars(urldecode(trim($param['user_answer'])));
