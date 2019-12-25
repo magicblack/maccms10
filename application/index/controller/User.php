@@ -82,6 +82,12 @@ class User extends Base
             $where['user_id'] = $GLOBALS['user']['user_id'];
             $param['page'] = intval($param['page']) < 1 ? 1 : intval($param['page']);
             $param['limit'] = intval($param['limit']) < 1 ? 10 : intval($param['limit']);
+            if(intval($param['mid'])>0){
+                $where['ulog_mid'] = ['eq',intval($param['mid'])];
+            }
+            if(intval($param['id'])>0){
+                $where['ulog_rid'] = ['eq',intval($param['id'])];
+            }
             if(intval($param['type'])>0){
                 $where['ulog_type'] = ['eq',intval($param['type'])];
             }

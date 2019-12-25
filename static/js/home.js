@@ -525,8 +525,8 @@ var MAC={
             MAC.Ulog.Click();
 
         },
-        'Get':function(type,page,limit,call){
-            MAC.Ajax(maccms.path+'/index.php/user/ajax_ulog/?ac=list&type='+type+'&page='+page+'&limit='+limit,'get','json','',call);
+        'Get':function(mid,id,type,page,limit,call){
+            MAC.Ajax(maccms.path+'/index.php/user/ajax_ulog/?ac=list&mid='+mid+'&id='+id+'&type='+type+'&page='+page+'&limit='+limit,'get','json','',call);
         },
         'Set':function(){
             if($(".mac_ulog_set").attr('data-mid')){
