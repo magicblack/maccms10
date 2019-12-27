@@ -25,7 +25,7 @@ class Ajax extends Base
         $limit = $this->_param['limit'];
         $page = $this->_param['page'];
         $type_id = $this->_param['tid'];
-        if( !in_array($mid,['1','2','3']) ) {
+        if( !in_array($mid,['1','2','3','8','9','11']) ) {
             return json(['code'=>1001,'msg'=>'参数错误']);
         }
         if( !in_array($limit,['10','20','30']) ) {
@@ -35,9 +35,7 @@ class Ajax extends Base
             $page =1;
         }
 
-
-        $mids = [1=>'vod',2=>'art',3=>'topic'];
-        $pre = $mids[$mid];
+        $pre = mac_get_mid_code($mid);
         $order= $pre.'_time desc';
         $where=[];
         $where[$pre.'_status'] = [ 'eq',1];
@@ -69,6 +67,15 @@ class Ajax extends Base
                 }
                 elseif($mid=='3'){
                     $v['detail_link'] = mac_url_topic_detail($v);
+                }
+                elseif($mid=='8'){
+                    $v['detail_link'] = mac_url_actor_detail($v);
+                }
+                elseif($mid=='9'){
+                    $v['detail_link'] = mac_url_role_detail($v);
+                }
+                elseif($mid=='11'){
+                    $v['detail_link'] = mac_url_website_detail($v);
                 }
                 $v[$pre.'_pic'] = mac_url_img($v[$pre.'_pic']);
                 $v[$pre.'_pic_thumb'] = mac_url_img($v[$pre.'_pic_thumb']);
@@ -143,11 +150,10 @@ class Ajax extends Base
         $id = $this->_param['id'];
         $mid = $this->_param['mid'];
         $type = $this->_param['type'];
-        if(empty($id) ||  !in_array($mid,['1','2','3','8','9']) ) {
+        if(empty($id) ||  !in_array($mid,['1','2','3','8','9','11']) ) {
             return json(['code'=>1001,'msg'=>'参数错误']);
         }
-        $mids = [1=>'vod',2=>'art',3=>'topic',8=>'actor',9=>'role'];
-        $pre = $mids[$mid];
+        $pre = mac_get_mid_code($mid);
         $where = [];
         $where[$pre.'_id'] = $id;
         $field = $pre.'_hits,'.$pre.'_hits_day,'.$pre.'_hits_week,'.$pre.'_hits_month,'.$pre.'_time_hits';
@@ -212,12 +218,10 @@ class Ajax extends Base
         $mid = $this->_param['mid'];
         $type = $this->_param['type'];
 
-        if(empty($id) ||  !in_array($mid,['1','2','3','4','8','9']) ) {
+        if(empty($id) ||  !in_array($mid,['1','2','3','4','8','9','11']) ) {
             return json(['code'=>1001,'msg'=>'参数错误']);
         }
-
-        $mids = [1=>'vod',2=>'art',3=>'topic',4=>'comment',8=>'actor',9=>'role'];
-        $pre = $mids[$mid];
+        $pre = mac_get_mid_code($mid);
         $where = [];
         $where[$pre.'_id'] = $id;
         $field = $pre.'_up,'.$pre.'_down';
@@ -259,12 +263,11 @@ class Ajax extends Base
         $mid = $this->_param['mid'];
         $score = $this->_param['score'];
 
-        if(empty($id) ||  !in_array($mid,['1','2','3','8','9']) ) {
+        if(empty($id) ||  !in_array($mid,['1','2','3','8','9','11']) ) {
             return json(['code'=>1001,'msg'=>'参数错误']);
         }
 
-        $mids = [1=>'vod',2=>'art',3=>'topic',8=>'actor',9=>'role'];
-        $pre = $mids[$mid];
+        $pre = mac_get_mid_code($mid);
         $where = [];
         $where[$pre.'_id'] = $id;
         $field = $pre.'_score,'.$pre.'_score_num,'.$pre.'_score_all';

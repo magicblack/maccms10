@@ -901,6 +901,11 @@ function mac_unescape($str)
 }
 
 /*特殊字段的值转换*/
+function mac_get_mid_code($data)
+{
+    $arr = [1=>'vod',2=>'art',3=>'topic',4=>'commment',5=>'gbook',6=>'user',7=>'label',8=>'actor',9=>'role',10=>'plot',11=>'website'];
+    return $arr[$data];
+}
 function mac_get_mid_text($data)
 {
     $arr = [1=>'视频',2=>'文章',3=>'专题',4=>'评论',5=>'留言',6=>'用户中心',7=>'自定义页面',8=>'演员',9=>'角色',10=>'剧情',11=>'网址'];
@@ -2205,7 +2210,7 @@ function mac_label_type($param)
 
 function mac_data_count($tid=0,$range='all',$flag='vod')
 {
-    if(!in_array($flag,['vod','art','actor','role','topic'])) {
+    if(!in_array($flag,['vod','art','actor','role','topic','website'])) {
         $flag='vod';
     }
     if(!in_array($range,['all','today','min'])){

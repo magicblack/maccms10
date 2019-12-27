@@ -1058,6 +1058,8 @@ cachetime自定义缓存时间单位秒
 {:mac_data_count(1,'all')} 获取某个分类下的数据总量，支持视频和文章,传入分类ID
 {:mac_data_count(1,'today')} 获取某个分类下的今日更新数据总量，支持视频和文章,传入分类ID
 
+另外还支持topic,website,actor,role模块的获取数据数量
+
 {:mac_url('map/index')} 获取站内链接,参数代表 模块/页面
 
 {$obj.vod_content|mac_url_content_img} 如果使用了第三方附件存储，附件和图片默认url是mac:开头的，此方法将替换为http

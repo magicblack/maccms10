@@ -6,7 +6,7 @@ return array (
     'path' => '',
     'server' => '127.0.0.1',
     'port' => '3306',
-    'name' => 'maccms8',
+    'name' => 'maccms10',
     'user' => 'root',
     'pass' => 'root',
     'tablepre' => 'mac_',

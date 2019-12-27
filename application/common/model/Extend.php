@@ -89,6 +89,16 @@ class Extend extends Base {
             $data['role_today'] = $tmp;
             $data['role_min'] = model('Role')->min('role_id');
 
+            //网址库
+            $where = [];
+            $where['website_status'] = ['eq',1];
+            $tmp = model('Website')->where($where)->count();
+            $data['website_all'] = $tmp;
+            $where['website_time'] = ['egt',$totay];
+            $tmp = model('Website')->where($where)->count();
+            $data['website_today'] = $tmp;
+            $data['website_min'] = model('Website')->min('website_id');
+
             Cache::set($key,$data,$GLOBALS['config']['app']['cache_time']);
         }
         return $data;
