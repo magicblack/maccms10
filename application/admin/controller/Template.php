@@ -174,10 +174,12 @@ class Template extends Base
             }
         }
 
-
         if (Request()->isPost()) {
-
             $fcontent = $param['fcontent'];
+            if(strpos($fcontent,'<?')!==false){
+                $this->error('安全提示，模板中包含php代码禁止在后台编辑');
+                return;
+            }
             $res = @fwrite(fopen($fullname,'wb'),$fcontent);
 
             if($res===false){

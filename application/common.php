@@ -354,12 +354,9 @@ function mac_check_back_link($url)
         return json($res);
     }
 
-    $url = $res['info']['link_url'];
     $site_url = $GLOBALS['config']['site']['site_url'];
     $site_wapurl = $GLOBALS['config']['site']['site_wapurl'];
-
     $html = mac_curl_get($url);
-
     $msg = '';
     $code = 1;
 
