@@ -70,39 +70,32 @@ class Base extends All
             $res = true;
         }
 
-        if(in_array($flag,['art','play','down'])){
-            if($flag=='art') {
-                $points = $info['art_points_detail'];
-                if($GLOBALS['config']['user']['art_points_type']=='1'){
-                    $points = $info['art_points'];
-                }
-            }
-            else{
-                $points = $info['vod_points_'.$flag];
-                if($GLOBALS['config']['user']['vod_points_type']=='1'){
-                    $points = $info['vod_points'];
-                }
+        if(in_array($flag,['art','play','down','actor','website'])){
+            $points = $info[$flag.'_points_detail'];
+            if($GLOBALS['config']['user'][$flag.'_points_type']=='1'){
+                $points = $info[$flag.'_points'];
             }
         }
-
 
         if($GLOBALS['config']['user']['status']==0){
 
         }
-        elseif($popedom==2 && $flag=='art'){
+        elseif($popedom==2 && in_array($flag,['art','actor','website'])){
+
             if($res===false && (empty($group['group_popedom'][$type_id][2]) || $trysee==0)){
                 return ['code'=>3001,'msg'=>'您没有权限访问此数据，请升级会员','trysee'=>0];
             }
             elseif($group['group_id']<3 && $points>0  ){
+                $mid = mac_get_mid($flag);
                 $where=[];
-                $where['ulog_mid'] = 2;
+                $where['ulog_mid'] = $mid;
                 $where['ulog_type'] = 1;
                 $where['ulog_rid'] = $param['id'];
                 $where['ulog_sid'] = $param['page'];
                 $where['ulog_nid'] = 0;
                 $where['user_id'] = $user['user_id'];
                 $where['ulog_points'] = $points;
-                if($GLOBALS['config']['user']['art_points_type']=='1'){
+                if($GLOBALS['config']['user'][$flag.'_points_type']=='1'){
                     $where['ulog_sid'] = 0;
                 }
                 $res = model('Ulog')->infoData($where);

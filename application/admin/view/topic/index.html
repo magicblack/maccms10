@@ -47,7 +47,7 @@
             <tr>
                 <td><input type="checkbox" name="ids[]" value="{$vo.topic_id}" class="layui-checkbox checkbox-ids" lay-skin="primary"></td>
                 <td>{$vo.topic_id}</td>
-                <td><a target="_blank" class="layui-badge-rim " href="{:mac_url_topic_detail($vo)}">{$vo.topic_name}</a> {if condition="$vo.topic_status eq 0"} <span class="layui-badge">未审</span>{/if} </td>
+                <td><a target="_blank" class="layui-badge-rim " href="{:mac_url_topic_detail($vo)}">{$vo.topic_name|htmlspecialchars}</a> {if condition="$vo.topic_status eq 0"} <span class="layui-badge">未审</span>{/if} </td>
                 <td>{$vo.topic_hits}</td>
                 <td>{$vo.topic_score}</td>
                 <td><a data-href="{:url('index/select')}?tab=topic&col=topic_level&tpl=select_level&url=topic/field&ids={$vo.topic_id}" data-width="270" data-height="100" class=" j-select"><span class="layui-badge layui-bg-orange">{$vo.topic_level}</span></a></td>

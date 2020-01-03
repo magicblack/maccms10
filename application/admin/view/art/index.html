@@ -118,12 +118,12 @@
             <tr>
                 <td><input type="checkbox" name="ids[]" value="{$vo.art_id}" class="layui-checkbox checkbox-ids" lay-skin="primary"></td>
                 <td>{$vo.art_id}</td>
-                <td>[{$vo.type.type_name}] <a target="_blank" class="layui-badge-rim " href="{:mac_url_art_detail($vo)}">{$vo.art_name}</a> {if condition="$vo.art_status eq 0"} <span class="layui-badge">未审</span>{/if} {if condition="$vo.art_lock eq 1"} <span class="layui-badge">锁定</span>{/if}</td>
+                <td>[{$vo.type.type_name}] <a target="_blank" class="layui-badge-rim " href="{:mac_url_art_detail($vo)}">{$vo.art_name|htmlspecialchars}</a> {if condition="$vo.art_status eq 0"} <span class="layui-badge">未审</span>{/if} {if condition="$vo.art_lock eq 1"} <span class="layui-badge">锁定</span>{/if}</td>
                 <td>{$vo.art_hits}</td>
                 <td>{$vo.art_score}</td>
                 <td><a data-href="{:url('index/select')}?tab=art&col=art_level&tpl=select_level&url=art/field&ids={$vo.art_id}" data-width="270" data-height="100" class=" j-select"><span class="layui-badge layui-bg-orange">{$vo.art_level}</span></a></td>
                 <td>{if condition="$vo.ismake eq 1"}<a target="_blank" class="layui-badge layui-bg-green " href="{:mac_url_art_detail($vo)}">Y</a>{else/}<a class="layui-badge" href="{:url('make/make?ac=info&tab=art')}?ids={$vo.art_id}&ref=1">N</a>{/if}</td>
-                <td>{$vo.art_author}</td>
+                <td>{$vo.art_author|htmlspecialchars}</td>
                 <td>{$vo.art_time|mac_day=color}</td>
                 <td>
                     <a class="layui-badge-rim j-iframe" data-full="1" data-href="{:url('info?id='.$vo['art_id'])}" href="javascript:;" title="编辑">编辑</a>

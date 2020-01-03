@@ -61,13 +61,13 @@
                 <td>{if condition="$vo.gbook_rid eq 0"}留言数据{else/}报错数据{/if}</td>
                 <td>
                     <div class="c-999 f-12">
-                        <u style="cursor:pointer" class="text-primary">{$vo.gbook_name}：</u>
+                        <u style="cursor:pointer" class="text-primary">{$vo.gbook_name|htmlspecialchars}：</u>
                         <time>【{$vo.gbook_time|mac_day=color}】</time>
                         <span class="ml-20">ip：【{$vo.gbook_ip|long2ip}】</span>
                     </div>
                     <div class="f-12 c-999">
                         <span class="ml-20">状态：</span>
-                        留言：{$vo.gbook_content}
+                        留言：{$vo.gbook_content|htmlspecialchars}
                     </div>
                 </td>
                 <td>
@@ -75,7 +75,7 @@
                         回复时间：{$vo.gbook_reply_time|mac_day=color}
                     </div>
                     <div class="f-12 c-999">
-                        回复：{$vo.gbook_reply}
+                        回复：{$vo.gbook_reply|htmlspecialchars}
                     </div>
                     <div> </div>
                 </td>

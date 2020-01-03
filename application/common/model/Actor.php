@@ -156,7 +156,7 @@ class Actor extends Base {
                 }
             }
             if(empty($pageurl)){
-                $pageurl = 'actor/index';
+                $pageurl = 'actor/type';
             }
             $param['page'] = 'PAGELINK';
             if($pageurl=='actor/type' || $pageurl=='actor/show'){

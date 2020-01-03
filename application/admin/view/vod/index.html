@@ -214,7 +214,7 @@
                 <td><input type="checkbox" name="ids[]" value="{$vo.vod_id}" class="layui-checkbox checkbox-ids" lay-skin="primary"></td>
                 <td>{$vo.vod_id}</td>
                 <td>
-                    [{$vo.type.type_name}] <a target="_blank" class="layui-badge-rim " href="{:mac_url_vod_detail($vo)}">{$vo.vod_name}</a>
+                    [{$vo.type.type_name}] <a target="_blank" class="layui-badge-rim " href="{:mac_url_vod_detail($vo)}">{$vo.vod_name|htmlspecialchars}</a>
                     {if condition="$vo.vod_status eq 0"} <span class="layui-badge">未审</span>{/if}
                     {if condition="$vo.vod_lock eq 1"} <span class="layui-badge">锁定</span>{/if}
                     {if condition="$vo.vod_isend eq 0 && $vo.vod_serial neq ''"} <span class="layui-badge layui-bg-blue">连载{$vo.vod_serial}</span>{/if}

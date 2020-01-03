@@ -153,7 +153,7 @@ class All extends Controller
         $this->assign('param',$param);
     }
 
-    protected function label_actor_detail($info=[])
+    protected function label_actor_detail($info=[],$view=0)
     {
         $param = mac_param_url();
         $this->assign('param',$param);
@@ -164,6 +164,28 @@ class All extends Controller
             }
             $info = $res['info'];
         }
+
+        if(empty($info['actor_tpl'])){
+            $info['actor_tpl'] = $info['type']['type_tpl_detail'];
+        }
+
+        if($view <2) {
+            $popedom = $this->check_user_popedom($info['type_id'], 2,$param,'actor',$info);
+            $this->assign('popedom',$popedom);
+
+            if($popedom['code']>1){
+                $this->assign('obj',$info);
+
+                if($popedom['confirm']==1){
+                    echo $this->fetch('actor/confirm');
+                    exit;
+                }
+
+                echo $this->error($popedom['msg'], mac_url('user/index') );
+                exit;
+            }
+        }
+
         $this->assign('obj',$info);
         $comment = config('maccms.comment');
         $this->assign('comment',$comment);
@@ -195,7 +217,7 @@ class All extends Controller
         return $info;
     }
 
-    protected function label_website_detail($info=[])
+    protected function label_website_detail($info=[],$view=0)
     {
         $param = mac_param_url();
         $this->assign('param',$param);
@@ -206,6 +228,28 @@ class All extends Controller
             }
             $info = $res['info'];
         }
+
+        if(empty($info['website_tpl'])){
+            $info['website_tpl'] = $info['type']['type_tpl_detail'];
+        }
+
+        if($view <2) {
+            $popedom = $this->check_user_popedom($info['type_id'], 2,$param,'website',$info);
+            $this->assign('popedom',$popedom);
+
+            if($popedom['code']>1){
+                $this->assign('obj',$info);
+
+                if($popedom['confirm']==1){
+                    echo $this->fetch('website/confirm');
+                    exit;
+                }
+
+                echo $this->error($popedom['msg'], mac_url('user/index') );
+                exit;
+            }
+        }
+
         $this->assign('obj',$info);
         $comment = config('maccms.comment');
         $this->assign('comment',$comment);

@@ -1,10 +1,11 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
-
-</body>
-</html>
+<?xml version="1.0" encoding="UTF-8" ?>
+<rss version="2.0">
+    <channel>
+        <title>{$website_name}</title>
+        <link>{$site_url}{:mac_url_website_detail(['id'=>$website_id])}</link>
+        <description><![CDATA["{$website_content|str_replace='$$$','',###|mac_substring=200}"]]></description>
+        <language>zh-cn</language>
+        <generator>{$site_url}</generator>
+        <webmaster>{$site_email}</webmaster>
+    </channel>
+</rss>

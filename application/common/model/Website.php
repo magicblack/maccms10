@@ -195,7 +195,7 @@ class Website extends Base {
                 }
             }
             if(empty($pageurl)){
-                $pageurl = 'website/index';
+                $pageurl = 'website/type';
             }
             $param['page'] = 'PAGELINK';
             if($pageurl=='website/type' || $pageurl=='website/show'){

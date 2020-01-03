@@ -91,9 +91,9 @@
             <tr>
                 <td><input type="checkbox" name="ids[]" value="{$vo.role_id}" class="layui-checkbox checkbox-ids" lay-skin="primary"></td>
                 <td>{$vo.role_id}</td>
-                <td><a target="_blank" class="layui-badge-rim " href="{:mac_url_vod_detail($vo.data)}">[{$vo.data.vod_name}]</a></td>
-                <td> <a target="_blank" class="layui-badge-rim " href="{:mac_url_role_detail($vo)}">{$vo.role_name}</a> {if condition="$vo.role_status eq 0"} <span class="layui-badge">未审</span>{/if} {if condition="$vo.role_lock eq 1"} <span class="layui-badge">锁定</span>{/if}</td>
-                <td>{$vo.role_actor}</td>
+                <td><a target="_blank" class="layui-badge-rim " href="{:mac_url_vod_detail($vo.data)}">[{$vo.data.vod_name|htmlspecialchars}]</a></td>
+                <td> <a target="_blank" class="layui-badge-rim " href="{:mac_url_role_detail($vo)}">{$vo.role_name|htmlspecialchars}</a> {if condition="$vo.role_status eq 0"} <span class="layui-badge">未审</span>{/if} {if condition="$vo.role_lock eq 1"} <span class="layui-badge">锁定</span>{/if}</td>
+                <td>{$vo.role_actor|htmlspecialchars}</td>
                 <td>{$vo.role_sort}</td>
                 <td>{$vo.role_hits}</td>
                 <td><a data-href="{:url('index/select')}?tab=role&col=role_level&tpl=select_level&url=role/field&ids={$vo.role_id}" data-width="270" data-height="100" class=" j-select"><span class="layui-badge layui-bg-orange">{$vo.role_level}</span></a></td>

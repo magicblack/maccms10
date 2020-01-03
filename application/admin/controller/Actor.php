@@ -42,7 +42,6 @@ class Actor extends Base
             $where['actor_name'] = ['like','%'.$param['wd'].'%'];
         }
 
-
         $order='actor_time desc';
         $res = model('Actor')->listData($where,$order,$param['page'],$param['limit']);
 

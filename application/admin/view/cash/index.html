@@ -49,14 +49,14 @@
             <tr>
                 <td><input type="checkbox" name="ids[]" value="{$vo.cash_id}" class="layui-checkbox checkbox-ids" lay-skin="primary"></td>
                 <td>{$vo.cash_id}</td>
-                <td>[{$vo.user_id}]{$vo.user_name}</td>
+                <td>[{$vo.user_id}]{$vo.user_name|htmlspecialchars}</td>
                 <td>{if condition="$vo.cash_status eq 1"}<span class="layui-badge layui-bg-green">已审核</span>{else/}<span class="layui-badge">未审核</span>{/if}</td>
                 <td>{$vo.cash_points}</td>
                 <td>{$vo.cash_money}</td>
-                <td>{$vo.cash_bank_name}</td>
-                <td>{$vo.cash_bank_no}</td>
-                <td>{$vo.cash_payee_name}</td>
-                <td>{$vo.cash_remarks}</td>
+                <td>{$vo.cash_bank_name|htmlspecialchars}</td>
+                <td>{$vo.cash_bank_no|htmlspecialchars}</td>
+                <td>{$vo.cash_payee_name|htmlspecialchars}</td>
+                <td>{$vo.cash_remarks|htmlspecialchars}</td>
                 <td>{$vo.cash_time|mac_day=color}</td>
                 <td>{$vo.cash_time_audit|mac_day=color}</td>
                 <td>

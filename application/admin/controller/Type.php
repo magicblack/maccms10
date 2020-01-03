@@ -30,6 +30,20 @@ class Type extends Base
             $list_count[$v['type_id']] = $v['cc'];
         }
 
+        //演员数量
+        $tmp = model('Actor')->field('type_id_1,type_id,count(actor_id) as cc')->where($where)->group('type_id_1,type_id')->select();
+        foreach($tmp as $k=>$v){
+            $list_count[$v['type_id_1']] += $v['cc'];
+            $list_count[$v['type_id']] = $v['cc'];
+        }
+        //网址数量
+        $tmp = model('Website')->field('type_id_1,type_id,count(website_id) as cc')->where($where)->group('type_id_1,type_id')->select();
+        foreach($tmp as $k=>$v){
+            $list_count[$v['type_id_1']] += $v['cc'];
+            $list_count[$v['type_id']] = $v['cc'];
+        }
+
+        //重新整合
         foreach($res['list'] as $k=>$v){
             $res['list'][$k]['cc'] = intval($list_count[$v['type_id']]);
             foreach($v['child'] as $k2=>$v2){

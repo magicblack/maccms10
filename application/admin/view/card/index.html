@@ -64,8 +64,8 @@
             <tr>
                 <td><input type="checkbox" name="ids[]" value="{$vo.card_id}" class="layui-checkbox checkbox-ids" lay-skin="primary"></td>
                 <td>{$vo.card_id}</td>
-                <td>{$vo.card_no}</td>
-                <td>{$vo.card_pwd}</td>
+                <td>{$vo.card_no|htmlspecialchars}</td>
+                <td>{$vo.card_pwd|htmlspecialchars}</td>
                 <td>{$vo.card_money}</td>
                 <td>{$vo.card_points}</td>
                 <td>{$vo.card_add_time|mac_day=color}</td>

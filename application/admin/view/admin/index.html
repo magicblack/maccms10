@@ -33,7 +33,7 @@
                     {/if}
                 </td>
                 <td>{$vo.admin_id}</td>
-                <td>{$vo.admin_name}</td>
+                <td>{$vo.admin_name|htmlspecialchars}</td>
                 <td>
                     <input type="checkbox" name="status" {if condition="$vo['admin_status'] eq 1"}checked{/if} value="{$vo['admin_status']}" lay-skin="switch" lay-filter="switchStatus" lay-text="正常|关闭" data-href="{:url('field?col=admin_status&ids='.$vo['admin_id'])}">
                 </td>
