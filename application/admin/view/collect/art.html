@@ -7,7 +7,7 @@
             <div class="layui-input-inline w150 m5"><a href="javascript:;" data-id="" class="select_type red">查看全部资源</a></div>
             {volist name="type" id="vo"}
             <div class="layui-input-inline w150 m5">
-                <a href="javascript:;" data-id="{$vo.type_id}" class="select_type">{$vo.type_name}</a>
+                <a href="javascript:;" data-id="{$vo.type_id}" class="select_type">{$vo.type_name|htmlspecialchars}</a>
                 <a id="{$param['cjflag']}_{$vo.type_id}" data-href="{:url('index/select')}?tab=art&col={$param['cjflag']}_{$vo.type_id}&ids=1&tpl=select_type&refresh=no&url=collect/bind" data-width="270" data-height="100" class="j-select" >
                     {if condition="$vo.isbind eq 1"}
                     <span class="red">[{$vo.local_type_name}]</span>
@@ -47,9 +47,9 @@
             {volist name="list" id="vo"}
             <tr>
                 <td><input type="checkbox" name="ids[]" value="{$vo.art_id}" class="layui-checkbox checkbox-ids" lay-skin="primary"></td>
-                <td>{$vo.art_name}</td>
-                <td>{$vo.type_name}</td>
-                <td>{$vo.art_from}</td>
+                <td>{$vo.art_name|htmlspecialchars}</td>
+                <td>{$vo.type_name|htmlspecialchars}</td>
+                <td>{$vo.art_from|htmlspecialchars}</td>
                 <td>{$vo.art_time|mac_day=color}</td>
             </tr>
             {/volist}
