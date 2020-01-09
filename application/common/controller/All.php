@@ -102,7 +102,7 @@ class All extends Controller
         $user_check = cookie('user_check');
 
         $user = ['user_id'=>0,'user_name'=>'游客','user_portrait'=>'static/images/touxiang.png','group_id'=>1,'points'=>0];
-        if(!empty($user_id) || !empty($user_name) || !empty($user_check)){
+        if(!empty($user_id) && !empty($user_name) && !empty($user_check)){
             $res = model('User')->checkLogin();
             if($res['code'] == 1){
                 $user = $res['info'];

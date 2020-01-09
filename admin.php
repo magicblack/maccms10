@@ -33,6 +33,10 @@ if(!is_file('./application/data/install/install.lock')) {
     header("Location: ./install.php");
     exit;
 }
+if(strpos($_SERVER["SCRIPT_NAME"],'/admin.php')!==false){
+    echo '请将后台入口文件admin.php改名,避免被黑客入侵攻击';
+    exit;
+}
 if (!@mb_check_encoding($_SERVER['PATH_INFO'], 'utf-8')){
     $_SERVER['PATH_INFO']=@mb_convert_encoding($_SERVER['PATH_INFO'], 'UTF-8', 'GBK');
 }
