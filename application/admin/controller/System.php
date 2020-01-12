@@ -35,7 +35,7 @@ class System extends Base
         }
 
         $options = [
-            'type' => $param['type'] == 1 ? 'memcache' : 'redis',
+            'type' => $param['type'],
             'port' => $param['port'],
             'username' => $param['username'],
             'password' => $param['password']
