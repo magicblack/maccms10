@@ -212,6 +212,7 @@ class Collect extends Base {
             $array_data[$key]['vod_id'] = (string)$video->id;
             //$array_data[$key]['type_id'] = (string)$video->tid;
             $array_data[$key]['vod_name'] = (string)$video->name;
+            $array_data[$key]['vod_sub'] = (string)$video->subname;
             $array_data[$key]['vod_remarks'] = (string)$video->note;
             $array_data[$key]['type_name'] = (string)$video->type;
             $array_data[$key]['vod_pic'] = (string)$video->pic;

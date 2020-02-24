@@ -380,6 +380,10 @@
                             <div class="layui-input-inline ">
                                 <input type="text" class="layui-input" value="{$info.vod_hits_month}" placeholder="" id="vod_hits_month" name="vod_hits_month" >
                             </div>
+                            <label class="layui-form-label">编辑人：</label>
+                            <div class="layui-input-inline ">
+                                <input type="text" class="layui-input" value="{$info.vod_author}" placeholder="" name="vod_author" id="vod_author">
+                            </div>
                         </div>
 
                         <div class="layui-form-item">
@@ -390,6 +394,10 @@
                             <label class="layui-form-label">日人气：</label>
                             <div class="layui-input-inline ">
                                 <input type="text" class="layui-input " value="{$info.vod_hits_day}" placeholder="" id="vod_hits_day" name="vod_hits_day">
+                            </div>
+                            <label class="layui-form-label">跳转URL：</label>
+                            <div class="layui-input-inline ">
+                                <input type="text" class="layui-input" value="{$info.vod_jumpurl}" placeholder="" name="vod_jumpurl" id="vod_jumpurl">
                             </div>
                         </div>
 
@@ -425,17 +433,18 @@
                         </div>
 
                         <div class="layui-form-item">
-                            <label class="layui-form-label">编辑人：</label>
-                            <div class="layui-input-inline ">
-                                <input type="text" class="layui-input" value="{$info.vod_author}" placeholder="" name="vod_author" id="vod_author">
-                            </div>
-                            <label class="layui-form-label">独立模板：</label>
+
+                            <label class="layui-form-label">内容页模板：</label>
                             <div class="layui-input-inline ">
                                 <input type="text" class="layui-input" value="{$info.vod_tpl}" placeholder="" name="vod_tpl">
                             </div>
-                            <label class="layui-form-label">跳转URL：</label>
+                            <label class="layui-form-label">播放页模板：</label>
                             <div class="layui-input-inline ">
-                                <input type="text" class="layui-input" value="{$info.vod_jumpurl}" placeholder="" name="vod_jumpurl" id="vod_jumpurl">
+                                <input type="text" class="layui-input" value="{$info.vod_tpl_play}" placeholder="" name="vod_tpl_play">
+                            </div>
+                            <label class="layui-form-label">下载页模板：</label>
+                            <div class="layui-input-inline ">
+                                <input type="text" class="layui-input" value="{$info.vod_tpl_down}" placeholder="" name="vod_tpl_down">
                             </div>
                         </div>
                         <div class="layui-form-item">

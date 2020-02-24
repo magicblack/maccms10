@@ -13,7 +13,7 @@
 <title>{$obj.vod_name|htmlspecialchars} {$vo2.title|htmlspecialchars} {$vo.player_info.show} </title>
 <link>{$maccms.site_url}{:mac_url_vod_play(['flag'=>'play','id'=>$vod_id,'sid'=>$vo.sid,'nid'=>$nid])}</link>
 <description><![CDATA["{$vo2.title}详情地址{$maccms.site_url}{:mac_url_vod_play(['flag'=>'play','id'=>$vod_id,'sid'=>$vo.sid,'nid'=>$nid])}"]]></description>
-<pubDate>{$vod_time|date='Y-m-d H:i:s',###}</pubDate>
+<pubDate>{$obj.vod_time|date='Y-m-d H:i:s',###}</pubDate>
 <category>{$obj.type.type_name}</category>
 <author>{$obj.vod_author|htmlspecialchars}</author>
 <comments>{$maccms.site_name}</comments>
