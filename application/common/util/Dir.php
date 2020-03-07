@@ -2,8 +2,8 @@
 namespace app\common\util;
 class Dir {
 
-    private $_values = array();
-    public $error = "";
+    private static $_values = array();
+    public static $error = "";
 
     /**
      * 架构函数
@@ -12,7 +12,7 @@ class Dir {
     public function __construct($path = '', $pattern = '*') {
         if (!$path) return false;
         if (substr($path, -1) != "/") $path .= "/";
-        $this->listFile($path, $pattern);
+        self::listFile($path, $pattern);
     }
 
 
@@ -79,10 +79,10 @@ class Dir {
             ');
             // 对结果排序 保证目录在前面
             usort($dir, $cmp_func);
-            $this->_values = $dir;
+            self::$_values = $dir;
             $_listDirs[$guid] = $dir;
         } else {
-            $this->_values = $_listDirs[$guid];
+            self::$_values = $_listDirs[$guid];
         }
     }
 
@@ -102,7 +102,7 @@ class Dir {
      * @return integer
      */
     public static function getATime() {
-        $current = $this->current($this->_values);
+        $current = self::current(self::$_values);
         return $current['atime'];
     }
 
@@ -111,7 +111,7 @@ class Dir {
      * @return integer
      */
     public static function getCTime() {
-        $current = $this->current($this->_values);
+        $current = self::current(self::$_values);
         return $current['ctime'];
     }
 
@@ -120,9 +120,9 @@ class Dir {
      * @return DirectoryIterator
      */
     public static function getChildren() {
-        $current = $this->current($this->_values);
+        $current = self::current(self::$_values);
         if ($current['isDir']) {
-            return new Dir($current['pathname']);
+            return new self($current['pathname']);
         }
         return false;
     }
@@ -132,7 +132,7 @@ class Dir {
      * @return string
      */
     public static function getFilename() {
-        $current = $this->current($this->_values);
+        $current = self::current(self::$_values);
         return $current['filename'];
     }
 
@@ -141,7 +141,7 @@ class Dir {
      * @return integer
      */
     public static function getGroup() {
-        $current = $this->current($this->_values);
+        $current = self::current(self::$_values);
         return $current['group'];
     }
 
@@ -150,7 +150,7 @@ class Dir {
      * @return integer
      */
     public static function getInode() {
-        $current = $this->current($this->_values);
+        $current = self::current(self::$_values);
         return $current['inode'];
     }
 
@@ -159,7 +159,7 @@ class Dir {
      * @return integer
      */
     public static function getMTime() {
-        $current = $this->current($this->_values);
+        $current = self::current(self::$_values);
         return $current['mtime'];
     }
 
@@ -168,7 +168,7 @@ class Dir {
      * @return string
      */
     function getOwner() {
-        $current = $this->current($this->_values);
+        $current = self::current(self::$_values);
         return $current['owner'];
     }
 
@@ -177,7 +177,7 @@ class Dir {
      * @return string
      */
     public static function getPath() {
-        $current = $this->current($this->_values);
+        $current = self::current(self::$_values);
         return $current['path'];
     }
 
@@ -186,7 +186,7 @@ class Dir {
      * @return string
      */
     public static function getPathname() {
-        $current = $this->current($this->_values);
+        $current = self::current(self::$_values);
         return $current['pathname'];
     }
 
@@ -195,7 +195,7 @@ class Dir {
      * @return integer
      */
     public static function getPerms() {
-        $current = $this->current($this->_values);
+        $current = self::current(self::$_values);
         return $current['perms'];
     }
 
@@ -204,7 +204,7 @@ class Dir {
      * @return integer
      */
     public static function getSize() {
-        $current = $this->current($this->_values);
+        $current = self::current(self::$_values);
         return $current['size'];
     }
 
@@ -213,7 +213,7 @@ class Dir {
      * @return string
      */
     public static function getType() {
-        $current = $this->current($this->_values);
+        $current = self::current(self::$_values);
         return $current['type'];
     }
 
@@ -222,7 +222,7 @@ class Dir {
      * @return boolen
      */
     public static function isDir() {
-        $current = $this->current($this->_values);
+        $current = self::current(self::$_values);
         return $current['isDir'];
     }
 
@@ -231,7 +231,7 @@ class Dir {
      * @return boolen
      */
     public static function isFile() {
-        $current = $this->current($this->_values);
+        $current = self::current(self::$_values);
         return $current['isFile'];
     }
 
@@ -240,7 +240,7 @@ class Dir {
      * @return boolen
      */
     public static function isLink() {
-        $current = $this->current($this->_values);
+        $current = self::current(self::$_values);
         return $current['isLink'];
     }
 
@@ -249,7 +249,7 @@ class Dir {
      * @return boolen
      */
     public static function isExecutable() {
-        $current = $this->current($this->_values);
+        $current = self::current(self::$_values);
         return $current['isExecutable'];
     }
 
@@ -258,7 +258,7 @@ class Dir {
      * @return boolen
      */
     public static function isReadable() {
-        $current = $this->current($this->_values);
+        $current = self::current(self::$_values);
         return $current['isReadable'];
     }
 
@@ -267,12 +267,12 @@ class Dir {
      * @return string
      */
     public static function getIterator() {
-        return new ArrayObject($this->_values);
+        return new ArrayObject(self::$_values);
     }
 
     // 返回目录的数组信息
     public static function toArray() {
-        return $this->_values;
+        return self::$_values;
     }
 
     // 静态方法
