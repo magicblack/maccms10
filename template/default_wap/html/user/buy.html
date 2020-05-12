@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width = device-width ,initial-scale = 1,minimum-scale = 1,maximum-scale = 1,user-scalable =no,"/>
+	<title>在线充值 - {$maccms.site_name}</title>
+	{include file="user/include" /}
+</head>
+
+<body style="background: #fff;">
+<!--子页顶部-->
+<div class="zy-search zy-tit">
+	<div class="sch-w clearfix">
+		<a class="go-back" href="#"><img src="{$maccms.path_tpl}images/user/go-back.png"></a>
+		<div class="tit">
+			我的充值
+		</div>
+	</div>
+</div>
+
+
+<div class="information-w">
+	<!--个人信息-->
+	<form method="post" id="fm">
+		<ul class="clearfix">
+			<li class="no-bg"><span class="tit">充值金额</span><span><input type="text" name="price" maxlength="4" class="new-val" value="{$config.min}"></span></li>
+			<li><span>1元等于<font color="red">{$config.scale}</font>个积分，最低<font color="red">{$config.min}</font>元起充<br>支持微信、支付宝、网银等在线充值</span></li>
+			<li><a class="btn-brand" href="javascript:;" id="btn_submit_pay" style="width: 60%">在线充值</a></li>
+		</ul>
+
+		<ul class="clearfix">
+			<li class="no-bg">
+				<span class="tit">充值卡号</span><span><input type="text" name="card_no" class="new-val" value=""></span>
+				{if condition="$GLOBALS['config']['pay']['card']['url'] neq ''"}
+				<a target="_blank" href="{$GLOBALS['config']['pay']['card']['url']}" >点击购买卡密</a>
+				{/if}
+			</li>
+			<li class="no-bg"><span class="tit">充值密码</span><span><input type="text" name="card_pwd" class="new-val" value=""></span></li>
+			<li><a class="btn-brand" href="javascript:;" id="btn_submit_card" style="width: 60%">充值卡充值</a></li>
+		</ul>
+
+	</form>
+</div>
+
+
+<!--loading start-->
+<div class="loading_box"></div>
+<!--loading end-->
+
+<script>
+
+	$(".go-back").click(function () {
+		var ref = document.referrer;
+		location.href=ref;
+	});
+
+	$('#btn_submit_pay').click(function(){
+		var that=$(this);
+		var price = $("input[name='price']").val();
+		if(Number(price)<1){
+			return;
+		}
+		if(confirm('确定要充值吗')) {
+			$.ajax({
+				url: "{:url('user/buy')}",
+				type: "post",
+				dataType: "json",
+				data: {price: price,flag:'pay'},
+				beforeSend: function () {
+					$("#btn_submit_pay").css("background","#fd6a6a").val("loading...");
+				},
+				success: function (r) {
+					if (r.code == 1) {
+						location.href="{:url('user/pay')}?order_code=" + r.data.order_code;
+					}
+					else{
+						alert(r.msg);
+					}
+				},
+				complete: function () {
+					$("#btn_submit_pay").css("background","#fa4646").val("提交");
+				}
+			});
+		}
+	});
+
+	$('#btn_submit_card').click(function(){
+		var that=$(this);
+		var no = $('input[name="card_no"]').val();
+		var pwd = $('input[name="card_pwd"]').val();
+		if(no=='' || pwd==''){
+			alert('请输入充值卡号和密码');
+			return;
+		}
+
+		if(confirm('确定要使用充值卡充值吗')) {
+			$.ajax({
+				url: "{:url('user/buy')}",
+				type: "post",
+				dataType: "json",
+				data: {card_no: no,card_pwd:pwd,flag:'card'},
+				beforeSend: function () {
+					$("#btn_submit_card").css("background","#fd6a6a").val("loading...");
+				},
+				success: function (r) {
+					alert(r.msg);
+				},
+				complete: function () {
+					$("#btn_submit_card").css("background","#fa4646").val("提交");
+				}
+			});
+		}
+
+	});
+
+</script>
+</body>
+</html>

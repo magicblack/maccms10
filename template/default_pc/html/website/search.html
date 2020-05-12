@@ -1,0 +1,59 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>网址导航{$param.wd}搜索结果 - {$maccms.site_name}</title>
+    <meta name="keywords" content="网址导航{$param.wd}" />
+    <meta name="description" content="网址导航{$param.wd}" />
+    {include file="public/include"}
+</head>
+<body>
+{include file="public/head"}
+<!--当前位置-->
+<div class="bread-crumb-nav fn-clear">
+    <ul class="bread-crumbs">
+        <li class="home"><a href="{$maccms.path}">首页</a></li>
+        <li>搜索" <strong style="color:#4c8fe8;">{$param.wd}</strong>" 结果 " <strong style="color:#4c8fe8" class="mac_total"></strong>" 个资源</li>
+        <li class="back"><a href="javascript:MAC.GoBack()">返回上一页</a></li>
+    </ul>
+</div>
+<!--列表部分-->
+<div class="ui-box ui-qire fn-clear" id="qire-lasted">
+    <div class="ui-title fn-clear">
+        <h2>最近更新</h2>
+        <div class="lasted-time fn-right">更新时间</div>
+        <div class="lasted-tags fn-right">标签</div>
+        <div class="lasted-type fn-right">类型</div>
+    </div>
+    <div class="ui-cnt">
+        <ul class="lasted-list fn-clear">
+            {maccms:website num="200" paging="yes" order="desc" by="time"}
+            <li><div class="lasted-num fn-left">∷</div>
+                <div class="lasted-tit fn-left">
+                    <h5 class="show-tipinfo"><a href="{:mac_url_website_detail($vo)}">{$vo.website_name}</a><em></em></h5>
+                    <div class="tipInfo">
+                        <div class="play-img"><img src="{:mac_url_img($vo.websitepic)}" alt="{$vo.website_name}" /></div>
+                        <dl>
+                            <dt>{$vo.website_name}</dt>
+                            <dd><label>地区：</label>{$vo.website_area}</dd>
+                            <dd><label>语言：</label>{$vo.website_lang}…</dd>
+                            <dd class="bg">备注：{$vo.website_remarks}<br />更新时间：{$vo.website_time|date='Y-m-d H:i:s',###}</dd>
+                        </dl>
+                    </div>
+                </div>
+                <div class="lasted-type fn-left"><a href="{:mac_url_type($vo.type)}">{$vo.type.type_name}</a></div>
+                <div class="lasted-tags fn-left"><a href='{:mac_url_type($vo.type,['area'=>$vo.website_area],'list')}' target='_blank'>{$vo.website_area}</a> </div>
+                <div class="lasted-time fn-right">{$vo.website_time|date='Y-m-d',###}</div>
+            </li>
+            {/maccms:website}
+        </ul>
+        {include file="public/paging"}
+        <script>
+            $('.mac_total').html('{$__PAGING__.record_total}');
+        </script>
+    </div>
+</div>
+
+{include file="public/foot"}
+</body>
+</html>

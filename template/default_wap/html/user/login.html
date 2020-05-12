@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width = device-width ,initial-scale = 1,minimum-scale = 1,maximum-scale = 1,user-scalable =no,"/>
+	<title>用户登录 - {$maccms.site_name}</title>
+	{include file="user/include" /}
+</head>
+<body>
+<div class="login-w">
+	<!--x返回按钮-->
+	<a href="javascript:history.go(-1)" class="btn-close" style="top: 10px;right: 10px;"></a>
+	<!--登录-->
+	<form method="post" action="">
+		<div class="form-group clearfix">
+			<i class="i-user"></i>
+			<input type="text" name="user_name" placeholder="请输入账号">
+		</div>
+		<div class="form-group clearfix">
+			<i class="i-pwd"></i>
+			<input type="password" name="user_pwd" placeholder="请输入密码">
+		</div>
+		{if condition="$GLOBALS['config']['user']['login_verify'] eq 1"}
+		<div class="form-group clearfix">
+			<i class="i-img-cod"></i>
+			<input type="text" name="verify" class="l_pwd_cod" style="width: 40%;">
+			<div class="pwd_img"><img id="verify_img" src="{:url('verify/index')}" onClick="this.src=this.src+'?'+Math.random()" /></div>
+		</div>
+		{/if}
+		<input type="button" id="btn_submit" value="立即登录" class="btn-brand">
+	</form>
+	<div class="log-btn clearfix">
+		<a class="btn-white log-reg" href="{:url('user/reg')}">免费注册</a>
+		<a class="a-gry" href="{:url('user/findpass')}">找回密码</a>
+	</div>
+</div>
+
+<!--loading start-->
+<div class="loading_box"></div>
+<!--loading end-->
+
+<script>
+
+	$("input[name='login_name']").focus();
+
+	$('#btn_submit').click(function(){
+		var user_name = $('input[name="user_name"]').val();
+		var user_pwd = $('input[name="user_pwd"]').val();
+		var verify = $('input[name="verify"]').val();
+
+		if(user_name==''){
+			alert('账号不能为空');
+			$('input[name="user_name"]').focus();
+			return;
+		}
+
+		if(user_pwd==''){
+			alert('密码不能为空');
+			$('input[name="user_pass"]').focus();
+			return;
+		}
+
+		if($('input[name="verify"]').length>0 && verify==''){
+			alert('验证码不能为空');
+			$('input[name="verify"]').focus();
+			return;
+		}
+
+		var data = {user_name:user_name, user_pwd:user_pwd, verify:verify };
+		$.ajax({
+			url: "{:url('user/login')}",
+			type: "post",
+			dataType: "json",
+			data: data,
+			beforeSend: function () {
+				//开启loading
+				//$(".loading_box").css("display","block");
+				$("#btn_submit").css("background","#fd6a6a").val("loading...");
+			},
+			success: function (r) {
+				if(r.code==1){
+					location.href="{:url('user/index')}";
+				}
+				else{
+					alert(r.msg);
+					$('#verify_img').click();
+				}
+			},
+			complete: function () {
+				//结束loading
+				//$(".loading_box").css("display","none");
+				$("#btn_submit").css("background","#fa4646").val("提交");
+			}
+		});
+
+	});
+</script>
+{include file="user/foot" /}
+</body>
+</html>

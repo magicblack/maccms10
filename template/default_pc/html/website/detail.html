@@ -1,0 +1,106 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>{$obj.website_name}详情介绍-{$obj.website_name}网址大全-{$obj.website_name}网址导航 - {$maccms.site_name}</title>
+    <meta name="keywords" content="{$obj.website_name}网址大全,{$obj.website_name}网址导航" />
+    <meta name="description" content="{$obj.website_name}网址大全:{$obj.website_blurb}" />
+    {include file="public/include"}
+</head>
+<body>
+{include file="public/head"}
+<!--当前位置-->
+<div class="bread-crumb-nav fn-clear">
+    <ul class="bread-crumbs">
+        <li class="home"><a href="{$maccms.path}">首页</a></li><li><a href="{:mac_url_type($obj.type_1)}">{$obj.type_1.type_name}</a></li>
+        <li><a href="{:mac_url_type($obj.type)}">{$obj.type.type_name}</a></li>
+        <li>{$obj.website_name}网址导航{$obj.website_nmae}网址大全</li>
+        <li class="back"><a href="javascript:MAC.GoBack()">返回上一页</a></li>
+    </ul>
+</div>
+<!--影片详细介绍-->
+<div class="ui-box" id="detail-box">
+    <!-- 评分分数 -->
+    <div class="rating-box" id="rating-main" style="display: block;">
+        <div class="rating-total fn-clear">
+            <label class="rating-total-item" id="total">&nbsp;</label>
+            <div class="pingfen-total"><strong id="pingfen">{$obj.website_score}</strong></div>
+        </div>
+        <div class="rating-panle">
+            <div class="rating-bar"><div class="rating-bar-item" id="fenshu" style="width: {$obj.website_score*10|ceil}%;">&nbsp;</div></div>
+            <ul class="rating-show" style="display: none;">
+                <li><span title="力荐" class="starstop star5">力荐</span><div class="power"><div class="power-item" id="pam"></div></div><em id="pa">人</em></li>
+                <li><span title="推荐" class="starstop star4">推荐</span><div class="power"><div class="power-item" id="pbm"></div></div><em id="pb">人</em></li>
+                <li><span title="还行" class="starstop star3">还行</span><div class="power"><div class="power-item" id="pcm"></div></div><em id="pc">人</em></li>
+                <li><span title="较差" class="starstop star2">较差</span><div class="power"><div class="power-item" id="pdm"></div></div><em id="pd">人</em></li>
+                <li><span title="很差" class="starstop star1">很差</span><div class="power"><div class="power-item" id="pem"></div></div><em id="pe">人</em></li>
+            </ul>
+        </div>
+    </div>
+    <div class="rating-box" id="rating-kong" style="display: none;"><div class="rating-kong-item"><span class="loading">评分加载中...</span></div></div>
+
+    <!-- 图文介绍 -->
+    <div class="detail-cols fn-clear">
+        <div class="detail-pic fn-left"><img src="{:mac_url_img($obj.website_pic)}" alt="{$obj.website_name}" /></div>
+        <div class="detail-info fn-left">
+            <!--星级-->
+            <div class="detail-title fn-clear"><h1>{$obj.website_name}</h1> </div>
+            <div id="detail-rating" class="fn-clear">
+                {include file="public/star2"}
+            </div>
+            <div class="info fn-clear">
+
+                <dl class="fn-left"><dt>语言：</dt><dd><span>{$obj.website_lang|mac_url_create='lang','website'}</span></dd></dl>
+                <dl class="fn-right"><dt>地区：</dt><dd><span>{$obj.website_area|mac_url_create='area','website'}</span></dd></dl>
+                <dl class="fn-left"><dt>时间：</dt><dd><span id="addtime">{$obj.website_time|date='Y-m-d',###}</span></dd></dl>
+                <dl class="fn-right"><dt>访问量：</dt><dd><span class="mac_hits hits" data-mid="{$maccms.mid}" data-id="{$obj.website_id}" data-type="hits"></span></dd></dl>
+                <dl class="fn-left"><dt>类型：</dt><dd>{$obj.website_class|mac_url_create='class','website'}</dd></dl>
+                <dl class="fn-right"><dt>收藏：</dt><dd class="link2"><a href="javascript:;" onclick="MAC.Desktop('{$obj.website_name}')">保存网址到桌面</a>&nbsp;&nbsp;<a href="javascript:void(0);" style="cursor:hand" onclick="MAC.Fav(location.href,document.name);">保存网址到浏览器</a>&nbsp;&nbsp;<a href="javascript:void(0);" style="cursor:hand" class="mac_ulog" data-type="2" data-mid="{$maccms.mid}" data-id="{$obj.website_id}">我要收藏</a></dd>
+                </dl>
+
+                <dl class="fenx"><dt>分享：</dt><dd><div class="bdsharebuttonbox"><a href="#" class="bds_weixin" data-cmd="weixin" title="分享到微信"></a><a href="#" class="bds_sqq" data-cmd="sqq" title="分享到QQ好友"></a><a href="#" class="bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a><a href="#" class="bds_renren" data-cmd="renren" title="分享到人人网"></a><a href="#" class="bds_douban" data-cmd="douban" title="分享到豆瓣网"></a><a href="#" class="bds_tieba" data-cmd="tieba" title="分享到百度贴吧"></a><a href="#" class="bds_qzone" data-cmd="qzone" title="分享到QQ空间"></a><a href="#" class="bds_tqq" data-cmd="tqq" title="分享到腾讯微博"></a><a href="#" class="bds_kaixin001" data-cmd="kaixin001" title="分享到开心网"></a><a href="#" class="bds_mogujie" data-cmd="mogujie" title="分享到蘑菇街"></a><a href="#" class="bds_huaban" data-cmd="huaban" title="分享到花瓣"></a><a href="#" class="bds_tqf" data-cmd="tqf" title="分享到腾讯朋友"></a><a href="#" class="bds_more" data-cmd="more"></a></div>
+                    <script>window._bd_share_config={"common":{"bdSnsKey":{},"bdText":"","bdMini":"1","bdMiniList":false,"bdPic":"","bdStyle":"1","bdSize":"24"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];</script></dd></dl>
+
+                <dl class="juqing" style="height:50px;"><dt>地址：</dt><dd><a  class="search-button"style="float:none;color:white;padding:20px;" target="_blank" href="{$obj.website_jumpurl}">点击访问</a></dd></dl>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--猜你喜欢-->
+<div class="ui-box marg">
+    <div class="ui-title">
+        <h2>喜欢看<strong>“{$obj.website_name}”</strong>的人也喜欢</h2>
+    </div>
+    <div class="box_con">
+        <ul class="img-list dis">
+            {maccms:website num="6" type="current" order="desc" by="time"}
+            <li><a href="{:mac_url_website_detail($vo)}" title="{$vo.website_name}"><img src="{:mac_url_img($vo.website_pic)}" alt="{$vo.website_name}"/><h2>{$vo.website_name}</h2><p></p><i>{$vo.website_version}</i><em></em></a></li>
+            {/maccms:website}
+        </ul>
+    </div>
+</div>
+
+<div class="ui-box marg" id="pinglun" >
+    <div class="ui-title">
+        <h3>评论</h3>
+    </div>
+    <div class="mac_comment" data-id="{$obj.website_id}" data-mid="{$maccms.mid}" ></div>
+    <script>
+        $(function(){
+            MAC.Comment.Login = {$comment.login};
+            MAC.Comment.Verify = {$comment.verify};
+            MAC.Comment.Init();
+            MAC.Comment.Show(1);
+        });
+    </script>
+</div>
+
+<span style="display:none" class="mac_ulog_set" alt="设置内容页浏览记录" data-type="1" data-mid="{$maccms.mid}" data-id="{$obj.website_id}" data-sid="{$param.sid}" data-nid="{$param.nid}"></span>
+
+<span style="display:none" class="mac_history_set" alt="设置History历史记录" data-name="[{$obj.type.type_name}]{$obj.website_name}" data-pic="{$obj.website_pic|mac_url_img}"></span>
+
+{include file="public/foot"}
+</body>
+</html>

@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width = device-width ,initial-scale = 1,minimum-scale = 1,maximum-scale = 1,user-scalable =no,"/>
+	<title>找回密码 - {$maccms.site_name}</title>
+	{include file="user/include" /}
+</head>
+<body>
+<!--子页顶部-->
+<div class="zy-search zy-tit">
+	<div class="sch-w clearfix">
+		<a class="go-back" href="#"><img src="{$maccms.path_tpl}images/user/go-back.png"></a>
+		<div class="tit">
+			找回密码
+		</div>
+	</div>
+</div>
+<div class="form-w">
+	<!--修改密码-->
+	<form method="post" action="" id="fm">
+		<div class="form-control clearfix">
+			<input class="fl" type="text" name="user_name" placeholder="账号">
+			<span class="fr"></span>
+		</div>
+		<div class="form-control clearfix">
+			<input type="text" name="user_question" placeholder="找回问题" value="">
+		</div>
+		<div class="form-control clearfix">
+			<input type="text" name="user_answer" placeholder="找回答案" value="">
+		</div>
+		<div class="form-control clearfix">
+			<input type="password" id="pass1" name="user_pwd" placeholder="新密码" value="">
+		</div>
+		<div class="form-control clearfix">
+			<input type="password" id="pass2" name="user_pwd2" placeholder="确认密码" value="">
+		</div>
+		<div class="form-control clearfix">
+			<input type="text" name="verify" required placeholder="验证码">
+			<div class="pwd_img"><img id="vcode" src="{:url('verify/index')}" onClick="this.src=this.src+'?'" /></div>
+		</div>
+		<input type="button" class="btn-brand" id="btn_submit" value="提交">
+	</form>
+	<div class="log-btn clearfix">
+		<a class="a-gry" href="{:url('user/findpass_msg')}?ac=phone">【绑定手机找回密码】</a>&nbsp;&nbsp;
+		<a class="a-gry" href="{:url('user/findpass_msg')}?ac=email">【绑定邮箱找回密码】</a>&nbsp;&nbsp;
+		<a class="a-gry" href="{:url('user/findpass')}">【密码问题找回密码】</a>&nbsp;&nbsp;
+	</div>
+</div>
+
+<script>
+	$(".go-back").click(function () {
+		var ref = document.referrer;
+		location.href=ref;
+	});
+
+	$("#btn_submit").click(function(msg) {
+		var data = $("#fm").serialize();
+		var input = $("#fm").serializeArray();
+		var pass1 = $("#pass1").val();
+		var pass2 = $("#pass2").val();
+		var inputName = new Array();
+		inputName['user_name'] = '登录帐号';
+		inputName['user_question'] = '找回问题';
+		inputName['user_answer'] = '找回答案';
+		inputName['user_pwd'] = '密码';
+		inputName['user_pwd2'] = '确认密码';
+		inputName['verify'] = '验证码';
+		var is = false;
+		var err = '';
+		$.each(input,function(name,field) {
+			if (field.value == '') {
+				is = true;
+				err = inputName[field.name] + '不能为空';
+				return false;
+			}
+		})
+		if (is) {
+			alert(err);
+			return false;
+		}
+		if (pass1 != pass2) {
+			alert('两次密码不一致');
+			return false;
+		}
+
+		$.ajax({
+			url: "{:url('user/findpass')}",
+			type: "post",
+			dataType: "json",
+			data: data,
+			beforeSend: function () {
+				//开启loading
+				//$(".loading_box").css("display","block");
+				$("#btn_submit").css("background","#fd6a6a").val("loading...");
+			},
+			success: function (r) {
+				alert(r.msg);
+				if(r.code==1){
+					location.href="{:url('user/login')}";
+				}
+			},
+			complete: function () {
+				//结束loading
+				//$(".loading_box").css("display","none");
+				$("#btn_submit").css("background","#fa4646").val("提交");
+			}
+		});
+	});
+
+</script>
+{include file="user/foot" /}
+</body>
+</html>

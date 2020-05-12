@@ -1,0 +1,54 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no">
+    <title>{$param.wd}{$param.actor}{$param.director}{$param.area}{$param.lang}{$param.year}{$param.class}搜索结果 - {$maccms.site_name}</title>
+    <meta name="keywords" content="{$param.wd}{$param.actor}{$param.director}{$param.area}{$param.lang}{$param.year}{$param.class}搜索结果" />
+    <meta name="description" content="{$param.wd}{$param.actor}{$param.director}{$param.area}{$param.lang}{$param.year}{$param.class}搜索结果" />
+    {include file="public/include"}
+</head>
+<body>
+{include file="public/head"}
+<header class="g_header2">
+    <a href="javascript:MAC.GoBack()"><i class="moreArrow2"></i>返回</a>
+    {$param.wd}{$param.actor}{$param.director}{$param.area}{$param.lang}{$param.year}{$param.class}搜索结果
+    <label for="navSwitch" href="javascript:;" class="s_c mac_user"><i class="i_user"><span></span></i></label>
+    <label for="navSwitch" href="javascript:;" class="s_r s_bt"><i class="i_bread"><span></span></i></label>
+</header>
+<!--搜索结果-->
+<div class="fn-clear" id="list-focus">
+    <ul class="show-list">
+        {maccms:vod num="10" paging="yes" pageurl="vod/search" order="desc" by="time"}
+        <li><a class="play-img" href="{:mac_url_vod_detail($vo)}"><img src="{:mac_url_img($vo.vod_pic)}" alt="{$vo.vod_name}" /></a>
+            <div class="play-txt">
+                <h2><a href="{:mac_url_vod_detail($vo)}">{$vo.vod_name}</a></h2>
+                <dl><dt>主演：</dt><dd>{$vo.vod_actor}</dd></dl>
+                <dl><dt>状态：</dt><dd><span class="color">{if condition="$vo.vod_serial gt 0"}第{$vo.vod_serial}集/共{$vo.vod_total}集{else/}{$vo.vod_remarks}{/if}</span></dd></dl>
+                <dl><dt>导演：</dt><dd>{$vo.vod_director}</dd></dl>
+                <dl><dt>类型：</dt><dd>{$vo.type_name} / {$vo.vod_area} / {$vo.vod_year}</dd></dl>
+                <dl><dt>时间：</dt><dd><span id="addtime">{$vo.vod_time|date='Y-m-d',###}</span></dd></dl><em>8.7分</em>
+            </div>
+        </li>
+        {/maccms:vod}
+    </ul>
+    <div class="ui-bar list-page fn-clear">
+        {include file="public/paging"}
+    </div>
+</div>
+<!--猜你喜欢-->
+<section class="box">
+    <section class="title"><i class="iLine"></i><h2>喜欢<strong>“{$param.wd}”</strong>的人也喜欢</h2></section>
+    <div class="box_con">
+        <ul class="img-list dis">
+            {maccms:vod num="6" order="desc" by="hits_week"}
+            <li><a href="{:mac_url_vod_detail($vo)}" title="{$vo.vod_name}"><span><img src="{:mac_url_img($vo.vod_pic)}" alt="{$vo.vod_name}"/></span><h2>{$vo.vod_name}</h2><p>{$vo.vod_actor}</p><i>{$vo.vod_remarks}</i><em></em></a></li>
+            {/maccms:vod}
+        </ul>
+    </div>
+</section>
+
+{include file="public/foot"}
+</body>
+</html>
+

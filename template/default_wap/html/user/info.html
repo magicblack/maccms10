@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width = device-width ,initial-scale = 1,minimum-scale = 1,maximum-scale = 1,user-scalable =no,"/>
+	<title>用户资料 - {$maccms.site_name}</title>
+	{include file="user/include" /}
+</head>
+<body>
+<!--子页顶部-->
+<div class="zy-search zy-tit">
+	<div class="sch-w clearfix">
+		<a class="go-back" href="#"><img src="{$maccms.path_tpl}images/user/go-back.png"></a>
+		<div class="tit">
+			用户资料
+		</div>
+	</div>
+</div>
+<div class="information-w">
+	<!--个人信息-->
+	<form method="post" id="fm">
+	<ul class="clearfix">
+		<li class="no-bg"><span class="tit">账号</span><span>{$obj.user_name}</span></li>
+		<li class="no-bg"><span class="tit">原密码</span><span><input type="password" name="user_pwd" class="new-val" value=""></span></li>
+		<li class="no-bg"><span class="tit">新密码</span><span><input type="password" name="user_pwd1" class="new-val" value=""></span></li>
+		<li class="no-bg"><span class="tit">确认密码</span><span><input type="password" name="user_pwd2" class="new-val" value=""></span></li>
+		<li class="no-bg"><span class="tit">qq号</span><span><input type="text" name="user_qq" class="new-val" value="{$obj.user_qq}"></span></li>
+
+		<li class="no-bg">
+			<span class="tit">邮箱</span>
+			<span><input type="text" name="user_email" class="new-val" readonly="readonly" value="{$obj.user_email}"></span>
+			{if condition="$obj.user_email neq ''"}
+			[<a class="btn_unbind" ac="email" href="javascript:;">解绑</a>]
+			{else/}
+			[<a href="{:url('user/bind')}?ac=email">绑定</a>]
+			{/if}
+		</li>
+
+		<li class="no-bg">
+			<span class="tit">手机</span>
+			<span><input type="text" name="user_phone" class="new-val" readonly="readonly" value="{$obj.user_phone}"></span>
+			{if condition="$obj.user_phone neq ''"}
+			[<a class="btn_unbind" ac="phone" href="javascript:;">解绑</a>]
+			{else/}
+			[<a href="{:url('user/bind')}?ac=phone">绑定</a>]
+			{/if}
+		</li>
+
+
+		<li class="no-bg"><span class="tit">找回问题</span><span><input type="text" name="user_question" class="new-val" value="{$obj.user_question}"></span></li>
+		<li class="no-bg"><span class="tit">找回答案</span><span><input type="text" name="user_answer" class="new-val" value="{$obj.user_answer}"></span></li>
+		<li><a class="btn-brand" href="javascript:;" id="btn_submit" style="width: 60%">提交修改</a></li>
+	</ul>
+	</form>
+</div>
+
+<!--loading start-->
+<div class="loading_box"></div>
+<!--loading end-->
+
+<script>
+
+    $('.btn_unbind').click(function(){
+        var ac = $(this).attr('ac');
+        if(ac!='email' && ac!='phone'){
+            alert('参数错误');
+        }
+        if(confirm('确认解除绑定吗？此操作不可恢复？')) {
+            $.ajax({
+                url: "{:url('user/unbind')}",
+                type: "post",
+                dataType: "json",
+                data: {ac: ac},
+                beforeSend: function () {
+                    //开启loading
+                },
+                success: function (r) {
+                    alert(r.msg);
+                    if(r.code==1){
+                        location.href="{:url('user/info')}";
+                    }
+                },
+                complete: function () {
+                    //结束loading
+                }
+            });
+        }
+    });
+
+	$("#btn_submit").click(function() {
+		var data = $("#fm").serialize();
+		$.ajax({
+			url: "{:url('user/info')}",
+			type: "post",
+			dataType: "json",
+			data: data,
+			beforeSend: function () {
+				//开启loading
+				//$(".loading_box").css("display","block");
+				$("#btn_submit").css("background","#fd6a6a").val("loading...");
+			},
+			success: function (r) {
+				alert(r.msg);
+				if(r.code==1){
+					location.href="{:url('user/info')}";
+				}
+			},
+			complete: function () {
+				//结束loading
+				//$(".loading_box").css("display","none");
+				$("#btn_submit").css("background","#fa4646").val("提交");
+			}
+		});
+	});
+
+	$(".go-back").click(function () {
+		var ref = document.referrer;
+		location.href=ref;
+	})
+
+</script>
+</body>
+</html>

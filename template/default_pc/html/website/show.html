@@ -1,0 +1,116 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>{$obj.type_name}网址收录 - {$maccms.site_name}</title>
+    <meta name="keywords" content="{$obj.type_key}" />
+    <meta name="description" content="{$obj.type_des}" />
+    {include file="public/include"}
+</head>
+<body>
+{include file="public/head"}
+<!-- 搜索条件 -->
+<div class="ui-box filter-focus">
+    <div class="ui-title"><h3>{$obj.type_name} - 高级搜索</h3></div>
+    <div class="ui-cnt">
+        <div class="filter-list fn-clear">
+            <h5>类型：</h5>
+            <ul>
+                <li><a {if condition="$param['class'] eq ''"} class="current" {/if} href="{:mac_url_type($obj,['area'=>$param['area'],'lang'=>$param['lang'],'level'=>$param['level'],'letter'=>$param['letter'],'tag'=>$param['tag'],'class'=>'','order'=>$param['order'],'by'=>$param['by'] ],'show')}">全部</a></li>
+                {empty name="$obj.type_extend.area"}
+                {maccms:foreach name=":explode(',',$obj.parent.type_extend.class)" id="vo2" key="key2"}
+                <li><a {if condition="$param['class'] eq $vo2"} class="current" {/if} href="{:mac_url_type($obj,['area'=>$param['area'],'lang'=>$param['lang'],'level'=>$param['level'],'letter'=>$param['letter'],'tag'=>$param['tag'],'class'=>$vo2,'order'=>$param['order'],'by'=>$param['by'] ],'show')}">{$vo2}</a></li>
+                {/maccms:foreach}
+                {else /}
+                {maccms:foreach name=":explode(',',$obj.type_extend.class)" id="vo2" key="key2"}
+                <li><a {if condition="$param['class'] eq $vo2"} class="current" {/if} href="{:mac_url_type($obj,['area'=>$param['area'],'lang'=>$param['lang'],'level'=>$param['level'],'letter'=>$param['letter'],'tag'=>$param['tag'],'class'=>$vo2,'order'=>$param['order'],'by'=>$param['by'] ],'show')}">{$vo2}</a></li>
+                {/maccms:foreach}
+                {/empty}
+            </ul>
+        </div>
+        <div class="filter-list fn-clear">
+            <h5>地区：</h5>
+            <ul>
+                <li><a {if condition="$param['area'] eq ''"} class="current" {/if} href="{:mac_url_type($obj,['area'=>'','lang'=>$param['lang'],'level'=>$param['level'],'letter'=>$param['letter'],'tag'=>$param['tag'],'class'=>$param['class'],'order'=>$param['order'],'by'=>$param['by'] ],'show')}">全部</a></li>
+                {empty name="$obj.type_extend.area"}
+                {maccms:foreach name=":explode(',',$obj.parent.type_extend.area)" id="vo2" key="key2"}
+                <li><a {if condition="$param['area'] eq $vo2"} class="current" {/if} href="{:mac_url_type($obj,['area'=>$vo2,'lang'=>$param['lang'],'level'=>$param['level'],'letter'=>$param['letter'],'tag'=>$param['tag'],'class'=>$param['class'],'order'=>$param['order'],'by'=>$param['by'] ],'show')}">{$vo2}</a></li>
+                {/maccms:foreach}
+                {else /}
+                {maccms:foreach name=":explode(',',$obj.type_extend.area)" id="vo2" key="key2"}
+                <li><a {if condition="$param['area'] eq $vo2"} class="current" {/if} href="{:mac_url_type($obj,['area'=>$vo2,'lang'=>$param['lang'],'level'=>$param['level'],'letter'=>$param['letter'],'tag'=>$param['tag'],'class'=>$param['class'],'order'=>$param['order'],'by'=>$param['by'] ],'show')}">{$vo2}</a></li>
+                {/maccms:foreach}
+                {/empty}
+            </ul>
+        </div>
+        <div class="filter-list fn-clear">
+            <h5>语言：</h5>
+            <ul>
+                <li><a {if condition="$param['lang'] eq ''"} class="current" {/if} href="{:mac_url_type($obj,['area'=>$param['area'],'lang'=>'','level'=>$param['level'],'letter'=>$param['letter'],'tag'=>$param['tag'],'class'=>$param['class'],'order'=>$param['order'],'by'=>$param['by'] ],'show')}">全部</a></li>
+                {empty name="$obj.type_extend.lang"}
+                {maccms:foreach name=":explode(',',$obj.parent.type_extend.lang)" id="vo2" key="key2"}
+                <li><a {if condition="$param['area'] eq $vo2"} class="current" {/if} href="{:mac_url_type($obj,['area'=>$param['area'],'lang'=>$vo2,'level'=>$param['level'],'letter'=>$param['letter'],'tag'=>$param['tag'],'class'=>$param['class'],'order'=>$param['order'],'by'=>$param['by'] ],'show')}">{$vo2}</a></li>
+                {/maccms:foreach}
+                {else /}
+                {maccms:foreach name=":explode(',',$obj.type_extend.lang)" id="vo2" key="key2"}
+                <li><a {if condition="$param['lang'] eq $vo2"} class="current" {/if} href="{:mac_url_type($obj,['area'=>$param['area'],'lang'=>$vo2,'level'=>$param['level'],'letter'=>$param['letter'],'tag'=>$param['tag'],'class'=>$param['class'],'order'=>$param['order'],'by'=>$param['by'] ],'show')}">{$vo2}</a></li>
+                {/maccms:foreach}
+                {/empty}
+            </ul>
+        </div>
+        <div class="filter-list filter-list-letter fn-clear">
+            <h5>字母：</h5>
+            <ul>
+                <li><a  {if condition="$param['letter'] eq ''"} class="current"{/if} href="{:mac_url_type($obj,['area'=>$param['area'],'lang'=>$param['lang'],'level'=>$param['level'],'letter'=>'','tag'=>$param['tag'],'class'=>$param['class'],'order'=>$param['order'],'by'=>$param['by'] ],'show')}">全部</a></li>
+                {maccms:foreach name=":explode(',','A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,R,S,T,U,V,W,X,Y,Z,0~9')" id="vo2" key="key2"}
+                <li><a {if condition="$param['letter'] eq $vo2"} class="current"{/if} {/if} href="{:mac_url_type($obj,['area'=>$param['area'],'lang'=>$param['lang'],'level'=>$param['level'],'letter'=>$vo2,'tag'=>$param['tag'],'class'=>$param['class'],'order'=>$param['order'],'by'=>$param['by'] ],'show')}">{$vo2}</a><li>
+                {/maccms:foreach}
+            </ul>
+        </div>
+    </div>
+</div>
+<!-- 排序方式 -->
+<div class="ui-bar fn-clear">
+    <div class="view-filter">
+        <a href="{:mac_url_type($obj,['area'=>$param['area'],'lang'=>$param['lang'],'level'=>$param['level'],'letter'=>$param['letter'],'tag'=>$param['tag'],'class'=>$param['class'],'order'=>$param['order'],'by'=>'time' ],'show')}" class="order {if condition="$param.by eq '' || $param.by eq 'time'"}current{/if}">按时间</a>
+        <a href="{:mac_url_type($obj,['area'=>$param['area'],'lang'=>$param['lang'],'level'=>$param['level'],'letter'=>$param['letter'],'tag'=>$param['tag'],'class'=>$param['class'],'order'=>$param['order'],'by'=>'hits' ],'show')}" class="order {if condition="$param.by eq 'hits'"}current{/if}">按人气</a>
+        <a href="{:mac_url_type($obj,['area'=>$param['area'],'lang'=>$param['lang'],'level'=>$param['level'],'letter'=>$param['letter'],'tag'=>$param['tag'],'class'=>$param['class'],'order'=>$param['order'],'by'=>'score' ],'show')}" class="order {if condition="$param.by eq 'score'"}current{/if}">按评分</a>
+    </div>
+</div>
+<!--列表部分-->
+<div class="ui-box ui-qire fn-clear" id="qire-lasted">
+    <div class="ui-title fn-clear">
+        <h2>最近更新</h2>
+        <div class="lasted-time fn-right">更新时间</div>
+        <div class="lasted-tags fn-right">标签</div>
+        <div class="lasted-type fn-right">类型</div>
+    </div>
+    <div class="ui-cnt">
+        <ul class="lasted-list fn-clear">
+            {maccms:website num="20" paging="yes" pageurl="website/show" type="current" order="desc" by="time"}
+            <li><div class="lasted-num fn-left">∷</div>
+                <div class="lasted-tit fn-left">
+                    <h5 class="show-tipinfo"><a href="{:mac_url_website_detail($vo)}">{$vo.website_name}</a><em></em></h5>
+                    <div class="tipInfo">
+                        <div class="play-img"><img src="{:mac_url_img($vo.websitepic)}" alt="{$vo.website_name}" /></div>
+                        <dl>
+                            <dt>{$vo.website_name}</dt>
+                            <dd><label>地区：</label>{$vo.website_area}</dd>
+                            <dd><label>语言：</label>{$vo.website_lang}…</dd>
+                            <dd class="bg">备注：{$vo.website_remarks}<br />更新时间：{$vo.website_time|date='Y-m-d H:i:s',###}</dd>
+                        </dl>
+                    </div>
+                </div>
+                <div class="lasted-type fn-left"><a href="{:mac_url_type($vo.type)}">{$vo.type.type_name}</a></div>
+                <div class="lasted-tags fn-left"><a href='{:mac_url_type($vo.type,['area'=>$vo.website_area],'list')}' target='_blank'>{$vo.website_area}</a> </div>
+                <div class="lasted-time fn-right">{$vo.website_time|date='Y-m-d',###}</div>
+            </li>
+            {/maccms:website}
+        </ul>
+        {include file="public/paging"}
+    </div>
+</div>
+
+{include file="public/foot"}
+</body>
+</html>

@@ -1,0 +1,25 @@
+<!-- 页头 -->
+<input type="checkbox" id="navSwitch">
+<header class="g_nav trans">
+    <ul class="g_wrap_p">
+        <li><a href="{$maccms.path}">首页</a></li>
+        {maccms:type ids="parent" order="asc" by="sort"}
+        <li><a href="{:mac_url_type($vo)}">{$vo.type_name}</a></li>
+        {/maccms:type}
+        <li><a href="{:mac_url('topic/index')}">影视专题</a></li>
+        <li><a href="{:mac_url('map/index')}">热门排行</a></li>
+    </ul>
+    <div class="g_wrap_p">
+        <div class="ui-search">
+            <form id="search" name="search" method="get" action="{:mac_url('vod/search')}" onSubmit="return qrsearch();">
+                <input type="text" id="wd" name="wd" class="search-input" value="请输入影片名或演员名称" onfocus="if(this.value=='请输入影片名或演员名称'){this.value='';}" onblur="if(this.value==''){this.value='请输入影片名或演员名称';};" />
+                <input type="submit" id="searchbutton"  class="search-button" value="搜索" />
+            </form>
+        </div>
+        <div class="resou">
+            {maccms:foreach name=":explode(',',$maccms.search_hot)" id="vo2" key="key2"}
+            <a href="{:mac_url('vod/search',['wd'=>$vo2])}">{$vo2}</a>
+            {/maccms:foreach}
+        </div>
+    </div>
+</header>

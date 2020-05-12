@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<rss version="2.0">
+<channel>
+<title>{$obj.art_name}</title> 
+<link>{$maccms.site_url}{:mac_url_art_detail(['id'=>$obj.art_id])}</link>
+<description><![CDATA["{$obj.art_content|str_replace='$$$','',###|mac_substring=200}"]]></description>
+<language>zh-cn</language> 
+<generator>{$maccms.site_url}</generator> 
+<webmaster>{$maccms.site_email}</webmaster>
+{maccms:foreach name="obj.art_page_list"}
+<item>
+<title>{$obj.art_name|htmlspecialchars}{$vo.title|htmlspecialchars}</title>
+<link>{$maccms.site_url}{:mac_url_art_detail(['id'=>$obj.art_id,'page'=>$i])}</link>
+<description><![CDATA["{$vo.title|htmlspecialchars}详情地址{$maccms.site_url}{:mac_url_art_detail(['id'=>$obj.art_id,'page'=>$i])}"]]></description>
+<pubDate>{$obj.art_time|date='Y-m-d H:i:s',###}</pubDate>
+<category>{$obj.type.type_name}</category>
+<author>{$obj.art_author|htmlspecialchars}</author>
+<comments>{$maccms.site_name}</comments>
+</item>
+{/maccms:foreach}
+</channel>
+</rss>

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<rss version="2.0">
+<channel>
+<title>{$obj.actor_name}</title> 
+<link>{$maccms.site_url}{:mac_url_actor_detail(['id'=>$obj.actor_id])}</link>
+<description><![CDATA["{$obj.actor_content|mac_filter_html|mac_substring=200}"]]></description>
+<language>zh-cn</language> 
+<generator>{$maccms.site_url}</generator> 
+<webmaster>{$maccms.site_email}</webmaster>
+</channel>
+</rss>

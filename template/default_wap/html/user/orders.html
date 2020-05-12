@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width = device-width ,initial-scale = 1,minimum-scale = 1,maximum-scale = 1,user-scalable =no,"/>
+	<title>我的充值记录 - {$maccms.site_name}</title>
+	{include file="user/include" /}
+</head>
+
+<body style="background: #fff;">
+<!--子页顶部-->
+<div class="zy-search zy-tit">
+	<div class="sch-w clearfix">
+		<a class="go-back" href="#"><img src="{$maccms.path_tpl}images/user/go-back.png"></a>
+		<div class="tit">
+			充值记录
+		</div>
+	</div>
+</div>
+
+<div class="wrap list-top" style="border-top: 1px solid #ececec;"><span class="ml10 "><a href="{:url('user/orders')}">在线充值记录</a></span><span class="ml10 "><a href="{:url('user/cards')}">充值卡记录</a></span></div>
+<div class="wrap" id="list">
+	<!--我的收藏-->
+	<div class="order-list often-odr">
+		{volist name="list" id="vo"}
+
+		<div class="item clearfix">
+			<div class="info">
+				<p class="tit">{$vo.order_id}、{$vo.order_code}</p>
+				<div class="p-bottom">
+					<p>状态：{if condition="$vo.order_status eq 1"}已支付{else}未支付{/if}  金额：{$vo.order_price}  积分：{$vo.order_points} </p>
+				</div>
+			</div>
+			<div class="odr-price">
+				<p class="price">{$vo.order_time|mac_day}</p>
+			</div>
+			<div class="often-del clearfix">
+				{if condition="$vo.order_status eq 0"}
+				<a class="btn-brand btn-del" href="{:url('user/pay')}?order_code={$vo.order_code}" style="width:60px;" >支付</a>
+				{/if}
+			</div>
+		</div>
+		{/volist}
+	</div>
+</div>
+
+
+<!--loading start-->
+<div class="loading_box"></div>
+<!--loading end-->
+
+<script>
+
+	$(".go-back").click(function () {
+		var ref = document.referrer;
+		location.href=ref;
+	});
+
+</script>
+</body>
+</html>

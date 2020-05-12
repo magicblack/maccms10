@@ -1,0 +1,62 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>{$obj.vod_name}分集剧情介绍-{$obj.vod_name}在线观看-{$obj.vod_name}迅雷下载 - {$maccms.site_name}</title>
+    <meta name="keywords" content="{$obj.vod_name}在线收看,{$obj.vod_name}迅雷下载" />
+    <meta name="description" content="{$obj.vod_name}剧情:{$obj.vod_blurb}" />
+    {include file="public/include"}
+</head>
+<body>
+{include file="public/head"}
+<!--当前位置-->
+<div class="bread-crumb-nav fn-clear">
+    <ul class="bread-crumbs">
+        <li class="home"><a href="{$maccms.path}">首页</a></li><li><a href="{:mac_url_type($obj.type_1)}">{$obj.type_1.type_name}</a></li>
+        <li><a href="{:mac_url_type($obj.type)}">{$obj.type.type_name}</a></li>
+        <li>{$obj.vod_name}在线点播{$obj.vod_nmae}迅雷下载</li>
+        <li class="back"><a href="javascript:MAC.GoBack()">返回上一页</a></li>
+    </ul>
+</div>
+
+    <div class="ui-box marg" id="juqing">
+        <div class="ui-title">
+            <h3>{$obj['vod_name']}分集剧情</h3>
+        </div>
+        <div class="tjuqing">
+            {php}
+            //分集剧情列表分页操作
+            $__LIST__=[];
+            $__LIST__['total'] = count($obj['vod_plot_list']); //数据总数
+            $__LIST__['limit'] = 10; //每页条数
+            $__LIST__['page'] = $param['page']; //当前页码
+            $__LIST__['pageurl'] = mac_url_vod_plot($obj,['page' => 'PAGELINK']);
+            $__LIST__['half'] = 5; //页码显示数
+            $__PAGING__ = mac_page_param($__LIST__['total'],$__LIST__['limit'],$__LIST__['page'],$__LIST__['pageurl'],$__LIST__['half']); //获取分页数据
+            $start = (intval($param['page'])-1) * $__LIST__['limit']; //计算起始页数
+            if($start<0){
+                $start=0;
+            }
+            $vod_plot_list = array_slice($obj['vod_plot_list'],$start,$__LIST__['limit']); //获取当前页码的数据
+            {/php}
+            {volist name="$vod_plot_list" id="vo"}
+            <div>
+                <div style="padding-top:10px;">
+                    <a class="page_link" href="{:mac_url_plot_detail($obj,['page'=>$key])}" title="{$vo.name}"><b>{$vo.name}</b></a>
+                </div>
+                <div>
+                    {$vo.detail|mac_substring=50}
+                    <a href="{:mac_url_plot_detail($obj,['page'=>$key])}" title="{$vo.name}">[详情...]</a>
+                </div>
+            </div>
+            {/volist}
+        </div>
+        <!-- 分页 -->
+        <div class="ui-bar list-page fn-clear">
+            {include file="public/paging"}
+        </div>
+    </div>
+
+{include file="public/foot"}
+</body>
+</html>
