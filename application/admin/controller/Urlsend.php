@@ -248,7 +248,7 @@ class Urlsend extends Base
         }
 
         if ($res['page'] >= $res['pagecount']) {
-            Cache::rm('urlsend_break_baidu_push');
+            Cache::rm($key);
 
             mac_echo('数据推送完毕');
             if(ENTRANCE=='admin') {
@@ -323,7 +323,7 @@ class Urlsend extends Base
         }
 
         if ($res['page'] >= $res['pagecount']) {
-            Cache::rm('urlsend_break_baidu_bear');
+            Cache::rm($key);
             mac_echo('数据推送完毕');
             if(ENTRANCE=='admin') {
                 mac_jump(url('urlsend/index'), 3);

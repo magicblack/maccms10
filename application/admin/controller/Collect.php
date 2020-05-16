@@ -33,9 +33,19 @@ class Collect extends Base
         $collect_break_vod = Cache::get($key);
         $key = $GLOBALS['config']['app']['cache_flag']. '_'. 'collect_break_art';
         $collect_break_art = Cache::get($key);
+        $key = $GLOBALS['config']['app']['cache_flag']. '_'. 'collect_break_actor';
+        $collect_break_actor = Cache::get($key);
+        $key = $GLOBALS['config']['app']['cache_flag']. '_'. 'collect_break_role';
+        $collect_break_role = Cache::get($key);
+        $key = $GLOBALS['config']['app']['cache_flag']. '_'. 'collect_break_website';
+        $collect_break_website = Cache::get($key);
+
 
         $this->assign('collect_break_vod', $collect_break_vod);
         $this->assign('collect_break_art', $collect_break_art);
+        $this->assign('collect_break_actor', $collect_break_actor);
+        $this->assign('collect_break_role', $collect_break_role);
+        $this->assign('collect_break_website', $collect_break_website);
 
         $this->assign('title', '采集资源管理');
         return $this->fetch('admin@collect/index');
@@ -92,9 +102,18 @@ class Collect extends Base
         $collect_break_vod = Cache::get($key);
         $key = $GLOBALS['config']['app']['cache_flag']. '_'. 'collect_break_art';
         $collect_break_art = Cache::get($key);
+        $key = $GLOBALS['config']['app']['cache_flag']. '_'. 'collect_break_actor';
+        $collect_break_actor = Cache::get($key);
+        $key = $GLOBALS['config']['app']['cache_flag']. '_'. 'collect_break_role';
+        $collect_break_role = Cache::get($key);
+        $key = $GLOBALS['config']['app']['cache_flag']. '_'. 'collect_break_website';
+        $collect_break_website = Cache::get($key);
 
         $this->assign('collect_break_vod', $collect_break_vod);
         $this->assign('collect_break_art', $collect_break_art);
+        $this->assign('collect_break_actor', $collect_break_actor);
+        $this->assign('collect_break_role', $collect_break_role);
+        $this->assign('collect_break_website', $collect_break_website);
 
         $this->assign('title', '联盟资源库');
         return $this->fetch('admin@collect/union');

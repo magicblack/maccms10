@@ -909,8 +909,9 @@ class Collect extends Base {
             }
         }
 
+        $key = $GLOBALS['config']['app']['cache_flag']. '_'.'collect_break_vod';
         if(ENTRANCE=='api'){
-            Cache::rm('collect_break_vod');
+            Cache::rm($key);
             if ($data['page']['page'] < $data['page']['pagecount']) {
                 $param['page'] = intval($data['page']['page']) + 1;
                 $res = $this->vod($param);
@@ -928,7 +929,7 @@ class Collect extends Base {
         }
         if($show==1) {
             if ($param['ac'] == 'cjsel') {
-                Cache::rm('collect_break_vod');
+                Cache::rm($key);
                 mac_echo("数据采集完成");
                 unset($param['ids']);
                 $param['ac'] = 'list';
@@ -941,7 +942,7 @@ class Collect extends Base {
                 mac_jump($url, $GLOBALS['config']['app']['collect_timespan']);
             } else {
                 if ($data['page']['page'] >= $data['page']['pagecount']) {
-                    Cache::rm('collect_break_vod');
+                    Cache::rm($key);
                     mac_echo("数据采集完成");
                     unset($param['page'],$param['ids']);
                     $param['ac'] = 'list';
@@ -1231,8 +1232,9 @@ class Collect extends Base {
             }
         }
 
+        $key = $GLOBALS['config']['app']['cache_flag']. '_'.'collect_break_art';
         if(ENTRANCE=='api'){
-            Cache::rm('collect_break_art');
+            Cache::rm($key);
             if ($data['page']['page'] < $data['page']['pagecount']) {
                 $param['page'] = intval($data['page']['page']) + 1;
                 $res = $this->art($param);
@@ -1251,7 +1253,7 @@ class Collect extends Base {
 
         if($show==1) {
             if ($param['ac'] == 'cjsel') {
-                Cache::rm('collect_break_art');
+                Cache::rm($key);
                 mac_echo("数据采集完成");
                 unset($param['ids']);
                 $param['ac'] = 'list';
@@ -1263,7 +1265,7 @@ class Collect extends Base {
                 mac_jump($url, $GLOBALS['config']['app']['collect_timespan']);
             } else {
                 if ($data['page']['page'] >= $data['page']['pagecount']) {
-                    Cache::rm('collect_break_art');
+                    Cache::rm($key);
                     mac_echo("数据采集完成");
                     unset($param['page']);
                     $param['ac'] = 'list';
@@ -1517,8 +1519,9 @@ class Collect extends Base {
             }
         }
 
+        $key = $GLOBALS['config']['app']['cache_flag']. '_'.'collect_break_actor';
         if(ENTRANCE=='api'){
-            Cache::rm('collect_break_actor');
+            Cache::rm($key);
             if ($data['page']['page'] < $data['page']['pagecount']) {
                 $param['page'] = intval($data['page']['page']) + 1;
                 $res = $this->actor($param);
@@ -1537,7 +1540,7 @@ class Collect extends Base {
 
         if($show==1) {
             if ($param['ac'] == 'cjsel') {
-                Cache::rm('collect_break_actor');
+                Cache::rm($key);
                 mac_echo("数据采集完成");
                 unset($param['ids']);
                 $param['ac'] = 'list';
@@ -1549,7 +1552,7 @@ class Collect extends Base {
                 mac_jump($url, $GLOBALS['config']['app']['collect_timespan']);
             } else {
                 if ($data['page']['page'] >= $data['page']['pagecount']) {
-                    Cache::rm('collect_break_actor');
+                    Cache::rm($key);
                     mac_echo("数据采集完成");
                     unset($param['page']);
                     $param['ac'] = 'list';
@@ -1804,8 +1807,9 @@ class Collect extends Base {
             }
         }
 
+        $key = $GLOBALS['config']['app']['cache_flag']. '_'.'collect_break_role';
         if(ENTRANCE=='api'){
-            Cache::rm('collect_break_role');
+            Cache::rm($key);
             if ($data['page']['page'] < $data['page']['pagecount']) {
                 $param['page'] = intval($data['page']['page']) + 1;
                 $res = $this->role($param);
@@ -1824,7 +1828,7 @@ class Collect extends Base {
 
         if($show==1) {
             if ($param['ac'] == 'cjsel') {
-                Cache::rm('collect_break_role');
+                Cache::rm($key);
                 mac_echo("数据采集完成");
                 unset($param['ids']);
                 $param['ac'] = 'list';
@@ -1836,7 +1840,7 @@ class Collect extends Base {
                 mac_jump($url, $GLOBALS['config']['app']['collect_timespan']);
             } else {
                 if ($data['page']['page'] >= $data['page']['pagecount']) {
-                    Cache::rm('collect_break_role');
+                    Cache::rm($key);
                     mac_echo("数据采集完成");
                     unset($param['page']);
                     $param['ac'] = 'list';
@@ -2088,8 +2092,9 @@ class Collect extends Base {
             }
         }
 
+        $key = $GLOBALS['config']['app']['cache_flag']. '_'.'collect_break_website';
         if(ENTRANCE=='api'){
-            Cache::rm('collect_break_website');
+            Cache::rm($key);
             if ($data['page']['page'] < $data['page']['pagecount']) {
                 $param['page'] = intval($data['page']['page']) + 1;
                 $res = $this->actor($param);
@@ -2108,7 +2113,7 @@ class Collect extends Base {
 
         if($show==1) {
             if ($param['ac'] == 'cjsel') {
-                Cache::rm('collect_break_website');
+                Cache::rm($key);
                 mac_echo("数据采集完成");
                 unset($param['ids']);
                 $param['ac'] = 'list';
@@ -2120,7 +2125,7 @@ class Collect extends Base {
                 mac_jump($url, $GLOBALS['config']['app']['collect_timespan']);
             } else {
                 if ($data['page']['page'] >= $data['page']['pagecount']) {
-                    Cache::rm('collect_break_website');
+                    Cache::rm($key);
                     mac_echo("数据采集完成");
                     unset($param['page']);
                     $param['ac'] = 'list';
