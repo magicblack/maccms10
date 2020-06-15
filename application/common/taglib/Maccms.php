@@ -6,7 +6,7 @@ use think\Db;
 class Maccms extends Taglib {
 
 	protected $tags = [
-	    'link'=> ['attr'=>'order,by,type,start,num,cachetime'],
+	    'link'=> ['attr'=>'order,by,type,not,start,num,cachetime'],
         'area'=> ['attr'=>'order,start,num'],
         'lang'=> ['attr'=>'order,start,num'],
         'year'=> ['attr'=>'order,start,num'],
@@ -14,15 +14,15 @@ class Maccms extends Taglib {
         'version'=> ['attr'=>'order,start,num'],
         'state'=> ['attr'=>'order,start,num'],
         'letter'=> ['attr'=>'order,start,num'],
-        'type' => ['attr' =>'order,by,start,num,id,ids,parent,flag,mid,format,cachetime'],
+        'type' => ['attr' =>'order,by,start,num,id,ids,not,parent,flag,mid,format,cachetime'],
         'comment'=>['attr' =>'order,by,start,num,paging,pageurl,id,pid,rid,mid,uid,half'],
         'gbook'=>['attr' =>'order,by,start,num,paging,pageurl,rid,uid,half'],
         'role'=>['attr' =>'order,by,start,num,paging,pageurl,id,ids,not,rid,actor,name,level,letter,half,timeadd,timehits,time,cachetime'],
-        'actor'=>['attr' =>'order,by,start,num,paging,pageurl,id,ids,not,area,sex,name,level,letter,type,starsign,blood,half,timeadd,timehits,time,cachetime'],
+        'actor'=>['attr' =>'order,by,start,num,paging,pageurl,id,ids,not,area,sex,name,level,letter,type,typenot,starsign,blood,half,timeadd,timehits,time,cachetime'],
         'topic' => ['attr' =>'order,by,start,num,id,ids,not,paging,pageurl,class,tag,half,timeadd,timehits,time,cachetime'],
-        'art' => ['attr' =>'order,by,start,num,id,ids,not,paging,pageurl,type,class,tag,level,letter,half,rel,timeadd,timehits,time,hitsmonth,hitsweek,hitsday,hits,cachetime'],
-        'vod' => ['attr' =>'order,by,start,num,id,ids,not,paging,pageurl,type,class,tag,area,lang,year,level,letter,half,rel,version,state,tv,weekday,timeadd,timehits,time,hitsmonth,hitsweek,hitsday,hits,isend,cachetime'],
-        'website'=>['attr' =>'order,by,start,num,paging,pageurl,id,ids,not,area,lang,name,level,letter,type,half,timeadd,timehits,time,cachetime'],
+        'art' => ['attr' =>'order,by,start,num,id,ids,not,paging,pageurl,type,typenot,class,tag,level,letter,half,rel,timeadd,timehits,time,hitsmonth,hitsweek,hitsday,hits,cachetime'],
+        'vod' => ['attr' =>'order,by,start,num,id,ids,not,paging,pageurl,type,typenot,class,tag,area,lang,year,level,letter,half,rel,version,state,tv,weekday,timeadd,timehits,time,hitsmonth,hitsweek,hitsday,hits,isend,cachetime'],
+        'website'=>['attr' =>'order,by,start,num,paging,pageurl,id,ids,not,area,lang,name,level,letter,type,typenot,half,timeadd,timehits,time,cachetime'],
         'foreach' => ['attr'=>'name,id,key'],
         'for' => ['attr'=>'start,end,comparison,step,name'],
     ];

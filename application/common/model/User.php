@@ -394,6 +394,22 @@ class User extends Base
         return ['code' => 1, 'msg' => '登录成功'];
     }
 
+    public function expire()
+    {
+        $where=[];
+        $where['group_id'] = ['gt',2];
+        $where['user_end_time'] = ['elt',time()];
+
+        $update=[];
+        $update['group_id'] = 2;
+
+        $res = $this->where($where)->update($update);
+        if ($res === false) {
+            return ['code' => 101, 'msg' => '更新会员组过期会员信息失败'];
+        }
+        return ['code' => 1, 'msg' => '更新过期信息成功'];
+    }
+
     public function logout()
     {
         cookie('user_id', null);

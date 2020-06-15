@@ -40,7 +40,7 @@ class Link extends Base {
         $start = intval(abs($lp['start']));
         $num = intval(abs($lp['num']));
         $cachetime = $lp['cachetime'];
-
+        $not = $lp['not'];
         $page = 1;
         $where = [];
 
@@ -60,15 +60,22 @@ class Link extends Base {
             $type = ($type === 'font') ? 0 : 1;
             $where['link_type'] = $type;
         }
+        if(!empty($not)){
+            $where['link_id'] = ['not in',explode(',',$not)];
+        }
+
         $by = 'link_'.$by;
         $order = $by . ' ' . $order;
 
         $cach_name = $GLOBALS['config']['app']['cache_flag']. '_' . md5('link_listcache_'.join('&',$where).'_'.$order.'_'.$page.'_'.$num.'_'.$start);
         $res = Cache::get($cach_name);
+        if(empty($cachetime)){
+            $cachetime = $GLOBALS['config']['app']['cache_time'];
+        }
         if($GLOBALS['config']['app']['cache_core']==0 || empty($res)) {
             $res = $this->listData($where, $order, $page, $num, $start);
             if($GLOBALS['config']['app']['cache_core']==1) {
-                Cache::set($cach_name, $res, $GLOBALS['config']['app']['cache_time']);
+                Cache::set($cach_name, $res, $cachetime);
             }
         }
         return $res;

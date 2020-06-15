@@ -145,12 +145,15 @@ class Collection {
      */
     public static function url_list(&$config, $num = '') {
         $url = array();
+
         switch ($config['sourcetype']) {
             case '1'://序列化
                 $num = empty($num) ? $config['pagesize_end'] : $num;
                 if($num<$config['pagesize_start']) $num=$config['pagesize_start'];
+                $p=0;
                 for ($i = $config['pagesize_start']; $i <= $num; $i = $i + $config['par_num']) {
-                    $url[$i] = str_replace('(*)', $i, $config['urlpage']);
+                    $url[$p] = str_replace('(*)', $i, $config['urlpage']);
+                    $p++;
                 }
                 break;
             case '2'://多网址

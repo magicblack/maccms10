@@ -160,9 +160,8 @@ class Cj extends Base
 
         $param['page'] = isset($param['page']) ? intval($param['page']) : 1;
 
-        $url_list = $urls[$param['page']];
+        $url_list = $urls[$param['page']-1];
         $url = $collection->get_url_lists($url_list, $data);
-
 
         $total = count($url);
         $re = 0;
@@ -310,6 +309,21 @@ class Cj extends Base
         $this->assign('title','内容发布管理');
 
         return $this->fetch('admin@cj/publish');
+    }
+
+    public function show()
+    {
+        $id = input('id');
+        $where=[];
+        $where['id'] = ['eq',$id];
+        $info = Db::name('cj_content')->where($where)->find();
+        if(!empty($info['data'])){
+            $info['data'] = @json_decode($info['data'],true);
+        }
+        $this->assign('info',$info);
+        $this->assign('title','详情信息');
+        return $this->fetch('admin@cj/show');
+
     }
 
     public function content_del()

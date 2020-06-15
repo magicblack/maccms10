@@ -269,6 +269,7 @@ num获取条数
 ids指定分类parent获取一级分诶；child获取子分类；1,2,3一组指定ID；
 parent父分类id
 flag视频=vod文章=art
+not排除id
 cachetime自定义缓存时间单位秒
 
 {maccms:type num="10" order="asc" by="sort" ids="all"}

@@ -97,6 +97,7 @@ class Type extends Base {
         $start = intval(abs($lp['start']));
         $num = intval(abs($lp['num']));
         $cachetime = $lp['cachetime'];
+        $not = $lp['not'];
         $page=1;
         $where = [];
 
@@ -163,6 +164,10 @@ class Type extends Base {
             }
             $where['type_pid'] = ['in',$parent];
         }
+        if(!empty($not)){
+            $where['type_id'] = ['not in',$not];
+        }
+
         if(defined('ENTRANCE') && ENTRANCE == 'index' && $GLOBALS['config']['app']['popedom_filter'] ==1){
             $type_ids = mac_get_popedom_filter($GLOBALS['user']['group']['group_type']);
             if(!empty($type_ids)){
@@ -182,11 +187,14 @@ class Type extends Base {
 
         $cach_name = $GLOBALS['config']['app']['cache_flag']. '_' .md5('type_listcache_'.http_build_query($where).'_'.$order.'_'.$num.'_'.$start);
         $res = Cache::get($cach_name);
+        if(empty($cachetime)){
+            $cachetime = $GLOBALS['config']['app']['cache_time'];
+        }
         if($GLOBALS['config']['app']['cache_core']==0 || empty($res)) {
             $res = $this->listData($where,$order,$format,$mid,$num,$start,0);
             $res['list'] = array_values($res['list']);
             if($GLOBALS['config']['app']['cache_core']==1) {
-                Cache::set($cach_name, $res, $GLOBALS['config']['app']['cache_time']);
+                Cache::set($cach_name, $res, $cachetime);
             }
         }
 

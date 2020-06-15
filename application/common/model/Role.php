@@ -96,7 +96,6 @@ class Role extends Base {
         $hits = $lp['hits'];
         $not = $lp['not'];
         $cachetime = $lp['cachetime'];
-
         $page = 1;
         $where = [];
         $totalshow=0;
@@ -259,12 +258,14 @@ class Role extends Base {
         }
 
         $cach_name = $GLOBALS['config']['app']['cache_flag']. '_' . md5('role_listcache_'.http_build_query($where_cache).'_'.$order.'_'.$page.'_'.$num.'_'.$start.'_'.$pageurl);
-
         $res = Cache::get($cach_name);
+        if(empty($cachetime)){
+            $cachetime = $GLOBALS['config']['app']['cache_time'];
+        }
         if($GLOBALS['config']['app']['cache_core']==0 || empty($res)) {
             $res = $this->listData($where,$order,$page,$num,$start,'*',1,$totalshow);
             if($GLOBALS['config']['app']['cache_core']==1) {
-                Cache::set($cach_name, $res, $GLOBALS['config']['app']['cache_time']);
+                Cache::set($cach_name, $res, $cachetime);
             }
         }
         $res['pageurl'] = $pageurl;

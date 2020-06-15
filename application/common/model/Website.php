@@ -137,7 +137,7 @@ class Website extends Base {
         $hits = $lp['hits'];
         $not = $lp['not'];
         $cachetime = $lp['cachetime'];
-
+        $typenot = $lp['typenot'];
         $refermonth = $lp['refermonth'];
         $referweek = $lp['refermonth'];
         $referday = $lp['refermonth'];
@@ -269,6 +269,9 @@ class Website extends Base {
                 $where['type_id'] = ['in', implode(',', $type)];
             }
         }
+        if(!empty($typenot)){
+            $where['type_id'] = ['not in',$typenot];
+        }
         if(!empty($tid)) {
             $where['type_id|type_id_1'] = ['eq',$tid];
         }
@@ -395,10 +398,13 @@ class Website extends Base {
 
         $cach_name = $GLOBALS['config']['app']['cache_flag']. '_' .md5('website_listcache_'.http_build_query($where_cache).'_'.$order.'_'.$page.'_'.$num.'_'.$start.'_'.$pageurl);
         $res = Cache::get($cach_name);
+        if(empty($cachetime)){
+            $cachetime = $GLOBALS['config']['app']['cache_time'];
+        }
         if($GLOBALS['config']['app']['cache_core']==0 || empty($res)) {
             $res = $this->listData($where,$order,$page,$num,$start,'*',1,$totalshow);
             if($GLOBALS['config']['app']['cache_core']==1){
-                Cache::set($cach_name, $res, $GLOBALS['config']['app']['cache_time']);
+                Cache::set($cach_name, $res, $cachetime);
             }
         }
         $res['pageurl'] = $pageurl;

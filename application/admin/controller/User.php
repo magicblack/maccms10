@@ -15,6 +15,10 @@ class User extends Base
         $param['page'] = intval($param['page']) <1 ? 1 : $param['page'];
         $param['limit'] = intval($param['limit']) <1 ? $this->_pagesize : $param['limit'];
 
+        if($param['page'] ==1){
+            model('User')->expire();
+        }
+
         $where=[];
         if(in_array($param['status'],['0','1'],true)){
             $where['user_status'] = $param['status'];
