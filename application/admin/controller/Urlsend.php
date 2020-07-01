@@ -1,23 +1,18 @@
 <?php
 namespace app\admin\controller;
-use think\Db;
-use think\Cache;
 
 class Urlsend extends Base
 {
     var $_lastid='';
-    var $_cache_name ='';
 
     public function __construct()
     {
         parent::__construct();
-
         $this->_param = input();
     }
 
     public function index()
     {
-
         if (Request()->isPost()) {
             $config = input();
             $config_new['urlsend'] = $config['urlsend'];
@@ -35,35 +30,28 @@ class Urlsend extends Base
         $urlsend_config = $GLOBALS['config']['urlsend'];
         $this->assign('config',$urlsend_config);
 
-        $key = $GLOBALS['config']['app']['cache_flag']. '_'.'urlsend_break_baidu_push';
-        $urlsend_break_baidu_push = Cache::get($key);
-        $key = $GLOBALS['config']['app']['cache_flag']. '_'.'urlsend_break_baidu_bear';
-        $urlsend_break_baidu_bear = Cache::get($key);
+        $path = './application/common/extend/urlsend';
+        $file_list = glob($path . '/*.php',GLOB_NOSORT );
+        $ext_list = [];
+        $ext_html = '';
+        foreach($file_list as $k=>$v) {
+            $cl = str_replace([$path . '/', '.php'], '', $v);
+            $cp = 'app\\common\\extend\\urlsend\\' . $cl;
 
-        $this->assign('urlsend_break_baidu_push',$urlsend_break_baidu_push);
-        $this->assign('urlsend_break_baidu_bear',$urlsend_break_baidu_bear);
+            if (class_exists($cp)) {
+                $c = new $cp;
+                $ext_list[$cl] = $c->name;
+
+                if(file_exists( './application/admin/view/extend/urlsend/'.strtolower($cl) .'.html')) {
+                    $ext_html .= $this->fetch('admin@extend/urlsend/' . strtolower($cl));
+                }
+            }
+        }
+        $this->assign('ext_list',$ext_list);
+        $this->assign('ext_html',$ext_html);
 
         $this->assign('title','URL推送管理');
         return $this->fetch('admin@urlsend/index');
-    }
-
-
-
-    public function push($pp=[])
-    {
-        if(!empty($pp)){
-            $this->_param = $pp;
-        }
-
-        if($this->_param['ac']=='baidu_push'){
-            $this->baidu_push();
-        }
-        elseif($this->_param['ac']=='baidu_bear'){
-            $this->baidu_bear();
-        }
-        else{
-            $this->error('参数错误');
-        }
     }
 
     public function data()
@@ -73,14 +61,12 @@ class Urlsend extends Base
         $list = [];
         $mid = $this->_param['mid'];
         $this->_param['page'] = intval($this->_param['page']) <1 ? 1 : $this->_param['page'];
-        $this->_param['limit'] = intval($this->_param['limit']) <1 ? 500 : $this->_param['limit'];
+        $this->_param['limit'] = intval($this->_param['limit']) <1 ? 50 : $this->_param['limit'];
         $ids = $this->_param['ids'];
         $ac2 = $this->_param['ac2'];
 
         $today = strtotime(date('Y-m-d'));
         $where = [];
-        $this->_cache_name = $GLOBALS['config']['app']['cache_flag']. '_'.'urlsend_cach_'.$mid.'_'.$ac2;
-        $data = Cache::get($this->_cache_name);
         $col = '';
         switch($mid)
         {
@@ -88,7 +74,7 @@ class Urlsend extends Base
                 $where['vod_status'] = ['eq',1];
 
                 if($ac2=='today'){
-                    $where['vod_time_add'] = ['gt',$today];
+                    $where['vod_time'] = ['gt',$today];
                 }
                 if(!empty($ids)){
                     $where['vod_id'] = ['in',$ids];
@@ -215,125 +201,42 @@ class Urlsend extends Base
         return $res;
     }
 
-    public function baidu_push()
+
+    public function push($pp=[])
     {
-        $res = $this->data();
-        $key = $GLOBALS['config']['app']['cache_flag']. '_'.'urlsend_break_baidu_push';
-        Cache::set($key, url('urlsend/push').'?'. http_build_query($this->_param) );
-
-
-        if (!empty($res['urls'])) {
-            $type = $this->_param['type']; //urls: 添加, update: 更新, del: 删除
-            $token = $GLOBALS['config']['urlsend']['baidu_push_token'];
-            $site = $GLOBALS['http_type'] . $GLOBALS['config']['site']['site_url'];
-            if (empty($type)) {
-                $type = 'urls';
-            }
-            $api = 'http://data.zz.baidu.com/' . $type . '?site=' . $site . '&token=' . $token;
-            $head = ['Content-Type: text/plain'];
-            $data = implode("\n", $res['urls']);
-
-            $r = mac_curl_post($api, $data, $head);
-            $json = json_decode($r,true);
-            if(!$json){
-                mac_echo('请求失败，请重试');
-                return;
-            }
-            elseif($json['error']){
-                mac_echo('发生错误：'. $json['message'] );
-                return;
-            }
-            Cache::set($this->_cache_name, $this->_lastid);
-            mac_echo('推送成功'.$json['success'].'条；当天剩余可推'.$json['remain'].'条。');
+        if(!empty($pp)){
+            $this->_param = $pp;
         }
+        $ac = $this->_param['ac'];
 
-        if ($res['page'] >= $res['pagecount']) {
-            Cache::rm($key);
+        $cp = 'app\\common\\extend\\urlsend\\' . ucfirst($ac);
+        if (class_exists($cp)) {
+            $data = $this->data();
 
-            mac_echo('数据推送完毕');
-            if(ENTRANCE=='admin') {
-                mac_jump(url('urlsend/index'), 3);
+            $c = new $cp;
+            $res = $c->submit($data);
+
+            if($res['code']!=1){
+                mac_echo($res['msg']);
+                die;
             }
-        }
-        else {
-            $url = url('urlsend/baidu_push') . '?' . http_build_query($this->_param);
-            if(ENTRANCE=='admin') {
-                mac_jump($url, 3);
-            }
-        }
 
-    }
+            if ($data['page'] >= $data['pagecount']) {
+                mac_echo('数据推送完毕');
+                if(ENTRANCE=='admin') {
 
-    public function baidu_bear()
-    {
-        $res = $this->data();
-        $key = $GLOBALS['config']['app']['cache_flag']. '_'.'urlsend_break_baidu_bear';
-        Cache::set($key, url('urlsend/push').'?'. http_build_query($this->_param) );
-
-        if(!empty($res['urls'])){
-            $type = $this->_param['type']; //realtime实时, batch历史
-            $appid = $GLOBALS['config']['urlsend']['baidu_bear_appid'];
-            $token = $GLOBALS['config']['urlsend']['baidu_bear_token'];
-            if(empty($type)){
-                $type = 'realtime';
-            }
-            $api = 'http://data.zz.baidu.com/urls?appid='.$appid.'&token='.$token.'&type='.$type;
-
-            $head = ['Content-Type: text/plain'];
-            $data = implode("\n", $res['urls']);
-
-
-
-            $r = mac_curl_post($api, $data, $head);
-            $json = json_decode($r,true);
-
-            if(!$json){
-                mac_echo('请求失败，请重试');
-                return;
-            }
-            elseif($json['error']){
-                mac_echo('发生错误：'. $json['message'] );
-                return;
-            }
-            elseif($json['success_realtime'] ==0 && $json['remain_realtime']>0){
-                $data = array_slice($res['urls'], 0, $json['remain_realtime'],true );
-                $keys = array_keys($data);
-                $this->_lastid = end($keys);
-                
-                $data = implode("\n", $data);
-                $r = mac_curl_post($api, $data, $head);
-                $json = json_decode($r,true);
-                if(!$json){
-                    mac_echo('请求失败，请重试2');
-                    return;
                 }
-                elseif($json['error']){
-                    mac_echo('发生错误2：'. $json['message'] );
-                    return;
+            }
+            else {
+                $url = url('urlsend/push') . '?' . http_build_query($this->_param);
+                if(ENTRANCE=='admin') {
+                    mac_jump($url, 3);
                 }
             }
 
-            Cache::set($this->_cache_name, $this->_lastid);
-            if($type=='realtime'){
-                mac_echo('熊掌号实时推送'.$json['success_realtime'].'条；熊掌号实时剩余可推送'.$json['remain_realtime'].'条.');
-            }
-            else{
-                mac_echo('熊掌号历史推送'.$json['success_batch'].'条；熊掌号历史剩余可推送'.$json['remain_batch'].'条；');
-            }
         }
-
-        if ($res['page'] >= $res['pagecount']) {
-            Cache::rm($key);
-            mac_echo('数据推送完毕');
-            if(ENTRANCE=='admin') {
-                mac_jump(url('urlsend/index'), 3);
-            }
-        }
-        else {
-            $url = url('urlsend/baidu_bear') . '?' . http_build_query($this->_param);
-            if(ENTRANCE=='admin') {
-                mac_jump($url, 3);
-            }
+        else{
+            $this->error('参数错误');
         }
     }
 

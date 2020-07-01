@@ -287,6 +287,10 @@ class Vod extends Base
                     $update['vod_status'] = $param['val_status'];
                     $des .= '&nbsp;状态：'.($param['val_status'] ==1 ? '[已审核]':'[未审核]') .'；';
                 }
+                if(!empty($param['ck_copyright']) && isset($param['val_copyright'])){
+                    $update['val_copyright'] = $param['val_copyright'];
+                    $des .= '&nbsp;版权：'.($param['val_copyright'] ==1 ? '[已开启]':'[未关闭') .'；';
+                }
                 if(!empty($param['ck_lock']) && isset($param['val_lock'])){
                     $update['vod_lock'] = $param['val_lock'];
                     $des .= '&nbsp;推荐值：'.($param['val_lock']==1 ? '[锁定]':'[解锁]').'；';

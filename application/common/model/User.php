@@ -1,6 +1,7 @@
 <?php
 namespace app\common\model;
 use think\Db;
+use think\View;
 
 class User extends Base
 {
@@ -643,11 +644,12 @@ class User extends Base
 
         $to = $param['to'];
         $code = mac_get_rndstr(6,'num');
-
-        $sign = '【'.$GLOBALS['config']['site']['site_name'].'】';
         $r=0;
 
         $stime = strtotime('-5 min');
+        if($param['ac']=='email' && !intval($GLOBALS['config']['email']['time'])>0){
+            $stime = strtotime('-'.$GLOBALS['config']['email']['time'].' min');
+        }
         $where=[];
         $where['user_id'] = $GLOBALS['user']['user_id'];
         $where['msg_time'] = ['gt',$stime];
@@ -658,48 +660,22 @@ class User extends Base
         }
         $res_msg= ',请重试';
         if($param['ac']=='email'){
-            $pattern = '/\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*/';
-            if(!preg_match( $pattern, $to)){
-                return ['code'=>9003,'msg'=>'邮箱地址格式不正确'];
-            }
-
-            $title = '绑定'.$type_des.'验证';
-            $msg = $sign.'的会员您好，'.$GLOBALS['user']['user_name'].'。'.$type_des.'验证码为：'. $code .',请在5分钟内完成验证。' ;
-            $msg = str_replace(['[用户]','[类型]','[时长]','[验证码]'],[$GLOBALS['user']['user_name'],$type_des,'5',$code],$msg);
-
-            $res_send = mac_send_mail($to, $sign.$title, $msg);
-            if($res_send){
-                $r=1;
-            }
+            $title = $GLOBALS['config']['email']['tpl']['user_'.$type_flag.'_title'];
+            $body = $GLOBALS['config']['email']['tpl']['user_'.$type_flag.'_body'];
+            View::instance()->assign(['code'=>$code]);
+            $res_send = mac_send_mail($to, $title, $body);
+            $res_code = $res_send['code'];
+            $res_msg = $res_send['msg'];
         }
         else{
-            $pattern = "/^1{1}\d{10}$/";
-            if(!preg_match($pattern,$to)){
-                return ['code'=>9004,'msg'=>'手机号格式不正确'];
-            }
-            if(empty($GLOBALS['config']['sms']['type'])){
-                return ['code'=>9005,'msg'=>'未配置短信发送服务'];
-            }
-
             $msg = $GLOBALS['config']['sms']['content'];
             $msg = str_replace(['[用户]','[类型]','[时长]','[验证码]'],[$GLOBALS['user']['user_name'],$type_des,'5',$code],$msg);
-
-
-            $cp = 'app\\common\\extend\\sms\\' . ucfirst($GLOBALS['config']['sms']['type']);
-            if (class_exists($cp)) {
-                $c = new $cp;
-                $res_send = $c->submit($to,$code,$type_flag,$type_des,$msg);
-            }
-            //$res_send = Model('Sms'.$GLOBALS['config']['sms']['type'])->submit($to,$code,$type_flag,$type_des,$msg);
-            if($res_send['code']==1){
-                $r=1;
-            }
-            else{
-                $res_msg = ','.$res_send['msg'];
-            }
+            $res_send = mac_send_sms($to,$code,$type_flag,$type_des,$msg);
+            $res_code = $res_send['code'];
+            $res_msg = $res_send['msg'];
         }
 
-        if($r==1){
+        if($res_code==1){
             $data=[];
             $data['user_id'] = $GLOBALS['user']['user_id'];
             $data['msg_type'] = $param['type'];

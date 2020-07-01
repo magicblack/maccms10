@@ -123,7 +123,7 @@ class Vod extends Base {
         $actor = $lp['actor'];
         $director = $lp['director'];
         $version = $lp['version'];
-        $year = intval($lp['year']);
+        $year = $lp['year'];
         $start = intval(abs($lp['start']));
         $num = intval(abs($lp['num']));
         $half = intval(abs($lp['half']));

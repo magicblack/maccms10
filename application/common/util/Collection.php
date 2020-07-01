@@ -43,11 +43,12 @@ class Collection {
                 if (empty($data['time'])) $data['time'] = time();
 
                 //对自定义数据进行采集
-                $config['customize_config'] = json_decode($config['customize_config'],true);
+                $config['customize_config']  = json_decode($config['customize_config'],true);
+
                 if($config['customize_config']){
                     foreach ($config['customize_config'] as $k=>$v) {
                         if (empty($v['rule'])) continue;
-                        if(strpos($config['rule'],'[内容]')===false){
+                        if(strpos($v['rule'],'[内容]')===false){
                             $data[$v['en_name']] = $v['rule'];
                         }
                         else{

@@ -203,6 +203,19 @@
 
             <div class="layui-form-item">
                 <div class="layui-inline">
+                    <label class="layui-form-label"><input type="checkbox" lay-ignore value="1" name="ck_copyright">版权</label>
+                    <div class="layui-input-inline" style="width: 100px;">
+                        <select name="val_copyright">
+                            <option value="">选择版权</option>
+                            <option value="0" >关闭版权处理</option>
+                            <option value="1" >开启版权处理</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="layui-form-item">
+                <div class="layui-inline">
                     <label class="layui-form-label"><input type="checkbox" lay-ignore value="1" name="ck_hits">人气</label>
                     <div class="layui-input-inline" style="width: 100px;">
                         <input type="text" name="val_hits_min" required  placeholder="最小值" autocomplete="off" class="layui-input">

@@ -3,7 +3,7 @@ namespace app\admin\controller;
 use think\Db;
 use think\Config;
 use think\Cache;
-use think\Exception;
+use think\View;
 
 class System extends Base
 {
@@ -19,11 +19,12 @@ class System extends Base
             'nick' => $post['nick'],
             'test' => $post['test'],
         ];
-        $res = mac_send_mail($conf['test'], '苹果CMS发送邮件测试', '当您看到这封邮件说明邮件配置正确了！感谢使用苹果CMS相关产品！', $conf);
-        if ($res==true) {
+        $this->label_maccms();
+        $res = mac_send_mail($conf['test'], $GLOBALS['config']['email']['tpl']['test_title'], $GLOBALS['config']['email']['tpl']['test_body'], $conf);
+        if ($res['code']==1) {
             return json(['code' => 1, 'msg' => '测试成功']);
         }
-        return json(['code' => 1001, 'msg' => '测试失败：'.$res]);
+        return json(['code' => 1001, 'msg' => '测试失败：'.$res['msg']]);
     }
 
     public function test_cache()
@@ -403,8 +404,29 @@ class System extends Base
             }
             return $this->success('保存成功!');
         }
-
         $this->assign('config', config('maccms'));
+
+        $path = './application/common/extend/email';
+        $file_list = glob($path . '/*.php',GLOB_NOSORT );
+        $ext_list = [];
+        $ext_html = '';
+        foreach($file_list as $k=>$v) {
+            $cl = str_replace([$path . '/', '.php'], '', $v);
+            $cp = 'app\\common\\extend\\email\\' . $cl;
+
+            if (class_exists($cp)) {
+                $c = new $cp;
+                $ext_list[$cl] = $c->name;
+
+                if(file_exists( './application/admin/view/extend/email/'.strtolower($cl) .'.html')) {
+                    $ext_html .= $this->fetch('admin@extend/email/' . strtolower($cl));
+                }
+            }
+        }
+        $this->assign('ext_list',$ext_list);
+        $this->assign('ext_html',$ext_html);
+
+
         $this->assign('title', '邮件发送配置');
         return $this->fetch('admin@system/configemail');
     }

@@ -6,6 +6,9 @@
 '遵循Apache2开源协议发布，并提供免费使用。
 '--------------------------------------------------------
 */
+
+use think\View;
+
 error_reporting(E_ERROR | E_PARSE );
 
 // 应用公共文件
@@ -318,8 +321,63 @@ function mac_get_refer()
     return trim(urldecode($_SERVER["HTTP_REFERER"]));
 }
 
-function mac_send_mail($to, $title, $body,$conf=[]) {
-    $config = config('maccms.email');
+function mac_send_sms($to,$code,$type_flag,$type_des,$msg)
+{
+    if(empty($GLOBALS['config']['sms']['type'])){
+        return ['code'=>9005,'msg'=>'未配置短信发送服务'];
+    }
+    $pattern = "/^1{1}\d{10}$/";
+    if(!preg_match($pattern,$to)){
+        return ['code'=>999,'msg'=>'手机号格式不正确'];
+    }
+    if(empty($code)){
+        return ['code'=>998,'msg'=>'标题不能为空'];
+    }
+    if(empty($type_flag)){
+        return ['code'=>997,'msg'=>'模板编号不能为空'];
+    }
+
+
+    $cp = 'app\\common\\extend\\sms\\' . ucfirst($GLOBALS['config']['sms']['type']);
+    if (class_exists($cp)) {
+        $c = new $cp;
+        return $c->submit($to,$code,$type_flag,$type_des,$msg);
+    }
+    else{
+        return ['code'=>991,'msg'=>'未找到该短信发送方式'];
+    }
+}
+
+function mac_send_mail($to,$title,$body,$conf=[])
+{
+    if(empty($GLOBALS['config']['email']['type'])){
+        return ['code'=>9005,'msg'=>'未配置邮件发送服务'];
+    }
+    $pattern = '/\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*/';
+    if(!preg_match( $pattern, $to)){
+        return ['code'=>999,'msg'=>'邮箱格式不正确'];
+    }
+    if(empty($title)){
+        return ['code'=>998,'msg'=>'标题不能为空'];
+    }
+    if(empty($body)){
+        return ['code'=>997,'msg'=>'正文不能为空'];
+    }
+
+    View::instance()->assign(['time'=>$GLOBALS['config']['email']['time']]);
+    $title =  View::instance()->display($title);
+    $body =  View::instance()->display($body);
+
+    $cp = 'app\\common\\extend\\email\\' . ucfirst($GLOBALS['config']['email']['type']);
+    if (class_exists($cp)) {
+        $c = new $cp;
+        return $c->submit($to,$title,$body,$conf);
+    }
+    else{
+        return ['code'=>991,'msg'=>'未找到该邮件发送方式'];
+    }
+
+
     if(!empty($conf)){
         $config = $conf;
     }

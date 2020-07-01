@@ -51,7 +51,7 @@ class Art extends Base
     public function detail()
     {
         $info = $this->label_art_detail();
-        if(!empty($info['art_pwd']) && session('1-1-'.$info['art_id'])!='1'){
+        if(!empty($info['art_pwd']) && session('2-1-'.$info['art_id'])!='1'){
             return $this->label_fetch('art/detail_pwd');
         }
         return $this->label_fetch( mac_tpl_fetch('art',$info['art_tpl'],'detail') );

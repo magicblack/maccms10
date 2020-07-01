@@ -4,46 +4,40 @@
     <form class="layui-form layui-form-pane" action="">
         <div class="layui-tab">
             <ul class="layui-tab-title">
-                <li class="layui-this">邮件发送设置</li>
+                <li class="layui-this">邮件模板配置</li>
+                {volist name="ext_list" id="vo"}
+                <li data-key="{$key}" lay-id="configpay_{$i+2}">{$vo}</li>
+                {/volist}
             </ul>
             <div class="layui-tab-content">
                 <div class="layui-tab-item layui-show">
 
                     <blockquote class="layui-elem-quote layui-quote-nm">
                         提示信息：<br>
-                        发送邮件请开启openssl扩展库，否则可能发送失败
+                        修改后请先点击保存然后再测试发送。内容支持{literal}{$maccms.***}标签，  {$user.***}标签， {$code}验证码， {$time}有效时间{/literal}。
                     </blockquote>
 
                     <div class="layui-form-item">
-                        <label class="layui-form-label">服务器：</label>
+                        <label class="layui-form-label">发送方式：</label>
                         <div class="layui-input-inline">
-                            <input type="text" id="host" name="email[host]" placeholder="" value="{$config['email']['host']}" class="layui-input w200"  >
+                            <select class="w150" id="ac" name="email[type]" lay-filter="ac">
+                                <option value="" >请选择...</option>
+                                {volist name="ext_list" id="vo"}
+                                <option value="{$key}" {if condition="$config['email']['type'] eq $key"}selected {/if}>{$vo}</option>
+                                {/volist}
+                            </select>
                         </div>
-                        <div class="layui-form-mid layui-word-aux">smtp服务器</div>
                     </div>
                     <div class="layui-form-item">
-                        <label class="layui-form-label">端口：</label>
+                        <label class="layui-form-label">有效期限：</label>
                         <div class="layui-input-inline">
-                            <input type="text" id="port" name="email[port]" placeholder="" value="{$config['email']['port']}" class="layui-input w200"  >
+                            <input type="text" name="email[time]" placeholder="" value="{$config['email']['time']}" class="layui-input w200"  >
                         </div>
-                        <div class="layui-form-mid layui-word-aux">smtp端口</div>
+                        <div class="layui-form-mid layui-word-aux">邮件验证码多少分钟后失效</div>
                     </div>
+
                     <div class="layui-form-item">
-                        <label class="layui-form-label">帐号：</label>
-                        <div class="layui-input-inline">
-                            <input type="text" id="username" name="email[username]" placeholder="" value="{$config['email']['username']}" class="layui-input w200"  >
-                        </div>
-                        <div class="layui-form-mid layui-word-aux">smtp服务帐号</div>
-                    </div>
-                    <div class="layui-form-item">
-                        <label class="layui-form-label">密码：</label>
-                        <div class="layui-input-inline">
-                            <input type="password" id="password" name="email[password]" placeholder="" value="{$config['email']['password']}" class="layui-input w200"  >
-                        </div>
-                        <div class="layui-form-mid layui-word-aux">smtp服务密码</div>
-                    </div>
-                    <div class="layui-form-item">
-                        <label class="layui-form-label">昵称：</label>
+                        <label class="layui-form-label">发件昵称：</label>
                         <div class="layui-input-inline">
                             <input type="text" id="nick" name="email[nick]" placeholder="" value="{$config['email']['nick']}" class="layui-input w200"  >
                         </div>
@@ -57,7 +51,59 @@
                         <button type="button" class="layui-btn layui-btn-normal" onclick="test_email()">发送测试邮件</button>
                     </div>
 
-            </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">测试标题：</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="email[tpl][test_title]" placeholder="" value="{$config['email']['tpl']['test_title']}" class="layui-input"  >
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">测试正文：</label>
+                        <div class="layui-input-block">
+                            <textarea name="email[tpl][test_body]" class="layui-textarea">{$config['email']['tpl']['test_body']}</textarea>
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">用户注册标题：</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="email[tpl][user_reg_title]" placeholder="" value="{$config['email']['tpl']['user_reg_title']}" class="layui-input"  >
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">用户注册正文：</label>
+                        <div class="layui-input-block">
+                            <textarea name="email[tpl][user_reg_body]" class="layui-textarea">{$config['email']['tpl']['user_reg_body']}</textarea>
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">用户绑定标题：</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="email[tpl][user_bind_title]" placeholder="" value="{$config['email']['tpl']['user_bind_title']}" class="layui-input"  >
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">用户绑定正文：</label>
+                        <div class="layui-input-block">
+                            <textarea name="email[tpl][user_bind_body]" class="layui-textarea">{$config['email']['tpl']['user_bind_body']}</textarea>
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">用户找回标题：</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="email[tpl][user_findpass_title]" placeholder="" value="{$config['email']['tpl']['user_findpass_title']}" class="layui-input"  >
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">用户找回正文：</label>
+                        <div class="layui-input-block">
+                            <textarea name="email[tpl][user_findpass_body]" class="layui-textarea">{$config['email']['tpl']['user_findpass_body']}</textarea>
+                        </div>
+                    </div>
+                </div>
+                {$ext_html}
             </div>
 
         </div>
@@ -72,6 +118,21 @@
 
 {include file="../../../application/admin/view/public/foot" /}
 <script type="text/javascript">
+    layui.use(['element', 'form', 'layer'], function() {
+        var element = layui.element
+            ,form = layui.form
+            , layer = layui.layer;
+
+
+        element.on('tab(tb1)', function(){
+            $.cookie('configemail_tab', this.getAttribute('lay-id'));
+        });
+
+        if( $.cookie('configemail_tab') !=null ) {
+            element.tabChange('tb1', $.cookie('configemail_tab'));
+        }
+
+    });
     function test_email() {
         var host = $("#host").val();
         var username = $("#username").val();
