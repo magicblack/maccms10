@@ -30,25 +30,9 @@ class Urlsend extends Base
         $urlsend_config = $GLOBALS['config']['urlsend'];
         $this->assign('config',$urlsend_config);
 
-        $path = './application/common/extend/urlsend';
-        $file_list = glob($path . '/*.php',GLOB_NOSORT );
-        $ext_list = [];
-        $ext_html = '';
-        foreach($file_list as $k=>$v) {
-            $cl = str_replace([$path . '/', '.php'], '', $v);
-            $cp = 'app\\common\\extend\\urlsend\\' . $cl;
+        $extends = mac_extends_list('urlsend');
+        $this->assign('extends',$extends);
 
-            if (class_exists($cp)) {
-                $c = new $cp;
-                $ext_list[$cl] = $c->name;
-
-                if(file_exists( './application/admin/view/extend/urlsend/'.strtolower($cl) .'.html')) {
-                    $ext_html .= $this->fetch('admin@extend/urlsend/' . strtolower($cl));
-                }
-            }
-        }
-        $this->assign('ext_list',$ext_list);
-        $this->assign('ext_html',$ext_html);
 
         $this->assign('title','URL推送管理');
         return $this->fetch('admin@urlsend/index');

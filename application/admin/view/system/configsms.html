@@ -30,7 +30,7 @@
                         <div class="layui-input-inline">
                             <select  name="sms[type]">
                                 <option value="" >请选择...</option>
-                                {volist name="ext_list" id="vo"}
+                                {volist name="$extends['ext_list']" id="vo"}
                                 <option value="{$key}" {if condition="$config['sms']['type'] eq $key"}selected {/if}>{$vo}</option>
                                 {/volist}
                             </select>

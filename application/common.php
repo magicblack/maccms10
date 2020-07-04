@@ -321,6 +321,27 @@ function mac_get_refer()
     return trim(urldecode($_SERVER["HTTP_REFERER"]));
 }
 
+function mac_extends_list($flag)
+{
+    $path = './application/common/extend/'.$flag;
+    $file_list = glob($path . '/*.php',GLOB_NOSORT );
+    $res=[];
+    $res['ext_list'] = [];
+    $res['ext_html'] = '';
+    foreach($file_list as $k=>$v) {
+        $cl = str_replace([$path . '/', '.php'], '', $v);
+        $cp = 'app\\common\\extend\\'.$flag.'\\' . $cl;
+        if (class_exists($cp)) {
+            $c = new $cp;
+            $res['ext_list'][$cl] = $c->name;
+            if(file_exists( './application/admin/view/extend/'.$flag.'/'.strtolower($cl) .'.html')) {
+                $res['ext_html'] .= View::instance()->fetch('admin@extend/'.$flag.'/' . strtolower($cl));
+            }
+        }
+    }
+    return $res;
+}
+
 function mac_send_sms($to,$code,$type_flag,$type_des,$msg)
 {
     if(empty($GLOBALS['config']['sms']['type'])){

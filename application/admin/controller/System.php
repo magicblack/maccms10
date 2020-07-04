@@ -128,6 +128,9 @@ class System extends Base
         $usergroup = Db::name('group')->select();
         $this->assign('usergroup', $usergroup);
 
+        $editors = mac_extends_list('editor');
+        $this->assign('editors',$editors);
+
         $config = config('maccms');
         $this->assign('config', $config);
         $this->assign('title', '网站参数配置');
@@ -255,25 +258,8 @@ class System extends Base
 
         $this->assign('config', config('maccms'));
 
-        $path = './application/common/extend/upload';
-        $file_list = glob($path . '/*.php',GLOB_NOSORT );
-        $ext_list = [];
-        $ext_html = '';
-        foreach($file_list as $k=>$v) {
-            $cl = str_replace([$path . '/', '.php'], '', $v);
-            $cp = 'app\\common\\extend\\upload\\' . $cl;
-
-            if (class_exists($cp)) {
-                $c = new $cp;
-                $ext_list[$cl] = $c->name;
-
-                if(file_exists( './application/admin/view/extend/upload/'.strtolower($cl) .'.html')) {
-                    $ext_html .= $this->fetch('admin@extend/upload/' . strtolower($cl));
-                }
-            }
-        }
-        $this->assign('ext_list',$ext_list);
-        $this->assign('ext_html',$ext_html);
+        $extends = mac_extends_list('upload');
+        $this->assign('extends',$extends);
 
         $this->assign('title', '附件参数配置');
         return $this->fetch('admin@system/configupload');
@@ -343,26 +329,8 @@ class System extends Base
         $this->assign('http_type',$GLOBALS['http_type']);
         $this->assign('config', config('maccms'));
 
-        $path = './application/common/extend/pay';
-        $file_list = glob($path . '/*.php',GLOB_NOSORT );
-        $ext_list = [];
-        $ext_html = '';
-        foreach($file_list as $k=>$v) {
-            $cl = str_replace([$path . '/', '.php'], '', $v);
-            $cp = 'app\\common\\extend\\pay\\' . $cl;
-
-            if (class_exists($cp)) {
-                $c = new $cp;
-                $ext_list[$cl] = $c->name;
-
-                if(file_exists( './application/admin/view/extend/pay/'.strtolower($cl) .'.html')) {
-                    $ext_html .= $this->fetch('admin@extend/pay/' . strtolower($cl));
-                }
-            }
-        }
-        $this->assign('ext_list',$ext_list);
-        $this->assign('ext_html',$ext_html);
-
+        $extends = mac_extends_list('pay');
+        $this->assign('extends',$extends);
 
         $this->assign('title', '在线支付配置');
         return $this->fetch('admin@system/configpay');
@@ -406,26 +374,8 @@ class System extends Base
         }
         $this->assign('config', config('maccms'));
 
-        $path = './application/common/extend/email';
-        $file_list = glob($path . '/*.php',GLOB_NOSORT );
-        $ext_list = [];
-        $ext_html = '';
-        foreach($file_list as $k=>$v) {
-            $cl = str_replace([$path . '/', '.php'], '', $v);
-            $cp = 'app\\common\\extend\\email\\' . $cl;
-
-            if (class_exists($cp)) {
-                $c = new $cp;
-                $ext_list[$cl] = $c->name;
-
-                if(file_exists( './application/admin/view/extend/email/'.strtolower($cl) .'.html')) {
-                    $ext_html .= $this->fetch('admin@extend/email/' . strtolower($cl));
-                }
-            }
-        }
-        $this->assign('ext_list',$ext_list);
-        $this->assign('ext_html',$ext_html);
-
+        $extends = mac_extends_list('email');
+        $this->assign('extends',$extends);
 
         $this->assign('title', '邮件发送配置');
         return $this->fetch('admin@system/configemail');
@@ -447,19 +397,8 @@ class System extends Base
             return $this->success('保存成功!');
         }
 
-        $path = './application/common/extend/sms';
-        $file_list = glob($path . '/*.php',GLOB_NOSORT );
-        $ext_list = [];
-        foreach($file_list as $k=>$v) {
-            $cl = str_replace([$path . '/', '.php'], '', $v);
-            $cp = 'app\\common\\extend\\sms\\' . $cl;
-
-            if (class_exists($cp)) {
-                $c = new $cp;
-                $ext_list[$cl] = $c->name;
-            }
-        }
-        $this->assign('ext_list',$ext_list);
+        $extends = mac_extends_list('sms');
+        $this->assign('extends',$extends);
 
         $this->assign('config', config('maccms'));
         $this->assign('title', '短信发送配置');

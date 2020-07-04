@@ -118,7 +118,7 @@
                         <select class="w150" name="upload[mode]" lay-filter="upload[mode]">
                             <option value="local" {if condition="$config['upload']['mode'] eq 'local'"}selected {/if}>本地保存</option>
                             <option value="remote" {if condition="$config['upload']['mode'] eq 'remote'"}selected {/if}>远程访问</option>
-                            {volist name="ext_list" id="vo"}
+                            {volist name="$extends['ext_list']" id="vo"}
                             <option value="{$key}" {if condition="$config['upload']['mode'] eq $key"}selected {/if}>{$vo}</option>
                             {/volist}
                         </select>
@@ -132,7 +132,7 @@
                     </div>
                 </div>
 
-                {$ext_html}
+                {$extends['ext_html']}
 
                 </div>
 

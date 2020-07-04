@@ -5,7 +5,7 @@
         <div class="layui-tab">
             <ul class="layui-tab-title">
                 <li class="layui-this">邮件模板配置</li>
-                {volist name="ext_list" id="vo"}
+                {volist name="$extends['ext_list']" id="vo"}
                 <li data-key="{$key}" lay-id="configpay_{$i+2}">{$vo}</li>
                 {/volist}
             </ul>
@@ -22,7 +22,7 @@
                         <div class="layui-input-inline">
                             <select class="w150" id="ac" name="email[type]" lay-filter="ac">
                                 <option value="" >请选择...</option>
-                                {volist name="ext_list" id="vo"}
+                                {volist name="$extends['ext_list']" id="vo"}
                                 <option value="{$key}" {if condition="$config['email']['type'] eq $key"}selected {/if}>{$vo}</option>
                                 {/volist}
                             </select>
@@ -103,7 +103,7 @@
                         </div>
                     </div>
                 </div>
-                {$ext_html}
+                {$extends['ext_html']}
             </div>
 
         </div>

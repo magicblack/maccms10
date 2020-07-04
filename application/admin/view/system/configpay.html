@@ -6,7 +6,7 @@
             <ul class="layui-tab-title">
                 <li class="layui-this" lay-id="configpay_1">在线支付设置</li>
                 <li lay-id="configpay_2">卡密</li>
-                {volist name="ext_list" id="vo"}
+                {volist name="$extends['ext_list']" id="vo"}
                 <li data-key="{$key}" lay-id="configpay_{$i+2}">{$vo}</li>
                 {/volist}
                 
@@ -57,7 +57,7 @@
                     </div>
                 </div>
 
-                {$ext_html}
+                {$extends['ext_html']}
 
             </div>
         </div>

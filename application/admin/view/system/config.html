@@ -358,10 +358,11 @@
                     <label class="layui-form-label">富文本编辑器：</label>
                     <div class="layui-input-inline">
                         <select style="width:150px;" name="app[editor]">
-                            <option value="ueditor" {if condition="$config['app']['editor'] eq 'ueditor' || $config['app']['editor'] eq '' "}selected {/if}>ueditor</option>
-                            <option value="umeditor" {if condition="$config['app']['editor'] eq 'umeditor'"}selected {/if}>umeditor</option>
-                            <option value="kindeditor" {if condition="$config['app']['editor'] eq 'kindeditor'"}selected {/if}>kindeditor</option>
-                            <option value="ckeditor" {if condition="$config['app']['editor'] eq 'ckeditor'"}selected {/if}>ckeditor</option>
+                            {volist name="$editors['ext_list']" id="vo"}
+                            <option value="{$key}" {if condition="$config['app']['editor'] eq $key"}selected {/if}>{$vo}</option>
+                            {/volist}
+
+
                         </select>
                     </div>
                     <div class="layui-form-mid layui-word-aux">系统默认带ueditor，使用其他请先到官网下载扩展包</div>

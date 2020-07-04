@@ -5,14 +5,14 @@
     <form class="layui-form layui-form-pane" action="">
         <div class="layui-tab" lay-filter="tb1">
             <ul class="layui-tab-title">
-                {volist name="ext_list" id="vo"}
+                {volist name="$extends['ext_list']" id="vo"}
                 <li data-key="{$key}" lay-id="configpay_{$i+2}">{$vo}配置</li>
                 {/volist}
 
             </ul>
             <div class="layui-tab-content">
 
-                {$ext_html}
+                {$extends['ext_html']}
 
             </div>
         </div>
@@ -36,7 +36,7 @@
             <label class="layui-form-label">推送类型：</label>
             <div class="layui-input-inline">
                 <select class="w150" id="ac" name="ac" lay-filter="ac">
-                    {volist name="ext_list" id="vo"}
+                    {volist name="$extends['ext_list']" id="vo"}
                     <option value="{$key}">{$vo}</option>
                     {/volist}
                 </select>
@@ -103,6 +103,8 @@
             element.tabChange('tb1', $.cookie('urlsend_tab'));
         }
 
+
+
     });
     function post(p)
     {
@@ -114,6 +116,12 @@
         $("#form_post").submit();
     }
 
+    $(function () {
+        if( $.cookie('urlsend_tab') == undefined) {
+            $('.layui-tab-title').find('li').first().addClass('layui-this');
+            $('.layui-tab-item').first().addClass('layui-show');
+        }
+    });
 
 </script>
 </body>

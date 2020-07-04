@@ -532,20 +532,9 @@ class User extends Base
         $this->assign('config', $GLOBALS['config']['pay']);
         $this->assign('info', $res['info']);
 
-        $ext_list=[];
-
-        foreach($GLOBALS['config']['pay'] as $k=>$v){
-            if(!in_array($k,['min','scale','card'])){
-                if(!empty(current($v))){
-                    $cp = 'app\\common\\extend\\pay\\' . ucfirst($k);
-                    if (class_exists($cp)) {
-                        $c = new $cp;
-                        $ext_list[$k] = $c->name;
-                    }
-                }
-            }
-        }
-        $this->assign('ext_list',$ext_list);
+        $extends = mac_extends_list('pay');
+        $this->assign('extends',$extends);
+        $this->assign('ext_list',$extends['ext_list']);
 
         return $this->fetch('user/pay');
     }
