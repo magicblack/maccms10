@@ -36,7 +36,7 @@ class Upload extends Base
     {
         
 		$param = input();
-        $param['from'] = empty($param['from']) ? 'input' : $param['from'];
+        $param['from'] = empty($param['from']) ? '' : $param['from'];
         $param['input'] = empty($param['input']) ? 'file' : $param['input'];
         $param['flag'] = empty($param['flag']) ? 'vod' : $param['flag'];
         $param['thumb'] = empty($param['thumb']) ? '0' : $param['thumb'];

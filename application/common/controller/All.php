@@ -489,6 +489,7 @@ class All extends Controller
             $player_info['url'] = base64_encode(mac_escape($player_info['url']));
             $player_info['url_next'] = base64_encode(mac_escape($player_info['url_next']));
         }
+        $player_info['id'] = $param['id'];
         $player_info['sid'] = $param['sid'];
         $player_info['nid'] = $param['nid'];
         $info['player_info'] = $player_info;

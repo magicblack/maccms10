@@ -212,6 +212,7 @@ class Urlsend extends Base
                 }
             }
             else {
+                $this->_param['page']++;
                 $url = url('urlsend/push') . '?' . http_build_query($this->_param);
                 if(ENTRANCE=='admin') {
                     mac_jump($url, 3);
