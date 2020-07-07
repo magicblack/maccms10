@@ -447,8 +447,9 @@ class Actor extends Base {
         }
         $path = './';
         foreach($list['list'] as $k=>$v){
-            if(file_exists($path.$v['actor_pic'])){
-                unlink($path.$v['actor_pic']);
+            $pic = $path.$v['actor_pic'];
+            if(file_exists($pic) && (substr($pic,0,8) == "./upload") || count( explode("./",$pic) ) ==1){
+                unlink($pic);
             }
             if($GLOBALS['config']['view']['actor_detail'] ==2 ){
                 $lnk = mac_url_actor_detail($v);

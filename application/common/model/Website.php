@@ -504,8 +504,9 @@ class Website extends Base {
         }
         $path = './';
         foreach($list['list'] as $k=>$v){
-            if(file_exists($path.$v['website_pic'])){
-                unlink($path.$v['website_pic']);
+            $pic = $path.$v['website_pic'];
+            if(file_exists($pic) && (substr($pic,0,8) == "./upload") || count( explode("./",$pic) ) ==1){
+                unlink($pic);
             }
             if($GLOBALS['config']['view']['website_detail'] ==2 ){
                 $lnk = mac_url_website_detail($v);

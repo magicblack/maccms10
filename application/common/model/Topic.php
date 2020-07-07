@@ -405,14 +405,17 @@ class Topic extends Base {
         }
         $path = './';
         foreach($list['list'] as $k=>$v){
-            if(file_exists($path.$v['topic_pic'])){
-                unlink($path.$v['topic_pic']);
+            $pic = $path.$v['topic_pic'];
+            if(file_exists($pic) && (substr($pic,0,8) == "./upload") || count( explode("./",$pic) ) ==1){
+                unlink($pic);
             }
-            if(file_exists($path.$v['topic_pic_thumb'])){
-                unlink($path.$v['topic_pic_thumb']);
+            $pic = $path.$v['topic_pic_thumb'];
+            if(file_exists($pic) && (substr($pic,0,8) == "./upload") || count( explode("./",$pic) ) ==1){
+                unlink($pic);
             }
-            if(file_exists($path.$v['topic_pic_slide'])){
-                unlink($path.$v['topic_pic_slide']);
+            $pic = $path.$v['topic_pic_slide'];
+            if(file_exists($pic) && (substr($pic,0,8) == "./upload") || count( explode("./",$pic) ) ==1){
+                unlink($pic);
             }
             if($GLOBALS['config']['view']['topic_detail'] ==2 ){
                 $lnk = mac_url_topic_detail($v);

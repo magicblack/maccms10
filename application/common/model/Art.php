@@ -513,14 +513,17 @@ class Art extends Base {
         }
         $path = './';
         foreach($list['list'] as $k=>$v){
-            if(file_exists($path.$v['art_pic'])){
-                unlink($path.$v['art_pic']);
+            $pic = $path.$v['art_pic'];
+            if(file_exists($pic) && (substr($pic,0,8) == "./upload") || count( explode("./",$pic) ) ==1){
+                unlink($pic);
             }
-            if(file_exists($path.$v['art_pic_thumb'])){
-                unlink($path.$v['art_pic_thumb']);
+            $pic = $path.$v['art_pic_thumb'];
+            if(file_exists($pic) && (substr($pic,0,8) == "./upload") || count( explode("./",$pic) ) ==1){
+                unlink($pic);
             }
-            if(file_exists($path.$v['art_pic_slide'])){
-                unlink($path.$v['art_pic_slide']);
+            $pic = $path.$v['art_pic_slide'];
+            if(file_exists($pic) && (substr($pic,0,8) == "./upload") || count( explode("./",$pic) ) ==1){
+                unlink($pic);
             }
             if($GLOBALS['config']['view']['art_detail'] ==2 ){
                 $lnk = mac_url_art_detail($v);

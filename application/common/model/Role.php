@@ -373,8 +373,9 @@ class Role extends Base {
         $list = $this->where($where)->select();
         $path = './';
         foreach($list as $k=>$v){
-            if(file_exists($path.$v['role_pic'])){
-                unlink($path.$v['role_pic']);
+            $pic = $path.$v['role_pic'];
+            if(file_exists($pic) && (substr($pic,0,8) == "./upload") || count( explode("./",$pic) ) ==1){
+                unlink($pic);
             }
         }
         return ['code'=>1,'msg'=>'删除成功'];
