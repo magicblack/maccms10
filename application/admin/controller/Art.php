@@ -146,8 +146,9 @@ class Art extends Base
             }
             mac_echo( "<font color=red>共".$total."条数据需要处理，每页".$param['limit']."条，共".$page_count."页，正在处理第".$param['page']."页数据</font>");
 
+            $page = $param['page_count'] - $param['page'] + 1;
             $order='art_id desc';
-            $res = model('Art')->listData($where,$order,$param['page'],$param['limit']);
+            $res = model('Art')->listData($where,$order,$page,$param['limit']);
 
             foreach($res['list'] as  $k=>$v){
                 $where2 = [];

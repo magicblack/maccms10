@@ -220,6 +220,7 @@
                     {if condition="$vo.vod_isend eq 0 && $vo.vod_serial neq ''"} <span class="layui-badge layui-bg-blue">连载{$vo.vod_serial}</span>{/if}
                     {if condition="$vo.vod_remarks neq ''"} <span class="layui-badge layui-bg-orange">{$vo.vod_remarks}</span>{/if}
                     {if condition="$vo.vod_plot eq 1"} <span class="layui-badge layui-bg-cyan">剧情</span>{/if}
+                    {if condition="$vo.vod_copyright eq 1"} <span class="layui-badge layui-bg-black">版权</span>{/if}
                 </td>
                 <td>{$vo.vod_hits}</td>
                 <td>{$vo.vod_score}</td>

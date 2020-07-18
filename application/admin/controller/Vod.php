@@ -157,7 +157,7 @@ class Vod extends Base
             mac_echo('<style type="text/css">body{font-size:12px;color: #333333;line-height:21px;}span{font-weight:bold;color:#FF0000}</style>');
 
             if(empty($param['ck_del']) && empty($param['ck_level']) && empty($param['ck_status']) && empty($param['ck_lock']) && empty($param['ck_hits'])
-                && empty($param['ck_points'])
+                && empty($param['ck_points']) && empty($param['ck_copyright'])
             ){
                 return $this->error('没有选择任何参数');
             }
@@ -269,8 +269,9 @@ class Vod extends Base
             }
             mac_echo( "<font color=red>共".$param['total']."条数据需要处理，每页".$param['limit']."条，共".$param['page_count']."页，正在处理第".$param['page']."页数据</font>");
 
+            $page = $param['page_count'] - $param['page'] + 1;
             $order='vod_id desc';
-            $res = model('Vod')->listData($where,$order,$param['page'],$param['limit']);
+            $res = model('Vod')->listData($where,$order,$page,$param['limit']);
 
             foreach($res['list'] as  $k=>$v){
                 $where2 = [];
@@ -288,7 +289,7 @@ class Vod extends Base
                     $des .= '&nbsp;状态：'.($param['val_status'] ==1 ? '[已审核]':'[未审核]') .'；';
                 }
                 if(!empty($param['ck_copyright']) && isset($param['val_copyright'])){
-                    $update['val_copyright'] = $param['val_copyright'];
+                    $update['vod_copyright'] = $param['val_copyright'];
                     $des .= '&nbsp;版权：'.($param['val_copyright'] ==1 ? '[已开启]':'[未关闭') .'；';
                 }
                 if(!empty($param['ck_lock']) && isset($param['val_lock'])){

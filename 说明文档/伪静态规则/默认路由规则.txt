@@ -39,7 +39,10 @@ vodplay/<id>-<sid>-<nid>   => vod/play
 voddown/<id>-<sid>-<nid>   => vod/down
 vodshow/<id>-<area?>-<by?>-<class?>-<lang?>-<letter?>-<level?>-<order?>-<page?>-<state?>-<tag?>-<year?>   => vod/show
 vodsearch/<wd?>-<actor?>-<area?>-<by?>-<class?>-<director?>-<lang?>-<letter?>-<level?>-<order?>-<page?>-<state?>-<tag?>-<year?>   => vod/search
-
+vodplot/<id>-<page?>   => vod/plot
+vodplot/<id>   => vod/plot
+plotdetail/<id>-<page?>   => plot/plot
+plotdetail/<id>   => plot/detail
 
 arttype/<id>-<page?>   => art/type
 arttype/<id>   => art/type

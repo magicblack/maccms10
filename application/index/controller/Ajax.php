@@ -87,6 +87,10 @@ class Ajax extends Base
 
     public function suggest()
     {
+        if($GLOBALS['config']['app']['search'] !='1'){
+            return json(['code'=>999,'msg'=>'搜索功能关闭中']);
+        }
+
         $mid = $this->_param['mid'];
         $wd = $this->_param['wd'];
         $limit = intval($this->_param['limit']);
