@@ -118,26 +118,6 @@ return array (
     array (
     ),
   ),
-  'actortype/<id>-<page?>' => 
-  array (
-    0 => 'actor/type',
-    1 => 
-    array (
-    ),
-    2 => 
-    array (
-    ),
-  ),
-  'actortype/<id>' => 
-  array (
-    0 => 'actor/type',
-    1 => 
-    array (
-    ),
-    2 => 
-    array (
-    ),
-  ),
   'actor-<page?>' => 
   array (
     0 => 'actor/index',
@@ -168,19 +148,9 @@ return array (
     array (
     ),
   ),
-  'actorshow/<id>-<area?>-<blood?>-<by?>-<letter?>-<level?>-<order?>-<page?>-<sex?>-<starsign?>' => 
+  'actorshow/<area?>-<blood?>-<by?>-<letter?>-<level?>-<order?>-<page?>-<sex?>-<starsign?>' => 
   array (
     0 => 'actor/show',
-    1 => 
-    array (
-    ),
-    2 => 
-    array (
-    ),
-  ),
-  'actorsearch/<wd?>-<area?>-<blood?>-<by?>-<letter?>-<level?>-<order?>-<page?>-<sex?>-<starsign?>' => 
-  array (
-    0 => 'actor/search',
     1 => 
     array (
     ),
@@ -221,76 +191,6 @@ return array (
   'roleshow/<by?>-<letter?>-<level?>-<order?>-<page?>-<rid?>' => 
   array (
     0 => 'role/show',
-    1 => 
-    array (
-    ),
-    2 => 
-    array (
-    ),
-  ),
-  'websitetype/<id>-<page?>' => 
-  array (
-    0 => 'website/type',
-    1 => 
-    array (
-    ),
-    2 => 
-    array (
-    ),
-  ),
-  'websitetype/<id>' => 
-  array (
-    0 => 'website/type',
-    1 => 
-    array (
-    ),
-    2 => 
-    array (
-    ),
-  ),
-  'website-<page?>' => 
-  array (
-    0 => 'website/index',
-    1 => 
-    array (
-    ),
-    2 => 
-    array (
-    ),
-  ),
-  'website$' => 
-  array (
-    0 => 'website/index',
-    1 => 
-    array (
-    ),
-    2 => 
-    array (
-    ),
-  ),
-  'websitedetail-<id>' => 
-  array (
-    0 => 'website/detail',
-    1 => 
-    array (
-    ),
-    2 => 
-    array (
-    ),
-  ),
-  'websiteshow/<id>-<area?>-<by?>-<class?>-<lang?>-<letter?>-<level?>-<order?>-<page?>-<tag?>' => 
-  array (
-    0 => 'website/show',
-    1 => 
-    array (
-    ),
-    2 => 
-    array (
-    ),
-  ),
-  'websitesearch/<wd?>-<area?>-<by?>-<class?>-<lang?>-<letter?>-<level?>-<order?>-<page?>-<tag?>' => 
-  array (
-    0 => 'website/search',
     1 => 
     array (
     ),
@@ -371,6 +271,26 @@ return array (
   'vodsearch/<wd?>-<actor?>-<area?>-<by?>-<class?>-<director?>-<lang?>-<letter?>-<level?>-<order?>-<page?>-<state?>-<tag?>-<year?>' => 
   array (
     0 => 'vod/search',
+    1 => 
+    array (
+    ),
+    2 => 
+    array (
+    ),
+  ),
+  'vodplot/<id>-<page?>' => 
+  array (
+    0 => 'vod/plot',
+    1 => 
+    array (
+    ),
+    2 => 
+    array (
+    ),
+  ),
+  'vodplot/<id>' => 
+  array (
+    0 => 'vod/plot',
     1 => 
     array (
     ),
@@ -461,6 +381,26 @@ return array (
   'label-<file>' => 
   array (
     0 => 'label/index',
+    1 => 
+    array (
+    ),
+    2 => 
+    array (
+    ),
+  ),
+  'plotdetail/<id>-<page?>' => 
+  array (
+    0 => 'plot/plot',
+    1 => 
+    array (
+    ),
+    2 => 
+    array (
+    ),
+  ),
+  'plotdetail/<id>' => 
+  array (
+    0 => 'plot/detail',
     1 => 
     array (
     ),

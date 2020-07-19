@@ -42,11 +42,11 @@
             {volist name="$vod_plot_list" id="vo"}
             <div>
                 <div style="padding-top:10px;">
-                    <a class="page_link" href="{:mac_url_plot_detail($obj,['page'=>$key])}" title="{$vo.name}"><b>{$vo.name}</b></a>
+                    <a class="page_link" href="{:mac_url_plot_detail($obj,['page'=>$key+1])}" title="{$vo.name}"><b>{$vo.name}</b></a>
                 </div>
                 <div>
                     {$vo.detail|mac_substring=50}
-                    <a href="{:mac_url_plot_detail($obj,['page'=>$key])}" title="{$vo.name}">[详情...]</a>
+                    <a href="{:mac_url_plot_detail($obj,['page'=>$key+1])}" title="{$vo.name}">[详情...]</a>
                 </div>
             </div>
             {/volist}

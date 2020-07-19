@@ -34,7 +34,7 @@ class Init
         $TMP_HTMLDIR = $config['site']['html_dir'];
         $TMP_ADSDIR = $config['site']['ads_dir'];
 
-        if($isMobile){
+        if($isMobile && $isDomain==0){
             if( ($config['site']['mob_status']==2 ) || ($config['site']['mob_status']==1 && $_SERVER['HTTP_HOST']==$config['site']['site_wapurl']) || ($config['site']['mob_status']==1 && $isDomain) ) {
                 $TMP_ISWAP = 1;
                 $TMP_TEMPLATEDIR = $config['site']['mob_template_dir'];
