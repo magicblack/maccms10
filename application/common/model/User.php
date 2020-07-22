@@ -610,6 +610,10 @@ class User extends Base
         }
         //msg_type  1绑定2找回3注册
         $stime = strtotime('-5 min');
+        if($param['ac']=='email' && intval($GLOBALS['config']['email']['time'])>0){
+            $stime = strtotime('-'.$GLOBALS['config']['email']['time'].' min');
+        }
+
         $where=[];
         $where['user_id'] = $GLOBALS['user']['user_id'];
         $where['msg_time'] = ['gt',$stime];
@@ -647,7 +651,7 @@ class User extends Base
         $r=0;
 
         $stime = strtotime('-5 min');
-        if($param['ac']=='email' && !intval($GLOBALS['config']['email']['time'])>0){
+        if($param['ac']=='email' && intval($GLOBALS['config']['email']['time'])>0){
             $stime = strtotime('-'.$GLOBALS['config']['email']['time'].' min');
         }
         $where=[];
@@ -661,9 +665,10 @@ class User extends Base
         $res_msg= ',请重试';
         if($param['ac']=='email'){
             $title = $GLOBALS['config']['email']['tpl']['user_'.$type_flag.'_title'];
-            $body = $GLOBALS['config']['email']['tpl']['user_'.$type_flag.'_body'];
+            $msg = $GLOBALS['config']['email']['tpl']['user_'.$type_flag.'_body'];
             View::instance()->assign(['code'=>$code]);
-            $res_send = mac_send_mail($to, $title, $body);
+            $msg =  View::instance()->display($msg);
+            $res_send = mac_send_mail($to, $title, $msg);
             $res_code = $res_send['code'];
             $res_msg = $res_send['msg'];
         }
@@ -674,7 +679,7 @@ class User extends Base
             $res_code = $res_send['code'];
             $res_msg = $res_send['msg'];
         }
-
+        
         if($res_code==1){
             $data=[];
             $data['user_id'] = $GLOBALS['user']['user_id'];

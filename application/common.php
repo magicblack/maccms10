@@ -389,6 +389,10 @@ function mac_send_mail($to,$title,$body,$conf=[])
     $title =  View::instance()->display($title);
     $body =  View::instance()->display($body);
 
+    if(!empty($conf)){
+        $config = $conf;
+    }
+
     $cp = 'app\\common\\extend\\email\\' . ucfirst($GLOBALS['config']['email']['type']);
     if (class_exists($cp)) {
         $c = new $cp;
@@ -397,28 +401,6 @@ function mac_send_mail($to,$title,$body,$conf=[])
     else{
         return ['code'=>991,'msg'=>'未找到该邮件发送方式'];
     }
-
-
-    if(!empty($conf)){
-        $config = $conf;
-    }
-    $mail = new \phpmailer\src\PHPMailer();
-    //$mail->SMTPDebug = 2;
-    $mail->isSMTP();
-    $mail->CharSet = "UTF-8";
-    $mail->Host = $config['host'];
-    $mail->SMTPAuth = true;
-    $mail->Username = $config['username'];
-    $mail->Password = $config['password'];
-    $mail->SMTPSecure = 'tls';
-    $mail->Port = $config['port'];
-    $mail->setFrom(  $config['username'] , $config['nick'] );
-    $mail->addAddress($to);
-    $mail->isHTML(true);
-    $mail->Subject = $title;
-    $mail->Body    = $body;
-    unset($config);
-    return $mail->send();
 }
 
 function mac_check_back_link($url)
