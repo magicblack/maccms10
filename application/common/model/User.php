@@ -663,7 +663,6 @@ class User extends Base
             $title = $GLOBALS['config']['email']['tpl']['user_'.$type_flag.'_title'];
             $body = $GLOBALS['config']['email']['tpl']['user_'.$type_flag.'_body'];
             View::instance()->assign(['code'=>$code]);
-            $msg = str_replace(['{$maccms.site_name}','{$user.user_name}','{$time}','{$code}'],[$GLOBALS['config']['site']['site_name'],$GLOBALS['user']['user_name'],$GLOBALS['config']['email']['time'],$code],$body);
             $res_send = mac_send_mail($to, $title, $body);
             $res_code = $res_send['code'];
             $res_msg = $res_send['msg'];
