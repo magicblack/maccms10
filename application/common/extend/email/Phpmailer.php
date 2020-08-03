@@ -11,6 +11,7 @@ class Phpmailer {
         if(empty($config)) {
             $config = $GLOBALS['config']['email']['phpmailer'];
         }
+
         $mail = new \phpmailer\src\PHPMailer();
         //$mail->SMTPDebug = 2;
         $mail->isSMTP();
@@ -19,7 +20,7 @@ class Phpmailer {
         $mail->SMTPAuth = true;
         $mail->Username = $config['username'];
         $mail->Password = $config['password'];
-        $mail->SMTPSecure = 'tls';
+        $mail->SMTPSecure = $config['secure'];
         $mail->Port = $config['port'];
         $mail->setFrom(  $config['username'] , $config['nick'] );
         $mail->addAddress($to);

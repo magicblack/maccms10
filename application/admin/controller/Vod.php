@@ -17,7 +17,7 @@ class Vod extends Base
 
         $where = [];
         if(!empty($param['type'])){
-            $where['type_id'] = ['eq',$param['type']];
+            $where['type_id|type_id_1'] = ['eq',$param['type']];
         }
         if(!empty($param['level'])){
             $where['vod_level'] = ['eq',$param['level']];
@@ -443,6 +443,32 @@ class Vod extends Base
 
         $this->assign('title','视频信息');
         return $this->fetch('admin@vod/info');
+    }
+
+    public function iplot()
+    {
+        if (Request()->isPost()) {
+            $param = input('post.');
+            $res = model('Vod')->savePlot($param);
+            if($res['code']>1){
+                return $this->error($res['msg']);
+            }
+            return $this->success($res['msg']);
+        }
+
+        $id = input('id');
+        $where=[];
+        $where['vod_id'] = $id;
+        $res = model('Vod')->infoData($where);
+
+
+        $info = $res['info'];
+        $this->assign('info',$info);
+        $this->assign('vod_plot_list',$info['vod_plot_list']);
+
+
+        $this->assign('title','分集剧情信息');
+        return $this->fetch('admin@vod/iplot');
     }
 
     public function del()

@@ -18,7 +18,7 @@ class Art extends Base
 
         $where = [];
         if (!empty($param['type'])) {
-            $where['type_id'] = ['eq', $param['type']];
+            $where['type_id|type_id_1'] = ['eq', $param['type']];
         }
         if (!empty($param['level'])) {
             $where['art_level'] = ['eq', $param['level']];

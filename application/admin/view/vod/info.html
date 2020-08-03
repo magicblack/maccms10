@@ -11,10 +11,6 @@
             <ul class="layui-tab-title ">
                 <li class="layui-this">基本信息</a></li>
                 <li>其他信息</li>
-                <li>剧情信息</li>
-                {notempty name="info.vod_id"}
-                <li>角色信息</li>
-                {/notempty}
             </ul>
             <div class="layui-tab-content">
 
@@ -480,40 +476,6 @@
 
                     </div>
 
-                <div class="layui-tab-item">
-                    <div id="plot_list" class="contents">
-                        {volist name="$vod_plot_list" id="vo"}
-                        <div class="layui-form-item" data-i="{$key}">
-                            <label class="layui-form-label">剧情{$key}：</label>
-                            <div class="layui-input-inline w500"><input type="text" name="vod_plot_name[]" class="layui-input" value="{$vo.name}" placeholder="剧情标题"></div>
-                            <div class="layui-input-inline w400 p10"><a href="javascript:void(0)" class="j-editor-clear">清空</a>&nbsp;<a href="javascript:void(0)" class="j-editor-remove">删除</a>&nbsp;<a href="javascript:void(0)" class="j-editor-up">上移</a>&nbsp;<a href="javascript:void(0)" class="j-editor-down">下移</a><br></div>
-                            <div class="p10 m20"> </div>
-                            <div class="layui-input-block "><textarea id="vod_plot_detail{$key}" name="vod_plot_detail[]" type="text/plain" style="width:100%;height:150px">{$vo.detail|mac_str_correct=###,'#',chr(13)}</textarea></div>
-                        </div>
-                        {/volist}
-                    </div>
-                    <div class="layui-form-item">
-                        <label class=""><button class="layui-btn radius j-plot-add" type="button">添加一集剧情</button></label>
-                        <div class="layui-input-block">
-
-                        </div>
-                    </div>
-                </div>
-
-                <div class="layui-tab-item">
-                    <div class="layui-form-item">
-                        <label class="layui-form-label">采集网址：</label>
-                        <div class="layui-input-inline w500">
-                            <input type="text" class="layui-input" value="" placeholder="" id="role_cj" name="role_cj">
-                        </div>
-                        <button class="layui-btn" type="button" id="btn_role_cj">点击采集</button>
-                    </div>
-
-                    {notempty name="info.vod_id"}
-                    <iframe src="{:url('role/data')}?select=1&tab=vod&rid={$info.vod_id}" marginwidth="0" marginheight="0" style="width:100%;height:600px;"></iframe>
-                    {/notempty}
-                </div>
-
 
             </div>
         </div>
@@ -698,7 +660,7 @@
                 timeout: 5000,
                 url: '//' + 'api' + '.' + 'mac'+ 'cms' + '.'+ 'com' + '/douban/index/id/' + id,
                 error: function(){
-                    alert('请求解析服务器失败');
+                    alert('请求服务失败');
                 },
                 complete:function(){
                     is_load=0;

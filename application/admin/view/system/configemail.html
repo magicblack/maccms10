@@ -2,11 +2,11 @@
 
 <div class="page-container">
     <form class="layui-form layui-form-pane" action="">
-        <div class="layui-tab">
+        <div class="layui-tab" lay-filter="tb1">
             <ul class="layui-tab-title">
-                <li class="layui-this">邮件模板配置</li>
+                <li class="layui-this" lay-id="configemail_1">邮件模板配置</li>
                 {volist name="$extends['ext_list']" id="vo"}
-                <li data-key="{$key}" lay-id="configpay_{$i+2}">{$vo}</li>
+                <li data-key="{$key}" lay-id="configemail_{$i+1}">{$vo}</li>
                 {/volist}
             </ul>
             <div class="layui-tab-content">
@@ -117,6 +117,7 @@
 </div>
 
 {include file="../../../application/admin/view/public/foot" /}
+<script type="text/javascript" src="__STATIC__/js/jquery.cookie.js"></script>
 <script type="text/javascript">
     layui.use(['element', 'form', 'layer'], function() {
         var element = layui.element

@@ -1958,6 +1958,9 @@ function mac_url($model,$param=[],$info=[])
             }
             $url = MAC_PATH. 'index.php' . $url;
         }
+        elseif($config['rewrite']['status']==1 && strpos($url,'index.php')!==false){
+            $url = str_replace('index.php/','',$url);
+        }
 
         if($config['rewrite']['suffix_hide']==1){
             $url = str_replace('.html','/',$url);

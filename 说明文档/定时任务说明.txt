@@ -57,17 +57,17 @@
 执行文件：选择 网址推送urlsend
 
 附加参数：
-百度主动推送当天视频 ac=baidu_push&ac2=today&mid=1
-百度主动推送当天文章 ac=baidu_push&ac2=today&mid=2
-百度主动推送当天专题 ac=baidu_push&ac2=today&mid=3
-百度主动推送当天演员 ac=baidu_push&ac2=today&mid=8
-百度主动推送当天角色 ac=baidu_push&ac2=today&mid=9
+百度主动推送当天视频 ac=Baidu&limit=50&page=1&ac2=today&mid=1
+百度主动推送当天文章 ac=Baidu&limit=50&page=1&ac2=today&mid=2
+百度主动推送当天专题 ac=Baidu&limit=50&page=1&ac2=today&mid=3
+百度主动推送当天演员 ac=Baidu&limit=50&page=1&ac2=today&mid=8
+百度主动推送当天角色 ac=Baidu&limit=50&page=1&ac2=today&mid=9
 
-百度熊掌号推送当天视频 ac=baidu_bear&ac2=today&type=realtime&mid=1
-百度熊掌号推送当天文章 ac=baidu_bear&ac2=today&type=realtime&mid=2
-百度熊掌号推送当天专题 ac=baidu_bear&ac2=today&type=realtime&mid=3
-百度熊掌号推送当天演员 ac=baidu_bear&ac2=today&type=realtime&mid=8
-百度熊掌号推送当天角色 ac=baidu_bear&ac2=today&type=realtime&mid=9
+百度快速推送当天视频 ac=Baidufast&limit=10&page=1&ac2=today&mid=1
+百度快速推送当天文章 ac=Baidufast&limit=10&page=1&ac2=today&mid=2
+百度快速推送当天专题 ac=Baidufast&limit=10&page=1&ac2=today&mid=3
+百度快速推送当天演员 ac=Baidufast&limit=10&page=1&ac2=today&mid=8
+百度快速推送当天角色 ac=Baidufast&limit=10&page=1&ac2=today&mid=9
 
 
 

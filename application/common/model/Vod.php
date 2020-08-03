@@ -587,8 +587,8 @@ class Vod extends Base {
             $data['vod_down_note']='';
             $data['vod_down_url']='';
         }
-
-        if(!empty($data['vod_plot_name'])) {
+        
+	    if(!empty($data['vod_plot_name'])) {
             $data['vod_plot'] = 1;
             $data['vod_plot_name'] = join('$$$', $data['vod_plot_name']);
             $data['vod_plot_detail'] = join('$$$', $data['vod_plot_detail']);
@@ -597,7 +597,7 @@ class Vod extends Base {
             $data['vod_plot_name']='';
             $data['vod_plot_detail']='';
         }
-
+        
         if($data['uptime']==1){
             $data['vod_time'] = time();
         }
@@ -616,6 +616,43 @@ class Vod extends Base {
             $data['vod_time_add'] = time();
             $data['vod_time'] = time();
             $res = $this->allowField(true)->insert($data);
+        }
+        if(false === $res){
+            return ['code'=>1002,'msg'=>'保存失败：'.$this->getError() ];
+        }
+        return ['code'=>1,'msg'=>'保存成功'];
+    }
+
+    public function savePlot($data)
+    {
+        $validate = \think\Loader::validate('Vod');
+        if(!$validate->check($data)){
+            return ['code'=>1001,'msg'=>'参数错误：'.$validate->getError() ];
+        }
+        $key = 'vod_detail_'.$data['vod_id'];
+        Cache::rm($key);
+        $key = 'vod_detail_'.$data['vod_en'];
+        Cache::rm($key);
+        $key = 'vod_detail_'.$data['vod_id'].'_'.$data['vod_en'];
+        Cache::rm($key);
+
+        if(!empty($data['vod_plot_name'])) {
+            $data['vod_plot'] = 1;
+            $data['vod_plot_name'] = join('$$$', $data['vod_plot_name']);
+            $data['vod_plot_detail'] = join('$$$', $data['vod_plot_detail']);
+        }else{
+            $data['vod_plot'] = 0;
+            $data['vod_plot_name']='';
+            $data['vod_plot_detail']='';
+        }
+
+        if(!empty($data['vod_id'])){
+            $where=[];
+            $where['vod_id'] = ['eq',$data['vod_id']];
+            $res = $this->allowField(true)->where($where)->update($data);
+        }
+        else{
+            $res = false;
         }
         if(false === $res){
             return ['code'=>1002,'msg'=>'保存失败：'.$this->getError() ];
