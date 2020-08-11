@@ -2,6 +2,7 @@
 namespace app\common\controller;
 use think\Controller;
 use think\Cache;
+use think\Request;
 
 class All extends Controller
 {
@@ -92,6 +93,19 @@ class All extends Controller
         $this->assign( ['maccms'=>$maccms] );
     }
 
+    protected function page_error($msg='发生错误')
+    {
+        $url = Request::instance()->isAjax() ? '' : 'javascript:history.back(-1);';
+        $wait = 3;
+        $this->assign('url',$url);
+        $this->assign('wait',$wait);
+        $this->assign('msg',$msg);
+        $html = $this->label_fetch('public/jump');
+        header("HTTP/1.1 404 Not Found");
+        header("Status: 404 Not Found");
+        exit($html);
+    }
+
     protected function label_user()
     {
         if(ENTRANCE != 'index'){
@@ -162,7 +176,7 @@ class All extends Controller
         if(empty($info)) {
             $res = mac_label_actor_detail($param);
             if ($res['code'] > 1) {
-                return $this->error($res['msg']);
+                $this->page_error($res['msg']);;
             }
             $info = $res['info'];
         }
@@ -208,7 +222,7 @@ class All extends Controller
         if(empty($info)) {
             $res = mac_label_role_detail($param);
             if ($res['code'] > 1) {
-                return $this->error($res['msg']);
+                $this->page_error($res['msg']);;
             }
             $info = $res['info'];
         }
@@ -226,7 +240,7 @@ class All extends Controller
         if(empty($info)) {
             $res = mac_label_website_detail($param);
             if ($res['code'] > 1) {
-                return $this->error($res['msg']);
+                $this->page_error($res['msg']);;
             }
             $info = $res['info'];
         }
@@ -282,7 +296,7 @@ class All extends Controller
         if(empty($info)) {
             $res = mac_label_topic_detail($param);
             if ($res['code'] > 1) {
-                return $this->error($res['msg']);
+                $this->page_error($res['msg']);;
             }
             $info = $res['info'];
         }
@@ -302,7 +316,7 @@ class All extends Controller
         if(empty($info)) {
             $res = mac_label_art_detail($param);
             if ($res['code'] > 1) {
-                return $this->error($res['msg']);
+                $this->page_error($res['msg']);;
             }
             $info = $res['info'];
         }
@@ -346,8 +360,8 @@ class All extends Controller
         $this->assign('param',$param);
         if(empty($info)) {
             $res = mac_label_vod_detail($param);
-            if ($res['code'] > 1) {
-                return $this->error($res['msg']);
+            if ($res['code'] > 1){
+                $this->page_error($res['msg']);
             }
             $info = $res['info'];
         }
@@ -383,7 +397,7 @@ class All extends Controller
         if (empty($info)) {
             $res = mac_label_vod_detail($param);
             if ($res['code'] > 1) {
-                return $this->error($res['msg']);
+                $this->page_error($res['msg']);
             }
             $info = $res['info'];
         }
@@ -404,7 +418,7 @@ class All extends Controller
         if(empty($info)) {
             $res = mac_label_vod_detail($param);
             if ($res['code'] > 1) {
-                return $this->error($res['msg']);
+                $this->page_error($res['msg']);
             }
             $info = $res['info'];
         }
