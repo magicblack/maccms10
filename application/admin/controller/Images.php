@@ -7,6 +7,7 @@ class Images extends Base
     public function __construct()
     {
         parent::__construct();
+        header('X-Accel-Buffering: no');
     }
 
     public function index()
@@ -127,7 +128,7 @@ class Images extends Base
         $param = input();
 
         $param['page'] = intval($param['page']) < 1 ? 1 : $param['page'];
-        $param['limit'] = intval($param['limit']) < 10 ? 10 : $param['limit'];
+        $param['limit'] = intval($param['limit']) < 1 ? 10 : $param['limit'];
         $flag = "#err". date('Y-m-d',time());
 
         if($param['tab']=='vod'){
