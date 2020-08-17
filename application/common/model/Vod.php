@@ -588,16 +588,6 @@ class Vod extends Base {
             $data['vod_down_url']='';
         }
         
-	    if(!empty($data['vod_plot_name'])) {
-            $data['vod_plot'] = 1;
-            $data['vod_plot_name'] = join('$$$', $data['vod_plot_name']);
-            $data['vod_plot_detail'] = join('$$$', $data['vod_plot_detail']);
-        }else{
-            $data['vod_plot'] = 0;
-            $data['vod_plot_name']='';
-            $data['vod_plot_detail']='';
-        }
-        
         if($data['uptime']==1){
             $data['vod_time'] = time();
         }
@@ -613,6 +603,9 @@ class Vod extends Base {
             $res = $this->allowField(true)->where($where)->update($data);
         }
         else{
+            $data['vod_plot'] = 0;
+            $data['vod_plot_name']='';
+            $data['vod_plot_detail']='';
             $data['vod_time_add'] = time();
             $data['vod_time'] = time();
             $res = $this->allowField(true)->insert($data);
