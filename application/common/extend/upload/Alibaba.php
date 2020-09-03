@@ -12,7 +12,7 @@ class Alibaba
 
         $url = 'https://kfupload.alibaba.com/mupload';
         $data = [];
-        $data['scene'] = 'aeMessageCenterV2ImageRule';
+        $data['scene'] = 'aeMessageCenterImageRule';
         $data['name'] = 'player.jpg';
         if (class_exists('CURLFile')) {
             $data['file'] = new \CURLFile(realpath($file_path));
