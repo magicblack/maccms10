@@ -78,11 +78,12 @@ class Gbook extends Base
             return ['code'=>1005,'msg'=>'请不要频繁操作'];
         }
 
+        $param['gbook_content']= htmlentities(mac_filter_words($param['gbook_content']));
         $pattern = '/[^\x00-\x80]/';
         if(!preg_match($pattern,$param['gbook_content'])){
             return ['code'=>1005,'msg'=>'内容必须包含中文,请重新输入'];
         }
-        $param['gbook_content']= htmlentities(mac_filter_words($param['gbook_content']));
+
         $param['gbook_reply'] = '';
 
         if(empty(cookie('user_id'))){

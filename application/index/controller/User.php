@@ -738,7 +738,7 @@ class User extends Base
     public function ulog_del()
     {
         $param = input();
-        $ids = $param['ids'];
+        $ids = htmlspecialchars(urldecode(trim($param['ids'])));
         $type = $param['type'];
         $all = $param['all'];
 
@@ -789,7 +789,7 @@ class User extends Base
     public function plog_del()
     {
         $param = input();
-        $ids = $param['ids'];
+        $ids = htmlspecialchars(urldecode(trim($param['ids'])));
         $type = $param['type'];
         $all = $param['all'];
 
@@ -841,7 +841,7 @@ class User extends Base
     public function cash_del()
     {
         $param = input();
-        $ids = $param['ids'];
+        $ids = htmlspecialchars(urldecode(trim($param['ids'])));
         $type = $param['type'];
         $all = $param['all'];
 
@@ -917,7 +917,7 @@ class User extends Base
     {
         $param = input();
         $where = [];
-        $where['order_id'] = $param['order_id'];
+        $where['order_id'] = intval($param['order_id']);
         $res = model('Order')->infoData($where);
         if (request()->isAjax()) {
             return json($res);

@@ -62,11 +62,11 @@ class Comment extends Base
             return ['code'=>1005,'msg'=>'请不要频繁操作'];
         }
 
+        $param['comment_content']= htmlentities(mac_filter_words($param['comment_content']));
         $pattern = '/[^\x00-\x80]/';
         if(!preg_match($pattern,$param['comment_content'])){
             return ['code'=>1005,'msg'=>'内容必须包含中文,请重新输入'];
         }
-        $param['comment_content']= htmlentities(mac_filter_words($param['comment_content']));
 
         if(!in_array($param['comment_mid'],['1','2','3','8','9','11'])){
             return ['code'=>1006,'msg'=>'模型mid错误'];
@@ -80,6 +80,8 @@ class Comment extends Base
             $param['user_id'] = intval(cookie('user_id'));
         }
         $param['comment_name'] = htmlentities($param['comment_name']);
+        $param['comment_rid'] = intval($param['comment_rid']);
+        $param['comment_pid'] = intval($param['comment_pid']);
 
         if($GLOBALS['config']['comment']['audit'] ==1){
             $param['comment_status'] = 0;
@@ -110,7 +112,7 @@ class Comment extends Base
     public function report()
     {
         $param = input();
-        $id = $param['id'];
+        $id = intval($param['id']);
 
         if(empty($id) ) {
             return json(['code'=>1001,'msg'=>'参数错误']);
@@ -131,7 +133,7 @@ class Comment extends Base
     public function digg()
     {
         $param = input();
-        $id = $param['id'];
+        $id = intval($param['id']);
         $type = $param['type'];
 
         if(empty($id) ||  empty($type) ) {
