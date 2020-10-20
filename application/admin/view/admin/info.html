@@ -2,6 +2,7 @@
 <div class="page-container p10">
     <form class="layui-form layui-form-pane" method="post" action="">
         <input id="admin_id" name="admin_id" type="hidden" value="{$info.admin_id}">
+        <input type="hidden" name="__token__" value="{$Request.token}" />
         <div class="layui-form-item">
             <label class="layui-form-label">账号：</label>
             <div class="layui-input-block  ">

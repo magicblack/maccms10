@@ -11,7 +11,7 @@ class Timming extends Base
 
     public function index()
     {
-        $param = input();
+        $param = input('','','trim,urldecode,htmlspecialchars');;
         $name = $param['name'];
         if(empty($name)){
             //return $this->error('参数错误!');

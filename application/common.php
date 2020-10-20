@@ -11,6 +11,23 @@ use think\View;
 
 error_reporting(E_ERROR | E_PARSE );
 
+//访问日志记录需根目录创建log目录
+function slog($logs)
+{
+	$ymd = date('Y-m-d-H');
+	$now = date('Y-m-d H:i:s');
+	$toppath = "./log/$ymd.txt";
+	$ts = @fopen($toppath,"a+");
+	@fputs($ts, $now .' '. $logs ."\r\n");
+	@fclose($ts);
+}
+//foreach($_GET as $k=>$v){ $getData .= $k.'='.$v.'&'; }
+//foreach($_POST as $k=>$v){ $postData .= $k.'='.$v.'&'; }
+//foreach($_COOKIE as $k=>$v){ $cookieData .= $k.'='.$v.'&'; }
+//$log = $_SERVER['PHP_SELF'] . '---get:' .$getData .'---post:' . $postData ;
+//slog($log);
+
+
 // 应用公共文件
 function mac_return($msg,$code=1,$data=''){
     if(is_array($msg)){

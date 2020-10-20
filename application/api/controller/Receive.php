@@ -9,8 +9,7 @@ class Receive extends Base
     public function __construct()
     {
         parent::__construct();
-        $this->_param = input();
-
+        $this->_param = input('','','trim,urldecode,htmlspecialchars');
 
         if($GLOBALS['config']['interface']['status'] != 1){
             echo json_encode(['code'=>3001,'msg'=>'接口关闭err'],JSON_UNESCAPED_UNICODE);
