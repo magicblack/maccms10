@@ -142,7 +142,7 @@ class Index extends Controller
         $password = input('post.password');
         $install_dir = input('post.install_dir');
         $initdata = input('post.initdata');
-
+	 $token = input('post.__token__');
         $config = include APP_PATH.'database.php';
         if (empty($config['hostname']) || empty($config['database']) || empty($config['username'])) {
             return $this->error('请先点击测试数据库连接！');
@@ -219,6 +219,7 @@ class Index extends Controller
             'admin_name' => $account,
             'admin_pwd' => $password,
             'admin_status' =>1,
+            '__token__'=>$token,
         ];
         $res = model('Admin')->saveData($data);
         if (!$res['code']>1) {

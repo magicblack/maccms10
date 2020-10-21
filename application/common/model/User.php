@@ -389,10 +389,63 @@ class User extends Base
         cookie('user_name', $row['user_name'],['expire'=>2592000] );
         cookie('group_id', $group['group_id'],['expire'=>2592000] );
         cookie('group_name', $group['group_name'],['expire'=>2592000] );
-        cookie('user_check', md5($random . '-' .$row['user_name'] . '-' . $row['user_id'] .'-'.request()->ip().'-'.$_SERVER['SERVER_ADDR'] ),['expire'=>2592000] );
+        cookie('user_check', md5($random . '-' .$row['user_name'] . '-' . $row['user_id'] .'-'.$_SERVER['SERVER_ADDR'] ),['expire'=>2592000] );
         cookie('user_portrait', mac_get_user_portrait($row['user_id']),['expire'=>2592000] );
 
         return ['code' => 1, 'msg' => '登录成功'];
+    }
+
+    public function checkLogin()
+    {
+        $user_id = cookie('user_id');
+        $user_name = cookie('user_name');
+        $user_check = cookie('user_check');
+
+        $user_id = htmlspecialchars(urldecode(trim($user_id)));
+        $user_name = htmlspecialchars(urldecode(trim($user_name)));
+        $user_check = htmlspecialchars(urldecode(trim($user_check)));
+
+        if (empty($user_id) || empty($user_name) || empty($user_check)) {
+            return ['code' => 1001, 'msg' => '未登录'];
+        }
+
+        $where = [];
+        $where['user_id'] = $user_id;
+        $where['user_name'] = $user_name;
+        $where['user_status'] = 1;
+
+        $info = $this->field('*')->where($where)->find();
+        if(empty($info)) {
+            return ['code' => 1002, 'msg' => '未登录'];
+        }
+        $info = $info->toArray();
+        $login_check = md5($info['user_random'] . '-' . $info['user_name']. '-' . $info['user_id'] .'-'.$_SERVER['SERVER_ADDR'] );
+        if($login_check != $user_check) {
+            return ['code' => 1003, 'msg' => '未登录'];
+        }
+
+        $group_list = model('Group')->getCache('group_list');
+        $info['group'] = $group_list[$info['group_id']];
+
+        //会员截止日期
+        if ($info['group_id'] > 2 && $info['user_end_time'] < time()) {
+            //用户组
+            $info['group'] = $group_list[2];
+
+            $update = [];
+            $update['group_id'] = 2;
+
+            $res = $this->where($where)->update($update);
+            if($res === false){
+                return ['code' => 1004, 'msg' => '更新会员截止日期失败'];
+            }
+
+            cookie('group_id', $info['group']['group_id'], ['expire'=>2592000] );
+            cookie('group_name', $info['group']['group_name'],['expire'=>2592000] );
+        }
+
+
+        return ['code' => 1, 'msg' => '已登录', 'info' => $info];
     }
 
     public function expire()
@@ -420,59 +473,6 @@ class User extends Base
         cookie('user_check', null);
         cookie('user_portrait', null);
         return ['code' => 1, 'msg' => '退出成功'];
-    }
-
-    public function checkLogin()
-    {
-        $user_id = cookie('user_id');
-        $user_name = cookie('user_name');
-        $user_check = cookie('user_check');
-
-        $user_id = htmlspecialchars(urldecode(trim($user_id)));
-        $user_name = htmlspecialchars(urldecode(trim($user_name)));
-        $user_check = htmlspecialchars(urldecode(trim($user_check)));
-
-        if (empty($user_id) || empty($user_name) || empty($user_check)) {
-            return ['code' => 1001, 'msg' => '未登录'];
-        }
-
-        $where = [];
-        $where['user_id'] = $user_id;
-        $where['user_name'] = $user_name;
-        $where['user_status'] = 1;
-
-        $info = $this->field('*')->where($where)->find();
-        if(empty($info)) {
-            return ['code' => 1002, 'msg' => '未登录'];
-        }
-        $info = $info->toArray();
-        $login_check = md5($info['user_random'] . '-' . $info['user_name']. '-' . $info['user_id'] .'-'.request()->ip().'-'.$_SERVER['SERVER_ADDR'] );
-        if($login_check != $user_check) {
-            return ['code' => 1003, 'msg' => '未登录'];
-        }
-
-        $group_list = model('Group')->getCache('group_list');
-        $info['group'] = $group_list[$info['group_id']];
-
-        //会员截止日期
-        if ($info['group_id'] > 2 && $info['user_end_time'] < time()) {
-            //用户组
-            $info['group'] = $group_list[2];
-
-            $update = [];
-            $update['group_id'] = 2;
-
-            $res = $this->where($where)->update($update);
-            if($res === false){
-                return ['code' => 1004, 'msg' => '更新会员截止日期失败'];
-            }
-
-            cookie('group_id', $info['group']['group_id'], ['expire'=>2592000] );
-            cookie('group_name', $info['group']['group_name'],['expire'=>2592000] );
-        }
-
-
-        return ['code' => 1, 'msg' => '已登录', 'info' => $info];
     }
 
     public function resetPwd()

@@ -65,6 +65,7 @@
     </form>
     <form class="layui-form layui-form-pane" action="?step=5" method="post">
         <input type="hidden" name="install_dir" value="{$install_dir}">
+        <input type="hidden" name="__token__" value="{$Request.token}" />
         <fieldset class="layui-elem-field layui-field-title">
             <legend>其他设置</legend>
         </fieldset>

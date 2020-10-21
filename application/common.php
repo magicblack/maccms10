@@ -24,7 +24,7 @@ function slog($logs)
 //foreach($_GET as $k=>$v){ $getData .= $k.'='.$v.'&'; }
 //foreach($_POST as $k=>$v){ $postData .= $k.'='.$v.'&'; }
 //foreach($_COOKIE as $k=>$v){ $cookieData .= $k.'='.$v.'&'; }
-//$log = $_SERVER['PHP_SELF'] . '---get:' .$getData .'---post:' . $postData ;
+//$log = $_SERVER['PHP_SELF'] . '---get:' .$getData .'---post:' . $postData .'---'. json_encode($_POST).'---cookie:' . $cookieData ;
 //slog($log);
 
 
