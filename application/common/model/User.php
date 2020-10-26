@@ -389,7 +389,7 @@ class User extends Base
         cookie('user_name', $row['user_name'],['expire'=>2592000] );
         cookie('group_id', $group['group_id'],['expire'=>2592000] );
         cookie('group_name', $group['group_name'],['expire'=>2592000] );
-        cookie('user_check', md5($random . '-' .$row['user_name'] . '-' . $row['user_id'] .'-'.$_SERVER['SERVER_ADDR'] ),['expire'=>2592000] );
+        cookie('user_check', md5($random . '-' .$row['user_name'] . '-' . $row['user_id'] .'-'.request()->ip() ),['expire'=>2592000] );
         cookie('user_portrait', mac_get_user_portrait($row['user_id']),['expire'=>2592000] );
 
         return ['code' => 1, 'msg' => '登录成功'];
@@ -419,8 +419,8 @@ class User extends Base
             return ['code' => 1002, 'msg' => '未登录'];
         }
         $info = $info->toArray();
-        $login_check = md5($info['user_random'] . '-' . $info['user_name']. '-' . $info['user_id'] .'-'.$_SERVER['SERVER_ADDR'] );
-        if($login_check != $user_check) {
+        $login_check = md5($info['user_random'] . '-' . $info['user_name']. '-' . $info['user_id'] .'-'.request()->ip() );
+        if($login_check !== $user_check) {
             return ['code' => 1003, 'msg' => '未登录'];
         }
 

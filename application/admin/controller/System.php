@@ -3,7 +3,6 @@ namespace app\admin\controller;
 use think\Db;
 use think\Config;
 use think\Cache;
-use think\View;
 
 class System extends Base
 {
@@ -53,7 +52,7 @@ class System extends Base
         if (Request()->isPost()) {
             $config = input();
 
-            $validate = \think\Loader::validate('System');
+            $validate = \think\Loader::validate('Token');
             if(!$validate->check($config)){
                 return $this->error($validate->getError());
             }
@@ -223,6 +222,13 @@ class System extends Base
     {
         if (Request()->isPost()) {
             $config = input();
+
+            $validate = \think\Loader::validate('Token');
+            if(!$validate->check($config)){
+                return $this->error($validate->getError());
+            }
+            unset($config['__token__']);
+
             $config_new['user'] = $config['user'];
 
             $config_old = config('maccms');
@@ -436,6 +442,12 @@ class System extends Base
         if (Request()->isPost()) {
             $config = input();
 
+            $validate = \think\Loader::validate('Token');
+            if(!$validate->check($config)){
+                return $this->error($validate->getError());
+            }
+            unset($config['__token__']);
+
             if($config['interface']['status']==1 && strlen($config['interface']['pass']) < 16){
                 return $this->error('保存失败，安全起见入库密码必须大于等于16位!');
             }
@@ -543,6 +555,12 @@ class System extends Base
     {
         if (Request()->isPost()) {
             $config = input();
+            $validate = \think\Loader::validate('Token');
+            if(!$validate->check($config)){
+                return $this->error($validate->getError());
+            }
+            unset($config['__token__']);
+
             $config_new['play'] = $config['play'];
             $config_old = config('maccms');
             $config_new = array_merge($config_old, $config_new);
@@ -585,6 +603,13 @@ class System extends Base
     {
         if (Request()->isPost()) {
             $config = input();
+
+            $validate = \think\Loader::validate('Token');
+            if(!$validate->check($config)){
+                return $this->error($validate->getError());
+            }
+            unset($config['__token__']);
+
             $config_new['seo'] = $config['seo'];
 
             $config_old = config('maccms');

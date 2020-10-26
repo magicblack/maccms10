@@ -9,21 +9,20 @@ class Receive extends Base
     public function __construct()
     {
         parent::__construct();
-        $this->_param = input('','','trim,urldecode,htmlspecialchars');
+        $this->_param = input('','','trim,urldecode');
 
         if($GLOBALS['config']['interface']['status'] != 1){
             echo json_encode(['code'=>3001,'msg'=>'接口关闭err'],JSON_UNESCAPED_UNICODE);
-            exit;
-        }
-        if($GLOBALS['config']['interface']['pass'] != $this->_param['pass']){
-            echo json_encode(['code'=>3002,'msg'=>'非法使用err'],JSON_UNESCAPED_UNICODE);
             exit;
         }
         if( strlen($GLOBALS['config']['interface']['pass']) <16){
             echo json_encode(['code'=>3003,'msg'=>'安全起见入库密码必须大于等于16位'],JSON_UNESCAPED_UNICODE);
             exit;
         }
-
+        if($GLOBALS['config']['interface']['pass'] != $this->_param['pass']){
+            echo json_encode(['code'=>3002,'msg'=>'非法使用err'],JSON_UNESCAPED_UNICODE);
+            exit;
+        }
     }
 
     public function index()

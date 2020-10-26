@@ -63,6 +63,11 @@ class Collect extends Base
     {
         if (Request()->isPost()) {
             $param = input('post.');
+            $validate = \think\Loader::validate('Token');
+            if(!$validate->check($param)){
+                return $this->error($validate->getError());
+            }
+
             $res = model('Collect')->saveData($param);
             if ($res['code'] > 1) {
                 return $this->error($res['msg']);

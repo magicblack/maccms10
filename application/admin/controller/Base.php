@@ -25,7 +25,6 @@ class Base extends All
         }
         else {
             $res = model('Admin')->checkLogin();
-
             if ($res['code'] > 1) {
                 return $this->redirect('index/login');
             }

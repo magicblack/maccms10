@@ -1,0 +1,58 @@
+{include file="../../../application/admin/view/public/head" /}
+<div class="page-container p10">
+
+    <div class="layui-tab layui-tab-brief" lay-filter="tabs">
+        <ul class="layui-tab-title">
+            <li class="btn-local" ><a href="{:url('index')}">本地应用</a></li>
+            <li class="layui-this"><a href="{:url('add')}">离线安装</a></li>
+        </ul>
+        <div class="layui-tab-content">
+            <blockquote class="layui-elem-quote layui-quote-nm">
+                提示：<br>
+                1.请确保第三方插件符合程序开发规范。
+                2.--使用前请做好安全检测避免出现安全问题。
+            </blockquote>
+            <input type="hidden" id="token" name="__token__" value="{$Request.token}" />
+            <button type="button" class="layui-btn layui-upload" id="upload1">点击上传</button>
+        </div>
+    </div>
+</div>
+
+{include file="../../../application/admin/view/public/foot" /}
+
+
+<script type="text/javascript">
+    var url='';
+    layui.use(['form','laypage', 'layer','upload','element'], function() {
+        // 操作对象
+        var form = layui.form
+            , layer = layui.layer
+            , upload = layui.upload
+            ,element = layui.element;
+
+        upload.render({
+            elem: '.layui-upload'
+            ,url: "{:url('addon/local')}?__token__=" + $('#token').val()
+            ,method: 'post'
+            ,exts:'zip'
+            ,before: function(input) {
+                layer.msg('文件上传中...', {time:3000000});
+            },done: function(res, index, upload) {
+                var obj = this.item;
+                if (res.code == 0) {
+                    layer.msg(res.msg);
+                }
+
+                setTimeout(function () {
+                    layer.closeAll();
+                    location.reload();
+                },2000);
+            }
+        });
+
+    });
+
+
+</script>
+</body>
+</html>

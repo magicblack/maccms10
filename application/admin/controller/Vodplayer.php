@@ -24,6 +24,11 @@ class VodPlayer extends Base
         $param = input();
         $list = config($this->_pre);
         if (Request()->isPost()) {
+            $validate = \think\Loader::validate('Token');
+            if(!$validate->check($param)){
+                return $this->error($validate->getError());
+            }
+            unset($param['__token__']);
             unset($param['flag']);
             $code = $param['code'];
             unset($param['code']);

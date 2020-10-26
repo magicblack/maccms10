@@ -239,8 +239,12 @@ class Database extends Base
     {
         if($this->request->isPost()){
             $param=input();
-            $sql = trim($param['sql']);
+            $validate = \think\Loader::validate('Token');
+            if(!$validate->check($param)){
+                return $this->error($validate->getError());
+            }
 
+            $sql = trim($param['sql']);
             if(!empty($sql)){
                 $sql = str_replace('{pre}',config('database.prefix'),$sql);
                 //查询语句返回结果集
@@ -279,6 +283,11 @@ class Database extends Base
             $findstr = $param['findstr'];
             $tostr = $param['tostr'];
             $where = $param['where'];
+
+            $validate = \think\Loader::validate('Token');
+            if(!$validate->check($param)){
+                return $this->error($validate->getError());
+            }
 
             if(!empty($table) && !empty($field) && !empty($findstr) && !empty($tostr)){
                 $sql = "UPDATE ".$table." set ".$field."=Replace(".$field.",'".$findstr."','".$tostr."') where 1=1 ". $where;

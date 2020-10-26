@@ -271,6 +271,7 @@ return array(
         '11104' => array("show"=>0,'name' => '--应用插件状态', 'controller' => 'addon',		'action' => 'state'),
         '11105' => array("show"=>0,'name' => '--应用插件上传', 'controller' => 'addon',		'action' => 'local'),
         '11106' => array("show"=>0,'name' => '--应用插件升级', 'controller' => 'addon',		'action' => 'upgrade'),
+        '11107' => array("show"=>0,'name' => '--应用插件添加', 'controller' => 'addon',		'action' => 'add'),
     )),
 
 );

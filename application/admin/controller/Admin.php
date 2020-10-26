@@ -45,6 +45,11 @@ class Admin extends Base
             if(!in_array('index/welcome',$param['admin_auth'])){
                 $param['admin_auth'][] = 'index/welcome';
             }
+            $validate = \think\Loader::validate('Token');
+            if(!$validate->check($param)){
+                return $this->error($validate->getError());
+            }
+
             $res = model('Admin')->saveData($param);
             if($res['code']>1){
                 return $this->error($res['msg']);

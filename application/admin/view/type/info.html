@@ -5,6 +5,7 @@
     
     <form class="layui-form layui-form-pane" method="post" action="">
         <input type="hidden" name="type_id" value="{$info.type_id}">
+        <input type="hidden" name="__token__" value="{$Request.token}" />
         <blockquote class="layui-elem-quote layui-quote-nm">
             提示信息：<br>
             1,新增加分类后，请到用户-会员组分别对每个组设置权限，否则会提示无权限访问

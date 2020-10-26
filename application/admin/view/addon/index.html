@@ -5,7 +5,7 @@
         <ul class="layui-tab-title">
             <li class="layui-this btn-local" data-href="{:url('downloaded')}">本地应用</li>
             <li class="btn-online" data-href="http://api.maccms.com/addon/index">在线商店</li>
-            <li class="layui-upload" data-href="{:url('add')}">离线安装</li>
+            <li class=""><a href="{:url('add')}">离线安装</a></li>
             <li class="">绑定账号</li>
         </ul>
         <div class="layui-tab-content">
@@ -52,24 +52,6 @@
                 load_list();
             }
         });
-
-        upload.render({
-            elem: '.layui-upload'
-            ,url: "{:url('addon/local')}"
-            ,method: 'post'
-            ,exts:'zip'
-            ,before: function(input) {
-                layer.msg('文件上传中...', {time:3000000});
-            },done: function(res, index, upload) {
-                var obj = this.item;
-                if (res.code == 0) {
-                    layer.msg(res.msg);
-                    return false;
-                }
-                layer.closeAll();
-            }
-        });
-
 
         $(document).on('click', '.btn-disable,.btn-enable', function() {
             $.ajax({

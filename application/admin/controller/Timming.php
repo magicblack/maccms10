@@ -23,6 +23,11 @@ class Timming extends Base
         $param = input();
         $list = config('timming');
         if (Request()->isPost()) {
+            $validate = \think\Loader::validate('Token');
+            if(!$validate->check($param)){
+                return $this->error($validate->getError());
+            }
+
             $param['weeks'] = join(',',$param['weeks']);
             $param['hours'] = join(',',$param['hours']);
             $list[$param['name']] = $param;

@@ -10,7 +10,7 @@ class Provide extends Base
     public function __construct()
     {
         parent::__construct();
-        $this->_param = input('','','trim,urldecode,htmlspecialchars');
+        $this->_param = input('','','trim,urldecode');
     }
 
     public function index()

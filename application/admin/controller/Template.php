@@ -175,9 +175,21 @@ class Template extends Base
         }
 
         if (Request()->isPost()) {
+            $validate = \think\Loader::validate('Token');
+            if(!$validate->check($param)){
+                return $this->error($validate->getError());
+            }
+
+            $validate = \think\Loader::validate('Template');
+            if(!$validate->check($param)){
+                return $this->error($validate->getError());
+            }
+
             $fcontent = $param['fcontent'];
-            if(strpos($fcontent,'<?')!==false || strpos($fcontent,'{php}')!==false){
-                $this->error('安全提示，模板中包含php代码禁止在后台编辑');
+            $filter = '<?|{php|eval|server|assert|get|post|request|cookie|input|session|env|config|call|global|dump|print|phpinfo|passthru|exec|system|chroot|scandir|chgrp|chown|shell_exec|proc_open|proc_get_status|ini_alter|ini_alter|ini_restore|dl|pfsockopen|openlog|syslog|readlink|symlink|popepassthru|stream_socket_server|fsocket|fsockopen';
+            $r = preg_replace($filter, "*", $fcontent);
+            if($fcontent !== $r){
+                $this->error('安全提示，模板中包含风险代码禁止在后台编辑');
                 return;
             }
             $res = @fwrite(fopen($fullname,'wb'),$fcontent);

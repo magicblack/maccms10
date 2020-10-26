@@ -146,7 +146,7 @@ class Admin extends Base {
 
         cookie('admin_id',$row['admin_id']);
         cookie('admin_name',$row['admin_name']);
-        cookie('admin_check',md5($random .'-'. $row['admin_name'] .'-'.$row['admin_id'] .'-'.$_SERVER['SERVER_ADDR'] ) );
+        cookie('admin_check',md5($random .'-'. $row['admin_name'] .'-'.$row['admin_id'] .'-'.request()->ip() ) );
 
         return ['code'=>1,'msg'=>'登录成功'];
     }
@@ -185,8 +185,8 @@ class Admin extends Base {
         }
         $info = $info->toArray();
 
-        $login_check = md5($info['admin_random'] .'-'. $info['admin_name'] .'-'.$info['admin_id'] .'-'.$_SERVER['SERVER_ADDR']) ;
-        if($login_check != $admin_check){
+        $login_check = md5($info['admin_random'] .'-'. $info['admin_name'] .'-'.$info['admin_id'] .'-'.request()->ip() ) ;
+        if($login_check !== $admin_check){
             return ['code'=>1003,'msg'=>'未登录'];
         }
         return ['code'=>1,'msg'=>'已登录','info'=>$info];

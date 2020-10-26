@@ -235,11 +235,13 @@ class Addon extends Base
         }
     }
 
-    /**
-     * 本地上传
-     */
     public function local()
     {
+        $param = input();
+        $validate = \think\Loader::validate('Token');
+        if(!$validate->check($param)){
+            return $this->error($validate->getError());
+        }
         $file = $this->request->file('file');
         $addonTmpDir = RUNTIME_PATH . 'addons' . DS;
         if (!is_dir($addonTmpDir)) {
@@ -308,6 +310,11 @@ class Addon extends Base
             // 上传失败获取错误信息
             return $this->error($file->getError());
         }
+    }
+
+    public function add()
+    {
+        return $this->fetch('admin@addon/add');
     }
 
     /**
