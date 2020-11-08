@@ -714,7 +714,7 @@ class Collect extends Base {
                                     $des .= '播放地址相同，跳过。';
                                 } elseif (empty($cj_play_from)) {
                                     $des .= '播放器类型为空，跳过。';
-                                } elseif (strpos(','.$info['vod_play_from'].',', ','.$cj_play_from.',') <= 0) {
+                                } elseif (strpos(','.$info['vod_play_from'].',', ','.$cj_play_from.',') !==false) {
                                     $color = 'green';
                                     $des .= '播放组(' . $cj_play_from . ')，新增ok。';
                                     if(!empty($old_play_from)){
