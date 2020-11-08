@@ -1,0 +1,40 @@
+{include file="../../../application/admin/view/public/head" /}
+
+<div class="page-container">
+    <form class="layui-form layui-form-pane" method="get" action="">
+        <input name="ck" value="1" type="hidden">
+        <div class="layui-tab">
+            <ul class="layui-tab-title">
+                <li class="layui-this">挂马检测</li>
+            </ul>
+            <div class="layui-tab-content">
+                <div class="layui-tab-item layui-show">
+
+                    <div class="layui-input-block" >
+                        <blockquote class="layui-elem-quote layui-quote-nm">
+                            <strong>挂马检测1.0版本</strong><br>
+                            1，将对分类表，视频表，文章表，会员表等表结构进行检查。<br>
+                            2，检测包含script等特殊字符串。<br>
+                            3，将自动清除挂马代码。<br>
+                            4，不能保证100%清除，如还有问题请自行进入phpmyadmin或其他数据库管理工具里清除。<br>
+                            5，建议清理多次，直到没有出现问题数据。
+                        </blockquote>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="layui-form-item center">
+            <div class="layui-input-block">
+                <button type="submit" class="layui-btn" >确认执行</button>
+            </div>
+        </div>
+    </form>
+</div>
+
+{include file="../../../application/admin/view/public/foot" /}
+<script type="text/javascript">
+
+</script>
+
+</body>
+</html>

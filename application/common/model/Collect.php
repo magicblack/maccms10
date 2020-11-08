@@ -714,7 +714,7 @@ class Collect extends Base {
                                     $des .= '播放地址相同，跳过。';
                                 } elseif (empty($cj_play_from)) {
                                     $des .= '播放器类型为空，跳过。';
-                                } elseif (strpos("," . $info['vod_play_from'], $cj_play_from) <= 0) {
+                                } elseif (strpos(','.$info['vod_play_from'].',', ','.$cj_play_from.',') <= 0) {
                                     $color = 'green';
                                     $des .= '播放组(' . $cj_play_from . ')，新增ok。';
                                     if(!empty($old_play_from)){
@@ -1703,11 +1703,15 @@ class Collect extends Base {
                 $where['role_name'] = $v['role_name'];
                 $where['role_actor'] = $v['role_actor'];
 
-
                 $where2 = [];
-                $where2['vod_name'] = ['eq',$v['vod_name']];
                 $blend = false;
-
+                if(!empty($v['douban_id'])){
+                    $where2['vod_douban_id'] = ['eq',$v['douban_id']];
+                    unset($v['douban_id']);
+                }
+                else{
+                    $where2['vod_name'] = ['eq',$v['vod_name']];
+                }
                 if (strpos($config['inrule'], 'c')!==false) {
                     $where2['vod_actor'] = ['like', mac_like_arr($v['role_actor']), 'OR'];
                 }
@@ -2127,6 +2131,220 @@ class Collect extends Base {
                 if ($data['page']['page'] >= $data['page']['pagecount']) {
                     Cache::rm($key);
                     mac_echo("数据采集完成");
+                    unset($param['page']);
+                    $param['ac'] = 'list';
+                    $url = url('api') . '?' . http_build_query($param);
+                    mac_jump($url, $GLOBALS['config']['app']['collect_timespan']);
+                } else {
+                    $param['page'] = intval($data['page']['page']) + 1;
+                    $url = url('api') . '?' . http_build_query($param);
+                    mac_jump($url, $GLOBALS['config']['app']['collect_timespan']);
+                }
+            }
+        }
+    }
+
+    public function comment_data($param,$data,$show=1)
+    {
+        if($show==1) {
+            mac_echo('当前采集任务<strong class="green">' . $data['page']['page'] . '</strong>/<span class="green">' . $data['page']['pagecount'] . '</span>页 采集地址&nbsp;' . $data['page']['url'] . '');
+        }
+
+        $config = config('maccms.collect');
+        $config = $config['comment'];
+
+        $filter_arr = explode(',',$config['filter']); $filter_arr = array_filter($filter_arr);
+        $pse_rnd = explode('#',$config['words']); $pse_rnd = array_filter($pse_rnd);
+        $pse_syn = mac_txt_explain($config['thesaurus']);
+
+        foreach($data['data'] as $k=>$v){
+
+            $color='red';
+            $des='';
+            $msg='';
+            $tmp='';
+
+            if(empty($v['comment_name']) || empty($v['comment_content']) || empty($v['rel_name']) ) {
+                $des = '数据不完整comment_content,comment_name,rel_name必须，跳过err。';
+            }
+            elseif( mac_array_filter($filter_arr,$v['comment_content']) !==false) {
+                $des = '数据在过滤单中，跳过err';
+            }
+            else {
+                unset($v['comment_id']);
+
+                foreach($v as $k2=>$v2){
+                    if(strpos($k2,'_content')===false) {
+                        $v[$k2] = strip_tags($v2);
+                    }
+                }
+
+                $v['comment_time'] = time();
+                $v['comment_status'] = intval($config['status']);
+                $v['comment_up'] = intval($v['comment_up']);
+                $v['comment_down'] = intval($v['comment_down']);
+                $v['comment_mid'] = intval($v['comment_mid']);
+                if(!empty($v['comment_ip']) && !is_numeric($v['comment_ip'])){
+                    $v['comment_ip'] = ip2long($v['comment_ip']);
+                }
+
+                if($config['updown_start']>0 && $config['updown_end']){
+                    $v['comment_up'] = rand($config['updown_start'], $config['updown_end']);
+                    $v['comment_down'] = rand($config['updown_start'], $config['updown_end']);
+                }
+                if ($config['psernd'] == 1) {
+                    $v['comment_content'] = mac_rep_pse_rnd($pse_rnd, $v['comment_content']);
+                }
+                if ($config['psesyn'] == 1) {
+                    $v['comment_content'] = mac_rep_pse_syn($pse_syn, $v['comment_content']);
+                }
+
+                $where = [];
+                $where2 = [];
+                $blend = false;
+
+                if (strpos($config['inrule'], 'b')!==false) {
+                    $where['comment_content'] = ['eq', $v['comment_content']];
+                }
+                if (strpos($config['inrule'], 'c')!==false) {
+                    $where['comment_name'] = ['eq', $v['comment_name']];
+                }
+
+                if(empty($v['rel_id'])){
+                    if($v['comment_mid']==1){
+                        if(!empty($v['douban_id'])){
+                            $where2['vod_douban_id'] = ['eq',$v['douban_id']];
+                            unset($v['douban_id']);
+                        }
+                        else{
+                            $where2['vod_name'] = ['eq',$v['rel_name']];
+                        }
+                        $rel_info = model('Vod')->where($where2)->find();
+                    }
+                    elseif($v['comment_mid']==2){
+                        $where2['art_name'] = ['eq',$v['rel_name']];
+                        $rel_info = model('Art')->where($where2)->find();
+                    }
+                    elseif($v['comment_mid']==3){
+                        $where2['topic_name'] = ['eq',$v['rel_name']];
+                        $rel_info = model('Topic')->where($where2)->find();
+                    }
+                    elseif($v['comment_mid']==8){
+                        $where2['actor_name'] = ['eq',$v['rel_name']];
+                        $rel_info = model('Actor')->where($where2)->find();
+                    }
+                    elseif($v['comment_mid']==9){
+                        $where2['role_name'] = ['eq',$v['rel_name']];
+                        $rel_info = model('Role')->where($where2)->find();
+                    }
+                    elseif($v['comment_mid']==11){
+                        $where2['website_name'] = ['eq',$v['rel_name']];
+                        $rel_info = model('Website')->where($where2)->find();
+                    }
+
+                    $rel_id = $rel_info[mac_get_mid_code($v['comment_mid']).'_id'];
+                }
+                else{
+                    $rel_id = $v['rel_id'];
+                }
+
+                if(empty($rel_id)){
+                    $des = '未找到相关数据无法关联，跳过。';
+                }
+                else {
+
+                    $v['comment_rid'] = $rel_id;
+                    $info=false;
+
+                    if(!empty($where)) {
+                        $where['comment_rid'] = $rel_id;
+                        $info = model('Comment')->where($where)->find();
+                    }
+                    if (!$info) {
+                        $msg = $tmp['msg'];
+                        $res = model('Comment')->insert($v);
+                        if ($res === false) {
+
+                        }
+                        $color = 'green';
+                        $des = '新加入库，成功ok。';
+                    } else {
+
+                        if(empty($config['uprule'])){
+                            $des = '没有设置任何二次更新项目，跳过。';
+                        }
+                        else {
+                            $rc = true;
+                            if ($rc) {
+                                $update = [];
+
+                                if (strpos(',' . $config['uprule'], 'a') !== false && !empty($v['comment_time']) && $v['comment_time'] != $info['comment_time']) {
+                                    $update['comment_time'] = $v['comment_time'];
+                                }
+
+                                if(count($update)>0){
+                                    $update['comment_time'] = time();
+                                    $where = [];
+                                    $where['comment_id'] = $info['comment_id'];
+                                    $res = model('Comment')->where($where)->update($update);
+                                    $color = 'green';
+                                    if ($res === false) {
+
+                                    }
+                                }
+                                else{
+                                    $des = '无需更新。';
+                                }
+                            }
+
+                        }
+                    }
+                }
+
+            }
+            if($show==1) {
+                mac_echo( ($k + 1) . $v['comment_content'] . "<font color=$color>" .$des .'</font>'. $msg . '');
+            }
+            else{
+                return ['code'=>($color=='red' ? 1001 : 1),'msg'=> $v['comment_content'] .' '.$des ];
+            }
+        }
+
+        $key = $GLOBALS['config']['app']['cache_flag']. '_'.'collect_break_comment';
+        if(ENTRANCE=='api'){
+            Cache::rm($key);
+            if ($data['page']['page'] < $data['page']['pagecount']) {
+                $param['page'] = intval($data['page']['page']) + 1;
+                $res = $this->role($param);
+                if($res['code']>1){
+                    return $this->error($res['msg']);
+                }
+                $this->actor_data($param,$res );
+            }
+            mac_echo('数据采集完成。');
+            die;
+        }
+
+        if(empty($GLOBALS['config']['app']['collect_timespan'])){
+            $GLOBALS['config']['app']['collect_timespan'] = 3;
+        }
+
+        if($show==1) {
+            if ($param['ac'] == 'cjsel') {
+                Cache::rm($key);
+                mac_echo('数据采集完成。');
+                unset($param['ids']);
+                $param['ac'] = 'list';
+                $url = url('api') . '?' . http_build_query($param);
+                $ref = $_SERVER["HTTP_REFERER"];
+                if(!empty($ref)){
+                    $url = $ref;
+                }
+                mac_jump($url, $GLOBALS['config']['app']['collect_timespan']);
+            } else {
+                if ($data['page']['page'] >= $data['page']['pagecount']) {
+                    Cache::rm($key);
+                    mac_echo('数据采集完成。');
                     unset($param['page']);
                     $param['ac'] = 'list';
                     $url = url('api') . '?' . http_build_query($param);

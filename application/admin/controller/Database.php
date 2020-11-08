@@ -302,4 +302,85 @@ class Database extends Base
         return $this->fetch('admin@database/rep');
     }
 
+    public function inspect()
+    {
+        $param = input();
+        if ($param['ck']) {
+            $pre = config('database.prefix');
+            $schema = Db::query('select * from information_schema.columns where table_schema = ?', [config('database.database')]);
+            $col_list = [];
+            $sql = '';
+            foreach ($schema as $k => $v) {
+                $col_list[$v['TABLE_NAME']][$v['COLUMN_NAME']] = $v;
+            }
+            $tables = ['actor', 'art', 'comment','gbook', 'link', 'topic', 'type','user', 'vod'];
+            $param['tbi'] = intval($param['tbi']);
+            if ($param['tbi'] >= count($tables)) {
+                mac_echo('清理结束,可以多次执行,以免有漏掉的数据');
+                die;
+            }
+
+            $check_arr = ["script>"];
+            $rel_val = ["/<script[\s\S]*?<\/script>/is"];
+
+            mac_echo('<style type="text/css">body{font-size:12px;color: #333333;line-height:21px;}span{font-weight:bold;color:#FF0000}</style>');
+
+            foreach ($col_list as $k1 => $v1) {
+                $pre_tb = str_replace($pre, '', $k1);
+                $si = array_search($pre_tb, $tables);
+                if ($pre_tb !== $tables[$param['tbi']]) {
+                    continue;
+                }
+                mac_echo('开始检测' . $k1 . '表...');
+                $where = [];
+                foreach ($v1 as $k2 => $v2) {
+                    if (strpos($v2['DATA_TYPE'], 'int') === false) {
+                        $where[$k2] = ['like', mac_like_arr(join(',', $check_arr)), 'OR'];
+                    }
+                }
+                if (!empty($where)) {
+                    $field = array_keys($where);
+                    $field[] = $tables[$si] . '_id';
+                    $list = Db::name($pre_tb)->field($field)->whereOr($where)->fetchSql(false)->select();
+
+                    mac_echo('共检测到' . count($list) . '条危险数据...');
+                    foreach ($list as $k3 => $v3) {
+                        $update = [];
+                        $col_id = $tables[$si] . '_id';
+                        $col_name = $tables[$si] . '_name';
+                        $val_id = $v3[$col_id];;
+                        $val_name = strip_tags($v3[$col_name]);
+                        $ck = false;
+                        $where2 = [];
+                        $where2[$col_id] = $val_id;
+                        foreach ($v3 as $k4 => $v4) {
+
+                            if ($k4 != $col_id) {
+                                $val = $v4;
+                                foreach ($check_arr as $kk => $vv) {
+                                    $val = preg_replace($rel_val[$kk], "", $val);
+                                }
+                                if ($val !== $v4) {
+                                    $update[$k4] = $val;
+                                    $ck = true;
+                                }
+                            }
+                        }
+
+                        if ($ck) {
+                            $r = Db::name($pre_tb)->where($where2)->update($update);
+                            mac_echo($val_id . '、' . $val_name . ' ok');
+                        }
+                    }
+                }
+            }
+
+            $param['tbi']++;
+            $url = url('database/inspect') . '?' . http_build_query($param);
+            mac_jump($url, 3);
+            exit;
+        }
+        return $this->fetch('admin@database/inspect');
+    }
+
 }

@@ -100,7 +100,11 @@ class All extends Controller
         $this->assign('url',$url);
         $this->assign('wait',$wait);
         $this->assign('msg',$msg);
-        $html = $this->label_fetch('public/jump');
+        $tpl = 'jump';
+        if(!empty($GLOBALS['config']['app']['page_404'])){
+            $tpl = $GLOBALS['config']['app']['page_404'];
+        }
+        $html = $this->label_fetch('public/'.$tpl);
         header("HTTP/1.1 404 Not Found");
         header("Status: 404 Not Found");
         exit($html);

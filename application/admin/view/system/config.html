@@ -324,6 +324,13 @@
                     </div>
                     <div class="layui-form-mid layui-word-aux">使用微信、QQ访问将直接显示跳转提示页面</div>
                 </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">404页面：</label>
+                    <div class="layui-input-inline">
+                        <input type="text" name="app[page_404]" placeholder="" value="{$config['app']['page_404']}" class="layui-input w150">
+                    </div>
+                    <div class="layui-form-mid layui-word-aux">自定义404页面，页面放在模板的public目录下无需后缀名，默认为jump</div>
+                </div>
 
                 <div class="layui-form-item">
                     <label class="layui-form-label">采集间隔：</label>

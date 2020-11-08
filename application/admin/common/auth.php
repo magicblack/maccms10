@@ -255,6 +255,7 @@ return array(
 
         '102' => array("show"=>1,'name' => '执行SQL语句', 'controller' => 'database',		'action' => 'sql'),
         '103' => array("show"=>1,'name' => '数据批量替换', 'controller' => 'database',		'action' => 'rep'),
+        '104' => array("show"=>1,'name' => '挂马检测', 'controller' => 'database',		'action' => 'inspect'),
     )),
     '11' => array('name' => '应用', 'icon' => 'xe621', 'sub' => array(
         '111' => array("show"=>1,'name' => '应用市场', 'controller' => 'addon',		'action' => 'index', 'param'=>''),

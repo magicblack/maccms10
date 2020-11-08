@@ -113,8 +113,8 @@ class Receive extends Base
             echo json_encode(['code'=>2002,'msg'=>'演员名必须err'],JSON_UNESCAPED_UNICODE);
             exit;
         }
-        if(empty($info['vod_name'])){
-            echo json_encode(['code'=>2003,'msg'=>'视频名必须err'],JSON_UNESCAPED_UNICODE);
+        if(empty($info['vod_name']) && empty($info['douban_id'])){
+            echo json_encode(['code'=>2003,'msg'=>'视频名或豆瓣id必须err'],JSON_UNESCAPED_UNICODE);
             exit;
         }
 
@@ -142,6 +142,33 @@ class Receive extends Base
         }
         $data['data'][] = $info;
         $res = model('Collect')->website_data([],$data,0);
+        echo json_encode($res,JSON_UNESCAPED_UNICODE);
+    }
+
+    public function comment()
+    {
+        $info = $this->_param;
+
+        if(empty($info['comment_name'])){
+            echo json_encode(['code'=>2001,'msg'=>'名称必须err'],JSON_UNESCAPED_UNICODE);
+            exit;
+        }
+        if(empty($info['comment_content'])){
+            echo json_encode(['code'=>2002,'msg'=>'内容必须'],JSON_UNESCAPED_UNICODE);
+            exit;
+        }
+        if(empty($info['comment_mid'])){
+            echo json_encode(['code'=>2004,'msg'=>'mid必须'],JSON_UNESCAPED_UNICODE);
+            exit;
+        }
+        if(empty($info['rel_name']) && empty($info['douban_id'])){
+            echo json_encode(['code'=>2003,'msg'=>'关联数据名rel_name或豆瓣编号douban_id至少填写一项err'],JSON_UNESCAPED_UNICODE);
+            exit;
+        }
+
+
+        $data['data'][] = $info;
+        $res = model('Collect')->comment_data([],$data,0);
         echo json_encode($res,JSON_UNESCAPED_UNICODE);
     }
 }
