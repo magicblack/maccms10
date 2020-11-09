@@ -2,6 +2,12 @@
 <div class="page-container">
     <form class="layui-form layui-form-pane" method="post" action="">
         <input type="hidden" name="__token__" value="{$Request.token}" />
+        <blockquote class="layui-elem-quote layui-quote-nm">
+            提示信息：<br>
+            为了安全考量避免通过模板写入后门文件，文件内出现以下任意字符串时禁止在线保存修改，如需修改请使用其他方式。<br>
+            {$filter}
+        </blockquote>
+
         <div class="layui-form-item">
             <label class="layui-form-label">路径：</label>
             <div class="layui-input-block">

@@ -173,6 +173,8 @@ class Template extends Base
                 return;
             }
         }
+        $filter = '<\?|php|eval|server|assert|get|post|request|cookie|session|input|env|config|call|global|dump|print|phpinfo|fputs|fopen|global|chr|strtr|pack|system|gzuncompress|shell|base64|file|proc|preg|call|ini';
+        $this->assign('filter',$filter);
 
         if (Request()->isPost()) {
             $validate = \think\Loader::validate('Token');
@@ -184,10 +186,8 @@ class Template extends Base
             if(!$validate->check($param)){
                 return $this->error($validate->getError());
             }
-
             $fcontent = $param['fcontent'];
-            $filter = '<?|{php|eval|server|assert|get|post|request|cookie|input|session|env|config|call|global|dump|print|phpinfo|passthru|exec|system|chroot|scandir|chgrp|chown|shell_exec|proc_open|proc_get_status|ini_alter|ini_alter|ini_restore|dl|pfsockopen|openlog|syslog|readlink|symlink|popepassthru|stream_socket_server|fsocket|fsockopen';
-            $r = preg_replace($filter, "*", $fcontent);
+            $r = mac_reg_replace($fcontent,$filter,"*");
             if($fcontent !== $r){
                 $this->error('安全提示，模板中包含风险代码禁止在后台编辑');
                 return;
