@@ -3,7 +3,7 @@ return array (
     'name' => '苹果CMS',
     'copyright' => 'MacCMS.LA',
     'url' => '//www.maccms.la/',
-    'code' => '2020.1000.1040',
+    'code' => '2020.1000.1041',
     'license' => '免费版',
 );
 ?>

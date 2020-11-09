@@ -710,11 +710,12 @@ class Collect extends Base {
                                 $cj_play_url = $cj_play_url_arr[$k2];
                                 $cj_play_server = $cj_play_server_arr[$k2];
                                 $cj_play_note = $cj_play_note_arr[$k2];
+
                                 if ($cj_play_url == $info['vod_play_url']) {
                                     $des .= '播放地址相同，跳过。';
                                 } elseif (empty($cj_play_from)) {
                                     $des .= '播放器类型为空，跳过。';
-                                } elseif (strpos(','.$info['vod_play_from'].',', ','.$cj_play_from.',') !==false) {
+                                } elseif (strpos('$$$'.$info['vod_play_from'].'$$$', '$$$'.$cj_play_from.'$$$') === false) {
                                     $color = 'green';
                                     $des .= '播放组(' . $cj_play_from . ')，新增ok。';
                                     if(!empty($old_play_from)){
