@@ -3,10 +3,8 @@
 
     <div class="layui-tab layui-tab-brief" lay-filter="tabs">
         <ul class="layui-tab-title">
-            <li class="layui-this btn-local" data-href="{:url('downloaded')}">本地应用</li>
-            <li class="btn-online" data-href="http://api.maccms.com/addon/index">在线商店</li>
-            <li class=""><a href="{:url('add')}">离线安装</a></li>
-            <li class="">绑定账号</li>
+            <li class="layui-this btn-local" data-href="{:url('downloaded')}">{:lang('local_app')}</li>
+            <li class=""><a href="{:url('add')}">{:lang('local_setup')}</a></li>
         </ul>
         <div class="layui-tab-content">
             <div class="layui-tab-item layui-show">
@@ -15,9 +13,9 @@
         <div class="center mb10">
         <form class="layui-form " method="post">
             <div class="layui-input-inline w300">
-                <input type="text" autocomplete="off" placeholder="请输入搜索条件" class="layui-input" name="wd" value="{$param['wd']}">
+                <input type="text" autocomplete="off" placeholder="{:lang('wd')}" class="layui-input" name="wd" value="{$param['wd']}">
             </div>
-            <button class="layui-btn mgl-20 j-search" >查询</button>
+            <button class="layui-btn mgl-20 j-search" >{:lang('btn_search')}</button>
         </form>
         </div>
     </div>
@@ -100,7 +98,7 @@
     function load_list(){
         var h='';
         $('#addon_list').html('');
-        layer.msg('数据请求中...',{time:500000});
+        layer.msg("{:lang('wait_submit')}",{time:500000});
 
         $.ajax({
             type: 'get',
@@ -108,21 +106,21 @@
             url: url,
             success:function($r){
                 $.each($r.rows,function(i,row){
-                    h ='<div class="layui-col-md3"><div class="addon"> <a href="#" target="_blank"> <img src="'+row.image+'" class="add-logo"> </a> <div class="addon-caption"> <h4>'+row.title+'<span class="layui-badge layui-bg-green">推荐</span></h4> <p><b>￥'+row.price+'</b></p> <p>作者: '+row.author+'</p> <p>介绍: '+row.intro+'</p> <p>版本: '+row.version+'</p> <p>添加时间: '+ getDataTime(row.createtime)+'</p>';
+                    h ='<div class="layui-col-md3"><div class="addon"> <a href="#" target="_blank"> <img src="'+row.image+'" class="add-logo"> </a> <div class="addon-caption"> <h4>'+row.title+'<span class="layui-badge layui-bg-green">{:lang('level')}</span></h4> <p><b>￥'+row.price+'</b></p> <p>{:lang('author')}: '+row.author+'</p> <p>{:lang('intro')}: '+row.intro+'</p> <p>{:lang('ver')}: '+row.version+'</p> <p>{:lang('update_time')}: '+ getDataTime(row.createtime)+'</p>';
                     h+='<div class="operate"><span class="btn-group">';
                     if(row.install =='1'){
-                        h+='<a href="javascript:;" class="layui-btn layui-btn-normal layui-btn-sm j-iframe" data-name="'+row.name+'" data-href="{:url('config')}?name='+row.name+'" ><i class="layui-icon">&#xe614;</i>配置</a>';
+                        h+='<a href="javascript:;" class="layui-btn layui-btn-normal layui-btn-sm j-iframe" data-name="'+row.name+'" data-href="{:url('config')}?name='+row.name+'" ><i class="layui-icon">&#xe614;</i>{:lang('config')}</a>';
                         if(row.state=='1'){
-                            h+='<a href="javascript:;" class="layui-btn layui-btn-warm layui-btn-sm btn-disable" data-name="'+row.name+'" data-action="disable"><i class="layui-icon">&#x1006;</i>禁用</a>';
+                            h+='<a href="javascript:;" class="layui-btn layui-btn-warm layui-btn-sm btn-disable" data-name="'+row.name+'" data-action="disable"><i class="layui-icon">&#x1006;</i>{:lang('disable')}</a>';
                         }
                         else{
-                            h+='<a href="javascript:;" class="layui-btn  layui-btn-sm btn-enable" data-name="'+row.name+'" data-action="enable"><i class="layui-icon">&#xe605;</i>启用</a><a href="javascript:;" class="layui-btn layui-btn-danger layui-btn-sm btn-uninstall" data-name="'+row.name+'"><i class="layui-icon">&#x1006;</i>卸载</a>';
+                            h+='<a href="javascript:;" class="layui-btn  layui-btn-sm btn-enable" data-name="'+row.name+'" data-action="enable"><i class="layui-icon">&#xe605;</i>{:lang('enable')}</a><a href="javascript:;" class="layui-btn layui-btn-danger layui-btn-sm btn-uninstall" data-name="'+row.name+'"><i class="layui-icon">&#x1006;</i>{:lang('uninstall')}</a>';
                         }
                     }
                     else{
-                        h+='<a href="javascript:;" class="layui-btn layui-btn-sm btn-install"><i class="layui-icon">&#xe601;</i>安装</a>';
+                        h+='<a href="javascript:;" class="layui-btn layui-btn-sm btn-install"><i class="layui-icon">&#xe601;</i>{:lang('install')}</a>';
                     }
-                    h+='</span> <span class="fr" style="margin-top:10px;"> <a href="javascript:;" class="btn-info text-gray " data-name="'+row.name+'" title="详情"><i class="layui-icon">&#xe63c;</i></a> </span> </div> </div> </div> </div>';
+                    h+='</span> <span class="fr" style="margin-top:10px;"> <a href="javascript:;" class="btn-info text-gray " data-name="'+row.name+'" title="{:lang('detail')}"><i class="layui-icon">&#xe63c;</i></a> </span> </div> </div> </div> </div>';
 
                     $('#addon_list').append(h);
                 });

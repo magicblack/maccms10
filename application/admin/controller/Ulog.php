@@ -37,7 +37,7 @@ class Ulog extends Base
         $param['limit'] = '{limit}';
         $this->assign('param',$param);
 
-        $this->assign('title','日志管理');
+        $this->assign('title',lang('admin/ulog/title'));
         return $this->fetch('admin@ulog/index');
     }
 
@@ -58,7 +58,7 @@ class Ulog extends Base
             }
             return $this->success($res['msg']);
         }
-        return $this->error('参数错误');
+        return $this->error(lang('param_err'));
     }
 
 }

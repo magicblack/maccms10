@@ -54,7 +54,7 @@ class Card extends Base
             header('Expires:0');
             header('Pragma:public');
 
-            echo '卡号,密码,创建时间' .  "\n";
+            echo ''.lang('admin/card/import_tip') .  "\n";
             foreach($res['list'] as  $k=>$v){
                 echo $v['card_no'] . "," . $v['card_pwd'] . "," . date('Y-m-d H:i:s',$v['card_add_time']) . "\n";
             }
@@ -71,7 +71,7 @@ class Card extends Base
         $param['page'] = '{page}';
         $param['limit'] = '{limit}';
         $this->assign('param',$param);
-        $this->assign('title','充值卡管理');
+        $this->assign('title',lang('admin/card/title'));
         return $this->fetch('admin@card/index');
     }
 
@@ -81,7 +81,7 @@ class Card extends Base
             $param = input('post.');
 
             if(empty($param['num']) || empty($param['money']) || empty($param['point']) ){
-                return $this->error('参数错误');
+                return $this->error(lang('param_err'));
             }
 
             $res = model('Card')->saveAllData(intval($param['num']),intval($param['money']),intval($param['point']),$param['role_no'],$param['role_pwd']);
@@ -121,7 +121,7 @@ class Card extends Base
             }
             return $this->success($res['msg']);
         }
-        return $this->error('参数错误');
+        return $this->error(lang('param_err'));
     }
 
 }

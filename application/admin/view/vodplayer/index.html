@@ -3,10 +3,10 @@
     <div class="my-toolbar-box">
 
         <div class="layui-btn-group">
-            <a data-href="{:url('info')}" class="layui-btn layui-btn-primary j-iframe"><i class="layui-icon">&#xe654;</i>添加</a>
-            <a data-href="{:url('import')}" class="layui-btn layui-btn-primary layui-upload" ><i class="layui-icon">&#xe654;</i>导入</a>
-            <a data-href="{:url('index/select')}?tab=vod&col=status&tpl=select_state&url=vodplayer/field" data-width="470" data-height="100" data-checkbox="1" class="layui-btn layui-btn-primary j-select"><i class="layui-icon">&#xe620;</i>状态</a>
-            <a data-href="{:url('index/select')}?tab=vod&col=ps&tpl=select_state&url=vodplayer/field" data-width="470" data-height="100" data-checkbox="1" class="layui-btn layui-btn-primary j-select"><i class="layui-icon">&#xe620;</i>解析状态</a>
+            <a data-href="{:url('info')}" class="layui-btn layui-btn-primary j-iframe"><i class="layui-icon">&#xe654;</i>{:lang('add')}</a>
+            <a data-href="{:url('import')}" class="layui-btn layui-btn-primary layui-upload" ><i class="layui-icon">&#xe654;</i>{:lang('import')}</a>
+            <a data-href="{:url('index/select')}?tab=vod&col=status&tpl=select_state&url=vodplayer/field" data-width="470" data-height="100" data-checkbox="1" class="layui-btn layui-btn-primary j-select"><i class="layui-icon">&#xe620;</i>{:lang('status')}</a>
+            <a data-href="{:url('index/select')}?tab=vod&col=ps&tpl=select_state&url=vodplayer/field" data-width="470" data-height="100" data-checkbox="1" class="layui-btn layui-btn-primary j-select"><i class="layui-icon">&#xe620;</i>{:lang('status_parse')}</a>
         </div>
 
     </div>
@@ -16,16 +16,16 @@
             <thead>
             <tr>
                 <th width="25"><input type="checkbox" lay-skin="primary" lay-filter="allChoose"></th>
-                <th width="40">排序</th>
-                <th width="40">编码</th>
-                <th width="130">名称</th>
-                <th width="50">状态</th>
-                <th width="50">解析状态</th>
-                <th width="50">目标窗口</th>
-                <th width="130">独立解析地址</th>
-                <th width="130">备注</th>
-                <th >提示</th>
-                <th width="130">操作</th>
+                <th width="40">{:lang('sort')}</th>
+                <th width="40">{:lang('code')}</th>
+                <th width="130">{:lang('name')}</th>
+                <th width="50">{:lang('status')}</th>
+                <th width="50">{:lang('status_parse')}</th>
+                <th width="50">{:lang('target')}</th>
+                <th width="130">{:lang('admin/vodplayer/alone_api_url')}</th>
+                <th width="130">{:lang('remarks')}</th>
+                <th >{:lang('tip')}</th>
+                <th width="130">{:lang('opt')}</th>
             </tr>
             </thead>
 
@@ -35,16 +35,16 @@
                 <td>{$vo.sort}</td>
                 <td>{$vo.from}</td>
                 <td>{$vo.show}</td>
-                <td>{if condition="$vo.status eq 1"}<span class="layui-badge layui-bg-green">启用</span>{else}<span class="layui-badge">禁用</span>{/if} </td>
-                <td>{if condition="$vo.ps eq 1"}<span class="layui-badge layui-bg-green">启用</span>{else}<span class="layui-badge">禁用</span>{/if} </td>
-                <td>{if condition="$vo.target neq '_blank'"}<span class="layui-badge layui-bg-green">当前</span>{else}<span class="layui-badge">新页</span>{/if} </td>
+                <td>{if condition="$vo.status eq 1"}<span class="layui-badge layui-bg-green">{:lang('enable')}</span>{else}<span class="layui-badge">{:lang('disable')}</span>{/if} </td>
+                <td>{if condition="$vo.ps eq 1"}<span class="layui-badge layui-bg-green">{:lang('enable')}</span>{else}<span class="layui-badge">{:lang('disable')}</span>{/if} </td>
+                <td>{if condition="$vo.target neq '_blank'"}<span class="layui-badge layui-bg-green">{:lang('current')}</span>{else}<span class="layui-badge">{:lang('blank')}</span>{/if} </td>
                 <td>{$vo.parse}</td>
                 <td>{$vo.des}</td>
                 <td>{$vo.tip}</td>
                 <td>
-                    <a class="layui-badge-rim" href="{:url('export?id='.$vo['from'])}" title="导出">导出</a>
-                    <a class="layui-badge-rim j-iframe" data-href="{:url('info?id='.$vo['from'])}" href="javascript:;" title="编辑">编辑</a>
-                    <a class="layui-badge-rim j-tr-del" data-href="{:url('del?ids='.$vo['from'])}" href="javascript:;" title="删除">删除</a>
+                    <a class="layui-badge-rim" href="{:url('export?id='.$vo['from'])}" title="{:lang('export')}">{:lang('export')}</a>
+                    <a class="layui-badge-rim j-iframe" data-href="{:url('info?id='.$vo['from'])}" href="javascript:;" title="{:lang('edit')}">{:lang('edit')}</a>
+                    <a class="layui-badge-rim j-tr-del" data-href="{:url('del?ids='.$vo['from'])}" href="javascript:;" title="{:lang('del')}">{:lang('del')}</a>
                 </td>
             </tr>
             {/volist}
@@ -69,7 +69,7 @@
             ,method: 'post'
             ,exts:'txt'
             ,before: function(input) {
-                layer.msg('文件上传中...', {time:3000000});
+                layer.msg("{:lang('upload_ing')}", {time:3000000});
             },done: function(res, index, upload) {
                 var obj = this.item;
                 if (res.code == 0) {

@@ -25,22 +25,24 @@ class Route
         $convert = Config::get('url_convert');
         $filter = $convert ? 'strtolower' : 'trim';
 
-        $addon = $addon ? call_user_func($filter, $addon) : '';
-        $controller = $controller ? call_user_func($filter, $controller) : 'index';
-        $action = $action ? call_user_func($filter, $action) : 'index';
-        
+        $addon = $addon ? trim(call_user_func($filter, $addon)) : '';
+        $controller = $controller ? trim(call_user_func($filter, $controller)) : 'index';
+        $action = $action ? trim(call_user_func($filter, $action)) : 'index';
+
         Hook::listen('addon_begin', $request);
-        if (!empty($addon) && !empty($controller) && !empty($action))
-        {
+        if (!empty($addon) && !empty($controller) && !empty($action)) {
             $info = get_addon_info($addon);
-            if (!$info)
-            {
-                throw new HttpException(404, lang('addon %s not found', $addon));
+            if (!$info) {
+                throw new HttpException(404, __('addon %s not found', $addon));
             }
-            if (!$info['state'])
-            {
-                throw new HttpException(500, lang('addon %s is disabled', $addon));
+            if (!$info['state']) {
+                throw new HttpException(500, __('addon %s is disabled', $addon));
             }
+            $dispatch = $request->dispatch();
+            if (isset($dispatch['var']) && $dispatch['var']) {
+                //$request->route($dispatch['var']);
+            }
+
             // 设置当前请求的控制器、操作
             $request->controller($controller)->action($action);
 
@@ -50,37 +52,29 @@ class Route
             Hook::listen('addons_init', $request);
 
             $class = get_addon_class($addon, 'controller', $controller);
-            if (!$class)
-            {
-                throw new HttpException(404, lang('addon controller %s not found', Loader::parseName($controller, 1)));
+            if (!$class) {
+                throw new HttpException(404, __('addon controller %s not found', Loader::parseName($controller, 1)));
             }
 
             $instance = new $class($request);
 
             $vars = [];
-            if (is_callable([$instance, $action]))
-            {
+            if (is_callable([$instance, $action])) {
                 // 执行操作方法
                 $call = [$instance, $action];
-            }
-            elseif (is_callable([$instance, '_empty']))
-            {
+            } elseif (is_callable([$instance, '_empty'])) {
                 // 空操作
                 $call = [$instance, '_empty'];
                 $vars = [$action];
-            }
-            else
-            {
+            } else {
                 // 操作不存在
-                throw new HttpException(404, lang('addon action %s not found', get_class($instance) . '->' . $action . '()'));
+                throw new HttpException(404, __('addon action %s not found', get_class($instance) . '->' . $action . '()'));
             }
 
             Hook::listen('addon_action_begin', $call);
 
             return call_user_func_array($call, $vars);
-        }
-        else
-        {
+        } else {
             abort(500, lang('addon can not be empty'));
         }
     }

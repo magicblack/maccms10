@@ -17,13 +17,13 @@ class Card extends Base {
 
     public function getCardUseStatusTextAttr($val,$data)
     {
-        $arr = [0=>'未使用',1=>'已使用'];
+        $arr = [0=>lang('not_used'),1=>lang('used')];
         return $arr[$data['card_use_status']];
     }
 
     public function getCardSaleStatusTextAttr($val,$data)
     {
-        $arr = [0=>'未销售',1=>'已销售'];
+        $arr = [0=>lang('not_sale'),1=>lang('sold')];
         return $arr[$data['card_sale_status']];
     }
 
@@ -37,29 +37,29 @@ class Card extends Base {
                 $list[$k]['user'] = $user['info'];
             }
         }
-        return ['code'=>1,'msg'=>'数据列表','page'=>$page,'pagecount'=>ceil($total/$limit),'limit'=>$limit,'total'=>$total,'list'=>$list];
+        return ['code'=>1,'msg'=>lang('data_list'),'page'=>$page,'pagecount'=>ceil($total/$limit),'limit'=>$limit,'total'=>$total,'list'=>$list];
     }
 
     public function infoData($where,$field='*')
     {
         if(empty($where) || !is_array($where)){
-            return ['code'=>1001,'msg'=>'参数错误'];
+            return ['code'=>1001,'msg'=>lang('param_err')];
         }
         $info = $this->field($field)->where($where)->find();
 
         if(empty($info)){
-            return ['code'=>1002,'msg'=>'获取数据失败'];
+            return ['code'=>1002,'msg'=>lang('obtain_err')];
         }
         $info = $info->toArray();
 
-        return ['code'=>1,'msg'=>'获取成功','info'=>$info];
+        return ['code'=>1,'msg'=>lang('obtain_ok'),'info'=>$info];
     }
 
     public function saveData($data)
     {
         $validate = \think\Loader::validate('Card');
         if(!$validate->check($data)){
-            return ['code'=>1001,'msg'=>'参数错误：'.$validate->getError() ];
+            return ['code'=>1001,'msg'=>lang('param_err').'：'.$validate->getError() ];
         }
 
         if(!empty($data['card_id'])){
@@ -72,9 +72,9 @@ class Card extends Base {
             $res = $this->allowField(true)->insert($data);
         }
         if(false === $res){
-            return ['code'=>1002,'msg'=>'保存失败：'.$this->getError() ];
+            return ['code'=>1002,'msg'=>lang('save_err').'：'.$this->getError() ];
         }
-        return ['code'=>1,'msg'=>'保存成功'];
+        return ['code'=>1,'msg'=>lang('save_ok')];
     }
 
     public function saveAllData($num,$money,$point,$role_no,$role_pwd)
@@ -90,9 +90,9 @@ class Card extends Base {
         $data = array_values($data);
         $res = $this->allowField(true)->insertAll($data);
         if(false === $res){
-            return ['code'=>1002,'msg'=>'保存失败：'.$this->getError() ];
+            return ['code'=>1002,'msg'=>lang('save_err').'：'.$this->getError() ];
         }
-        return ['code'=>1,'msg'=>'保存成功'];
+        return ['code'=>1,'msg'=>lang('save_ok')];
     }
 
 
@@ -100,30 +100,30 @@ class Card extends Base {
     {
         $res = $this->where($where)->delete();
         if($res===false){
-            return ['code'=>1001,'msg'=>'删除失败：'.$this->getError() ];
+            return ['code'=>1001,'msg'=>lang('del_err').'：'.$this->getError() ];
         }
-        return ['code'=>1,'msg'=>'删除成功'];
+        return ['code'=>1,'msg'=>lang('del_ok')];
     }
 
     public function fieldData($where,$col,$val)
     {
         if(!isset($col) || !isset($val)){
-            return ['code'=>1001,'msg'=>'参数错误'];
+            return ['code'=>1001,'msg'=>lang('param_err')];
         }
 
         $data = [];
         $data[$col] = $val;
         $res = $this->allowField(true)->where($where)->update($data);
         if($res===false){
-            return ['code'=>1001,'msg'=>'设置失败：'.$this->getError() ];
+            return ['code'=>1001,'msg'=>lang('set_err').'：'.$this->getError() ];
         }
-        return ['code'=>1,'msg'=>'设置成功'];
+        return ['code'=>1,'msg'=>lang('set_ok')];
     }
 
     public function useData($card_no,$card_pwd,$user_info)
     {
         if (empty($card_no) || empty($card_pwd) || empty($user_info)) {
-            return ['code' => 1001, 'msg' => '参数错误'];
+            return ['code' => 1001, 'msg'=>lang('param_err')];
         }
 
         $where=[];
@@ -134,14 +134,14 @@ class Card extends Base {
 
         $info = $this->where($where)->find();
         if(empty($info)){
-            return ['code' => 1002, 'msg' => '充值卡信息有误，请重试'];
+            return ['code' => 1002, 'msg' =>lang('model/card/not_found')];
         }
 
         $where2=[];
         $where2['user_id'] = $user_info['user_id'];
         $res = model('User')->where($where2)->setInc('user_points',$info['card_points']);
         if($res===false){
-            return ['code' => 1003, 'msg' => '更新用户点数失败，请重试'];
+            return ['code' => 1003, 'msg' =>lang('model/card/update_user_points_err')];
         }
 
         $update=[];
@@ -151,9 +151,9 @@ class Card extends Base {
         $update['user_id'] = $user_info['user_id'];
         $res = $this->where($where)->update($update);
         if($res===false){
-            return ['code' => 1004, 'msg' => '更新充值卡状态失败，请重试'];
+            return ['code' => 1004, 'msg' =>lang('model/card/update_card_status_err')];
         }
 
-        return ['code' => 1, 'msg' => '充值成功，增加积分【'.$info['card_points'].'】'];
+        return ['code' => 1, 'msg' => lang('model/card/used_card_ok',[$info['card_points']])];
     }
 }

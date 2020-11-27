@@ -22,9 +22,9 @@ class Urlsend extends Base
 
             $res = mac_arr2file(APP_PATH . 'extra/maccms.php', $config_new);
             if ($res === false) {
-                return $this->error('保存失败，请重试!');
+                return $this->error(lang('save_err'));
             }
-            return $this->success('保存成功!');
+            return $this->success(lang('save_ok'));
         }
 
         $urlsend_config = $GLOBALS['config']['urlsend'];
@@ -34,7 +34,7 @@ class Urlsend extends Base
         $this->assign('extends',$extends);
 
 
-        $this->assign('title','URL推送管理');
+        $this->assign('title',lang('admin/urlsend/title'));
         return $this->fetch('admin@urlsend/index');
     }
 
@@ -167,11 +167,11 @@ class Urlsend extends Base
         }
 
         if(empty($res['list'])){
-            mac_echo('没有获取到数据');
+            mac_echo(lang('admin/urlsend/no_data'));
             return;
         }
 
-        mac_echo('共'.$res['total'].'条数据等待推送，分'.$res['pagecount'].'页推送，当前第'.$res['page'].'页');
+        mac_echo(lang('admin/urlsend/tip',[$res['total'],$res['pagecount'],$res['page']]));
 
         $urls = [];
         foreach($res['list'] as $k=>$v){
@@ -206,7 +206,7 @@ class Urlsend extends Base
             }
 
             if ($data['page'] >= $data['pagecount']) {
-                mac_echo('数据推送完毕');
+                mac_echo(lang('admin/urlsend/complete'));
                 if(ENTRANCE=='admin') {
 
                 }
@@ -221,7 +221,7 @@ class Urlsend extends Base
 
         }
         else{
-            $this->error('参数错误');
+            $this->error(lang('param_err'));
         }
     }
 

@@ -44,22 +44,22 @@ class Cash extends Base {
             }
         }
 
-        return ['code'=>1,'msg'=>'数据列表','page'=>$page,'pagecount'=>ceil($total/$limit),'limit'=>$limit,'total'=>$total,'list'=>$list];
+        return ['code'=>1,'msg'=>lang('data_list'),'page'=>$page,'pagecount'=>ceil($total/$limit),'limit'=>$limit,'total'=>$total,'list'=>$list];
     }
 
     public function infoData($where,$field='*')
     {
         if(empty($where) || !is_array($where)){
-            return ['code'=>1001,'msg'=>'参数错误'];
+            return ['code'=>1001,'msg'=>lang('param_err')];
         }
         $info = $this->field($field)->where($where)->find();
 
         if(empty($info)){
-            return ['code'=>1002,'msg'=>'获取数据失败'];
+            return ['code'=>1002,'msg'=>lang('obtain_err')];
         }
         $info = $info->toArray();
 
-        return ['code'=>1,'msg'=>'获取成功','info'=>$info];
+        return ['code'=>1,'msg'=>lang('obtain_ok'),'info'=>$info];
     }
 
     public function saveData($data)
@@ -67,16 +67,16 @@ class Cash extends Base {
         $data['cash_money']  = floatval($data['cash_money']);
 
         if($GLOBALS['config']['user']['cash_status'] !='1'){
-            return ['code'=>1005,'msg'=>'提现功能未开启！'];
+            return ['code'=>1005,'msg'=>lang('model/cash/not_open')];
         }
 
         if($data['cash_money'] < $GLOBALS['config']['user']['cash_min']){
-            return ['code'=>1006,'msg'=>'最低提现金额：'.$GLOBALS['config']['user']['cash_min'] ];
+            return ['code'=>1006,'msg'=>lang('model/cash/min_money_err').'：'.$GLOBALS['config']['user']['cash_min'] ];
         }
 
         $tx_points = intval($data['cash_money'] * $GLOBALS['config']['user']['cash_ratio']);
         if($tx_points > $GLOBALS['user']['user_points']){
-            return ['code'=>1007,'msg'=>'提现太多了,没有这么多积分哦！'];
+            return ['code'=>1007,'msg'=>lang('model/cash/mush_money_err')];
         }
 
         $data['cash_bank_name'] = htmlspecialchars(urldecode(trim($data['cash_bank_name'])));
@@ -87,15 +87,15 @@ class Cash extends Base {
 
         $validate = \think\Loader::validate('Cash');
         if(!$validate->check($data)){
-            return ['code'=>1001,'msg'=>'参数错误：'.$validate->getError() ];
+            return ['code'=>1001,'msg'=>lang('param_err').'：'.$validate->getError() ];
         }
 
         if($data['user_id']==0 ) {
-            return ['code'=>1002,'msg'=>'参数非法'];
+            return ['code'=>1002,'msg'=>lang('param_err')];
         }
         $res = $this->allowField(true)->insert($data);
         if(false === $res){
-            return ['code'=>1004,'msg'=>'保存失败：'.$this->getError() ];
+            return ['code'=>1004,'msg'=>lang('save_err').'：'.$this->getError() ];
         }
 
         //更新用户表
@@ -110,7 +110,7 @@ class Cash extends Base {
             return ['code'=>1005,'msg'=>'更新用户积分失败：'.$this->getError() ];
         }
 
-        return ['code'=>1,'msg'=>'保存成功'];
+        return ['code'=>1,'msg'=>lang('save_ok')];
     }
 
     public function delData($where)
@@ -123,7 +123,7 @@ class Cash extends Base {
 
             $res = $this->where($where)->delete();
             if($res===false){
-                return ['code'=>1001,'msg'=>'删除失败：'.$this->getError() ];
+                return ['code'=>1001,'msg'=>lang('del_err').'：'.$this->getError() ];
             }
 
             //如果未审核则恢复冻结积分
@@ -143,22 +143,22 @@ class Cash extends Base {
             }
         }
 
-        return ['code'=>1,'msg'=>'删除成功'];
+        return ['code'=>1,'msg'=>lang('del_ok')];
     }
 
     public function fieldData($where,$col,$val)
     {
         if(!isset($col) || !isset($val)){
-            return ['code'=>1001,'msg'=>'参数错误'];
+            return ['code'=>1001,'msg'=>lang('param_err')];
         }
 
         $data = [];
         $data[$col] = $val;
         $res = $this->allowField(true)->where($where)->update($data);
         if($res===false){
-            return ['code'=>1001,'msg'=>'设置失败：'.$this->getError() ];
+            return ['code'=>1001,'msg'=>lang('set_err').'：'.$this->getError() ];
         }
-        return ['code'=>1,'msg'=>'设置成功'];
+        return ['code'=>1,'msg'=>lang('set_ok')];
     }
 
     public function auditData($where)
@@ -173,7 +173,7 @@ class Cash extends Base {
             $update['cash_time_audit'] = time();
             $res = model('Cash')->where($where)->update($update);
             if($res===false){
-                return ['code'=>1001,'msg'=>'删除失败：'.$this->getError() ];
+                return ['code'=>1001,'msg'=>lang('del_err').'：'.$this->getError() ];
             }
 
             $res = model('User')->where($where2)->setDec('user_points_froze', $v['cash_points']);

@@ -10,8 +10,8 @@ class Template extends Validate
     ];
 
     protected $message  =   [
-        'fname.require' => '名称必须',
-        'fpath.require'   => '路径必须',
+        'fname.require' => 'validate/require_name',
+        'fpath.require'   => 'validate/require_path',
     ];
 
 }

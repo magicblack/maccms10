@@ -28,7 +28,7 @@ class Provide extends Base
         if($GLOBALS['config']['api']['vod']['charge'] == 1) {
             $h = $_SERVER['REMOTE_ADDR'];
             if (!$h) {
-                echo '域名未授权！';
+                echo lang('api/auth_err');
                 exit;
             }
             else {
@@ -42,7 +42,7 @@ class Provide extends Base
                 }
                 if($h != 'localhost' && $h != '127.0.0.1') {
                     if(!in_array($h, $auths)){
-                        echo '域名未授权！';
+                        echo lang('api/auth_err');
                         exit;
                     }
                 }
@@ -105,7 +105,7 @@ class Provide extends Base
             if ($this->_param['at'] == 'xml') {
                 $html = $this->vod_xml($res);
             } else {
-                $html = json_encode($this->vod_json($res));
+                $html = json_encode($this->vod_json($res),JSON_UNESCAPED_UNICODE);
             }
 
             if($cache_time>0) {
@@ -287,7 +287,7 @@ class Provide extends Base
         if($GLOBALS['config']['api']['art']['charge'] == 1) {
             $h = $_SERVER['REMOTE_ADDR'];
             if (!$h) {
-                echo '域名未授权！';
+                echo lang('api/auth_err');
                 exit;
             }
             else {
@@ -301,7 +301,7 @@ class Provide extends Base
                 }
                 if($h != 'localhost' && $h != '127.0.0.1') {
                     if(!in_array($h, $auths)){
-                        echo '域名未授权！';
+                        echo lang('api/auth_err');
                         exit;
                     }
                 }
@@ -392,7 +392,7 @@ class Provide extends Base
                 }
                 $res['class'] = $class;
             }
-            $html = json_encode($res);
+            $html = json_encode($res,JSON_UNESCAPED_UNICODE);
 
             if($cache_time>0) {
                 Cache::set($cach_name, $html, $cache_time);
@@ -411,7 +411,7 @@ class Provide extends Base
         if($GLOBALS['config']['api']['actor']['charge'] == 1) {
             $h = $_SERVER['REMOTE_ADDR'];
             if (!$h) {
-                echo '域名未授权！';
+                echo lang('api/auth_err');
                 exit;
             }
             else {
@@ -425,7 +425,7 @@ class Provide extends Base
                 }
                 if($h != 'localhost' && $h != '127.0.0.1') {
                     if(!in_array($h, $auths)){
-                        echo '域名未授权！';
+                        echo lang('api/auth_err');
                         exit;
                     }
                 }
@@ -516,7 +516,7 @@ class Provide extends Base
                 $res['class'] = $class;
             }
 
-            $html = json_encode($res);
+            $html = json_encode($res,JSON_UNESCAPED_UNICODE);
 
             if($cache_time>0) {
                 Cache::set($cach_name, $html, $cache_time);
@@ -535,7 +535,7 @@ class Provide extends Base
         if($GLOBALS['config']['api']['role']['charge'] == 1) {
             $h = $_SERVER['REMOTE_ADDR'];
             if (!$h) {
-                echo '域名未授权！';
+                echo lang('api/auth_err');
                 exit;
             }
             else {
@@ -549,7 +549,7 @@ class Provide extends Base
                 }
                 if($h != 'localhost' && $h != '127.0.0.1') {
                     if(!in_array($h, $auths)){
-                        echo '域名未授权！';
+                        echo lang('api/auth_err');
                         exit;
                     }
                 }
@@ -604,6 +604,7 @@ class Provide extends Base
 
             foreach ($res['list'] as $k => &$v) {
                 $v['role_time'] = date('Y-m-d H:i:s', $v['role_time']);
+                $v['douban_id'] = $v['data']['vod_douban_id'];
                 $v['vod_name'] = $v['data']['vod_name'];
                 $v['vod_director'] = $v['data']['vod_director'];
                 unset($v['data']);
@@ -627,7 +628,7 @@ class Provide extends Base
                 $res['class'] = $class;
             }
 
-            $html = json_encode($res);
+            $html = json_encode($res,JSON_UNESCAPED_UNICODE);
 
             if($cache_time>0) {
                 Cache::set($cach_name, $html, $cache_time);
@@ -646,7 +647,7 @@ class Provide extends Base
         if($GLOBALS['config']['api']['website']['charge'] == 1) {
             $h = $_SERVER['REMOTE_ADDR'];
             if (!$h) {
-                echo '域名未授权！';
+                echo lang('api/auth_err');
                 exit;
             }
             else {
@@ -660,7 +661,7 @@ class Provide extends Base
                 }
                 if($h != 'localhost' && $h != '127.0.0.1') {
                     if(!in_array($h, $auths)){
-                        echo '域名未授权！';
+                        echo lang('api/auth_err');
                         exit;
                     }
                 }
@@ -751,7 +752,7 @@ class Provide extends Base
                 $res['class'] = $class;
             }
 
-            $html = json_encode($res);
+            $html = json_encode($res,JSON_UNESCAPED_UNICODE);
 
             if($cache_time>0) {
                 Cache::set($cach_name, $html, $cache_time);
@@ -761,5 +762,8 @@ class Provide extends Base
         exit;
     }
 
+    public function comment()
+    {
 
+    }
 }

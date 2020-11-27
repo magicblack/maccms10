@@ -10,151 +10,151 @@
 
         <div class="layui-tab">
             <ul class="layui-tab-title ">
-                <li class="layui-this">基本信息</a></li>
-                <li>其他信息</li>
+                <li class="layui-this">{:lang('base_info')}</a></li>
+                <li>{:lang('other_info')}</li>
             </ul>
         <div class="layui-tab-content">
 
             <div class="layui-tab-item layui-show">
 
                 <div class="layui-form-item">
-                    <label class="layui-form-label">参数：</label>
+                    <label class="layui-form-label">{:lang('param')}：</label>
                     <div class="layui-input-inline ">
                         <select name="topic_status">
-                            <option value="1" >已审核</option>
-                            <option value="0" {if condition="$info.topic_status eq '0'"}selected{/if}>未审核</option>
+                            <option value="1" >{:lang('reviewed')}</option>
+                            <option value="0" {if condition="$info.topic_status eq '0'"}selected{/if}>{:lang('reviewed_not')}</option>
                         </select>
                     </div>
                     <div class="layui-input-inline ">
                         <select name="topic_level">
-                            <option value="0">请选择推荐值</option>
-                            <option value="9" {if condition="$info['topic_level'] eq 9"}selected {/if}>推荐9-幻灯</option>
-                            <option value="1" {if condition="$info['topic_level'] eq 1"}selected {/if}>推荐1</option>
-                            <option value="2" {if condition="$info['topic_level'] eq 2"}selected {/if}>推荐2</option>
-                            <option value="3" {if condition="$info['topic_level'] eq 3"}selected {/if}>推荐3</option>
-                            <option value="4" {if condition="$info['topic_level'] eq 4"}selected {/if}>推荐4</option>
-                            <option value="5" {if condition="$info['topic_level'] eq 5"}selected {/if}>推荐5</option>
-                            <option value="6" {if condition="$info['topic_level'] eq 6"}selected {/if}>推荐6</option>
-                            <option value="7" {if condition="$info['topic_level'] eq 7"}selected {/if}>推荐7</option>
-                            <option value="8" {if condition="$info['topic_level'] eq 8"}selected {/if}>推荐8</option>
+                            <option value="0">{:lang('select_level')}</option>
+                            <option value="9" {if condition="$info['topic_level'] eq 9"}selected {/if}>{:lang('level')}9-{:lang('slide')}</option>
+                            <option value="1" {if condition="$info['topic_level'] eq 1"}selected {/if}>{:lang('level')}1</option>
+                            <option value="2" {if condition="$info['topic_level'] eq 2"}selected {/if}>{:lang('level')}2</option>
+                            <option value="3" {if condition="$info['topic_level'] eq 3"}selected {/if}>{:lang('level')}3</option>
+                            <option value="4" {if condition="$info['topic_level'] eq 4"}selected {/if}>{:lang('level')}4</option>
+                            <option value="5" {if condition="$info['topic_level'] eq 5"}selected {/if}>{:lang('level')}5</option>
+                            <option value="6" {if condition="$info['topic_level'] eq 6"}selected {/if}>{:lang('level')}6</option>
+                            <option value="7" {if condition="$info['topic_level'] eq 7"}selected {/if}>{:lang('level')}7</option>
+                            <option value="8" {if condition="$info['topic_level'] eq 8"}selected {/if}>{:lang('level')}8</option>
 
                         </select>
                     </div>
                     <div class="layui-input-inline w110">
-                        <input type="checkbox" name="uptime" title="更新时间" value="1" checked class="layui-checkbox checkbox-ids" lay-skin="primary">
+                        <input type="checkbox" name="uptime" title="{:lang('update_time')}" value="1" checked class="layui-checkbox checkbox-ids" lay-skin="primary">
                     </div>
                 </div>
                 <div class="layui-form-item">
-                    <label class="layui-form-label">名称：</label>
+                    <label class="layui-form-label">{:lang('name')}：</label>
                     <div class="layui-input-inline w500">
                         <input type="text" class="layui-input" lay-verify="topic_name" value="{$info.topic_name}" placeholder="" name="topic_name">
                     </div>
-                    <label class="layui-form-label">副标：</label>
+                    <label class="layui-form-label">{:lang('sub')}：</label>
                     <div class="layui-input-inline">
                         <input type="text" class="layui-input" value="{$info.topic_sub}" placeholder="" name="topic_sub">
                     </div>
                 </div>
 
                 <div class="layui-form-item">
-                    <label class="layui-form-label">别名：</label>
+                    <label class="layui-form-label">{:lang('en')}：</label>
                     <div class="layui-input-inline w500">
                         <input type="text" class="layui-input" lay-verify="topic_en" value="{$info.topic_en}" placeholder="" name="topic_en">
                     </div>
-                    <label class="layui-form-label">首字母：</label>
+                    <label class="layui-form-label">{:lang('letter')}：</label>
                     <div class="layui-input-inline w70">
                         <input type="text" class="layui-input" value="{$info.topic_letter}" placeholder="" name="topic_letter">
                     </div>
-                    <label class="layui-form-label">高亮：</label>
+                    <label class="layui-form-label">{:lang('color')}：</label>
                     <div class="layui-input-inline w70">
                         <input type="text" class="layui-input color" value="{$info.topic_color}" placeholder="" name="topic_color">
                     </div>
                 </div>
 
                 <div class="layui-form-item">
-                    <label class="layui-form-label">备注：</label>
+                    <label class="layui-form-label">{:lang('remarks')}：</label>
                     <div class="layui-input-inline w500">
                         <input type="text" class="layui-input" value="{$info.topic_remarks}" placeholder="" name="topic_remarks">
                     </div>
-                    <label class="layui-form-label">排序：</label>
+                    <label class="layui-form-label">{:lang('sort')}：</label>
                     <div class="layui-input-inline ">
                         <input type="text" class="layui-input" value="{$info.topic_sort}" placeholder="" name="topic_sort">
                     </div>
                 </div>
 
                 <div class="layui-form-item">
-                    <label class="layui-form-label">扩展分类：</label>
+                    <label class="layui-form-label">{:lang('class')}：</label>
                     <div class="layui-input-inline w500">
-                        <input type="text" class="layui-input" value="{$info.topic_type}" placeholder="多个请用,号相连" name="topic_type">
+                        <input type="text" class="layui-input" value="{$info.topic_type}" placeholder="{:lang('multi_separate_tip')}" name="topic_type">
                     </div>
-                    <label class="layui-form-label">独立模板：</label>
+                    <label class="layui-form-label">{:lang('tpl')}：</label>
                     <div class="layui-input-inline ">
                         <input type="text" class="layui-input" lay-verify="topic_tpl" value="{$info.topic_tpl|mac_default='detail.html'}" placeholder="" name="topic_tpl">
                     </div>
                 </div>
 
                 <div class="layui-form-item">
-                    <label class="layui-form-label">TAG收录：</label>
+                    <label class="layui-form-label">TAG：</label>
                     <div class="layui-input-inline w500">
-                        <input type="text" class="layui-input" value="{$info.topic_tag}" placeholder="自动收录包含TAG的视频和文章；多个用,号相连" name="topic_tag">
+                        <input type="text" class="layui-input" value="{$info.topic_tag}" placeholder="{:lang('multi_separate_tip')}" name="topic_tag">
                     </div>
                 </div>
 
                 <div class="layui-form-item">
-                    <label class="layui-form-label">视频收录：</label>
+                    <label class="layui-form-label">{:lang('admin/topic/vod_include')}：</label>
                     <div class="layui-input-inline w500">
-                        <input type="text" class="layui-input" value="{$info.topic_rel_vod}" placeholder="视频id多个请用,号相连" name="topic_rel_vod">
+                        <input type="text" class="layui-input" value="{$info.topic_rel_vod}" placeholder="{:lang('vod')}id,{:lang('multi_separate_tip')}" name="topic_rel_vod">
                     </div>
                     <div class="layui-input-inline">
-                        <a class="layui-btn j-iframe" data-href="{:url('vod/data')}?select=1&input=topic_rel_vod" href="javascript:;" title="查询数据">查询数据</a>
+                        <a class="layui-btn j-iframe" data-href="{:url('vod/data')}?select=1&input=topic_rel_vod" href="javascript:;" title="{:lang('search_data')}">{:lang('search_data')}</a>
                     </div>
                 </div>
                 <div class="layui-form-item">
-                    <label class="layui-form-label">文章收录：</label>
+                    <label class="layui-form-label">{:lang('admin/topic/art_include')}：</label>
                     <div class="layui-input-inline w500">
-                        <input type="text" class="layui-input" value="{$info.topic_rel_art}" placeholder="文章id多个请用,号相连" name="topic_rel_art">
+                        <input type="text" class="layui-input" value="{$info.topic_rel_art}" placeholder="{:lang('art')}id,{:lang('multi_separate_tip')}" name="topic_rel_art">
                     </div>
                     <div class="layui-input-inline">
-                        <a class="layui-btn j-iframe" data-href="{:url('art/data')}?select=1&input=topic_rel_art" href="javascript:;" title="查询数据">查询数据</a>
+                        <a class="layui-btn j-iframe" data-href="{:url('art/data')}?select=1&input=topic_rel_art" href="javascript:;" title="{:lang('search_data')}">{:lang('search_data')}</a>
                     </div>
                 </div>
 
                 <div class="layui-form-item">
-                    <label class="layui-form-label">图片：</label>
+                    <label class="layui-form-label">{:lang('pic')}：</label>
                     <div class="layui-input-inline w500 upload">
                         <input type="text" class="layui-input upload-input" style="max-width:100%;" value="{$info.topic_pic}" placeholder="" id="topic_pic" name="topic_pic">
                     </div>
                     <div class="layui-input-inline ">
-                        <button type="button" class="layui-btn layui-upload" lay-data="{data:{thumb:1,thumb_class:'upload-thumb'}}" id="upload1">上传图片</button>
+                        <button type="button" class="layui-btn layui-upload" lay-data="{data:{thumb:1,thumb_class:'upload-thumb'}}" id="upload1">{:lang('upload_pic')}</button>
                     </div>
                 </div>
                 <div class="layui-form-item">
-                    <label class="layui-form-label">缩略图：</label>
+                    <label class="layui-form-label">{:lang('pic_thumb')}：</label>
                     <div class="layui-input-inline w500 upload">
                         <input type="text" class="layui-input upload-input upload-thumb" style="max-width:100%;" value="{$info.topic_pic_thumb}" placeholder="" id="topic_pic_thumb" name="topic_pic_thumb">
                     </div>
                     <div class="layui-input-inline ">
-                        <button type="button" class="layui-btn layui-upload" lay-data="{data:{thumb:0,thumb_class:''}}" id="upload2">上传图片</button>
+                        <button type="button" class="layui-btn layui-upload" lay-data="{data:{thumb:0,thumb_class:''}}" id="upload2">{:lang('upload_pic')}</button>
                     </div>
                 </div>
                 <div class="layui-form-item">
-                    <label class="layui-form-label">幻灯图：</label>
+                    <label class="layui-form-label">{:lang('slide')}：</label>
                     <div class="layui-input-inline w500 upload">
                         <input type="text" class="layui-input upload-input" style="max-width:100%;" value="{$info.topic_pic_slide}" placeholder="" id="topic_pic_slide" name="topic_pic_slide">
                     </div>
                     <div class="layui-input-inline ">
-                        <button type="button" class="layui-btn layui-upload" lay-data="{data:{thumb:0,thumb_class:''}}" id="upload3">上传图片</button>
+                        <button type="button" class="layui-btn layui-upload" lay-data="{data:{thumb:0,thumb_class:''}}" id="upload3">{:lang('upload_pic')}</button>
                     </div>
                 </div>
 
                 <div class="layui-form-item">
-                    <label class="layui-form-label">简介：</label>
+                    <label class="layui-form-label">{:lang('blurb')}：</label>
                     <div class="layui-input-block">
-                        <textarea name="topic_blurb" cols="" rows="3" class="layui-textarea"  placeholder="不填写将自动从第一页详情里获取前100个字" style="height:40px;">{$info.topic_blurb}</textarea>
+                        <textarea name="topic_blurb" cols="" rows="3" class="layui-textarea"  placeholder="{:lang('blurb_auto_tip')}" style="height:40px;">{$info.topic_blurb}</textarea>
                     </div>
                 </div>
 
                 <div class="layui-form-item">
-                    <label class="layui-form-label">介绍：</label>
+                    <label class="layui-form-label">{:lang('content')}：</label>
                     <div class="layui-input-block">
                         <textarea id="topic_content" name="topic_content" type="text/plain" style="width:99%;height:300px">{$info.topic_content|mac_url_content_img}</textarea>
                     </div>
@@ -164,53 +164,53 @@
             <div class="layui-tab-item">
 
                 <div class="layui-form-item">
-                    <label class="layui-form-label">SEO关键字：</label>
+                    <label class="layui-form-label">{:lang('seo_key')}：</label>
                     <div class="layui-input-block w500">
                         <input type="text" class="layui-input" value="{$info.topic_key}" placeholder="" name="topic_key">
                     </div>
                 </div>
                 <div class="layui-form-item">
-                    <label class="layui-form-label">SEO描述：</label>
+                    <label class="layui-form-label">{:lang('seo_des')}：</label>
                     <div class="layui-input-block w500">
                         <input type="text" class="layui-input" value="{$info.topic_des}" placeholder="" name="topic_des">
                     </div>
                 </div>
                 <div class="layui-form-item">
-                    <label class="layui-form-label">SEO标题：</label>
+                    <label class="layui-form-label">{:lang('seo_title')}：</label>
                     <div class="layui-input-block w500">
                         <input type="text" class="layui-input" value="{$info.topic_title}" placeholder="" name="topic_title">
                     </div>
                 </div>
 
                 <div class="layui-form-item">
-                    <label class="layui-form-label">顶数量：</label>
+                    <label class="layui-form-label">{:lang('up')}：</label>
                     <div class="layui-input-inline ">
                         <input type="text" class="layui-input" value="{$info.topic_up}" placeholder="" id="topic_up" name="topic_up">
                     </div>
-                    <label class="layui-form-label">踩数量：</label>
+                    <label class="layui-form-label">{:lang('down')}：</label>
                     <div class="layui-input-inline ">
                         <input type="text" class="layui-input" value="{$info.topic_down}" placeholder="" id="topic_down" name="topic_down">
                     </div>
-                    <button class="layui-btn" type="button" id="btn_rnd">随机生成</button>
+                    <button class="layui-btn" type="button" id="btn_rnd">{:lang('rnd_make')}</button>
                 </div>
 
                 <div class="layui-form-item">
-                    <label class="layui-form-label">总人气：</label>
+                    <label class="layui-form-label">{:lang('hits')}：</label>
                     <div class="layui-input-inline ">
                         <input type="text" class="layui-input" value="{$info.topic_hits}" placeholder="" id="topic_hits" name="topic_hits">
                     </div>
-                    <label class="layui-form-label">月人气：</label>
+                    <label class="layui-form-label">{:lang('hits_month')}：</label>
                     <div class="layui-input-inline ">
                         <input type="text" class="layui-input" value="{$info.topic_hits_month}" placeholder="" id="topic_hits_month" name="topic_hits_month" >
                     </div>
                 </div>
 
                 <div class="layui-form-item">
-                    <label class="layui-form-label">周人气：</label>
+                    <label class="layui-form-label">{:lang('hits_week')}：</label>
                     <div class="layui-input-inline ">
                         <input type="text" class="layui-input" value="{$info.topic_hits_week}" placeholder="" id="topic_hits_week" name="topic_hits_week">
                     </div>
-                    <label class="layui-form-label">日人气：</label>
+                    <label class="layui-form-label">{:lang('hits_day')}：</label>
                     <div class="layui-input-inline ">
                         <input type="text" class="layui-input " value="{$info.topic_hits_day}" placeholder="" id="topic_hits_day" name="topic_hits_day">
                     </div>
@@ -218,15 +218,15 @@
 
 
                 <div class="layui-form-item">
-                    <label class="layui-form-label">平均分：</label>
+                    <label class="layui-form-label">{:lang('score')}：</label>
                     <div class="layui-input-inline ">
                         <input type="text" class="layui-input" value="{$info.topic_score}" placeholder="" id="topic_score" name="topic_score">
                     </div>
-                    <label class="layui-form-label">总评分：</label>
+                    <label class="layui-form-label">{:lang('score_all')}：</label>
                     <div class="layui-input-inline ">
                         <input type="text" class="layui-input" value="{$info.topic_score_all}" placeholder="" id="topic_score_all" name="topic_score_all">
                     </div>
-                    <label class="layui-form-label">总评次：</label>
+                    <label class="layui-form-label">{:lang('score_num')}：</label>
                     <div class="layui-input-inline ">
                         <input type="text" class="layui-input" value="{$info.topic_score_num}" placeholder="" id="topic_score_num" name="topic_score_num">
                     </div>
@@ -237,8 +237,8 @@
         </div>
         <div class="layui-form-item center">
             <div class="layui-input-block">
-                <button type="submit" class="layui-btn" lay-submit="" lay-filter="formSubmit" data-child="">保 存</button>
-                <button class="layui-btn layui-btn-warm" type="reset">还 原</button>
+                <button type="submit" class="layui-btn" lay-submit="" lay-filter="formSubmit" data-child="">{:lang('btn_save')}</button>
+                <button class="layui-btn layui-btn-warm" type="reset">{:lang('btn_reset')}</button>
             </div>
         </div>
     </form>
@@ -260,12 +260,12 @@
         form.verify({
             topic_name: function (value) {
                 if (value == "") {
-                    return "请输入专题名称";
+                    return "{:lang('name_empty')}";
                 }
             },
             topic_tpl: function (value) {
                 if (value == "") {
-                    return "请输入专题页模板";
+                    return "{:lang('admin/topic/tpl_empty')}";
                 }
             }
         });
@@ -275,7 +275,7 @@
             ,url: "{:url('upload/upload')}?flag=topic"
             ,method: 'post'
             ,before: function(input) {
-                layer.msg('文件上传中...', {time:3000000});
+                layer.msg("{:lang('upload_ing')}", {time:3000000});
             },done: function(res, index, upload) {
                 var obj = this.item;
                 if (res.code == 0) {

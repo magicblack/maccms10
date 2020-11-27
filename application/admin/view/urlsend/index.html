@@ -6,7 +6,7 @@
         <div class="layui-tab" lay-filter="tb1">
             <ul class="layui-tab-title">
                 {volist name="$extends['ext_list']" id="vo"}
-                <li data-key="{$key}" lay-id="configpay_{$i+2}">{$vo}配置</li>
+                <li data-key="{$key}" lay-id="configpay_{$i+2}">{$vo}{:lang('config')}</li>
                 {/volist}
 
             </ul>
@@ -18,8 +18,8 @@
         </div>
         <div class="layui-form-item ">
             <div class="layui-input-block">
-                <button type="submit" class="layui-btn" lay-submit="" lay-filter="formSubmit">保 存</button>
-                <button class="layui-btn layui-btn-warm" type="reset">还 原</button>
+                <button type="submit" class="layui-btn" lay-submit="" lay-filter="formSubmit">{:lang('btn_save')}</button>
+                <button class="layui-btn layui-btn-warm" type="reset">{:lang('btn_reset')}</button>
             </div>
         </div>
     </form>
@@ -27,13 +27,11 @@
 
     <form class="layui-form layui-form-pane" method="post" action="" target="_blank" id="form_post">
         <blockquote class="layui-elem-quote">
-            断点会记录在缓存中，更新缓存后断点将消失。
-            当前站点配置域名：{$GLOBALS['http_type'].$GLOBALS['config']['site']['site_url']}<br>
-            开始推送之前请先填写好上面的所需配置项。
+            {:lang('admin/urlsend/tip2')}
         </blockquote>
 
         <div class="layui-form-item">
-            <label class="layui-form-label">推送类型：</label>
+            <label class="layui-form-label">{:lang('admin/urlsend/send_genre')}：</label>
             <div class="layui-input-inline">
                 <select class="w150" id="ac" name="ac" lay-filter="ac">
                     {volist name="$extends['ext_list']" id="vo"}
@@ -44,14 +42,14 @@
         </div>
 
         <div class="layui-form-item">
-            <label class="layui-form-label">每页推送数：</label>
+            <label class="layui-form-label">{:lang('admin/urlsend/page_send_num')}：</label>
             <div class="layui-input-inline w400">
                 <input type="text" name="limit" id="limit" value="50" class="layui-input">
             </div>
             <div class="layui-form-mid layui-word-aux"></div>
         </div>
         <div class="layui-form-item">
-            <label class="layui-form-label">起始页码：</label>
+            <label class="layui-form-label">{:lang('admin/urlsend/start_page')}：</label>
             <div class="layui-input-inline w400">
                 <input type="text" name="page" id="page" value="1" class="layui-input">
             </div>
@@ -59,26 +57,26 @@
         </div>
 
         <hr class="layui-bg-gray">
-        <input type="button" value="当天视频" class="layui-btn layui-btn-primary" onclick="post('ac2=today&mid=1');">
-        <input type="button" value="全部视频" class="layui-btn layui-btn-primary" onclick="post('ac2=all&mid=1');">
+        <input type="button" value="{:lang('that_day')}{:lang('vod')}" class="layui-btn layui-btn-primary" onclick="post('ac2=today&mid=1');">
+        <input type="button" value="{:lang('all')}{:lang('vod')}" class="layui-btn layui-btn-primary" onclick="post('ac2=all&mid=1');">
 
-        <input type="button" value="当天文章" class="layui-btn layui-btn-primary" onclick="post('ac2=today&mid=2');">
-        <input type="button" value="全部文章" class="layui-btn layui-btn-primary" onclick="post('ac2=all&mid=2');">
+        <input type="button" value="{:lang('that_day')}{:lang('art')}" class="layui-btn layui-btn-primary" onclick="post('ac2=today&mid=2');">
+        <input type="button" value="{:lang('all')}{:lang('art')}" class="layui-btn layui-btn-primary" onclick="post('ac2=all&mid=2');">
         <hr class="layui-bg-gray">
-        <input type="button" value="当天专题" class="layui-btn layui-btn-primary" onclick="post('ac2=today&mid=3');">
-        <input type="button" value="全部专题" class="layui-btn layui-btn-primary" onclick="post('ac2=all&mid=3');">
+        <input type="button" value="{:lang('that_day')}{:lang('topic')}" class="layui-btn layui-btn-primary" onclick="post('ac2=today&mid=3');">
+        <input type="button" value="{:lang('all')}{:lang('topic')}" class="layui-btn layui-btn-primary" onclick="post('ac2=all&mid=3');">
 
-        <input type="button" value="当天演员" class="layui-btn layui-btn-primary" onclick="post('ac2=today&mid=8');">
-        <input type="button" value="全部演员" class="layui-btn layui-btn-primary" onclick="post('ac2=all&mid=8');">
+        <input type="button" value="{:lang('that_day')}{:lang('actor')}" class="layui-btn layui-btn-primary" onclick="post('ac2=today&mid=8');">
+        <input type="button" value="{:lang('all')}{:lang('actor')}" class="layui-btn layui-btn-primary" onclick="post('ac2=all&mid=8');">
         <hr class="layui-bg-gray">
-        <input type="button" value="当天角色" class="layui-btn layui-btn-primary" onclick="post('ac2=today&mid=9');">
-        <input type="button" value="全部角色" class="layui-btn layui-btn-primary" onclick="post('ac2=all&mid=9');">
+        <input type="button" value="{:lang('that_day')}{:lang('role')}" class="layui-btn layui-btn-primary" onclick="post('ac2=today&mid=9');">
+        <input type="button" value="{:lang('all')}{:lang('role')}" class="layui-btn layui-btn-primary" onclick="post('ac2=all&mid=9');">
 
-        <input type="button" value="当天网址" class="layui-btn layui-btn-primary" onclick="post('ac2=today&mid=11');">
-        <input type="button" value="全部网址" class="layui-btn layui-btn-primary" onclick="post('ac2=all&mid=11');">
+        <input type="button" value="{:lang('that_day')}{:lang('website')}" class="layui-btn layui-btn-primary" onclick="post('ac2=today&mid=11');">
+        <input type="button" value="{:lang('all')}{:lang('website')}" class="layui-btn layui-btn-primary" onclick="post('ac2=all&mid=11');">
         <hr class="layui-bg-gray">
         {if condition="$urlsend_break_baidu_push neq ''"}
-        <a href="{$urlsend_break_baidu_push}" class="layui-btn layui-btn-danger ">【进入断点继续推送】</a>
+        <a href="{$urlsend_break_baidu_push}" class="layui-btn layui-btn-danger ">【{:lang('admin/urlsend/in_break_point_exec')}】</a>
         {/if}
 
     </form>

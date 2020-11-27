@@ -3,14 +3,14 @@
 
     <div class="my-toolbar-box" >
         <ul class="layui-tab-title mb10">
-            <li class="layui-this"><a href="{:url('index')}">备份数据库</a></li>
-            <li><a href="{:url('index')}?group=import">恢复数据库</a></li>
+            <li class="layui-this"><a href="{:url('index')}">{:lang('admin/database/backup_db')}</a></li>
+            <li><a href="{:url('index')}?group=import">{:lang('admin/database/import_db')}</a></li>
         </ul>
 
         <div class="layui-btn-group">
-            <a data-href="{:url('export')}" class="layui-btn layui-btn-primary j-page-btns"><i class="layui-icon">&#xe62d;</i>备份数据库</a>
-            <a data-href="{:url('optimize')}" class="layui-btn layui-btn-primary j-page-btns"><i class="layui-icon">&#xe631;</i>优化数据库</a>
-            <a data-href="{:url('repair')}" class="layui-btn layui-btn-primary j-page-btns"><i class="layui-icon">&#xe60c;</i>修复数据库</a>
+            <a data-href="{:url('export')}" class="layui-btn layui-btn-primary j-page-btns"><i class="layui-icon">&#xe62d;</i>{:lang('admin/database/backup_db')}</a>
+            <a data-href="{:url('optimize')}" class="layui-btn layui-btn-primary j-page-btns"><i class="layui-icon">&#xe631;</i>{:lang('admin/database/optimize_db')}</a>
+            <a data-href="{:url('repair')}" class="layui-btn layui-btn-primary j-page-btns"><i class="layui-icon">&#xe60c;</i>{:lang('admin/database/repair_db')}</a>
         </div>
     </div>
 
@@ -22,12 +22,12 @@
             <thead>
             <tr>
                 <th><input type="checkbox" lay-skin="primary" lay-filter="allChoose"></th>
-                <th>表名</th>
-                <th>数据量</th>
-                <th>大小</th>
-                <th>冗余</th>
-                <th>备注</th>
-                <th width="90">操作</th>
+                <th>{:lang('admin/database/table')}</th>
+                <th>{:lang('admin/database/count')}</th>
+                <th>{:lang('admin/database/size')}</th>
+                <th>{:lang('admin/database/redundancy')}</th>
+                <th>{:lang('remarks')}</th>
+                <th width="90">{:lang('opt')}</th>
             </tr>
             </thead>
             <tbody>
@@ -40,8 +40,8 @@
                 <td>{$vo['Data_free']/1024|round=###,2} kb</td>
                 <td>{$vo['Comment']}</td>
                 <td>
-                        <a data-href="{:url('optimize?ids='.$vo['Name'])}" class="layui-badge-rim j-ajax">优化</a>
-                        <a data-href="{:url('repair?ids='.$vo['Name'])}" class="layui-badge-rim  j-ajax">修复</a>
+                        <a data-href="{:url('optimize?ids='.$vo['Name'])}" class="layui-badge-rim j-ajax">{:lang('admin/database/optimize')}</a>
+                        <a data-href="{:url('repair?ids='.$vo['Name'])}" class="layui-badge-rim  j-ajax">{:lang('admin/database/repair')}</a>
                 </td>
             </tr>
             {/volist}

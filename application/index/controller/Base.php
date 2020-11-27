@@ -21,7 +21,7 @@ class Base extends All
     {
         header("HTTP/1.0 404 Not Found");
         echo  '<script>setTimeout(function (){location.href="'.MAC_PATH.'";},'.(2000).');</script>';
-        $msg = '页面不存在';
+        $msg = lang('page_not_found');
         abort(404,$msg);
         exit;
     }
@@ -29,12 +29,12 @@ class Base extends All
     protected function check_search($param)
     {
         if($GLOBALS['config']['app']['search'] !='1'){
-            echo $this->error('搜索功能关闭中');
+            echo $this->error(lang('search_close'));
             exit;
         }
 
         if ( $param['page']==1 && mac_get_time_span("last_searchtime") < $GLOBALS['config']['app']['search_timespan']){
-            echo $this->error("请不要频繁操作，搜索时间间隔为".$GLOBALS['config']['app']['search_timespan']."秒");
+            echo $this->error(lang('search_frequently')."".$GLOBALS['config']['app']['search_timespan']."".lang('seconds'));
             exit;
         }
 
@@ -89,7 +89,7 @@ class Base extends All
         elseif($popedom==2 && in_array($pre,['art','actor','website'])){
 
             if($res===false && (empty($group['group_popedom'][$type_id][2]) || $trysee==0)){
-                return ['code'=>3001,'msg'=>'您没有权限访问此数据，请升级会员','trysee'=>0];
+                return ['code'=>3001,'msg'=>lang('controller/no_popedom'),'trysee'=>0];
             }
             elseif($group['group_id']<3 && $points>0  ){
                 $mid = mac_get_mid($pre);
@@ -107,16 +107,16 @@ class Base extends All
                 $res = model('Ulog')->infoData($where);
 
                 if($res['code'] > 1) {
-                    return ['code'=>3003,'msg'=>'观看此数据，需要支付【'.$points.'】积分，确认支付吗？','points'=>$points,'confirm'=>1,'trysee'=>0];
+                    return ['code'=>3003,'msg'=>lang('controller/pay_play_points',[$points]),'points'=>$points,'confirm'=>1,'trysee'=>0];
                 }
             }
         }
         elseif($popedom==3){
             if($res===false && (empty($group['group_popedom'][$type_id][5]) || $trysee==0)){
-                return ['code'=>3001,'msg'=>'您没有权限访问此数据，请升级会员','trysee'=>0];
+                return ['code'=>3001,'msg'=>lang('controller/no_popedom'),'trysee'=>0];
             }
             elseif($group['group_id']<3 && empty($group['group_popedom'][$type_id][3]) && !empty($group['group_popedom'][$type_id][5]) && $trysee>0){
-                return ['code'=>3002,'msg'=>'进入试看模式','trysee'=>$trysee];
+                return ['code'=>3002,'msg'=>lang('controller/in_try_see'),'trysee'=>$trysee];
             }
             elseif($group['group_id']<3 && $points>0  ){
                 $where=[];
@@ -134,17 +134,17 @@ class Base extends All
                 $res = model('Ulog')->infoData($where);
 
                 if($res['code'] > 1) {
-                    return ['code'=>3003,'msg'=>'观看此数据，需要支付【'.$points.'】积分，确认支付吗？','points'=>$points,'confirm'=>1,'trysee'=>0];
+                    return ['code'=>3003,'msg'=>lang('controller/pay_play_points',[$points]),'points'=>$points,'confirm'=>1,'trysee'=>0];
                 }
             }
         }
         else{
             if($res===false){
-                return ['code'=>1001,'msg'=>'您没有权限访问此页面，请升级会员组'];
+                return ['code'=>1001,'msg'=>lang('controller/no_popedom')];
             }
             if($popedom == 4){
                 if( $group['group_id'] ==1 && $points>0){
-                    return ['code'=>4001,'msg'=>'此页面为收费数据，请先登录后访问！','trysee'=>0];
+                    return ['code'=>4001,'msg'=>lang('controller/charge_data'),'trysee'=>0];
                 }
                 elseif($group['group_id'] ==2 && $points>0){
                     $where=[];
@@ -162,7 +162,7 @@ class Base extends All
                     $res = model('Ulog')->infoData($where);
 
                     if($res['code'] > 1) {
-                        return ['code'=>4003,'msg'=>'下载此数据，需要支付【'.$points.'】积分，确认支付吗？','points'=>$points,'confirm'=>1,'trysee'=>0];
+                        return ['code'=>4003,'msg'=>lang('controller/pay_down_points',[$points]),'points'=>$points,'confirm'=>1,'trysee'=>0];
                     }
                 }
             }
@@ -182,7 +182,6 @@ class Base extends All
                     }
                     $res = model('Ulog')->infoData($where);
 
-
                     if(2 == 1) {
 
                     }
@@ -190,16 +189,15 @@ class Base extends All
 
                     }
                     elseif( $group['group_id'] <=2 && $points <= intval($user['user_points']) ){
-                        return ['code'=>5001,'msg'=>'试看结束,是否支付[' . $points . ']积分观看完整数据？您还剩下[' . $user['user_points'] . ']积分，请先充值！','trysee'=>$trysee];
+                        return ['code'=>5001,'msg'=>lang('controller/try_see_end',[$points, $user['user_points']]),'trysee'=>$trysee];
                     }
                     elseif( $group['group_id'] <3 && $points > intval($user['user_points']) ){
-                        return ['code'=>5002,'msg'=>'对不起,观看此页面数据需要[' . $points . ']积分，您还剩下[' . $user['user_points'] . ']积分，请先充值！','trysee'=>$trysee];
+                        return ['code'=>5002,'msg'=>lang('controller/not_enough_points',[$points,$user['user_points'] ]),'trysee'=>$trysee];
                     }
-
                 }
             }
         }
 
-        return ['code'=>1,'msg'=>'权限验证通过'];
+        return ['code'=>1,'msg'=>lang('controller/popedom_ok')];
     }
 }

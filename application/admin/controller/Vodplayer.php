@@ -15,7 +15,7 @@ class VodPlayer extends Base
     {
         $list = config($this->_pre);
         $this->assign('list',$list);
-        $this->assign('title','播放器管理');
+        $this->assign('title',lang('admin/vodplayer/title'));
         return $this->fetch('admin@vodplayer/index');
     }
 
@@ -45,15 +45,15 @@ class VodPlayer extends Base
 
             $res = mac_arr2file( APP_PATH .'extra/'.$this->_pre.'.php', $list);
             if($res===false){
-                return $this->error('保存配置文件失败，请重试!');
+                return $this->error(lang('write_err_config'));
             }
 
             $res = fwrite(fopen('./static/player/' . $param['from'].'.js','wb'),$code);
             if($res===false){
-                return $this->error('保存代码文件失败，请重试!');
+                return $this->error(lang('wirte_err_codefile'));
             }
 
-            return $this->success('保存成功!');
+            return $this->success(lang('save_ok'));
         }
 
         $info = $list[$param['id']];
@@ -62,7 +62,7 @@ class VodPlayer extends Base
             $info['code'] = $code;
         }
         $this->assign('info',$info);
-        $this->assign('title','信息管理');
+        $this->assign('title',lang('admin/vodplayer/title'));
         return $this->fetch('admin@vodplayer/info');
     }
 
@@ -73,10 +73,10 @@ class VodPlayer extends Base
         unset($list[$param['ids']]);
         $res = mac_arr2file(APP_PATH. 'extra/'.$this->_pre.'.php', $list);
         if($res===false){
-            return $this->error('删除失败，请重试!');
+            return $this->error(lang('del_err'));
         }
 
-        return $this->success('删除成功!');
+        return $this->success(lang('del_ok'));
     }
 
     public function field()
@@ -96,11 +96,11 @@ class VodPlayer extends Base
             }
             $res = mac_arr2file(APP_PATH. 'extra/'.$this->_pre.'.php', $list);
             if($res===false){
-                return $this->error('保存失败，请重试!');
+                return $this->error(lang('save_err'));
             }
-            return $this->success('保存成功!');
+            return $this->success(lang('save_ok'));
         }
-        return $this->error('参数错误');
+        return $this->error(lang('param_err'));
     }
 
     public function export()
@@ -133,7 +133,7 @@ class VodPlayer extends Base
             if($data){
 
                 if(empty($data['status']) || empty($data['from']) || empty($data['sort']) ){
-                    return $this->error('格式错误');
+                    return $this->error(lang('format_err'));
                 }
                 $code = $data['code'];
                 unset($data['code']);
@@ -142,16 +142,16 @@ class VodPlayer extends Base
                 $list[$data['from']] = $data;
                 $res = mac_arr2file( APP_PATH .'extra/'.$this->_pre.'.php', $list);
                 if($res===false){
-                    return $this->error('保存配置文件失败，请重试!');
+                    return $this->error(lang('write_err_config'));
                 }
 
                 $res = fwrite(fopen('./static/player/' . $data['from'].'.js','wb'),$code);
                 if($res===false){
-                    return $this->error('保存代码文件失败，请重试!');
+                    return $this->error(lang('wirte_err_codefile'));
                 }
 
             }
-            return $this->success('导入失败，请检查文件格式');
+            return $this->success(lang('import_err'));
         }
         else{
             return $this->error($file->getError());

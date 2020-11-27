@@ -19,20 +19,19 @@ class Update extends Base
 
     public function index()
     {
-        $this->assign('title','test管理');
         return $this->fetch('admin@test/index');
     }
 
     public function step1($file='')
     {
         if(empty($file)){
-            return $this->error('参数错误');
+            return $this->error(lang('param_err'));
         }
         $version = config('version.code');
         $url = $this->_url .$file . '.zip?t='.time();
 
         echo $this->fetch('admin@public/head');
-        echo "<div class='update'><h1>在线升级进行中第一步【文件升级】,请稍后......</h1><textarea rows=\"25\" class='layui-textarea' readonly>正在下载升级文件包...\n";
+        echo "<div class='update'><h1>".lang('admin/update/step1_a')."</h1><textarea rows=\"25\" class='layui-textarea' readonly>".lang('admin/update/step1_b')."\n";
         ob_flush();flush();
         sleep(1);
 
@@ -41,18 +40,18 @@ class Update extends Base
         $html = mac_curl_get($url);
         @fwrite(@fopen($this->_save_path.$save_file,'wb'),$html);
         if(!is_file($this->_save_path.$save_file)){
-            echo "下载升级包失败，请重试...\n";
+            echo lang('admin/update/download_err')."\n";
             exit;
         }
 
         if(filesize($this->_save_path.$save_file) <1){
             @unlink($this->_save_path.$save_file);
-            echo "下载升级包失败，请重试...\n";
+            echo lang('admin/update/download_err')."\n";
             exit;
         }
 
-        echo "下载升级包完毕...\n";
-        echo "正在处理升级包的文件...\n";
+        echo lang('admin/update/download_ok')."\n";
+        echo lang('admin/update/upgrade_package_processed')."\n";
         ob_flush();flush();
         sleep(1);
 
@@ -60,7 +59,7 @@ class Update extends Base
         $archive->PclZip($this->_save_path.$save_file);
         if(!$archive->extract(PCLZIP_OPT_PATH, '', PCLZIP_OPT_REPLACE_NEWER)) {
             echo $archive->error_string."\n";
-            echo '升级失败，请检查系统目录及文件权限！' ."\n";;
+            echo lang('admin/update/upgrade_err').'' ."\n";;
             exit;
         }
         else{
@@ -78,7 +77,7 @@ class Update extends Base
         $save_file = 'database.php';
 
         echo $this->fetch('admin@public/head');
-        echo "<div class='update'><h1>在线升级进行中第二步【数据升级】,请稍后......</h1><textarea rows=\"25\" class='layui-textarea' readonly>\n";
+        echo "<div class='update'><h1>".lang('admin/update/step2_a')."</h1><textarea rows=\"25\" class='layui-textarea' readonly>\n";
         ob_flush();flush();
         sleep(1);
 
@@ -87,7 +86,7 @@ class Update extends Base
         $sql_file = $this->_save_path .$save_file;
 
         if (is_file($sql_file)) {
-            echo "发现数据库升级脚本文件，正在处理...\n";
+            echo lang('admin/update/upgrade_sql')."\n";
             ob_flush();flush();
             $pre = config('database.prefix');
             $schema = Db::query('select * from information_schema.columns where table_schema = ?',[ config('database.database') ]);
@@ -113,9 +112,9 @@ class Update extends Base
                         echo $v;
                         try {
                             Db::execute($v);
-                            echo "    ---成功"."\n\n";
+                            echo "    ---".lang('success')."\n\n";
                         } catch (\Exception $e) {
-                            echo "    ---失败"."\n\n";
+                            echo "    ---".lang('fail')."\n\n";
                         }
                         ob_flush();flush();
                     }
@@ -127,7 +126,7 @@ class Update extends Base
             @unlink($sql_file);
         }
         else{
-            echo "未发现数据库升级脚本，稍后进入更新数据缓存部分...\n";
+            echo lang('admin/update/no_sql')."\n";
         }
         echo '</textarea></div>';
         mac_jump(url('update/step3', ['jump' => 1]), 3);
@@ -136,14 +135,14 @@ class Update extends Base
     public function step3()
     {
         echo $this->fetch('admin@public/head');
-        echo "<div class='update'><h1>在线升级进行中第三步【更新缓存】,请稍后......</h1><textarea rows=\"25\" class='layui-textarea' readonly>\n";
+        echo "<div class='update'><h1>".lang('admin/update/step3_a')."</h1><textarea rows=\"25\" class='layui-textarea' readonly>\n";
         ob_flush();flush();
         sleep(1);
 
         $this->_cache_clear();
 
-        echo "更新数据缓存文件...\n";
-        echo "恭喜您，系统升级完毕...";
+        echo lang('admin/update/update_cache')."\n";
+        echo lang('admin/update/upgrade_complete')."";
         ob_flush();flush();
         echo '</textarea></div>';
     }

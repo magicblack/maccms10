@@ -9,8 +9,8 @@ class Token extends Validate
     ];
 
     protected $message  =   [
-        '__token__.require' => '非法提交',
-        '__token__.token'   => '请不要重复提交表单'
+        '__token__.require' => 'illegal_request',
+        '__token__.token'   => 'token_err'
     ];
 
 }

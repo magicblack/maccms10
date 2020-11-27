@@ -7,27 +7,26 @@
         <input type="hidden" name="type_id" value="{$info.type_id}">
         <input type="hidden" name="__token__" value="{$Request.token}" />
         <blockquote class="layui-elem-quote layui-quote-nm">
-            提示信息：<br>
-            1,新增加分类后，请到用户-会员组分别对每个组设置权限，否则会提示无权限访问
+            {:lang('admin/type/tip')}
         </blockquote>
 
         <div class="layui-form-item">
-            <label class="layui-form-label">类型：</label>
+            <label class="layui-form-label"> {:lang('genre')}：</label>
             <div class="layui-input-inline ">
                     <select id="type_mid" name="type_mid" lay-filter="type_mid">
-                        <option value="1" {if condition="$info['type_mid'] == '1' || ($info.type_id eq 0 && $infop['type_mid'] == '1')"}selected {/if}>视频</option>
-                        <option value="2" {if condition="$info['type_mid'] == '2' || ($info.type_id eq 0 && $infop['type_mid'] == '2')"}selected {/if}>文章</option>
-                        <option value="8" {if condition="$info['type_mid'] == '8' || ($info.type_id eq 0 && $infop['type_mid'] == '8')"}selected {/if}>演员</option>
-                        <option value="11" {if condition="$info['type_mid'] == '11' || ($info.type_id eq 0 && $infop['type_mid'] == '11')"}selected {/if}>网址</option>
+                        <option value="1" {if condition="$info['type_mid'] == '1' || ($info.type_id eq 0 && $infop['type_mid'] == '1')"}selected {/if}>{:lang('vod')}</option>
+                        <option value="2" {if condition="$info['type_mid'] == '2' || ($info.type_id eq 0 && $infop['type_mid'] == '2')"}selected {/if}>{:lang('art')}</option>
+                        <option value="8" {if condition="$info['type_mid'] == '8' || ($info.type_id eq 0 && $infop['type_mid'] == '8')"}selected {/if}>{:lang('actor')}</option>
+                        <option value="11" {if condition="$info['type_mid'] == '11' || ($info.type_id eq 0 && $infop['type_mid'] == '11')"}selected {/if}>{:lang('website')}</option>
                     </select>
             </div>
         </div>
 
         <div class="layui-form-item">
-            <label class="layui-form-label">父级分类：</label>
+            <label class="layui-form-label">{:lang('admin/type/parent_type')}：</label>
             <div class="layui-input-inline ">
                     <select name="type_pid">
-                        <option value="0">顶级分类</option>
+                        <option value="0">{:lang('admin/type/top_type')}</option>
                         {volist name="parent" id="vo"}
                         <option value="{$vo.type_id}" {if condition="$info.type_pid eq $vo.type_id || $pid eq $vo.type_id"}selected {/if}>{$vo.type_name}</option>
                         {/volist}
@@ -35,160 +34,160 @@
             </div>
         </div>
         <div class="layui-form-item">
-            <label class="layui-form-label">状态：</label>
+            <label class="layui-form-label">{:lang('status')}：</label>
             <div class="layui-input-block">
-                <input name="type_status" type="radio" id="rad-1" value="0" title="禁用" {if condition="$info['type_status'] neq 1"}checked {/if}>
-                <input name="type_status" type="radio" id="rad-2" value="1" title="启用" {if condition="$info['type_status'] eq 1"}checked {/if}>
+                <input name="type_status" type="radio" id="rad-1" value="0" title="{:lang('disable')}" {if condition="$info['type_status'] neq 1"}checked {/if}>
+                <input name="type_status" type="radio" id="rad-2" value="1" title="{:lang('enable')}" {if condition="$info['type_status'] eq 1"}checked {/if}>
             </div>
         </div>
         <div class="layui-form-item">
-            <label class="layui-form-label">排序：</label>
+            <label class="layui-form-label">{:lang('sort')}：</label>
             <div class="layui-input-inline w100">
                 <input type="text" class="layui-input" value="{$info.type_sort}" placeholder="" id="type_sort" name="type_sort">
             </div>
         </div>
         <div class="layui-form-item">
-            <label class="layui-form-label">名称：</label>
+            <label class="layui-form-label">{:lang('name')}：</label>
             <div class="layui-input-block">
                 <input type="text" class="layui-input" lay-verify="type_name" value="{$info.type_name}" placeholder="" id="type_name" name="type_name">
             </div>
         </div>
         <div class="layui-form-item">
-            <label class="layui-form-label">别名：</label>
+            <label class="layui-form-label">{:lang('en')}：</label>
             <div class="layui-input-block">
                 <input type="text" class="layui-input" value="{$info.type_en}" placeholder="" id="type_en" name="type_en">
             </div>
         </div>
         <div class="layui-form-item">
-            <label class="layui-form-label">分类模板：</label>
+            <label class="layui-form-label">{:lang('admin/type/type_tpl')}：</label>
             <div class="layui-input-block">
                 <input type="text" class="layui-input" lay-verify="type_tpl" value="{$info.type_tpl}" placeholder="" id="type_tpl" name="type_tpl">
             </div>
         </div>
         <div class="layui-form-item">
-            <label class="layui-form-label">筛选模板：</label>
+            <label class="layui-form-label">{:lang('admin/type/show_tpl')}：</label>
             <div class="layui-input-block">
                 <input type="text" class="layui-input" lay-verify="type_tpl_list" value="{$info.type_tpl_list}" placeholder="" id="type_tpl_list" name="type_tpl_list">
             </div>
         </div>
         <div class="layui-form-item">
-            <label class="layui-form-label">内容模板：</label>
+            <label class="layui-form-label">{:lang('admin/type/detail_tpl')}：</label>
             <div class="layui-input-block">
                 <input type="text" class="layui-input" value="{$info.type_tpl_detail}" placeholder="" id="type_tpl_detail" name="type_tpl_detail">
             </div>
         </div>
 
         <div class="layui-form-item vod-list">
-            <label class="layui-form-label">播放模板：</label>
+            <label class="layui-form-label">{:lang('admin/type/play_tpl')}：</label>
             <div class="layui-input-block">
                 <input type="text" class="layui-input" value="{$info.type_tpl_play}" placeholder="" id="type_tpl_play" name="type_tpl_play">
             </div>
         </div>
         <div class="layui-form-item vod-list">
-            <label class="layui-form-label">下载模板：</label>
+            <label class="layui-form-label">{:lang('admin/type/down_tpl')}：</label>
             <div class="layui-input-block">
                 <input type="text" class="layui-input" value="{$info.type_tpl_down}" placeholder="" id="type_tpl_down" name="type_tpl_down">
             </div>
         </div>
 
         <div class="layui-form-item">
-            <label class="layui-form-label">SEO标题：</label>
+            <label class="layui-form-label">{:lang('seo_title')}：</label>
             <div class="layui-input-block">
                 <input type="text" class="layui-input" value="{$info.type_title}" placeholder="" id="type_title" name="type_title">
             </div>
         </div>
 
         <div class="layui-form-item">
-            <label class="layui-form-label">SEO关键字：</label>
+            <label class="layui-form-label">{:lang('seo_key')}：</label>
             <div class="layui-input-block">
                 <input type="text" class="layui-input" value="{$info.type_key}" placeholder="" id="type_key" name="type_key">
             </div>
         </div>
         <div class="layui-form-item">
-            <label class="layui-form-label">SEO描述：</label>
+            <label class="layui-form-label">{:lang('seo_des')}：</label>
             <div class="layui-input-block">
                 <input type="text" class="layui-input" value="{$info.type_des}" placeholder="" id="type_des" name="type_des">
             </div>
         </div>
 
         <div class="layui-form-item">
-            <label class="layui-form-label">分类图标：</label>
+            <label class="layui-form-label">{:lang('admin/type/logo')}：</label>
             <div class="layui-input-inline w600">
-                <input type="text" name="type_logo" placeholder="图片地址或路径" value="{$info['type_logo']}" class="layui-input upload-input">
+                <input type="text" name="type_logo" placeholder="" value="{$info['type_logo']}" class="layui-input upload-input">
             </div>
             <div class="layui-input-inline ">
-                <button type="button" class="layui-btn layui-upload" lay-data="{data:{thumb:0,thumb_class:'type_logo'}}" id="upload1">上传图片</button>
+                <button type="button" class="layui-btn layui-upload" lay-data="{data:{thumb:0,thumb_class:'type_logo'}}" id="upload1">{:lang('upload_pic')}</button>
             </div>
         </div>
         <div class="layui-form-item">
-            <label class="layui-form-label">分类封面：</label>
+            <label class="layui-form-label">{:lang('admin/type/pic')}</label>
             <div class="layui-input-inline w600">
-                <input type="text" name="type_pic" placeholder="图片地址或路径" value="{$info['type_pic']}" class="layui-input upload-input">
+                <input type="text" name="type_pic" placeholder="" value="{$info['type_pic']}" class="layui-input upload-input">
             </div>
             <div class="layui-input-inline ">
-                <button type="button" class="layui-btn layui-upload" lay-data="{data:{thumb:0,thumb_class:'type_pic'}}" id="upload1">上传图片</button>
+                <button type="button" class="layui-btn layui-upload" lay-data="{data:{thumb:0,thumb_class:'type_pic'}}" id="upload1">{:lang('upload_pic')}</button>
             </div>
         </div>
         <div class="layui-form-item">
-            <label class="layui-form-label">跳转URL：</label>
+            <label class="layui-form-label">{:lang('jumpurl')}：</label>
             <div class="layui-input-block">
                 <input type="text" class="layui-input" value="{$info.type_jumpurl}" placeholder="" id="type_jumpurl" name="type_jumpurl">
             </div>
         </div>
 
         <div class="layui-form-item">
-            <label class="layui-form-label">扩展分类：</label>
+            <label class="layui-form-label">{:lang('class')}：</label>
             <div class="layui-input-block">
-                <input type="text" class="layui-input" value="{$info.type_extend.class}" placeholder="多个用,号连接" name="type_extend[class]">
+                <input type="text" class="layui-input" value="{$info.type_extend.class}" placeholder="{:lang('multi_separate_tip')}" name="type_extend[class]">
             </div>
         </div>
         <div class="layui-form-item vod-list" {if condition="$info.type_mid neq '1'"} style="display:none" {/if} >
-            <label class="layui-form-label">扩展地区：</label>
+            <label class="layui-form-label">{:lang('extend_area')}：</label>
             <div class="layui-input-block">
-                <input type="text" class="layui-input" value="{$info.type_extend.area}" placeholder="多个用,号连接" name="type_extend[area]">
+                <input type="text" class="layui-input" value="{$info.type_extend.area}" placeholder="{:lang('multi_separate_tip')}" name="type_extend[area]">
             </div>
         </div>
         <div class="layui-form-item vod-list" {if condition="$info.type_mid neq '1'"} style="display:none" {/if}>
-            <label class="layui-form-label">扩展语言：</label>
+            <label class="layui-form-label">{:lang('extend_lang')}：</label>
             <div class="layui-input-block">
-                <input type="text" class="layui-input" value="{$info.type_extend.lang}" placeholder="多个用,号连接" name="type_extend[lang]">
+                <input type="text" class="layui-input" value="{$info.type_extend.lang}" placeholder="{:lang('multi_separate_tip')}" name="type_extend[lang]">
             </div>
         </div>
         <div class="layui-form-item vod-list" {if condition="$info.type_mid neq '1'"} style="display:none" {/if}>
-            <label class="layui-form-label">扩展年代：</label>
+            <label class="layui-form-label">{:lang('extend_year')}：</label>
             <div class="layui-input-block">
-                <input type="text" class="layui-input" value="{$info.type_extend.year}" placeholder="多个用,号连接" name="type_extend[year]">
+                <input type="text" class="layui-input" value="{$info.type_extend.year}" placeholder="{:lang('multi_separate_tip')}" name="type_extend[year]">
             </div>
         </div>
         <div class="layui-form-item vod-list" {if condition="$info.type_mid neq '1'"} style="display:none" {/if}>
-            <label class="layui-form-label">扩展演员：</label>
+            <label class="layui-form-label">{:lang('admin/type/extend_star')}：</label>
             <div class="layui-input-block">
-                <input type="text" class="layui-input" value="{$info.type_extend.star}" placeholder="多个用,号连接" name="type_extend[star]">
+                <input type="text" class="layui-input" value="{$info.type_extend.star}" placeholder="{:lang('multi_separate_tip')}" name="type_extend[star]">
             </div>
         </div>
         <div class="layui-form-item vod-list" {if condition="$info.type_mid neq '1'"} style="display:none" {/if}>
-            <label class="layui-form-label">扩展导演：</label>
+            <label class="layui-form-label">{:lang('admin/type/extend_director')}：</label>
             <div class="layui-input-block">
-                <input type="text" class="layui-input" value="{$info.type_extend.director}" placeholder="多个用,号连接" name="type_extend[director]">
+                <input type="text" class="layui-input" value="{$info.type_extend.director}" placeholder="{:lang('multi_separate_tip')}" name="type_extend[director]">
             </div>
         </div>
         <div class="layui-form-item vod-list" {if condition="$info.type_mid neq '1'"} style="display:none" {/if}>
-            <label class="layui-form-label">扩展资源：</label>
+            <label class="layui-form-label">{:lang('admin/type/extend_state')}：</label>
             <div class="layui-input-block">
-                <input type="text" class="layui-input" value="{$info.type_extend.state}" placeholder="多个用,号连接" name="type_extend[state]">
+                <input type="text" class="layui-input" value="{$info.type_extend.state}" placeholder="{:lang('multi_separate_tip')}" name="type_extend[state]">
             </div>
         </div>
         <div class="layui-form-item vod-list" {if condition="$info.type_mid neq '1'"} style="display:none" {/if}>
-            <label class="layui-form-label">扩展版本：</label>
+            <label class="layui-form-label">{:lang('admin/type/extend_version')}：</label>
             <div class="layui-input-block">
-                <input type="text" class="layui-input" value="{$info.type_extend.version}" placeholder="多个用,号连接" name="type_extend[version]">
+                <input type="text" class="layui-input" value="{$info.type_extend.version}" placeholder="{:lang('multi_separate_tip')}" name="type_extend[version]">
             </div>
         </div>
 
         <div class="layui-form-item center">
             <div class="layui-input-block">
-                <button type="submit" class="layui-btn" lay-submit="" lay-filter="formSubmit" data-child="true">保 存</button>
-                <button class="layui-btn layui-btn-warm" type="reset">还 原</button>
+                <button type="submit" class="layui-btn" lay-submit="" lay-filter="formSubmit" data-child="true">{:lang('btn_save')}</button>
+                <button class="layui-btn layui-btn-warm" type="reset">{:lang('btn_reset')}</button>
             </div>
         </div>
     </form>
@@ -233,7 +232,7 @@
             ,url: "{:url('upload/upload')}?flag=type"
             ,method: 'post'
             ,before: function(input) {
-                layer.msg('文件上传中...', {time:3000000});
+                layer.msg("{:lang('upload_ing')}", {time:3000000});
             },done: function(res, index, upload) {
                 var obj = this.item;
                 if (res.code == 0) {
@@ -270,12 +269,12 @@
         form.verify({
             type_name: function (value) {
                 if (value == "") {
-                    return "请输入分类名称";
+                    return "{:lang('name_empty')}";
                 }
             },
             type_tpl: function (value) {
                 if (value == "") {
-                    return "请输入分类页模板";
+                    return "{:lang('admin/type/tpl_empty')}";
                 }
             }
         });

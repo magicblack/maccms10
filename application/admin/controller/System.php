@@ -3,6 +3,7 @@ namespace app\admin\controller;
 use think\Db;
 use think\Config;
 use think\Cache;
+use think\View;
 
 class System extends Base
 {
@@ -21,9 +22,9 @@ class System extends Base
         $this->label_maccms();
         $res = mac_send_mail($conf['test'], $GLOBALS['config']['email']['tpl']['test_title'], $GLOBALS['config']['email']['tpl']['test_body'], $conf);
         if ($res['code']==1) {
-            return json(['code' => 1, 'msg' => '测试成功']);
+            return json(['code' => 1, 'msg' => lang('test_ok')]);
         }
-        return json(['code' => 1001, 'msg' => '测试失败：'.$res['msg']]);
+        return json(['code' => 1001, 'msg' => lang('test_err').'：'.$res['msg']]);
     }
 
     public function test_cache()
@@ -31,7 +32,7 @@ class System extends Base
         $param = input();
 
         if (!isset($param['type']) || empty($param['host']) || empty($param['port'])) {
-            return $this->error('参数错误!');
+            return $this->error(lang('param_err'));
         }
 
         $options = [
@@ -44,7 +45,7 @@ class System extends Base
         $hd = Cache::connect($options);
         $hd->set('test', 'test');
 
-        return json(['code' => 1, 'msg' => '测试成功']);
+        return json(['code' => 1, 'msg' => lang('test_ok')]);
     }
 
     public function config()
@@ -112,9 +113,9 @@ class System extends Base
 
             $res = mac_arr2file(APP_PATH . 'extra/maccms.php', $config_new);
             if ($res === false) {
-                return $this->error('保存失败，请重试!');
+                return $this->error(lang('save_err'));
             }
-            return $this->success('保存成功!');
+            return $this->success(lang('save_ok'));
         }
 
 
@@ -124,6 +125,12 @@ class System extends Base
         }
         $this->assign('templates', $templates);
 
+        $langs = glob('./application/lang/*.php');
+        foreach ($langs as $k => &$v) {
+            $v = str_replace(['./application/lang/','.php'],['',''],$v);
+        }
+        $this->assign('langs', $langs);
+
         $usergroup = Db::name('group')->select();
         $this->assign('usergroup', $usergroup);
 
@@ -132,10 +139,9 @@ class System extends Base
 
         $config = config('maccms');
         $this->assign('config', $config);
-        $this->assign('title', '网站参数配置');
+        $this->assign('title', lang('admin/system/config/title'));
         return $this->fetch('admin@system/config');
     }
-
 
 
     public function configurl()
@@ -200,7 +206,7 @@ class System extends Base
 
             $res = mac_arr2file(APP_PATH . 'route.php', $route);
             if ($res === false) {
-                return $this->error('保存路由配置失败，请重试!');
+                return $this->error(lang('write_err_route'));
             }
 
             //写扩展配置
@@ -208,13 +214,13 @@ class System extends Base
             $config_new = array_merge($config_old, $config_new);
             $res = mac_arr2file(APP_PATH . 'extra/maccms.php', $config_new);
             if ($res === false) {
-                return $this->error('保存配置文件失败，请重试!');
+                return $this->error(lang('write_err_config'));
             }
-            return $this->success('保存成功!');
+            return $this->success(lang('save_ok'));
         }
 
         $this->assign('config', config('maccms'));
-        $this->assign('title', 'url参数配置');
+        $this->assign('title', lang('admin/system/configurl/title'));
         return $this->fetch('admin@system/configurl');
     }
 
@@ -230,19 +236,18 @@ class System extends Base
             unset($config['__token__']);
 
             $config_new['user'] = $config['user'];
-
             $config_old = config('maccms');
             $config_new = array_merge($config_old, $config_new);
 
             $res = mac_arr2file(APP_PATH . 'extra/maccms.php', $config_new);
             if ($res === false) {
-                return $this->error('保存失败，请重试!');
+                return $this->error(lang('save_err'));
             }
-            return $this->success('保存成功!');
+            return $this->success(lang('save_ok'));
         }
 
         $this->assign('config', config('maccms'));
-        $this->assign('title', '会员参数配置');
+        $this->assign('title', lang('admin/system/configuser/title'));
         return $this->fetch('admin@system/configuser');
     }
 
@@ -257,9 +262,9 @@ class System extends Base
 
             $res = mac_arr2file(APP_PATH . 'extra/maccms.php', $config_new);
             if ($res === false) {
-                return $this->error('保存失败，请重试!');
+                return $this->error(lang('save_err'));
             }
-            return $this->success('保存成功!');
+            return $this->success(lang('save_ok'));
         }
 
         $this->assign('config', config('maccms'));
@@ -267,7 +272,7 @@ class System extends Base
         $extends = mac_extends_list('upload');
         $this->assign('extends',$extends);
 
-        $this->assign('title', '附件参数配置');
+        $this->assign('title', lang('admin/system/configupload/title'));
         return $this->fetch('admin@system/configupload');
     }
 
@@ -284,16 +289,15 @@ class System extends Base
 
             $res = mac_arr2file(APP_PATH . 'extra/maccms.php', $config_new);
             if ($res === false) {
-                return $this->error('保存失败，请重试!');
+                return $this->error(lang('save_err'));
             }
-            return $this->success('保存成功!');
+            return $this->success(lang('save_ok'));
         }
 
         $this->assign('config', config('maccms'));
-        $this->assign('title', '评论留言配置');
+        $this->assign('title', lang('admin/system/configcomment/title'));
         return $this->fetch('admin@system/configcomment');
     }
-
 
     public function configweixin()
     {
@@ -306,13 +310,13 @@ class System extends Base
 
             $res = mac_arr2file(APP_PATH . 'extra/maccms.php', $config_new);
             if ($res === false) {
-                return $this->error('保存失败，请重试!');
+                return $this->error(lang('save_err'));
             }
-            return $this->success('保存成功!');
+            return $this->success(lang('save_ok'));
         }
 
         $this->assign('config', config('maccms'));
-        $this->assign('title', '微信对接配置');
+        $this->assign('title', lang('admin/system/configweixin/title'));
         return $this->fetch('admin@system/configweixin');
     }
 
@@ -327,9 +331,9 @@ class System extends Base
 
             $res = mac_arr2file(APP_PATH . 'extra/maccms.php', $config_new);
             if ($res === false) {
-                return $this->error('保存失败，请重试!');
+                return $this->error(lang('save_err'));
             }
-            return $this->success('保存成功!');
+            return $this->success(lang('save_ok'));
         }
 
         $this->assign('http_type',$GLOBALS['http_type']);
@@ -338,7 +342,7 @@ class System extends Base
         $extends = mac_extends_list('pay');
         $this->assign('extends',$extends);
 
-        $this->assign('title', '在线支付配置');
+        $this->assign('title', lang('admin/system/configpay/title'));
         return $this->fetch('admin@system/configpay');
     }
 
@@ -353,13 +357,13 @@ class System extends Base
 
             $res = mac_arr2file(APP_PATH . 'extra/maccms.php', $config_new);
             if ($res === false) {
-                return $this->error('保存失败，请重试!');
+                return $this->error(lang('save_err'));
             }
-            return $this->success('保存成功!');
+            return $this->success(lang('save_ok'));
         }
 
         $this->assign('config', config('maccms'));
-        $this->assign('title', '整合登录配置');
+        $this->assign('title', lang('admin/system/configconnect/title'));
         return $this->fetch('admin@system/configconnect');
     }
 
@@ -374,16 +378,16 @@ class System extends Base
 
             $res = mac_arr2file(APP_PATH . 'extra/maccms.php', $config_new);
             if ($res === false) {
-                return $this->error('保存失败，请重试!');
+                return $this->error(lang('save_err'));
             }
-            return $this->success('保存成功!');
+            return $this->success(lang('save_ok'));
         }
         $this->assign('config', config('maccms'));
 
         $extends = mac_extends_list('email');
         $this->assign('extends',$extends);
 
-        $this->assign('title', '邮件发送配置');
+        $this->assign('title', lang('admin/system/configemail/title'));
         return $this->fetch('admin@system/configemail');
     }
 
@@ -398,16 +402,16 @@ class System extends Base
 
             $res = mac_arr2file(APP_PATH . 'extra/maccms.php', $config_new);
             if ($res === false) {
-                return $this->error('保存失败，请重试!');
+                return $this->error(lang('save_err'));
             }
-            return $this->success('保存成功!');
+            return $this->success(lang('save_ok'));
         }
 
         $extends = mac_extends_list('sms');
         $this->assign('extends',$extends);
 
         $this->assign('config', config('maccms'));
-        $this->assign('title', '短信发送配置');
+        $this->assign('title', lang('admin/system/configsms/title'));
         return $this->fetch('admin@system/configsms');
     }
 
@@ -426,16 +430,15 @@ class System extends Base
 
             $res = mac_arr2file(APP_PATH . 'extra/maccms.php', $config_new);
             if ($res === false) {
-                return $this->error('保存失败，请重试!');
+                return $this->error(lang('save_err'));
             }
-            return $this->success('保存成功!');
+            return $this->success(lang('save_ok'));
         }
 
         $this->assign('config', config('maccms'));
-        $this->assign('title', '采集接口API配置');
+        $this->assign('title', lang('admin/system/configapi/title'));
         return $this->fetch('admin@system/configapi');
     }
-
 
     public function configinterface()
     {
@@ -449,7 +452,7 @@ class System extends Base
             unset($config['__token__']);
 
             if($config['interface']['status']==1 && strlen($config['interface']['pass']) < 16){
-                return $this->error('保存失败，安全起见入库密码必须大于等于16位!');
+                return $this->error(lang('admin/system/configinterface/pass_check'));
             }
 
             $config_new['interface'] = $config['interface'];
@@ -461,17 +464,17 @@ class System extends Base
 
             $res = mac_arr2file(APP_PATH . 'extra/maccms.php', $config_new);
             if ($res === false) {
-                return $this->error('保存失败，请重试!');
+                return $this->error(lang('save_err'));
             }
 
             //保存缓存
             mac_interface_type();
 
-            return $this->success('保存成功!');
+            return $this->success(lang('save_ok'));
         }
 
         $this->assign('config', config('maccms'));
-        $this->assign('title', '站外入库配置');
+        $this->assign('title', lang('admin/system/configinterface/title'));
         return $this->fetch('admin@system/configinterface');
     }
 
@@ -510,6 +513,12 @@ class System extends Base
             if (empty($config_new['collect']['website']['uprule'])) {
                 $config_new['collect']['website']['uprule'] = [];
             }
+            if (empty($config_new['collect']['comment']['inrule'])) {
+                $config_new['collect']['comment']['inrule'] = ['a'];
+            }
+            if (empty($config_new['collect']['comment']['uprule'])) {
+                $config_new['collect']['comment']['uprule'] = [];
+            }
 
             $config_new['collect']['vod']['inrule'] = ',' . join(',', $config_new['collect']['vod']['inrule']);
             $config_new['collect']['vod']['uprule'] = ',' . join(',', $config_new['collect']['vod']['uprule']);
@@ -521,6 +530,8 @@ class System extends Base
             $config_new['collect']['role']['uprule'] = ',' . join(',', $config_new['collect']['role']['uprule']);
             $config_new['collect']['website']['inrule'] = ',' . join(',', $config_new['collect']['website']['inrule']);
             $config_new['collect']['website']['uprule'] = ',' . join(',', $config_new['collect']['website']['uprule']);
+            $config_new['collect']['comment']['inrule'] = ',' . join(',', $config_new['collect']['comment']['inrule']);
+            $config_new['collect']['comment']['uprule'] = ',' . join(',', $config_new['collect']['comment']['uprule']);
 
             $config_new['collect']['vod']['namewords'] = mac_replace_text($config_new['collect']['vod']['namewords'], 2);
             $config_new['collect']['vod']['thesaurus'] = mac_replace_text($config_new['collect']['vod']['thesaurus'], 2);
@@ -533,28 +544,30 @@ class System extends Base
             $config_new['collect']['role']['words'] = mac_replace_text($config_new['collect']['role']['words'], 2);
             $config_new['collect']['website']['thesaurus'] = mac_replace_text($config_new['collect']['website']['thesaurus'], 2);
             $config_new['collect']['website']['words'] = mac_replace_text($config_new['collect']['website']['words'], 2);
+            $config_new['collect']['comment']['thesaurus'] = mac_replace_text($config_new['collect']['comment']['thesaurus'], 2);
+            $config_new['collect']['comment']['words'] = mac_replace_text($config_new['collect']['comment']['words'], 2);
 
             $config_old = config('maccms');
             $config_new = array_merge($config_old, $config_new);
 
             $res = mac_arr2file(APP_PATH . 'extra/maccms.php', $config_new);
             if ($res === false) {
-                return $this->error('保存失败，请重试!');
+                return $this->error(lang('save_err'));
             }
-            return $this->success('保存成功!');
+            return $this->success(lang('save_ok'));
         }
 
 
         $this->assign('config', config('maccms'));
-        $this->assign('title', '采集参数配置');
+        $this->assign('title', lang('admin/system/configcollect/title'));
         return $this->fetch('admin@system/configcollect');
     }
-
 
     public function configplay()
     {
         if (Request()->isPost()) {
             $config = input();
+
             $validate = \think\Loader::validate('Token');
             if(!$validate->check($config)){
                 return $this->error($validate->getError());
@@ -567,7 +580,7 @@ class System extends Base
 
             $res = mac_arr2file(APP_PATH . 'extra/maccms.php', $config_new);
             if ($res === false) {
-                return $this->error('保存失败，请重试!');
+                return $this->error(lang('save_err'));
             }
 
             $path = './static/js/playerconfig.js';
@@ -580,9 +593,9 @@ class System extends Base
             $fc = str_replace($jsb, "\r\n" . $content . "\r\n", $fc);
             $res = @fwrite(fopen('./static/js/playerconfig.js', 'wb'), $fc);
             if ($res === false) {
-                return $this->error('保存失败，请重试!');
+                return $this->error(lang('save_err'));
             }
-            return $this->success('保存成功！');
+            return $this->success(lang('save_ok'));
         }
 
         $fp = './static/js/playerconfig.js';
@@ -595,7 +608,7 @@ class System extends Base
 
         $play = json_decode($jsb, true);
         $this->assign('play', $play);
-        $this->assign('title', '播放器参数配置');
+        $this->assign('title', lang('admin/system/configplay/title'));
         return $this->fetch('admin@system/configplay');
     }
 
@@ -611,19 +624,18 @@ class System extends Base
             unset($config['__token__']);
 
             $config_new['seo'] = $config['seo'];
-
             $config_old = config('maccms');
             $config_new = array_merge($config_old, $config_new);
 
             $res = mac_arr2file(APP_PATH . 'extra/maccms.php', $config_new);
             if ($res === false) {
-                return $this->error('保存失败，请重试!');
+                return $this->error(lang('save_err'));
             }
-            return $this->success('保存成功!');
+            return $this->success(lang('save_ok'));
         }
 
         $this->assign('config', config('maccms'));
-        $this->assign('title', 'SEO参数配置');
+        $this->assign('title', lang('admin/system/configseo/title'));
         return $this->fetch('admin@system/configseo');
     }
 

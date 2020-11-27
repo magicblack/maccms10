@@ -5,14 +5,13 @@ use think\Validate;
 class Vod extends Validate
 {
     protected $rule =   [
-        'vod_name'  => 'require|max:255',
+        'vod_name'  => 'require',
         'type_id'  => 'require',
     ];
 
     protected $message  =   [
-        'vod_name.require' => '名称必须',
-        'vod_name.max'     => '名称最多不能超过255个字符',
-        'type_id.require' => '分类必须',
+        'vod_name.require' => 'validate/require_name',
+        'type_id.require' => 'validate/require_type',
     ];
 
     protected $scene = [

@@ -26,7 +26,7 @@ class Ajax extends Base
         $page = $this->_param['page'];
         $type_id = $this->_param['tid'];
         if( !in_array($mid,['1','2','3','8','9','11']) ) {
-            return json(['code'=>1001,'msg'=>'参数错误']);
+            return json(['code'=>1001,'msg'=>lang('param_err')]);
         }
         if( !in_array($limit,['10','20','30']) ) {
             $limit =10;
@@ -88,7 +88,7 @@ class Ajax extends Base
     public function suggest()
     {
         if($GLOBALS['config']['app']['search'] !='1'){
-            return json(['code'=>999,'msg'=>'搜索功能关闭中']);
+            return json(['code'=>999,'msg'=>lang('suggest_close')]);
         }
 
         $mid = $this->_param['mid'];
@@ -96,7 +96,7 @@ class Ajax extends Base
         $limit = intval($this->_param['limit']);
 
         if( $wd=='' || !in_array($mid,['1','2','3','8','9','11']) ) {
-            return json(['code'=>1001,'msg'=>'参数错误']);
+            return json(['code'=>1001,'msg'=>lang('param_err')]);
         }
         $mids = [1=>'vod',2=>'art',3=>'topic',8=>'actor',9=>'role',11=>'website'];
         $pre = $mids[$mid];
@@ -155,7 +155,7 @@ class Ajax extends Base
         $mid = $this->_param['mid'];
         $type = $this->_param['type'];
         if(empty($id) ||  !in_array($mid,['1','2','3','8','9','11']) ) {
-            return json(['code'=>1001,'msg'=>'参数错误']);
+            return json(['code'=>1001,'msg'=>lang('param_err')]);
         }
         $pre = mac_get_mid_code($mid);
         $where = [];
@@ -213,7 +213,7 @@ class Ajax extends Base
             $data['hits_week'] = $info[$pre.'_hits_week'];
             $data['hits_month'] = $info[$pre.'_hits_month'];
         }
-        return json(['code'=>1,'msg'=>'操作成功！','data'=>$data]);
+        return json(['code'=>1,'msg'=>'ok','data'=>$data]);
     }
 
     public function referer()
@@ -223,15 +223,15 @@ class Ajax extends Base
         $domain = $this->_param['domain'];
 
         if(empty($url)) {
-            return json(['code'=>1001,'msg'=>'参数错误']);
+            return json(['code'=>1001,'msg'=>lang('param_err')]);
         }
 
         if(strpos($_SERVER["HTTP_REFERER"],$_SERVER['HTTP_HOST'])===false){
-            return json(['code'=>1002,'msg'=>'参数错误']);
+            return json(['code'=>1002,'msg'=>lang('param_err')]);
         }
 
         if(strpos($url,$domain)===false){
-            return json(['code'=>1003,'msg'=>'参数错误']);
+            return json(['code'=>1003,'msg'=>lang('param_err')]);
         }
 
         $pre = 'website';
@@ -296,7 +296,7 @@ class Ajax extends Base
             $data['referer_week'] = $info[$pre.'_referer_week'];
             $data['referer_month'] = $info[$pre.'_referer_month'];
         }
-        return json(['code'=>1,'msg'=>'操作成功！','data'=>$data]);
+        return json(['code'=>1,'msg'=>'ok','data'=>$data]);
     }
 
     public function digg()
@@ -306,7 +306,7 @@ class Ajax extends Base
         $type = $this->_param['type'];
 
         if(empty($id) ||  !in_array($mid,['1','2','3','4','8','9','11']) ) {
-            return json(['code'=>1001,'msg'=>'参数错误']);
+            return json(['code'=>1001,'msg'=>lang('param_err')]);
         }
         $pre = mac_get_mid_code($mid);
         $where = [];
@@ -317,7 +317,7 @@ class Ajax extends Base
         if($type) {
             $cookie = $pre . '-digg-' . $id;
             if(!empty(cookie($cookie))){
-                return json(['code'=>1002,'msg'=>'您已参与过了']);
+                return json(['code'=>1002,'msg'=>lang('index/haved')]);
             }
             if ($type == 'up') {
                 $model->where($where)->setInc($pre.'_up');
@@ -341,7 +341,7 @@ class Ajax extends Base
             $data['up'] = 0;
             $data['down'] = 0;
         }
-        return json(['code'=>1,'msg'=>'操作成功！','data'=>$data]);
+        return json(['code'=>1,'msg'=>'ok','data'=>$data]);
     }
 
     public function score()
@@ -351,7 +351,7 @@ class Ajax extends Base
         $score = $this->_param['score'];
 
         if(empty($id) ||  !in_array($mid,['1','2','3','8','9','11']) ) {
-            return json(['code'=>1001,'msg'=>'参数错误']);
+            return json(['code'=>1001,'msg'=>lang('param_err')]);
         }
 
         $pre = mac_get_mid_code($mid);
@@ -370,7 +370,7 @@ class Ajax extends Base
             if($score){
                 $cookie = $pre.'-score-'.$id;
                 if(!empty(cookie($cookie))){
-                    return json(['code'=>1002,'msg'=>'您已评分']);
+                    return json(['code'=>1002,'msg'=>lang('index/haved')]);
                 }
                 $update=[];
                 $update[$pre.'_score_num'] = $info[$pre.'_score_num']+1;
@@ -394,7 +394,7 @@ class Ajax extends Base
             $data['score_num'] = 0;
             $data['score_all'] = 0;
         }
-        return json(['code'=>1,'msg'=>'感谢您的参与，评分成功！','data'=>$data]);
+        return json(['code'=>1,'msg'=>lang('score_ok'),'data'=>$data]);
     }
 
     public function pwd()
@@ -405,16 +405,16 @@ class Ajax extends Base
         $pwd = input('param.pwd');
 
         if( empty($id) || empty($pwd) || !in_array($mid,['1','2']) || !in_array($type,['1','4','5'])){
-            return json(['code'=>1001,'msg'=>'参数错误']);
+            return json(['code'=>1001,'msg'=>lang('param_err')]);
         }
 
         $key = $mid.'-'.$type.'-'.$id;
         if(session($key)=='1'){
-            return json(['code'=>1002,'msg'=>'请不要重复验证']);
+            return json(['code'=>1002,'msg'=>lang('index/pwd_repeat')]);
         }
 
         if ( mac_get_time_span("last_pwd") < 5){
-            return json(['code'=>1003,'msg'=>'请不要频繁请求，请稍后重试']);
+            return json(['code'=>1003,'msg'=>lang('index/pwd_frequently')]);
         }
 
 
@@ -423,21 +423,21 @@ class Ajax extends Base
             $where['vod_id'] = ['eq',$id];
             $info = model('Vod')->infoData($where);
             if($info['code'] >1){
-                return json(['code'=>1011,'msg'=>'数据无效']);
+                return json(['code'=>1011,'msg'=>$info['msg']]);
             }
             if($type=='1'){
                 if($info['info']['vod_pwd'] != $pwd){
-                    return json(['code'=>1012,'msg'=>'密码错误']);
+                    return json(['code'=>1012,'msg'=>lang('pass_err')]);
                 }
             }
             elseif($type=='4'){
                 if($info['info']['vod_pwd_play'] != $pwd){
-                    return json(['code'=>1013,'msg'=>'密码错误']);
+                    return json(['code'=>1013,'msg'=>lang('pass_err')]);
                 }
             }
             elseif($type=='5'){
                 if($info['info']['vod_pwd_down'] != $pwd){
-                    return json(['code'=>1014,'msg'=>'密码错误']);
+                    return json(['code'=>1014,'msg'=>lang('pass_err')]);
                 }
             }
         }
@@ -446,14 +446,14 @@ class Ajax extends Base
             $where['art_id'] = ['eq',$id];
             $info = model('Art')->infoData($where);
             if($info['code'] >1){
-                return json(['code'=>1021,'msg'=>'数据无效']);
+                return json(['code'=>1021,'msg'=>$info['msg']]);
             }
             if($info['info']['art_pwd'] != $pwd){
-                return json(['code'=>1022,'msg'=>'密码错误']);
+                return json(['code'=>1022,'msg'=>lang('pass_err')]);
             }
         }
 
         session($key,'1');
-        return json(['code'=>1,'msg'=>'密码正确']);
+        return json(['code'=>1,'msg'=>'ok']);
     }
 }

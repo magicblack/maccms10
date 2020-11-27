@@ -57,7 +57,7 @@ class Actor extends Base
         $type_tree = model('Type')->getCache('type_tree');
         $this->assign('type_tree', $type_tree);
 
-        $this->assign('title', '演员管理');
+        $this->assign('title', lang('admin/actor/title'));
         return $this->fetch('admin@actor/index');
     }
 
@@ -82,7 +82,7 @@ class Actor extends Base
         $type_tree = model('Type')->getCache('type_tree');
         $this->assign('type_tree', $type_tree);
 
-        $this->assign('title','演员信息');
+        $this->assign('title',lang('admin/actor/title'));
         return $this->fetch('admin@actor/info');
     }
 
@@ -100,7 +100,7 @@ class Actor extends Base
             }
             return $this->success($res['msg']);
         }
-        return $this->error('参数错误');
+        return $this->error(lang('param_err'));
     }
 
     public function field()
@@ -141,7 +141,7 @@ class Actor extends Base
             }
             return $this->success($res['msg']);
         }
-        return $this->error('参数错误');
+        return $this->error(lang('param_err'));
     }
 
 }

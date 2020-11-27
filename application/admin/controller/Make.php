@@ -9,10 +9,21 @@ class Make extends Base
 
     public function __construct()
     {
-        parent::__construct();
         header('X-Accel-Buffering: no');
         $this->_param = input();
         $GLOBALS['ismake'] = '1';
+
+        if($this->_param['ac2']=='wap'){
+            $TMP_TEMPLATEDIR = $GLOBALS['config']['site']['mob_template_dir'];
+            $TMP_HTMLDIR = $GLOBALS['config']['site']['mob_html_dir'];
+            $TMP_ADSDIR = $GLOBALS['config']['site']['mob_ads_dir'];
+            $GLOBALS['MAC_ROOT_TEMPLATE'] = ROOT_PATH .'template/'.$TMP_TEMPLATEDIR.'/'. $TMP_HTMLDIR .'/';
+            $GLOBALS['MAC_PATH_TEMPLATE'] = MAC_PATH.'template/'.$TMP_TEMPLATEDIR.'/';
+            $GLOBALS['MAC_PATH_TPL'] = $GLOBALS['MAC_PATH_TEMPLATE']. $TMP_HTMLDIR  .'/';
+            $GLOBALS['MAC_PATH_ADS'] = $GLOBALS['MAC_PATH_TEMPLATE']. $TMP_ADSDIR  .'/';
+            config('template.view_path', 'template/' . $TMP_TEMPLATEDIR .'/' . $TMP_HTMLDIR .'/');
+        }
+        parent::__construct();
     }
 
     protected function buildHtml($htmlfile='',$htmlpath='',$templateFile='') {
@@ -92,7 +103,7 @@ class Make extends Base
 
         //自定义页面
         $label_list = [];
-        $path = MAC_ROOT_TEMPLATE .'label';
+        $path = $GLOBALS['MAC_ROOT_TEMPLATE'] .'label';
         if(is_dir($path)){
             $farr = glob($path.'/*');
             foreach($farr as $f){
@@ -107,7 +118,7 @@ class Make extends Base
         $this->assign('label_ids',join(',',$label_list));
 
 
-        $this->assign('title','生成静态管理');
+        $this->assign('title',lang('admin/make/title'));
         return $this->fetch('admin@make/opt');
 
     }
@@ -154,8 +165,13 @@ class Make extends Base
         mac_echo('<style type="text/css">body{font-size:12px;color: #333333;line-height:21px;}span{font-weight:bold;color:#FF0000}</style>');
 
         $GLOBALS['aid'] = mac_get_aid('index');
-        $this->label_maccms();
+
         $link = 'index.html';
+        if($this->_param['ac2']=='wap'){
+            $link = 'wap_index.html';
+        }
+        $this->label_maccms();
+
         $this->buildHtml($link,'./', 'index/index');
         $this->echoLink($link,'/'.$link);
         if(ENTRANCE=='admin'){
@@ -183,7 +199,7 @@ class Make extends Base
         mac_echo('<style type="text/css">body{font-size:12px;color: #333333;line-height:21px;}span{font-weight:bold;color:#FF0000}</style>');
 
         if(!in_array($this->_param['ac2'], ['index','baidu','google','so','sogou','bing','sm'])){
-            return $this->error('参数错误');
+            return $this->error(lang('param_err'));
         }
         if(empty(intval($this->_param['ps']))){
             $this->_param['ps'] = 1;
@@ -231,7 +247,7 @@ class Make extends Base
         }
 
         if($GLOBALS['config']['view'][$this->_param['tab'].'_type'] <2){
-            mac_echo('浏览模式非静态，无法生成');
+            mac_echo(lang('admin/make/view_model_static_err'));
             exit;
         }
 
@@ -242,21 +258,21 @@ class Make extends Base
         $data_count = intval($this->_param['data_count']);
 
         if(empty($ids)){
-            return $this->error('参数错误');
+            return $this->error(lang('param_err'));
         }
         if(!is_array($ids)){
             $ids = explode(',',$ids);
         }
         if ($num>=count($ids)){
             if(empty($this->_param['jump'])){
-                $this->echoLink('分类页生成完毕');
+                $this->echoLink(lang('admin/make/typepage_make_complete'));
                 if(ENTRANCE=='admin') {
                     mac_jump(url('make/opt'), 3);
                 }
                 exit;
             }
             else{
-                $this->echoLink('分类页生成完毕，稍后继续生成首页');
+                $this->echoLink(lang('admin/make/typepage_make_complete_later_make_index'));
                 if(ENTRANCE=='admin') {
                     mac_jump(url('make/index', ['jump' => 1]), 3);
                 }
@@ -278,13 +294,13 @@ class Make extends Base
             if($this->_param['tab'] =='art') {
                 $where['art_status'] = ['eq', 1];
                 $data_count = model('Art')->countData($where);
-                $html = mac_read_file(MAC_ROOT_TEMPLATE . 'art/'.$type_info['type_tpl']);
+                $html = mac_read_file($GLOBALS['MAC_ROOT_TEMPLATE'] . 'art/'.$type_info['type_tpl']);
                 $labelRule = '{maccms:art(.*?)num="(.*?)"(.*?)paging="yes"([\s\S]*?)}([\s\S]*?){/maccms:art}';
             }
             else{
                 $where['vod_status'] = ['eq', 1];
                 $data_count = model('Vod')->countData($where);
-                $html = mac_read_file(MAC_ROOT_TEMPLATE . 'vod/'.$type_info['type_tpl']);
+                $html = mac_read_file($GLOBALS['MAC_ROOT_TEMPLATE'] . 'vod/'.$type_info['type_tpl']);
                 $labelRule = '{maccms:vod(.*?)num="(.*?)"(.*?)paging="yes"([\s\S]*?)}([\s\S]*?){/maccms:vod}';
             }
 
@@ -321,7 +337,7 @@ class Make extends Base
             $this->_param['page_size'] = 0;
             $url = url('make/make') .'?'. http_build_query($this->_param);
 
-            $this->echoLink('【'.$type_info['type_name'].'】列表页生成完毕，稍后继续');
+            $this->echoLink('【'.$type_info['type_name'].'】'.lang('admin/make/list_make_complate_later'));
             if(ENTRANCE=='admin') {
                 mac_jump($url, 3);
             }
@@ -330,7 +346,7 @@ class Make extends Base
 
         $sec_count = ceil($page_count / $GLOBALS['config']['app']['makesize']);
         $sec = ceil($start / $GLOBALS['config']['app']['makesize']);
-        $this->echoLink('正在生成【'.$type_info['type_name'].'】列表页，共'.$this->_param['page_count'].'页，分'.$sec_count.'次生成，当前'.$sec.'次');
+        $this->echoLink(lang('admin/make/type_tip',[$type_info['type_name'],$this->_param['page_count'],$sec_count,$sec]));
         $this->label_maccms();
 
 
@@ -344,7 +360,7 @@ class Make extends Base
             $link = mac_url_type($type_info,['id'=>$id,'page'=>$i]);
 
             $this->buildHtml($link,'./', mac_tpl_fetch($this->_param['tab'],$type_info['type_tpl'],'type') );
-            $this->echoLink('第'.$i.'页',$link);
+            $this->echoLink(''.lang('the').$i.''.lang('page'),$link);
 
             if($GLOBALS['config']['app']['makesize'] == $n){
                 break;
@@ -354,7 +370,7 @@ class Make extends Base
 
         if(ENTRANCE=='api'){
             if ($num+1>=count($ids)) {
-                mac_echo('定时任务完毕，本次每个分类生成' . $GLOBALS['config']['app']['makesize'] . '个列表页面，避免网站卡死！');
+                mac_echo(lang('admin/make/type_timming_tip',[$GLOBALS['config']['app']['makesize']]));
                 die;
             }
             else{
@@ -373,12 +389,12 @@ class Make extends Base
             $this->_param['data_count'] = 0;
             $this->_param['page_count'] = 0;
             $this->_param['page_size'] = 0;
-            $this->echoLink('【'.$type_info['type_name'].'】列表页生成完毕，稍后继续');
+            $this->echoLink('【'.$type_info['type_name'].'】'.lang('admin/make/list_make_complate_later'));
         }
         elseif($this->_param['start'] < $this->_param['page_count']){
             $this->_param['start']++;
 
-            $this->echoLink('让服务器休息一会，稍后继续');
+            $this->echoLink(lang('server_rest'));
         }
         $url = url('make/make') .'?'. http_build_query($this->_param);
         if(ENTRANCE=='admin') {
@@ -403,7 +419,7 @@ class Make extends Base
         $GLOBALS['config']['app']['makesize'] = 1;
 
         if($GLOBALS['config']['view']['topic_index'] <2){
-            mac_echo('浏览模式非静态，无法生成');
+            mac_echo(lang('admin/make/view_model_static_err'));
             exit;
         }
 
@@ -411,7 +427,7 @@ class Make extends Base
             $where = [];
             $where['topic_status'] = ['eq', 1];
             $data_count = model('Topic')->countData($where);
-            $html = mac_read_file(MAC_ROOT_TEMPLATE . 'topic/index.html');
+            $html = mac_read_file($GLOBALS['MAC_ROOT_TEMPLATE'] . 'topic/index.html');
             $labelRule = '{maccms:topic(.*?)num="(.*?)"(.*?)paging="yes"([\s\S]*?)}([\s\S]*?){/maccms:topic}';
 
             $labelRule = mac_buildregx($labelRule,"");
@@ -434,7 +450,7 @@ class Make extends Base
         }
 
         if($start > $page_count){
-            $this->echoLink('专题列表生成完毕');
+            $this->echoLink(lang('admin/make/topicpage_make_complete'));
             if(ENTRANCE=='admin') {
                 mac_jump(url('make/opt'), 3);
             }
@@ -443,7 +459,7 @@ class Make extends Base
 
         $sec_count = ceil($page_count / $GLOBALS['config']['app']['makesize']);
         $sec = ceil($start / $GLOBALS['config']['app']['makesize']);
-        $this->echoLink('正在生成专题列表页，共'.$this->_param['page_count'].'页，分'.$sec_count.'次生成，当前'.$sec.'次');
+        $this->echoLink(lang('admin/make/topic_index_tip',[$this->_param['page_count'],$sec_count,$sec]));
 
         $this->label_maccms();
 
@@ -455,7 +471,7 @@ class Make extends Base
             $this->label_topic_index($data_count);
             $link = mac_url_topic_index(['page'=>$i]);
             $this->buildHtml($link,'./','topic/index');
-            $this->echoLink('第'.$i.'页',$link);
+            $this->echoLink(lang('the').''.$i.''.lang('page'),$link);
 
             if($GLOBALS['config']['app']['makesize'] == $n){
                 break;
@@ -464,7 +480,7 @@ class Make extends Base
         }
 
         if($this->_param['start'] >= $page_count){
-            $this->echoLink('专题列表生成完毕');
+            $this->echoLink(lang('admin/make/topicpage_make_complete'));
             if(ENTRANCE=='admin') {
                 mac_jump(url('make/opt'), 3);
             }
@@ -472,7 +488,7 @@ class Make extends Base
         }
         else{
             $this->_param['start']++;
-            $this->echoLink('让服务器休息一会，稍后继续');
+            $this->echoLink(lang('server_rest'));
         }
         $url = url('make/make') .'?'. http_build_query($this->_param);
         if(ENTRANCE=='admin') {
@@ -488,20 +504,20 @@ class Make extends Base
         $GLOBALS['aid'] = mac_get_aid('topic','detail');
 
         if(empty($ids)){
-            return $this->error('参数错误');
+            return $this->error(lang('param_err'));
         }
         if(!is_array($ids)){
             $ids = explode(',',$ids);
         }
 
         if($GLOBALS['config']['view']['topic_detail'] <2){
-            mac_echo('浏览模式非静态，无法生成');
+            mac_echo(lang('admin/make/view_model_static_err'));
             exit;
         }
 
 
         $data_count = count($ids);
-        $this->echoLink('正在生成专题内容页，共'.$data_count.'条');
+        $this->echoLink(lang('admin/make/topic_tip',[$data_count]));
         $this->label_maccms();
 
         $n=1;
@@ -533,7 +549,7 @@ class Make extends Base
             die;
         }
 
-        $this->echoLink('专题内容页生成完毕');
+        $this->echoLink(lang('admin/make/topic_make_complete'));
         if(ENTRANCE=='admin'){
             mac_jump( url('make/opt') ,3);
         }
@@ -551,7 +567,7 @@ class Make extends Base
             $where['art_status'] = ['eq',1];
 
             if($GLOBALS['config']['view']['art_detail'] <2){
-                mac_echo('浏览模式非静态，无法生成');
+                mac_echo(lang('view_model_static_err'));
                 exit;
             }
 
@@ -562,7 +578,7 @@ class Make extends Base
             $where['vod_status'] = ['eq',1];
 
             if($GLOBALS['config']['view']['vod_detail'] <2 && $GLOBALS['config']['view']['vod_play'] <2 && $GLOBALS['config']['view']['vod_down'] <2){
-                mac_echo('浏览模式非静态，无法生成');
+                mac_echo(lang('view_model_static_err'));
                 exit;
             }
 
@@ -581,7 +597,7 @@ class Make extends Base
 
         $where = [];
         if(empty($ids) && empty($type_ids) && empty($this->_param['ac2'])){
-            return $this->error('参数错误');
+            return $this->error(lang('param_err'));
         }
         $type_name ='';
 
@@ -594,14 +610,14 @@ class Make extends Base
             if ($num>=count($type_ids)){
 
                 if(empty($this->_param['jump'])){
-                    $this->echoLink('内容页生成完毕1');
+                    $this->echoLink(lang('admin/make/info_make_complete').'1');
                     if(ENTRANCE=='admin'){
                         mac_jump( url('make/opt') ,3);
                     }
                     exit;
                 }
                 else{
-                    $this->echoLink('内容页生成完毕，稍后继续生成分类页');
+                    $this->echoLink(lang('admin/make/info_make_complete_later_make_type'));
                     if(ENTRANCE=='admin'){
                         mac_jump( url('make/make',['jump'=>1,'ac'=>'type','tab'=>$this->_param['tab'], $this->_param['tab'].'type'=> join(',',$type_ids) ,'ac2'=>'day']) ,3);
                     }
@@ -617,9 +633,9 @@ class Make extends Base
             $where['type_id'] = ['eq',$type_id];
         }
         elseif(!empty($ids)){
-            $type_name ='选择数据';
+            $type_name =lang('select_data');
             if($start > $page_count){
-                mac_echo('内容页生成完毕2');
+                mac_echo(lang('admin/make/info_make_complete').'2');
                 exit;
             }
             $where[$this->_param['tab'].'_id'] = ['in',$ids];
@@ -627,7 +643,7 @@ class Make extends Base
 
 
         if($this->_param['ac2'] =='day'){
-            $type_name .='今日数据';
+            $type_name .=lang('today_data');
             $where[$this->_param['tab'].'_time'] = ['gt', strtotime(date('Y-m-d'))];
 
 
@@ -641,12 +657,12 @@ class Make extends Base
             }
         }
         elseif($this->_param['ac2'] =='nomake'){
-            $type_name ='未生成数据';
+            $type_name =lang('no_make_data');
             $start=1;
             $data_count=0;
             $where[$this->_param['tab'].'_time_make'] = ['exp',  Db::raw(' < '. $this->_param['tab'].'_time')];
             if($start > $page_count){
-                $this->echoLink('内容页生成完毕4');
+                $this->echoLink(lang('admin/make/info_make_complete').'4');
                 if(ENTRANCE=='admin'){
                     mac_jump( url('make/opt') ,3);
                 }
@@ -677,7 +693,7 @@ class Make extends Base
 
         if($start > $page_count){
 
-            $this->echoLink('【'.$type_name.'】内容页生成完毕，稍后继续');
+            $this->echoLink('【'.$type_name.'】'.lang('admin/make/info_make_complete_later'));
 
             if($this->_param['ac2'] =='nomake' ){
                 if(ENTRANCE=='admin'){
@@ -704,7 +720,7 @@ class Make extends Base
         }
 
 
-        $this->echoLink('正在生成【'.$type_name.'】内容页，共'.$this->_param['data_count'].'条，分'.$this->_param['page_count'].'次生成，每次'.$this->_param['page_size'].'条，当前第'.$start.'次');
+        $this->echoLink(lang('admin/make/info_tip',[$type_name,$this->_param['data_count'],$this->_param['page_count'],$this->_param['page_size'],$start]));
 
         if($this->_param['tab'] =='art') {
             $res = model('Art')->listData($where, $order, $start, $GLOBALS['config']['app']['makesize']);
@@ -852,7 +868,7 @@ class Make extends Base
             $this->_param['data_count'] = 0;
             $this->_param['page_count'] = 0;
             $this->_param['page_size'] = 0;
-            $this->echoLink('【'.$type_name.'】内容页生成完毕，稍后继续');
+            $this->echoLink('【'.$type_name.'】'.lang('admin/make/info_make_complete_later'));
 
 
             if($this->_param['ac2'] !=''){
@@ -865,7 +881,7 @@ class Make extends Base
         }
         else{
             $this->_param['start'] = ++$start;
-            $this->echoLink('让服务器休息一会，稍后继续');
+            $this->echoLink(lang('server_rest'));
         }
         $url = url('make/make') .'?'. http_build_query($this->_param);
 
@@ -880,13 +896,13 @@ class Make extends Base
         $ids = $this->_param['label'];
         $GLOBALS['aid'] = mac_get_aid('label');
         if(empty($ids)){
-            return $this->error('参数错误');
+            return $this->error(lang('param_err'));
         }
         if(!is_array($ids)){
             $ids = explode(',',$ids);
         }
         $data_count = count($ids);
-        $this->echoLink('正在生成自定义页，共'.$data_count.'个页');
+        $this->echoLink(lang('admin/make/label_tip',[$data_count]));
         $this->label_maccms();
 
         $n=1;
@@ -901,7 +917,7 @@ class Make extends Base
             $n++;
         }
 
-        $this->echoLink('自定义页生成完毕');
+        $this->echoLink(lang('admin/make/label_complete'));
         if(ENTRANCE=='admin'){
             mac_jump( url('make/opt') ,3);
         }

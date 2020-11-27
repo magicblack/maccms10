@@ -1,6 +1,6 @@
 <?php
 /*
-'软件名称：苹果CMS  官方网站：http://www.maccms.la/  源码库：https://github.com/magicblack
+'软件名称：苹果CMS  源码库：https://github.com/magicblack
 '--------------------------------------------------------
 'Licensed ( http://www.apache.org/licenses/LICENSE-2.0 )
 '遵循Apache2开源协议发布，并提供免费使用。
@@ -11,22 +11,21 @@ use think\View;
 
 error_reporting(E_ERROR | E_PARSE );
 
-//访问日志记录需根目录创建log目录
+//访问日志记录，根目录创建log目录
 function slog($logs)
 {
-	$ymd = date('Y-m-d-H');
-	$now = date('Y-m-d H:i:s');
-	$toppath = "./log/$ymd.txt";
-	$ts = @fopen($toppath,"a+");
-	@fputs($ts, $now .' '. $logs ."\r\n");
-	@fclose($ts);
+    $ymd = date('Y-m-d-H');
+    $now = date('Y-m-d H:i:s');
+    $toppath = "./log/$ymd.txt";
+    $ts = @fopen($toppath,"a+");
+    @fputs($ts, $now .' '. $logs ."\r\n");
+    @fclose($ts);
 }
 //foreach($_GET as $k=>$v){ $getData .= $k.'='.$v.'&'; }
 //foreach($_POST as $k=>$v){ $postData .= $k.'='.$v.'&'; }
 //foreach($_COOKIE as $k=>$v){ $cookieData .= $k.'='.$v.'&'; }
 //$log = $_SERVER['PHP_SELF'] . '---get:' .$getData .'---post:' . $postData .'---'. json_encode($_POST).'---cookie:' . $cookieData ;
 //slog($log);
-
 
 // 应用公共文件
 function mac_return($msg,$code=1,$data=''){
@@ -213,7 +212,7 @@ function mac_alert_url($str,$url)
 
 function mac_jump($url,$sec=0)
 {
-    echo '<script>setTimeout(function (){location.href="'.$url.'";},'.($sec*1000).');</script><span>暂停'.$sec.'秒后继续  >>>  </span><a href="'.$url.'" >如果您的浏览器没有自动跳转，请点击这里</a><br>';
+    echo '<script>setTimeout(function (){location.href="'.$url.'";},'.($sec*1000).');</script><span>'.lang('pause').''.$sec.''.lang('continue_in_second').'  >>>  </span><a href="'.$url.'" >'.lang('browser_jump').'</a><br>';
 }
 
 function mac_echo($str)
@@ -249,41 +248,41 @@ function mac_friend_date($time)
     $td = $time - mktime(0, 0, 0, date('m'), date('d') + 1, date('Y')); //明天
     $atd = $time - mktime(0, 0, 0, date('m'), date('d') + 2, date('Y')); //后天
     if ($d == 0) {
-        $fdate = '刚刚';
+        $fdate = lang('just');
     } else {
         switch ($d) {
             case $d < $atd:
-                $fdate = date('Y年m月d日', $time);
+                $fdate = date('Y'.lang('year').'m'.lang('month').'d'.lang('day'), $time);
                 break;
             case $d < $td:
-                $fdate = '后天' . date('H:i', $time);
+                $fdate = lang('day_after_tomorrow') . date('H:i', $time);
                 break;
             case $d < 0:
-                $fdate = '明天' . date('H:i', $time);
+                $fdate = lang('tomorrow') . date('H:i', $time);
                 break;
             case $d < 60:
-                $fdate = $d . '秒前';
+                $fdate = $d . lang('seconds_ago');
                 break;
             case $d < 3600:
-                $fdate = floor($d / 60) . '分钟前';
+                $fdate = floor($d / 60) . lang('minutes_ago');
                 break;
             case $d < $dd:
-                $fdate = floor($d / 3600) . '小时前';
+                $fdate = floor($d / 3600) . lang('hours_ago');
                 break;
             case $d < $yd:
-                $fdate = '昨天' . date('H:i', $time);
+                $fdate = lang('yesterday') . date('H:i', $time);
                 break;
             case $d < $byd:
-                $fdate = '前天' . date('H:i', $time);
+                $fdate = lang('day_before_yesterday') . date('H:i', $time);
                 break;
             case $d < $md:
-                $fdate = date('m月d日 H:i', $time);
+                $fdate = date('m'.lang('month').'d'.lang('day').' H:i', $time);
                 break;
             case $d < $ld:
-                $fdate = date('m月d日', $time);
+                $fdate = date('m'.lang('month').'d'.lang('day'), $time);
                 break;
             default:
-                $fdate = date('Y年m月d日', $time);
+                $fdate = date('Y'.lang('year').'m'.lang('month').'d'.lang('day'), $time);
                 break;
         }
     }
@@ -362,17 +361,17 @@ function mac_extends_list($flag)
 function mac_send_sms($to,$code,$type_flag,$type_des,$msg)
 {
     if(empty($GLOBALS['config']['sms']['type'])){
-        return ['code'=>9005,'msg'=>'未配置短信发送服务'];
+        return ['code'=>9005,'msg'=> lang('sms_not_config')];
     }
     $pattern = "/^1{1}\d{10}$/";
     if(!preg_match($pattern,$to)){
-        return ['code'=>999,'msg'=>'手机号格式不正确'];
+        return ['code'=>999,'msg'=>lang('phone_format_err')];
     }
     if(empty($code)){
-        return ['code'=>998,'msg'=>'标题不能为空'];
+        return ['code'=>998,'msg'=>lang('title_not_empty')];
     }
     if(empty($type_flag)){
-        return ['code'=>997,'msg'=>'模板编号不能为空'];
+        return ['code'=>997,'msg'=>lang('tpl_not')];
     }
 
 
@@ -382,24 +381,24 @@ function mac_send_sms($to,$code,$type_flag,$type_des,$msg)
         return $c->submit($to,$code,$type_flag,$type_des,$msg);
     }
     else{
-        return ['code'=>991,'msg'=>'未找到该短信发送方式'];
+        return ['code'=>991,'msg'=>lang('sms_not')];
     }
 }
 
 function mac_send_mail($to,$title,$body,$conf=[])
 {
     if(empty($GLOBALS['config']['email']['type'])){
-        return ['code'=>9005,'msg'=>'未配置邮件发送服务'];
+        return ['code'=>9005,'msg'=>lang('email_not_config')];
     }
     $pattern = '/\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*/';
     if(!preg_match( $pattern, $to)){
-        return ['code'=>999,'msg'=>'邮箱格式不正确'];
+        return ['code'=>999,'msg'=>lang('email_format_err')];
     }
     if(empty($title)){
-        return ['code'=>998,'msg'=>'标题不能为空'];
+        return ['code'=>998,'msg'=>lang('title_not_empty')];
     }
     if(empty($body)){
-        return ['code'=>997,'msg'=>'正文不能为空'];
+        return ['code'=>997,'msg'=>lang('body_not_empty')];
     }
 
     View::instance()->assign(['time'=>$GLOBALS['config']['email']['time']]);
@@ -416,7 +415,7 @@ function mac_send_mail($to,$title,$body,$conf=[])
         return $c->submit($to,$title,$body,$conf);
     }
     else{
-        return ['code'=>991,'msg'=>'未找到该邮件发送方式'];
+        return ['code'=>991,'msg'=>lang('email_not')];
     }
 }
 
@@ -424,7 +423,7 @@ function mac_check_back_link($url)
 {
     $res=[];
     $res['code'] = 0;
-    $res['msg'] = '参数错误';
+    $res['msg'] = lang('param_err');
 
     if(empty($url)){
         return json($res);
@@ -436,8 +435,8 @@ function mac_check_back_link($url)
     $msg = '';
     $code = 1;
 
-    $ok = '反链正常';
-    $err = '反链异常';
+    $ok = lang('back_link').lang('normal');
+    $err = lang('back_link').lang('abnormal');
 
     $msg .= '['.$site_url.']';
     if(strpos($html,$site_url)!==false){
@@ -980,7 +979,7 @@ function mac_get_mid_code($data)
 }
 function mac_get_mid_text($data)
 {
-    $arr = [1=>'视频',2=>'文章',3=>'专题',4=>'评论',5=>'留言',6=>'用户中心',7=>'自定义页面',8=>'演员',9=>'角色',10=>'剧情',11=>'网址'];
+    $arr = [1=>lang('vod'),2=>lang('art'),3=>lang('topic'),4=>lang('comment'),5=>lang('gbook'),6=>lang('user'),7=>lang('label'),8=>lang('actor'),9=>lang('role'),10=>lang('plot'),11=>lang('website')];
     return $arr[$data];
 }
 function mac_get_mid($controller)
@@ -1015,42 +1014,42 @@ function mac_get_aid($controller,$action='')
 
 function mac_get_user_status_text($data)
 {
-    $arr = [0=>'禁用',1=>'启用'];
+    $arr = [0=>lang('disable'),1=>lang('enable')];
     return $arr[$data];
 }
 function mac_get_user_flag_text($data)
 {
-    $arr = [0=>'计点',1=>'计时',2=>'ip段'];
+    $arr = [0=>lang('counting_points'),1=>lang('counting_times'),2=>lang('counting_ips')];
     return $arr[$data];
 }
 
 function mac_get_ulog_type_text($data)
 {
-    $arr = [1=>'浏览',2=>'收藏',3=>'想看',4=>'点播',5=>'下载'];
+    $arr = [1=>lang('browse'),2=>lang('collect'),3=>lang('want_see'),4=>lang('play'),5=>lang('down')];
     return $arr[$data];
 }
 
 function mac_get_plog_type_text($data)
 {
-    $arr = [1=>'积分充值',2=>'注册推广',3=>'访问推广',4=>'三级分销',7=>'积分升级',8=>'积分消费',9=>'积分提现'];
+    $arr = [1=>lang('integral_recharge'),2=>lang('registration_promotion'),3=>lang('visit_promotion'),4=>lang('three_level_distribution'),7=>lang('points_upgrade'),8=>lang('integral_consumption'),9=>lang('integral_withdrawal')];
     return $arr[$data];
 }
 
 function mac_get_card_sale_status_text($data)
 {
-    $arr = [0=>'未出售',1=>'已出售'];
+    $arr = [0=>lang('not_sale'),1=>lang('sold')];
     return $arr[$data];
 }
 
 function mac_get_card_use_status_text($data)
 {
-    $arr = [0=>'未使用',1=>'已使用'];
+    $arr = [0=>lang('not_used'),1=>lang('used')];
     return $arr[$data];
 }
 
 function mac_get_order_status_text($data)
 {
-    $arr = [0=>'未支付',1=>'已支付'];
+    $arr = [0=>lang('not_paid'),1=>lang('paid')];
     return $arr[$data];
 }
 function mac_get_user_portrait($user_id)
@@ -1087,10 +1086,10 @@ function mac_txt_merge($txt,$str)
     }
     if($GLOBALS['config']['collect']['vod']['class_filter'] !='0') {
         if (mb_strlen($str) > 2) {
-            $str = str_replace(['片'], [''], $str);
+            $str = str_replace([lang('slice')], [''], $str);
         }
         if (mb_strlen($str) > 2) {
-            $str = str_replace(['剧'], [''], $str);
+            $str = str_replace([lang('drama')], [''], $str);
         }
     }
     $txt = mac_format_text($txt);
@@ -1252,7 +1251,7 @@ function mac_play_list_one($url_one, $from_one, $server_one=''){
 
         list($title, $url, $from) = explode('$', $val);
         if ( empty($url) ) {
-            $url_list[$key+1]['name'] = '第'.($key+1).'集';
+            $url_list[$key+1]['name'] = lang('the').($key+1).lang('episode');
             $url_list[$key+1]['url'] = $server_one.$title;
         }else{
             $url_list[$key+1]['name'] = $title;
@@ -1466,6 +1465,55 @@ function mac_url_content_img($content)
     return str_replace('mac:',$protocol.':',$content);
 }
 
+function mac_alphaID($in, $to_num=false, $pad_up=false, $passKey='')
+{
+    $key = 'abcdefghijklmnopqrstuvwxyz0123456789';
+    $i = array('a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z','0','1','2','3','4','5','6','7','8','9');
+    if (!empty($passKey)) {
+        $len = strlen($key);
+        $passhash = hash('sha256',$passKey);
+        $passhash = (strlen($passhash) < $len)
+            ? hash('sha512',$passKey)
+            : $passhash;
+        for ($n=0; $n < $len; $n++) {
+            $p[] = substr($passhash, $n ,1);
+        }
+        array_multisort($p, SORT_DESC, $i);
+        $key = implode($i);
+    }
+    $base = strlen($key);
+    if ($to_num) {
+        $in = strrev($in);
+        $out = 0;
+        $len = strlen($in) - 1;
+        for ($t = 0; $t <= $len; $t++) {
+            $bcpow = bcpow($base, $len - $t);
+            $out = $out + strpos($key, substr($in, $t, 1)) * $bcpow;
+        }
+        if (is_numeric($pad_up)) {
+            $pad_up--;
+            if ($pad_up > 0) {
+                $out -= pow($base, $pad_up);
+            }
+        }
+    } else {
+        if (is_numeric($pad_up)) {
+            $pad_up--;
+            if ($pad_up > 0) {
+                $in += pow($base, $pad_up);
+            }
+        }
+        $out = "";
+        for ($t = floor(log10($in) / log10($base)); $t >= 0; $t--) {
+            $a = floor($in / bcpow($base, $t));
+            $out = $out . substr($key, $a, 1);
+            $in = $in - ($a * bcpow($base, $t));
+        }
+        $out = strrev($out);
+    }
+    return $out;
+}
+
 function mac_url($model,$param=[],$info=[])
 {
     foreach($param as $k=>$v){
@@ -1541,9 +1589,20 @@ function mac_url($model,$param=[],$info=[])
         case 'art/show':
         case 'actor/show':
         case 'website/show':
-            $id = $config['rewrite']['type_id'] ==1 ? 'type_en' : 'type_id';
-            if(!empty($info[$id])){
-                $param['id'] = $info[$id];
+            switch($config['rewrite']['type_id'])
+            {
+                case 1:
+                    $id = $info['type_en'];
+                    break;
+                case 2:
+                    $id = mac_alphaID($info['type_id'],false,$config['rewrite']['encode_len'],$config['rewrite']['encode_key']);
+                    break;
+                default:
+                    $id = $info['type_id'];
+                    break;
+            }
+            if(!empty($id)){
+                $param['id'] = $id;
             }
             $url = url($model,$param);
             break;
@@ -1564,8 +1623,19 @@ function mac_url($model,$param=[],$info=[])
                 }
             }
             else{
-                $id = $config['rewrite']['type_id'] ==1 ? 'type_en' : 'type_id';
-                $url = url($model,['id'=>$info[$id],'page'=>$param['page']]);
+                switch($config['rewrite']['type_id'])
+                {
+                    case 1:
+                        $id = $info['type_en'];
+                        break;
+                    case 2:
+                        $id = mac_alphaID($info['type_id'],false,$config['rewrite']['encode_len'],$config['rewrite']['encode_key']);
+                        break;
+                    default:
+                        $id = $info['type_id'];
+                        break;
+                }
+                $url = url($model,['id'=>$id,'page'=>$param['page']]);
             }
             break;
         case 'vod/detail':
@@ -1582,8 +1652,20 @@ function mac_url($model,$param=[],$info=[])
                 }
             }
             else{
-                $id = $config['rewrite']['vod_id'] ==1 ? 'vod_en' : 'vod_id';
-                $url = url($model,['id'=> $info[$id] ]);
+                switch($config['rewrite']['vod_id'])
+                {
+                    case 1:
+                        $id = $info['vod_en'];
+                        break;
+                    case 2:
+                        $id = mac_alphaID($info['vod_id'],false,$config['rewrite']['encode_len'],$config['rewrite']['encode_key']);
+                        break;
+                    default:
+                        $id = $info['vod_id'];
+                        break;
+                }
+
+                $url = url($model,['id'=> $id ]);
             }
             $replace_to = array_merge($replace_to,[date('Y',$info['vod_time']),date('m',$info['vod_time']),date('d',$info['vod_time'])]);
             break;
@@ -1615,8 +1697,19 @@ function mac_url($model,$param=[],$info=[])
                 }
             }
             else{
-                $id = $config['rewrite']['vod_id'] ==1 ? 'vod_en' : 'vod_id';
-                $url = url($model,['id'=>$info[$id],'sid'=>$param['sid'],'nid'=>$param['nid']]);
+                switch($config['rewrite']['vod_id'])
+                {
+                    case 1:
+                        $id = $info['vod_en'];
+                        break;
+                    case 2:
+                        $id = mac_alphaID($info['vod_id'],false,$config['rewrite']['encode_len'],$config['rewrite']['encode_key']);
+                        break;
+                    default:
+                        $id = $info['vod_id'];
+                        break;
+                }
+                $url = url($model,['id'=>$id,'sid'=>$param['sid'],'nid'=>$param['nid']]);
             }
             $replace_to = array_merge($replace_to,[date('Y',$info['vod_time']),date('m',$info['vod_time']),date('d',$info['vod_time']),$param['sid'],$param['nid']]);
             break;
@@ -1641,8 +1734,19 @@ function mac_url($model,$param=[],$info=[])
                 }
             }
             else{
-                $id = $config['rewrite']['vod_id'] ==1 ? 'vod_en' : 'vod_id';
-                $url = url($model,['id'=>$info[$id],'sid'=>$param['sid'],'nid'=>$param['nid']]);
+                switch($config['rewrite']['vod_id'])
+                {
+                    case 1:
+                        $id = $info['vod_en'];
+                        break;
+                    case 2:
+                        $id = mac_alphaID($info['vod_id'],false,$config['rewrite']['encode_len'],$config['rewrite']['encode_key']);
+                        break;
+                    default:
+                        $id = $info['vod_id'];
+                        break;
+                }
+                $url = url($model,['id'=>$id,'sid'=>$param['sid'],'nid'=>$param['nid']]);
             }
             $replace_to = array_merge($replace_to,[date('Y',$info['vod_time']),date('m',$info['vod_time']),date('d',$info['vod_time']),$param['sid'],$param['nid']]);
             break;
@@ -1660,8 +1764,19 @@ function mac_url($model,$param=[],$info=[])
                 }
             }
             else{
-                $id = $config['rewrite']['vod_id'] ==1 ? 'vod_en' : 'vod_id';
-                $url = url($model,['id'=>$info[$id]]);
+                switch($config['rewrite']['vod_id'])
+                {
+                    case 1:
+                        $id = $info['vod_en'];
+                        break;
+                    case 2:
+                        $id = mac_alphaID($info['vod_id'],false,$config['rewrite']['encode_len'],$config['rewrite']['encode_key']);
+                        break;
+                    default:
+                        $id = $info['vod_id'];
+                        break;
+                }
+                $url = url($model,['id'=>$id]);
             }
             $replace_to = array_merge($replace_to,[date('Y',$info['vod_time']),date('m',$info['vod_time']),date('d',$info['vod_time'])]);
             break;
@@ -1683,8 +1798,19 @@ function mac_url($model,$param=[],$info=[])
                 }
             }
             else{
-                $id = $config['rewrite']['vod_id'] ==1 ? 'vod_en' : 'vod_id';
-                $url = url($model,['id'=>$info[$id],'page'=>$param['page']]);
+                switch($config['rewrite']['vod_id'])
+                {
+                    case 1:
+                        $id = $info['vod_en'];
+                        break;
+                    case 2:
+                        $id = mac_alphaID($info['vod_id'],false,$config['rewrite']['encode_len'],$config['rewrite']['encode_key']);
+                        break;
+                    default:
+                        $id = $info['vod_id'];
+                        break;
+                }
+                $url = url($model,['id'=>$id,'page'=>$param['page']]);
             }
             $replace_to = array_merge($replace_to,[date('Y',$info['vod_time']),date('m',$info['vod_time']),date('d',$info['vod_time'])]);
             break;
@@ -1705,8 +1831,19 @@ function mac_url($model,$param=[],$info=[])
                 }
             }
             else{
-                $id = $config['rewrite']['type_id'] ==1 ? 'type_en' : 'type_id';
-                $url = url($model,['id'=>$info[$id],'page'=>$param['page']]);
+                switch($config['rewrite']['type_id'])
+                {
+                    case 1:
+                        $id = $info['type_en'];
+                        break;
+                    case 2:
+                        $id = mac_alphaID($info['type_id'],false,$config['rewrite']['encode_len'],$config['rewrite']['encode_key']);
+                        break;
+                    default:
+                        $id = $info['type_id'];
+                        break;
+                }
+                $url = url($model,['id'=>$id,'page'=>$param['page']]);
             }
             break;
         case 'art/detail':
@@ -1727,8 +1864,19 @@ function mac_url($model,$param=[],$info=[])
                 }
             }
             else{
-                $id = $config['rewrite']['art_id'] ==1 ? 'art_en' : 'art_id';
-                $url = url($model,['id'=>$info[$id],'page'=>$param['page']]);
+                switch($config['rewrite']['art_id'])
+                {
+                    case 1:
+                        $id = $info['art_en'];
+                        break;
+                    case 2:
+                        $id = mac_alphaID($info['art_id'],false,$config['rewrite']['encode_len'],$config['rewrite']['encode_key']);
+                        break;
+                    default:
+                        $id = $info['art_id'];
+                        break;
+                }
+                $url = url($model,['id'=>$id,'page'=>$param['page']]);
             }
             $replace_to = array_merge($replace_to,[date('Y',$info['art_time']),date('m',$info['art_time']),date('d',$info['art_time'])]);
             break;
@@ -1758,8 +1906,19 @@ function mac_url($model,$param=[],$info=[])
                 }
             }
             else{
-                $id = $config['rewrite']['topic_id'] ==1 ? 'topic_en' : 'topic_id';
-                $url = url($model,['id'=>$info[$id]]);
+                switch($config['rewrite']['topic_id'])
+                {
+                    case 1:
+                        $id = $info['topic_en'];
+                        break;
+                    case 2:
+                        $id = mac_alphaID($info['topic_id'],false,$config['rewrite']['encode_len'],$config['rewrite']['encode_key']);
+                        break;
+                    default:
+                        $id = $info['topic_id'];
+                        break;
+                }
+                $url = url($model,['id'=>$id]);
             }
             break;
         case 'actor/index':
@@ -1793,8 +1952,19 @@ function mac_url($model,$param=[],$info=[])
                 }
             }
             else{
-                $id = $config['rewrite']['type_id'] ==1 ? 'type_en' : 'type_id';
-                $url = url($model,['id'=>$info[$id],'page'=>$param['page']]);
+                switch($config['rewrite']['type_id'])
+                {
+                    case 1:
+                        $id = $info['type_en'];
+                        break;
+                    case 2:
+                        $id = mac_alphaID($info['type_id'],false,$config['rewrite']['encode_len'],$config['rewrite']['encode_key']);
+                        break;
+                    default:
+                        $id = $info['type_id'];
+                        break;
+                }
+                $url = url($model,['id'=>$id,'page'=>$param['page']]);
             }
             break;
         case 'actor/detail':
@@ -1809,8 +1979,19 @@ function mac_url($model,$param=[],$info=[])
                 }
             }
             else{
-                $id = $config['rewrite']['actor_id'] ==1 ? 'actor_en' : 'actor_id';
-                $url = url($model,['id'=>$info[$id]]);
+                switch($config['rewrite']['actor_id'])
+                {
+                    case 1:
+                        $id = $info['actor_en'];
+                        break;
+                    case 2:
+                        $id = mac_alphaID($info['actor_id'],false,$config['rewrite']['encode_len'],$config['rewrite']['encode_key']);
+                        break;
+                    default:
+                        $id = $info['actor_id'];
+                        break;
+                }
+                $url = url($model,['id'=>$id]);
             }
             break;
         case 'role/index':
@@ -1839,8 +2020,19 @@ function mac_url($model,$param=[],$info=[])
                 }
             }
             else{
-                $id = $config['rewrite']['role_id'] ==1 ? 'role_en' : 'role_id';
-                $url = url($model,['id'=>$info[$id]]);
+                switch($config['rewrite']['role_id'])
+                {
+                    case 1:
+                        $id = $info['role_en'];
+                        break;
+                    case 2:
+                        $id = mac_alphaID($info['role_id'],false,$config['rewrite']['encode_len'],$config['rewrite']['encode_key']);
+                        break;
+                    default:
+                        $id = $info['role_id'];
+                        break;
+                }
+                $url = url($model,['id'=>$id]);
             }
             break;
         case 'plot/index':
@@ -1875,8 +2067,19 @@ function mac_url($model,$param=[],$info=[])
                 }
             }
             else{
-                $id = $config['rewrite']['vod_id'] ==1 ? 'vod_en' : 'vod_id';
-                $url = url($model,['id'=>$info[$id],'page'=>$param['page']]);
+                switch($config['rewrite']['vod_id'])
+                {
+                    case 1:
+                        $id = $info['vod_en'];
+                        break;
+                    case 2:
+                        $id = mac_alphaID($info['vod_id'],false,$config['rewrite']['encode_len'],$config['rewrite']['encode_key']);
+                        break;
+                    default:
+                        $id = $info['vod_id'];
+                        break;
+                }
+                $url = url($model,['id'=>$id,'page'=>$param['page']]);
             }
             $replace_to = array_merge($replace_to,[date('Y',$info['vod_time']),date('m',$info['vod_time']),date('d',$info['vod_time'])]);
             break;
@@ -1911,8 +2114,19 @@ function mac_url($model,$param=[],$info=[])
                 }
             }
             else{
-                $id = $config['rewrite']['type_id'] ==1 ? 'type_en' : 'type_id';
-                $url = url($model,['id'=>$info[$id],'page'=>$param['page']]);
+                switch($config['rewrite']['type_id'])
+                {
+                    case 1:
+                        $id = $info['type_en'];
+                        break;
+                    case 2:
+                        $id = mac_alphaID($info['type_id'],false,$config['rewrite']['encode_len'],$config['rewrite']['encode_key']);
+                        break;
+                    default:
+                        $id = $info['type_id'];
+                        break;
+                }
+                $url = url($model,['id'=>$id,'page'=>$param['page']]);
             }
             break;
         case 'website/detail':
@@ -1927,8 +2141,19 @@ function mac_url($model,$param=[],$info=[])
                 }
             }
             else{
-                $id = $config['rewrite']['website_id'] ==1 ? 'website_en' : 'website_id';
-                $url = url($model,['id'=>$info[$id]]);
+                switch($config['rewrite']['website_id'])
+                {
+                    case 1:
+                        $id = $info['website_en'];
+                        break;
+                    case 2:
+                        $id = mac_alphaID($info['website_id'],false,$config['rewrite']['encode_len'],$config['rewrite']['encode_key']);
+                        break;
+                    default:
+                        $id = $info['website_id'];
+                        break;
+                }
+                $url = url($model,['id'=>$id]);
             }
             break;
         case 'gbook/index':
@@ -2171,11 +2396,14 @@ function mac_url_vod_down($info,$param=[])
 function mac_label_website_detail($param)
 {
     $where = [];
-    if(is_numeric($param['id'])){
-        $where['website_id'] = ['eq',$param['id']];
+    if($GLOBALS['config']['rewrite']['website_id']==1){
+        $where['website_en'] = ['eq',$param['id']];
     }
     else{
-        $where['website_en'] = ['eq',$param['id']];
+        if($GLOBALS['config']['rewrite']['website_id']==2) {
+            $param['id'] = mac_alphaID($param['id'], true, $GLOBALS['config']['rewrite']['encode_len'],$GLOBALS['config']['rewrite']['encode_key'] );
+        }
+        $where['website_id'] = ['eq',$param['id']];
     }
     $where['website_status'] = ['eq',1];
     $res = model('Website')->infoData($where,'*',1);
@@ -2187,11 +2415,14 @@ function mac_label_website_detail($param)
 function mac_label_actor_detail($param)
 {
     $where = [];
-    if(is_numeric($param['id'])){
-        $where['actor_id'] = ['eq',$param['id']];
+    if($GLOBALS['config']['rewrite']['actor_id']==1){
+        $where['actor_en'] = ['eq',$param['id']];
     }
     else{
-        $where['actor_en'] = ['eq',$param['id']];
+        if($GLOBALS['config']['rewrite']['actor_id']==2) {
+            $param['id'] = mac_alphaID($param['id'], true, $GLOBALS['config']['rewrite']['encode_len'],$GLOBALS['config']['rewrite']['encode_key'] );
+        }
+        $where['actor_id'] = ['eq',$param['id']];
     }
     $where['actor_status'] = ['eq',1];
     $res = model('Actor')->infoData($where,'*',1);
@@ -2203,11 +2434,14 @@ function mac_label_actor_detail($param)
 function mac_label_role_detail($param)
 {
     $where = [];
-    if(is_numeric($param['id'])){
-        $where['role_id'] = ['eq',$param['id']];
+    if($GLOBALS['config']['rewrite']['role_id']==1){
+        $where['role_en'] = ['eq',$param['id']];
     }
     else{
-        $where['role_en'] = ['eq',$param['id']];
+        if($GLOBALS['config']['rewrite']['role_id']==2) {
+            $param['id'] = mac_alphaID($param['id'], true, $GLOBALS['config']['rewrite']['encode_len'],$GLOBALS['config']['rewrite']['encode_key'] );
+        }
+        $where['role_id'] = ['eq',$param['id']];
     }
     $where['role_status'] = ['eq',1];
     $res = model('Role')->infoData($where,'*',1);
@@ -2216,11 +2450,14 @@ function mac_label_role_detail($param)
 function mac_label_topic_detail($param)
 {
     $where = [];
-    if(is_numeric($param['id'])){
-        $where['topic_id'] = ['eq',$param['id']];
+    if($GLOBALS['config']['rewrite']['topic_id']==1){
+        $where['topic_en'] = ['eq',$param['id']];
     }
     else{
-        $where['topic_en'] = ['eq',$param['id']];
+        if($GLOBALS['config']['rewrite']['topic_id']==2) {
+            $param['id'] = mac_alphaID($param['id'], true, $GLOBALS['config']['rewrite']['encode_len'],$GLOBALS['config']['rewrite']['encode_key'] );
+        }
+        $where['topic_id'] = ['eq',$param['id']];
     }
     $where['topic_status'] = ['eq',1];
     $res = model('Topic')->infoData($where,'*',1);
@@ -2229,11 +2466,14 @@ function mac_label_topic_detail($param)
 function mac_label_art_detail($param)
 {
     $where = [];
-    if(is_numeric($param['id'])){
-        $where['art_id'] = ['eq',$param['id']];
+    if($GLOBALS['config']['rewrite']['art_id']==1){
+        $where['art_en'] = ['eq',$param['id']];
     }
     else{
-        $where['art_en'] = ['eq',$param['id']];
+        if($GLOBALS['config']['rewrite']['art_id']==2) {
+            $param['id'] = mac_alphaID($param['id'], true, $GLOBALS['config']['rewrite']['encode_len'],$GLOBALS['config']['rewrite']['encode_key'] );
+        }
+        $where['art_id'] = ['eq',$param['id']];
     }
     $where['art_status'] = ['eq',1];
     $res = model('Art')->infoData($where,'*',1);
@@ -2248,11 +2488,14 @@ function mac_label_art_detail($param)
 function mac_label_vod_detail($param)
 {
     $where = [];
-    if(is_numeric($param['id'])){
-        $where['vod_id'] = ['eq',$param['id']];
+    if($GLOBALS['config']['rewrite']['vod_id']==1){
+        $where['vod_en'] = ['eq',$param['id']];
     }
     else{
-        $where['vod_en'] = ['eq',$param['id']];
+        if($GLOBALS['config']['rewrite']['vod_id']==2) {
+            $param['id'] = mac_alphaID($param['id'], true, $GLOBALS['config']['rewrite']['encode_len'],$GLOBALS['config']['rewrite']['encode_key'] );
+        }
+        $where['vod_id'] = ['eq',$param['id']];
     }
     $where['vod_status'] = ['eq',1];
     $res = model('Vod')->infoData($where,'*',1);
@@ -2274,6 +2517,15 @@ function mac_label_vod_role($param)
 
 function mac_label_type($param)
 {
+    if($GLOBALS['config']['rewrite']['type_id']==1){
+
+    }
+    else{
+        if($GLOBALS['config']['rewrite']['type_id']==2) {
+            $param['id'] = mac_alphaID($param['id'], true, $GLOBALS['config']['rewrite']['encode_len'],$GLOBALS['config']['rewrite']['encode_key'] );
+        }
+    }
+
     $type_info = model('Type')->getCacheInfo($param['id']);
 
     $GLOBALS['type_id'] =$type_info['type_id'];
@@ -2339,5 +2591,62 @@ function reset_html_filename($htmlfile)
 
     $htmlfile = str_replace('//','/', $htmlfile);
     return $htmlfile;
+}
+
+if (!function_exists('is_really_writable')) {
+
+    /**
+     * 判断文件或文件夹是否可写
+     * @param string $file 文件或目录
+     * @return    bool
+     */
+    function is_really_writable($file)
+    {
+        if (DIRECTORY_SEPARATOR === '/') {
+            return is_writable($file);
+        }
+        if (is_dir($file)) {
+            $file = rtrim($file, '/') . '/' . md5(mt_rand());
+            if (($fp = @fopen($file, 'ab')) === false) {
+                return false;
+            }
+            fclose($fp);
+            @chmod($file, 0777);
+            @unlink($file);
+            return true;
+        } elseif (!is_file($file) or ($fp = @fopen($file, 'ab')) === false) {
+            return false;
+        }
+        fclose($fp);
+        return true;
+    }
+}
+if (!function_exists('rmdirs')) {
+
+    /**
+     * 删除文件夹
+     * @param string $dirname  目录
+     * @param bool   $withself 是否删除自身
+     * @return boolean
+     */
+    function rmdirs($dirname, $withself = true)
+    {
+        if (!is_dir($dirname)) {
+            return false;
+        }
+        $files = new RecursiveIteratorIterator(
+            new RecursiveDirectoryIterator($dirname, RecursiveDirectoryIterator::SKIP_DOTS),
+            RecursiveIteratorIterator::CHILD_FIRST
+        );
+
+        foreach ($files as $fileinfo) {
+            $todo = ($fileinfo->isDir() ? 'rmdir' : 'unlink');
+            $todo($fileinfo->getRealPath());
+        }
+        if ($withself) {
+            @rmdir($dirname);
+        }
+        return true;
+    }
 }
 

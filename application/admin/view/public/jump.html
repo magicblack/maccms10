@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
-    <title>跳转提示</title>
+    <title>{:lang('admin/public/jump/title')} - {:lang('admin/public/head/title')}</title>
     <style type="text/css">
         *{ padding: 0; margin: 0; }
         body{ background: #fff; font-family: "Microsoft Yahei","Helvetica Neue",Helvetica,Arial,sans-serif; color: #333; font-size: 16px; }
@@ -29,7 +29,7 @@
         <?php } ?>
         <p class="detail"></p>
         <p class="jump">
-            页面自动 <a id="href" href="<?php echo($url);?>">跳转</a> 等待时间： <b id="wait"><?php echo($wait);?></b>
+            {:lang('page_auto')} <a id="href" href="<?php echo($url);?>">{:lang('jump')}</a> {:lang('wait_time')}： <b id="wait"><?php echo($wait);?></b>
         </p>
     </div>
     <script type="text/javascript">

@@ -5,19 +5,14 @@
         <input name="ck" value="1" type="hidden">
         <div class="layui-tab">
             <ul class="layui-tab-title">
-                <li class="layui-this">挂马检测</li>
+                <li class="layui-this">{:lang('admin/database/inspect')}</li>
             </ul>
             <div class="layui-tab-content">
                 <div class="layui-tab-item layui-show">
 
                     <div class="layui-input-block" >
                         <blockquote class="layui-elem-quote layui-quote-nm">
-                            <strong>挂马检测1.0版本</strong><br>
-                            1，将对分类表，视频表，文章表，会员表等表结构进行检查。<br>
-                            2，检测包含script等特殊字符串。<br>
-                            3，将自动清除挂马代码。<br>
-                            4，不能保证100%清除，如还有问题请自行进入phpmyadmin或其他数据库管理工具里清除。<br>
-                            5，建议清理多次，直到没有出现问题数据。
+                            {:lang('admin/database/inspect_tip')}
                         </blockquote>
                     </div>
                 </div>
@@ -25,7 +20,7 @@
         </div>
         <div class="layui-form-item center">
             <div class="layui-input-block">
-                <button type="submit" class="layui-btn" >确认执行</button>
+                <button type="submit" class="layui-btn" >{:lang('admin/database/exec')}</button>
             </div>
         </div>
     </form>

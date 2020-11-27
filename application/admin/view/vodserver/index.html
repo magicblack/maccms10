@@ -3,7 +3,7 @@
     <div class="my-toolbar-box">
 
         <div class="layui-btn-group">
-            <a data-href="{:url('info')}" class="layui-btn layui-btn-primary j-iframe"><i class="layui-icon">&#xe654;</i>添加</a>
+            <a data-href="{:url('info')}" class="layui-btn layui-btn-primary j-iframe"><i class="layui-icon">&#xe654;</i>{:lang('add')}</a>
         </div>
 
     </div>
@@ -12,13 +12,13 @@
         <table class="layui-table" lay-size="sm">
             <thead>
             <tr>
-                <th width="80">排序</th>
-                <th width="80">编码</th>
-                <th width="80">状态</th>
-                <th width="150">名称</th>
-                <th>备注</th>
-                <th>提示</th>
-                <th width="100">操作</th>
+                <th width="80">{:lang('sort')}</th>
+                <th width="80">{:lang('code')}</th>
+                <th width="80">{:lang('status')}</th>
+                <th width="150">{:lang('name')}</th>
+                <th>{:lang('remarks')}</th>
+                <th>{:lang('tip')}</th>
+                <th width="100">{:lang('opt')}</th>
             </tr>
             </thead>
 
@@ -26,13 +26,13 @@
             <tr>
                 <td>{$vo.sort}</td>
                 <td>{$vo.from}</td>
-                <td>{if condition="$vo.status eq 1"}<span class="layui-badge layui-bg-green">启用</span>{else}<span class="layui-badge">禁用</span>{/if} </td>
+                <td>{if condition="$vo.status eq 1"}<span class="layui-badge layui-bg-green">{:lang('enable')}</span>{else}<span class="layui-badge">{:lang('disable')}</span>{/if} </td>
                 <td>{$vo.show}</td>
                 <td>{$vo.des}</td>
                 <td>{$vo.tip}</td>
                 <td>
-                    <a class="layui-badge-rim j-iframe" data-href="{:url('info?id='.$vo['from'])}" href="javascript:;" title="编辑">编辑</a>
-                    <a class="layui-badge-rim j-tr-del" data-href="{:url('del?ids='.$vo['from'])}" href="javascript:;" title="删除">删除</a>
+                    <a class="layui-badge-rim j-iframe" data-href="{:url('info?id='.$vo['from'])}" href="javascript:;" title="{:lang('edit')}">{:lang('edit')}</a>
+                    <a class="layui-badge-rim j-tr-del" data-href="{:url('del?ids='.$vo['from'])}" href="javascript:;" title="{:lang('del')}">{:lang('del')}</a>
                 </td>
             </tr>
             {/volist}

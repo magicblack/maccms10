@@ -5,117 +5,115 @@
         <input type="hidden" name="__token__" value="{$Request.token}" />
         <div class="layui-tab">
             <ul class="layui-tab-title">
-                <li class="layui-this">播放器设置</li>
+                <li class="layui-this">{:lang('admin/system/configplay/title')}</li>
             </ul>
             <div class="layui-tab-content">
                 <div class="layui-tab-item layui-show">
 
                     <blockquote class="layui-elem-quote layui-quote-nm">
-                        提示信息：<br>
-                        1，播放器大小支持px像素和%百分比两种单位。<br>
-                        2，如果设置的值不包含任何单位，则按照100%处理。
+                        {:lang('admin/system/configplay/tip')}
                     </blockquote>
 
                 <div class="layui-form-item" >
-                    <label class="layui-form-label">播放器宽度：</label>
+                    <label class="layui-form-label">{:lang('admin/system/configplay/width')}：</label>
                     <div class="layui-input-inline w150">
-                        <input type="text" name="play[width]" placeholder="例如: 540px 或 100%" value="{$play.width}" class="layui-input ">
+                        <input type="text" name="play[width]" placeholder="{:lang('admin/system/configplay/width_tip')}" value="{$play.width}" class="layui-input ">
                     </div>
                 </div>
                 <div class="layui-form-item" >
-                    <label class="layui-form-label">播放器高度：</label>
+                    <label class="layui-form-label">{:lang('admin/system/configplay/height')}：</label>
                     <div class="layui-input-block">
-                        <input type="text" name="play[height]" placeholder="例如: 460px 或 100%" value="{$play.height}" class="layui-input w150">
+                        <input type="text" name="play[height]" placeholder="{:lang('admin/system/configplay/height_tip')}" value="{$play.height}" class="layui-input w150">
                     </div>
                 </div>
                 <div class="layui-form-item" >
-                    <label class="layui-form-label">手机播放宽度：</label>
+                    <label class="layui-form-label">{:lang('admin/system/configplay/widthmob')}：</label>
                     <div class="layui-input-inline w150">
-                        <input type="text" name="play[widthmob]" placeholder="例如: 540px 或 100%" value="{$play.widthmob}" class="layui-input ">
+                        <input type="text" name="play[widthmob]" placeholder="{:lang('admin/system/configplay/width_tip')}" value="{$play.widthmob}" class="layui-input ">
                     </div>
                 </div>
                 <div class="layui-form-item" >
-                    <label class="layui-form-label">手机播放高度：</label>
+                    <label class="layui-form-label">{:lang('admin/system/configplay/heightmob')}：</label>
                     <div class="layui-input-block">
-                        <input type="text" name="play[heightmob]" placeholder="例如: 460px 或 100%" value="{$play.heightmob}" class="layui-input w150">
+                        <input type="text" name="play[heightmob]" placeholder="{:lang('admin/system/configplay/height_tip')}" value="{$play.heightmob}" class="layui-input w150">
                     </div>
                 </div>
                 <div class="layui-form-item" style="display:none;">
-                    <label class="layui-form-label">弹窗口宽度：</label>
+                    <label class="layui-form-label">{:lang('admin/system/configplay/widthpop')}：</label>
                     <div class="layui-input-block">
-                        <input type="text" name="play[widthpop]" placeholder="例如: 500px 或 100%" value="{$play.widthpop}" class="layui-input w150">
+                        <input type="text" name="play[widthpop]" placeholder="{:lang('admin/system/configplay/width_tip')}" value="{$play.widthpop}" class="layui-input w150">
                     </div>
                 </div>
                 <div class="layui-form-item" style="display:none;">
-                    <label class="layui-form-label">弹窗口高度：</label>
+                    <label class="layui-form-label">{:lang('admin/system/configplay/heightpop')}：</label>
                     <div class="layui-input-block">
-                        <input type="text" name="play[heightpop]" placeholder="例如: 460px 或 100%" value="{$play.heightpop}" class="layui-input w150">
+                        <input type="text" name="play[heightpop]" placeholder="{:lang('admin/system/configplay/height_tip')}" value="{$play.heightpop}" class="layui-input w150">
                     </div>
                 </div>
 
                 <div class="layui-form-item">
-                    <label class="layui-form-label">预加载时间：</label>
+                    <label class="layui-form-label">{:lang('admin/system/configplay/second')}：</label>
                     <div class="layui-input-block">
-                        <input type="text" name="play[second]" placeholder="例如: 5，单位是秒" value="{$play.second}" class="layui-input w150">
+                        <input type="text" name="play[second]" placeholder="{:lang('admin/system/configplay/second_tip')}" value="{$play.second}" class="layui-input w150">
                     </div>
                 </div>
                 <div class="layui-form-item">
-                    <label class="layui-form-label">预加载提示：</label>
+                    <label class="layui-form-label">{:lang('admin/system/configplay/prestrain')}：</label>
                     <div class="layui-input-block">
-                        <input type="text" name="play[prestrain]" placeholder="不要出现双引号、单引号等特殊字符号" value="{$play.prestrain}" class="layui-input">
+                        <input type="text" name="play[prestrain]" placeholder="{:lang('admin/system/configplay/prestrain_tip')}" value="{$play.prestrain}" class="layui-input">
                     </div>
                 </div>
                 <div class="layui-form-item">
-                    <label class="layui-form-label">缓冲提示：</label>
+                    <label class="layui-form-label">{:lang('admin/system/configplay/buffer')}：</label>
                     <div class="layui-input-block">
-                        <input type="text" name="play[buffer]" placeholder="不要出现双引号、单引号等特殊字符号" value="{$play.buffer}" class="layui-input">
+                        <input type="text" name="play[buffer]" placeholder="{:lang('admin/system/configplay/buffer_tip')}" value="{$play.buffer}" class="layui-input">
                     </div>
                 </div>
 
                     <div class="layui-form-item">
-                        <label class="layui-form-label">接口地址：</label>
+                        <label class="layui-form-label">{:lang('admin/system/configplay/parse')}：</label>
                         <div class="layui-input-block">
-                            <input type="text" name="play[parse]" placeholder="第三方接口处理" value="{$play.parse}" class="layui-input">
+                            <input type="text" name="play[parse]" placeholder="{:lang('admin/system/configplay/parse_tip')}" value="{$play.parse}" class="layui-input">
                         </div>
                     </div>
 
 
                 <div class="layui-form-item">
-                    <label class="layui-form-label">自动全屏：</label>
+                    <label class="layui-form-label">{:lang('admin/system/configplay/autofull')}：</label>
                     <div class="layui-input-block">
-                        <input type="radio" name="play[autofull]" value="0" title="关闭" {if condition="$play.autofull neq 1"}checked {/if}>
-                        <input type="radio" name="play[autofull]" value="1" title="开启" {if condition="$play.autofull eq 1"}checked {/if}>
+                        <input type="radio" name="play[autofull]" value="0" title="{:lang('close')}" {if condition="$play.autofull neq 1"}checked {/if}>
+                        <input type="radio" name="play[autofull]" value="1" title="{:lang('open')}" {if condition="$play.autofull eq 1"}checked {/if}>
                     </div>
                 </div>
                 <div class="layui-form-item" style="display:none;">
-                    <label class="layui-form-label">头部开关：</label>
+                    <label class="layui-form-label">{:lang('admin/system/configplay/showtop')}：</label>
                     <div class="layui-input-block">
-                        <input type="radio" name="play[showtop]" value="0" title="关闭" {if condition="$play.showtop neq 1"}checked {/if}>
-                        <input type="radio" name="play[showtop]" value="1" title="开启" {if condition="$play.showtop eq 1"}checked {/if}>
+                        <input type="radio" name="play[showtop]" value="0" title="{:lang('close')}" {if condition="$play.showtop neq 1"}checked {/if}>
+                        <input type="radio" name="play[showtop]" value="1" title="{:lang('open')}" {if condition="$play.showtop eq 1"}checked {/if}>
                     </div>
                 </div>
                 <div class="layui-form-item" style="display:none;">
-                    <label class="layui-form-label">列表开关：</label>
+                    <label class="layui-form-label">{:lang('admin/system/configplay/showlist')}：</label>
                     <div class="layui-input-block">
-                        <input type="radio" name="play[showlist]" value="0" title="关闭" {if condition="$play.showlist neq 1"}checked {/if}>
-                        <input type="radio" name="play[showlist]" value="1" title="开启" {if condition="$play.showlist eq 1"}checked {/if}>
+                        <input type="radio" name="play[showlist]" value="0" title="{:lang('close')}" {if condition="$play.showlist neq 1"}checked {/if}>
+                        <input type="radio" name="play[showlist]" value="1" title="{:lang('open')}" {if condition="$play.showlist eq 1"}checked {/if}>
                     </div>
                 </div>
                 <div class="layui-form-item">
-                    <label class="layui-form-label">播放器文件：</label>
+                    <label class="layui-form-label">{:lang('admin/system/configplay/flag')}：</label>
                     <div class="layui-input-block">
-                        <input type="radio" name="play[flag]" value="0" title="本地播放器" checked >
+                        <input type="radio" name="play[flag]" value="0" title="{:lang('admin/system/configplay/flag_tip')}" checked >
                     </div>
                 </div>
 
                 <div class="layui-form-item" style="display:none;">
-                    <label class="layui-form-label">播放器颜色：</label>
+                    <label class="layui-form-label">{:lang('admin/system/configplay/colors')}：</label>
                     <div class="layui-input-block">
                         <input type="text" id="mac_colors" name="play[colors]" placeholder="" value="{$play.colors}" class="layui-input">
                     </div>
                 </div>
                     <div class="layui-form-item" style="display:none;">
-                        <label class="layui-form-label">选择颜色：</label>
+                        <label class="layui-form-label">{:lang('admin/system/configplay/select_colors')}：</label>
                         <div class="layui-input-block">
                             <button class="layui-btn btn-primary radius" type="button" onclick="setColor(1);return false;" style="background-color: #000000"> 全黑色</button>
                             <button class="layui-btn btn-primary radius" type="button" onclick="setColor(2);return false;" style="background-color: #EFF4F7"> 浅蓝色</button>
@@ -125,8 +123,7 @@
                     </div>
 
                     <blockquote class="layui-elem-quote layui-quote-nm" style="display:none;">
-                        颜色使用16进制表示法，不带#号，以逗号分割，一共15个可配置颜色!
-                        <br>依次是：背景色，文字颜色，链接颜色，分组标题背景色，分组标题颜色，当前分组标题颜色，当前集数颜色，集数列表滚动条凸出部分的颜色，滚动条上下按钮上三角箭头的颜色，滚动条的背景颜色，滚动条空白部分的颜色，滚动条立体滚动条阴影的颜色 ，滚动条亮边的颜色，滚动条强阴影的颜色，滚动条的基本颜色
+                        {:lang('admin/system/configplay/select_colors_tip')}
                     </blockquote>
 
             </div>
@@ -135,9 +132,9 @@
         </div>
         <div class="layui-form-item center">
             <div class="layui-input-block">
-                <button type="submit" class="layui-btn" lay-submit="" lay-filter="formSubmit">保 存</button>
-                <button type="button" class="layui-btn layui-btn-normal" id="btnDef">默认值</button>
-                <button class="layui-btn layui-btn-warm" type="reset">还 原</button>
+                <button type="submit" class="layui-btn" lay-submit="" lay-filter="formSubmit">{:lang('btn_save')}</button>
+                <button type="button" class="layui-btn layui-btn-normal" id="btnDef">{:lang('default_val')}</button>
+                <button class="layui-btn layui-btn-warm" type="reset">{:lang('btn_reset')}</button>
             </div>
         </div>
     </form>

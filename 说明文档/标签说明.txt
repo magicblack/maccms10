@@ -266,7 +266,7 @@ order排列顺序desc倒序，asc正序
 by排序依据  id,sort
 start从第几条开始
 num获取条数
-ids指定分类parent获取一级分诶；child获取子分类；1,2,3一组指定ID；
+ids指定分类parent获取一级分类；child获取子分类；1,2,3一组指定ID；
 parent父分类id
 flag视频=vod文章=art
 not排除id

@@ -1,6 +1,5 @@
 {include file="../../../application/admin/view/public/head" /}
 
-
 <style type="text/css">
     .hs-iframe{width:100%;height:100%;}
     .layui-tab-content {top: 41px; position: absolute; bottom: 0; width: 100%; padding: 0; }
@@ -9,14 +8,11 @@
     .layui-tab-title .layui-this:after {border: none; }
     .layui-tab-title li { border-right: 1px solid #e6e6e6;}
     .footer{position:fixed;left:0;bottom:0;z-index:998;}
-	
-
-
 </style>
 <div class="layui-layout layui-layout-admin">
     <div class="layui-header header-top">
 	
-	<div class="top-logo">超级控制台</div>
+	<div class="top-logo">{:lang('admin/index/index/name')}</div>
 	<ul class="layout-right" lay-filter="">	
 		 <li class="nav-item">
 			<a href="__ROOT__/" target="_blank"><i class="layui-icon layui-icon-home size-14"></i></a>
@@ -35,8 +31,8 @@
 	</div>
 
 	<div class="layui-header">
-	    <div class="fl header-logo">超级控制台</div>
-		<div class="fl header-fold topLevelMenus"><a href="javascript:;" title="打开/关闭左侧导航" class="aicon ai-caidan" id="foldSwitch"><i class="layui-icon">&#xe65f;</i></a></div>
+	    <div class="fl header-logo">{:lang('admin/index/index/name')}</div>
+		<div class="fl header-fold topLevelMenus"><a href="javascript:;" title="{:lang('admin/index/index/menu_switch')}" class="aicon ai-caidan" id="foldSwitch"><i class="layui-icon">&#xe65f;</i></a></div>
 		 <a href="javascript:;" class=" site-tree-mobile layui-mobile layui-show-xs-block layui-hide-lg"><i class="layui-icon layui-icon-spread-left size-20"></i></a>
 	    <div class="bottom-nav">	
 		  <ul class="layui-nav fl nobg main-nav " >
@@ -54,15 +50,15 @@
 				 <li class="layui-nav-item layui-hide-xs">
 					<a href="javascript:void(0);">{$Think.cookie.admin_name}&nbsp;&nbsp;</a>
 					<dl class="layui-nav-child">
-						<dd><a href="__ROOT__/" target="_blank">网站首页</a></dd>
-						<dd><a href="javascript:void(0);" id="lockScreen">锁屏操作</a></dd>
-						<dd><a href="{:url('index/logout')}">退出登陆</a></dd>
+						<dd><a href="__ROOT__/" target="_blank">{:lang('admin/index/index/menu_index')}</a></dd>
+						<dd><a href="javascript:void(0);" id="lockScreen">{:lang('admin/index/index/menu_lock')}</a></dd>
+						<dd><a href="{:url('index/logout')}">{:lang('admin/index/index/menu_logout')}</a></dd>
 					</dl>
 				</li>
 				<li class="layui-nav-item layui-hide-xs">
-                <a href="javascript:void(0);" >缓存&nbsp;&nbsp;</a>
+                <a href="javascript:void(0);" >{:lang('admin/index/index/menu_cache')}&nbsp;&nbsp;</a>
                 <dl class="layui-nav-child">
-                    <dd><a href="{:url('index/clear')}" class="j-ajax" refresh="yes">清理缓存</a></dd>
+                    <dd><a href="{:url('index/clear')}" class="j-ajax" refresh="yes">{:lang('admin/index/index/menu_cache_clear')}</a></dd>
                 </dl>
             </li>
 			</ul>
@@ -72,10 +68,10 @@
 	<div class="nav-item-ul">
 	  <div class="">
 		  <ul class="layui-nav">
-			  <li class="layui-nav-item"><a href="__ROOT__/" target="_blank">网站首页</a></li>
-			  <li class="layui-nav-item"><a href="javascript:void(0);" id="lockScreen">锁屏操作</a></li>
-			  <li class="layui-nav-item"><a href="{:url('index/clear')}" class="j-ajax" refresh="yes">清理缓存</a></li>
-			  <li class="layui-nav-item"><a href="{:url('index/logout')}">退出登陆</a></li>
+			  <li class="layui-nav-item"><a href="__ROOT__/" target="_blank">{:lang('admin/index/index/menu_index')}</a></li>
+			  <li class="layui-nav-item"><a href="javascript:void(0);" id="lockScreen">{:lang('admin/index/index/menu_lock')}</a></li>
+			  <li class="layui-nav-item"><a href="{:url('index/clear')}" class="j-ajax" refresh="yes">{:lang('admin/index/index/menu_cache_clear')}</a></li>
+			  <li class="layui-nav-item"><a href="{:url('index/logout')}">{:lang('admin/index/index/menu_logout')}</a></li>
 		  </ul>
 		
 	  </div>
@@ -118,16 +114,16 @@
             <div class="tab-go-refresh" id="J_refresh"><i class="layui-icon layui-icon-refresh"></i></div>
             <div class="tab-go-left" id="page-prev"><i class="layui-icon layui-icon-zuozuo"></i></div>
             <ul class="layui-tab-title top_tab" id="B_history">
-                <li lay-id="111" class="layui-this">欢迎页面</li>
+                <li lay-id="111" class="layui-this">{:lang('admin/index/index/menu_welcome')}</li>
             </ul>
             <div class="tab-right">
                 <div class="tab-go-right" id="page-next"><i class="layui-icon layui-icon-youyou"></i></div>
                 <ul class="layui-nav closeBox">
                     <li class="layui-nav-item" >
-                        <a href="javascript:;">操作</a>
+                        <a href="javascript:;">{:lang('admin/index/index/menu_opt')}</a>
                         <dl class="layui-nav-child">
-                            <dd><a href="javascript:;" class="closePageAll">&nbsp;关闭全部</a></dd>
-                            <dd><a href="javascript:;" class="closePageOther">&nbsp;关闭其他</a></dd>
+                            <dd><a href="javascript:;" class="closePageAll">&nbsp;{:lang('admin/index/index/menu_close_all')}</a></dd>
+                            <dd><a href="javascript:;" class="closePageOther">&nbsp;{:lang('admin/index/index/menu_close_other')}</a></dd>
                         </dl>
                     </li>
                 </ul>
@@ -144,7 +140,7 @@
 
     <div class="layui-footer footer">
         <div class="fl"></div>
-        <div class="fr"> © MacCMS All Rights Reserved.</div>
+        <div class="fr"> {:lang('maccms_copyright')}</div>
     </div>
 </div>
 
@@ -184,7 +180,7 @@
                 return false;
             }
             if ($('iframe').length == 10) {
-                layer.msg('最多可打开10个标签页');
+                layer.msg("{:lang('admin/index/index/menu_max')}");
                 return false;
             }
             that.css({color:'#fff'});
@@ -267,7 +263,7 @@
                 })
 
             } else {
-                layer.msg("没有可以关闭的窗口了@_@");
+                layer.msg("{:lang('admin/index/index/menu_close_empty')}");
             }
         });
         //关闭其他选项卡
@@ -283,7 +279,7 @@
                 })
 
             } else {
-                layer.msg("没有可以关闭的窗口了@_@");
+                layer.msg("{:lang('admin/index/index/menu_close_empty')}");
             }
         });
 

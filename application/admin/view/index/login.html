@@ -5,7 +5,7 @@
     <meta name="renderer" content="webkit">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-    <title>后台管理中心 - Copyright by 苹果CMS内容管理系统</title>
+    <title>{:lang('admin/index/login/title')}</title>
     <link rel="stylesheet" href="__STATIC__/layui/css/layui.css?v=1024">
     <link rel="stylesheet" href="__STATIC__/css/admin_style.css?v=1024">
     <style type="text/css">
@@ -18,43 +18,43 @@
 </head>
 <body class="login-body body">
 <div class="login-head">
-    <h1><a href="//www.maccms.la/">欢迎使用</a></h1>
+    <h1><a href="//www.maccms.la/">{:lang('admin/index/login/tip_welcome')}</a></h1>
 </div>
 <div class="login-box">
     <form class="layui-form layui-form-pane" method="post" action="">
         <div class="layui-form-item">
-            <h3>系统管理</h3>
+            <h3>{:lang('admin/index/login/tip_sys')}</h3>
         </div>
         <div class="layui-form-item">
-            <label class="layui-form-label">账号：</label>
+            <label class="layui-form-label">{:lang('account')}：</label>
             <div class="layui-input-block">
-                <input type="text" name="admin_name" class="layui-input" lay-verify="admin_name" placeholder="账号" autocomplete="on" maxlength="20"/>
+                <input type="text" name="admin_name" class="layui-input" lay-verify="admin_name" placeholder="" autocomplete="on" maxlength="20"/>
             </div>
         </div>
         <div class="layui-form-item">
-            <label class="layui-form-label">密码：</label>
+            <label class="layui-form-label">{:lang('pass')}：</label>
             <div class="layui-input-block">
-                <input type="password" name="admin_pwd" class="layui-input" lay-verify="admin_pwd" placeholder="密码" maxlength="20"/>
+                <input type="password" name="admin_pwd" class="layui-input" lay-verify="admin_pwd" placeholder="" maxlength="20"/>
             </div>
         </div>
         {if condition="$GLOBALS['config']['app']['admin_login_verify'] neq '0'"}
         <div class="layui-form-item">
-            <label class="layui-form-label">验证码：</label>
+            <label class="layui-form-label">{:lang('verify')}：</label>
             <div class="layui-input-block">
-                <input type="number" name="verify" class="layui-input" lay-verify="verify" placeholder="验证码" maxlength="4"  max="9999"/><img id="verify_img" src="__ROOT__/index.php/verify/index.html" onclick="this.src = this.src+'?'">
+                <input type="number" name="verify" class="layui-input" lay-verify="verify" placeholder="" maxlength="4"  max="9999"/><img id="verify_img" src="__ROOT__/index.php/verify/index.html" onclick="this.src = this.src+'?'">
             </div>
         </div>
         {/if}
-        <button type="button" class="layui-btn btn-submit" lay-submit="" lay-filter="sub">立即登录</button>
+        <button type="button" class="layui-btn btn-submit" lay-submit="" lay-filter="sub">{:lang('admin/index/login/btn_submit')}</button>
     </form>
     <div class="copyright">
-        © MacCMS All Rights Reserved.
+        {:lang('maccms_copyright')}
     </div>
 
     <fieldset class="layui-elem-field">
-        <legend>免责声明</legend>
+        <legend>{:lang('admin/index/login/tip_declare')}</legend>
         <div class="layui-field-box">
-            本程序开源且永久免费无任何内置数据，请在遵守当地法律的前提下使用，对用户在使用过程中的信息内容本程序不负任何责任！自由！平等！分享！开源！
+            {:lang('admin/index/login/tip_declare_txt')}
         </div>
     </fieldset>
 </div>
@@ -72,24 +72,24 @@
         form.verify({
             admin_name: function (value) {
                 if (value == "") {
-                    return "请输入用户名";
+                    return "{:lang('admin/index/login/verify_no')}";
                 }
             },
             admin_pwd: function (value) {
                 if (value == "") {
-                    return "请输入密码";
+                    return "{:lang('admin/index/login/verify_pass')}";
                 }
             },
             verify: function (value) {
                 if (value == "") {
-                    return "请输入验证码";
+                    return "{:lang('admin/index/login/verify_verify')}";
                 }
             }
         });
 
         // 提交监听
         form.on('submit(sub)', function (data) {
-            layer.msg('数据提交中...',{time:500000});
+            layer.msg("{:lang('wait_submit')}",{time:500000});
             $.post("{:url('index/login')}",data.field,function(r){
                 if(r.code==1){
                     location.href="{:url('index/index')}";

@@ -61,8 +61,9 @@ Hook::add('app_init', function () {
             $domains[$domain] = $drules ? $drules : [];
             $domains[$domain][':controller/[:action]'] = sprintf($execute . '&indomain=1', $addon, ":controller", ":action");
         } else {
-            if (!$v)
+            if (!$v) {
                 continue;
+            }
             list($addon, $controller, $action) = explode('/', $v);
             $rules[$k] = sprintf($execute, $addon, $controller, $action);
         }
@@ -93,18 +94,37 @@ Hook::add('app_init', function () {
             Hook::exec($v, 'app_init');
         }
     }
-    Hook::import($hooks, false);
+    Hook::import($hooks, true);
 });
 
 /**
  * 处理插件钩子
- * @param string $hook 钩子名称
- * @param mixed $params 传入参数
+ * @param string $hook   钩子名称
+ * @param mixed  $params 传入参数
  * @return void
  */
 function hook($hook, $params = [])
 {
     Hook::listen($hook, $params);
+}
+
+/**
+ * 移除空目录
+ * @param string $dir 目录
+ */
+function remove_empty_folder($dir)
+{
+    try {
+        $isDirEmpty = !(new \FilesystemIterator($dir))->valid();
+        if ($isDirEmpty) {
+            @rmdir($dir);
+            remove_empty_folder(dirname($dir));
+        }
+    } catch (\UnexpectedValueException $e) {
+
+    } catch (\Exception $e) {
+
+    }
 }
 
 /**
@@ -116,22 +136,32 @@ function get_addon_list()
     $results = scandir(ADDON_PATH);
     $list = [];
     foreach ($results as $name) {
-        if ($name === '.' or $name === '..')
+        if ($name === '.' or $name === '..') {
             continue;
-        $addonDir = ADDON_PATH . DS . $name . DS;
-        if (!is_dir($addonDir))
+        }
+        if (is_file(ADDON_PATH . $name)) {
             continue;
+        }
+        $addonDir = ADDON_PATH . $name . DS;
+        if (!is_dir($addonDir)) {
+            continue;
+        }
 
-        if (!is_file($addonDir . ucfirst($name) . '.php'))
+        if (!is_file($addonDir . ucfirst($name) . '.php')) {
             continue;
+        }
 
         //这里不采用get_addon_info是因为会有缓存
         //$info = get_addon_info($name);
         $info_file = $addonDir . 'info.ini';
-        if (!is_file($info_file))
+        if (!is_file($info_file)) {
             continue;
+        }
 
         $info = Config::parse($info_file, '', "addon-info-{$name}");
+        if (!isset($info['name'])) {
+            continue;
+        }
         $info['url'] = addon_url($name);
         $list[$name] = $info;
     }
@@ -140,6 +170,7 @@ function get_addon_list()
 
 /**
  * 获得插件自动加载的配置
+ * @param bool $truncate 是否清除手动配置的钩子
  * @return array
  */
 function get_addon_autoload_config($truncate = false)
@@ -150,6 +181,10 @@ function get_addon_autoload_config($truncate = false)
         // 清空手动配置的钩子
         $config['hooks'] = [];
     }
+
+    // 伪静态优先级
+    $priority = isset($config['priority']) && $config['priority'] ? is_array($config['priority']) ? $config['priority'] : explode(',', $config['priority']) : [];
+
     $route = [];
     // 读取插件目录及钩子列表
     $base = get_class_methods("\\think\\Addons");
@@ -158,9 +193,21 @@ function get_addon_autoload_config($truncate = false)
     $url_domain_deploy = Config::get('url_domain_deploy');
     $addons = get_addon_list();
     $domain = [];
-    foreach ($addons as $name => $addon) {
-        if (!$addon['state'])
+
+    $priority = array_merge($priority, array_keys($addons));
+
+    $orderedAddons = array();
+    foreach ($priority as $key) {
+        if (!isset($addons[$key])) {
             continue;
+        }
+        $orderedAddons[$key] = $addons[$key];
+    }
+
+    foreach ($orderedAddons as $name => $addon) {
+        if (!$addon['state']) {
+            continue;
+        }
 
         // 读取出所有公共方法
         $methods = (array)get_class_methods("\\addons\\" . $name . "\\" . ucfirst($name));
@@ -204,8 +251,8 @@ function get_addon_autoload_config($truncate = false)
 
 /**
  * 获取插件类的类名
- * @param $name 插件名
- * @param string $type 返回命名空间类型
+ * @param string $name  插件名
+ * @param string $type  返回命名空间类型
  * @param string $class 当前类名
  * @return string
  */
@@ -275,7 +322,7 @@ function get_addon_config($name)
 
 /**
  * 获取插件的单例
- * @param $name
+ * @param string $name 插件名
  * @return mixed|null
  */
 function get_addon_instance($name)
@@ -295,8 +342,8 @@ function get_addon_instance($name)
 
 /**
  * 插件显示内容里生成访问插件的url
- * @param $url 地址 格式：插件名/控制器/方法
- * @param array $vars 变量参数
+ * @param string      $url    地址 格式：插件名/控制器/方法
+ * @param array       $vars   变量参数
  * @param bool|string $suffix 生成的URL后缀
  * @param bool|string $domain 域名
  * @return bool|string
@@ -321,6 +368,7 @@ function addon_url($url, $vars = [], $suffix = true, $domain = false)
     $dispatch = think\Request::instance()->dispatch();
     $indomain = isset($dispatch['var']['indomain']) && $dispatch['var']['indomain'] ? true : false;
     $domainprefix = $config && isset($config['domain']) && $config['domain'] ? $config['domain'] : '';
+    $domain = $domainprefix && Config::get('url_domain_deploy') ? $domainprefix : $domain;
     $rewrite = $config && isset($config['rewrite']) && $config['rewrite'] ? $config['rewrite'] : [];
     if ($rewrite) {
         $path = substr($url, stripos($url, '/') + 1);
@@ -350,13 +398,15 @@ function addon_url($url, $vars = [], $suffix = true, $domain = false)
             $vars[substr($k, 1)] = $v;
         }
     }
-    return url($val, [], $suffix, $domain) . ($vars ? '?' . http_build_query($vars) : '');
+    $url = url($val, [], $suffix, $domain) . ($vars ? '?' . http_build_query($vars) : '');
+    $url = preg_replace("/\/((?!index)[\w]+)\.php\//i", "/", $url);
+    return $url;
 }
 
 /**
  * 设置基础配置信息
- * @param string $name 插件名
- * @param array $array
+ * @param string $name  插件名
+ * @param array  $array 配置数据
  * @return boolean
  * @throws Exception
  */
@@ -365,20 +415,25 @@ function set_addon_info($name, $array)
     $file = ADDON_PATH . $name . DIRECTORY_SEPARATOR . 'info.ini';
     $addon = get_addon_instance($name);
     $array = $addon->setInfo($name, $array);
+    if (!isset($array['name']) || !isset($array['title']) || !isset($array['version'])) {
+        throw new Exception("插件配置写入失败");
+    }
     $res = array();
     foreach ($array as $key => $val) {
         if (is_array($val)) {
             $res[] = "[$key]";
-            foreach ($val as $skey => $sval)
+            foreach ($val as $skey => $sval) {
                 $res[] = "$skey = " . (is_numeric($sval) ? $sval : $sval);
-        } else
+            }
+        } else {
             $res[] = "$key = " . (is_numeric($val) ? $val : $val);
+        }
     }
     if ($handle = fopen($file, 'w')) {
         fwrite($handle, implode("\n", $res) . "\n");
         fclose($handle);
         //清空当前配置缓存
-        Config::set($name, NULL, 'addoninfo');
+        Config::set($name, null, 'addoninfo');
     } else {
         throw new Exception("文件没有写入权限");
     }
@@ -387,9 +442,11 @@ function set_addon_info($name, $array)
 
 /**
  * 写入配置文件
- * @param string $name 插件名
- * @param array $config 配置数据
+ * @param string  $name      插件名
+ * @param array   $config    配置数据
  * @param boolean $writefile 是否写入配置文件
+ * @return bool
+ * @throws Exception
  */
 function set_addon_config($name, $config, $writefile = true)
 {
@@ -412,16 +469,19 @@ function set_addon_config($name, $config, $writefile = true)
 /**
  * 写入配置文件
  *
- * @param string $name 插件名
- * @param array $array
+ * @param string $name  插件名
+ * @param array  $array 配置数据
  * @return boolean
  * @throws Exception
  */
 function set_addon_fullconfig($name, $array)
 {
     $file = ADDON_PATH . $name . DIRECTORY_SEPARATOR . 'config.php';
+    if (!is_really_writable($file)) {
+        throw new Exception("文件没有写入权限");
+    }
     if ($handle = fopen($file, 'w')) {
-        fwrite($handle, "<?php\n\n" . "return " . var_export($array, TRUE) . ";\n");
+        fwrite($handle, "<?php\n\n" . "return " . var_export($array, true) . ";\n");
         fclose($handle);
     } else {
         throw new Exception("文件没有写入权限");

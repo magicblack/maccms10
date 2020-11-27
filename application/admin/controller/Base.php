@@ -25,6 +25,7 @@ class Base extends All
         }
         else {
             $res = model('Admin')->checkLogin();
+
             if ($res['code'] > 1) {
                 return $this->redirect('index/login');
             }
@@ -33,7 +34,7 @@ class Base extends All
             $this->_makesize = $GLOBALS['config']['app']['makesize'];
 
             if($this->_cl!='Update' && !$this->check_auth($this->_cl,$this->_ac)){
-                return $this->error('您没有权限访问此页面');
+                return $this->error(lang('permission_denied'));
             }
         }
         $this->assign('cl',$this->_cl);

@@ -11,7 +11,7 @@ class Timming extends Base
 
     public function index()
     {
-        $param = input('','','trim,urldecode');;
+        $param = input('','','trim,urldecode');
         $name = $param['name'];
         if(empty($name)){
             //return $this->error('参数错误!');
@@ -27,8 +27,8 @@ class Timming extends Base
             $curweek= date('w',time()) ;	$curhours= date("H",time());
             if(strlen($oldhours)==1 && intval($oldhours) <10){ $oldhours= '0'.$oldhours; }
             if(strlen($curhours)==1 && intval($curhours) <10){ $curhours= substr($curhours,1,1); }
-            $last = (!empty($v['runtime']) ? date('Y-m-d H:i:s',$v['runtime']) :'从未');
-            $status = $v['status'] == '1' ? '开启' : '关闭';
+            $last = (!empty($v['runtime']) ? date('Y-m-d H:i:s',$v['runtime']) : lang('api/never'));
+            $status = $v['status'] == '1' ?  lang('open'): lang('close');
 
             //测试
             //$v['runtime']=0;
@@ -36,20 +36,20 @@ class Timming extends Base
             if( $v['status']=='1' &&
                 ( empty($v['runtime']) || ($oldweek."-".$oldhours) != ($curweek."-".$curhours) && strpos($v['weeks'],$curweek)!==false && strpos($v['hours'],$curhours)!==false  || $param['enforce'] =='1')
                ) {
-                mac_echo('任务：'.$v['name'] . '，状态：'. $status .'，上次执行时间：'. $last . '---执行');
+                mac_echo( lang('api/task_tip_exec',[$v['name'] ,$status,$last]));
                 $list[$k]['runtime'] = time();
 
 
                 $res = mac_arr2file( APP_PATH .'extra/timming.php', $list);
                 if($res===false){
-                    return $this->error('保存配置文件失败，请重试!');
+                    return $this->error(lang('write_err_config'));
                 }
                 $file = $v['file'];
                 $this->$file($v['param']);
                 die;
             }
             else{
-                mac_echo('任务：'.$v['name'] . '，状态：'. $status .'，上次执行时间：'. $last .'---跳过');
+                mac_echo(lang('api/task_tip_jump',[$v['name'] ,$status,$last]));
             }
         }
     }

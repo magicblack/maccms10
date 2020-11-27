@@ -100,7 +100,7 @@ class Vod extends Base
         if(!empty($param['repeat'])){
             if($param['page'] ==1){
                 Db::execute('DROP TABLE IF EXISTS '.config('database.prefix').'tmpvod');
-                Db::execute('CREATE TABLE IF NOT EXISTS `'.config('database.prefix').'tmpvod` ENGINE=MyISAM as (SELECT min(vod_id) as id1,vod_name as name1 FROM '.config('database.prefix').'vod GROUP BY name1 HAVING COUNT(name1)>1)');
+                Db::execute('CREATE TABLE IF NOT EXISTS `'.config('database.prefix').'tmpvod`  ENGINE=MyISAM as (SELECT min(vod_id) as id1,vod_name as name1 FROM '.config('database.prefix').'vod GROUP BY name1 HAVING COUNT(name1)>1)');
             }
             $order='vod_name asc';
             $res = model('Vod')->listRepeatData($where,$order,$param['page'],$param['limit']);
@@ -145,7 +145,7 @@ class Vod extends Base
         $this->assign('server_list',$server_list);
 
 
-        $this->assign('title','视频管理');
+        $this->assign('title',lang('admin/vod/title'));
         return $this->fetch('admin@vod/index');
     }
 
@@ -159,15 +159,15 @@ class Vod extends Base
             if(empty($param['ck_del']) && empty($param['ck_level']) && empty($param['ck_status']) && empty($param['ck_lock']) && empty($param['ck_hits'])
                 && empty($param['ck_points']) && empty($param['ck_copyright'])
             ){
-                return $this->error('没有选择任何参数');
+                return $this->error(lang('param_err'));
             }
 
 
             if($param['ck_del']==2 && empty($param['player'])){
-                return $this->error('删除播放组时，必须选择播放器参数');
+                return $this->error(lang('admin/vod/del_play_must_select_play'));
             }
             if($param['ck_del']==3 && empty($param['downer'])){
-                return $this->error('删除下载组时，必须选择下载器参数');
+                return $this->error(lang('admin/vod/del_down_must_select_down'));
             }
 
             $where = [];
@@ -245,7 +245,7 @@ class Vod extends Base
 
             if($param['ck_del'] == 1){
                 $res = model('Vod')->delData($where);
-                mac_echo('批量删除完毕');
+                mac_echo(lang('multi_del_ok'));
                 mac_jump( url('vod/batch') ,3);
                 exit;
             }
@@ -263,11 +263,11 @@ class Vod extends Base
             }
 
             if($param['page'] > $param['page_count']) {
-                mac_echo('批量操作完毕');
+                mac_echo(lang('multi_opt_ok'));
                 mac_jump( url('vod/batch') ,3);
                 exit;
             }
-            mac_echo( "<font color=red>共".$param['total']."条数据需要处理，每页".$param['limit']."条，共".$param['page_count']."页，正在处理第".$param['page']."页数据</font>");
+            mac_echo( "<font color=red>".lang('admin/batch_tip',[$param['total'],$param['limit'],$param['page_count'],$param['page']])."</font>");
 
             $page = $param['page_count'] - $param['page'] + 1;
             $order='vod_id desc';
@@ -282,43 +282,43 @@ class Vod extends Base
 
                 if(!empty($param['ck_level']) && !empty($param['val_level'])){
                     $update['vod_level'] = $param['val_level'];
-                    $des .= '&nbsp;推荐值：'.$param['val_level'].'；';
+                    $des .= '&nbsp;'.lang('level').'：'.$param['val_level'].'；';
                 }
                 if(!empty($param['ck_status']) && isset($param['val_status'])){
                     $update['vod_status'] = $param['val_status'];
-                    $des .= '&nbsp;状态：'.($param['val_status'] ==1 ? '[已审核]':'[未审核]') .'；';
+                    $des .= '&nbsp;'.lang('status').'：'.($param['val_status'] ==1 ? '['.lang('reviewed').']':'['.lang('reviewed_not').']') .'；';
                 }
                 if(!empty($param['ck_copyright']) && isset($param['val_copyright'])){
                     $update['vod_copyright'] = $param['val_copyright'];
-                    $des .= '&nbsp;版权：'.($param['val_copyright'] ==1 ? '[已开启]':'[未关闭') .'；';
+                    $des .= '&nbsp;'.lang('copyright').'：'.($param['val_copyright'] ==1 ? '['.lang('open').']':'['.lang('close').'') .'；';
                 }
                 if(!empty($param['ck_lock']) && isset($param['val_lock'])){
                     $update['vod_lock'] = $param['val_lock'];
-                    $des .= '&nbsp;推荐值：'.($param['val_lock']==1 ? '[锁定]':'[解锁]').'；';
+                    $des .= '&nbsp;'.lang('lock').'：'.($param['val_lock']==1 ? '['.lang('lock').']':'['.lang('unlock').']').'；';
                 }
                 if(!empty($param['ck_hits']) && $param['val_hits_min']!='' && $param['val_hits_max']!='' ){
                     $update['vod_hits'] = rand($param['val_hits_min'],$param['val_hits_max']);
-                    $des .= '&nbsp;人气：'.$update['vod_hits'].'；';
+                    $des .= '&nbsp;'.lang('hits').'：'.$update['vod_hits'].'；';
                 }
                 if(!empty($param['ck_points']) && $param['val_points_play']!=''  ){
                     $update['vod_points_play'] = $param['val_points_play'];
-                    $des .= '&nbsp;播放积分：'.$param['val_points_play'].'；';
+                    $des .= '&nbsp;'.lang('points_play').'：'.$param['val_points_play'].'；';
                 }
                 if(!empty($param['ck_points']) && $param['val_points_down']!='' ){
                     $update['vod_points_down'] = $param['val_points_down'];
-                    $des .= '&nbsp;下载积分：'.$param['val_points_down'].'；';
+                    $des .= '&nbsp;'.lang('points_down').'：'.$param['val_points_down'].'；';
                 }
 
                 if($param['ck_del'] == 2 || $param['ck_del'] ==3){
                     if($param['ck_del']==2) {
                         $pre = 'vod_play';
                         $par = 'player';
-                        $des .= '&nbsp;播放组：';
+                        $des .= '&nbsp;'.lang('play_group').'：';
                     }
                     elseif($param['ck_del']==3){
                         $pre = 'vod_down';
                         $par='downer';
-                        $des .= '&nbsp;下载组：';
+                        $des .= '&nbsp;'.lang('down_group').'：';
                     }
 
 
@@ -327,7 +327,7 @@ class Vod extends Base
                         $update[$pre.'_server'] = '';
                         $update[$pre.'_note'] = '';
                         $update[$pre.'_url'] = '';
-                        $des .= '删除为空；';
+                        $des .= lang('del_empty').'；';
                     }
                     else{
                         $vod_from_arr = explode('$$$',$v[$pre.'_from']);
@@ -346,10 +346,10 @@ class Vod extends Base
                             $update[$pre.'_server'] = join('$$$',$vod_server_arr);
                             $update[$pre.'_note'] = join('$$$',$vod_note_arr);
                             $update[$pre.'_url'] = join('$$$',$vod_url_arr);
-                            $des .= '删除；';
+                            $des .= lang('del'). '；';
                         }
                         else{
-                            $des .= '跳过；';
+                            $des .= lang('jump_over').'；';
                         }
                     }
                 }
@@ -383,7 +383,7 @@ class Vod extends Base
         $this->assign('server_list',$server_list);
 
 
-        $this->assign('title','视频批量操作');
+        $this->assign('title',lang('admin/vod/title'));
         return $this->fetch('admin@vod/batch');
     }
 
@@ -441,7 +441,7 @@ class Vod extends Base
         $this->assign('vod_plot_list',$info['vod_plot_list']);
 
 
-        $this->assign('title','视频信息');
+        $this->assign('title',lang('admin/vod/title'));
         return $this->fetch('admin@vod/info');
     }
 
@@ -467,7 +467,7 @@ class Vod extends Base
         $this->assign('vod_plot_list',$info['vod_plot_list']);
 
 
-        $this->assign('title','分集剧情信息');
+        $this->assign('title',lang('admin/vod/plot/title'));
         return $this->fetch('admin@vod/iplot');
     }
 
@@ -493,11 +493,11 @@ class Vod extends Base
             $sql = 'delete from '.config('database.prefix').'vod where vod_name in(select name1 from '.config('database.prefix').'tmpvod) and vod_id '.$st.'(select id1 from '.config('database.prefix').'tmpvod)';
             $res = model('Vod')->execute($sql);
             if($res===false){
-                return $this->success('删除失败');
+                return $this->success(lang('del_err'));
             }
-            return $this->success('删除成功');
+            return $this->success(lang('del_ok'));
         }
-        return $this->error('参数错误');
+        return $this->error(lang('param_err'));
     }
 
     public function field()
@@ -510,7 +510,7 @@ class Vod extends Base
         $end = $param['end'];
 
 
-        if(!empty($ids) && in_array($col,['vod_status','vod_lock','vod_level','vod_hits','type_id'])){
+        if(!empty($ids) && in_array($col,['vod_status','vod_lock','vod_level','vod_hits','type_id','vod_copyright'])){
             $where=[];
             $where['vod_id'] = ['in',$ids];
             $update = [];
@@ -538,7 +538,7 @@ class Vod extends Base
             }
             return $this->success($res['msg']);
         }
-        return $this->error('参数错误');
+        return $this->error(lang('param_err'));
     }
 
     public function updateToday()

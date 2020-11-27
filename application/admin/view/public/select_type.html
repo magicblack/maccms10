@@ -4,7 +4,7 @@
 
     <div class="layui-input-inline w150">
         <select name="val">
-            <option value="">选择分类</option>
+            <option value="">{:lang('select_type')}</option>
             {volist name="type_tree" id="vo"}
             {if condition="$vo.type_mid eq $mid"}
             <option value="{$vo.type_id}" >{$vo.type_name}</option>
@@ -16,7 +16,7 @@
         </select>
     </div>
     <div class="layui-input-inline">
-        <button type="submit" class="layui-btn" lay-submit="" refresh="{$refresh}" lay-filter="formSubmit">保 存</button>
+        <button type="submit" class="layui-btn" lay-submit="" refresh="{$refresh}" lay-filter="formSubmit">{:lang('btn_save')}</button>
     </div>
 </form>
 

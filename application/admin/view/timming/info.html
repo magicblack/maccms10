@@ -3,59 +3,59 @@
     <form class="layui-form layui-form-pane" method="post" action="">
         <input type="hidden" name="__token__" value="{$Request.token}" />
                     <div class="layui-form-item">
-                        <label class="layui-form-label">状态：</label>
+                        <label class="layui-form-label">{:lang('status')}：</label>
                         <div class="layui-input-inline">
-                            <input name="status" type="radio" id="rad-1" value="0" title="禁用" {if condition="$info['status'] neq 1"}checked {/if}>
-                            <input name="status" type="radio" id="rad-2" value="1" title="启用" {if condition="$info['status'] eq 1"}checked {/if}>
+                            <input name="status" type="radio" id="rad-1" value="0" title="{:lang('disable')}" {if condition="$info['status'] neq 1"}checked {/if}>
+                            <input name="status" type="radio" id="rad-2" value="1" title="{:lang('enable')}" {if condition="$info['status'] eq 1"}checked {/if}>
                         </div>
                     </div>
                     <div class="layui-form-item">
-                        <label class="layui-form-label">名称：</label>
+                        <label class="layui-form-label">{:lang('name')}：</label>
                         <div class="layui-input-inline w500">
-                            <input type="text" class="layui-input" value="{$info.name}" placeholder="唯一标识英文" id="name" name="name" {if condition="$info.name neq ''"} readonly="readonly"{/if}>
+                            <input type="text" class="layui-input" value="{$info.name}" placeholder="{:lang('admin/timming/unique_id')}" id="name" name="name" {if condition="$info.name neq ''"} readonly="readonly"{/if}>
                         </div>
-                        <div class="layui-form-mid layui-word-aux">调用方法/api.php/timming/index?name={$info.name}</div>
+                        <div class="layui-form-mid layui-word-aux">{:lang('admin/timming/call_method')}/api.php/timming/index?name={$info.name}</div>
                     </div>
                     <div class="layui-form-item">
-                        <label class="layui-form-label">备注：</label>
+                        <label class="layui-form-label">{:lang('remarks')}：</label>
                         <div class="layui-input-inline w500">
-                            <input type="text" class="layui-input" value="{$info.des}" placeholder="备注信息" id="des" name="des">
+                            <input type="text" class="layui-input" value="{$info.des}" placeholder="" id="des" name="des">
                         </div>
                     </div>
                     <div class="layui-form-item">
-                        <label class="layui-form-label">执行文件：</label>
+                        <label class="layui-form-label">{:lang('admin/timming/exec_file')}：</label>
                         <div class="layui-input-inline w500">
                             <select class="" name="file">
-                                <option value="collect" {if condition="$info['file'] eq 'collect'"}selected{/if}>采集资源库collect</option>
-                                <option value="make" {if condition="$info['file'] eq 'make'"}selected{/if}>生成make</option>
-                                <option value="cj" {if condition="$info['file'] eq 'cj'"}selected{/if}>采集规则cj</option>
-                                <option value="cache" {if condition="$info['file'] eq 'cache'"}selected{/if}>清理缓存cache</option>
-                                <option value="urlsend" {if condition="$info['file'] eq 'urlsend'"}selected{/if}>网址推送urlsend</option>
+                                <option value="collect" {if condition="$info['file'] eq 'collect'"}selected{/if}>{:lang('admin/timming/collect')}</option>
+                                <option value="make" {if condition="$info['file'] eq 'make'"}selected{/if}>{:lang('admin/timming/make')}</option>
+                                <option value="cj" {if condition="$info['file'] eq 'cj'"}selected{/if}>{:lang('admin/timming/cj')}</option>
+                                <option value="cache" {if condition="$info['file'] eq 'cache'"}selected{/if}>{:lang('admin/timming/cache')}</option>
+                                <option value="urlsend" {if condition="$info['file'] eq 'urlsend'"}selected{/if}>{:lang('admin/timming/urlsend')}</option>
                             </select>
                         </div>
                     </div>
                     <div class="layui-form-item">
-                        <label class="layui-form-label">附加参数：</label>
+                        <label class="layui-form-label">{:lang('admin/timming/attach_param')}：</label>
                         <div class="layui-input-block">
-                            <input type="text" class="layui-input" value="{$info.param}" placeholder="可以留空，例如:ac=timming&id=1" id="param" name="param">
+                            <input type="text" class="layui-input" value="{$info.param}" placeholder="{:lang('admin/timming/attach_param_tip')}" id="param" name="param">
                         </div>
                     </div>
 
                     <div class="layui-form-item">
-                        <label class="layui-form-label">执行周期：</label>
+                        <label class="layui-form-label">{:lang('admin/timming/exec_cycle')}：</label>
                         <div class="layui-input-block role-list-form">
-                            <input type="checkbox" name="weeks[]" class="layui-checkbox" lay-skin="primary" value="1" title="周一" {if condition="strpos($info['weeks'],'1')!==false"}checked{/if}>
-                            <input type="checkbox" name="weeks[]" class="layui-checkbox" lay-skin="primary" value="2" title="周二" {if condition="strpos($info['weeks'],'2')!==false"}checked{/if}>
-                            <input type="checkbox" name="weeks[]" class="layui-checkbox" lay-skin="primary" value="3" title="周三" {if condition="strpos($info['weeks'],'3')!==false"}checked{/if}>
-                            <input type="checkbox" name="weeks[]" class="layui-checkbox" lay-skin="primary" value="4" title="周四" {if condition="strpos($info['weeks'],'4')!==false"}checked{/if}>
-                            <input type="checkbox" name="weeks[]" class="layui-checkbox" lay-skin="primary" value="5" title="周五" {if condition="strpos($info['weeks'],'5')!==false"}checked{/if}>
-                            <input type="checkbox" name="weeks[]" class="layui-checkbox" lay-skin="primary" value="6" title="周六" {if condition="strpos($info['weeks'],'6')!==false"}checked{/if}>
-                            <input type="checkbox" name="weeks[]" class="layui-checkbox" lay-skin="primary" value="0" title="周日" {if condition="strpos($info['weeks'],'0')!==false"}checked{/if}>
+                            <input type="checkbox" name="weeks[]" class="layui-checkbox" lay-skin="primary" value="1" title="{:lang('monday')}" {if condition="strpos($info['weeks'],'1')!==false"}checked{/if}>
+                            <input type="checkbox" name="weeks[]" class="layui-checkbox" lay-skin="primary" value="2" title="{:lang('tuesday')}" {if condition="strpos($info['weeks'],'2')!==false"}checked{/if}>
+                            <input type="checkbox" name="weeks[]" class="layui-checkbox" lay-skin="primary" value="3" title="{:lang('wednesday')}" {if condition="strpos($info['weeks'],'3')!==false"}checked{/if}>
+                            <input type="checkbox" name="weeks[]" class="layui-checkbox" lay-skin="primary" value="4" title="{:lang('thursday')}" {if condition="strpos($info['weeks'],'4')!==false"}checked{/if}>
+                            <input type="checkbox" name="weeks[]" class="layui-checkbox" lay-skin="primary" value="5" title="{:lang('friday')}" {if condition="strpos($info['weeks'],'5')!==false"}checked{/if}>
+                            <input type="checkbox" name="weeks[]" class="layui-checkbox" lay-skin="primary" value="6" title="{:lang('saturday')}" {if condition="strpos($info['weeks'],'6')!==false"}checked{/if}>
+                            <input type="checkbox" name="weeks[]" class="layui-checkbox" lay-skin="primary" value="0" title="{:lang('sunday')}" {if condition="strpos($info['weeks'],'0')!==false"}checked{/if}>
 
                         </div>
                     </div>
                     <div class="layui-form-item">
-                        <label class="layui-form-label">执行时间：</label>
+                        <label class="layui-form-label">{:lang('admin/timming/exec_time')}：</label>
                         <div class="layui-input-block role-list-form">
                             <input type="checkbox" name="hours[]" class="layui-checkbox" lay-skin="primary" value="00" title="00" {if condition="strpos($info['hours'],'00')!==false"}checked{/if}>
                             <input type="checkbox" name="hours[]" class="layui-checkbox" lay-skin="primary" value="01" title="01" {if condition="strpos($info['hours'],'01')!==false"}checked{/if}>
@@ -87,11 +87,11 @@
 
         <div class="layui-form-item center">
             <div class="layui-input-block">
-                <button type="button" class="layui-btn layui-btn-normal formCheckAll" lay-filter="formCheckAll" >全选</button>
-                <button type="button" class="layui-btn layui-btn-normal formCheckOther" lay-filter="formCheckOther">反选</button>
+                <button type="button" class="layui-btn layui-btn-normal formCheckAll" lay-filter="formCheckAll" >{:lang('check_all')}</button>
+                <button type="button" class="layui-btn layui-btn-normal formCheckOther" lay-filter="formCheckOther">{:lang('check_other')}</button>
 
-                <button type="submit" class="layui-btn" lay-submit="" lay-filter="formSubmit" data-child="true">保 存</button>
-                <button class="layui-btn layui-btn-warm" type="reset">还 原</button>
+                <button type="submit" class="layui-btn" lay-submit="" lay-filter="formSubmit" data-child="true">{:lang('btn_save')}</button>
+                <button class="layui-btn layui-btn-warm" type="reset">{:lang('btn_reset')}</button>
             </div>
         </div>
     </form>
@@ -108,14 +108,9 @@
 
         // 验证
         form.verify({
-            from: function (value) {
-                if (value == "") {
-                    return "请输入编码";
-                }
-            },
             show: function (value) {
                 if (value == "") {
-                    return "请输入名称";
+                    return "{:lang('name_empty')}";
                 }
             }
         });

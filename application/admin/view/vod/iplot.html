@@ -12,7 +12,7 @@
 
         <div class="layui-tab">
             <ul class="layui-tab-title ">
-                <li class="layui-this">分集剧情</a></li>
+                <li class="layui-this">{:lang('admin/vod/episode_plot')}</a></li>
             </ul>
             <div class="layui-tab-content">
 
@@ -24,9 +24,9 @@
                     <div id="plot_list" class="contents">
                         {volist name="$vod_plot_list" id="vo"}
                         <div class="layui-form-item" data-i="{$key}">
-                            <label class="layui-form-label">剧情{$key}：</label>
-                            <div class="layui-input-inline w500"><input type="text" name="vod_plot_name[]" class="layui-input" value="{$vo.name}" placeholder="剧情标题"></div>
-                            <div class="layui-input-inline w400 p10"><a href="javascript:void(0)" class="j-editor-clear">清空</a>&nbsp;<a href="javascript:void(0)" class="j-editor-remove">删除</a>&nbsp;<a href="javascript:void(0)" class="j-editor-up">上移</a>&nbsp;<a href="javascript:void(0)" class="j-editor-down">下移</a><br></div>
+                            <label class="layui-form-label">{:lang('admin/vod/plot')}{$key}：</label>
+                            <div class="layui-input-inline w500"><input type="text" name="vod_plot_name[]" class="layui-input" value="{$vo.name}" placeholder="{:lang('admin/vod/plot_name')}"></div>
+                            <div class="layui-input-inline w400 p10"><a href="javascript:void(0)" class="j-editor-clear">{:lang('clear')}</a>&nbsp;<a href="javascript:void(0)" class="j-editor-remove">{:lang('del')}</a>&nbsp;<a href="javascript:void(0)" class="j-editor-up">{:lang('admin/vod/move_up')}</a>&nbsp;<a href="javascript:void(0)" class="j-editor-down">{:lang('admin/vod/move_down')}</a><br></div>
                             <div class="p10 m20"> </div>
                             <div class="layui-input-block "><textarea id="vod_plot_detail{$key}" name="vod_plot_detail[]" type="text/plain" style="width:100%;height:150px">{$vo.detail|mac_str_correct=###,'#',chr(13)}</textarea></div>
                             <script>ueArray[{$key}] = editor_getEditor('vod_plot_detail{$key}');</script>
@@ -34,7 +34,7 @@
                         {/volist}
                     </div>
                     <div class="layui-form-item">
-                        <label class=""><button class="layui-btn radius j-plot-add" type="button">添加一集剧情</button></label>
+                        <label class=""><button class="layui-btn radius j-plot-add" type="button">{:lang('add_group')}</button></label>
                         <div class="layui-input-block">
 
                         </div>
@@ -46,8 +46,8 @@
 
                 <div class="layui-form-item center">
                     <div class="layui-input-block">
-                        <button type="submit" class="layui-btn" lay-submit="" lay-filter="formSubmit" data-child="">保 存</button>
-                        <button class="layui-btn layui-btn-warm" type="reset">还 原</button>
+                        <button type="submit" class="layui-btn" lay-submit="" lay-filter="formSubmit" data-child="">{:lang('btn_save')}</button>
+                        <button class="layui-btn layui-btn-warm" type="reset">{:lang('btn_reset')}</button>
                     </div>
                 </div>
     </form>
@@ -68,7 +68,7 @@
         form.verify({
             vod_name: function (value) {
                 if (value == "") {
-                    return "请输入名称";
+                    return "{:lang('name_empty')}";
                 }
             }
         });
@@ -158,7 +158,7 @@
 
         $('.j-plot-add').on('click',function(){
             plot_arr_len++;
-            var tpl='<div class="layui-form-item" data-i="'+plot_arr_len+'"><label class="layui-form-label">剧情'+(plot_arr_len)+'：</label><div class="layui-input-inline w500"><input type="text" name="vod_plot_name[]" class="layui-input" placeholder="剧情标题"></div><div class="layui-input-inline w400 p10"><a href="javascript:void(0)" class="j-editor-clear">清空</a>&nbsp;<a href="javascript:void(0)" class="j-editor-remove">删除</a>&nbsp;<a href="javascript:void(0)" class="j-editor-up">上移</a>&nbsp;<a href="javascript:void(0)" class="j-editor-down">下移</a>&nbsp;</div><div class="p10 m20"></div><div class="layui-input-block"><textarea id="vod_plot_detail'+(plot_arr_len)+'" name="vod_plot_detail[]" class="layui-textarea" style="width:99%;height:250px"></textarea></div></div>';
+            var tpl='<div class="layui-form-item" data-i="'+plot_arr_len+'"><label class="layui-form-label">{:lang('admin/vod/plot')}'+(plot_arr_len)+'：</label><div class="layui-input-inline w500"><input type="text" name="vod_plot_name[]" class="layui-input" placeholder="{:lang('admin/vod/plot_name')}"></div><div class="layui-input-inline w400 p10"><a href="javascript:void(0)" class="j-editor-clear">{:lang('clear')}</a>&nbsp;<a href="javascript:void(0)" class="j-editor-remove">{:lang('del')}</a>&nbsp;<a href="javascript:void(0)" class="j-editor-up">{:lang('admin/vod/move_up')}</a>&nbsp;<a href="javascript:void(0)" class="j-editor-down">{:lang('admin/vod/move_down')}</a>&nbsp;</div><div class="p10 m20"></div><div class="layui-input-block"><textarea id="vod_plot_detail'+(plot_arr_len)+'" name="vod_plot_detail[]" class="layui-textarea" style="width:99%;height:250px"></textarea></div></div>';
             $("#plot_list").append(tpl);
             ueArray[plot_arr_len] = editor_getEditor( 'vod_plot_detail'+plot_arr_len );
         });

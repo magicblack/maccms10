@@ -12,10 +12,10 @@ class Ulog extends Validate
     ];
 
     protected $message  =   [
-        'user_id.require'     => '用户必须',
-        'ulog_mid.require'   => '模块必须',
-        'ulog_type.require'   => '类型必须',
-        'ulog_rid.require'   => '关联ID必须',
+        'user_id.require'     => 'validate/require_user',
+        'ulog_mid.require'   => 'validate/require_id',
+        'ulog_type.require'   => 'validate/require_type',
+        'ulog_rid.require'   => 'validate/require_rid',
 
     ];
 

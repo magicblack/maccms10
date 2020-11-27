@@ -18,7 +18,7 @@ class Group extends Base {
 
     public function getGroupStatusTextAttr($val,$data)
     {
-        $arr = [0=>'禁用',1=>'启用'];
+        $arr = [0=>lang('disable'),1=>lang('enable')];
         return $arr[$data['group_status']];
     }
 
@@ -33,22 +33,22 @@ class Group extends Base {
             $list[$v['group_id']] = $v;
         }
 
-        return ['code'=>1,'msg'=>'数据列表','total'=>$total,'list'=>$list];
+        return ['code'=>1,'msg'=>lang('data_list'),'total'=>$total,'list'=>$list];
     }
 
     public function infoData($where,$field='*')
     {
         if(empty($where) || !is_array($where)){
-            return ['code'=>1001,'msg'=>'参数错误'];
+            return ['code'=>1001,'msg'=>lang('param_err')];
         }
         $info = $this->field($field)->where($where)->find();
 
         if(empty($info)){
-            return ['code'=>1002,'msg'=>'获取数据失败'];
+            return ['code'=>1002,'msg'=>lang('obtain_err')];
         }
         $info = $info->toArray();
         $info['group_popedom'] = json_decode($info['group_popedom'],true);
-        return ['code'=>1,'msg'=>'获取成功','info'=>$info];
+        return ['code'=>1,'msg'=>lang('obtain_ok'),'info'=>$info];
     }
 
     public function saveData($data)
@@ -68,7 +68,7 @@ class Group extends Base {
 
         $validate = \think\Loader::validate('Group');
         if(!$validate->check($data)){
-            return ['code'=>1001,'msg'=>'参数错误：'.$validate->getError() ];
+            return ['code'=>1001,'msg'=>lang('param_err').'：'.$validate->getError() ];
         }
         if(!empty($data['group_id'])){
             $where=[];
@@ -79,40 +79,40 @@ class Group extends Base {
             $res = $this->allowField(true)->insert($data);
         }
         if(false === $res){
-            return ['code'=>1002,'msg'=>'保存失败：'.$this->getError() ];
+            return ['code'=>1002,'msg'=>lang('save_err').'：'.$this->getError() ];
         }
         $this->setCache();
-        return ['code'=>1,'msg'=>'保存成功'];
+        return ['code'=>1,'msg'=>lang('save_ok')];
     }
 
     public function delData($where)
     {
         $cc = model('User')->countData($where);
         if($cc>0){
-            return ['code'=>1002,'msg'=>'删除失败：会员组下还有用户' ];
+            return ['code'=>1002,'msg'=>lang('del_err').'：'.lang('model/group/have_user') ];
         }
         $res = $this->where($where)->delete();
         if($res===false){
-            return ['code'=>1001,'msg'=>'删除失败：'.$this->getError() ];
+            return ['code'=>1001,'msg'=>lang('del_err').'：'.$this->getError() ];
         }
         $this->setCache();
-        return ['code'=>1,'msg'=>'删除成功'];
+        return ['code'=>1,'msg'=>lang('del_ok')];
     }
 
     public function fieldData($where,$col,$val)
     {
         if(!isset($col) || !isset($val)){
-            return ['code'=>1001,'msg'=>'参数错误'];
+            return ['code'=>1001,'msg'=>lang('param_err')];
         }
 
         $data = [];
         $data[$col] = $val;
         $res = $this->allowField(true)->where($where)->update($data);
         if($res===false){
-            return ['code'=>1001,'msg'=>'设置失败：'.$this->getError() ];
+            return ['code'=>1001,'msg'=>lang('set_err').'：'.$this->getError() ];
         }
         $this->setCache();
-        return ['code'=>1,'msg'=>'设置成功'];
+        return ['code'=>1,'msg'=>lang('set_ok')];
     }
 
     public function setCache()

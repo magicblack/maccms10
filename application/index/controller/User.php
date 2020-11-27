@@ -21,7 +21,7 @@ class User extends Base
         } else {
             if ($GLOBALS['user']['user_id'] < 1) {
                 model('User')->logout();
-                return $this->error('未登录', url('user/login'));
+                return $this->error(lang('index/no_login').'', url('user/login'));
             }
             /*
             $res = model('User')->checkLogin();
@@ -76,7 +76,7 @@ class User extends Base
             if ($data['ulog_points'] == 0) {
                 $res = model('Ulog')->saveData($data);
             } else {
-                $res = ['code' => 2001, 'msg' => '收费收据需单独记录'];
+                $res = ['code' => 2001, 'msg' => lang('index/ulog_fee')];
             }
         } else {
             $where = [];
@@ -102,13 +102,13 @@ class User extends Base
     {
         $param = input();
         $data = [];
-        $data['ulog_mid'] = intval($param['mid']) <=0 ? 1:$param['mid'];
+        $data['ulog_mid'] = intval($param['mid']) <=0 ? 1: intval($param['mid']);
         $data['ulog_rid'] = intval($param['id']);
         $data['ulog_sid'] = intval($param['sid']);
         $data['ulog_nid'] = intval($param['nid']);
 
         if (!in_array($param['mid'], ['1','2']) || !in_array($param['type'], ['1','4','5']) || empty($data['ulog_rid']) ) {
-            return json(['code' => 2001, 'msg' => '参数错误']);
+            return json(['code' => 2001, 'msg' => lang('param_err')]);
         }
         $data['ulog_type'] = $param['type'];
         $data['user_id'] = $GLOBALS['user']['user_id'];
@@ -144,17 +144,17 @@ class User extends Base
 
         $res = model('Ulog')->infoData($data);
         if ($res['code'] == 1) {
-            return json(['code' => 1, 'msg' => '您已经购买过此条数据，无需再次支付，请刷新页面重试']);
+            return json(['code' => 1, 'msg' => lang('index/buy_popedom1')]);
         }
 
         if ($data['ulog_points'] > $GLOBALS['user']['user_points']) {
-            return json(['code' => 2002, 'msg' => '对不起,查看此页面数据需要[' . $data['ulog_points'] . ']积分，您还剩下[' . $GLOBALS['user']['user_points'] . ']积分，请先充值！']);
+            return json(['code' => 2002, 'msg' => lang('index/buy_popedom1',[$data['ulog_points'],$GLOBALS['user']['user_points']])]);
         } else {
             $where = [];
             $where['user_id'] = $GLOBALS['user']['user_id'];
             $res = model('User')->where($where)->setDec('user_points',$data['ulog_points']);
             if ($res === false) {
-                return json(['code' => 2003, 'msg' => '对不起,更新用户积分信息失败，请刷新重试！']);
+                return json(['code' => 2003, 'msg' => lang('index/buy_popedom2')]);
             }
 
             //积分日志
@@ -202,7 +202,7 @@ class User extends Base
 
     public function oauth($type = '')
     {
-        empty($type) && $this->error('参数错误');
+        empty($type) && $this->error(lang('param_err'));
         //加载ThinkOauth类并实例化一个对象
         $sns = ThinkOauth::getInstance($type);
         //跳转到授权页面
@@ -213,7 +213,7 @@ class User extends Base
     public function logincallback($type = '', $code = '')
     {
         if (empty($type) || empty($code)) {
-            return $this->error('参数错误');
+            return $this->error(lang('param_err'));
         }
         //加载ThinkOauth类并实例化一个对象
         $sns = ThinkOauth::getInstance($type);
@@ -234,7 +234,7 @@ class User extends Base
 
                     if ($check['info'][$col] == $openid) {
                         //无需再次绑定
-                        return json(['code' => 1001, 'msg' => '已经绑定该账号']);
+                        return json(['code' => 1001, 'msg' => lang('index/bind_haved')]);
                     } else {
                         //解除原有绑定
                         $where = [];
@@ -248,7 +248,7 @@ class User extends Base
                         $update = [];
                         $update[$col] = $openid;
                         model('User')->where($where)->update($update);
-                        return json(['code' => 1, 'msg' => '绑定成功']);
+                        return json(['code' => 1, 'msg' => lang('index/bind_ok')]);
                     }
                 }
 
@@ -267,7 +267,7 @@ class User extends Base
                     $reg = model('User')->register($data);
                     if ($reg['code'] > 1) {
                         //注册失败
-                        return $this->error('同步信息注册失败，请联系管理员');
+                        return $this->error(lang('index/logincallback1'));
                     }
                 }
                 //直接登录。。。
@@ -280,7 +280,7 @@ class User extends Base
                 return $this->error($res['msg']);
             }
         } else {
-            return $this->error('获取第三方用户信息失败，请重试');
+            return $this->error(lang('index/logincallback2'));
         }
     }
 
@@ -360,7 +360,7 @@ class User extends Base
 
             $GLOBALS['config']['user']['login_verify'] = '0';
             $res = model('User')->login($param);
-            $res['msg'] = '注册成功，' . $res['msg'];
+            $res['msg'] = lang('index/reg_ok').'，' . $res['msg'];
             return json($res);
         }
         if (!empty($param['uid'])) {
@@ -384,22 +384,19 @@ class User extends Base
     public function portrait()
     {
         if ($GLOBALS['config']['user']['portrait_status'] == 0) {
-            return json(['code' => 0, 'msg' => '未开启自定义头像功能！']);
+            return json(['code' => 0, 'msg' => lang('index/portrait_tip1')]);
         }
 
         $file = request()->file('file');
         if (empty($file)) {
-            return json(['code' => 0, 'msg' => '未找到上传的文件(原因：表单名可能错误，默认表单名“file”)！']);
-        }
-        if ($file->getMime() == 'text/x-php') {
-            return json(['code' => 0, 'msg' => '禁止上传php,html文件！']);
+            return json(['code' => 0, 'msg' => lang('index/portrait_no_upload')]);
         }
 
         $upload_image_ext = 'jpg,png,gif';
         if ($file->checkExt($upload_image_ext)) {
             $type = 'image';
         } else {
-            return json(['code' => 0, 'msg' => '非系统允许的上传格式！']);
+            return json(['code' => 0, 'msg' => lang('index/portrait_ext')]);
         }
 
         $uniq = $GLOBALS['user']['user_id'] % 10;
@@ -415,7 +412,7 @@ class User extends Base
 
         $upfile = $file->move($_upload_path, $_save_name);
         if (!is_file($_upload_path . $_save_name)) {
-            return json(['code' => 0, 'msg' => '文件上传失败！']);
+            return json(['code' => 0, 'msg' => lang('index/upload_err')]);
         }
         $file = $_save_path . str_replace('\\', '/', $_save_name);
         $config = [
@@ -440,11 +437,11 @@ class User extends Base
             $where['user_id'] = $GLOBALS['user']['user_id'];
             $res = model('User')->where($where)->update($update);
             if ($res === false) {
-                return json(['code' => 0, 'msg' => '更新会员头像信息失败！']);
+                return json(['code' => 0, 'msg' => lang('index/portrait_err')]);
             }
             return json(['code' => 1, 'msg' => 'ok', 'file' =>  '' . MAC_PATH . $new_file . '?' . mt_rand(1, 9999)]);
         } catch (\Exception $e) {
-            return json(['code' => 0, 'msg' => '生成缩放头像图片文件失败！']);
+            return json(['code' => 0, 'msg' => lang('index/portrait_thumb_err')]);
         }
     }
 
@@ -466,7 +463,7 @@ class User extends Base
             $res = model('User')->findpass_msg($param);
             return json($res);
         }
-        $param['ac_text'] = $param['ac'] == 'phone' ? '手机' : '邮箱';
+        $param['ac_text'] = $param['ac'] == 'phone' ? lang('mobile') : lang('email');
         $this->assign('param', $param);
         return $this->fetch('user/findpass_msg');
     }
@@ -494,11 +491,11 @@ class User extends Base
             } else {
                 $price = input('param.price');
                 if (empty($price)) {
-                    return json(['code' => 1001, 'msg' => '参数错误']);
+                    return json(['code' => 1001, 'msg' => lang('param_err')]);
                 }
 
                 if ($price < $GLOBALS['config']['pay']['min']) {
-                    return json(['code' => 1002, 'msg' => '最小充值金额不能低于' . $GLOBALS['config']['pay']['min'] . '元']);
+                    return json(['code' => 1002, 'msg' =>lang('index/min_pay',[$GLOBALS['config']['pay']['min']])]);
                 }
 
                 $data = [];
@@ -548,11 +545,11 @@ class User extends Base
         $payment = strtolower(htmlspecialchars(urldecode(trim($param['payment']))));
 
         if (empty($order_code) && empty($order_id) && empty($payment)) {
-            return $this->error('参数错误');
+            return $this->error(lang('param_err'));
         }
 
         if ($GLOBALS['config']['pay'][$payment]['appid'] == '') {
-            return $this->error('该支付选项未开启');
+            return $this->error(lang('index/payment_status'));
         }
 
         //核实订单
@@ -561,10 +558,10 @@ class User extends Base
         $where['user_id'] = $GLOBALS['user']['user_id'];
         $res = model('Order')->infoData($where);
         if ($res['code'] > 1) {
-            return $this->error('获取单据失败');
+            return $this->error(lang('index/order_not'));
         }
         if ($res['info']['order_status'] == 1) {
-            return $this->error('该单据已支付完成');
+            return $this->error(lang('index/order_payed'));
         }
 
         $this->assign('order', $res['info']);
@@ -593,7 +590,7 @@ class User extends Base
             QRcode::png($data,false,QR_ECLEVEL_L,10);
         }
         else{
-            return $this->error('参数错误');
+            return $this->error(lang('param_err'));
         }
     }
 
@@ -617,7 +614,7 @@ class User extends Base
         $this->assign('type_tree', $type_tree);
 
         $n = 1;
-        $ids = [1 => '列表页', 2 => '内容页', 3 => '播放页', 4 => '下载页', '5' => '试看'];
+        $ids = [1 => lang('index/page_type'), 2 => lang('index/page_detail'), 3 => lang('index/page_play'), 4 => lang('index/page_down'), '5' => lang('index/trysee')];
         foreach ($type_tree as $k1 => $v1) {
             unset($type_tree[$k1]['type_extend']);
             foreach ($ids as $a => $b) {
@@ -659,7 +656,6 @@ class User extends Base
 
         $this->assign('param',$param);
         $this->assign('list', $res['list']);
-        $this->assign('title', '我的点播');
         $pages = mac_page_param($res['total'], $param['limit'], $param['page'], url('user/plays', ['page' => 'PAGELINK']));
         $this->assign('__PAGING__', $pages);
         return $this->fetch('user/plays');
@@ -680,7 +676,6 @@ class User extends Base
 
         $this->assign('param',$param);
         $this->assign('list', $res['list']);
-        $this->assign('title', '我的下载');
         $pages = mac_page_param($res['total'], $param['limit'], $param['page'], url('user/downs', ['page' => 'PAGELINK']));
         $this->assign('__PAGING__', $pages);
         return $this->fetch('user/downs');
@@ -703,7 +698,6 @@ class User extends Base
 
         $this->assign('param',$param);
         $this->assign('list', $res['list']);
-        $this->assign('title', '我的收藏');
         $pages = mac_page_param($res['total'], $param['limit'], $param['page'], url('user/favs', ['page' => 'PAGELINK']));
         $this->assign('__PAGING__', $pages);
         return $this->fetch('user/favs');
@@ -729,7 +723,6 @@ class User extends Base
 
         $this->assign('param',$param);
         $this->assign('list', $res['list']);
-        $this->assign('title', '我的记录');
         $pages = mac_page_param($res['total'], $param['limit'], $param['page'], url('user/ulog', ['page' => 'PAGELINK']));
         $this->assign('__PAGING__', $pages);
         return $this->fetch('user/ulog');
@@ -743,11 +736,11 @@ class User extends Base
         $all = $param['all'];
 
         if (!in_array($type, array('1', '2', '3', '4', '5'))) {
-            return json(['code' => 1001, 'msg' => '参数错误']);
+            return json(['code' => 1001, 'msg' => lang('param_err')]);
         }
 
         if (empty($ids) && empty($all)) {
-            return json(['code' => 1001, 'msg' => '参数错误']);
+            return json(['code' => 1001, 'msg' => lang('param_err')]);
         }
 
         $arr = [];
@@ -780,7 +773,6 @@ class User extends Base
 
         $this->assign('param',$param);
         $this->assign('list', $res['list']);
-        $this->assign('title', '积分记录');
         $pages = mac_page_param($res['total'], $param['limit'], $param['page'], url('user/plog', ['page' => 'PAGELINK']));
         $this->assign('__PAGING__', $pages);
         return $this->fetch('user/plog');
@@ -794,7 +786,7 @@ class User extends Base
         $all = $param['all'];
 
         if (empty($ids) && empty($all)) {
-            return json(['code' => 1001, 'msg' => '参数错误']);
+            return json(['code' => 1001, 'msg' => lang('param_err')]);
         }
 
         $arr = [];
@@ -832,7 +824,6 @@ class User extends Base
 
         $this->assign('param',$param);
         $this->assign('list', $res['list']);
-        $this->assign('title', '提现记录');
         $pages = mac_page_param($res['total'], $param['limit'], $param['page'], url('user/cash', ['page' => 'PAGELINK']));
         $this->assign('__PAGING__', $pages);
         return $this->fetch('user/cash');
@@ -846,7 +837,7 @@ class User extends Base
         $all = $param['all'];
 
         if (empty($ids) && empty($all)) {
-            return json(['code' => 1001, 'msg' => '参数错误']);
+            return json(['code' => 1001, 'msg' => lang('param_err')]);
         }
 
         $arr = [];
@@ -888,7 +879,6 @@ class User extends Base
 
         $this->assign('param',$param);
         $this->assign('list', $res['list']);
-        $this->assign('title', '提现记录');
         $pages = mac_page_param($res['total'], $param['limit'], $param['page'], url('user/plog', ['page' => 'PAGELINK']));
         $this->assign('__PAGING__', $pages);
         return $this->fetch('user/reward');

@@ -19,7 +19,7 @@ class Art extends Base {
 
     public function getArtStatusTextAttr($val,$data)
     {
-        $arr = [0=>'禁用',1=>'启用'];
+        $arr = [0=>lang('disable'),1=>lang('enable')];
         return $arr[$data['art_status']];
     }
 
@@ -69,7 +69,7 @@ class Art extends Base {
 	            }
             }
         }
-        return ['code'=>1,'msg'=>'数据列表','page'=>$page,'pagecount'=>ceil($total/$limit),'limit'=>$limit,'total'=>$total,'list'=>$list];
+        return ['code'=>1,'msg'=>lang('data_list'),'page'=>$page,'pagecount'=>ceil($total/$limit),'limit'=>$limit,'total'=>$total,'list'=>$list];
     }
 
     public function listRepeatData($where,$order,$page=1,$limit=20,$start=0,$field='*',$addition=1)
@@ -112,7 +112,7 @@ class Art extends Base {
         }
 
 
-        return ['code'=>1,'msg'=>'数据列表','page'=>$page,'pagecount'=>ceil($total/$limit),'limit'=>$limit,'total'=>$total,'list'=>$list];
+        return ['code'=>1,'msg'=>lang('data_list'),'page'=>$page,'pagecount'=>ceil($total/$limit),'limit'=>$limit,'total'=>$total,'list'=>$list];
     }
 
     public function listCacheData($lp)
@@ -146,6 +146,7 @@ class Art extends Base {
         $not = $lp['not'];
         $cachetime = $lp['cachetime'];
         $typenot = $lp['typenot'];
+        $name = $lp['name'];
         $page = 1;
         $where = [];
         $totalshow=0;
@@ -179,6 +180,9 @@ class Art extends Base {
             }
             if(!empty($param['wd'])) {
                 $wd = $param['wd'];
+            }
+            if(!empty($param['name'])) {
+                $name = $param['name'];
             }
             if(!empty($param['tag'])) {
                 $tag = $param['tag'];
@@ -330,6 +334,9 @@ class Art extends Base {
             }
             $where[$role] = ['like', '%' . $wd . '%'];
         }
+        if(!empty($name)) {
+            $where['art_name'] = ['like', mac_like_arr($name),'OR'];
+        }
         if(!empty($tag)) {
             $where['art_tag'] = ['like', mac_like_arr($tag),'OR'];
         }
@@ -390,7 +397,7 @@ class Art extends Base {
     public function infoData($where,$field='*',$cache=0)
     {
         if(empty($where) || !is_array($where)){
-            return ['code'=>1001,'msg'=>'参数错误'];
+            return ['code'=>1001,'msg'=>lang('param_err')];
         }
         $data_cache = false;
         $key = $GLOBALS['config']['app']['cache_flag']. '_'.'art_detail_'.$where['art_id'][1].'_'.$where['art_en'][1];
@@ -403,7 +410,7 @@ class Art extends Base {
         if($GLOBALS['config']['app']['cache_core']==0 || $cache==0 || empty($info['art_id'])) {
             $info = $this->field($field)->where($where)->find();
             if (empty($info)) {
-                return ['code' => 1002, 'msg' => '获取数据失败'];
+                return ['code' => 1002, 'msg' => lang('obtain_err')];
             }
             $info = $info->toArray();
             //内容
@@ -427,14 +434,14 @@ class Art extends Base {
                 Cache::set($key, $info);
             }
         }
-        return ['code'=>1,'msg'=>'获取成功','info'=>$info];
+        return ['code'=>1,'msg'=>lang('obtain_ok'),'info'=>$info];
     }
 
     public function saveData($data)
     {
         $validate = \think\Loader::validate('Art');
         if(!$validate->check($data)){
-            return ['code'=>1001,'msg'=>'参数错误：'.$validate->getError() ];
+            return ['code'=>1001,'msg'=>lang('param_err').'：'.$validate->getError() ];
         }
 
         $key = 'art_detail_'.$data['art_id'];
@@ -500,16 +507,16 @@ class Art extends Base {
             $res = $this->allowField(true)->insert($data);
         }
         if(false === $res){
-            return ['code'=>1002,'msg'=>'保存失败：'.$this->getError() ];
+            return ['code'=>1002,'msg'=>lang('save_err').'：'.$this->getError() ];
         }
-        return ['code'=>1,'msg'=>'保存成功'];
+        return ['code'=>1,'msg'=>lang('save_ok')];
     }
 
     public function delData($where)
     {
         $list = $this->listData($where,'',1,9999);
         if($list['code'] !==1){
-            return ['code'=>1001,'msg'=>'删除失败：'.$this->getError() ];
+            return ['code'=>1001,'msg'=>lang('del_err').'：'.$this->getError() ];
         }
         $path = './';
         foreach($list['list'] as $k=>$v){
@@ -535,20 +542,20 @@ class Art extends Base {
         }
         $res = $this->where($where)->delete();
         if($res===false){
-            return ['code'=>1001,'msg'=>'删除失败：'.$this->getError() ];
+            return ['code'=>1001,'msg'=>lang('del_err').'：'.$this->getError() ];
         }
 
-        return ['code'=>1,'msg'=>'删除成功'];
+        return ['code'=>1,'msg'=>lang('del_ok')];
     }
 
     public function fieldData($where,$update)
     {
         if(!is_array($update)){
-            return ['code'=>1001,'msg'=>'参数错误'];
+            return ['code'=>1001,'msg'=>lang('param_err')];
         }
         $res = $this->allowField(true)->where($where)->update($update);
         if($res===false){
-            return ['code'=>1001,'msg'=>'设置失败：'.$this->getError() ];
+            return ['code'=>1001,'msg'=>lang('set_err').'：'.$this->getError() ];
         }
 
         $list = $this->field('art_id,art_name,art_en')->where($where)->select();
@@ -559,7 +566,7 @@ class Art extends Base {
             Cache::rm($key);
         }
 
-        return ['code'=>1,'msg'=>'设置成功'];
+        return ['code'=>1,'msg'=>lang('set_ok')];
     }
 
     public function updateToday($flag='art')
@@ -578,7 +585,7 @@ class Art extends Base {
         }else{
             $ids = array_unique($ids);
         }
-        return ['code'=>1,'msg'=>'获取成功','data'=> join(',',$ids) ];
+        return ['code'=>1,'msg'=>lang('obtain_ok'),'data'=> join(',',$ids) ];
     }
 
 }

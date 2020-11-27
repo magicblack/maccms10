@@ -7,24 +7,24 @@
             <form class="layui-form " method="post">
                 <div class="layui-input-inline w150">
                     <select name="level">
-                        <option value="">选择级别</option>
-                        <option value="1" {if condition="$param['level'] eq '1'"}selected {/if}>一级分销</option>
-                        <option value="2" {if condition="$param['level'] eq '2'"}selected {/if}>二级分销</option>
-                        <option value="3" {if condition="$param['level'] eq '3'"}selected {/if}>三级分销</option>
+                        <option value="">{:lang('admin/user/reward/select_level')}</option>
+                        <option value="1" {if condition="$param['level'] eq '1'"}selected {/if}>{:lang('admin/user/reward/one_distribution')}</option>
+                        <option value="2" {if condition="$param['level'] eq '2'"}selected {/if}>{:lang('admin/user/reward/two_distribution')}</option>
+                        <option value="3" {if condition="$param['level'] eq '3'"}selected {/if}>{:lang('admin/user/reward/three_distribution')}</option>
                     </select>
                 </div>
                 <div class="layui-input-inline">
-                    <input type="text" autocomplete="off" placeholder="请输入搜索条件" class="layui-input" name="wd" value="{$param['wd']}">
+                    <input type="text" autocomplete="off" placeholder="{:lang('wd')}" class="layui-input" name="wd" value="{$param['wd']}">
                 </div>
                 <input type="hidden" name="uid" value="{$param['uid']}">
-                <button class="layui-btn mgl-20 j-search" >查询</button>
+                <button class="layui-btn mgl-20 j-search" >{:lang('btn_search')}</button>
             </form>
         </div>
 
         <div class="layui-btn-group">
-            <a class="layui-btn ">一级分销总人数【{$data.level_cc_1}】总提成积分【{$data.points_cc_1}】</a>
-            <a class="layui-btn layui-btn-normal">二级分销总人数【{$data.level_cc_2}】总提成积分【{$data.points_cc_2}】</a>
-            <a class="layui-btn layui-btn-warm">三级分销总人数【{$data.level_cc_3}】总提成积分【{$data.points_cc_3}】</a>
+            <a class="layui-btn ">{:lang('admin/user/reward/one_people_num')}【{$data.level_cc_1}】{:lang('admin/user/reward/total_commission_points')}【{$data.points_cc_1}】</a>
+            <a class="layui-btn layui-btn-normal">{:lang('admin/user/reward/two_people_num')}【{$data.level_cc_2}】{:lang('admin/user/reward/total_commission_points')}【{$data.points_cc_2}】</a>
+            <a class="layui-btn layui-btn-warm">{:lang('admin/user/reward/three_people_num')}【{$data.level_cc_3}】{:lang('admin/user/reward/total_commission_points')}【{$data.points_cc_3}】</a>
         </div>
 
     </div>
@@ -34,12 +34,12 @@
             <thead>
             <tr>
                 <th width="25"><input type="checkbox" lay-skin="primary" lay-filter="allChoose"></th>
-                <th width="100">编号</th>
-                <th>名称</th>
-                <th width="120">会员组</th>
-                <th width="120">状态</th>
-                <th width="120">分销级别</th>
-                <th width="130">注册时间</th>
+                <th width="100">{:lang('id')}</th>
+                <th>{:lang('name')}</th>
+                <th width="120">{:lang('group')}</th>
+                <th width="120">{:lang('status')}</th>
+                <th width="120">{:lang('admin/user/reward/distribution_level')}</th>
+                <th width="130">{:lang('reg_time')}</th>
             </tr>
             </thead>
             {volist name="list" id="vo"}
@@ -48,8 +48,8 @@
                 <td>{$vo.user_id}</td>
                 <td>{$vo.user_name}</td>
                 <td>{$vo.group_name}</td>
-                <td>{if condition="$vo['user_status'] eq 1"}<span class="layui-badge layui-bg-green">正常</span>{else/}<span class="layui-badge">关闭</span>{/if}</td>
-                <td>{if condition="$vo['user_pid'] eq $param['uid']"}一级分销{elseif condition="$vo['user_pid_2'] eq $param['uid']"}二级分销{else/}{/if}</td>
+                <td>{if condition="$vo['user_status'] eq 1"}<span class="layui-badge layui-bg-green">{:lang('open')}</span>{else/}<span class="layui-badge">{:lang('close')}</span>{/if}</td>
+                <td>{if condition="$vo['user_pid'] eq $param['uid']"}{:lang('admin/user/reward/one_distribution')}{elseif condition="$vo['user_pid_2'] eq $param['uid']"}{:lang('admin/user/reward/two_distribution')}{else/}{/if}</td>
                 <td>{$vo.user_reg_time|mac_day=color}</td>
             </tr>
             {/volist}

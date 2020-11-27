@@ -40,7 +40,7 @@ class Order extends Base
         $this->assign('param',$param);
 
 
-        $this->assign('title','订单管理');
+        $this->assign('title',lang('admin/order/title'));
         return $this->fetch('admin@order/index');
     }
 
@@ -63,7 +63,7 @@ class Order extends Base
             }
             return $this->success($res['msg']);
         }
-        return $this->error('参数错误');
+        return $this->error(lang('param_err'));
     }
 
 

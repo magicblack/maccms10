@@ -363,7 +363,7 @@
             <?php
            if(strpos($message,'模板文件不存在')!==false){
              $message = str_replace(':template',':'.MAC_PATH.'template',$message);
-             $message = str_replace(MAC_PATH_TPL,'',$message );
+             $message = str_replace($GLOBALS['MAC_PATH_TPL'],'',$message );
            }
            ?>
             <div class="info"><h1><?php echo htmlentities($message); ?></h1></div>

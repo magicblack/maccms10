@@ -31,7 +31,7 @@ class Link extends Base
         $param['page'] = '{page}';
         $param['limit'] = '{limit}';
         $this->assign('param',$param);
-        $this->assign('title','友情链接管理');
+        $this->assign('title',lang('admin/link/title'));
         return $this->fetch('admin@link/index');
     }
 
@@ -53,7 +53,7 @@ class Link extends Base
 
 
         $this->assign('info',$res['info']);
-        $this->assign('title','友情链接信息');
+        $this->assign('title',lang('admin/link/title'));
         return $this->fetch('admin@link/info');
     }
 
@@ -71,7 +71,7 @@ class Link extends Base
             }
             return $this->success($res['msg']);
         }
-        return $this->error('参数错误');
+        return $this->error(lang('param_err'));
     }
 
     public function batch()
@@ -88,7 +88,7 @@ class Link extends Base
             $data['link_logo'] = $param['link_logo'][$k];
 
             if (empty($data['link_name'])) {
-                $data['link_name'] = '未知';
+                $data['link_name'] = lang('unknown');
             }
             $res = model('Link')->saveData($data);
             if($res['code']>1){

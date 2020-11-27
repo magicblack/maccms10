@@ -29,7 +29,7 @@ class Group extends Base
         $this->assign('total',$res['total']);
 
         $this->assign('param',$param);
-        $this->assign('title','会员组管理');
+        $this->assign('title',lang('admin/group/title'));
         return $this->fetch('admin@group/index');
     }
 
@@ -59,7 +59,7 @@ class Group extends Base
         $type_tree = model('Type')->getCache('type_tree');
         $this->assign('type_tree',$type_tree);
 
-        $this->assign('title','会员组信息');
+        $this->assign('title',lang('admin/group/title'));
         return $this->fetch('admin@group/info');
     }
 
@@ -71,7 +71,7 @@ class Group extends Base
         if(!empty($ids)){
 
             if(strpos(','.$ids.',', ','.$GLOBALS['config']['user']['reg_group'].',')!==false){
-                return $this->error('注册默认会员组无法删除');
+                return $this->error(lang('admin/group/reg_group_del_err'));
             }
 
             $where=[];
@@ -82,7 +82,7 @@ class Group extends Base
             }
             return $this->success($res['msg']);
         }
-        return $this->error('参数错误');
+        return $this->error(lang('param_err'));
     }
 
     public function field()
@@ -102,7 +102,7 @@ class Group extends Base
             }
             return $this->success($res['msg']);
         }
-        return $this->error('参数错误');
+        return $this->error(lang('param_err'));
     }
 
 

@@ -46,12 +46,12 @@
         form.verify({
             link_name: function (value) {
                 if (value == "") {
-                    return "请输入链接名称";
+                    return "{:lang('name_empty')}";
                 }
             },
             link_url: function (value) {
                 if (value == "") {
-                    return "请输入链接地址";
+                    return "{:lang('link_empty')}";
                 }
             }
         });

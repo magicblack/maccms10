@@ -55,7 +55,7 @@ class Database extends Base
         }
 
         $this->assign('list',$list);
-        $this->assign('title','数据库管理');
+        $this->assign('title',lang('admin/database/title'));
         return $this->fetch('admin@database/'.$group);
     }
 
@@ -63,7 +63,7 @@ class Database extends Base
     {
         if ($this->request->isPost()) {
             if (empty($ids)) {
-                return $this->error('请选择您要备份的数据表！');
+                return $this->error(lang('admin/database/select_export_table'));
             }
 
             if (!is_array($ids)) {
@@ -95,7 +95,7 @@ class Database extends Base
             //检查是否有正在执行的任务
             $lock = "{$config['path']}backup.lock";
             if(is_file($lock)){
-                return $this->error('检测到有一个备份任务正在执行，请稍后再试！');
+                return $this->error(lang('admin/database/lock_check'));
             } else {
                 if (!is_dir($config['path'])) {
                     Dir::create($config['path'], 0755, true);
@@ -118,7 +118,7 @@ class Database extends Base
                     $start = $database->backup($table, $start);
                     while (0 !== $start) {
                         if (false === $start) {
-                            return $this->error('备份出错！');
+                            return $this->error(lang('admin/database/backup_err'));
                         }
                         $start = $database->backup($table, $start[0]);
                     }
@@ -126,9 +126,9 @@ class Database extends Base
                 // 备份完成，删除锁定文件
                 unlink($lock);
             }
-            return $this->success('备份完成。');
+            return $this->success(lang('admin/database/backup_ok'));
         }
-        return $this->error('备份出错！');
+        return $this->error(lang('admin/database/backup_err'));
     }
 
     /**
@@ -141,7 +141,7 @@ class Database extends Base
     public function import($id = '')
     {
         if (empty($id)) {
-            return $this->error('请选择您要恢复的备份文件！');
+            return $this->error(lang('admin/database/select_file'));
         }
 
         $name  = date('Ymd-His', $id) . '-*.sql*';
@@ -169,20 +169,20 @@ class Database extends Base
                 // 导入所有数据
                 while (0 !== $start) {
                     if (false === $start) {
-                        return $this->error('数据恢复出错！');
+                        return $this->error(lang('admin/database/import_err'));
                     }
                     $start = $database->import($start[0]);
                 }
             }
-            return $this->success('数据恢复完成。');
+            return $this->success(lang('admin/database/import_ok'));
         }
-        return $this->error('备份文件可能已经损坏，请检查！');
+        return $this->error(lang('admin/database/file_damage'));
     }
 
     public function optimize($ids = '')
     {
         if (empty($ids)) {
-            return $this->error('请选择您要优化的数据表！');
+            return $this->error(lang('admin/database/select_optimize_table'));
         }
 
         if (!is_array($ids)) {
@@ -194,15 +194,15 @@ class Database extends Base
         $tables = implode('`,`', $table);
         $res = Db::query("OPTIMIZE TABLE `{$tables}`");
         if ($res) {
-            return $this->success('数据表优化完成。');
+            return $this->success(lang('admin/database/optimize_ok'));
         }
-        return $this->error('数据表优化失败！');
+        return $this->error(lang('admin/database/optimize_err'));
     }
 
     public function repair($ids = '')
     {
         if (empty($ids)) {
-            return $this->error('请选择您要修复的数据表！');
+            return $this->error(lang('admin/database/select_repair_table'));
         }
 
         if (!is_array($ids)) {
@@ -214,25 +214,25 @@ class Database extends Base
         $tables = implode('`,`', $table);
         $res = Db::query("REPAIR TABLE `{$tables}`");
         if ($res) {
-            return $this->success('数据表修复完成。');
+            return $this->success(lang('admin/database/repair_ok'));
         }
-        return $this->error('数据表修复失败！');
+        return $this->error(lang('admin/database/repair_ok'));
     }
 
 
     public function del($id = '')
     {
         if (empty($id)) {
-            return $this->error('请选择您要删除的备份文件！');
+            return $this->error(lang('admin/database/select_del_file'));
         }
 
         $name  = date('Ymd-His', $id) . '-*.sql*';
         $path = trim($GLOBALS['config']['db']['backup_path']).DS.$name;
         array_map("unlink", glob($path));
         if(count(glob($path)) && glob($path)){
-            return $this->error('备份文件删除失败，请检查权限！');
+            return $this->error(lang('del_err'));
         }
-        return $this->success('备份文件删除成功。');
+        return $this->success(lang('del_ok'));
     }
 
     public function sql()
@@ -245,6 +245,7 @@ class Database extends Base
             }
 
             $sql = trim($param['sql']);
+
             if(!empty($sql)){
                 $sql = str_replace('{pre}',config('database.prefix'),$sql);
                 //查询语句返回结果集
@@ -255,7 +256,7 @@ class Database extends Base
                     Db::execute($sql);
                 }
             }
-            $this->success('执行成功');
+            $this->success(lang('run_ok'));
         }
         return $this->fetch('admin@database/sql');
     }
@@ -266,17 +267,15 @@ class Database extends Base
         $table = $param['table'];
         if(!empty($table)){
             $list = Db::query('SHOW COLUMNS FROM '.$table);
-            $this->success('获取成功',null, $list);
+            $this->success(lang('obtain_ok'),null, $list);
         }
-        $this->error('参数错误');
+        $this->error(lang('param_err'));
     }
 
 
     public function rep()
     {
-
         if($this->request->isPost()){
-
             $param = input();
             $table = $param['table'];
             $field = $param['field'];
@@ -292,10 +291,10 @@ class Database extends Base
             if(!empty($table) && !empty($field) && !empty($findstr) && !empty($tostr)){
                 $sql = "UPDATE ".$table." set ".$field."=Replace(".$field.",'".$findstr."','".$tostr."') where 1=1 ". $where;
                 Db::execute($sql);
-                return $this->success('执行成功');
+                return $this->success(lang('run_ok'));
             }
 
-            return $this->error('参数错误');
+            return $this->error(lang('param_err'));
         }
         $list = Db::query("SHOW TABLE STATUS");
         $this->assign('list',$list);
@@ -313,17 +312,19 @@ class Database extends Base
             foreach ($schema as $k => $v) {
                 $col_list[$v['TABLE_NAME']][$v['COLUMN_NAME']] = $v;
             }
-            $tables = ['actor', 'art', 'comment','gbook', 'link', 'topic', 'type','user', 'vod'];
+            $tables = ['actor', 'art', 'gbook', 'link', 'topic', 'type', 'vod'];
             $param['tbi'] = intval($param['tbi']);
             if ($param['tbi'] >= count($tables)) {
-                mac_echo('清理结束,可以多次执行,以免有漏掉的数据');
+                mac_echo(lang('admin/database/clear_ok'));
                 die;
             }
 
-            $check_arr = ["script>"];
-            $rel_val = ["/<script[\s\S]*?<\/script>/is"];
+
+            $check_arr = ["<script>", "<iframe>"];
+            $rel_val = ["/<script[\s\S]*?<\/script>/is","/<iframe[\s\S]*?<\/iframe>/is"];
 
             mac_echo('<style type="text/css">body{font-size:12px;color: #333333;line-height:21px;}span{font-weight:bold;color:#FF0000}</style>');
+
 
             foreach ($col_list as $k1 => $v1) {
                 $pre_tb = str_replace($pre, '', $k1);
@@ -331,7 +332,7 @@ class Database extends Base
                 if ($pre_tb !== $tables[$param['tbi']]) {
                     continue;
                 }
-                mac_echo('开始检测' . $k1 . '表...');
+                mac_echo(lang('admin/database/check_tip1',[$k1]));
                 $where = [];
                 foreach ($v1 as $k2 => $v2) {
                     if (strpos($v2['DATA_TYPE'], 'int') === false) {
@@ -343,7 +344,7 @@ class Database extends Base
                     $field[] = $tables[$si] . '_id';
                     $list = Db::name($pre_tb)->field($field)->whereOr($where)->fetchSql(false)->select();
 
-                    mac_echo('共检测到' . count($list) . '条危险数据...');
+                    mac_echo(lang('admin/database/check_tip2',[count($list)]));
                     foreach ($list as $k3 => $v3) {
                         $update = [];
                         $col_id = $tables[$si] . '_id';
@@ -382,5 +383,4 @@ class Database extends Base
         }
         return $this->fetch('admin@database/inspect');
     }
-
 }

@@ -17,7 +17,7 @@ class Upload extends Base
         $this->assign('path',$param['path']);
         $this->assign('id',$param['id']);
 
-        $this->assign('title','上传图片');
+        $this->assign('title',lang('upload_pic'));
         return $this->fetch('admin@upload/index');
     }
 
@@ -25,10 +25,10 @@ class Upload extends Base
     {
         $temp_file = tempnam(sys_get_temp_dir(), 'Tux');
         if($temp_file){
-            echo '测试写入成功：' . $temp_file;
+            echo lang('admin/upload/test_write_ok').'：' . $temp_file;
         }
         else{
-            echo '写入失败，请检查临时文件目录权限：' . sys_get_temp_dir() ;
+            echo lang('admin/upload/test_write_err').'：' . sys_get_temp_dir() ;
         }
     }
 
@@ -53,7 +53,7 @@ class Upload extends Base
                 $c->front($param);
             }
             else{
-                return self::upload_return('未找到第三方扩展上传类库！', '');
+                return self::upload_return(lang('admin/upload/not_find_extend'), '');
             }
         }
         else{
@@ -65,10 +65,10 @@ class Upload extends Base
 
         $data = [];
         if (empty($file)) {
-            return self::upload_return('未找到上传的文件(原因：表单名可能错误，默认表单名“file”)！', $param['from']);
+            return self::upload_return(lang('admin/upload/no_input_file'), $param['from']);
         }
         if ($file->getMime() == 'text/x-php') {
-            return self::upload_return('禁止上传php,html文件！', $param['from']);
+            return self::upload_return(lang('admin/upload/forbidden_ext'), $param['from']);
         }
 
         $upload_image_ext = 'jpg,jpeg,png,gif';
@@ -88,7 +88,7 @@ class Upload extends Base
             $type = 'media';
         }
         else {
-            return self::upload_return('非系统允许的上传格式！', $param['from']);
+            return self::upload_return(lang('admin/upload/forbidden_ext'), $param['from']);
         }
 
         if($param['flag']=='user'){
@@ -106,7 +106,7 @@ class Upload extends Base
             $upfile = $file->move($_upload_path,$_save_name);
 
             if (!is_file($_upload_path.$_save_name)) {
-                return self::upload_return('文件上传失败！', $param['from']);
+                return self::upload_return(lang('admin/upload/upload_faild'), $param['from']);
             }
             $file = $_save_path.str_replace('\\', '/', $_save_name);
             $config= [
@@ -136,10 +136,10 @@ class Upload extends Base
                 ];
 
 
-                return self::upload_return('文件上传成功', $param['from'], 1, $data);
+                return self::upload_return(lang('admin/upload/upload_success'), $param['from'], 1, $data);
             }
             catch(\Exception $e){
-                return self::upload_return('生成缩放头像图片文件失败！', $param['from']);
+                return self::upload_return(lang('admin/upload/make_thumb_faild'), $param['from']);
             }
             exit;
         }
@@ -177,7 +177,7 @@ class Upload extends Base
         $upfile = $file->move($_upload_path,$savename);
 
         if (!is_file($_upload_path.$upfile->getSaveName())) {
-            return self::upload_return('文件上传失败！', $param['from']);
+            return self::upload_return(lang('admin/upload/upload_faild'), $param['from']);
         }
 
         //附件访问地址
@@ -239,7 +239,7 @@ class Upload extends Base
                 $data['file']  = mac_url_content_img($data['file']);
             }
         }
-        return self::upload_return('文件上传成功', $param['from'], 1, $data);
+        return self::upload_return(lang('admin/upload/upload_success'), $param['from'], 1, $data);
     }
 
 

@@ -49,7 +49,7 @@ class Comment extends Base
         $param['page'] = '{page}';
         $param['limit'] = '{limit}';
         $this->assign('param',$param);
-        $this->assign('title','评论管理');
+        $this->assign('title',lang('admin/comment/title'));
         return $this->fetch('admin@comment/index');
     }
 
@@ -70,7 +70,7 @@ class Comment extends Base
         $res = model('Comment')->infoData($where);
 
         $this->assign('info',$res['info']);
-        $this->assign('title','评论信息');
+        $this->assign('title',lang('admin/comment/title'));
         return $this->fetch('admin@comment/info');
     }
 
@@ -92,7 +92,7 @@ class Comment extends Base
             }
             return $this->success($res['msg']);
         }
-        return $this->error('参数错误');
+        return $this->error(lang('param_err'));
     }
 
     public function field()
@@ -112,7 +112,7 @@ class Comment extends Base
             }
             return $this->success($res['msg']);
         }
-        return $this->error('参数错误');
+        return $this->error(lang('param_err'));
     }
 
 

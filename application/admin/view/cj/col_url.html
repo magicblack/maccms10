@@ -2,18 +2,18 @@
 <div class="page-container p10">
 
     <fieldset class="layui-elem-field">
-        <legend>采集信息</legend>
+        <legend>{:lang('base_info')}</legend>
         <div class="layui-field-box">
-            {$url_list} <br>总共：{$total} 条，重复记录：{$re}条，去重共入库{$total-$re}条。
+            {$url_list} <br>{:lang('sum')}：{$total} {:lang('data')}，{:lang('duplicate_data')}：{$re}{:lang('data')}，{:lang('distinct_into')}{$total-$re}{:lang('data')}。
         </div>
     </fieldset>
 
     <table class="layui-table" lay-size="sm">
     <thead>
       <tr>
-        <th width="50">序号</th>
-		<th>链接</th>
-        <th>标题</th>
+        <th width="50">{:lang('serial_num')}</th>
+		<th>{:lang('link')}</th>
+        <th>{:lang('name')}</th>
       </tr> 
     </thead>
     <tbody>

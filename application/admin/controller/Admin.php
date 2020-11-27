@@ -34,7 +34,7 @@ class Admin extends Base
         $this->assign('admin',$this->_admin);
 
         $this->assign('param',$param);
-        $this->assign('title','管理员管理');
+        $this->assign('title',lang('admin/admin/title'));
         return $this->fetch('admin@admin/index');
     }
 
@@ -49,7 +49,6 @@ class Admin extends Base
             if(!$validate->check($param)){
                 return $this->error($validate->getError());
             }
-
             $res = model('Admin')->saveData($param);
             if($res['code']>1){
                 return $this->error($res['msg']);
@@ -93,7 +92,7 @@ class Admin extends Base
         $this->assign('menus',$menus);
 
 
-        $this->assign('title','管理员信息');
+        $this->assign('title',lang('admin/admin/title'));
         return $this->fetch('admin@admin/info');
     }
 
@@ -109,7 +108,7 @@ class Admin extends Base
                 $ids = explode(',', $ids);
             }
             if(in_array($this->_admin['admin_id'],$ids)){
-                return $this->error('禁止删除当前登录账号');
+                return $this->error(lang('admin/admin/del_cur_err'));
             }
             $res = model('Admin')->delData($where);
             if($res['code']>1){
@@ -117,7 +116,7 @@ class Admin extends Base
             }
             return $this->success($res['msg']);
         }
-        return $this->error('参数错误');
+        return $this->error(lang('param_err'));
     }
 
     public function field()
@@ -137,7 +136,7 @@ class Admin extends Base
             }
             return $this->success($res['msg']);
         }
-        return $this->error('参数错误');
+        return $this->error(lang('param_err'));
     }
 
 }

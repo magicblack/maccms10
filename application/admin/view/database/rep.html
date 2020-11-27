@@ -8,16 +8,15 @@
         <input type="hidden" name="__token__" value="{$Request.token}" />
         <div class="layui-tab">
             <ul class="layui-tab-title">
-                <li class="layui-this">批量替换</li>
+                <li class="layui-this">{:lang('admin/database/batch_replace')}</li>
             </ul>
             <div class="layui-tab-content">
                 <div class="layui-tab-item layui-show">
 
                 <div class="layui-form-item">
-                    <label class="layui-form-label">选择数据表：</label>
+                    <label class="layui-form-label">{:lang('admin/database/select_table')}：</label>
                     <div class="layui-input-inline w400" >
                         <select name="table" lay-filter="table" lay-verify="table">
-                            <option value="">请选择表</option>
                             {volist name="list" id="vo"}
                                 <option value="{$vo.Name}">{$vo.Name}【{$vo.Comment}】</option>
                             {/volist}
@@ -25,34 +24,34 @@
                     </div>
                 </div>
                 <div class="layui-form-item row-fields">
-                    <label class="layui-form-label">选择字段：</label>
+                    <label class="layui-form-label">{:lang('admin/database/select_col')}：</label>
                     <div class="layui-input-block fields" >
 
                     </div>
                 </div>
                 <div class="layui-form-item">
-                    <label class="layui-form-label">要替换的字段：</label>
+                    <label class="layui-form-label">{:lang('admin/database/field')}：</label>
                     <div class="layui-input-block" >
-                        <input type="text" id="field" name="field" placeholder="请选择字段" lay-verify="field" class="layui-input">
+                        <input type="text" id="field" name="field" placeholder="" lay-verify="field" class="layui-input">
                     </div>
                 </div>
 
                     <div class="layui-form-item">
-                        <label class="layui-form-label">被替换的内容：</label>
+                        <label class="layui-form-label">{:lang('admin/database/findstr')}：</label>
                         <div class="layui-input-block" >
-                            <textarea name="findstr" placeholder="请输入" lay-verify="findstr" class="layui-textarea"></textarea>
+                            <textarea name="findstr" placeholder="" lay-verify="findstr" class="layui-textarea"></textarea>
                         </div>
                     </div>
                     <div class="layui-form-item">
-                        <label class="layui-form-label">替换为内容：</label>
+                        <label class="layui-form-label">{:lang('admin/database/tostr')}：</label>
                         <div class="layui-input-block" >
-                            <textarea name="tostr" placeholder="请输入" lay-verify="tostr" class="layui-textarea"></textarea>
+                            <textarea name="tostr" placeholder="" lay-verify="tostr" class="layui-textarea"></textarea>
                         </div>
                     </div>
                     <div class="layui-form-item">
-                        <label class="layui-form-label">替换条件：</label>
+                        <label class="layui-form-label">{:lang('admin/database/where')}：</label>
                         <div class="layui-input-block" >
-                            <input type="text" name="where" placeholder="请输入" value="" class="layui-input">
+                            <input type="text" name="where" placeholder="" value="" class="layui-input">
                         </div>
                     </div>
 
@@ -64,8 +63,8 @@
         </div>
         <div class="layui-form-item center">
             <div class="layui-input-block">
-                <button type="submit" class="layui-btn" lay-submit="" lay-filter="formSubmit">保 存</button>
-                <button class="layui-btn layui-btn-warm" type="reset">还 原</button>
+                <button type="submit" class="layui-btn" lay-submit="" lay-filter="formSubmit">{:lang('btn_save')}</button>
+                <button class="layui-btn layui-btn-warm" type="reset">{:lang('btn_reset')}</button>
             </div>
         </div>
     </form>
@@ -102,22 +101,22 @@
         form.verify({
             table: function (value) {
                 if (value == "") {
-                    return "请选择数据表";
+                    return "{:lang('admin/database/select_table')}";
                 }
             },
             field: function (value) {
                 if (value == "") {
-                    return "请选择字段";
+                    return "{:lang('admin/database/select_col')}";
                 }
             },
             findstr: function (value) {
                 if (value == "") {
-                    return "请输入需要替换的内容";
+                    return "{:lang('admin/database/findstr')}";
                 }
             },
             tostr: function (value) {
                 if (value == "") {
-                    return "请输入替换为内容";
+                    return "{:lang('admin/database/tostr')}";
                 }
             }
         });

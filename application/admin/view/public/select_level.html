@@ -4,15 +4,15 @@
 
     <div class="layui-input-inline w150">
         <select name="val">
-            <option value="">选择推荐</option>
-            <option value="0">取消推荐</option>
+            <option value="">{:lang('select_level')}</option>
+            <option value="0">{:lang('cancel_level')}</option>
             {volist name="level_list" id="vo"}
-            <option value="{$vo}">推荐{$vo}</option>
+            <option value="{$vo}">{:lang('level')}{$vo}</option>
             {/volist}
         </select>
     </div>
     <div class="layui-input-inline">
-        <button type="submit" class="layui-btn" lay-submit="" lay-filter="formSubmit">保 存</button>
+        <button type="submit" class="layui-btn" lay-submit="" lay-filter="formSubmit">{:lang('btn_save')}</button>
     </div>
 </form>
 

@@ -7,7 +7,7 @@ class Type extends Base
     public function __construct()
     {
         parent::__construct();
-        $this->assign('title','视频分类管理');
+        $this->assign('title',lang('admin/type/title'));
     }
 
     public function index()
@@ -54,7 +54,6 @@ class Type extends Base
 
         $this->assign('list',$res['list']);
         $this->assign('total',$res['total']);
-        $this->assign('title','分类管理');
         return $this->fetch('admin@type/index');
     }
 
@@ -66,7 +65,6 @@ class Type extends Base
             if(!$validate->check($param)){
                 return $this->error($validate->getError());
             }
-
             $res = model('Type')->saveData($param);
             if($res['code']>1){
                 return $this->error($res['msg']);
@@ -112,7 +110,7 @@ class Type extends Base
             }
             return $this->success($res['msg']);
         }
-        return $this->error('参数错误');
+        return $this->error(lang('param_err'));
     }
 
     public function field()
@@ -132,7 +130,7 @@ class Type extends Base
             }
             return $this->success($res['msg']);
         }
-        return $this->error('参数错误');
+        return $this->error(lang('param_err'));
     }
 
     public function batch()
@@ -151,7 +149,7 @@ class Type extends Base
             $data['type_tpl_detail'] = $param['type_tpl_detail_'.$id];
 
             if (empty($data['type_name'])) {
-                $data['type_name'] = '未知';
+                $data['type_name'] = lang('unknown');
             }
 
             $res = model('Type')->saveData($data);
@@ -241,7 +239,7 @@ class Type extends Base
 
                 return $this->success('ok',null,$extend);
             }
-            return $this->error('获取信息失败');
+            return $this->error(lang('get_info_err'));
 
         }
     }
@@ -260,7 +258,7 @@ class Type extends Base
             }
             return $this->success($res['msg']);
         }
-        return $this->error('参数错误');
+        return $this->error(lang('param_err'));
     }
 
 }

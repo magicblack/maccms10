@@ -8,77 +8,77 @@
         <div class="layui-form-item">
             <label class="layui-form-label">标签类别：</label>
             <div class="layui-input-block">
-                <input type="button" class="layui-btn layui-btn-primary" value="link(友情链接)" onclick="showex('link')"/>
+                <input type="button" class="layui-btn layui-btn-primary" value="link({:lang('link')})" onclick="showex('link')"/>
 
-                <input type="button" class="layui-btn layui-btn-primary" value="type(分类)" onclick="showex('type')"/>
-                <input type="button" class="layui-btn layui-btn-primary" value="topic(专题)" onclick="showex('topic')"/>
-                <input type="button" class="layui-btn layui-btn-primary" value="art(文章)" onclick="showex('art')"/>
-                <input type="button" class="layui-btn layui-btn-primary" value="vod(视频)" onclick="showex('vod')"/>
+                <input type="button" class="layui-btn layui-btn-primary" value="type({:lang('type')})" onclick="showex('type')"/>
+                <input type="button" class="layui-btn layui-btn-primary" value="topic({:lang('topic')})" onclick="showex('topic')"/>
+                <input type="button" class="layui-btn layui-btn-primary" value="art({:lang('art')})" onclick="showex('art')"/>
+                <input type="button" class="layui-btn layui-btn-primary" value="vod({:lang('vod')})" onclick="showex('vod')"/>
 
-                <input type="button" class="layui-btn layui-btn-primary" value="area(视频地区)" onclick="showex('area')"/>
-                <input type="button" class="layui-btn layui-btn-primary" value="lang(视频语言)" onclick="showex('lang')"/>
-                <input type="button" class="layui-btn layui-btn-primary" value="year(视频年代)" onclick="showex('year')"/>
-                <input type="button" class="layui-btn layui-btn-primary" value="letter(视频首字母)" onclick="showex('letter')"/>
-                <input type="button" class="layui-btn layui-btn-primary" value="tag(Tag关键字)" onclick="showex('tag')"/>
+                <input type="button" class="layui-btn layui-btn-primary" value="area({:lang('area')})" onclick="showex('area')"/>
+                <input type="button" class="layui-btn layui-btn-primary" value="lang({:lang('lang')})" onclick="showex('lang')"/>
+                <input type="button" class="layui-btn layui-btn-primary" value="year({:lang('year')})" onclick="showex('year')"/>
+                <input type="button" class="layui-btn layui-btn-primary" value="letter({:lang('letter')})" onclick="showex('letter')"/>
+                <input type="button" class="layui-btn layui-btn-primary" value="tag(Tag)" onclick="showex('tag')"/>
 
-                <input type="button" class="layui-btn layui-btn-primary" value="gbook(留言本)" onclick="showex('gbook')"/>
-                <input type="button" class="layui-btn layui-btn-primary" value="comment(评论)" onclick="showex('comment')"/>
+                <input type="button" class="layui-btn layui-btn-primary" value="gbook({:lang('gbook')})" onclick="showex('gbook')"/>
+                <input type="button" class="layui-btn layui-btn-primary" value="comment({:lang('comment')})" onclick="showex('comment')"/>
             </div>
         </div>
 
         <div class="layui-form-item vs v_link">
-            <label class="layui-form-label">顺序：</label>
+            <label class="layui-form-label">{:lang('sort')}：</label>
             <div class="layui-input-inline w100">
-                <select id="order_link"><option value="desc">倒序</option><option value="asc">正序</option></select>
+                <select id="order_link"><option value="desc">{:lang('admin/template/reverse_order')}</option><option value="asc">{:lang('admin/template/positive_order')}</option></select>
             </div>
-            <label class="layui-form-label w50">排序：</label>
+            <label class="layui-form-label w50">{:lang('sort')}：</label>
             <div class="layui-input-inline w100">
-                <select id="by_link"><option value="sort">排序号</option><option value="id">编号</option></select>
+                <select id="by_link"><option value="sort">{:lang('sort')}</option><option value="id">{:lang('id')}</option></select>
             </div>
-            <label class="layui-form-label w50">数据：</label>
+            <label class="layui-form-label w50">{:lang('genre')}：</label>
             <div class="layui-input-inline w100">
-                <select id="type_link"><option value="all">全部链接</option><option value="font">文字链接</option><option value="pic">图片链接</option></select>
+                <select id="type_link"><option value="all">{:lang('all')}</option><option value="font">{:lang('admin/link/text_link')}</option><option value="pic">{:lang('admin/link/pic_link')}</option></select>
             </div>
         </div>
 
 
 
         <div class="layui-form-item vs v_tag" style="display: none;">
-            <label class="layui-form-label">顺序：</label>
+            <label class="layui-form-label">{:lang('sort')}：</label>
             <div class="layui-input-inline w100">
-                <select id="order_tag"><option value="asc">正序</option><option value="desc">倒序</option></select>
+                <select id="order_tag"><option value="asc">{:lang('admin/template/positive_order')}</option><option value="desc">{:lang('admin/template/reverse_order')}</option></select>
             </div>
             <label class="layui-form-label w50">tag：</label>
             <div class="layui-input-inline w200">
-                <input id="tag_tag" type="text" class="layui-input" value="冒险,搞笑,伦理">
+                <input id="tag_tag" type="text" class="layui-input" value="aa,bb,cc,dd">
             </div>
         </div>
 
 
         <div class="layui-form-item vs v_area" style="display: none;">
-            <label class="layui-form-label">顺序：</label>
+            <label class="layui-form-label">{:lang('sort')}：</label>
             <div class="layui-input-inline w100">
-                <select id="order_area"><option value="asc">正序</option><option value="desc">倒序</option></select>
+                <select id="order_area"><option value="asc">{:lang('admin/template/positive_order')}</option><option value="desc">{:lang('admin/template/reverse_order')}</option></select>
             </div>
         </div>
 
         <div class="layui-form-item vs v_lang" style="display: none;">
-            <label class="layui-form-label">顺序：</label>
+            <label class="layui-form-label">{:lang('sort')}：</label>
             <div class="layui-input-inline w100">
-                <select id="order_lang"><option value="asc">正序</option><option value="desc">倒序</option></select>
+                <select id="order_lang"><option value="asc">{:lang('admin/template/positive_order')}</option><option value="desc">{:lang('admin/template/reverse_order')}</option></select>
             </div>
         </div>
 
         <div class="layui-form-item vs v_year" style="display: none;">
-            <label class="layui-form-label">顺序：</label>
+            <label class="layui-form-label">{:lang('sort')}：</label>
             <div class="layui-input-inline w100">
-                <select id="order_year"><option value="desc">倒序</option><option value="asc">正序</option></select>
+                <select id="order_year"><option value="desc">{:lang('admin/template/reverse_order')}</option><option value="asc">{:lang('admin/template/positive_order')}</option></select>
             </div>
-            <label class="layui-form-label w50">起始：</label>
+            <label class="layui-form-label w50">{:lang('start')}：</label>
             <div class="layui-input-inline w80">
                 <input id="start_year" type="text" class="layui-input" value="2000">
             </div>
-            <label class="layui-form-label w50">截止：</label>
+            <label class="layui-form-label w50">{:lang('end')}：</label>
             <div class="layui-input-inline w80">
                 <input id="end_year" type="text" class="layui-input" value="{:date('Y')}">
             </div>
@@ -86,156 +86,156 @@
 
 
         <div class="layui-form-item vs v_letter" style="display: none;">
-            <label class="layui-form-label">顺序：</label>
+            <label class="layui-form-label">{:lang('sort')}：</label>
             <div class="layui-input-inline w100">
-                <select id="order_letter"><option value="asc">正序</option><option value="desc">倒序</option></select>
+                <select id="order_letter"><option value="asc">{:lang('admin/template/positive_order')}</option><option value="desc">{:lang('admin/template/reverse_order')}</option></select>
             </div>
         </div>
 
         <div class="layui-form-item vs v_type" style="display: none;">
-            <label class="layui-form-label">顺序：</label>
+            <label class="layui-form-label">{:lang('sort')}：</label>
             <div class="layui-input-inline w100">
-                <select id="order_type"><option value="asc">正序</option><option value="desc">倒序</option></select>
+                <select id="order_type"><option value="asc">{:lang('admin/template/positive_order')}</option><option value="desc">{:lang('admin/template/reverse_order')}</option></select>
             </div>
-            <label class="layui-form-label w50">排序：</label>
+            <label class="layui-form-label w50">{:lang('sort')}：</label>
             <div class="layui-input-inline w100">
-                <select id="by_type"><option value="sort">排序号</option><option value="id">编号</option></select>
+                <select id="by_type"><option value="sort">{:lang('sort')}</option><option value="id">{:lang('id')}</option></select>
             </div>
-            <label class="layui-form-label w50">模块：</label>
+            <label class="layui-form-label w50">{:lang('model')}：</label>
             <div class="layui-input-inline w100">
-                <select id="mid_type"><option value="">全部</option><option value="1">视频</option><option value="2">文章</option></select>
+                <select id="mid_type"><option value="">{:lang('all')}</option><option value="1">{:lang('vod')}</option><option value="2">{:lang('art')}</option></select>
             </div>
-            <label class="layui-form-label w50">数据：</label>
+            <label class="layui-form-label w50">{:lang('data')}：</label>
             <div class="layui-input-inline w100">
-                <select id="ids_type"><option value="all">全部</option><option value="parent">一级分类</option><option value="child">二级分类</option><option value="1,2,3">自定义ID</option></select>
+                <select id="ids_type"><option value="all">{:lang('all')}</option><option value="parent">一级{:lang('type')}</option><option value="child">二级{:lang('type')}</option><option value="1,2,3">{:lang('diy_ids')}</option></select>
             </div>
         </div>
 
         <div class="layui-form-item vs v_topic" style="display: none;">
-            <label class="layui-form-label">顺序：</label>
+            <label class="layui-form-label">{:lang('sort')}：</label>
             <div class="layui-input-inline w100">
-                <select id="order_topic"><option value="desc">倒序</option><option value="asc">正序</option></select>
+                <select id="order_topic"><option value="desc">{:lang('admin/template/reverse_order')}</option><option value="asc">{:lang('admin/template/positive_order')}</option></select>
             </div>
-            <label class="layui-form-label w50">排序：</label>
+            <label class="layui-form-label w50">{:lang('sort')}：</label>
             <div class="layui-input-inline w100">
-                <select id="by_topic"><option value="time">更新时间</option><option value="time_add">添加时间</option><option value="id">ID</option><option value="hits">总点击量</option><option value="hits_day">日点击量</option><option value="hits_week">周点击量</option><option value="hits_month">月点击量</option><option value="up">顶数</option><option value="down">踩数</option><option value="level">推荐值</option></select>
+                <select id="by_topic"><option value="time">{:lang('update_time')}</option><option value="time_add">{:lang('add_time')}</option><option value="id">ID</option><option value="hits">{:lang('hits')}</option><option value="hits_day">{:lang('hits_day')}</option><option value="hits_week">{:lang('hits_week')}</option><option value="hits_month">{:lang('hits_month')}</option><option value="up">顶数</option><option value="down">踩数</option><option value="level">{:lang('level')}</option></select>
             </div>
-            <label class="layui-form-label w50">数据：</label>
+            <label class="layui-form-label w50">{:lang('data')}：</label>
             <div class="layui-input-inline w100">
-                <select id="ids_topic"><option value="all">全部</option><option value="1,2,3">自定义ID</option></select>
+                <select id="ids_topic"><option value="all">{:lang('all')}</option><option value="1,2,3">{:lang('diy_ids')}</option></select>
             </div>
-            <label class="layui-form-label w50">数量：</label>
+            <label class="layui-form-label w50">{:lang('quantity')}：</label>
             <div class="layui-input-inline w80">
                 <input id="num_topic" type="text" class="layui-input" value="10">
             </div>
-            <label class="layui-form-label w50">分页：</label>
+            <label class="layui-form-label w50">{:lang('paging')}：</label>
             <div class="layui-input-inline w100">
-                <select id="paging_topic"><option value="false">否</option><option value="true">是</option></select>
+                <select id="paging_topic"><option value="false">{:lang('not')}</option><option value="true">{:lang('yes')}</option></select>
             </div>
         </div>
 
         <div class="layui-form-item vs v_art" style="display: none;">
             <label class="layui-form-label">标签参数：</label>
             <div class="layui-input-inline w100">
-                <select id="order_art"><option value="desc">倒序</option><option value="asc">正序</option></select>
+                <select id="order_art"><option value="desc">{:lang('admin/template/reverse_order')}</option><option value="asc">{:lang('admin/template/positive_order')}</option></select>
             </div>
-            <label class="layui-form-label w50">排序：</label>
+            <label class="layui-form-label w50">{:lang('sort')}：</label>
             <div class="layui-input-inline w100">
-                <select id="by_art"><option value="time">更新时间</option><option value="time_add">添加时间</option><option value="id">ID</option><option value="hits">总点击量</option><option value="hits_day">日点击量</option><option value="hits_week">周点击量</option><option value="hits_month">月点击量</option><option value="up">顶数</option><option value="down">踩数</option><option value="level">推荐值</option><option value="rnd">随机数据</option></select>
+                <select id="by_art"><option value="time">{:lang('update_time')}</option><option value="time_add">{:lang('add_time')}</option><option value="id">ID</option><option value="hits">{:lang('hits')}</option><option value="hits_day">{:lang('hits_day')}</option><option value="hits_week">{:lang('hits_week')}</option><option value="hits_month">{:lang('hits_month')}</option><option value="up">顶数</option><option value="down">踩数</option><option value="level">{:lang('level')}</option><option value="rnd">{:lang('rnd_data')}</option></select>
             </div>
-            <label class="layui-form-label w50">推荐：</label>
+            <label class="layui-form-label w50">{:lang('level')}：</label>
             <div class="layui-input-inline w100">
-                <select id="level_art"><option value="all">所有</option><option value="1">推荐1</option><option value="2">推荐2</option><option value="3">推荐3</option><option value="4">推荐4</option><option value="5">推荐5</option></select>
+                <select id="level_art"><option value="all">{:lang('all')}</option><option value="1">{:lang('level')}1</option><option value="2">{:lang('level')}2</option><option value="3">{:lang('level')}3</option><option value="4">{:lang('level')}4</option><option value="5">{:lang('level')}5</option></select>
             </div>
-            <label class="layui-form-label w50">数据：</label>
+            <label class="layui-form-label w50">{:lang('data')}：</label>
             <div class="layui-input-inline w100">
-                <select id="ids_art"><option value="all">全部</option><option value="1,2,3">自定义ID</option></select>
+                <select id="ids_art"><option value="all">{:lang('all')}</option><option value="1,2,3">{:lang('diy_ids')}</option></select>
             </div>
-            <label class="layui-form-label w50">数量：</label>
+            <label class="layui-form-label w50">{:lang('quantity')}：</label>
             <div class="layui-input-inline w80">
                 <input id="num_art" type="text" class="layui-input" value="10">
             </div>
-            <label class="layui-form-label w50">分页：</label>
+            <label class="layui-form-label w50">{:lang('paging')}：</label>
             <div class="layui-input-inline w100">
-                <select id="paging_art"><option value="false">否</option><option value="true">是</option></select>
+                <select id="paging_art"><option value="false">{:lang('not')}</option><option value="true">{:lang('yes')}</option></select>
             </div>
         </div>
 
 
         <div class="layui-form-item vs v_vod" style="display: none;">
-            <label class="layui-form-label">顺序：</label>
+            <label class="layui-form-label">{:lang('sort')}：</label>
             <div class="layui-input-inline w100">
-                <select id="order_vod"><option value="desc">倒序</option><option value="asc">正序</option></select>
+                <select id="order_vod"><option value="desc">{:lang('admin/template/reverse_order')}</option><option value="asc">{:lang('admin/template/positive_order')}</option></select>
             </div>
-            <label class="layui-form-label w50">排序：</label>
+            <label class="layui-form-label w50">{:lang('sort')}：</label>
             <div class="layui-input-inline w100">
-                <select id="by_vod"><option value="time">更新时间</option><option value="time_add">添加时间</option><option value="id">ID</option><option value="hits">总点击量</option><option value="hits_day">日点击量</option><option value="hits_week">周点击量</option><option value="hits_month">月点击量</option><option value="up">顶数</option><option value="down">踩数</option><option value="level">推荐值</option><option value="rnd">随机数据</option></select>
+                <select id="by_vod"><option value="time">{:lang('update_time')}</option><option value="time_add">{:lang('add_time')}</option><option value="id">ID</option><option value="hits">{:lang('hits')}</option><option value="hits_day">{:lang('hits_day')}</option><option value="hits_week">{:lang('hits_week')}</option><option value="hits_month">{:lang('hits_month')}</option><option value="up">顶数</option><option value="down">踩数</option><option value="level">{:lang('level')}</option><option value="rnd">{:lang('rnd_data')}</option></select>
             </div>
-            <label class="layui-form-label w50">推荐：</label>
+            <label class="layui-form-label w50">{:lang('level')}：</label>
             <div class="layui-input-inline w100">
-                <select id="level_vod"><option value="all">所有</option><option value="1">推荐1</option><option value="2">推荐2</option><option value="3">推荐3</option><option value="4">推荐4</option><option value="5">推荐5</option></select>
+                <select id="level_vod"><option value="all">{:lang('all')}</option><option value="1">{:lang('level')}1</option><option value="2">{:lang('level')}2</option><option value="3">{:lang('level')}3</option><option value="4">{:lang('level')}4</option><option value="5">{:lang('level')}5</option></select>
             </div>
-            <label class="layui-form-label w50">分类：</label>
+            <label class="layui-form-label w50">{:lang('type')}：</label>
             <div class="layui-input-inline w100">
-                <select id="type_vod"><option value="all">所有</option><option value="1,2">自定义ID</option></select>
+                <select id="type_vod"><option value="all">{:lang('all')}</option><option value="1,2">{:lang('diy_ids')}</option></select>
             </div>
-            <label class="layui-form-label w50">数据：</label>
+            <label class="layui-form-label w50">{:lang('data')}：</label>
             <div class="layui-input-inline w100">
-                <select id="ids_vod"><option value="all">全部</option><option value="1,2,3">自定义ID</option></select>
+                <select id="ids_vod"><option value="all">{:lang('all')}</option><option value="1,2,3">{:lang('diy_ids')}</option></select>
             </div>
-            <label class="layui-form-label w50">数量：</label>
+            <label class="layui-form-label w50">{:lang('quantity')}：</label>
             <div class="layui-input-inline w80">
                 <input id="num_vod" type="text" class="layui-input" value="10">
             </div>
-            <label class="layui-form-label w50">分页：</label>
+            <label class="layui-form-label w50">{:lang('paging')}：</label>
             <div class="layui-input-inline w100">
-                <select id="paging_vod"><option value="false">否</option><option value="true">是</option></select>
+                <select id="paging_vod"><option value="false">{:lang('not')}</option><option value="true">{:lang('yes')}</option></select>
             </div>
         </div>
 
 
         <div class="layui-form-item vs v_gbook" style="display: none;">
-            <label class="layui-form-label">顺序：</label>
+            <label class="layui-form-label">{:lang('sort')}：</label>
             <div class="layui-input-inline w100">
-                <select id="order_gbook"><option value="desc">倒序</option><option value="asc">正序</option></select>
+                <select id="order_gbook"><option value="desc">{:lang('admin/template/reverse_order')}</option><option value="asc">{:lang('admin/template/positive_order')}</option></select>
             </div>
-            <label class="layui-form-label w50">排序：</label>
+            <label class="layui-form-label w50">{:lang('sort')}：</label>
             <div class="layui-input-inline w100">
-                <select id="by_gbook"><option value="time">时间</option><option value="id">编号</option></select>
+                <select id="by_gbook"><option value="time">{:lang('time')}</option><option value="id">{:lang('id')}</option></select>
             </div>
-            <label class="layui-form-label w50">数量：</label>
+            <label class="layui-form-label w50">{:lang('quantity')}：</label>
             <div class="layui-input-inline w80">
                 <input id="num_gbook" type="text" class="layui-input" value="10">
             </div>
-            <label class="layui-form-label w50">分页：</label>
+            <label class="layui-form-label w50">{:lang('paging')}：</label>
             <div class="layui-input-inline w100">
-                <select id="paging_gbook"><option value="false">否</option><option value="true">是</option></select>
+                <select id="paging_gbook"><option value="false">{:lang('not')}</option><option value="true">{:lang('yes')}</option></select>
             </div>
         </div>
 
 
         <div class="layui-form-item vs v_comment" style="display: none;">
-            <label class="layui-form-label">顺序：</label>
+            <label class="layui-form-label">{:lang('sort')}：</label>
             <div class="layui-input-inline w100">
-                <select id="order_comment"><option value="desc">倒序</option><option value="asc">正序</option></select>
+                <select id="order_comment"><option value="desc">{:lang('admin/template/reverse_order')}</option><option value="asc">{:lang('admin/template/positive_order')}</option></select>
             </div>
-            <label class="layui-form-label w50">排序：</label>
+            <label class="layui-form-label w50">{:lang('sort')}：</label>
             <div class="layui-input-inline w100">
-                <select id="by_comment"><option value="time">时间</option><option value="id">ID</option></select>
+                <select id="by_comment"><option value="time">{:lang('time')}</option><option value="id">ID</option></select>
             </div>
-            <label class="layui-form-label w50">数量：</label>
+            <label class="layui-form-label w50">{:lang('quantity')}：</label>
             <div class="layui-input-inline w80">
                 <input id="num_comment" type="text" class="layui-input" value="10">
             </div>
-            <label class="layui-form-label w50">分页：</label>
+            <label class="layui-form-label w50">{:lang('paging')}：</label>
             <div class="layui-input-inline w100">
-                <select id="paging_comment"><option value="false">否</option><option value="true">是</option></select>
+                <select id="paging_comment"><option value="false">{:lang('not')}</option><option value="true">{:lang('yes')}</option></select>
             </div>
         </div>
 
 
         <div class="layui-form-item">
-            <label class="layui-form-label"><span class="c-red">*</span>内容：</label>
+            <label class="layui-form-label"><span class="c-red">*</span>{:lang('content')}：</label>
             <div class="layui-input-block">
                 <textarea id="labels" name="labels" cols="" rows="" class="layui-textarea"  placeholder="" style="width:100%;height:500px;"></textarea>
             </div>
@@ -279,56 +279,56 @@
         var c,p;
         var s='',par='';
         var rc=false;
-
+        
         switch(mark)
         {
             case 'link':
                 p= ['order','by','type'];
-                c= [ ['key','序号'],['link_id','编号'],['link_name','名称'],['link_type','类型'],['link_logo','图片'],['link_url','地址'] ];
+                c= [ ['key',"{:lang('serial_num')}"],['link_id',"{:lang('id')}"],['link_name',"{:lang('name')}"],['link_type',"{:lang('genre')}"],['link_logo',"{:lang('logo')}"],['link_url',"{:lang('url')}"] ];
                 break;
             case 'gbook':
                 p= ['order','by','num'];
-                c= [ ['key','序号'],['gbook_id','编号'],['gbook_name','留言昵称'],['gbook_content','留言内容'],['gbook_ip','留言IP'],['gbook_time','留言时间'],['gbook_reply','回复内容'],['gbook_reply_time','回复时间'] ]
+                c= [ ['key',"{:lang('serial_num')}"],['gbook_id',"{:lang('id')}"],['gbook_name',"{:lang('nickname')}"],['gbook_content',"{:lang('content')}"],['gbook_ip',"{:lang('ip')}"],['gbook_time',"{:lang('time')}"],['gbook_reply',"{:lang('admin/template/reply_content')}"],['gbook_reply_time',"{:lang('reply_time')}"] ]
                 break;
             case 'comment':
                 p= ['order','by','num'];
-                c= [ ['key','序号'],['comment_id','编号'],['comment_name','评论昵称'],['comment_content','评论内容'],['comment_ip','评论IP'],['comment_time','评论时间'] ]
+                c= [ ['key',"{:lang('serial_num')}"],['comment_id',"{:lang('id')}"],['comment_name',"{:lang('nickname')}"],['comment_content',"{:lang('content')}"],['comment_ip',"{:lang('ip')}"],['comment_time',"{:lang('time')}"] ]
                 break;
             case 'letter':
                 p= ['order','by'];
-                c= [ ['key','序号'],['letter_name','名称'],[':mac_url_vod_search(["letter"=>$vo.letter_name])','筛选查询链接'] ];
+                c= [ ['key',"{:lang('serial_num')}"],['letter_name',"{:lang('name')}"],[':mac_url_vod_search(["letter"=>$vo.letter_name])',"{:lang('admin/template/filter_search')}"] ];
                 break;
             case 'tag':
                 p= ['order','by','tag','table'];
-                c= [ ['key','序号'],['tag_name','名称'],[':mac_url_vod_search(["tag"=>$vo.tag_name])','筛选查询链接'] ];
+                c= [ ['key',"{:lang('serial_num')}"],['tag_name',"{:lang('name')}"],[':mac_url_vod_search(["tag"=>$vo.tag_name])',"{:lang('admin/template/filter_search')}"] ];
                 break;
             case 'area':
                 p= ['order','by'];
-                c= [ ['key','序号'],['area_name','名称'],[':mac_url_vod_search(["area"=>$vo.area_name])','筛选查询链接'] ];
+                c= [ ['key',"{:lang('serial_num')}"],['area_name',"{:lang('name')}"],[':mac_url_vod_search(["area"=>$vo.area_name])',"{:lang('admin/template/filter_search')}"] ];
                 break;
             case 'lang':
                 p= ['order','by'];
-                c= [ ['key','序号'],['lang_name','名称'],[':mac_url_vod_search(["lang"=>$vo.lang_name])','筛选查询链接'] ];
+                c= [ ['key',"{:lang('serial_num')}"],['lang_name',"{:lang('name')}"],[':mac_url_vod_search(["lang"=>$vo.lang_name])',"{:lang('admin/template/filter_search')}"] ];
                 break;
             case 'year':
                 p= ['order','by','start','end'];
-                c= [ ['key','序号'],['year_name','名称'],[':mac_url_vod_search(["year"=>$vo.year_name])','筛选查询链接'] ];
+                c= [ ['key',"{:lang('serial_num')}"],['year_name',"{:lang('name')}"],[':mac_url_vod_search(["year"=>$vo.year_name])',"{:lang('admin/template/filter_search')}"] ];
                 break;
             case 'type':
                 p= ['order','by','mid','ids'];
-                c= [ ['key','序号'],['type_id','编号'],['type_name','名称'],['type_en','拼音'],['type_pid','父分类ID'],['type_sort','排序'],['type_title','seo标题'],['type_key','seo关键字'],['type_des','seo描述'],[':mac_url_type($vo)','链接']  ];
+                c= [ ['key',"{:lang('serial_num')}"],['type_id',"{:lang('id')}"],['type_name',"{:lang('name')}"],['type_en',"{:lang('en')}"],['type_pid',"{:lang('parent_type_id')}"],['type_sort',"{:lang('sort')}"],['type_title',"{:lang('seo_title')}"],['type_key',"{:lang('seo_key')}"],['type_des',"{:lang('seo_des')}"],[':mac_url_type($vo)',"{:lang('url')}"]  ];
                 break;
             case 'topic':
                 p= ['order','by','num','paging','ids'];
-                c= [ ['key','序号'],['topic_id','编号'],['topic_name','名称'],['topic_en','拼音'],['topic_sort','排序'],['topic_title','seo标题'],['topic_key','seo关键字'],['topic_des','seo描述'],['topic_link','链接'],['topic_count','包含数据量'],['topic_pic','图片'],['topic_pic_thumb','缩略图'],['topic_pic_slide','幻灯图'],['topic_time_add','添加时间'],['topic_time','更新时间'],['topic_level','推荐值'],['topic_hits','总点击量'],['topic_hits_day','日点击量'],['topic_hits_week','周点击量'],['topic_hits_month','月点击量'],['topic_up','顶数'],['topic_down','踩数'],['topic_score','评分'],['topic_score_all','总分数'],['topic_score_num','总评次'],['topic_content','介绍'],['topic_remarks','备注'],['topic_tag','tags'],[':mac_url_topic_detail($vo)','链接'] ];
+                c= [ ['key',"{:lang('serial_num')}"],['topic_id',"{:lang('id')}"],['topic_name',"{:lang('name')}"],['topic_en',"{:lang('en')}"],['topic_sort',"{:lang('sort')}"],['topic_title',"{:lang('seo_title')}"],['topic_key',"{:lang('seo_key')}"],['topic_des',"{:lang('seo_des')}"],['topic_link',"{:lang('url')}"],['topic_count',"{:lang('admin/topic/count')}"],['topic_pic',"{:lang('pic')}"],['topic_pic_thumb',"{:lang('pic_thumb')}"],['topic_pic_slide',"{:lang('slide')}"],['topic_time_add',"{:lang('add_time')}"],['topic_time',"{:lang('update_time')}"],['topic_level',"{:lang('level')}"],['topic_hits',"{:lang('hits')}"],['topic_hits_day',"{:lang('hits_day')}"],['topic_hits_week',"{:lang('hits_week')}"],['topic_hits_month',"{:lang('hits_month')}"],['topic_up',"{:lang('up')}"],['topic_down',"{:lang('down')}"],['topic_score',"{:lang('score')}"],['topic_score_all',"{:lang('score_all')}"],['topic_score_num',"{:lang('score_num')}"],['topic_content',"{:lang('content')}"],['topic_remarks',"{:lang('remarks')}"],['topic_tag','tags'],[':mac_url_topic_detail($vo)',"{:lang('url')}"] ];
                 break;
             case 'art':
                 p= ['order','by','num','paging','ids','type','level'];
-                c= [ ['key','序号'],['art_id','编号'],['art_name','名称'],['art_en','拼音'],['art_sub','副名称'],['art_from','来源'],['art_content','介绍'],['art_remarks','备注'],['art_author','作者'],['art_color','颜色'],['art_hits','总点击量'],['art_hits_day','日点击量'],['art_hits_week','周点击量'],['art_hits_month','月点击量'],['art_up','顶数'],['art_down','踩数'],['art_pic','图片'],['art_pic_thumb','缩略图'],['art_pic_slide','幻灯图'],['art_time_add','添加时间'],['art_time','更新时间'],['art_blurb','简介'],['art_jumpurl','跳转url'],['art_level','推荐值'],['art_letter','首字母'],['art_tag','tags'],['art_class','扩展分类'],[':mac_url_art_detail($vo)','链接'],['type.type_id','二级分类ID'],['type.type_id_1','一级分类ID'],['type.type_name','分类名称'],['type.type_en','分类拼音'],['type.type_key','分类seo关键字'],['type.type_des','分类seo描述'],['type.type_title','分类seo标题'],[':mac_url_type($vo.type)','分类链接'] ];
+                c= [ ['key',"{:lang('serial_num')}"],['art_id',"{:lang('id')}"],['art_name',"{:lang('name')}"],['art_en',"{:lang('en')}"],['art_sub',"{:lang('sub')}"],['art_from',"{:lang('from')}"],['art_content',"{:lang('content')}"],['art_remarks',"{:lang('remarks')}"],['art_author',"{:lang('author')}"],['art_color',"{:lang('color')}"],['art_hits',"{:lang('hits')}"],['art_hits_day',"{:lang('hits_day')}"],['art_hits_week',"{:lang('hits_week')}"],['art_hits_month',"{:lang('hits_month')}"],['art_up',"{:lang('up')}"],['art_down',"{:lang('down')}"],['art_pic',"{:lang('pic')}"],['art_pic_thumb',"{:lang('pic_thumb')}"],['art_pic_slide',"{:lang('slide')}"],['art_time_add',"{:lang('add_time')}"],['art_time',"{:lang('update_time')}"],['art_blurb',"{:lang('blurb')}"],['art_jumpurl',"{:lang('jumpurl')}"],['art_level',"{:lang('level')}"],['art_letter',"{:lang('letter')}"],['art_tag','tags'],['art_class',"{:lang('class')}"],[':mac_url_art_detail($vo)',"{:lang('url')}"],['type.type_id',"{:lang('type_id')}"],['type.type_id_1',"{:lang('parent_type_id')}"],['type.type_name',"{:lang('type_name')}"],['type.type_en',"{:lang('en')}"],['type.type_key',"{:lang('seo_key')}"],['type.type_des',"{:lang('seo_des')}"],['type.type_title',"{:lang('seo_title')}"],[':mac_url_type($vo.type)',"{:lang('type')}{:lang('url')}"] ];
                 break;
             case 'vod':
                 p= ['order','by','num','paging','ids','type','level'];
-                c= [ ['key','序号'],['vod_id','编号'],['vod_name','名称'],['vod_en','拼音'],['vod_sub','副名称'],['vod_content','介绍'],['vod_remarks','备注'],['vod_blurb','简介'],['vod_letter','首字母'],['vod_total','总集数'],['vod_serial','连载数'],['vod_tv','上映电视台'],['vod_weekday','节目周期'],['vod_version','版本dvd-hd等'],['vod_isend','是否连载完毕'],['vod_author','编辑人员'],['vod_jumpurl','跳转url'],['vod_color','颜色'],['vod_hits','总点击量'],['vod_hits_day','日点击量'],['vod_hits_week','周点击量'],['vod_hits_month','月点击量'],['vod_up','顶数'],['vod_down','踩数'],['vod_time_add','添加时间'],['vod_time','更新时间'],['vod_level','推荐值'],['vod_state','资源类别-正片,预告片,花絮'],['vod_pic','图片'],['vod_pic_thumb','缩略图'],['vod_pic_slide','幻灯图'],['vod_tag','tag关键字'],['vod_actor','主演'],['vod_director','导演'],['vod_area','地区'],['vod_year','上映年份'],['vod_stint_play','点播每集所需积分'],['vod_stint_down','下载每集所需积分'],['vod_score','评分'],['vod_score_all','总评分'],['vod_score_num','总评次'],['vod_duration','时长'],['vod_play_from','播放器类型'],['vod_down_from','下载器类型'],[':mac_url_vod_detail($vo)','链接'],[':mac_url_vod_play($vo,1,1)','播放链接'],[':mac_url_vod_down($vo,1,1)','下载链接'],['type.type_id','二级分类ID'],['type.type_id_1','一级分类ID'],['type.type_name','分类名称'],['type.type_en','分类拼音'],['type.type_key','分类seo关键字'],['type.type_des','分类seo描述'],['type.type_title','分类seo标题'],[':mac_url_type($vo.type)','分类链接'] ];
+                c= [ ['key',"{:lang('serial_num')}"],['vod_id',"{:lang('id')}"],['vod_name',"{:lang('name')}"],['vod_en',"{:lang('en')}"],['vod_sub',"{:lang('sub')}"],['vod_content',"{:lang('content')}"],['vod_remarks',"{:lang('remarks')}"],['vod_blurb',"{:lang('blurb')}"],['vod_letter',"{:lang('letter')}"],['vod_total',"{:lang('admin/vod/total')}"],['vod_serial',"{:lang('admin/vod/serial')}"],['vod_tv',"{:lang('admin/vod/tv')}"],['vod_weekday',"{:lang('admin/vod/weekday')}"],['vod_version',"{:lang('admin/vod/version')}"],['vod_isend',"{:lang('admin/vod/isend')}"],['vod_author',"{:lang('author')}"],['vod_jumpurl',"{:lang('jumpurl')}"],['vod_color',"{:lang('color')}"],['vod_hits',"{:lang('hits')}"],['vod_hits_day',"{:lang('hits_day')}"],['vod_hits_week',"{:lang('hits_week')}"],['vod_hits_month',"{:lang('hits_month')}"],['vod_up',"{:lang('up')}"],['vod_down',"{:lang('down')}"],['vod_time_add',"{:lang('add_time')}"],['vod_time',"{:lang('update_time')}"],['vod_level',"{:lang('level')}"],['vod_state',"{:lang('admin/vod/state')}"],['vod_pic',"{:lang('pic')}"],['vod_pic_thumb',"{:lang('pic_thumb')}"],['vod_pic_slide',"{:lang('slide')}"],['vod_tag','tag'],['vod_actor',"{:lang('actor')}"],['vod_director',"{:lang('director')}"],['vod_area',"{:lang('area')}"],['vod_year',"{:lang('year')}"],['vod_stint_play',"{:lang('admin/vod/stint_play')}"],['vod_stint_down',"{:lang('admin/vod/stint_down')}"],['vod_score',"{:lang('score')}"],['vod_score_all',"{:lang('score_all')}"],['vod_score_num',"{:lang('score_num')}"],['vod_duration',"{:lang('admin/vod/duration')}"],['vod_play_from','播放器类型'],['vod_down_from','下载器类型'],[':mac_url_vod_detail($vo)',"{:lang('url')}"],[':mac_url_vod_play($vo,1,1)',"{:lang('play')}{:lang('url')}"],[':mac_url_vod_down($vo,1,1)',"{:lang('down')}{:lang('url')}"],['type.type_id',"{:lang('type_id')}"],['type.type_id_1',"{:lang('parent_type_id')}"],['type.type_name',"{:lang('type_name')}"],['type.type_en',"{:lang('type')}{:lang('en')}"],['type.type_key',"{:lang('type')}{:lang('seo_key')}"],['type.type_des',"{:lang('type')}{:lang('seo_des')}"],['type.type_title',"{:lang('type')}{:lang('seo_title')}"],[':mac_url_type($vo.type)',"{:lang('type')}{:lang('url')}"] ];
                 break;
         }
 

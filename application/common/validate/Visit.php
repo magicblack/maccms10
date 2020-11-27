@@ -11,9 +11,9 @@ class Visit extends Validate
     ];
 
     protected $message  =   [
-        'user_id.require' => '会员编码必须',
-        'visit_ip.require' => 'IP必须',
-        'visit_time.require' => '时间必须',
+        'user_id.require' => 'validate/require_user',
+        'visit_ip.require' => 'validate/require_ip',
+        'visit_time.require' => 'validate/require_time',
     ];
 
     protected $scene = [

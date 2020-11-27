@@ -10,18 +10,18 @@
 
         <div class="layui-tab">
             <ul class="layui-tab-title ">
-                <li class="layui-this">基本信息</a></li>
-                <li>其他信息</li>
+                <li class="layui-this">{:lang('base_info')}</a></li>
+                <li>{:lang('other_info')}</li>
             </ul>
             <div class="layui-tab-content">
 
                 <div class="layui-tab-item layui-show">
                     
                 <div class="layui-form-item">
-                    <label class="layui-form-label">参数：</label>
+                    <label class="layui-form-label">{:lang('param')}：</label>
                     <div class="layui-input-inline w150">
                             <select name="type_id" lay-filter="type_id">
-                                <option value="">请选择分类</option>
+                                <option value="">{:lang('select_type')}</option>
                                 {volist name="type_tree" id="vo"}
                                     {if condition="$vo.type_mid eq 2"}
                                     <option value="{$vo.type_id}" {if condition="$info.type_id eq $vo.type_id"}selected{/if}>{$vo.type_name}</option>
@@ -34,59 +34,59 @@
                     </div>
                     <div class="layui-input-inline w150">
                             <select name="art_level">
-                                <option value="0">请选择推荐</option>
-                                <option value="9" {if condition="$info.art_level eq 9"}selected{/if}>推荐9-幻灯</option>
-                                <option value="1" {if condition="$info.art_level eq 1"}selected{/if}>推荐1</option>
-                                <option value="2" {if condition="$info.art_level eq 2"}selected{/if}>推荐2</option>
-                                <option value="3" {if condition="$info.art_level eq 3"}selected{/if}>推荐3</option>
-                                <option value="4" {if condition="$info.art_level eq 4"}selected{/if}>推荐4</option>
-                                <option value="5" {if condition="$info.art_level eq 5"}selected{/if}>推荐5</option>
-                                <option value="6" {if condition="$info.art_level eq 6"}selected{/if}>推荐6</option>
-                                <option value="7" {if condition="$info.art_level eq 7"}selected{/if}>推荐7</option>
-                                <option value="8" {if condition="$info.art_level eq 8"}selected{/if}>推荐8</option>
+                                <option value="0">{:lang('select_level')}</option>
+                                <option value="9" {if condition="$info.art_level eq 9"}selected{/if}>{:lang('level')}9-{:lang('slide')}</option>
+                                <option value="1" {if condition="$info.art_level eq 1"}selected{/if}>{:lang('level')}1</option>
+                                <option value="2" {if condition="$info.art_level eq 2"}selected{/if}>{:lang('level')}2</option>
+                                <option value="3" {if condition="$info.art_level eq 3"}selected{/if}>{:lang('level')}3</option>
+                                <option value="4" {if condition="$info.art_level eq 4"}selected{/if}>{:lang('level')}4</option>
+                                <option value="5" {if condition="$info.art_level eq 5"}selected{/if}>{:lang('level')}5</option>
+                                <option value="6" {if condition="$info.art_level eq 6"}selected{/if}>{:lang('level')}6</option>
+                                <option value="7" {if condition="$info.art_level eq 7"}selected{/if}>{:lang('level')}7</option>
+                                <option value="8" {if condition="$info.art_level eq 8"}selected{/if}>{:lang('level')}8</option>
 
                             </select>
                     </div>
                     <div class="layui-input-inline w150">
                             <select name="art_status">
-                                <option value="1" >已审核</option>
-                                <option value="0" {if condition="$info.art_status eq '0'"}selected{/if}>未审核</option>
+                                <option value="1" >{:lang('reviewed')}</option>
+                                <option value="0" {if condition="$info.art_status eq '0'"}selected{/if}>{:lang('reviewed_not')}</option>
                             </select>
                     </div>
                     <div class="layui-input-inline w150">
                         <select name="art_lock">
-                            <option value="0">未锁</option>
-                            <option value="1" {if condition="$info.art_lock eq 1"}selected{/if}>锁定</option>
+                            <option value="0">{:lang('unlock')}</option>
+                            <option value="1" {if condition="$info.art_lock eq 1"}selected{/if}>{:lang('lock')}</option>
                         </select>
                     </div>
 
                     <div class="layui-input-inline">
-                        <input type="checkbox" name="uptime" title="更新时间" value="1" checked class="layui-checkbox checkbox-ids" lay-skin="primary">
+                        <input type="checkbox" name="uptime" title="{:lang('update_time')}" value="1" checked class="layui-checkbox checkbox-ids" lay-skin="primary">
                     </div>
                 </div>
 
                 <div class="layui-form-item">
-                    <label class="layui-form-label">标题：</label>
+                    <label class="layui-form-label">{:lang('name')}：</label>
                     <div class="layui-input-inline w500">
-                        <input type="text" class="layui-input" value="{$info.art_name}" placeholder="请输入" name="art_name">
+                        <input type="text" class="layui-input" value="{$info.art_name}" placeholder="" name="art_name">
                     </div>
-                    <label class="layui-form-label">副标：</label>
+                    <label class="layui-form-label">{:lang('sub')}：</label>
                     <div class="layui-input-inline ">
-                        <input type="text" class="layui-input" value="{$info.art_sub}" placeholder="请输入副标题" name="art_sub">
+                        <input type="text" class="layui-input" value="{$info.art_sub}" placeholder="" name="art_sub">
                     </div>
 
                 </div>
 
                 <div class="layui-form-item">
-                    <label class="layui-form-label">拼音：</label>
+                    <label class="layui-form-label">{:lang('en')}：</label>
                     <div class="layui-input-inline w500">
                         <input type="text" class="layui-input" value="{$info.art_en}" placeholder="" name="art_en">
                     </div>
-                    <label class="layui-form-label">首字母：</label>
+                    <label class="layui-form-label">{:lang('letter')}：</label>
                     <div class="layui-input-inline w70">
                         <input type="text" class="layui-input" value="{$info.art_letter}" placeholder="" name="art_letter">
                     </div>
-                    <label class="layui-form-label">高亮：</label>
+                    <label class="layui-form-label">{:lang('color')}：</label>
                     <div class="layui-input-inline w70">
                         <input type="text" class="layui-input color" value="{$info.art_color}" placeholder="" name="art_color">
                     </div>
@@ -98,11 +98,11 @@
                         <input type="text" class="layui-input" value="{$info.art_tag}" placeholder="" name="art_tag">
                     </div>
                     <div class="layui-input-inline w120">
-                        <input type="checkbox" name="uptag" title="自动生成" value="1" class="layui-checkbox checkbox-ids" lay-skin="primary">
+                        <input type="checkbox" name="uptag" title="{:lang('auto_make')}" value="1" class="layui-checkbox checkbox-ids" lay-skin="primary">
                     </div>
                 </div>
                     <div class="layui-form-item">
-                        <label class="layui-form-label">备注：</label>
+                        <label class="layui-form-label">{:lang('remarks')}：</label>
                         <div class="layui-input-inline w500">
                             <input type="text" class="layui-input" value="{$info.art_remarks}" placeholder="" name="art_remarks">
                         </div>
@@ -110,26 +110,26 @@
 
 
                     <div class="layui-form-item">
-                        <label class="layui-form-label">关联视频：</label>
+                        <label class="layui-form-label">{:lang('rel_vod')}：</label>
                         <div class="layui-input-inline w500">
                             <input type="text" class="layui-input" value="{$info.art_rel_vod}" placeholder="如“变形金刚”1、2、3部ID分别为11,12,13或将每部都填“变形金刚”" name="art_rel_vod">
                         </div>
                         <div class="layui-input-inline ">
-                            <a class="layui-btn j-iframe" data-href="{:url('vod/data')}?select=1&input=art_rel_vod" href="javascript:;" title="查询数据">查询数据</a>
+                            <a class="layui-btn j-iframe" data-href="{:url('vod/data')}?select=1&input=art_rel_vod" href="javascript:;" title="{:lang('search_data')}">{:lang('search_data')}</a>
                         </div>
                     </div>
                     <div class="layui-form-item">
-                        <label class="layui-form-label">关联文章：</label>
+                        <label class="layui-form-label">{:lang('rel_art')}：</label>
                         <div class="layui-input-inline w500">
                             <input type="text" class="layui-input" value="{$info.art_rel_art}" placeholder="如“变形金刚资讯”1、2、3部ID分别为11,12,13或将每部都填“变形金刚资讯”" name="art_rel_art">
                         </div>
                         <div class="layui-input-inline ">
-                            <a class="layui-btn j-iframe" data-href="{:url('art/data')}?select=1&input=art_rel_art" href="javascript:;" title="查询数据">查询数据</a>
+                            <a class="layui-btn j-iframe" data-href="{:url('art/data')}?select=1&input=art_rel_art" href="javascript:;" title="{:lang('search_data')}">{:lang('search_data')}</a>
                         </div>
                     </div>
 
                     <div class="layui-form-item">
-                        <label class="layui-form-label">扩展分类：</label>
+                        <label class="layui-form-label">{:lang('class')}：</label>
                         <div class="layui-input-inline w500">
                             <input type="text" class="layui-input" value="{$info.art_class}" placeholder="" id="art_class" name="art_class">
                         </div>
@@ -144,32 +144,32 @@
                         <input type="text" class="layui-input upload-input" style="max-width:100%;" value="{$info.art_pic}" placeholder="" id="art_pic" name="art_pic">
                     </div>
                     <div class="layui-input-inline ">
-                        <button type="button" class="layui-btn layui-upload" lay-data="{data:{thumb:1,thumb_class:'upload-thumb'}}" id="upload1">上传图片</button>
+                        <button type="button" class="layui-btn layui-upload" lay-data="{data:{thumb:1,thumb_class:'upload-thumb'}}" id="upload1">{:lang('upload_pic')}</button>
                     </div>
                 </div>
                     <div class="layui-form-item">
-                        <label class="layui-form-label">缩略图：</label>
+                        <label class="layui-form-label">{:lang('pic_thumb')}：</label>
                         <div class="layui-input-inline w500 upload">
                             <input type="text" class="layui-input upload-input" style="max-width:100%;" value="{$info.art_pic_thumb}" placeholder="" id="art_pic_thumb" name="art_pic_thumb">
                         </div>
                         <div class="layui-input-inline ">
-                            <button type="button" class="layui-btn layui-upload" lay-data="{data:{thumb:0,thumb_class:'upload-thumb'}}" id="upload2">上传图片</button>
+                            <button type="button" class="layui-btn layui-upload" lay-data="{data:{thumb:0,thumb_class:'upload-thumb'}}" id="upload2">{:lang('upload_pic')}</button>
                         </div>
                     </div>
                     <div class="layui-form-item">
-                        <label class="layui-form-label">海报图：</label>
+                        <label class="layui-form-label">{:lang('pic_slide')}：</label>
                         <div class="layui-input-inline w500 upload">
                             <input type="text" class="layui-input upload-input" style="max-width:100%;" value="{$info.art_pic_slide}" placeholder="" id="art_pic_slide" name="art_pic_slide">
                         </div>
                         <div class="layui-input-inline ">
-                            <button type="button" class="layui-btn layui-upload" lay-data="{data:{thumb:0,thumb_class:'upload-thumb'}}" id="upload3">上传图片</button>
+                            <button type="button" class="layui-btn layui-upload" lay-data="{data:{thumb:0,thumb_class:'upload-thumb'}}" id="upload3">{:lang('upload_pic')}</button>
                         </div>
                     </div>
 
                 <div class="layui-form-item">
-                        <label class="layui-form-label">简介：</label>
+                        <label class="layui-form-label">{:lang('blurb')}：</label>
                     <div class="layui-input-block">
-                        <textarea name="art_blurb" cols="" rows="3" class="layui-textarea"  placeholder="不填写将自动从第一页详情里获取前100个字" style="height:40px;">{$info.art_blurb}</textarea>
+                        <textarea name="art_blurb" cols="" rows="3" class="layui-textarea"  placeholder="{:lang('blurb_auto_tip')}" style="height:40px;">{$info.art_blurb}</textarea>
                     </div>
                 </div>
 
@@ -181,10 +181,10 @@
                 <div id="artlist" class="contents">
                     {volist name="$art_page_list" id="vo"}
                     <div class="layui-form-item" data-i="{$key}">
-                        <label class="layui-form-label">分页内容{$key}：</label>
-                        <div class="layui-input-inline w200"><input type="text" name="art_title[]" class="layui-input" value="{$vo.title}" placeholder="页标题"></div>
-                        <div class="layui-input-inline w200"><input type="text" name="art_note[]" class="layui-input" value="{$vo.note}" placeholder="页备注"></div>
-                        <div class="layui-input-inline w200"><a href="javascript:void(0)" class="j-editor-clear">清空</a>&nbsp;<a href="javascript:void(0)" class="j-editor-remove">删除</a>&nbsp;<a href="javascript:void(0)" class="j-editor-up">上移</a>&nbsp;<a href="javascript:void(0)" class="j-editor-down">下移</a>&nbsp;<br></div>
+                        <label class="layui-form-label">{:lang('page_content')}{$key}：</label>
+                        <div class="layui-input-inline w200"><input type="text" name="art_title[]" class="layui-input" value="{$vo.title}" placeholder="{:lang('page_title')}"></div>
+                        <div class="layui-input-inline w200"><input type="text" name="art_note[]" class="layui-input" value="{$vo.note}" placeholder="{:lang('page_note')}"></div>
+                        <div class="layui-input-inline w200"><a href="javascript:void(0)" class="j-editor-clear">{:lang('clear')}</a>&nbsp;<a href="javascript:void(0)" class="j-editor-remove">{:lang('del')}</a>&nbsp;<a href="javascript:void(0)" class="j-editor-up">上移</a>&nbsp;<a href="javascript:void(0)" class="j-editor-down">下移</a>&nbsp;<br></div>
                         <div class="p10 m20"></div>
                         <div class="layui-input-block"><textarea id="art_content{$key}" name="art_content[]" type="text/plain" style="width:99%;height:250px">{$vo.content|mac_url_content_img}</textarea></div>
                         <script>ueArray[{$key}] = editor_getEditor('art_content{$key}');</script>
@@ -194,7 +194,7 @@
 
 
                     <div class="layui-form-item">
-                        <label class=""><button class="layui-btn radius j-editor-add" type="button">添加一页内容</button></label>
+                        <label class=""><button class="layui-btn radius j-editor-add" type="button">{:lang('page_add')}</button></label>
                         <div class="layui-input-block">
 
                         </div>
@@ -204,34 +204,34 @@
 
                 <div class="layui-tab-item">
                         <div class="layui-form-item">
-                            <label class="layui-form-label">顶数量：</label>
+                            <label class="layui-form-label">{:lang('up')}：</label>
                             <div class="layui-input-inline ">
                                 <input type="text" class="layui-input" value="{$info.art_up}" placeholder="" id="art_up" name="art_up">
                             </div>
-                            <label class="layui-form-label">踩数量：</label>
+                            <label class="layui-form-label">{:lang('down')}：</label>
                             <div class="layui-input-inline ">
                                 <input type="text" class="layui-input" value="{$info.art_down}" placeholder="" id="art_down" name="art_down">
                             </div>
-                            <button class="layui-btn" type="button" id="btn_rnd">随机生成</button>
+                            <button class="layui-btn" type="button" id="btn_rnd">{:lang('rnd_make')}</button>
                         </div>
 
                         <div class="layui-form-item">
-                            <label class="layui-form-label">总人气：</label>
+                            <label class="layui-form-label">{:lang('hits')}：</label>
                             <div class="layui-input-inline ">
                                 <input type="text" class="layui-input" value="{$info.art_hits}" placeholder="" id="art_hits" name="art_hits">
                             </div>
-                            <label class="layui-form-label">月人气：</label>
+                            <label class="layui-form-label">{:lang('hits_month')}：</label>
                             <div class="layui-input-inline ">
                                 <input type="text" class="layui-input" value="{$info.art_hits_month}" placeholder="" id="art_hits_month" name="art_hits_month" >
                             </div>
                         </div>
 
                         <div class="layui-form-item">
-                            <label class="layui-form-label">周人气：</label>
+                            <label class="layui-form-label">{:lang('hits_week')}：</label>
                             <div class="layui-input-inline ">
                                 <input type="text" class="layui-input" value="{$info.art_hits_week}" placeholder="" id="art_hits_week" name="art_hits_week">
                             </div>
-                            <label class="layui-form-label">日人气：</label>
+                            <label class="layui-form-label">{:lang('hits_day')}：</label>
                             <div class="layui-input-inline ">
                                 <input type="text" class="layui-input " value="{$info.art_hits_day}" placeholder="" id="art_hits_day" name="art_hits_day">
                             </div>
@@ -239,56 +239,56 @@
 
 
                         <div class="layui-form-item">
-                            <label class="layui-form-label">平均分：</label>
+                            <label class="layui-form-label">{:lang('score')}：</label>
                             <div class="layui-input-inline ">
                                 <input type="text" class="layui-input" value="{$info.art_score}" placeholder="" id="art_score" name="art_score">
                             </div>
-                            <label class="layui-form-label">总评分：</label>
+                            <label class="layui-form-label">{:lang('score_all')}：</label>
                             <div class="layui-input-inline ">
                                 <input type="text" class="layui-input" value="{$info.art_score_all}" placeholder="" id="art_score_all" name="art_score_all">
                             </div>
-                            <label class="layui-form-label">总评次：</label>
+                            <label class="layui-form-label">{:lang('score_num')}：</label>
                             <div class="layui-input-inline ">
                                 <input type="text" class="layui-input" value="{$info.art_score_num}" placeholder="" id="art_score_num" name="art_score_num">
                             </div>
                         </div>
 
                         <div class="layui-form-item">
-                            <label class="layui-form-label">整数据积分：</label>
+                            <label class="layui-form-label">{:lang('points_all')}：</label>
                             <div class="layui-input-inline ">
                                 <input type="text" class="layui-input" value="{$info.art_points}" placeholder="" name="art_points">
                             </div>
-                            <label class="layui-form-label">每页积分：</label>
+                            <label class="layui-form-label">{:lang('points_detail')}：</label>
                             <div class="layui-input-inline ">
                                 <input type="text" class="layui-input" value="{$info.art_points_detail}" placeholder="" name="art_points_detail">
                             </div>
-                            <label class="layui-form-label">独立模板：</label>
+                            <label class="layui-form-label">{:lang('tpl')}：</label>
                             <div class="layui-input-inline ">
                                 <input type="text" class="layui-input" value="{$info.art_tpl}" placeholder="" name="art_tpl">
                             </div>
                         </div>
 
                         <div class="layui-form-item">
-                            <label class="layui-form-label">编辑人：</label>
+                            <label class="layui-form-label">{:lang('author')}：</label>
                             <div class="layui-input-inline ">
                                 <input type="text" class="layui-input" value="{$info.art_author}" placeholder="" name="art_author">
                             </div>
-                            <label class="layui-form-label">来源：</label>
+                            <label class="layui-form-label">{:lang('from')}：</label>
                             <div class="layui-input-inline ">
                                 <input type="text" class="layui-input" value="{$info.art_from}" placeholder="" name="art_from">
                             </div>
-                            <label class="layui-form-label">跳转URL：</label>
+                            <label class="layui-form-label">{:lang('jumpurl')}：</label>
                             <div class="layui-input-inline ">
                                 <input type="text" class="layui-input" value="{$info.art_jumpurl}" placeholder="" name="art_jumpurl">
                             </div>
                         </div>
 
                         <div class="layui-form-item">
-                            <label class="layui-form-label">访问密码：</label>
+                            <label class="layui-form-label">{:lang('access_pwd')}：</label>
                             <div class="layui-input-inline ">
-                                <input type="text" class="layui-input" value="{$info.art_pwd}" placeholder="非静态模式下可用" name="art_pwd">
+                                <input type="text" class="layui-input" value="{$info.art_pwd}" placeholder="{:lang('not_static_is_ok')}" name="art_pwd">
                             </div>
-                            <label class="layui-form-label">密码链接：</label>
+                            <label class="layui-form-label">{:lang('pwd_url')}：</label>
                             <div class="layui-input-inline ">
                                 <input type="text" class="layui-input" value="{$info.art_pwd_url}" placeholder="" name="art_pwd_url">
                             </div>
@@ -302,8 +302,8 @@
 
                 <div class="layui-form-item center">
                     <div class="layui-input-block">
-                        <button type="submit" class="layui-btn" lay-submit="" lay-filter="formSubmit" data-child="">保 存</button>
-                        <button class="layui-btn layui-btn-warm" type="reset">还 原</button>
+                        <button type="submit" class="layui-btn" lay-submit="" lay-filter="formSubmit" data-child="">{:lang('btn_save')}</button>
+                        <button class="layui-btn layui-btn-warm" type="reset">{:lang('btn_reset')}</button>
                     </div>
                 </div>
     </form>
@@ -324,7 +324,7 @@
         form.verify({
             art_name: function (value) {
                 if (value == "") {
-                    return "请输入名称";
+                    return "{:lang('name_empty')}";
                 }
             }
         });
@@ -355,7 +355,7 @@
             ,url: "{:url('upload/upload')}?flag=art"
             ,method: 'post'
             ,before: function(input) {
-                layer.msg('文件上传中...', {time:3000000});
+                layer.msg("{:lang('upload_ing')}", {time:3000000});
             },done: function(res, index, upload) {
                 var obj = this.item;
                 if (res.code == 0) {
@@ -443,7 +443,7 @@
 
         $('.j-editor-add').on('click',function(){
             content_arr_len++;
-            var tpl='<div class="layui-form-item" data-i="'+content_arr_len+'"><label class="layui-form-label">分页内容'+(content_arr_len)+'：</label><div class="layui-input-inline w200"><input type="text" name="art_title[]" class="layui-input" placeholder="页标题"></div><div class="layui-input-inline w200"><input type="text" name="art_note[]" class="layui-input" placeholder="页备注"></div><div class="layui-input-inline w200 p10"><a href="javascript:void(0)" class="j-editor-clear">清空</a>&nbsp;<a href="javascript:void(0)" class="j-editor-remove">删除</a>&nbsp;<a href="javascript:void(0)" class="j-editor-up">上移</a>&nbsp;<a href="javascript:void(0)" class="j-editor-down">下移</a>&nbsp;<br></div><div class="p10 m20"></div><div class="layui-input-block"><textarea id="art_content'+(content_arr_len)+'" name="art_content[]" type="text/plain" style="width:99%;height:250px"></textarea></div></div>';
+            var tpl='<div class="layui-form-item" data-i="'+content_arr_len+'"><label class="layui-form-label">{:lang('page_content')}'+(content_arr_len)+'：</label><div class="layui-input-inline w200"><input type="text" name="art_title[]" class="layui-input" placeholder="{:lang('page_title')}"></div><div class="layui-input-inline w200"><input type="text" name="art_note[]" class="layui-input" placeholder="{:lang('页备注')}"></div><div class="layui-input-inline w200 p10"><a href="javascript:void(0)" class="j-editor-clear">{:lang('clear')}</a>&nbsp;<a href="javascript:void(0)" class="j-editor-remove">{:lang('del')}</a>&nbsp;<a href="javascript:void(0)" class="j-editor-up">上移</a>&nbsp;<a href="javascript:void(0)" class="j-editor-down">下移</a>&nbsp;<br></div><div class="p10 m20"></div><div class="layui-input-block"><textarea id="art_content'+(content_arr_len)+'" name="art_content[]" type="text/plain" style="width:99%;height:250px"></textarea></div></div>';
             $(".contents").append(tpl);
             ueArray[content_arr_len] = editor_getEditor( 'art_content'+content_arr_len );
 

@@ -55,6 +55,11 @@ class Init
         define('MAC_PLAYER_SORT', $config['app']['player_sort'] );
         //define('ADDON_PATH', ROOT_PATH . 'addons' . DS);
 
+        $GLOBALS['MAC_ROOT_TEMPLATE'] = ROOT_PATH .'template/'.$TMP_TEMPLATEDIR.'/'. $TMP_HTMLDIR .'/';
+        $GLOBALS['MAC_PATH_TEMPLATE'] = MAC_PATH.'template/'.$TMP_TEMPLATEDIR.'/';
+        $GLOBALS['MAC_PATH_TPL'] = $GLOBALS['MAC_PATH_TEMPLATE']. $TMP_HTMLDIR  .'/';
+        $GLOBALS['MAC_PATH_ADS'] = $GLOBALS['MAC_PATH_TEMPLATE']. $TMP_ADSDIR  .'/';
+
         $GLOBALS['http_type'] = ((isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on') || (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] == 'https')) ? 'https://' : 'http://';
 
         if(ENTRANCE=='index'){
@@ -84,6 +89,9 @@ class Init
 
         if(!in_array($config['app']['cache_type'],['file','memcache','memcached','redis'])){
             $config['app']['cache_type'] = 'file';
+        }
+        if(!empty($config['app']['lang'])){
+            config('default_lang', $config['app']['lang']);
         }
 
         config('cache.type', $config['app']['cache_type']);

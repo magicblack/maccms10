@@ -34,9 +34,9 @@ class Domain extends Base
 
             $res = mac_arr2file(APP_PATH . 'extra/domain.php', $domain);
             if ($res === false) {
-                return $this->error('保存失败，请重试!');
+                return $this->error(lang('save_err'));
             }
-            return $this->success('保存成功!');
+            return $this->success(lang('save_ok'));
         }
 
 
@@ -48,7 +48,7 @@ class Domain extends Base
 
         $config = config('domain');
         $this->assign('domain_list', $config);
-        $this->assign('title', '站群参数配置');
+        $this->assign('title', lang('admin/domain/title'));
         return $this->fetch('admin@domain/index');
     }
 
@@ -60,10 +60,10 @@ class Domain extends Base
             unset($list[$param['ids']]);
             $res = mac_arr2file( APP_PATH .'extra/domain.php', $list);
             if($res===false){
-                return $this->error('删除失败，请重试!');
+                return $this->error(lang('del_err'));
             }
         }
-        return $this->success('删除成功');
+        return $this->success(lang('del_ok'));
     }
 
     public function export()
@@ -108,10 +108,10 @@ class Domain extends Base
 
                 $res = mac_arr2file( APP_PATH .'extra/domain.php', $domain);
                 if($res===false){
-                    return $this->error('保存配置文件失败，请重试!');
+                    return $this->error(lang('write_err_config'));
                 }
             }
-            return $this->success('导入失败，请检查文件格式');
+            return $this->success(lang('import_err'));
         }
         else{
             return $this->error($file->getError());

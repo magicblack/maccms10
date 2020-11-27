@@ -32,29 +32,29 @@ class Order extends Base {
             ->select();
 
 
-        return ['code'=>1,'msg'=>'数据列表','page'=>$page,'pagecount'=>ceil($total/$limit),'limit'=>$limit,'total'=>$total,'list'=>$list];
+        return ['code'=>1,'msg'=>lang('data_list'),'page'=>$page,'pagecount'=>ceil($total/$limit),'limit'=>$limit,'total'=>$total,'list'=>$list];
     }
 
     public function infoData($where,$field='*')
     {
         if(empty($where) || !is_array($where)){
-            return ['code'=>1001,'msg'=>'参数错误'];
+            return ['code'=>1001,'msg'=>lang('param_err')];
         }
         $info = $this->field($field)->where($where)->find();
 
         if(empty($info)){
-            return ['code'=>1002,'msg'=>'获取数据失败'];
+            return ['code'=>1002,'msg'=>lang('obtain_err')];
         }
         $info = $info->toArray();
 
-        return ['code'=>1,'msg'=>'获取成功','info'=>$info];
+        return ['code'=>1,'msg'=>lang('obtain_ok'),'info'=>$info];
     }
 
     public function saveData($data)
     {
         $validate = \think\Loader::validate('Order');
         if(!$validate->check($data)){
-            return ['code'=>1001,'msg'=>'参数错误：'.$validate->getError() ];
+            return ['code'=>1001,'msg'=>lang('param_err').'：'.$validate->getError() ];
         }
 
         $data['order_time'] = time();
@@ -67,33 +67,33 @@ class Order extends Base {
             $res = $this->allowField(true)->insert($data);
         }
         if(false === $res){
-            return ['code'=>1002,'msg'=>'保存失败：'.$this->getError() ];
+            return ['code'=>1002,'msg'=>lang('save_err').'：'.$this->getError() ];
         }
-        return ['code'=>1,'msg'=>'保存成功'];
+        return ['code'=>1,'msg'=>lang('save_ok')];
     }
 
     public function delData($where)
     {
         $res = $this->where($where)->delete();
         if($res===false){
-            return ['code'=>1001,'msg'=>'删除失败：'.$this->getError() ];
+            return ['code'=>1001,'msg'=>lang('del_err').'：'.$this->getError() ];
         }
-        return ['code'=>1,'msg'=>'删除成功'];
+        return ['code'=>1,'msg'=>lang('del_ok')];
     }
 
     public function fieldData($where,$col,$val)
     {
         if(!isset($col) || !isset($val)){
-            return ['code'=>1001,'msg'=>'参数错误'];
+            return ['code'=>1001,'msg'=>lang('param_err')];
         }
 
         $data = [];
         $data[$col] = $val;
         $res = $this->allowField(true)->where($where)->update($data);
         if($res===false){
-            return ['code'=>1001,'msg'=>'设置失败：'.$this->getError() ];
+            return ['code'=>1001,'msg'=>lang('set_err').'：'.$this->getError() ];
         }
-        return ['code'=>1,'msg'=>'设置成功'];
+        return ['code'=>1,'msg'=>lang('set_ok')];
     }
 
     /*
@@ -104,7 +104,7 @@ class Order extends Base {
     public function notify($order_code,$pay_type)
     {
         if(empty($order_code) || empty($pay_type)){
-            return ['code'=>1001,'msg'=>'参数错误'];
+            return ['code'=>1001,'msg'=>lang('param_err')];
         }
 
         $where = [];
@@ -114,7 +114,7 @@ class Order extends Base {
             return $order;
         }
         if($order['info']['order_status'] == 1){
-            return ['code'=>1,'msg'=>'订单已支付完毕'];
+            return ['code'=>1,'msg'=>lang('model/order/pay_over')];
         }
 
         $where2=[];
@@ -130,14 +130,14 @@ class Order extends Base {
         $update['order_pay_type'] = $pay_type;
         $res = $this->where($where)->update($update);
         if($res===false){
-            return ['code'=>2002,'msg'=>'更新订单状态失败'];
+            return ['code'=>2002,'msg'=>lang('model/order/update_status_err')];
         }
 
         $where2 = [];
         $where2['user_id'] = $user['info']['user_id'];
         $res = model('User')->where($where2)->setInc('user_points',$order['info']['order_points']);
         if($res===false){
-            return ['code'=>2003,'msg'=>'更新会员积分失败'];
+            return ['code'=>2003,'msg'=>lang('model/order/update_user_points_err')];
         }
 
         //积分日志
@@ -150,7 +150,7 @@ class Order extends Base {
 
 
 
-        return ['code'=>1,'msg'=>'充值完毕,回调函数执行成功'];
+        return ['code'=>1,'msg'=>lang('model/order/pay_ok')];
 
     }
 

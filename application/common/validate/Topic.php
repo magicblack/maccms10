@@ -5,15 +5,14 @@ use think\Validate;
 class Topic extends Validate
 {
     protected $rule =   [
-        'topic_name'  => 'require|max:30',
+        'topic_name'  => 'require',
         'topic_tpl' => 'require',
 
     ];
 
     protected $message  =   [
-        'topic_name.require' => '名称必须',
-        'topic_name.max'     => '名称最多不能超过30个字符',
-        'topic_tpl.require'   => '分类页模板必须'
+        'topic_name.require' => 'validate/require_name',
+        'topic_tpl.require'   => 'validate/require_tpl'
     ];
 
     protected $scene = [

@@ -39,41 +39,41 @@ class Comment extends Base
 
         if($GLOBALS['config']['comment']['verify'] == 1){
             if(!captcha_check($param['verify'])){
-                return ['code'=>1002,'msg'=>'验证码错误'];
+                return ['code'=>1002,'msg'=>lang('verify_err')];
             }
         }
 
         if($GLOBALS['config']['comment']['login'] ==1){
             if(empty(cookie('user_id'))){
-                return ['code' => 1003, 'msg' => '登录后才可以发表留言'];
+                return ['code' => 1003, 'msg' =>lang('index/require_login')];
             }
             $res = model('User')->checkLogin();
             if($res['code']>1) {
-                return ['code' => 1003, 'msg' => '登录后才可以发表留言'];
+                return ['code' => 1003, 'msg' => lang('index/require_login')];
             }
         }
 
         if(empty($param['comment_content'])){
-            return ['code'=>1004,'msg'=>'留言内容不能为空'];
+            return ['code'=>1004,'msg'=>lang('index/require_content')];
         }
 
         $cookie = 'comment_timespan';
         if(!empty(cookie($cookie))){
-            return ['code'=>1005,'msg'=>'请不要频繁操作'];
+            return ['code'=>1005,'msg'=>lang('frequently')];
         }
 
         $param['comment_content']= htmlentities(mac_filter_words($param['comment_content']));
         $pattern = '/[^\x00-\x80]/';
         if(!preg_match($pattern,$param['comment_content'])){
-            return ['code'=>1005,'msg'=>'内容必须包含中文,请重新输入'];
+            return ['code'=>1005,'msg'=>lang('index/require_cn')];
         }
 
         if(!in_array($param['comment_mid'],['1','2','3','8','9','11'])){
-            return ['code'=>1006,'msg'=>'模型mid错误'];
+            return ['code'=>1006,'msg'=>lang('index/mid_err')];
         }
 
         if(empty(cookie('user_id'))){
-            $param['comment_name'] = '游客';
+            $param['comment_name'] = lang('controller/visitor');
         }
         else{
             $param['comment_name'] = cookie('user_name');
@@ -82,7 +82,6 @@ class Comment extends Base
         $param['comment_name'] = htmlentities($param['comment_name']);
         $param['comment_rid'] = intval($param['comment_rid']);
         $param['comment_pid'] = intval($param['comment_pid']);
-
         if($GLOBALS['config']['comment']['audit'] ==1){
             $param['comment_status'] = 0;
         }
@@ -100,10 +99,10 @@ class Comment extends Base
         else{
             cookie($cookie, 't', $GLOBALS['config']['comment']['timespan']);
             if($GLOBALS['config']['comment']['audit'] ==1){
-                $res['msg'] = '谢谢，我们会尽快审核你的评论！';
+                $res['msg'] = lang('index/thanks_msg_audit');
             }
             else{
-                $res['msg'] = '感谢你的评论！';
+                $res['msg'] = lang('index/thanks_msg');
             }
             return $res;
         }
@@ -115,19 +114,19 @@ class Comment extends Base
         $id = intval($param['id']);
 
         if(empty($id) ) {
-            return json(['code'=>1001,'msg'=>'参数错误']);
+            return json(['code'=>1001,'msg'=>lang('param_err')]);
         }
 
         $cookie = 'comment-report-' . $id;
         if(!empty(cookie($cookie))){
-            return json(['code'=>1002,'msg'=>'您已提交举报了']);
+            return json(['code'=>1002,'msg'=>lang('index/haved')]);
         }
         $where = [];
         $where['comment_id'] = $id;
         model('comment')->where($where)->setInc('comment_report');
         cookie($cookie, 't', $GLOBALS['config']['comment']['timespan']);
 
-        return json(['code'=>1,'msg'=>'操作成功！']);
+        return json(['code'=>1,'msg'=>lang('opt_ok')]);
     }
 
     public function digg()
@@ -137,7 +136,7 @@ class Comment extends Base
         $type = $param['type'];
 
         if(empty($id) ||  empty($type) ) {
-            return json(['code'=>1001,'msg'=>'参数错误']);
+            return json(['code'=>1001,'msg'=>lang('param_err')]);
         }
 
         $pre = 'comment';
@@ -149,7 +148,7 @@ class Comment extends Base
         if($type) {
             $cookie = $pre . '-digg-' . $id;
             if(!empty(cookie($cookie))){
-                return json(['code'=>1002,'msg'=>'您已参与过了']);
+                return json(['code'=>1002,'msg'=>lang('index/haved')]);
             }
             if ($type == 'up') {
                 $model->where($where)->setInc($pre . '_up');
@@ -171,7 +170,7 @@ class Comment extends Base
             $data[$pre.'_up'] = 0;
             $data[$pre.'_down'] = 0;
         }
-        return json(['code'=>1,'msg'=>'操作成功！','data'=>$data]);
+        return json(['code'=>1,'msg'=>lang('opt_ok'),'data'=>$data]);
     }
 
 }

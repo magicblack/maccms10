@@ -19,7 +19,7 @@ class Actor extends Base {
 
     public function getActorStatusTextAttr($val,$data)
     {
-        $arr = [0=>'禁用',1=>'启用'];
+        $arr = [0=>lang('disable'),1=>lang('enable')];
         return $arr[$data['actor_status']];
     }
 
@@ -56,7 +56,7 @@ class Actor extends Base {
                 }
             }
         }
-        return ['code'=>1,'msg'=>'数据列表','page'=>$page,'pagecount'=>ceil($total/$limit),'limit'=>$limit,'total'=>$total,'list'=>$list];
+        return ['code'=>1,'msg'=>lang('data_list'),'page'=>$page,'pagecount'=>ceil($total/$limit),'limit'=>$limit,'total'=>$total,'list'=>$list];
     }
 
     public function listCacheData($lp)
@@ -343,7 +343,7 @@ class Actor extends Base {
     public function infoData($where,$field='*',$cache=0)
     {
         if(empty($where) || !is_array($where)){
-            return ['code'=>1001,'msg'=>'参数错误'];
+            return ['code'=>1001,'msg'=>lang('param_err')];
         }
         $data_cache = false;
         $key = $GLOBALS['config']['app']['cache_flag']. '_'. 'actor_detail_'.$where['actor_id'][1].'_'.$where['actor_en'][1];
@@ -356,7 +356,7 @@ class Actor extends Base {
         if($GLOBALS['config']['app']['cache_core']==0 || $cache==0 || empty($info['actor_id'])) {
             $info = $this->field($field)->where($where)->find();
             if (empty($info)) {
-                return ['code' => 1002, 'msg' => '获取数据失败'];
+                return ['code' => 1002, 'msg' => lang('obtain_err')];
             }
             $info = $info->toArray();
             //分类
@@ -369,14 +369,14 @@ class Actor extends Base {
                 Cache::set($key, $info);
             }
         }
-        return ['code'=>1,'msg'=>'获取成功','info'=>$info];
+        return ['code'=>1,'msg'=>lang('obtain_ok'),'info'=>$info];
     }
 
     public function saveData($data)
     {
         $validate = \think\Loader::validate('Actor');
         if(!$validate->check($data)){
-            return ['code'=>1001,'msg'=>'参数错误：'.$validate->getError() ];
+            return ['code'=>1001,'msg'=>lang('param_err').'：'.$validate->getError() ];
         }
 
         $key = 'actor_detail_'.$data['actor_id'];
@@ -434,16 +434,16 @@ class Actor extends Base {
             $res = $this->allowField(true)->insert($data);
         }
         if(false === $res){
-            return ['code'=>1002,'msg'=>'保存失败：'.$this->getError() ];
+            return ['code'=>1002,'msg'=>lang('save_err').'：'.$this->getError() ];
         }
-        return ['code'=>1,'msg'=>'保存成功'];
+        return ['code'=>1,'msg'=>lang('save_ok')];
     }
 
     public function delData($where)
     {
         $list = $this->listData($where,'',1,9999);
         if($list['code'] !==1){
-            return ['code'=>1001,'msg'=>'删除失败：'.$this->getError() ];
+            return ['code'=>1001,'msg'=>lang('del_err').'：'.$this->getError() ];
         }
         $path = './';
         foreach($list['list'] as $k=>$v){
@@ -461,20 +461,20 @@ class Actor extends Base {
         }
         $res = $this->where($where)->delete();
         if($res===false){
-            return ['code'=>1001,'msg'=>'删除失败：'.$this->getError() ];
+            return ['code'=>1001,'msg'=>lang('del_err').'：'.$this->getError() ];
         }
-        return ['code'=>1,'msg'=>'删除成功'];
+        return ['code'=>1,'msg'=>lang('del_ok')];
     }
 
     public function fieldData($where,$update)
     {
         if(!is_array($update)){
-            return ['code'=>1001,'msg'=>'参数错误'];
+            return ['code'=>1001,'msg'=>lang('param_err')];
         }
 
         $res = $this->allowField(true)->where($where)->update($update);
         if($res===false){
-            return ['code'=>1001,'msg'=>'设置失败：'.$this->getError() ];
+            return ['code'=>1001,'msg'=>lang('set_err').'：'.$this->getError() ];
         }
 
         $list = $this->field('actor_id,actor_name,actor_en')->where($where)->select();
@@ -485,7 +485,7 @@ class Actor extends Base {
             Cache::rm($key);
         }
 
-        return ['code'=>1,'msg'=>'设置成功'];
+        return ['code'=>1,'msg'=>lang('set_ok')];
     }
 
 }

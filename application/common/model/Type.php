@@ -78,7 +78,7 @@ class Type extends Base {
             $list = mac_list_to_tree($list,'type_id','type_pid');
         }
 
-        return ['code'=>1,'msg'=>'数据列表','total'=>$total,'list'=>$list];
+        return ['code'=>1,'msg'=>lang('data_list'),'total'=>$total,'list'=>$list];
     }
 
     public function listCacheData($lp)
@@ -117,7 +117,7 @@ class Type extends Base {
         if (!in_array($format, ['def', 'tree'])) {
             $format = 'def';
         }
-        if (in_array($mid, ['1', '2'])) {
+        if (in_array($mid, ['1', '2','8','11'])) {
             $where['type_mid'] = ['eq',$mid];
         }
         if(!empty($flag)){
@@ -204,12 +204,12 @@ class Type extends Base {
     public function infoData($where,$field='*')
     {
         if(empty($where) || !is_array($where)){
-            return ['code'=>1001,'msg'=>'参数错误'];
+            return ['code'=>1001,'msg'=>lang('param_err')];
         }
         $info = $this->field($field)->where($where)->find();
 
         if(empty($info)){
-            return ['code'=>1002,'msg'=>'获取数据失败'];
+            return ['code'=>1002,'msg'=>lang('obtain_err')];
         }
         $info = $info->toArray();
 
@@ -221,14 +221,14 @@ class Type extends Base {
         }
 
 
-        return ['code'=>1,'msg'=>'获取成功','info'=>$info];
+        return ['code'=>1,'msg'=>lang('obtain_ok'),'info'=>$info];
     }
 
     public function saveData($data)
     {
         $validate = \think\Loader::validate('Type');
         if(!$validate->check($data)){
-            return ['code'=>1001,'msg'=>'参数错误：'.$validate->getError() ];
+            return ['code'=>1001,'msg'=>lang('param_err').'：'.$validate->getError() ];
         }
 
         if(!empty($data['type_extend'])){
@@ -247,11 +247,11 @@ class Type extends Base {
             $res = $this->allowField(true)->insert($data);
         }
         if(false === $res){
-            return ['code'=>1002,'msg'=>'保存失败：'.$this->getError() ];
+            return ['code'=>1002,'msg'=>lang('save_err').'：'.$this->getError() ];
         }
 
         $this->setCache();
-        return ['code'=>1,'msg'=>'保存成功'];
+        return ['code'=>1,'msg'=>lang('save_ok')];
     }
 
     public function delData($where)
@@ -263,23 +263,23 @@ class Type extends Base {
             $flag = $v['type_mid'] == 1 ? 'Vod' : 'Art';
             $cc = model($flag)->where($where2)->count();
             if($cc > 0){
-                return ['code'=>1021,'msg'=>'删除失败：'. $v['type_name'].'还有'.$cc.'条数据，请先删除或转移' ];
+                return ['code'=>1021,'msg'=>lang('del_err').'：'. $v['type_name'].'还有'.$cc.'条数据，请先删除或转移' ];
             }
         }
 
         $res = $this->where($where)->delete();
         if($res===false){
-            return ['code'=>1001,'msg'=>'删除失败：'.$this->getError() ];
+            return ['code'=>1001,'msg'=>lang('del_err').'：'.$this->getError() ];
         }
 
         $this->setCache();
-        return ['code'=>1,'msg'=>'删除成功'];
+        return ['code'=>1,'msg'=>lang('del_ok')];
     }
 
     public function fieldData($where,$col,$val)
     {
         if(!isset($col) || !isset($val)){
-            return ['code'=>1001,'msg'=>'参数错误'];
+            return ['code'=>1001,'msg'=>lang('param_err')];
         }
 
         $data = [];
@@ -288,11 +288,11 @@ class Type extends Base {
         $res = $this->allowField(true)->where($where)->update($data);
 
         if($res===false){
-            return ['code'=>1002,'msg'=>'设置失败：'.$this->getError() ];
+            return ['code'=>1002,'msg'=>lang('set_err').'：'.$this->getError() ];
         }
 
         $this->setCache();
-        return ['code'=>1,'msg'=>'设置成功'];
+        return ['code'=>1,'msg'=>lang('set_ok')];
     }
 
     public function moveData($where,$val)
@@ -300,7 +300,7 @@ class Type extends Base {
         $list = $this->where($where)->select();
         $type_info = $this->getCacheInfo($val);
         if(empty($type_info)){
-            return ['code'=>1011,'msg'=>'获取目标分类信息失败'];
+            return ['code'=>1011,'msg'=>lang('model/type/to_info_err')];
         }
         foreach($list as $k=>$v){
             $where2=[];
@@ -311,10 +311,10 @@ class Type extends Base {
             $flag = $v['type_mid'] == 1 ? 'Vod' : 'Art';
             $cc = model($flag)->where($where2)->update($update);
             if($cc ===false){
-                return ['code'=>1012,'msg'=>'转移失败：'. $v['type_name'].''.$this->getError()  ];
+                return ['code'=>1012,'msg'=>lang('model/type/move_err').'：'. $v['type_name'].''.$this->getError()  ];
             }
         }
-        return ['code'=>1,'msg'=>'转移成功'];
+        return ['code'=>1,'msg'=>lang('model/type/move_ok')];
     }
 
     public function setCache()

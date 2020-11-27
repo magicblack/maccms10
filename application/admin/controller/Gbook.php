@@ -50,7 +50,7 @@ class Gbook extends Base
         $param['page'] = '{page}';
         $param['limit'] = '{limit}';
         $this->assign('param',$param);
-        $this->assign('title','留言本管理');
+        $this->assign('title',lang('admin/gbook/title'));
         return $this->fetch('admin@gbook/index');
     }
 
@@ -71,7 +71,7 @@ class Gbook extends Base
         $res = model('Gbook')->infoData($where);
 
         $this->assign('info',$res['info']);
-        $this->assign('title','留言本信息');
+        $this->assign('title',lang('admin/gbook/title'));
         return $this->fetch('admin@gbook/info');
     }
 
@@ -93,7 +93,7 @@ class Gbook extends Base
             }
             return $this->success($res['msg']);
         }
-        return $this->error('参数错误');
+        return $this->error(lang('param_err'));
     }
 
     public function field()
@@ -113,7 +113,7 @@ class Gbook extends Base
             }
             return $this->success($res['msg']);
         }
-        return $this->error('参数错误');
+        return $this->error(lang('param_err'));
     }
 
 }

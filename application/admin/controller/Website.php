@@ -77,7 +77,7 @@ class Website extends Base
         $type_tree = model('Type')->getCache('type_tree');
         $this->assign('type_tree', $type_tree);
 
-        $this->assign('title', '网址管理');
+        $this->assign('title',lang('admin/website/title'));
         return $this->fetch('admin@website/index');
     }
 
@@ -89,7 +89,7 @@ class Website extends Base
             mac_echo('<style type="text/css">body{font-size:12px;color: #333333;line-height:21px;}span{font-weight:bold;color:#FF0000}</style>');
 
             if(empty($param['ck_del']) && empty($param['ck_level']) && empty($param['ck_status']) && empty($param['ck_lock']) && empty($param['ck_hits']) ){
-                return $this->error('没有选择任何参数');
+                return $this->error(lang('param_err'));
             }
             $where = [];
             if(!empty($param['type'])){
@@ -123,7 +123,7 @@ class Website extends Base
 
             if($param['ck_del'] == 1){
                 $res = model('Website')->delData($where);
-                mac_echo('批量删除完毕');
+                mac_echo(lang('multi_del_ok'));
                 mac_jump( url('website/batch') ,3);
                 exit;
             }
@@ -134,17 +134,17 @@ class Website extends Base
             if(empty($param['limit'])){
                 $param['limit'] = 100;
             }
-            if(empty($total)) {
-                $total = model('Website')->countData($where);
-                $page_count = ceil($total / $param['limit']);
+            if(empty($param['total'])) {
+                $param['total'] = model('Website')->countData($where);
+                $param['page_count'] = ceil($param['total'] / $param['limit']);
             }
 
-            if($param['page'] > $page_count) {
-                mac_echo('批量设置完毕');
+            if($param['page'] > $param['page_count']) {
+                mac_echo(lang('multi_opt_ok'));
                 mac_jump( url('website/batch') ,3);
                 exit;
             }
-            mac_echo( "<font color=red>共".$total."条数据需要处理，每页".$param['limit']."条，共".$page_count."页，正在处理第".$param['page']."页数据</font>");
+            mac_echo( "<font color=red>".lang('admin/batch_tip',[$param['total'],$param['limit'],$param['page_count'],$param['page']])."</font>");
 
             $order='website_id desc';
             $res = model('Website')->listData($where,$order,$param['page'],$param['limit']);
@@ -158,19 +158,19 @@ class Website extends Base
 
                 if(!empty($param['ck_level']) && !empty($param['val_level'])){
                     $update['website_level'] = $param['val_level'];
-                    $des .= '&nbsp;推荐值：'.$param['val_level'].'；';
+                    $des .= '&nbsp;'.lang('level').'：'.$param['val_level'].'；';
                 }
                 if(!empty($param['ck_status']) && isset($param['val_status'])){
                     $update['website_status'] = $param['val_status'];
-                    $des .= '&nbsp;状态：'.($param['val_status'] ==1 ? '[已审核]':'[未审核]') .'；';
+                    $des .= '&nbsp;'.lang('status').'：'.($param['val_status'] ==1 ? '['.lang('reviewed').']':'['.lang('reviewed_not').']') .'；';
                 }
                 if(!empty($param['ck_lock']) && isset($param['val_lock'])){
                     $update['website_lock'] = $param['val_lock'];
-                    $des .= '&nbsp;推荐值：'.($param['val_lock']==1 ? '[锁定]':'[解锁]').'；';
+                    $des .= '&nbsp;'.lang('lock').'：'.($param['val_lock']==1 ? '['.lang('lock').']':'['.lang('ublock').']').'；';
                 }
                 if(!empty($param['ck_hits']) && !empty($param['val_hits_min']) && !empty($param['val_hits_max']) ){
                     $update['website_hits'] = rand($param['val_hits_min'],$param['val_hits_max']);
-                    $des .= '&nbsp;人气：'.$update['website_hits'].'；';
+                    $des .= '&nbsp;'.lang('hits').'：'.$update['website_hits'].'；';
                 }
                 mac_echo($des);
                 $res2 = model('Website')->where($where2)->update($update);
@@ -185,7 +185,7 @@ class Website extends Base
         $type_tree = model('Type')->getCache('type_tree');
         $this->assign('type_tree',$type_tree);
 
-        $this->assign('title','网址批量操作');
+        $this->assign('title',lang('admin/website/title'));
         return $this->fetch('admin@website/batch');
     }
 
@@ -213,7 +213,7 @@ class Website extends Base
         $type_tree = model('Type')->getCache('type_tree');
         $this->assign('type_tree',$type_tree);
 
-        $this->assign('title','网址信息');
+        $this->assign('title',lang('admin/website/title'));
         return $this->fetch('admin@website/info');
     }
 
@@ -239,11 +239,11 @@ class Website extends Base
             $sql = 'delete from '.config('database.prefix').'website where website_name in(select name1 from '.config('database.prefix').'tmpwebsite) and website_id '.$st.'(select id1 from '.config('database.prefix').'tmpwebsite)';
             $res = model('Website')->execute($sql);
             if($res===false){
-                return $this->success('删除失败');
+                return $this->success(lang('del_err'));
             }
-            return $this->success('删除成功');
+            return $this->success(lang('del_ok'));
         }
-        return $this->error('参数错误');
+        return $this->error(lang('param_err'));
     }
 
     public function field()
@@ -284,7 +284,7 @@ class Website extends Base
             }
             return $this->success($res['msg']);
         }
-        return $this->error('参数错误');
+        return $this->error(lang('param_err'));
     }
 
     public function updateToday()

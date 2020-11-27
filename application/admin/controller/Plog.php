@@ -34,7 +34,7 @@ class Plog extends Base
         $param['limit'] = '{limit}';
         $this->assign('param',$param);
 
-        $this->assign('title','积分日志管理');
+        $this->assign('title',lang('admin/plog/title'));
         return $this->fetch('admin@plog/index');
     }
 
@@ -55,7 +55,7 @@ class Plog extends Base
             }
             return $this->success($res['msg']);
         }
-        return $this->error('参数错误');
+        return $this->error(lang('param_err'));
     }
 
 }

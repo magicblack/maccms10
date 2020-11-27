@@ -7,22 +7,21 @@
             为了安全考量避免通过模板写入后门文件，文件内出现以下任意字符串时禁止在线保存修改，如需修改请使用其他方式。<br>
             {$filter}
         </blockquote>
-
         <div class="layui-form-item">
-            <label class="layui-form-label">路径：</label>
+            <label class="layui-form-label">{:lang('path')}：</label>
             <div class="layui-input-block">
                 <input type="text" class="layui-input" value="{$fpath}" placeholder="" id="fpath" name="fpath" readonly="readonly">
             </div>
         </div>
         <div class="layui-form-item">
-            <label class="layui-form-label">文件名：</label>
+            <label class="layui-form-label">{:lang('file_time')}：</label>
             <div class="layui-input-block">
-                <input type="text" class="layui-input" value="{$fname}" placeholder="后缀名仅允许html、htm、js、xml；自定义页面以label_开头。" id="fname" name="fname" {if condition="$fname neq ''"}readonly="readonly"{/if}>
+                <input type="text" class="layui-input" value="{$fname}" placeholder="{:lang('admin/template/name_tip')}" id="fname" name="fname" {if condition="$fname neq ''"}readonly="readonly"{/if}>
             </div>
         </div>
 
         <div class="layui-form-item">
-            <label class="layui-form-label">内容：</label>
+            <label class="layui-form-label">{:lang('content')}：</label>
             <div class="layui-input-block">
                 <textarea name="fcontent" cols="" rows="" class="layui-textarea"  placeholder="" style="height:550px;">{$fcontent}</textarea>
             </div>
@@ -30,8 +29,8 @@
 
         <div class="layui-form-item center">
             <div class="layui-input-block">
-                <button type="submit" class="layui-btn" lay-submit="" lay-filter="formSubmit" data-child="true">保 存</button>
-                <button class="layui-btn layui-btn-warm" type="reset">还 原</button>
+                <button type="submit" class="layui-btn" lay-submit="" lay-filter="formSubmit" data-child="true">{:lang('btn_save')}</button>
+                <button class="layui-btn layui-btn-warm" type="reset">{:lang('btn_reset')}</button>
             </div>
         </div>
     </form>

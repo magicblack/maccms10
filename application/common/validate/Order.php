@@ -12,10 +12,10 @@ class Order extends Validate
     ];
 
     protected $message  =   [
-        'user_id.require' => '用户必须',
-        'order_code.require'   => '单号必须',
-        'order_price.require'   => '价格必须',
-        'order_points.require'   => '点数必须',
+        'user_id.require' => 'validate/require_user',
+        'order_code.require'   => 'validate/require_order_code',
+        'order_price.require'   => 'validate/require_order_price',
+        'order_points.require'   => 'validate/require_order_points',
     ];
 
     protected $scene = [

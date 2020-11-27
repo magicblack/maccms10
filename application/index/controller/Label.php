@@ -15,8 +15,8 @@ class Label extends Base
             if(!empty($param['file'])){
                 $file = $param['file'];
             }
-            if(!file_exists(MAC_ROOT_TEMPLATE . 'label/'. $file.'.html' )){
-                return $this->error('非法请求');
+            if(!file_exists($GLOBALS['MAC_ROOT_TEMPLATE'] . 'label/'. $file.'.html' )){
+                return $this->error(lang('illegal_request'));
             }
             echo $this->label_fetch('label/'.$file);
         }

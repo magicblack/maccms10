@@ -11,18 +11,20 @@ class Receive extends Base
         parent::__construct();
         $this->_param = input('','','trim,urldecode');
 
+
         if($GLOBALS['config']['interface']['status'] != 1){
-            echo json_encode(['code'=>3001,'msg'=>'接口关闭err'],JSON_UNESCAPED_UNICODE);
-            exit;
-        }
-        if( strlen($GLOBALS['config']['interface']['pass']) <16){
-            echo json_encode(['code'=>3003,'msg'=>'安全起见入库密码必须大于等于16位'],JSON_UNESCAPED_UNICODE);
+            echo json_encode(['code'=>3001,'msg'=>lang('api/close_err')],JSON_UNESCAPED_UNICODE);
             exit;
         }
         if($GLOBALS['config']['interface']['pass'] != $this->_param['pass']){
-            echo json_encode(['code'=>3002,'msg'=>'非法使用err'],JSON_UNESCAPED_UNICODE);
+            echo json_encode(['code'=>3002,'msg'=>lang('api/pass_err')],JSON_UNESCAPED_UNICODE);
             exit;
         }
+        if( strlen($GLOBALS['config']['interface']['pass']) <16){
+            echo json_encode(['code'=>3003,'msg'=>lang('api/pass_safe_err')],JSON_UNESCAPED_UNICODE);
+            exit;
+        }
+
     }
 
     public function index()
@@ -35,11 +37,11 @@ class Receive extends Base
         $info = $this->_param;
 
         if(empty($info['vod_name'])){
-            echo json_encode(['code'=>2001,'msg'=>'名称必须err'],JSON_UNESCAPED_UNICODE);
+            echo json_encode(['code'=>2001,'msg'=>lang('api/require_name')],JSON_UNESCAPED_UNICODE);
             exit;
         }
         if(empty($info['type_id']) && empty($info['type_name'])){
-            echo json_encode(['code'=>2002,'msg'=>'分类名称和分类id至少填写1项err'],JSON_UNESCAPED_UNICODE);
+            echo json_encode(['code'=>2002,'msg'=>lang('api/require_type')],JSON_UNESCAPED_UNICODE);
             exit;
         }
 
@@ -58,11 +60,11 @@ class Receive extends Base
         $info = $this->_param;
 
         if(empty($info['art_name'])){
-            echo json_encode(['code'=>2001,'msg'=>'名称必须err'],JSON_UNESCAPED_UNICODE);
+            echo json_encode(['code'=>2001,'msg'=>lang('api/require_name')],JSON_UNESCAPED_UNICODE);
             exit;
         }
         if(empty($info['type_id']) && empty($info['type_name'])){
-            echo json_encode(['code'=>2002,'msg'=>'分类名称和分类id至少填写1项err'],JSON_UNESCAPED_UNICODE);
+            echo json_encode(['code'=>2002,'msg'=>lang('api/require_type')],JSON_UNESCAPED_UNICODE);
             exit;
         }
 
@@ -80,15 +82,15 @@ class Receive extends Base
         $info = $this->_param;
 
         if(empty($info['actor_name'])){
-            echo json_encode(['code'=>2001,'msg'=>'演员名必须err'],JSON_UNESCAPED_UNICODE);
+            echo json_encode(['code'=>2001,'msg'=>lang('api/require_actor_name')],JSON_UNESCAPED_UNICODE);
             exit;
         }
         if(empty($info['actor_sex'])){
-            echo json_encode(['code'=>2002,'msg'=>'性别必须err'],JSON_UNESCAPED_UNICODE);
+            echo json_encode(['code'=>2002,'msg'=>lang('api/require_sex')],JSON_UNESCAPED_UNICODE);
             exit;
         }
         if(empty($info['type_id']) && empty($info['type_name'])){
-            echo json_encode(['code'=>2003,'msg'=>'分类名称和分类id至少填写1项err'],JSON_UNESCAPED_UNICODE);
+            echo json_encode(['code'=>2003,'msg'=>lang('api/require_type')],JSON_UNESCAPED_UNICODE);
             exit;
         }
 
@@ -106,15 +108,15 @@ class Receive extends Base
         $info = $this->_param;
 
         if(empty($info['role_name'])){
-            echo json_encode(['code'=>2001,'msg'=>'角色名称必须err'],JSON_UNESCAPED_UNICODE);
+            echo json_encode(['code'=>2001,'msg'=>lang('api/require_role_name')],JSON_UNESCAPED_UNICODE);
             exit;
         }
         if(empty($info['role_actor'])){
-            echo json_encode(['code'=>2002,'msg'=>'演员名必须err'],JSON_UNESCAPED_UNICODE);
+            echo json_encode(['code'=>2002,'msg'=>lang('api/require_actor_name')],JSON_UNESCAPED_UNICODE);
             exit;
         }
         if(empty($info['vod_name']) && empty($info['douban_id'])){
-            echo json_encode(['code'=>2003,'msg'=>'视频名或豆瓣id必须err'],JSON_UNESCAPED_UNICODE);
+            echo json_encode(['code'=>2003,'msg'=>lang('api/require_rel_vod')],JSON_UNESCAPED_UNICODE);
             exit;
         }
 
@@ -128,11 +130,11 @@ class Receive extends Base
         $info = $this->_param;
 
         if(empty($info['website_name'])){
-            echo json_encode(['code'=>2001,'msg'=>'名称必须err'],JSON_UNESCAPED_UNICODE);
+            echo json_encode(['code'=>2001,'msg'=>lang('api/require_name')],JSON_UNESCAPED_UNICODE);
             exit;
         }
         if(empty($info['type_id']) && empty($info['type_name'])){
-            echo json_encode(['code'=>2002,'msg'=>'分类名称和分类id至少填写1项err'],JSON_UNESCAPED_UNICODE);
+            echo json_encode(['code'=>2002,'msg'=>lang('api/require_type')],JSON_UNESCAPED_UNICODE);
             exit;
         }
 
@@ -150,19 +152,19 @@ class Receive extends Base
         $info = $this->_param;
 
         if(empty($info['comment_name'])){
-            echo json_encode(['code'=>2001,'msg'=>'名称必须err'],JSON_UNESCAPED_UNICODE);
+            echo json_encode(['code'=>2001,'msg'=>lang('api/require_comment_name')],JSON_UNESCAPED_UNICODE);
             exit;
         }
         if(empty($info['comment_content'])){
-            echo json_encode(['code'=>2002,'msg'=>'内容必须'],JSON_UNESCAPED_UNICODE);
+            echo json_encode(['code'=>2002,'msg'=>lang('api/require_comment_name')],JSON_UNESCAPED_UNICODE);
             exit;
         }
         if(empty($info['comment_mid'])){
-            echo json_encode(['code'=>2004,'msg'=>'mid必须'],JSON_UNESCAPED_UNICODE);
+            echo json_encode(['code'=>2004,'msg'=>lang('api/require_mid')],JSON_UNESCAPED_UNICODE);
             exit;
         }
         if(empty($info['rel_name']) && empty($info['douban_id'])){
-            echo json_encode(['code'=>2003,'msg'=>'关联数据名rel_name或豆瓣编号douban_id至少填写一项err'],JSON_UNESCAPED_UNICODE);
+            echo json_encode(['code'=>2003,'msg'=>lang('api/require_rel_name')],JSON_UNESCAPED_UNICODE);
             exit;
         }
 

@@ -22,7 +22,7 @@ class Images extends Base
 
         if(substr($path,0,7) != "@upload") { $path = "@upload"; }
         if(count( explode("..@",$path) ) > 1) {
-            $this->error('非法目录请求');
+            $this->error(lang('illegal_request'));
             return;
         }
 
@@ -92,7 +92,7 @@ class Images extends Base
 
         $this->assign('files',$files);
 
-        $this->assign('title','图片管理');
+        $this->assign('title',lang('admin/images/title'));
         return $this->fetch('admin@images/index');
     }
 
@@ -120,7 +120,7 @@ class Images extends Base
                 }
             }
         }
-        return $this->success('删除成功');
+        return $this->success(lang('del_ok'));
     }
 
     public function sync()
@@ -175,7 +175,7 @@ class Images extends Base
             $col_time='website_time';
         }
         else{
-            return $this->error('参数错误');
+            return $this->error(lang('param_err'));
         }
 
         $where = ' 1=1 ';
@@ -203,12 +203,12 @@ class Images extends Base
         $page_count = ceil($total / $param['limit']);
 
         if($total==0){
-            mac_echo('同步操作完毕');
+            mac_echo(lang('admin/images/sync_complete'));
             exit;
         }
 
         mac_echo('<style type="text/css">body{font-size:12px;color: #333333;line-height:21px;}span{font-weight:bold;color:#FF0000}</style>');
-        mac_echo('<span>共'.$total.'条数据需要处理，每页'.$param['limit'].'条，共'.$page_count.'页，正在处理第'.$param['page'].'页数据</span>');
+        mac_echo(lang('admin/images/sync_tip',[$total,$param['limit'],$page_count,$param['page']]));
 
         $list = Db::name($tab)->where($where)->page($page_count-1,$param['limit'])->select();
         $config = config('maccms.upload');
@@ -254,11 +254,11 @@ class Images extends Base
                         $link = str_replace('mac:', $config['protocol'].':', $img_url);
                     }
                     if ($img_url == $img_old) {
-                        $des = '<a href="' . $link . '" target="_blank">' . $link . '</a><font color=red>下载失败!</font>';
+                        $des = '<a href="' . $link . '" target="_blank">' . $link . '</a><font color=red>'.lang('download_err').'!</font>';
                         $img_url .= $flag;
                         $content = str_replace($img_old,"",$content);
                     } else {
-                        $des = '<a href="' . $link . '" target="_blank">' . $link . '</a><font color=green>下载成功!</font>';
+                        $des = '<a href="' . $link . '" target="_blank">' . $link . '</a><font color=green>'.lang('download_ok').'!</font>';
                         $content = str_replace($img_old, $img_url, $content );
                     }
                     mac_echo($des);
@@ -288,10 +288,10 @@ class Images extends Base
                 }
 
                 if ($img_url == $img_old) {
-                    $des = '<a href="' . $link . '" target="_blank">' . $link . '</a><font color=red>下载失败!</font>';
+                    $des = '<a href="' . $link . '" target="_blank">' . $link . '</a><font color=red>'.lang('download_err').'!</font>';
                     $img_url .= $flag;
                 } else {
-                    $des = '<a href="' . $link . '" target="_blank">' . $link . '</a><font color=green>下载成功!</font>';
+                    $des = '<a href="' . $link . '" target="_blank">' . $link . '</a><font color=green>'.lang('download_ok').'!</font>';
                 }
                 mac_echo($des);
 

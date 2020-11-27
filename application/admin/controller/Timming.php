@@ -14,7 +14,7 @@ class Timming extends Base
     {
         $list = config('timming');
         $this->assign('list',$list);
-        $this->assign('title','定时任务管理');
+        $this->assign('title',lang('admin/timming/title'));
         return $this->fetch('admin@timming/index');
     }
 
@@ -33,15 +33,15 @@ class Timming extends Base
             $list[$param['name']] = $param;
             $res = mac_arr2file( APP_PATH .'extra/timming.php', $list);
             if($res===false){
-                return $this->error('保存配置文件失败，请重试!');
+                return $this->error(lang('write_err_config'));
             }
 
-            return $this->success('保存成功!');
+            return $this->success(lang('save_ok'));
         }
         $info = $list[$param['id']];
 
         $this->assign('info',$info);
-        $this->assign('title','信息管理');
+        $this->assign('title',lang('admin/timming/title'));
         return $this->fetch('admin@timming/info');
     }
 
@@ -52,10 +52,10 @@ class Timming extends Base
         unset($list[$param['ids']]);
         $res = mac_arr2file(APP_PATH. 'extra/timming.php', $list);
         if($res===false){
-            return $this->error('删除失败，请重试!');
+            return $this->error(lang('del_err'));
         }
 
-        return $this->success('删除成功!');
+        return $this->success(lang('del_ok'));
     }
 
     public function field()
@@ -75,10 +75,10 @@ class Timming extends Base
             }
             $res = mac_arr2file(APP_PATH. 'extra/timming.php', $list);
             if($res===false){
-                return $this->error('保存失败，请重试!');
+                return $this->error(lang('save_err'));
             }
-            return $this->success('保存成功!');
+            return $this->success(lang('save_ok'));
         }
-        return $this->error('参数错误');
+        return $this->error(lang('param_err'));
     }
 }

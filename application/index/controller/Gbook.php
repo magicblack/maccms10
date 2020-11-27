@@ -55,39 +55,40 @@ class Gbook extends Base
 
         if($GLOBALS['config']['gbook']['verify'] == 1){
             if(!captcha_check($param['verify'])){
-                return ['code'=>1002,'msg'=>'验证码错误'];
+                return ['code'=>1002,'msg'=>lang('verify_err')];
             }
         }
 
         if($GLOBALS['config']['gbook']['login'] ==1){
             if(empty(cookie('user_id'))){
-                return ['code' => 1003, 'msg' => '登录后才可以发表留言'];
+                return ['code' => 1003, 'msg' => lang('index/require_login')];
             }
             $res = model('User')->checkLogin();
             if($res['code']>1) {
-                return ['code' => 1003, 'msg' => '登录后才可以发表留言'];
+                return ['code' => 1003, 'msg' => lang('index/require_login')];
             }
         }
 
         if(empty($param['gbook_content'])){
-            return ['code'=>1004,'msg'=>'留言内容不能为空'];
+            return ['code'=>1004,'msg'=>lang('index/require_content')];
         }
 
         $cookie = 'gbook_timespan';
         if(!empty(cookie($cookie))){
-            return ['code'=>1005,'msg'=>'请不要频繁操作'];
+            return ['code'=>1005,'msg'=>lang('frequently')];
         }
 
         $param['gbook_content']= htmlentities(mac_filter_words($param['gbook_content']));
         $pattern = '/[^\x00-\x80]/';
         if(!preg_match($pattern,$param['gbook_content'])){
-            return ['code'=>1005,'msg'=>'内容必须包含中文,请重新输入'];
+            return ['code'=>1005,'msg'=>lang('index/require_cn')];
         }
 
         $param['gbook_reply'] = '';
 
         if(empty(cookie('user_id'))){
-            $param['gbook_name'] = '游客';
+            $param['gbook_name'] = lang('controller/visitor');
+            $param['user_id']=0;
         }
         else{
             $param['gbook_name'] = cookie('user_name');
@@ -113,10 +114,10 @@ class Gbook extends Base
         else{
             cookie($cookie, 't', $GLOBALS['config']['gbook']['timespan']);
             if($GLOBALS['config']['gbook']['audit'] ==1){
-                $res['msg'] = '谢谢，我们会尽快审核你的发言！';
+                $res['msg'] =  lang('index/thanks_msg_audit');
             }
             else{
-                $res['msg'] = '感谢你的留言！';
+                $res['msg'] = lang('index/thanks_msg');
             }
             return $res;
         }

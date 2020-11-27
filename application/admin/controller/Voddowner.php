@@ -15,7 +15,7 @@ class VodDowner extends Base
     {
         $list = config($this->_pre);
         $this->assign('list',$list);
-        $this->assign('title','下载器管理');
+        $this->assign('title',lang('admin/voddowner/title'));
         return $this->fetch('admin@voddowner/index');
     }
 
@@ -41,14 +41,14 @@ class VodDowner extends Base
             array_multisort($sort, SORT_DESC, SORT_FLAG_CASE , $list);
             $res = mac_arr2file( APP_PATH .'extra/'.$this->_pre.'.php', $list);
             if($res===false){
-                return $this->error('保存失败，请重试!');
+                return $this->error(lang('save_err'));
             }
-            return $this->success('保存成功!');
+            return $this->success(lang('save_ok'));
         }
 
         $info = $list[$param['id']];
         $this->assign('info',$info);
-        $this->assign('title','信息管理');
+        $this->assign('title',lang('admin/voddowner/title'));
         return $this->fetch('admin@voddowner/info');
     }
 
@@ -59,9 +59,9 @@ class VodDowner extends Base
         unset($list[$param['ids']]);
         $res = mac_arr2file(APP_PATH. 'extra/'.$this->_pre.'.php', $list);
         if($res===false){
-            return $this->error('删除失败，请重试!');
+            return $this->error(lang('del_err'));
         }
-        return $this->success('删除成功!');
+        return $this->success(lang('del_ok'));
     }
 
     public function field()
@@ -81,11 +81,11 @@ class VodDowner extends Base
             }
             $res = mac_arr2file(APP_PATH. 'extra/'.$this->_pre.'.php', $list);
             if($res===false){
-                return $this->error('保存失败，请重试!');
+                return $this->error(lang('save_err'));
             }
-            return $this->success('保存成功!');
+            return $this->success(lang('save_ok'));
         }
-        return $this->error('参数错误');
+        return $this->error(lang('param_err'));
     }
 
 }

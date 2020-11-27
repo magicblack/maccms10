@@ -17,7 +17,7 @@ class Payment extends Base
             $pay_type = $param['pay_type'];
 
             if ($GLOBALS['config']['pay'][$pay_type]['appid'] == '') {
-                echo '该支付选项未开启';
+                echo lang('index/payment_status');
                 exit;
             }
 
@@ -27,12 +27,12 @@ class Payment extends Base
                 $c->notify();
             }
             else{
-                echo '未找到支付选项';
+                echo lang('index/payment_not');
                 exit;
             }
         }
         else{
-            return $this->success('支付完成', url('user/index') );
+            return $this->success(lang('index/payment_ok'), url('user/index') );
         }
     }
 }

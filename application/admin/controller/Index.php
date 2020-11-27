@@ -61,11 +61,15 @@ class Index extends Base
             }
         }
 
-        $quickmenu = mac_read_file( APP_PATH.'data/config/quickmenu.txt');
+        $quickmenu = config('quickmenu');
+        if(empty($quickmenu)){
+            $quickmenu = mac_read_file( APP_PATH.'data/config/quickmenu.txt');
+            $quickmenu = explode(chr(13),$quickmenu);
+        }
         if(!empty($quickmenu)){
-            $menus[1]['sub'][13] = ['name'=>'↓↓↓自定义菜单区域↓↓↓', 'url'=>'javascript:void(0);return false;','controller'=>'', 'action'=>'' ];
-            $arr = explode(chr(13),$quickmenu);
-            foreach($arr as $k=>$v){
+            $menus[1]['sub'][13] = ['name'=>lang('admin/index/quick_tit'), 'url'=>'javascript:void(0);return false;','controller'=>'', 'action'=>'' ];
+
+            foreach($quickmenu as $k=>$v){
                 if(empty($v)){
                     continue;
                 }
@@ -87,7 +91,7 @@ class Index extends Base
         }
         $this->assign('menus',$menus);
 
-        $this->assign('title','后台管理中心');
+        $this->assign('title',lang('admin/index/title'));
         return $this->fetch('admin@index/index');
     }
 
@@ -98,24 +102,41 @@ class Index extends Base
 
         $this->assign('version',$version);
         $this->assign('update_sql',$update_sql);
-
+        $this->assign('mac_lang',config('default_lang'));
 
         $this->assign('info',$this->_admin);
-        $this->assign('title','欢迎页面');
+        $this->assign('title',lang('admin/index/welcome/title'));
         return $this->fetch('admin@index/welcome');
     }
 
     public function quickmenu()
     {
         if(Request()->isPost()){
+            $param = input();
+            $validate = \think\Loader::validate('Token');
+            if(!$validate->check($param)){
+                return $this->error($validate->getError());
+            }
             $quickmenu = input('post.quickmenu');
-            @fwrite(fopen(APP_PATH.'data/config/quickmenu.txt','wb'),$quickmenu);
-            $this->success('保存成功，跳转中!');
+            $quickmenu = str_replace(chr(10),'',$quickmenu);
+            $menu_arr = explode(chr(13),$quickmenu);
+            $res = mac_arr2file(APP_PATH . 'extra/quickmenu.php', $menu_arr);
+            if ($res === false) {
+                return $this->error(lang('save_err'));
+            }
+            return $this->success(lang('save_ok'));
         }
         else{
-            $quickmenu = mac_read_file(APP_PATH.'data/config/quickmenu.txt');
+            $config_menu = config('quickmenu');
+            if(empty($config_menu)){
+                $quickmenu = mac_read_file(APP_PATH.'data/config/quickmenu.txt');
+            }
+            else{
+                $quickmenu = array_values($config_menu);
+                $quickmenu = join(chr(13),$quickmenu);
+            }
             $this->assign('quickmenu',$quickmenu);
-            $this->assign('title','快捷菜单配置');
+            $this->assign('title',lang('admin/index/quickmenu/title'));
             return $this->fetch('admin@index/quickmenu');
         }
     }
@@ -125,23 +146,23 @@ class Index extends Base
         $res = $this->_cache_clear();
         //运行缓存
         if(!$res) {
-            $this->error('缓存清理失败!');
+            $this->error(lang('admin/index/clear_err'));
         }
-        return $this->success('缓存清理成功!');
+        return $this->success(lang('admin/index/clear_ok'));
     }
 
     public function iframe()
     {
         $val = input('post.val', 0);
         if ($val != 0 && $val != 1) {
-            return $this->error('缓存清理成功!');
+            return $this->error(lang('admin/index/clear_ok'));
         }
         if ($val == 1) {
             cookie('hisi_iframe', 'yes');
         } else {
             cookie('hisi_iframe', null);
         }
-        return $this->success('布局切换成功，跳转中!');
+        return $this->success(lang('admin/index/iframe'));
     }
 
     public function unlocked()
@@ -150,10 +171,10 @@ class Index extends Base
         $password = $param['password'];
 
         if($this->_admin['admin_pwd'] != md5($password)){
-            return $this->error('密码错误');
+            return $this->error(lang('admin/index/pass_err'));
         }
 
-        return $this->success('解锁成功');
+        return $this->success(lang('admin/index/unlock_ok'));
     }
 
     public function check_back_link()
@@ -176,7 +197,7 @@ class Index extends Base
         $refresh = $param['refresh'];
 
         if(empty($tpl) || empty($tab) || empty($col) || empty($ids) || empty($url)){
-            return $this->error('参数错误');
+            return $this->error(lang('param_err'));
         }
 
         if(is_array($ids)){

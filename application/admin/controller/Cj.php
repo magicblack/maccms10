@@ -31,7 +31,7 @@ class Cj extends Base
         $param['page'] = '{page}';
         $param['limit'] = '{limit}';
         $this->assign('param',$param);
-        $this->assign('title','自定义采集管理');
+        $this->assign('title',lang('admin/cj/title'));
 
         return $this->fetch('admin@cj/index');
     }
@@ -67,7 +67,7 @@ class Cj extends Base
             $res['info']['customize_config'] = json_decode($res['info']['customize_config'],true);
         }
         $this->assign('data',$res['info']);
-        $this->assign('title','采集信息');
+        $this->assign('title',lang('admin/cj/title'));
         return $this->fetch('admin@cj/info');
     }
 
@@ -78,11 +78,10 @@ class Cj extends Base
         $where['nodeid'] = $param['id'];
         $res = model('Cj')->infoData('cj_node',$where);
         if($res['code']>1){
-            return $this->error('获取采集项目信息失败');
+            return $this->error($res['msg']);
         }
 
         if (Request()->isPost()) {
-
             $program_config = [];
             foreach($param['model_field'] as $k=>$v){
                 if(!empty($param['node_field'][$k])){
@@ -95,9 +94,9 @@ class Cj extends Base
             $update['program_config'] = json_encode($program_config);
             $res = model('Cj')->saveData($update);
             if($res['code']>1){
-                return $this->error('保存失败');
+                return $this->error(lang('save_err'));
             }
-            return $this->success('保存成功');
+            return $this->success(lang('save_ok'));
         }
 
         $program_config = [];
@@ -107,7 +106,7 @@ class Cj extends Base
         $this->assign('program_config',$program_config);
 
 
-        $node_field = array('title'=>'标题','type'=>'分类', 'content'=>'内容');
+        $node_field = array('title'=>lang('title'),'type'=>lang('type'), 'content'=>lang('content'));
         $customize_config = [];
         if(!empty($res['info']['customize_config'])){
             $customize_config = json_decode($res['info']['customize_config'],true);
@@ -146,16 +145,15 @@ class Cj extends Base
         $where['nodeid'] = $param['id'];
         $res = model('Cj')->infoData('cj_node',$where);
         if($res['code']>1){
-            return $this->error('获取采集项目信息失败');
+            return $this->error($res['msg']);
         }
         $data = $res['info'];
         $collection = new cjOper();
         $urls = $collection->url_list($data);
 
-
         $total_page = count($urls);
         if (empty($total_page)){
-            return $this->error('获取网址信息失败');
+            return $this->error(lang('admin/cj/url_list_err'));
         }
 
         $param['page'] = isset($param['page']) ? intval($param['page']) : 1;
@@ -190,7 +188,7 @@ class Cj extends Base
             Db::name('cj_node')->where('nodeid',$param['id'])->update(array('lastdate' => $time));
         }
         if($this->_isall==1){
-            mac_echo('url采集完成');
+            mac_echo(lang('admin/cj/url_cj_complete'));
             $this->col_content($param);
             exit;
         }
@@ -201,15 +199,15 @@ class Cj extends Base
 		$this->assign('url', $url);
 		$this->assign('page',$param['page']);
 		$this->assign('total',$total);
-        $this->assign('title','采集url地址');
+        $this->assign('title',lang('admin/cj/url/title'));
         if($total_page > $param['page']){
-            mac_echo('让服务器休息一会，稍后继续');
+            mac_echo(lang('server_rest'));
             $param['page'] ++;
             $link = url('cj/col_url') . '?'. http_build_query($param);
             mac_jump( $link ,3);
         }
         else{
-            mac_echo('url采集完成');
+            mac_echo(lang('admin/cj/url_cj_complete'));
         }
         return $this->fetch('admin@cj/col_url');
     }
@@ -228,7 +226,7 @@ class Cj extends Base
         $where['nodeid'] = $param['id'];
         $res = model('Cj')->infoData('cj_node',$where);
         if($res['code']>1){
-            return $this->error('获取采集项目信息失败');
+            return $this->error($res['msg']);
         }
         $data = $res['info'];
 
@@ -239,7 +237,7 @@ class Cj extends Base
         }
         $limit = 20;
         $total_page = ceil($total/$limit);
-        mac_echo('正在采集内容，共【'.$total.'】条，分'.$total_page.'页，每页采集'.$limit.'条，当前'.$page.'页');
+        mac_echo(lang('admin/cj/content/tip',[$total,$total_page,$limit,$page]));
 
         $list = Db::name('cj_content')->where('nodeid',$param['id'])->where('status',1)->page($total_page-1,$limit)->select();
 
@@ -256,12 +254,12 @@ class Cj extends Base
             }
         }
         else{
-            mac_echo('内容采集完成');
+            mac_echo(lang('admin/cj/content_cj_complete'));
             exit;
         }
 
         if($this->_isall==1){
-            mac_echo('内容采集完成');
+            mac_echo(lang('admin/cj/content_cj_complete'));
             $param['ids'] = implode(',',$ids);
             $param['limit'] = 999;
             $this->content_into($param);
@@ -269,7 +267,7 @@ class Cj extends Base
         }
 
         if ($total_page > $page){
-            mac_echo('让服务器休息一会，稍后继续');
+            mac_echo(lang('server_rest'));
             $param['page'] ++;
             $link = url('cj/col_content') . '?'. http_build_query($param);
             mac_jump( $link ,3);
@@ -277,7 +275,7 @@ class Cj extends Base
         else{
             $time = time();
             Db::name('cj_node')->where('nodeid',$param['id'])->update(array('lastdate' => $time));
-            mac_echo('采集完成');
+            mac_echo(lang('admin/cj/cj_complete'));
             exit;
         }
     }
@@ -306,7 +304,7 @@ class Cj extends Base
         $param['page'] = '{page}';
         $param['limit'] = '{limit}';
         $this->assign('param',$param);
-        $this->assign('title','内容发布管理');
+        $this->assign('title',lang('admin/cj/publish/title'));
 
         return $this->fetch('admin@cj/publish');
     }
@@ -321,7 +319,7 @@ class Cj extends Base
             $info['data'] = @json_decode($info['data'],true);
         }
         $this->assign('info',$info);
-        $this->assign('title','详情信息');
+        $this->assign('title',lang('admin/cj/title'));
         return $this->fetch('admin@cj/show');
 
     }
@@ -351,10 +349,10 @@ class Cj extends Base
 
             $res = Db::name('cj_content')->where($where)->delete();
             if($res===false){
-                return $this->error('删除失败'.$this->getError());
+                return $this->error(lang('del_err').''.$this->getError());
             }
         }
-        return $this->success('删除成功');
+        return $this->success(lang('del_ok'));
     }
 
     public function content_into($param=[])
@@ -373,11 +371,9 @@ class Cj extends Base
         $where['nodeid'] = $param['id'];
         $res = model('Cj')->infoData('cj_node',$where);
         if($res['code']>1){
-            return $this->error('获取采集项目信息失败');
+            return $this->error($res['msg']);
         }
         $node = $res['info'];
-
-
         $where=[];
         $where['nodeid'] = $nodeid;
         $where['status'] =['eq',2];
@@ -394,7 +390,7 @@ class Cj extends Base
         $list = Db::name('cj_content')->where($where)->page($param['page'],$param['limit'])->select();
 
         $total_page = ceil($param['total']/$param['limit']);
-        mac_echo('正在导入内容，共【'.$param['total'].'】条，分'.$total_page.'页，每页采集'.$param['limit'].'条，当前'.$param['page'].'页');
+        mac_echo(lang('admin/cj/content_into/tip',[$param['total'],$total_page,$param['limit'],$param['page']]));
 
         $program_config =[];
         if(!empty($node['program_config'])){
@@ -444,19 +440,19 @@ class Cj extends Base
         }
 
         if($this->_isall==1){
-            mac_echo('内容入库完成');
+            mac_echo(lang('admin/cj/content_into/complete'));
             exit;
         }
 
 
         if ($total_page > $param['page']){
-            mac_echo('让服务器休息一会，稍后继续');
+            mac_echo(lang('server_rest'));
             $param['page'] ++;
             $link = url('cj/content_into') . '?'. http_build_query($param);
             mac_jump( $link ,3);
         }
         else{
-            mac_echo('数据导入完成...');
+            mac_echo(lang('import_ok'));
             exit;
         }
     }
@@ -490,7 +486,7 @@ class Cj extends Base
             }
             return $this->success($res['msg']);
         }
-        return $this->error('参数错误');
+        return $this->error(lang('param_err'));
     }
 
     public function export()
@@ -501,7 +497,7 @@ class Cj extends Base
         $where['nodeid'] = $param['id'];
         $res = model('Cj')->infoData('cj_node',$where);
         if($res['code']>1){
-            return $this->error('获取采集项目信息失败');
+            return $this->error($res['msg']);
         }
         $node = $res['info'];
 
@@ -530,7 +526,7 @@ class Cj extends Base
                 }
                 return $this->success($res['msg']);
             }
-            return $this->success('导入失败，请检查文件格式');
+            return $this->success(lang('import_err'));
         }
         else{
             return $this->error($file->getError());

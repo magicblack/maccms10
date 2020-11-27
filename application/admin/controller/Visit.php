@@ -49,7 +49,7 @@ class Visit extends Base
         $param['limit'] = '{limit}';
         $this->assign('param',$param);
 
-        $this->assign('title','访问记录管理');
+        $this->assign('title',lang('admin/visit/title'));
         return $this->fetch('admin@visit/index');
     }
 
@@ -70,7 +70,7 @@ class Visit extends Base
             }
             return $this->success($res['msg']);
         }
-        return $this->error('参数错误');
+        return $this->error(lang('param_err'));
     }
 
 }

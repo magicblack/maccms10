@@ -42,7 +42,7 @@ class Topic extends Base
         $param['page'] = '{page}';
         $param['limit'] = '{limit}';
         $this->assign('param',$param);
-        $this->assign('title','专题管理');
+        $this->assign('title',lang('admin/topic/title'));
         return $this->fetch('admin@topic/index');
     }
 
@@ -68,7 +68,7 @@ class Topic extends Base
 
         $config = config('maccms.site');
         $this->assign('install_dir',$config['install_dir']);
-
+        $this->assign('title',lang('admin/topic/title'));
         return $this->fetch('admin@topic/info');
     }
 
@@ -86,7 +86,7 @@ class Topic extends Base
             }
             return $this->success($res['msg']);
         }
-        return $this->error('参数错误');
+        return $this->error(lang('param_err'));
     }
 
     public function field()
@@ -106,7 +106,7 @@ class Topic extends Base
             }
             return $this->success($res['msg']);
         }
-        return $this->error('参数错误');
+        return $this->error(lang('param_err'));
     }
 
 }

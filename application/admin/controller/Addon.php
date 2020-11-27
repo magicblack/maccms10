@@ -19,7 +19,7 @@ class Addon extends Base
     {
         $param = input();
 
-        $this->assign('title','插件管理');
+        $this->assign('title',lang('admin/addon/title'));
         return $this->fetch('admin@addon/index');
     }
 
@@ -28,22 +28,22 @@ class Addon extends Base
         $param = input();
         $name = $param['name'];
         if(empty($name)){
-            return $this->error('参数错误');
+            return $this->error(lang('param_err'));
         }
 
         if (!is_dir(ADDON_PATH . $name)) {
-            return $this->error('获取插件目录失败');
+            return $this->error(lang('get_dir_err'));
         }
 
         $info = get_addon_info($name);
         $config = get_addon_fullconfig($name);
         if (!$info){
-            return $this->error('获取插件信息失败');
+            return $this->error(lang('get_addon_info_err'));
         }
         if ($this->request->isPost()) {
             $params = $this->request->post("row/a");
             if(empty($params)){
-                return $this->error('参数错误');
+                return $this->error(lang('param_err'));
             }
             foreach ($config as $k => &$v) {
                 if (isset($params[$v['name']])) {
@@ -61,7 +61,7 @@ class Addon extends Base
                 //更新配置文件
                 set_addon_fullconfig($name, $config);
                 Service::refresh();
-                return $this->success('保存成功');
+                return $this->success(lang('save_ok'));
             } catch (Exception $e) {
                 return $this->error($e->getMessage());
             }
@@ -158,7 +158,7 @@ class Addon extends Base
         $name = $param['name'];
         $force = (int)$param['force'];
         if (!$name) {
-            return $this->error('参数错误');
+            return $this->error(lang('param_err'));
         }
         try {
             $uid = $this->request->post("uid");
@@ -175,7 +175,7 @@ class Addon extends Base
             $info = get_addon_info($name);
             $info['config'] = get_addon_config($name) ? 1 : 0;
             $info['state'] = 1;
-            return $this->success('安装成功');
+            return $this->success(lang('install_err'));
         } catch (AddonException $e) {
             return $this->result($e->getData(), $e->getCode(), $e->getMessage());
         } catch (Exception $e) {
@@ -192,17 +192,17 @@ class Addon extends Base
         $name = $param['name'];
         $force = (int)$param['force'];
         if (!$name) {
-            return $this->error('参数错误');
+            return $this->error(lang('param_err'));
         }
         try {
             if( strpos($name,".")!==false ||  strpos($name,"/")!==false ||  strpos($name,"\\")!==false  ) {
-                $this->error('非法目录请求');
+                $this->error(lang('admin/addon/path_err'));
                 return;
             }
 
 
             Service::uninstall($name, $force);
-            return $this->success('卸载成功');
+            return $this->success(lang('uninstall_ok'));
         } catch (AddonException $e) {
             return $this->result($e->getData(), $e->getCode(), $e->getMessage());
         } catch (Exception $e) {
@@ -220,14 +220,14 @@ class Addon extends Base
         $action = $param['action'];
         $force = (int)$param['force'];
         if (!$name) {
-            return $this->error('参数错误');
+            return $this->error(lang('param_err'));
         }
         try {
             $action = $action == 'enable' ? $action : 'disable';
             //调用启用、禁用的方法
             Service::$action($name, $force);
             Cache::rm('__menu__');
-            return $this->success('状态设置成功');
+            return $this->success(lang('opt_ok'));
         } catch (AddonException $e) {
             return $this->result($e->getData(), $e->getCode(), $e->getMessage());
         } catch (Exception $e) {
@@ -235,6 +235,9 @@ class Addon extends Base
         }
     }
 
+    /**
+     * 本地上传
+     */
     public function local()
     {
         $param = input();
@@ -242,6 +245,7 @@ class Addon extends Base
         if(!$validate->check($param)){
             return $this->error($validate->getError());
         }
+
         $file = $this->request->file('file');
         $addonTmpDir = RUNTIME_PATH . 'addons' . DS;
         if (!is_dir($addonTmpDir)) {
@@ -257,18 +261,18 @@ class Addon extends Base
                 @unlink($tmpFile);
                 $infoFile = $tmpAddonDir . 'info.ini';
                 if (!is_file($infoFile)) {
-                    throw new Exception('缺少插件配置文件info.ini');
+                    throw new Exception(lang('admin/addon/lack_config_err'));
                 }
 
                 $config = Config::parse($infoFile, '', $tmpName);
                 $name = isset($config['name']) ? $config['name'] : '';
                 if (!$name) {
-                    throw new Exception('插件名称不能为空');
+                    throw new Exception(lang('admin/addon/name_empty_err'));
                 }
 
                 $newAddonDir = ADDON_PATH . $name . DS;
                 if (is_dir($newAddonDir)) {
-                    throw new Exception('已经存在插件');
+                    throw new Exception(lang('admin/addon/haved_err'));
                 }
 
                 //重命名插件文件夹
@@ -292,7 +296,7 @@ class Addon extends Base
                     Service::importsql($name);
 
                     $info['config'] = get_addon_config($name) ? 1 : 0;
-                    return $this->success('离线安装成功');
+                    return $this->success(lang('install_ok'));
                 } catch (Exception $e) {
                     if (Dir::delDir($newAddonDir) === false) {
 
@@ -316,7 +320,6 @@ class Addon extends Base
     {
         return $this->fetch('admin@addon/add');
     }
-
     /**
      * 更新插件
      */
@@ -324,7 +327,7 @@ class Addon extends Base
     {
         $name = $this->request->post("name");
         if (!$name) {
-            return $this->error('参数错误');
+            return $this->error(lang('param_err'));
         }
         try {
             $uid = $this->request->post("uid");
@@ -340,7 +343,7 @@ class Addon extends Base
             //调用更新的方法
             Service::upgrade($name, $extend);
             Cache::rm('__menu__');
-            return $this->success('更新成功');
+            return $this->success(lang('update_ok'));
         } catch (AddonException $e) {
             return $this->result($e->getData(), $e->getCode(), $e->getMessage());
         } catch (Exception $e) {

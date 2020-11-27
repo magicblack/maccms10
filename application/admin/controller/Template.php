@@ -22,7 +22,7 @@ class Template extends Base
 
         if(substr($path,0,10) != ".@template") { $path = ".@template"; }
         if(count( explode(".@",$path) ) > 2) {
-            $this->error('非法目录请求');
+            $this->error(lang('illegal_request'));
             return;
         }
 
@@ -77,7 +77,7 @@ class Template extends Base
                             $tmp_name = str_replace($path . '@', '', $tmp_path);
                             $ftime = filemtime($f);
 
-                            $files[] = ['isfile' => 0, 'name' => $tmp_name, 'path' => $tmp_path, 'note'=>'文件夹', 'time' => $ftime];
+                            $files[] = ['isfile' => 0, 'name' => $tmp_name, 'path' => $tmp_path, 'note'=>lang('文件夹'), 'time' => $ftime];
                     }
                     elseif(is_file($f)) {
                         $num_file++;
@@ -91,7 +91,7 @@ class Template extends Base
                         $tmp_path = $path_info['dirname'];
                         $tmp_name = $path_info['basename'];
 
-                        $files[] = ['isfile' => 1, 'name' => $tmp_name, 'path' => $tmp_path, 'fullname'=> $tmp_path.'/'.$tmp_name, 'size' => $fsize,'note'=>'文件', 'time' => $ftime];
+                        $files[] = ['isfile' => 1, 'name' => $tmp_name, 'path' => $tmp_path, 'fullname'=> $tmp_path.'/'.$tmp_name, 'size' => $fsize,'note'=>lang('file'), 'time' => $ftime];
                     }
                 }
             }
@@ -101,7 +101,7 @@ class Template extends Base
         $this->assign('num_path',$num_path);
         $this->assign('files',$files);
 
-        $this->assign('title','模板管理');
+        $this->assign('title',lang('admin/template/title'));
         return $this->fetch('admin@template/index');
     }
 
@@ -134,7 +134,7 @@ class Template extends Base
                     $tmp_path = $path_info['dirname'];
                     $tmp_name = $path_info['basename'];
 
-                    $files[] = ['isfile' => 1, 'name' => $tmp_name, 'path' => $tmp_path, 'fullname'=> $tmp_path.'/'.$tmp_name, 'size' => $fsize,'note'=>'文件', 'time' => $ftime];
+                    $files[] = ['isfile' => 1, 'name' => $tmp_name, 'path' => $tmp_path, 'fullname'=> $tmp_path.'/'.$tmp_name, 'size' => $fsize,'note'=>lang('file'), 'time' => $ftime];
                 }
             }
         }
@@ -142,7 +142,7 @@ class Template extends Base
         $this->assign('sum_size',mac_format_size($sum_size));
         $this->assign('num_file',$num_file);
         $this->assign('files',$files);
-        $this->assign('title','广告位管理');
+        $this->assign('title',lang('admin/template/ads/title'));
         return $this->fetch('admin@template/ads');
     }
 
@@ -154,7 +154,7 @@ class Template extends Base
         $fpath = $param['fpath'];
 
         if( empty($fpath)){
-            $this->error('参数错误1');
+            $this->error(lang('param_err').'1');
             return;
         }
         $fpath = str_replace('@','/',$fpath);
@@ -162,17 +162,18 @@ class Template extends Base
         $fullname = str_replace('\\','/',$fullname);
 
         if( (substr($fullname,0,10) != "./template") || count( explode("./",$fullname) ) > 2) {
-            $this->error('参数错误2');
+            $this->error(lang('param_err').'2');
             return;
         }
         $path = pathinfo($fullname);
         if(!empty($fname)) {
             $extarr = array('html', 'htm', 'js', 'xml');
             if (!in_array($path['extension'], $extarr)) {
-                $this->error('参数错误，后缀名只允许htm,html,js,xml');
+                $this->error(lang('admin/template/ext_safe_tip'));
                 return;
             }
         }
+
         $filter = '<\?|php|eval|server|assert|get|post|request|cookie|session|input|env|config|call|global|dump|print|phpinfo|fputs|fopen|global|chr|strtr|pack|system|gzuncompress|shell|base64|file|proc|preg|call|ini';
         $this->assign('filter',$filter);
 
@@ -186,18 +187,19 @@ class Template extends Base
             if(!$validate->check($param)){
                 return $this->error($validate->getError());
             }
+
             $fcontent = $param['fcontent'];
             $r = mac_reg_replace($fcontent,$filter,"*");
             if($fcontent !== $r){
-                $this->error('安全提示，模板中包含风险代码禁止在后台编辑');
+                $this->error(lang('admin/template/php_safe_tip'));
                 return;
             }
             $res = @fwrite(fopen($fullname,'wb'),$fcontent);
 
             if($res===false){
-                return $this->error('保存失败，请重试');
+                return $this->error(lang('save_err'));
             }
-            return $this->success('保存成功');
+            return $this->success(lang('save_ok'));
         }
 
         $fcontent = @file_get_contents($fullname);
@@ -229,12 +231,12 @@ class Template extends Base
                 }
             }
         }
-        return $this->success('删除成功');
+        return $this->success(lang('del_ok'));
     }
 
     public function wizard()
     {
-        $this->assign('title','标签向导管理');
+        $this->assign('title',lang('admin/template/wizard/title'));
         return $this->fetch('admin@template/wizard');
     }
 

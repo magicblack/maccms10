@@ -55,7 +55,7 @@ class Role extends Base
         $param['limit'] = '{limit}';
         $this->assign('param', $param);
 
-        $this->assign('title', '角色管理');
+        $this->assign('title',lang('admin/role/title'));
         return $this->fetch('admin@role/index');
     }
 
@@ -89,7 +89,7 @@ class Role extends Base
         $data = $res['info'];
         $this->assign('data',$data);
 
-        $this->assign('title','角色信息');
+        $this->assign('title',lang('admin/role/title'));
         return $this->fetch('admin@role/info');
     }
 
@@ -107,7 +107,7 @@ class Role extends Base
             }
             return $this->success($res['msg']);
         }
-        return $this->error('参数错误');
+        return $this->error(lang('param_err'));
     }
 
     public function field()
@@ -140,7 +140,7 @@ class Role extends Base
             }
             return $this->success($res['msg']);
         }
-        return $this->error('参数错误');
+        return $this->error(lang('param_err'));
     }
 
 }

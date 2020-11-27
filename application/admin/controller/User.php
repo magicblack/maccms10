@@ -50,7 +50,7 @@ class User extends Base
 
         $this->assign('group_list',$group_list);
 
-        $this->assign('title','会员管理');
+        $this->assign('title',lang('admin/user/title'));
         return $this->fetch('admin@user/index');
     }
 
@@ -133,7 +133,7 @@ class User extends Base
         $param['limit'] = '{limit}';
         $this->assign('param',$param);
 
-        $this->assign('title','会员管理');
+        $this->assign('title',lang('admin/user/title'));
         return $this->fetch('admin@user/reward');
     }
 
@@ -161,7 +161,7 @@ class User extends Base
         $res = model('Group')->listData($where,$order);
         $this->assign('group_list',$res['list']);
 
-        $this->assign('title','会员信息');
+        $this->assign('title',lang('admin/user/title'));
         return $this->fetch('admin@user/info');
     }
 
@@ -179,7 +179,7 @@ class User extends Base
             }
             return $this->success($res['msg']);
         }
-        return $this->error('参数错误');
+        return $this->error(lang('param_err'));
     }
 
     public function field()
@@ -199,7 +199,7 @@ class User extends Base
             }
             return $this->success($res['msg']);
         }
-        return $this->error('参数错误');
+        return $this->error(lang('param_err'));
     }
 
 

@@ -3,7 +3,7 @@
 
     <div class="my-btn-box lh30" >
         <div class="layui-btn-group fl">
-            <a data-href="{:url('del')}" class="layui-btn layui-btn-primary j-page-btns confirm"><i class="layui-icon">&#xe640;</i>删除</a>
+            <a data-href="{:url('del')}" class="layui-btn layui-btn-primary j-page-btns confirm"><i class="layui-icon">&#xe640;</i>{:lang('del')}</a>
         </div>
         <div class="page-filter fr" >
 
@@ -14,14 +14,14 @@
     <table class="layui-table mt10">
         <thead>
         <tr>
-            <th><input type="checkbox" lay-skin="primary" lay-filter="allChoose">文件名</th>
-            <th width="200">文件大小</th>
-            <th width="200">修改时间</th>
+            <th><input type="checkbox" lay-skin="primary" lay-filter="allChoose">{:lang('file_name')}</th>
+            <th width="200">{:lang('file_size')}</th>
+            <th width="200">{:lang('file_time')}</th>
         </tr>
         </thead>
 
         {if condition="$ischild eq 1"}
-        <tr><td colspan="3"><a href="{:url('images/index',['path'=>$uppath])}">...返回上级目录</a></td></tr>
+        <tr><td colspan="3"><a href="{:url('images/index',['path'=>$uppath])}">...{:lang('return_parent_dir')}</a></td></tr>
         {/if}
 
             {volist name="files" id="vo"}
@@ -39,7 +39,7 @@
             {/volist}
         </tbody>
         <tfoot>
-            <tr><td colspan="3">本目录下共有<b class="red">{$num_path}</b>个目录,<b class="red">{$num_file}</b>个文件,占用<b class="red">{$sum_size}</b>空间</td></tr>
+            <tr><td colspan="3">{:lang('sum')}<b class="red">{$num_path}</b>{:lang('dir')},<b class="red">{$num_file}</b>{:lang('file')},{:lang('occupies')}<b class="red">{$sum_size}</b>{:lang('space')}</td></tr>
         </tfoot>
     </table>
     </form>

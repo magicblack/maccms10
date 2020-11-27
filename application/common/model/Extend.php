@@ -145,7 +145,7 @@ class Extend extends Base {
 
         $cach_name = $GLOBALS['config']['app']['cache_flag']. '_' . md5('area_listcache_'.join('&',$lp).'_'.$order.'_'.$num.'_'.$start);
 
-        return ['code'=>1,'msg'=>'数据列表','page'=>1,'limit'=>$num,'total'=>$total,'list'=>$list];
+        return ['code'=>1,'msg'=>lang('data_list'),'page'=>1,'limit'=>$num,'total'=>$total,'list'=>$list];
     }
 
     public function langData($lp)
@@ -188,7 +188,7 @@ class Extend extends Base {
 
         $cach_name = $GLOBALS['config']['app']['cache_flag']. '_' . md5('lang_listcache_'.join('&',$lp).'_'.$order.'_'.$num.'_'.$start);
 
-        return ['code'=>1,'msg'=>'数据列表','page'=>1,'limit'=>$num,'total'=>$total,'list'=>$list];
+        return ['code'=>1,'msg'=>lang('data_list'),'page'=>1,'limit'=>$num,'total'=>$total,'list'=>$list];
     }
 
     public function classData($lp)
@@ -231,7 +231,7 @@ class Extend extends Base {
 
         $cach_name = $GLOBALS['config']['app']['cache_flag']. '_' . md5('class_listcache_'.join('&',$lp).'_'.$order.'_'.$num.'_'.$start);
 
-        return ['code'=>1,'msg'=>'数据列表','page'=>1,'limit'=>$num,'total'=>$total,'list'=>$list];
+        return ['code'=>1,'msg'=>lang('data_list'),'page'=>1,'limit'=>$num,'total'=>$total,'list'=>$list];
     }
 
     public function yearData($lp)
@@ -274,7 +274,7 @@ class Extend extends Base {
 
         $cach_name = $GLOBALS['config']['app']['cache_flag']. '_' . md5('year_listcache_'.join('&',$lp).'_'.$order.'_'.$num.'_'.$start);
 
-        return ['code'=>1,'msg'=>'数据列表','page'=>1,'limit'=>$num,'total'=>$total,'list'=>$list];
+        return ['code'=>1,'msg'=>lang('data_list'),'page'=>1,'limit'=>$num,'total'=>$total,'list'=>$list];
     }
 
     public function versionData($lp)
@@ -318,7 +318,7 @@ class Extend extends Base {
 
         $cach_name = $GLOBALS['config']['app']['cache_flag']. '_' . md5('version_listcache_'.join('&',$lp).'_'.$order.'_'.$num.'_'.$start);
 
-        return ['code'=>1,'msg'=>'数据列表','page'=>1,'limit'=>$num,'total'=>$total,'list'=>$list];
+        return ['code'=>1,'msg'=>lang('data_list'),'page'=>1,'limit'=>$num,'total'=>$total,'list'=>$list];
     }
 
     public function stateData($lp)
@@ -365,7 +365,7 @@ class Extend extends Base {
 
         $cach_name = $GLOBALS['config']['app']['cache_flag']. '_' . md5('state_listcache_'.join('&',$lp).'_'.$order.'_'.$num.'_'.$start);
 
-        return ['code'=>1,'msg'=>'数据列表','page'=>1,'limit'=>$num,'total'=>$total,'list'=>$list];
+        return ['code'=>1,'msg'=>lang('data_list'),'page'=>1,'limit'=>$num,'total'=>$total,'list'=>$list];
     }
 
     public function letterData($lp)
@@ -408,7 +408,7 @@ class Extend extends Base {
 
         $cach_name = $GLOBALS['config']['app']['cache_flag']. '_' . md5('letter_listcache_'.join('&',$lp).'_'.$order.'_'.$num.'_'.$start);
 
-        return ['code'=>1,'msg'=>'数据列表','page'=>1,'limit'=>$num,'total'=>$total,'list'=>$list];
+        return ['code'=>1,'msg'=>lang('data_list'),'page'=>1,'limit'=>$num,'total'=>$total,'list'=>$list];
     }
 
 

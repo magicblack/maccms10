@@ -57,8 +57,8 @@ class All extends Controller
     {
         $maccms = $GLOBALS['config']['site'];
         $maccms['path'] = MAC_PATH;
-        $maccms['path_tpl'] = MAC_PATH_TEMPLATE;
-        $maccms['path_ads'] = MAC_PATH_ADS;
+        $maccms['path_tpl'] = $GLOBALS['MAC_PATH_TEMPLATE'];
+        $maccms['path_ads'] = $GLOBALS['MAC_PATH_ADS'];
         $maccms['user_status'] = $GLOBALS['config']['user']['status'];
         $maccms['date'] = date('Y-m-d');
 
@@ -93,8 +93,11 @@ class All extends Controller
         $this->assign( ['maccms'=>$maccms] );
     }
 
-    protected function page_error($msg='发生错误')
+    protected function page_error($msg='')
     {
+        if(empty($msg)){
+            $msg=lang('controller/an_error_occurred');
+        }
         $url = Request::instance()->isAjax() ? '' : 'javascript:history.back(-1);';
         $wait = 3;
         $this->assign('url',$url);
@@ -119,7 +122,7 @@ class All extends Controller
         $user_name = cookie('user_name');
         $user_check = cookie('user_check');
 
-        $user = ['user_id'=>0,'user_name'=>'游客','user_portrait'=>'static/images/touxiang.png','group_id'=>1,'points'=>0];
+        $user = ['user_id'=>0,'user_name'=>lang('controller/visitor'),'user_portrait'=>'static/images/touxiang.png','group_id'=>1,'points'=>0];
         $group_list = model('Group')->getCache();
 
         if(!empty($user_id) && !empty($user_name) && !empty($user_check)){
@@ -129,7 +132,7 @@ class All extends Controller
             }
             else{
                 cookie('user_id','0');
-                cookie('user_name','游客');
+                cookie('user_name',lang('controller/visitor'));
                 cookie('user_check','');
                 $user['group'] = $group_list[1];
             }
@@ -155,7 +158,7 @@ class All extends Controller
 
         $this->assign('obj',$info);
         if(empty($info)){
-            return $this->error('获取分类失败，请选择其它分类！');
+            return $this->error(lang('controller/get_type_err'));
         }
         if($view<2) {
             $res = $this->check_user_popedom($info['type_id'], 1);

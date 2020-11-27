@@ -2,25 +2,22 @@
 
 <div class="page-container">
     <fieldset class="layui-elem-field layui-field-title" class="mt10">
-        <legend>自定义快捷菜单</legend>
+        <legend>{:lang('admin/index/quickmenu/name')}</legend>
     </fieldset>
 
     <blockquote class="layui-elem-quote layui-quote-nm">
-        格式要求：1.菜单名称,菜单链接地址；2.每个快捷菜单各占一行；<br>
-        1，支持远程地址，例如： 更新日志,//www.baidu.com/<br>
-        2，支持插件文件，例如： 插件文件菜单,/application/xxxx.html<br>
-        3，支持系统模块，例如： 文章管理,art/data<br>
-        4，支持行分隔符，例如： 分隔符,###
+        {:lang('admin/index/quickmenu/tip')}
     </blockquote>
 
     <form class="layui-form" action="">
+        <input type="hidden" name="__token__" value="{$Request.token}" />
         <div class="layui-form-item layui-form-text">
-            <textarea name="quickmenu" placeholder="请输入内容" class="layui-textarea" style="height:600px; resize:none">{$quickmenu}</textarea>
+            <textarea name="quickmenu" placeholder="{:lang('filed_empty')}" class="layui-textarea" style="height:600px; resize:none">{$quickmenu}</textarea>
         </div>
         <div class="layui-form-item center">
             <div class="layui-input-block">
-                <button type="submit" class="layui-btn" lay-submit="" lay-filter="formSubmit">保 存</button>
-                <button class="layui-btn layui-btn-warm" type="reset">还 原</button>
+                <button type="submit" class="layui-btn" lay-submit="" lay-filter="formSubmit">{:lang('btn_save')}</button>
+                <button class="layui-btn layui-btn-warm" type="reset">{:lang('btn_reset')}</button>
             </div>
         </div>
     </form>

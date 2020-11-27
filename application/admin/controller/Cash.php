@@ -38,7 +38,7 @@ class Cash extends Base
         $param['limit'] = '{limit}';
         $this->assign('param',$param);
 
-        $this->assign('title','提现管理');
+        $this->assign('title',lang('admin/cash/title'));
         return $this->fetch('admin@cash/index');
     }
 
@@ -59,7 +59,7 @@ class Cash extends Base
             }
             return $this->success($res['msg']);
         }
-        return $this->error('参数错误');
+        return $this->error(lang('param_err'));
     }
 
     public function audit()
@@ -75,7 +75,7 @@ class Cash extends Base
             }
             return $this->success($res['msg']);
         }
-        return $this->error('参数错误');
+        return $this->error(lang('param_err'));
     }
 
 }

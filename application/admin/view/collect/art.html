@@ -4,7 +4,7 @@
     <div class="my-toolbar-box">
 
         <div class="mb10">
-            <div class="layui-input-inline w150 m5"><a href="javascript:;" data-id="" class="select_type red">查看全部资源</a></div>
+            <div class="layui-input-inline w150 m5"><a href="javascript:;" data-id="" class="select_type red">{:lang('admin/collect/view_all_resource')}</a></div>
             {volist name="type" id="vo"}
             <div class="layui-input-inline w150 m5">
                 <a href="javascript:;" data-id="{$vo.type_id}" class="select_type">{$vo.type_name|htmlspecialchars}</a>
@@ -12,7 +12,7 @@
                     {if condition="$vo.isbind eq 1"}
                     <span class="red">[{$vo.local_type_name}]</span>
                     {else}
-                    [绑定]
+                    [{:lang('bind')}]
                     {/if}
                 </a>
             </div>
@@ -23,9 +23,9 @@
         <div class="center mb10">
             <form class="layui-form " method="">
                 <div class="layui-input-inline">
-                    <input type="text" autocomplete="off" placeholder="请输入搜索条件" class="layui-input" id="wd" name="wd" value="{$param['wd']}">
+                    <input type="text" autocomplete="off" placeholder="{:lang('wd')}" class="layui-input" id="wd" name="wd" value="{$param['wd']}">
                 </div>
-                <button type="button" class="layui-btn mgl-20 j-btn" >查询</button>
+                <button type="button" class="layui-btn mgl-20 j-btn" >{:lang('btn_search')}</button>
             </form>
         </div>
 
@@ -37,10 +37,10 @@
             <thead>
             <tr>
                 <th width="25"><input type="checkbox" lay-skin="primary" lay-filter="allChoose"></th>
-                <th >名称</th>
-                <th width="60">分类</th>
-                <th width="60">来源</th>
-                <th width="140">时间</th>
+                <th >{:lang('name')}</th>
+                <th width="60">{:lang('type')}</th>
+                <th width="60">{:lang('from')}</th>
+                <th width="140">{:lang('time')}</th>
             </tr>
             </thead>
 
@@ -61,9 +61,9 @@
                 unset($p1['ac']);
                 $p1_str = http_build_query($p1);
             {/php}
-            <a data-href="{:url('api')}?{$p1_str}&ac=cjsel" data-ajax="no" class="layui-btn layui-btn-primary j-page-btns"><i class="layui-icon">&#xe654;</i>采选中</a>
-            <a data-href="{:url('api')}?{$p1_str}&h=24&ac=cjday" data-checkbox="no" data-ajax="no" class="layui-btn layui-btn-primary j-page-btns"><i class="layui-icon">&#xe654;</i>采当天</a>
-            <a data-href="{:url('api')}?{$p1_str}&ac=cjall" data-checkbox="no" data-ajax="no" class="layui-btn layui-btn-primary j-page-btns"><i class="layui-icon">&#xe654;</i>采全部</a>
+            <a data-href="{:url('api')}?{$p1_str}&ac=cjsel" data-ajax="no" class="layui-btn layui-btn-primary j-page-btns"><i class="layui-icon">&#xe654;</i>{:lang('admin/collect/cj_select')}</a>
+            <a data-href="{:url('api')}?{$p1_str}&h=24&ac=cjday" data-checkbox="no" data-ajax="no" class="layui-btn layui-btn-primary j-page-btns"><i class="layui-icon">&#xe654;</i>{:lang('admin/collect/cj_today')}</a>
+            <a data-href="{:url('api')}?{$p1_str}&ac=cjall" data-checkbox="no" data-ajax="no" class="layui-btn layui-btn-primary j-page-btns"><i class="layui-icon">&#xe654;</i>{:lang('admin/collect/cj_all')}</a>
         </div>
 
         <div id="pages" class="center"></div>
@@ -120,7 +120,7 @@
             $('#'+res.data.id).html('<span class="red">['+ res.data.local_type_name +']</span>');
         }
         else{
-            $('#'+res.data.id).html('[绑定]');
+            $('#'+res.data.id).html("[{:lang('bind')}]");
         }
     }
 </script>

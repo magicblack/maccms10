@@ -48,7 +48,7 @@ class Collect extends Base
         $this->assign('collect_break_role', $collect_break_role);
         $this->assign('collect_break_website', $collect_break_website);
 
-        $this->assign('title', '采集资源管理');
+        $this->assign('title',lang('admin/collect/title'));
         return $this->fetch('admin@collect/index');
     }
 
@@ -67,7 +67,6 @@ class Collect extends Base
             if(!$validate->check($param)){
                 return $this->error($validate->getError());
             }
-
             $res = model('Collect')->saveData($param);
             if ($res['code'] > 1) {
                 return $this->error($res['msg']);
@@ -80,7 +79,7 @@ class Collect extends Base
         $where['collect_id'] = ['eq', $id];
         $res = model('Collect')->infoData($where);
         $this->assign('info', $res['info']);
-        $this->assign('title', '采集接口信息');
+        $this->assign('title', lang('admin/collect/title'));
         return $this->fetch('admin@collect/info');
     }
 
@@ -99,7 +98,7 @@ class Collect extends Base
             }
             return $this->success($res['msg']);
         }
-        return $this->error('参数错误');
+        return $this->error(lang('param_err'));
     }
 
     public function union()
@@ -121,7 +120,7 @@ class Collect extends Base
         $this->assign('collect_break_role', $collect_break_role);
         $this->assign('collect_break_website', $collect_break_website);
 
-        $this->assign('title', '联盟资源库');
+        $this->assign('title', lang('admin/collect/title'));
         return $this->fetch('admin@collect/union');
     }
 
@@ -132,7 +131,7 @@ class Collect extends Base
         $collect_break = Cache::get($key);
         $url = $this->_ref;
         if (!empty($collect_break)) {
-            echo '正在载入断点位置，请稍后。。。';
+            echo lang('admin/collect/load_break');
             $url = $collect_break;
         }
         mac_jump($url);
@@ -192,9 +191,9 @@ class Collect extends Base
 
         $res = mac_arr2file( APP_PATH .'extra/bind.php', $config);
         if($res===false){
-            return json(['code'=>0,'msg'=>'清理失败，请重试!']);
+            return json(['code'=>0,'msg'=>lang('clear_err')]);
         }
-        return json(['code'=>1,'msg'=>'清理成功!']);
+        return json(['code'=>1,'msg'=>lang('clear_ok')]);
     }
 
     public function bind()
@@ -220,11 +219,11 @@ class Collect extends Base
 
             $res = mac_arr2file( APP_PATH .'extra/bind.php', $config);
             if($res===false){
-                return $this->error('保存失败，请重试!');
+                return $this->error(lang('save_err'));
             }
-            return $this->success('保存成功!',null, $data);
+            return $this->success(lang('save_ok'),null, $data);
         }
-        return $this->error('参数错误');
+        return $this->error(lang('param_err'));
     }
 
     public function vod($param)
@@ -252,7 +251,7 @@ class Collect extends Base
                     $res['type'][$k]['local_type_id'] = $local_id;
                     $type_name = $type_list[$local_id]['type_name'];
                     if(empty($type_name)){
-                        $type_name = '未知分类';
+                        $type_name = lang('unknown_type');
                     }
                     $res['type'][$k]['local_type_name'] = $type_name;
                 }
@@ -305,7 +304,7 @@ class Collect extends Base
                     $res['type'][$k]['local_type_id'] = $local_id;
                     $type_name = $type_list[$local_id]['type_name'];
                     if(empty($type_name)){
-                        $type_name = '未知分类';
+                        $type_name = lang('unknown_type');
                     }
                     $res['type'][$k]['local_type_name'] = $type_name;
                 }
@@ -357,7 +356,7 @@ class Collect extends Base
                     $res['type'][$k]['local_type_id'] = $local_id;
                     $type_name = $type_list[$local_id]['type_name'];
                     if(empty($type_name)){
-                        $type_name = '未知分类';
+                        $type_name = lang('unknown_type');
                     }
                     $res['type'][$k]['local_type_name'] = $type_name;
                 }
@@ -409,7 +408,7 @@ class Collect extends Base
                     $res['type'][$k]['local_type_id'] = $local_id;
                     $type_name = $type_list[$local_id]['type_name'];
                     if (empty($type_name)) {
-                        $type_name = '未知分类';
+                        $type_name = lang('unknown_type');
                     }
                     $res['type'][$k]['local_type_name'] = $type_name;
                 }
@@ -461,7 +460,7 @@ class Collect extends Base
                     $res['type'][$k]['local_type_id'] = $local_id;
                     $type_name = $type_list[$local_id]['type_name'];
                     if (empty($type_name)) {
-                        $type_name = '未知分类';
+                        $type_name = lang('unknown_type');
                     }
                     $res['type'][$k]['local_type_name'] = $type_name;
                 }
