@@ -289,16 +289,13 @@ class Index extends Controller
     private function checkDir()
     {
         $items = [
-            ['dir', './application', lang('install/read_and_write'), lang('install/read_and_write'), 'ok'],
+            ['file', './application/database.php', lang('install/read_and_write'), lang('install/read_and_write'), 'ok'],
+            ['file', './application/route.php', lang('install/read_and_write'), lang('install/read_and_write'), 'ok'],
             ['dir', './application/extra', lang('install/read_and_write'), lang('install/read_and_write'), 'ok'],
-            ['dir', './application/data/', lang('install/read_and_write'), lang('install/read_and_write'), 'ok'],
-            ['dir', './application/data/config', lang('install/read_and_write'), lang('install/read_and_write'), 'ok'],
             ['dir', './application/data/backup', lang('install/read_and_write'), lang('install/read_and_write'), 'ok'],
             ['dir', './application/data/update', lang('install/read_and_write'), lang('install/read_and_write'), 'ok'],
-            ['file', './application/database.php', lang('install/read_and_write'), lang('install/read_and_write'), 'ok'],
             ['dir', './runtime', lang('install/read_and_write'), lang('install/read_and_write'), 'ok'],
             ['dir', './upload', lang('install/read_and_write'), lang('install/read_and_write'), 'ok'],
-
         ];
         foreach ($items as &$v) {
             if ($v[0] == 'dir') {// 文件夹
@@ -338,7 +335,6 @@ class Index extends Controller
             ['xml', lang('install/support'), 'yes', lang('install/function')],
             ['file_get_contents', lang('install/support'), 'yes', lang('install/function')],
             ['mb_strlen', lang('install/support'), 'yes', lang('install/function')],
-            ['gzopen', lang('install/support'), 'yes', lang('install/function')],
         ];
 
         if(version_compare(PHP_VERSION,'5.6.0','ge') && version_compare(PHP_VERSION,'5.7.0','lt')){
