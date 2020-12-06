@@ -217,6 +217,9 @@ class Urlsend extends Base
                 if(ENTRANCE=='admin') {
                     mac_jump($url, 3);
                 }
+                else{
+                    $this->push($this->_param);
+                }
             }
 
         }

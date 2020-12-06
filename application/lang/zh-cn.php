@@ -416,7 +416,7 @@ return [
     'file'=>'文件',
     'file_name'=>'文件名称',
     'file_size'=>'文件大小',
-    'file_name'=>'文件时间',
+    'file_time'=>'文件时间',
     'file_des'=>'文件描述',
     'occupies'=>'占用',
     'space'=>'空间',

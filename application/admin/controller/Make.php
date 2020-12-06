@@ -567,7 +567,7 @@ class Make extends Base
             $where['art_status'] = ['eq',1];
 
             if($GLOBALS['config']['view']['art_detail'] <2){
-                mac_echo(lang('view_model_static_err'));
+                mac_echo(lang('admin/make/view_model_static_err'));
                 exit;
             }
 
@@ -578,7 +578,7 @@ class Make extends Base
             $where['vod_status'] = ['eq',1];
 
             if($GLOBALS['config']['view']['vod_detail'] <2 && $GLOBALS['config']['view']['vod_play'] <2 && $GLOBALS['config']['view']['vod_down'] <2){
-                mac_echo(lang('view_model_static_err'));
+                mac_echo(lang('admin/make/view_model_static_err'));
                 exit;
             }
 
@@ -822,7 +822,6 @@ class Make extends Base
                                 	$_REQUEST['sid'] = $i;
                                 	$_REQUEST['nid'] = $j;
                                     $info = $this->label_vod_play($f,$v,$GLOBALS['config']['view']['vod_'.$f]);
-
                                     $link = ($f=='play' ? mac_url_vod_play($v, ['sid' => $i, 'nid' => $j]) : mac_url_vod_down($v, ['sid' => $i, 'nid' => $j]) );
                                     $link_sp = explode('?',$link);
                                     $this->buildHtml($link_sp[0], './', mac_tpl_fetch('vod', $info['vod_tpl_'.$f], $f) );

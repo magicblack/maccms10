@@ -1718,7 +1718,7 @@ function mac_url($model,$param=[],$info=[])
                 $info['vod_id'],$info['vod_en'],'',
                 $info['type_id'],$info['type']['type_en'],$info['type_1']['type_id'],$info['type_1']['type_en']
             ];
-            if($config['view']['vod_down'] == 2){
+            if($config['view']['vod_down'] >= 2){
                 $path = $config['path' ]['vod_down'];
                 if(substr($path,strlen($path)-1,1)=='/'){
                     $path .= 'index';
@@ -1726,11 +1726,17 @@ function mac_url($model,$param=[],$info=[])
                 if(strpos($path,'{md5}')!==false){
                     $replace_to[] = md5($info['vod_id']);
                 }
-                if($config['view']['vod_down'] ==3){
+                if($config['view']['vod_down'] ==2){
+                    $path.= '.'. $config['path']['suffix'];
+                    $path .= '?'.$info['vod_id'] . '-' . $param['sid'] . '-' . $param['nid'] ;
+                }
+                elseif($config['view']['vod_down'] ==3){
                     $path .= $config['path']['page_sp'] . $param['sid'] . $config['path']['page_sp'] . $param['nid'] ;
                 }
                 elseif($config['view']['vod_down'] ==4){
-                    $path .= $config['path']['page_sp'] .''. $param['sid'] ;
+                    $path .= $config['path']['page_sp'] .''. $param['sid'] . $config['path']['page_sp'] . '1';
+                    $path.= '.'. $config['path']['suffix'];
+                    $path .= '?'.$info['vod_id'] . '-' . $param['sid'] . '-' . $param['nid'] ;
                 }
             }
             else{

@@ -379,13 +379,12 @@ class Collect extends Base {
         if($pic_status == 1){
             $img_url = model('Image')->down_load($pic_url, $GLOBALS['config']['upload'], $flag);
             $link = MAC_PATH . $img_url;
-            $link = str_replace('mac:', $GLOBALS['config']['upload']['protocol'].':', $img_url);
-
+            $link = str_replace('mac:', $GLOBALS['config']['upload']['protocol'].':', $link);
             if ($img_url == $pic_url) {
-                $des = '<a href="' . $link . '" target="_blank">' . $link . '</a><font color=red>'.lang('download_ok').'!</font>';
+                $des = '<a href="' . $pic_url . '" target="_blank">' . $pic_url . '</a><font color=red>'.lang('download_err').'!</font>';
             } else {
                 $pic_url = $img_url;
-                $des = '<a href="' . $link . '" target="_blank">' . $link . '</a><font color=green>'.lang('download_err').'!</font>';
+                $des = '<a href="' . $link . '" target="_blank">' . $link . '</a><font color=green>'.lang('download_ok').'!</font>';
             }
         }
         return ['pic'=>$pic_url,'msg'=>$des];
@@ -427,10 +426,11 @@ class Collect extends Base {
                 unset($v['vod_id']);
 
                 foreach($v as $k2=>$v2){
-                    if(strpos($k2,'_content')===false) {
+                    if(strpos($k2,'_content')===false && $k2!=='vod_plot_detail') {
                         $v[$k2] = strip_tags($v2);
                     }
                 }
+
                 $v['vod_name'] = trim($v['vod_name']);
                 $v['type_id_1'] = intval($type_list[$v['type_id']]['type_pid']);
                 $v['vod_en'] = Pinyin::get($v['vod_name']);
@@ -777,7 +777,7 @@ class Collect extends Base {
                                     $des .= lang('model/collect/downurl_same');
                                 } elseif (empty($cj_down_from)) {
                                     $des .= lang('model/collect/downfrom_empty');
-                                } elseif (strpos(','.$info['vod_down_from'].',', ','.$cj_down_from.',')===false) {
+                                } elseif (strpos('$$$'.$info['vod_down_from'].'$$$', '$$$'.$cj_down_from.'$$$')===false) {
                                     $color = 'green';
                                     $des .= lang('model/collect/downgroup_add_ok',[$cj_down_from]);
                                     if(!empty($old_down_from)){
