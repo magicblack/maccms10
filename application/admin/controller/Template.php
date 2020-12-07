@@ -77,7 +77,7 @@ class Template extends Base
                             $tmp_name = str_replace($path . '@', '', $tmp_path);
                             $ftime = filemtime($f);
 
-                            $files[] = ['isfile' => 0, 'name' => $tmp_name, 'path' => $tmp_path, 'note'=>lang('文件夹'), 'time' => $ftime];
+                            $files[] = ['isfile' => 0, 'name' => $tmp_name, 'path' => $tmp_path, 'note'=>lang('dir'), 'time' => $ftime];
                     }
                     elseif(is_file($f)) {
                         $num_file++;
