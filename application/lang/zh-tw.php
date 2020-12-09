@@ -1416,7 +1416,6 @@ return [
     'admin/vod/select_copyright'=>'選擇版權',
     'admin/vod/is_end'=>'已完結',
     'admin/vod/no_end'=>'未完結',
-    'admin/vod/del_player'=>'刪播放組',
     'admin/vod/del_downer'=>'刪下載組',
     'admin/vod/episode_plot'=>'分集劇情',
     'admin/vod/plot'=>'分集劇情',
