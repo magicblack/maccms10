@@ -8,6 +8,7 @@
 *last update 0917
 */
 return [
+    'lang_ver'=>'1053+',
     'hello'  => '欢迎使用',
     'maccms_name'=>'苹果CMS-v10',
     'maccms_copyright'=>'© MacCMS All Rights Reserved.',
@@ -63,7 +64,7 @@ return [
     'keyword'=>'关键字',
     'description'=>'描述',
     'data_name'=>'数据名称',
-
+    'return'=>'返回',
     'integral_recharge'=>'积分充值',
     'registration_promotion'=>'注册推广',
     'visit_promotion'=>'访问推广',
@@ -250,7 +251,7 @@ return [
     'pic'=>'图片',
     'pic_thumb'=>'缩略图',
     'pic_slide'=>'海报图',
-
+    'upload'=>'上传',
     'upload_pic'=>'上传图片',
     'blurb'=>'简介',
     'content'=>'详情',
@@ -1327,6 +1328,10 @@ return [
     'admin/addon/name_empty_err'=>'插件名称不能为空',
     'admin/addon/haved_err'=>'已经存在插件',
     'admin/addon/path_err'=>'非法目录请求',
+    'admin/addon/add_tip'=>'提示：<br>
+                1.请确保第三方插件符合程序开发规范。
+                2.--使用前请做好安全检测避免出现安全问题。',
+
 
     'admin/admin/title'=>'管理员管理',
     'admin/admin/del_cur_err'=>'禁止删除当前登录账号',
@@ -1357,6 +1362,9 @@ return [
     'admin/vodplayer/api_url_tip'=>'独立接口地址，权重高于全局播放器设置的接口',
     'admin/vodplayer/sort_tip'=>'数值越大排列越靠前',
     'admin/vodplayer/code_empty'=>'请输入编码',
+    'admin/vodplayer/import_tip'=>'提示：<br>
+                       1.请确保导入文件格式正确。',
+
 
     'admin/timming/title'=>'定时任务管理',
     'admin/timming/unique_id'=>'唯一标识英文',

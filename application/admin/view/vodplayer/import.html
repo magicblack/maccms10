@@ -3,12 +3,13 @@
 
     <div class="layui-tab layui-tab-brief" lay-filter="tabs">
         <ul class="layui-tab-title">
-            <li class="btn-local" ><a href="{:url('index')}">{:lang('local_app')}</a></li>
-            <li class="layui-this"><a href="{:url('add')}">{:lang('local_setup')}</a></li>
+            <li class="btn-local" ><a href="{:url('index')}">{:lang('return')}</a></li>
+            <li class="layui-this"><a href="{:url('add')}">{:lang('import')}</a></li>
         </ul>
+
         <div class="layui-tab-content">
             <blockquote class="layui-elem-quote layui-quote-nm">
-                {:lang('admin/addon/add_tip')}
+                {:lang('admin/vodplayer/import_tip')}
             </blockquote>
             <input type="hidden" id="token" name="__token__" value="{$Request.token}" />
             <button type="button" class="layui-btn layui-upload" id="upload1">{:lang('upload')}</button>
@@ -30,17 +31,14 @@
 
         upload.render({
             elem: '.layui-upload'
-            ,url: "{:url('addon/local')}?__token__=" + $('#token').val()
+            ,url: "{:url('vodplayer/import')}?__token__=" + $('#token').val()
             ,method: 'post'
-            ,exts:'zip'
+            ,exts:'txt'
             ,before: function(input) {
                 layer.msg("{:lang('upload_ing')}", {time:3000000});
             },done: function(res, index, upload) {
                 var obj = this.item;
-                if (res.code == 0) {
-                    layer.msg(res.msg);
-                }
-
+                layer.msg(res.msg);
                 setTimeout(function () {
                     layer.closeAll();
                     location.reload();

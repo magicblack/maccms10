@@ -8,6 +8,7 @@
 *last update 0917
 */
 return [
+    'lang_ver'=>'1053+',
     'hello'  => '歡迎使用',
     'maccms_name'=>'蘋果CMS-v10',
     'maccms_copyright'=>'© MacCMS All Rights Reserved.',
@@ -63,7 +64,7 @@ return [
     'keyword'=>'關鍵字',
     'description'=>'描述',
     'data_name'=>'數據名稱',
-
+    'return'=>'返回',
     'integral_recharge'=>'積分充值',
     'registration_promotion'=>'註冊推廣',
     'visit_promotion'=>'訪問推廣',
@@ -250,7 +251,7 @@ return [
     'pic'=>'圖片',
     'pic_thumb'=>'縮略圖',
     'pic_slide'=>'海報圖',
-
+    'upload'=>'上傳',
     'upload_pic'=>'上傳圖片',
     'blurb'=>'簡介',
     'content'=>'詳情',
@@ -645,6 +646,7 @@ return [
     'model/user/update_login_err'=>'更新登錄信息失敗',
     'model/user/update_expire_err'=>'更新會員組過期信息失敗',
     'model/user/update_expire_ok'=>'更新過期信息成功',
+    'model/user/login_ok'=>'登錄成功',
     'model/user/logout_ok'=>'退出成功',
     'model/user/not_login'=>'未登錄',
     'model/user/haved_login'=>'已登錄',
@@ -1326,6 +1328,10 @@ return [
     'admin/addon/name_empty_err'=>'插件名稱不能為空',
     'admin/addon/haved_err'=>'已經存在插件',
     'admin/addon/path_err'=>'非法目錄請求',
+    'admin/addon/add_tip'=>'提示：<br>
+                1.請確保第三方插件符合程序開發規範。
+                2.--使用前請做好安全檢測避免出現安全問題。',
+
 
     'admin/admin/title'=>'管理員管理',
     'admin/admin/del_cur_err'=>'禁止刪除當前登錄賬號',
@@ -1356,6 +1362,9 @@ return [
     'admin/vodplayer/api_url_tip'=>'獨立接口地址，權重高於全局播放器設置的接口',
     'admin/vodplayer/sort_tip'=>'數值越大排列越靠前',
     'admin/vodplayer/code_empty'=>'請輸入編碼',
+    'admin/vodplayer/import_tip'=>'提示：<br>
+                       1.請確保導入文件格式正確。',
+
 
     'admin/timming/title'=>'定時任務管理',
     'admin/timming/unique_id'=>'唯壹標識英文',

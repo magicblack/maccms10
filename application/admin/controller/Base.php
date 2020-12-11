@@ -16,8 +16,7 @@ class Base extends All
         parent::__construct();
 
         //判断用户登录状态
-
-        if(in_array($this->_cl,['Index']) && in_array($this->_ac,['login','logout'])) {
+        if(in_array($this->_cl,['Index']) && in_array($this->_ac,['login'])) {
 
         }
         elseif(ENTRANCE=='api' && in_array($this->_cl,['Timming']) && in_array($this->_ac,['index'])){
@@ -25,7 +24,6 @@ class Base extends All
         }
         else {
             $res = model('Admin')->checkLogin();
-
             if ($res['code'] > 1) {
                 return $this->redirect('index/login');
             }

@@ -125,36 +125,49 @@ class VodPlayer extends Base
 
     public function import()
     {
-        $file = $this->request->file('file');
-        $info = $file->rule('uniqid')->validate(['size' => 10240000, 'ext' => 'txt']);
-        if ($info) {
-            $data = json_decode(base64_decode(file_get_contents($info->getpathName())), true);
-            @unlink($info->getpathName());
-            if($data){
-
-                if(empty($data['status']) || empty($data['from']) || empty($data['sort']) ){
-                    return $this->error(lang('format_err'));
-                }
-                $code = $data['code'];
-                unset($data['code']);
-
-                $list = config($this->_pre);
-                $list[$data['from']] = $data;
-                $res = mac_arr2file( APP_PATH .'extra/'.$this->_pre.'.php', $list);
-                if($res===false){
-                    return $this->error(lang('write_err_config'));
-                }
-
-                $res = fwrite(fopen('./static/player/' . $data['from'].'.js','wb'),$code);
-                if($res===false){
-                    return $this->error(lang('wirte_err_codefile'));
-                }
-
+        if (request()->isPost()) {
+            $param = input();
+            $validate = \think\Loader::validate('Token');
+            if(!$validate->check($param)){
+                return $this->error($validate->getError());
             }
-            return $this->success(lang('import_err'));
+            unset($param['__token__']);
+            $file = $this->request->file('file');
+            $info = $file->rule('uniqid')->validate(['size' => 10240000, 'ext' => 'txt']);
+            if ($info) {
+                $data = json_decode(base64_decode(file_get_contents($info->getpathName())), true);
+                @unlink($info->getpathName());
+                if ($data) {
+                    if (empty($data['status']) || empty($data['from']) || empty($data['sort'])) {
+                        return $this->error(lang('format_err'));
+                    }
+                    if (strpos($data['from'], '.') !== false || strpos($data['from'], '/') !== false || strpos($data['from'], '\\') !== false) {
+                        $this->error(lang('param_err'));
+                        return;
+                    }
+                    $code = $data['code'];
+                    unset($data['code']);
+
+                    $list = config($this->_pre);
+                    $list[$data['from']] = $data;
+                    $res = mac_arr2file(APP_PATH . 'extra/' . $this->_pre . '.php', $list);
+                    if ($res === false) {
+                        return $this->error(lang('write_err_config'));
+                    }
+
+                    $res = fwrite(fopen('./static/player/' . $data['from'] . '.js', 'wb'), $code);
+                    if ($res === false) {
+                        return $this->error(lang('wirte_err_codefile'));
+                    }
+                }
+                return $this->success(lang('import_ok'));
+            } else {
+                return $this->error($file->getError());
+            }
         }
         else{
-            return $this->error($file->getError());
+            return $this->fetch('admin@vodplayer/import');
         }
     }
+
 }

@@ -4,7 +4,7 @@
 
         <div class="layui-btn-group">
             <a data-href="{:url('info')}" class="layui-btn layui-btn-primary j-iframe"><i class="layui-icon">&#xe654;</i>{:lang('add')}</a>
-            <a data-href="{:url('import')}" class="layui-btn layui-btn-primary layui-upload" ><i class="layui-icon">&#xe654;</i>{:lang('import')}</a>
+            <a href="{:url('import')}" class="layui-btn layui-btn-primary" ><i class="layui-icon">&#xe654;</i>{:lang('import')}</a>
             <a data-href="{:url('index/select')}?tab=vod&col=status&tpl=select_state&url=vodplayer/field" data-width="470" data-height="100" data-checkbox="1" class="layui-btn layui-btn-primary j-select"><i class="layui-icon">&#xe620;</i>{:lang('status')}</a>
             <a data-href="{:url('index/select')}?tab=vod&col=ps&tpl=select_state&url=vodplayer/field" data-width="470" data-height="100" data-checkbox="1" class="layui-btn layui-btn-primary j-select"><i class="layui-icon">&#xe620;</i>{:lang('status_parse')}</a>
         </div>
@@ -56,29 +56,12 @@
 {include file="../../../application/admin/view/public/foot" /}
 
 <script type="text/javascript">
-    layui.use(['form','laypage', 'layer','upload'], function() {
+    layui.use(['form','laypage', 'layer'], function() {
         // 操作对象
         var form = layui.form
                 , layer = layui.layer
-                , $ = layui.jquery
-                , upload = layui.upload;
+                , $ = layui.jquery;
 
-        upload.render({
-            elem: '.layui-upload'
-            ,url: "{:url('vodplayer/import')}"
-            ,method: 'post'
-            ,exts:'txt'
-            ,before: function(input) {
-                layer.msg("{:lang('upload_ing')}", {time:3000000});
-            },done: function(res, index, upload) {
-                var obj = this.item;
-                if (res.code == 0) {
-                    layer.msg(res.msg);
-                    return false;
-                }
-                location.reload();
-            }
-        });
 
     });
 </script>
