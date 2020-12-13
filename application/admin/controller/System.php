@@ -148,6 +148,13 @@ class System extends Base
     {
         if (Request()->isPost()) {
             $config = input();
+
+            $validate = \think\Loader::validate('Token');
+            if(!$validate->check($config)){
+                return $this->error($validate->getError());
+            }
+            unset($config['__token__']);
+
             $config_new['view'] = $config['view'];
             $config_new['path'] = $config['path'];
             $config_new['rewrite'] = $config['rewrite'];
@@ -255,6 +262,13 @@ class System extends Base
     {
         if (Request()->isPost()){
             $config = input();
+
+            $validate = \think\Loader::validate('Token');
+            if(!$validate->check($config)){
+                return $this->error($validate->getError());
+            }
+            unset($config['__token__']);
+
             $config_new['upload'] = $config['upload'];
 
             $config_old = config('maccms');
@@ -281,6 +295,12 @@ class System extends Base
         if (Request()->isPost()) {
             $config = input();
 
+            $validate = \think\Loader::validate('Token');
+            if(!$validate->check($config)){
+                return $this->error($validate->getError());
+            }
+            unset($config['__token__']);
+
             $config_new['gbook'] = $config['gbook'];
             $config_new['comment'] = $config['comment'];
 
@@ -303,6 +323,13 @@ class System extends Base
     {
         if (Request()->isPost()) {
             $config = input();
+
+            $validate = \think\Loader::validate('Token');
+            if(!$validate->check($config)){
+                return $this->error($validate->getError());
+            }
+            unset($config['__token__']);
+
             $config_new['weixin'] = $config['weixin'];
 
             $config_old = config('maccms');
@@ -324,6 +351,13 @@ class System extends Base
     {
         if (Request()->isPost()) {
             $config = input();
+
+            $validate = \think\Loader::validate('Token');
+            if(!$validate->check($config)){
+                return $this->error($validate->getError());
+            }
+            unset($config['__token__']);
+
             $config_new['pay'] = $config['pay'];
 
             $config_old = config('maccms');
@@ -350,6 +384,13 @@ class System extends Base
     {
         if (Request()->isPost()) {
             $config = input();
+
+            $validate = \think\Loader::validate('Token');
+            if(!$validate->check($config)){
+                return $this->error($validate->getError());
+            }
+            unset($config['__token__']);
+
             $config_new['connect'] = $config['connect'];
 
             $config_old = config('maccms');
@@ -371,6 +412,13 @@ class System extends Base
     {
         if (Request()->isPost()) {
             $config = input();
+
+            $validate = \think\Loader::validate('Token');
+            if(!$validate->check($config)){
+                return $this->error($validate->getError());
+            }
+            unset($config['__token__']);
+
             $config_new['email'] = $config['email'];
 
             $config_old = config('maccms');
@@ -395,6 +443,13 @@ class System extends Base
     {
         if (Request()->isPost()) {
             $config = input();
+
+            $validate = \think\Loader::validate('Token');
+            if(!$validate->check($config)){
+                return $this->error($validate->getError());
+            }
+            unset($config['__token__']);
+
             $config_new['sms'] = $config['sms'];
 
             $config_old = config('maccms');
@@ -419,6 +474,13 @@ class System extends Base
     {
         if (Request()->isPost()) {
             $config = input();
+
+            $validate = \think\Loader::validate('Token');
+            if(!$validate->check($config)){
+                return $this->error($validate->getError());
+            }
+            unset($config['__token__']);
+
             $config_new['api'] = $config['api'];
 
             $config_new['api']['vod']['auth'] = mac_replace_text($config_new['api']['vod']['auth'], 2);
@@ -482,6 +544,12 @@ class System extends Base
     {
         if (Request()->isPost()) {
             $config = input();
+            $validate = \think\Loader::validate('Token');
+            if(!$validate->check($config)){
+                return $this->error($validate->getError());
+            }
+            unset($config['__token__']);
+
             $config_new['collect'] = $config['collect'];
             if (empty($config_new['collect']['vod']['inrule'])) {
                 $config_new['collect']['vod']['inrule'] = ['a'];

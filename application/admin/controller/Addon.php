@@ -245,7 +245,7 @@ class Addon extends Base
         if(!$validate->check($param)){
             return $this->error($validate->getError());
         }
-
+        echo 'closed';exit;
         $file = $this->request->file('file');
         $addonTmpDir = RUNTIME_PATH . 'addons' . DS;
         if (!is_dir($addonTmpDir)) {

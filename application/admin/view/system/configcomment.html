@@ -5,6 +5,7 @@
     <div class="showpic" style="display:none;"><img class="showpic_img" width="120" height="160"></div>
 
     <form class="layui-form layui-form-pane" action="">
+        <input type="hidden" name="__token__" value="{$Request.token}" />
         <div class="layui-tab">
             <ul class="layui-tab-title">
                 <li class="layui-this">{:lang('admin/system/configcomment/title')}</li>

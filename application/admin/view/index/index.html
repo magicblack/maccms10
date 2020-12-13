@@ -50,17 +50,14 @@
 				 <li class="layui-nav-item layui-hide-xs">
 					<a href="javascript:void(0);">{:lang('opt')}&nbsp;&nbsp;</a>
 					<dl class="layui-nav-child">
-						<dd><a href="__ROOT__/" target="_blank">{:lang('admin/index/index/menu_index')}</a></dd>
+                        <dd><a href="{:url('index/clear')}" class="j-ajax" refresh="yes">{:lang('admin/index/index/menu_cache_clear')}</a></dd>
 						<dd><a href="javascript:void(0);" id="lockScreen">{:lang('admin/index/index/menu_lock')}</a></dd>
 						<dd><a href="{:url('index/logout')}">{:lang('admin/index/index/menu_logout')}</a></dd>
 					</dl>
 				</li>
 				<li class="layui-nav-item layui-hide-xs">
-                <a href="javascript:void(0);" >{:lang('admin/index/index/menu_cache')}&nbsp;&nbsp;</a>
-                <dl class="layui-nav-child">
-                    <dd><a href="{:url('index/clear')}" class="j-ajax" refresh="yes">{:lang('admin/index/index/menu_cache_clear')}</a></dd>
-                </dl>
-            </li>
+                    <a href="__ROOT__/" target="_blank">{:lang('admin/index/index/menu_index')}</a>
+                </li>
 			</ul>
 		</div>
 	</div>
