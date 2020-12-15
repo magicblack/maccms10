@@ -33,6 +33,10 @@ class VodDowner extends Base
             if(is_numeric($param['from'])){
                 $param['from'] .='_';
             }
+            if (strpos($param['from'], '.') !== false || strpos($param['from'], '/') !== false || strpos($param['from'], '\\') !== false) {
+                $this->error(lang('param_err'));
+                return;
+            }
             $list[$param['from']] = $param;
             $sort=[];
             foreach ($list as $k=>&$v){

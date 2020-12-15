@@ -104,7 +104,7 @@ class Index extends Base
         $this->assign('update_sql',$update_sql);
         $this->assign('mac_lang',config('default_lang'));
 
-        $this->assign('info',$this->_admin);
+        $this->assign('admin',$this->_admin);
         $this->assign('title',lang('admin/index/welcome/title'));
         return $this->fetch('admin@index/welcome');
     }

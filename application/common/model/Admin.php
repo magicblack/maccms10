@@ -147,8 +147,7 @@ class Admin extends Base {
         }
 
         session('admin_auth','1');
-        session('admin_id',$row['admin_id']);
-        session('admin_name',$row['admin_name']);
+        session('admin_info',$row->toArray());
 
         //cookie('admin_id',$row['admin_id']);
         //cookie('admin_name',$row['admin_name']);
@@ -160,36 +159,23 @@ class Admin extends Base {
     public function logout()
     {
         session('admin_auth',null);
-        session('admin_name',null);
-        cookie('admin_id',null);
-        cookie('admin_name',null);
-        cookie('admin_check',null);
+        session('admin_info',null);
+        //cookie('admin_id',null);
+        //cookie('admin_name',null);
+        //cookie('admin_check',null);
 
         return ['code'=>1,'msg'=>lang('model/admin/logout_ok')];
     }
 
     public function checkLogin()
     {
-        if(!session('admin_auth')){
+        if(session('admin_auth')!=='1'){
             return ['code'=>1009,'msg'=>lang('model/admin/not_login')];
         }
-        $admin_id = session('admin_id');
-        $admin_name = session('admin_name');
-
-        if(empty($admin_id) || empty($admin_name)){
-            return ['code'=>1001, 'msg'=>lang('model/admin/not_login')];
-        }
-
-        $where = [];
-        $where['admin_id'] = $admin_id;
-        $where['admin_name'] = $admin_name;
-        $where['admin_status'] =1 ;
-
-        $info = $this->where($where)->find();
+        $info = session('admin_info');
         if(empty($info)){
             return ['code'=>1002,'msg'=>lang('model/admin/not_login')];
         }
-        $info = $info->toArray();
         return ['code'=>1,'msg'=>lang('model/admin/haved_login'),'info'=>$info];
     }
 

@@ -8,7 +8,7 @@
 *last update 0917
 */
 return [
-    'lang_ver'=>'1053+',
+    'lang_ver'=>'1055+',
     'hello'  => '欢迎使用',
     'maccms_name'=>'苹果CMS-v10',
     'maccms_copyright'=>'© MacCMS All Rights Reserved.',
@@ -1356,7 +1356,7 @@ return [
     'admin/voddowner/title'=>'下载器管理',
     'admin/vodplayer/alone_api_url'=>'独立接口地址',
     'admin/vodplayer/alone_api_url'=>'独立接口地址',
-    'admin/vodplayer/code_tip'=>'唯一标识英文、纯数字会自动加_',
+    'admin/vodplayer/code_tip'=>'唯一标识英文、纯数字会自动加_，禁止出现./\\等符号',
     'admin/vodplayer/name_tip'=>'中文名称',
     'admin/vodplayer/api_url'=>'接口地址',
     'admin/vodplayer/api_url_tip'=>'独立接口地址，权重高于全局播放器设置的接口',
