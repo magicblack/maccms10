@@ -378,8 +378,12 @@ class Collect extends Base {
     {
         if($pic_status == 1){
             $img_url = model('Image')->down_load($pic_url, $GLOBALS['config']['upload'], $flag);
-            $link = MAC_PATH . $img_url;
-            $link = str_replace('mac:', $GLOBALS['config']['upload']['protocol'].':', $link);
+            if(substr($img_url,0,7)=='upload/'){
+                $link = MAC_PATH . $img_url;
+            }
+            else{
+                $link = str_replace('mac:', $GLOBALS['config']['upload']['protocol'].':', $img_url);
+            }
             if ($img_url == $pic_url) {
                 $des = '<a href="' . $pic_url . '" target="_blank">' . $pic_url . '</a><font color=red>'.lang('download_err').'!</font>';
             } else {

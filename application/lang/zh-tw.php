@@ -107,7 +107,8 @@ return [
     'audit_time'=>'審核時間',
     'bank'=>'銀行',
     'request_err'=>'請求失敗',
-
+    'group'=>'會員組',
+    'access'=>'賬號',
     'test_ok'=>'測試成功',
     'test_err'=>'測試失敗',
     'browser_jump'=>'如果您的瀏覽器沒有自動跳轉，請點擊這裏',
@@ -120,7 +121,7 @@ return [
     'verify_empty'=>'請輸入驗證碼',
     'verify_err'=>'驗證碼錯誤',
     'url_empty'=>'請輸入URL',
-
+    'cancel_level'=>'取消推薦',
     'select'=>'選擇',
     'select_return'=>'選擇返回',
     'select_data'=>'選擇數據',

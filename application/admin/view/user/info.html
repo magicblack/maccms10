@@ -1,6 +1,6 @@
 {include file="../../../application/admin/view/public/head" /}
 <div class="page-container p10">
-    <div class="showpic" style="display:none;"><img class="showpic_img" width="120" height="160"></div>
+    <div class="showpic" style="display:none;"><img class="showpic_img" width="120" height="160" referrerPolicy="no-referrer"></div>
 
     <form class="layui-form layui-form-pane" method="post" action="">
         <input id="user_id" name="user_id" type="hidden" value="{$info.user_id}">
@@ -27,7 +27,7 @@
 
 
         <div class="layui-form-item ">
-            <label class="layui-form-label">{:lang('groupo')}：</label>
+            <label class="layui-form-label">{:lang('group')}：</label>
             <div class="layui-input-inline">
                 <select name="group_id" lay-filter="group_id">
                     {volist name="group_list" id="vo"}

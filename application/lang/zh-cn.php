@@ -107,7 +107,8 @@ return [
     'audit_time'=>'审核时间',
     'bank'=>'银行',
     'request_err'=>'请求失败',
-
+    'group'=>'会员组',
+    'access'=>'账号',
     'test_ok'=>'测试成功',
     'test_err'=>'测试失败',
     'browser_jump'=>'如果您的浏览器没有自动跳转，请点击这里',
@@ -120,7 +121,7 @@ return [
     'verify_empty'=>'请输入验证码',
     'verify_err'=>'验证码错误',
     'url_empty'=>'请输入URL',
-
+    'cancel_level'=>'取消推荐',
     'select'=>'选择',
     'select_return'=>'选择返回',
     'select_data'=>'选择数据',

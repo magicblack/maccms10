@@ -246,7 +246,7 @@ class Images extends Base
 
                     $img_url = model('Image')->down_load($img_old, $config, $param['tab']);
                     $des = '';
-                    if(in_array($config['mode'],['local'])){
+                    if(in_array($config['mode'],['local']) || substr($img_url,0,7)=='upload/'){
                         $img_url = MAC_PATH . $img_url;
                         $link = $img_url;
                     }
@@ -279,16 +279,15 @@ class Images extends Base
 
                 $img_url = model('Image')->down_load($img_old, $config, $param['tab']);
                 $des = '';
-                
-                if(in_array($config['mode'],['local'])){
-
+                if(in_array($config['mode'],['local']) || substr($img_url,0,7)=='upload/'){
+                    $link = MAC_PATH . $img_url;
                 }
                 else{
                     $link = str_replace('mac:', $config['protocol'].':', $img_url);
                 }
 
                 if ($img_url == $img_old) {
-                    $des = '<a href="' . $link . '" target="_blank">' . $link . '</a><font color=red>'.lang('download_err').'!</font>';
+                    $des = '<a href="' . $img_old . '" target="_blank">' . $img_old . '</a><font color=red>'.lang('download_err').'!</font>';
                     $img_url .= $flag;
                 } else {
                     $des = '<a href="' . $link . '" target="_blank">' . $link . '</a><font color=green>'.lang('download_ok').'!</font>';
