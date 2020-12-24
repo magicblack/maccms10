@@ -35,7 +35,7 @@ class Gbook extends Base
         }
         if(!empty($param['wd'])){
             $param['wd'] = htmlspecialchars(urldecode($param['wd']));
-            $where['gboook_name|gbook_content'] = ['like','%'.$param['wd'].'%'];
+            $where['gbook_name|gbook_content'] = ['like','%'.$param['wd'].'%'];
         }
 
 

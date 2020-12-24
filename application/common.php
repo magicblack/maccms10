@@ -868,19 +868,22 @@ function mac_rep_pse_rnd($psearr,$txt,$id=0)
     if(empty($id)){
         $id = crc32($txt);
     }
-    $i=count($psearr)+1;
+    $i=count($psearr);
     $j=mb_strpos($txt,"<br>");
-
+    $k=mb_strlen($txt);
     if ($j==0){ $j=mb_strpos($txt,"<br/>"); }
     if ($j==0){ $j=mb_strpos($txt,"<br />"); }
     if ($j==0){ $j=mb_strpos($txt,"</p>"); }
-    if ($j==0){ $j=mb_strpos($txt,"。")+1;}
-
+    if ($j==0){ $j=mb_strpos($txt,"。");}
+    if ($j==0){ $j=mb_strpos($txt,"！");}
+    if ($j==0){ $j=mb_strpos($txt,"!");}
+    if ($j==0){ $j=mb_strpos($txt,"？");}
+    if ($j==0){ $j=mb_strpos($txt,"?");}
     if ($j>0){
-        $res= mac_substring($txt,$j-1) . $psearr[$id % $i] . mac_substring($txt,mb_strlen($txt)-$j,$j);
+        $res= mac_substring($txt,$j-1) . $psearr[$id % $i] . mac_substring($txt,$k-$j,$j);
     }
     else{
-        $res= $psearr[$id % 1]. $txt;
+        $res= $psearr[$id % $i]. $txt;
     }
     return $res;
 }
