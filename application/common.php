@@ -864,26 +864,39 @@ function mac_interface_type()
 
 function mac_rep_pse_rnd($psearr,$txt,$id=0)
 {
-    if(empty($txt)){ $txt=""; }
-    if(empty($id)){
-        $id = crc32($txt);
+    if(empty($psearr)){
+        return $txt;
     }
     $i=count($psearr);
-    $j=mb_strpos($txt,"<br>");
-    $k=mb_strlen($txt);
-    if ($j==0){ $j=mb_strpos($txt,"<br/>"); }
-    if ($j==0){ $j=mb_strpos($txt,"<br />"); }
-    if ($j==0){ $j=mb_strpos($txt,"</p>"); }
-    if ($j==0){ $j=mb_strpos($txt,"。");}
-    if ($j==0){ $j=mb_strpos($txt,"！");}
-    if ($j==0){ $j=mb_strpos($txt,"!");}
-    if ($j==0){ $j=mb_strpos($txt,"？");}
-    if ($j==0){ $j=mb_strpos($txt,"?");}
-    if ($j>0){
-        $res= mac_substring($txt,$j-1) . $psearr[$id % $i] . mac_substring($txt,$k-$j,$j);
+    if(empty($txt)){
+        if(empty($id)){
+            $r = mt_rand(0,$i-1);
+        }
+        else{
+            $r = $id % $i;
+        }
+        $res= $psearr[$r];
     }
     else{
-        $res= $psearr[$id % $i]. $txt;
+        if(empty($id)){
+            $id = crc32($txt);
+        }
+        $j=mb_strpos($txt,"<br>");
+        $k=mb_strlen($txt);
+        if($j==0){ $j=mb_strpos($txt,"<br/>"); }
+        if($j==0){ $j=mb_strpos($txt,"<br />"); }
+        if($j==0){ $j=mb_strpos($txt,"</p>"); }
+        if($j==0){ $j=mb_strpos($txt,"。"); }
+        if($j==0){ $j=mb_strpos($txt,"！"); }
+        if($j==0){ $j=mb_strpos($txt,"!"); }
+        if($j==0){ $j=mb_strpos($txt,"？"); }
+        if($j==0){ $j=mb_strpos($txt,"?"); }
+        if($j>0){
+            $res= mac_substring($txt,$j-1) . $psearr[$id % $i] . mac_substring($txt,$k-$j,$j);
+        }
+        else{
+            $res= $psearr[$id % $i]. $txt;
+        }
     }
     return $res;
 }

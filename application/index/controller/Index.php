@@ -13,9 +13,4 @@ class Index extends Base
         return $this->label_fetch('index/index');
     }
 
-    public function test()
-    {
-
-    }
-
 }
