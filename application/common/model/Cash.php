@@ -62,9 +62,10 @@ class Cash extends Base {
         return ['code'=>1,'msg'=>lang('obtain_ok'),'info'=>$info];
     }
 
-    public function saveData($data)
+    public function saveData($param)
     {
-        $data['cash_money']  = floatval($data['cash_money']);
+        $data=[];
+        $data['cash_money']  = floatval($param['cash_money']);
 
         if($GLOBALS['config']['user']['cash_status'] !='1'){
             return ['code'=>1005,'msg'=>lang('model/cash/not_open')];
@@ -78,10 +79,10 @@ class Cash extends Base {
         if($tx_points > $GLOBALS['user']['user_points']){
             return ['code'=>1007,'msg'=>lang('model/cash/mush_money_err')];
         }
-
-        $data['cash_bank_name'] = htmlspecialchars(urldecode(trim($data['cash_bank_name'])));
-        $data['cash_bank_no'] = htmlspecialchars(urldecode(trim($data['cash_bank_no'])));
-        $data['cash_payee_name'] = htmlspecialchars(urldecode(trim($data['cash_payee_name'])));
+        $data['user_id'] = $GLOBALS['user']['user_id'];
+        $data['cash_bank_name'] = htmlspecialchars(urldecode(trim($param['cash_bank_name'])));
+        $data['cash_bank_no'] = htmlspecialchars(urldecode(trim($param['cash_bank_no'])));
+        $data['cash_payee_name'] = htmlspecialchars(urldecode(trim($param['cash_payee_name'])));
         $data['cash_points'] = $tx_points;
         $data['cash_time'] = time();
 

@@ -401,14 +401,6 @@ function mac_send_mail($to,$title,$body,$conf=[])
         return ['code'=>997,'msg'=>lang('body_not_empty')];
     }
 
-    View::instance()->assign(['time'=>$GLOBALS['config']['email']['time']]);
-    $title =  View::instance()->display($title);
-    $body =  View::instance()->display($body);
-
-    if(!empty($conf)){
-        $config = $conf;
-    }
-
     $cp = 'app\\common\\extend\\email\\' . ucfirst($GLOBALS['config']['email']['type']);
     if (class_exists($cp)) {
         $c = new $cp;
@@ -1483,9 +1475,11 @@ function mac_url_content_img($content)
 
 function mac_alphaID($in, $to_num=false, $pad_up=false, $passKey='')
 {
-    $key = 'abcdefghijklmnopqrstuvwxyz0123456789';
-    $i = array('a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z','0','1','2','3','4','5','6','7','8','9');
+    $key = 'abcdefghijklmnopqrstuvwxyz0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
     if (!empty($passKey)) {
+        for ($n = 0; $n<strlen($key); $n++) {
+            $i[] = substr($key,$n ,1);
+        }
         $len = strlen($key);
         $passhash = hash('sha256',$passKey);
         $passhash = (strlen($passhash) < $len)

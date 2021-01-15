@@ -135,19 +135,16 @@
 
     });
     function test_email() {
-        var host = $("#host").val();
-        var username = $("#username").val();
-        var password = $("#password").val();
+        var type = $('#ac').val();
         var test = $("#test").val();
         var nick = $("#nick").val();
-        var port = $('#port').val();
 
         layer.msg("{:lang('wait_submit')}",{time:500000});
         $.ajax({
             url: "{:url('system/test_email')}",
             type: "post",
             dataType: "json",
-            data: {host:host,username:username,password:password,port:port,nick:nick,test:test},
+            data: {type:type,nick:nick,test:test},
             beforeSend: function () {
             },
             error:function(r){

@@ -58,43 +58,47 @@ class Base extends All
 
     public function _cache_clear()
     {
-        //播放器配置缓存
-        $vodplayer = config('vodplayer');
-        $voddowner = config('voddowner');
-        $vodserver = config('vodserver');
-        $player = [];
-        foreach($vodplayer as  $k=>$v){
-            $player[$k] = [
-                'show'=>(string)$v['show'],
-                'des'=>(string)$v['des'],
-                'ps'=>(string)$v['ps'],
-                'parse'=>(string)$v['parse'],
-            ];
-        }
-        $downer = [];
-        foreach($voddowner as  $k=>$v){
-            $downer[$k] = [
-                'show'=>(string)$v['show'],
-                'des'=>(string)$v['des'],
-                'ps'=>(string)$v['ps'],
-                'parse'=>(string)$v['parse'],
-            ];
-        }
+        if(ENTRANCE=='admin') {
+            //播放器配置缓存
+            $vodplayer = config('vodplayer');
+            $voddowner = config('voddowner');
+            $vodserver = config('vodserver');
+            $player = [];
+            foreach ($vodplayer as $k => $v) {
+                $player[$k] = [
+                    'show' => (string)$v['show'],
+                    'des' => (string)$v['des'],
+                    'ps' => (string)$v['ps'],
+                    'parse' => (string)$v['parse'],
+                ];
+            }
+            $downer = [];
+            foreach ($voddowner as $k => $v) {
+                $downer[$k] = [
+                    'show' => (string)$v['show'],
+                    'des' => (string)$v['des'],
+                    'ps' => (string)$v['ps'],
+                    'parse' => (string)$v['parse'],
+                ];
+            }
 
-        $server = [];
-        foreach($vodserver as  $k=>$v){
-            $server[$k] = [
-                'show'=>(string)$v['show'],
-                'des'=>(string)$v['des']
-            ];
+            $server = [];
+            foreach ($vodserver as $k => $v) {
+                $server[$k] = [
+                    'show' => (string)$v['show'],
+                    'des' => (string)$v['des']
+                ];
+            }
+            $content = 'MacPlayerConfig.player_list=' . json_encode($player) . ',MacPlayerConfig.downer_list=' . json_encode($downer) . ',MacPlayerConfig.server_list=' . json_encode($server) . ';';
+            $path = './static/js/playerconfig.js';
+            if (!file_exists($path)) {
+                $path .= '.bak';
+            }
+            $fc = @file_get_contents($path);
+            $jsb = mac_get_body($fc, '//缓存开始', '//缓存结束');
+            $fc = str_replace($jsb, "\r\n" . $content . "\r\n", $fc);
+            @fwrite(fopen('./static/js/playerconfig.js', 'wb'), $fc);
         }
-        $content = 'MacPlayerConfig.player_list='.json_encode($player) . ',MacPlayerConfig.downer_list='.json_encode($downer) . ',MacPlayerConfig.server_list='.json_encode($server) .';';
-        $path = './static/js/playerconfig.js';
-        if(!file_exists($path)){ $path .= '.bak'; }
-        $fc = @file_get_contents( $path );
-        $jsb = mac_get_body($fc,'//缓存开始','//缓存结束');
-        $fc = str_replace($jsb,"\r\n".$content."\r\n",$fc);
-        @fwrite(fopen('./static/js/playerconfig.js','wb'),$fc);
 
         Dir::delDir(RUNTIME_PATH.'cache/');
         Dir::delDir(RUNTIME_PATH.'log/');

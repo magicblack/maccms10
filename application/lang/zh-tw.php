@@ -5,10 +5,9 @@
 *模塊key：開頭  admin/ 、 install/ 、只在模塊內使用
 *後臺菜單key：開頭menu/
 *內部處理key：開頭 model/、controller/、只在模塊內使用
-*last update 0917
 */
 return [
-    'lang_ver'=>'1055+',
+    'lang_ver'=>'1059+',
     'hello'  => '歡迎使用',
     'maccms_name'=>'蘋果CMS-v10',
     'maccms_copyright'=>'© MacCMS All Rights Reserved.',
@@ -1033,7 +1032,7 @@ return [
 
     'admin/system/configemail/title'=>'郵件發送配置',
     'admin/system/configemail/tip'=>'提示信息：<br>
-                        修改後請先點擊保存然後再測試發送。內容支持{literal}{$maccms.***}標簽，  {$user.***}標簽， {$code}驗證碼， {$time}有效時間{/literal}。',
+                        修改後請先點擊保存然後再測試發送。內容支持{$maccms.***}標簽，  {$user.***}標簽， {$code}驗證碼， {$time}有效時間。',
     'admin/system/configemail/type'=>'發送方式',
     'admin/system/configemail/time'=>'有效期限',
     'admin/system/configemail/time_tip'=>'郵件驗證碼多少分鐘後失效',
@@ -1426,6 +1425,7 @@ return [
     'admin/vod/select_copyright'=>'選擇版權',
     'admin/vod/is_end'=>'已完結',
     'admin/vod/no_end'=>'未完結',
+    'admin/vod/del_player'=>'刪播放組',
     'admin/vod/del_downer'=>'刪下載組',
     'admin/vod/episode_plot'=>'分集劇情',
     'admin/vod/plot'=>'分集劇情',
@@ -1807,9 +1807,9 @@ return [
     'admin/urlsend/no_data'=>'沒有獲取到數據',
     'admin/urlsend/tip'=>'共%s條數據等待推送，分%s頁推送，當前第%s頁',
     'admin/urlsend/complete'=>'數據推送完畢',
-    'admin/urlsend/tip2'=>'斷點會記錄在緩存中，更新緩存後斷點將消失。
-            當前站點配置域名：{$GLOBALS[\'http_type\'].$GLOBALS[\'config\'][\'site\'][\'site_url\']}<br>
-            開始推送之前請先填寫好上面的所需配置項。',
+    'admin/urlsend/tip2'=>'斷點會記錄在緩存中，更新緩存後斷點將消失。<br>
+            開始推送之前請先填寫好上面的所需配置項。<br>
+            當前站點配置域名：',
     'admin/urlsend/send_genre'=>'推送類型',
     'admin/urlsend/page_send_num'=>'每頁推送數',
     'admin/urlsend/start_page'=>'起始頁碼',
