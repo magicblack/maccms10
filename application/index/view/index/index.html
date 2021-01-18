@@ -8,10 +8,7 @@
     <title>{$title} - 苹果CMS</title>
     <link rel="stylesheet" href="__STATIC__/layui/css/layui.css">
     <link rel="stylesheet" href="__STATIC__/css/admin_style.css">
-    <script>
-        var ROOT_PATH = "__ROOT__", ADMIN_PATH="{$_SERVER['SCRIPT_NAME']}";
-        var maccms ="{$maccms|json_encode}";
-    </script>
+    <script>var maccms={"path":"__ROOT__","mid":"{$maccms['mid']}","aid":"{$maccms['aid']}","url":"{$maccms['site_url']}","wapurl":"{$maccms['site_wapurl']}","mob_status":"{$maccms['mob_status']}"};</script>
 </head>
 <body>
 link标签：<br>

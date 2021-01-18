@@ -720,7 +720,7 @@ return [
     'index/logincallback2'=>'获取第三方用户信息失败，请重试',
     'index/reg_ok'=> '注册成功',
     'index/portrait_tip1'=> '未开启自定义头像功能',
-    'index/portrait_no_upload'=> '未找到上传的文件(原因：表单名可能错误，默认表单名“file”)！',
+    'index/portrait_no_upload'=> '未找到上传的文件(原因：表单名可能错误，默认表单名“file”或“imgdata”)！',
     'index/portrait_ext'=> '非系统允许的上传格式！',
     'index/upload_err'=>'文件上传失败！',
     'index/portrait_err'=>'更新会员头像信息失败！',
@@ -732,7 +732,7 @@ return [
     'index/page_detail'=>'内容页',
     'index/page_play'=>'播放页',
     'index/page_down'=>'下载页',
-    'index/tree_see'=>'试看',
+    'index/try_see'=>'试看',
 
     'admin/public/head/title'=>'安全第一请勿泄露后台地址 - Copyright by 苹果CMS内容管理系统',
     'admin/public/jump/title'=>'跳转提示',

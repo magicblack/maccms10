@@ -386,18 +386,9 @@ class User extends Base
         if ($GLOBALS['config']['user']['portrait_status'] == 0) {
             return json(['code' => 0, 'msg' => lang('index/portrait_tip1')]);
         }
-
+        $base64_img = input('post.imgdata');
         $file = request()->file('file');
-        if (empty($file)) {
-            return json(['code' => 0, 'msg' => lang('index/portrait_no_upload')]);
-        }
-
-        $upload_image_ext = 'jpg,png,gif';
-        if ($file->checkExt($upload_image_ext)) {
-            $type = 'image';
-        } else {
-            return json(['code' => 0, 'msg' => lang('index/portrait_ext')]);
-        }
+        $upload_image_ext = ['jpeg','jpg','gif','png'];
 
         $uniq = $GLOBALS['user']['user_id'] % 10;
         // 上传附件路径
@@ -410,10 +401,39 @@ class User extends Base
             mac_mkdirss($_save_path);
         }
 
-        $upfile = $file->move($_upload_path, $_save_name);
-        if (!is_file($_upload_path . $_save_name)) {
-            return json(['code' => 0, 'msg' => lang('index/upload_err')]);
+        if(!empty($base64_img)){
+            if(preg_match('/^(data:\s*image\/(\w+);base64,)/', $base64_img, $result)){
+                $type = $result[2];
+                if(in_array($type, $upload_image_ext)){
+                    if(!file_put_contents($_save_path.$_save_name, base64_decode(str_replace($result[1], '', $base64_img)))){
+                        return json(['code' => 0, 'msg' => lang('index/upload_err')]);
+                    }
+                }
+                else {
+                    return json(['code' => 0, 'msg' => lang('index/portrait_ext')]);
+                }
+            }
+            else{
+                return json(['code' => 0, 'msg' => lang('index/portrait_no_upload')]);
+            }
         }
+        elseif(!empty($file)) {
+            if ($file->checkExt($upload_image_ext)) {
+                $type = 'image';
+            }
+            else {
+                return json(['code' => 0, 'msg' => lang('index/portrait_ext')]);
+            }
+            $upfile = $file->move($_upload_path, $_save_name);
+            if (!is_file($_upload_path . $_save_name)) {
+                return json(['code' => 0, 'msg' => lang('index/upload_err')]);
+            }
+
+        }
+        else{
+            return json(['code' => 0, 'msg' => lang('index/portrait_no_upload')]);
+        }
+
         $file = $_save_path . str_replace('\\', '/', $_save_name);
         $config = [
             'thumb_type' => 6,
@@ -614,7 +634,7 @@ class User extends Base
         $this->assign('type_tree', $type_tree);
 
         $n = 1;
-        $ids = [1 => lang('index/page_type'), 2 => lang('index/page_detail'), 3 => lang('index/page_play'), 4 => lang('index/page_down'), '5' => lang('index/trysee')];
+        $ids = [1 => lang('index/page_type'), 2 => lang('index/page_detail'), 3 => lang('index/page_play'), 4 => lang('index/page_down'), '5' => lang('index/try_see')];
         foreach ($type_tree as $k1 => $v1) {
             unset($type_tree[$k1]['type_extend']);
             foreach ($ids as $a => $b) {
