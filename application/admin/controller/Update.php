@@ -11,7 +11,7 @@ class Update extends Base
     public function __construct()
     {
         parent::__construct();
-        header('X-Accel-Buffering: no');
+        //header('X-Accel-Buffering: no');
 
         $this->_url = base64_decode("aHR0cDovL3VwZGF0ZS5tYWNjbXMubGEv")."v10/";
         $this->_save_path = './application/data/update/';

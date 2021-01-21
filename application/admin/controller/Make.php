@@ -9,7 +9,7 @@ class Make extends Base
 
     public function __construct()
     {
-        header('X-Accel-Buffering: no');
+        //header('X-Accel-Buffering: no');
         $this->_param = input();
         $GLOBALS['ismake'] = '1';
 

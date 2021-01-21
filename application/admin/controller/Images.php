@@ -7,7 +7,7 @@ class Images extends Base
     public function __construct()
     {
         parent::__construct();
-        header('X-Accel-Buffering: no');
+        //header('X-Accel-Buffering: no');
     }
 
     public function index()
