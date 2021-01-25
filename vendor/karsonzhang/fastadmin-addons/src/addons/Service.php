@@ -635,7 +635,7 @@ EOD;
     {
         return [
             'application',
-            'public'
+            'static'
         ];
     }
 
