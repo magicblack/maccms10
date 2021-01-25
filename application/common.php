@@ -99,31 +99,6 @@ function mac_rmdirs($dirname, $withself = true)
     }
     return true;
 }
-function mac_copydirs($source, $dest)
-{
-    if (!is_dir($dest))
-    {
-        mkdir($dest, 0755);
-    }
-    foreach (
-        $iterator = new RecursiveIteratorIterator(
-            new RecursiveDirectoryIterator($source, RecursiveDirectoryIterator::SKIP_DOTS), RecursiveIteratorIterator::SELF_FIRST) as $item
-    )
-    {
-        if ($item->isDir())
-        {
-            $sontDir = $dest . DS . $iterator->getSubPathName();
-            if (!is_dir($sontDir))
-            {
-                mkdir($sontDir);
-            }
-        }
-        else
-        {
-            copy($item, $dest . DS . $iterator->getSubPathName());
-        }
-    }
-}
 
 function mac_arr2file($f,$arr='')
 {
@@ -2665,4 +2640,34 @@ if (!function_exists('rmdirs')) {
         return true;
     }
 }
+if (!function_exists('copydirs')) {
+
+    /**
+     * 复制文件夹
+     * @param string $source 源文件夹
+     * @param string $dest   目标文件夹
+     */
+    function copydirs($source, $dest)
+    {
+        if (!is_dir($dest)) {
+            mkdir($dest, 0755, true);
+        }
+        foreach (
+            $iterator = new RecursiveIteratorIterator(
+                new RecursiveDirectoryIterator($source, RecursiveDirectoryIterator::SKIP_DOTS),
+                RecursiveIteratorIterator::SELF_FIRST
+            ) as $item
+        ) {
+            if ($item->isDir()) {
+                $sontDir = $dest . DS . $iterator->getSubPathName();
+                if (!is_dir($sontDir)) {
+                    mkdir($sontDir, 0755, true);
+                }
+            } else {
+                copy($item, $dest . DS . $iterator->getSubPathName());
+            }
+        }
+    }
+}
+
 
