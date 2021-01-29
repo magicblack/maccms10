@@ -5,7 +5,10 @@
         <input type="hidden" name="__token__" value="{$Request.token}" />
         <div class="layui-tab">
             <ul class="layui-tab-title">
-                <li class="layui-this">{:lang('admin/system/configsms/title')}</li>
+                <li class="layui-this" lay-id="configsms_1">{:lang('admin/system/configsms/title')}</li>
+                {volist name="$extends['ext_list']" id="vo"}
+                <li data-key="{$key}" lay-id="configsms_{$i+1}">{$vo}</li>
+                {/volist}
             </ul>
             <div class="layui-tab-content">
                 <div class="layui-tab-item layui-show">
@@ -25,20 +28,6 @@
                             </select>
                         </div>
                         <div class="layui-form-mid layui-word-aux"></div>
-                    </div>
-                    <div class="layui-form-item">
-                        <label class="layui-form-label">appid：</label>
-                        <div class="layui-input-inline w400">
-                            <input type="text" id="appid" name="sms[appid]" placeholder="" value="{$config['sms']['appid']}" class="layui-input"  >
-                        </div>
-                        <div class="layui-form-mid layui-word-aux">{:lang('admin/system/configsms/appid_tip')}</div>
-                    </div>
-                    <div class="layui-form-item">
-                        <label class="layui-form-label">appkey：</label>
-                        <div class="layui-input-inline w400">
-                            <input type="text" id="appkey" name="sms[appkey]" placeholder="" value="{$config['sms']['appkey']}" class="layui-input"  >
-                        </div>
-                        <div class="layui-form-mid layui-word-aux">{:lang('admin/system/configsms/appkey_tip')}</div>
                     </div>
                     <div class="layui-form-item">
                         <label class="layui-form-label">{:lang('admin/system/configsms/sign')}：</label>
@@ -68,10 +57,9 @@
                         </div>
                         <div class="layui-form-mid layui-word-aux">{:lang('admin/system/configsms/tpl_code_tip')}</div>
                     </div>
-
+                </div>
+                {$extends['ext_html']}
             </div>
-            </div>
-
         </div>
         <div class="layui-form-item center">
             <div class="layui-input-block">

@@ -207,17 +207,17 @@ class Make extends Base
 
         $GLOBALS['aid'] = mac_get_aid('rss');
         $this->label_maccms();
-
         for($i=1;$i<=$this->_param['ps'];$i++){
             $par =[];
-            if($i>1){
+            if($i>=1){
                 $par['page'] = $i;
                 $_REQUEST['page'] = $i;
             }
-            $link = mac_url('rss/'.$this->_param['ac2'],$par);
 
+            $link = 'rss/'.$this->_param['ac2'].'.html';
             $this->buildHtml($link,'./','rss/'.$this->_param['ac2']);
-            $this->echoLink($link,$link);
+
+            $this->echoLink($link,'/'.$link);
         }
         if(ENTRANCE=='admin') {
             mac_jump(url('make/opt'), 3);

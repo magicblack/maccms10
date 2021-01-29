@@ -73,8 +73,11 @@ return array(
         '3502' => array("show"=>0,'name' => '--评论删除', 'controller' => 'comment',		'action' => 'del'),
         '3504' => array("show"=>0,'name' => '--评论状态', 'controller' => 'comment',		'action' => 'field'),
 
-        '36' => array("show"=>1,'name' => lang('menu/images'), 'controller' => 'images',		'action' => 'index'),
-        '3601' => array("show"=>0,'name' => '--附件删除', 'controller' => 'images',		'action' => 'del'),
+        '36' => array("show"=>1,'name' => lang('menu/images'), 'controller' => 'annex',		'action' => 'data'),
+        '3604' => array("show"=>0,'name' => '--附件文件夹', 'controller' => 'annex',		'action' => 'file'),
+        '3605' => array("show"=>0,'name' => '--附件检测', 'controller' => 'annex',		'action' => 'check'),
+        '3606' => array("show"=>0,'name' => '--附件数据初始化', 'controller' => 'annex',		'action' => 'init'),
+        '3601' => array("show"=>0,'name' => '--附件删除', 'controller' => 'annex',		'action' => 'del'),
         '3602' => array("show"=>0,'name' => '--同步图片选项', 'controller' => 'images',		'action' => 'opt'),
         '3603' => array("show"=>0,'name' => '--同步图片方法', 'controller' => 'images',		'action' => 'sync'),
     )),

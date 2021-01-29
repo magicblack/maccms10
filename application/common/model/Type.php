@@ -26,6 +26,12 @@ class Type extends Base {
         //TODO:自定义的初始化
     }
 
+    public function countData($where)
+    {
+        $total = $this->where($where)->count();
+        return $total;
+    }
+
     public function listData($where,$order,$format='def',$mid=0,$limit=999,$start=0,$totalshow=1)
     {
         if(!is_array($where)){

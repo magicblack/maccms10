@@ -7,7 +7,7 @@
 *内部处理key：开头 model/、controller/、只在模块内使用
 */
 return [
-    'lang_ver'=>'1059+',
+    'lang_ver'=>'1063+',
     'hello'  => '欢迎使用',
     'maccms_name'=>'苹果CMS-v10',
     'maccms_copyright'=>'© MacCMS All Rights Reserved.',
@@ -198,6 +198,7 @@ return [
     'area'=>'地区',
     'lang'=>'语言',
     'sex'=>'性别',
+    'sum'=>'共',
     'opt'=>'操作',
     'opt_content'=>'内容操作',
     'name'=>'名称',
@@ -1277,25 +1278,13 @@ return [
 
     'admin/system/configsms/title'=>'短信发送配置',
     'admin/system/configsms/tip'=>'提示信息：<br>
-                        请务必按照短信接口服务商的要求做好短信签名和短信内容的设置。<br>
-                        腾讯云短信：https://cloud.tencent.com/product/sms<br>
-                        腾讯云短信模板例子：<br>
-                        尊敬的用户，您的注册会员验证码为：{1}，请勿泄漏于他人！<br>
-                        验证码为：{1}，您正在绑定手机，若非本人操作，请勿泄露。<br>
-                        验证码为：{1}，您正在进行密码重置操作，如非本人操作，请忽略本短信！<br>
-                        阿里云短信：https://www.aliyun.com/product/sms<br>
-                        阿里云短信模板例子：<br>
-                        尊敬的用户，您的注册会员验证码为：${code}，请勿泄漏于他人！<br>
-                        验证码为：${code}，您正在绑定手机，若非本人操作，请勿泄露。<br>
-                        验证码为：${code}，您正在进行密码重置操作，如非本人操作，请忽略本短信！<br>',
+                        请务必按照短信接口服务商的要求做好短信签名和短信内容的设置。<br>',
     'admin/system/configsms/type'=>'服务商',
-    'admin/system/configsms/appid_tip'=>'腾讯云对应AppId，阿里云对应KeyId',
-    'admin/system/configsms/appkey_tip'=>'腾讯云对应AppKey，阿里云对应KeySecret',
     'admin/system/configsms/sign'=>'短信签名',
     'admin/system/configsms/tpl_code_reg'=>'注册模板编号',
     'admin/system/configsms/tpl_code_tip'=>'模板编号需要在服务商短信控制台中申请',
     'admin/system/configsms/tpl_code_bind'=>'绑定模板编号',
-    'admin/system/configsms/tpl_code_findpass'=>'注册模板编号',
+    'admin/system/configsms/tpl_code_findpass'=>'找回密码模板编号',
     'admin/system/configsms/test_err'=>'发生错误，请检查是否开启相应扩展库!',
 
 
@@ -1599,6 +1588,19 @@ return [
     'admin/group/popedom_down'=>'下载页',
     'admin/group/popedom_trysee'=>'试看',
 
+    'admin/annex/title'=>'附件管理',
+    'admin/annex/check'=>'检测无效文件',
+    'admin/annex/check_complete'=>'无效文件清理完毕',
+
+    'admin/annex/init_tip'=>'<strong>附件数据初始化1.0版本</strong><br>
+                            1，将对分类表，视频表，文章表，会员表等表结构进行检索。<br>
+                            2，将包含本地图片地址内容插入到附件表中。',
+    'admin/annex/init_data'=>'数据初始化',
+    'admin/annex/dir_model'=>'文件夹模式',
+    'admin/annex/check_ok'=>'附件数据初始化结束',
+    'admin/annex/check_tip1'=>'正在检测%s表...共%s条，分%s次检测，每次%s条，当前第%s次',
+    'admin/annex/check_jump'=>'表%s检测完毕，稍后继续...',
+
 
     'admin/images/title'=>'图片管理',
     'admin/images/sync_complete'=>'同步操作完毕!',
@@ -1797,7 +1799,7 @@ return [
     'admin/upload/test_write_ok'=>'测试写入成功',
     'admin/upload/test_write_ok'=>'写入失败，请检查临时文件目录权限',
     'admin/upload/not_find_extend'=>'未找到第三方扩展上传类库',
-    'admin/upload/no_input_file'=>'未找到上传的文件(原因：表单名可能错误，默认表单名“file”)！',
+    'admin/upload/no_input_file'=>'未找到上传的文件(原因：表单名可能错误，默认表单名“file”或“imgdata”)！',
     'admin/upload/forbidden_ext'=>'非系统允许的上传格式！',
     'admin/upload/upload_success'=>'文件上传成功！',
     'admin/upload/upload_faild'=>'文件上传失败！',

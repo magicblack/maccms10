@@ -1,0 +1,27 @@
+<div class="layui-tab-item">
+
+    <blockquote class="layui-elem-quote layui-quote-nm">
+        提示信息：<br>
+        腾讯云短信：https://cloud.tencent.com/product/sms<br>
+        腾讯云短信模板例子：<br>
+        尊敬的用户，您的注册会员验证码为：{1}，请勿泄漏于他人！<br>
+        验证码为：{1}，您正在绑定手机，若非本人操作，请勿泄露。<br>
+        验证码为：{1}，您正在进行密码重置操作，如非本人操作，请忽略本短信！<br>
+    </blockquote>
+
+    <div class="layui-form-item">
+        <label class="layui-form-label">AppId：</label>
+        <div class="layui-input-inline w400">
+            <input type="text" name="sms[qcloud][appid]" placeholder="" value="{$config['sms']['qcloud']['appid']}" class="layui-input"  >
+        </div>
+        <div class="layui-form-mid layui-word-aux"></div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">AppKey：</label>
+        <div class="layui-input-inline w400">
+            <input type="text" name="sms[qcloud][appkey]" placeholder="" value="{$config['sms']['qcloud']['appkey']}" class="layui-input"  >
+        </div>
+        <div class="layui-form-mid layui-word-aux"></div>
+    </div>
+
+</div>

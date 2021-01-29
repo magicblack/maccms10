@@ -86,6 +86,22 @@ CREATE TABLE `mac_admin` (
 ) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 ;
 
 -- ----------------------------
+-- Table structure for mac_annex
+-- ----------------------------
+DROP TABLE IF EXISTS `mac_annex`;
+CREATE TABLE `mac_annex` (
+  `annex_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `annex_time` int(10) unsigned NOT NULL DEFAULT '0',
+  `annex_file` varchar(255) NOT NULL DEFAULT '',
+  `annex_size` int(10) unsigned NOT NULL DEFAULT '0',
+  `annex_type` varchar(8) NOT NULL DEFAULT '',
+  PRIMARY KEY (`annex_id`),
+  KEY `annex_time` (`annex_time`),
+  KEY `annex_file` (`annex_file`),
+  KEY `annex_type` (`annex_type`)
+) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+
+-- ----------------------------
 -- Table structure for mac_art
 -- ----------------------------
 DROP TABLE IF EXISTS `mac_art`;

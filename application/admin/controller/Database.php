@@ -219,7 +219,6 @@ class Database extends Base
         return $this->error(lang('admin/database/repair_ok'));
     }
 
-
     public function del($id = '')
     {
         if (empty($id)) {
@@ -272,7 +271,6 @@ class Database extends Base
         $this->error(lang('param_err'));
     }
 
-
     public function rep()
     {
         if($this->request->isPost()){
@@ -320,8 +318,8 @@ class Database extends Base
             }
 
 
-            $check_arr = ["<script>", "<iframe>"];
-            $rel_val = ["/<script[\s\S]*?<\/script>/is","/<iframe[\s\S]*?<\/iframe>/is"];
+            $check_arr = ["<script>", "<iframe>","{php}"];
+            $rel_val = ["/<script[\s\S]*?<\/script>/is","/<iframe[\s\S]*?<\/iframe>/is","/{php}[\s\S]*?{\/php}/is"];
 
             mac_echo('<style type="text/css">body{font-size:12px;color: #333333;line-height:21px;}span{font-weight:bold;color:#FF0000}</style>');
 

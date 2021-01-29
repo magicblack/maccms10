@@ -39,11 +39,11 @@ class Timming extends Base
                 mac_echo( lang('api/task_tip_exec',[$v['name'] ,$status,$last]));
                 $list[$k]['runtime'] = time();
 
-
                 $res = mac_arr2file( APP_PATH .'extra/timming.php', $list);
                 if($res===false){
                     return $this->error(lang('write_err_config'));
                 }
+                $this->reset();
                 $file = $v['file'];
                 $this->$file($v['param']);
                 die;
@@ -51,6 +51,13 @@ class Timming extends Base
             else{
                 mac_echo(lang('api/task_tip_jump',[$v['name'] ,$status,$last]));
             }
+        }
+    }
+
+    private function reset()
+    {
+        foreach($_REQUEST as $k=>$v){
+            $_REQUEST[$k]='';
         }
     }
 

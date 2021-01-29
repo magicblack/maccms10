@@ -10,90 +10,9 @@ class Images extends Base
         //header('X-Accel-Buffering: no');
     }
 
-    public function index()
+    public function data()
     {
-        $path = input('path');
-        $path = str_replace('\\','',$path);
-        $path = str_replace('/','',$path);
 
-        if(empty($path)){
-            $path = '@upload';
-        }
-
-        if(substr($path,0,7) != "@upload") { $path = "@upload"; }
-        if(count( explode("..@",$path) ) > 1) {
-            $this->error(lang('illegal_request'));
-            return;
-        }
-
-
-        $uppath = substr($path,0,strrpos($path,"@"));
-
-        $ischild = 0;
-        if ($path !="@upload"){
-            $ischild = 1;
-        }
-        $this->assign('uppath',$uppath);
-        $this->assign('ischild',$ischild);
-
-
-        $num_path = 0;
-        $num_file = 0;
-        $sum_size = 0;
-        $filters = ",,cache,break,artcollect,downdata,playdata,export,vodcollect,";
-        $files = [];
-
-        $pp = str_replace('@','/',$path);
-
-        if(is_dir('.'.$pp)){
-
-            $farr = glob('.'.$pp.'/*');
-            if($farr){
-                foreach($farr as $f){
-
-                    if ( is_dir($f) ){
-
-                        if(strpos($filters,",".$f.",")<=0){
-                            $num_path++;
-                            $tmp_path = str_replace('./upload/','@upload/',$f);
-                            $tmp_path = str_replace('/','@',$tmp_path);
-
-                            $tmp_name = str_replace($path.'@','',$tmp_path);
-
-
-                            $files[] = ['isfile'=>0,'name'=>$tmp_name,'path'=>$tmp_path];
-                        }
-                    }
-                    elseif(is_file($f)){
-                        if (strpos($f,".html") <=0 && strpos($f,".htm") <=0){
-                            $num_file++;
-                            $fsize = filesize($f);
-                            $sum_size += $fsize;
-                            $fsize = mac_format_size($fsize);
-                            $ftime = filemtime($f);
-                            $tmp_path = mac_convert_encoding($f,"UTF-8","GB2312");
-
-                            $tmp_path = str_replace('./upload/','@upload/',$f);
-                            $tmp_path = str_replace('/','@',$tmp_path);
-
-                            $tmp_name = str_replace($path.'@',"",$tmp_path);
-                            $tmp_path = str_replace('@','/',$tmp_path);
-
-                            $files[] = ['isfile'=>1,'name'=>$tmp_name,'path'=>$tmp_path, 'size'=>$fsize, 'time'=>$ftime];
-                        }
-                    }
-
-                }
-            }
-        }
-        $this->assign('sum_size',mac_format_size($sum_size));
-        $this->assign('num_file',$num_file);
-        $this->assign('num_path',$num_path);
-
-        $this->assign('files',$files);
-
-        $this->assign('title',lang('admin/images/title'));
-        return $this->fetch('admin@images/index');
     }
 
     public function opt()

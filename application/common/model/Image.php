@@ -64,6 +64,7 @@ class Image extends Base {
             if(!$r){
                 return $url;
             }
+            $file_size = filesize($_upload_path.$file_name);
             // 水印
             if ($config['watermark'] == 1) {
                 $this->watermark($_file_path,$config,$flag);
@@ -73,9 +74,19 @@ class Image extends Base {
                 $this->makethumb($_file_path,$config,$flag);
             }
             //上传到远程
-            
             $_file_path = model('Upload')->api($_file_path,$config);
-            
+
+            $tmp = $_file_path;
+            if((substr($tmp,0,7) == "/upload")){
+                $tmp = substr($tmp,1);
+            }
+            if((substr($tmp,0,6) == "upload")){
+                $annex = [];
+                $annex['annex_file'] = $tmp;
+                $annex['annex_type'] = 'image';
+                $annex['annex_size'] = $file_size;
+                model('Annex')->saveData($annex);
+            }
             return $_file_path;
         }
         else{

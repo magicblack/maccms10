@@ -7,7 +7,7 @@
 *內部處理key：開頭 model/、controller/、只在模塊內使用
 */
 return [
-    'lang_ver'=>'1059+',
+    'lang_ver'=>'1063+',
     'hello'  => '歡迎使用',
     'maccms_name'=>'蘋果CMS-v10',
     'maccms_copyright'=>'© MacCMS All Rights Reserved.',
@@ -198,6 +198,7 @@ return [
     'area'=>'地區',
     'lang'=>'語言',
     'sex'=>'性別',
+    'sum'=>'共',
     'opt'=>'操作',
     'opt_content'=>'內容操作',
     'name'=>'名稱',
@@ -1277,25 +1278,13 @@ return [
 
     'admin/system/configsms/title'=>'短信發送配置',
     'admin/system/configsms/tip'=>'提示信息：<br>
-                        請務必按照短信接口服務商的要求做好短信簽名和短信內容的設置。<br>
-                        騰訊雲短信：https://cloud.tencent.com/product/sms<br>
-                        騰訊雲短信模板例子：<br>
-                        尊敬的用戶，您的註冊會員驗證碼為：{1}，請勿泄漏於他人！<br>
-                        驗證碼為：{1}，您正在綁定手機，若非本人操作，請勿泄露。<br>
-                        驗證碼為：{1}，您正在進行密碼重置操作，如非本人操作，請忽略本短信！<br>
-                        阿裏雲短信：https://www.aliyun.com/product/sms<br>
-                        阿裏雲短信模板例子：<br>
-                        尊敬的用戶，您的註冊會員驗證碼為：${code}，請勿泄漏於他人！<br>
-                        驗證碼為：${code}，您正在綁定手機，若非本人操作，請勿泄露。<br>
-                        驗證碼為：${code}，您正在進行密碼重置操作，如非本人操作，請忽略本短信！<br>',
+                        請務必按照短信接口服務商的要求做好短信簽名和短信內容的設置。<br>',
     'admin/system/configsms/type'=>'服務商',
-    'admin/system/configsms/appid_tip'=>'騰訊雲對應AppId，阿裏雲對應KeyId',
-    'admin/system/configsms/appkey_tip'=>'騰訊雲對應AppKey，阿裏雲對應KeySecret',
     'admin/system/configsms/sign'=>'短信簽名',
     'admin/system/configsms/tpl_code_reg'=>'註冊模板編號',
     'admin/system/configsms/tpl_code_tip'=>'模板編號需要在服務商短信控制臺中申請',
     'admin/system/configsms/tpl_code_bind'=>'綁定模板編號',
-    'admin/system/configsms/tpl_code_findpass'=>'註冊模板編號',
+    'admin/system/configsms/tpl_code_findpass'=>'找回密碼模板編號',
     'admin/system/configsms/test_err'=>'發生錯誤，請檢查是否開啟相應擴展庫!',
 
 
@@ -1599,6 +1588,10 @@ return [
     'admin/group/popedom_down'=>'下載頁',
     'admin/group/popedom_trysee'=>'試看',
 
+    'admin/annex/title'=>'附件管理',
+    'admin/annex/check'=>'檢測無效文件',
+    'admin/annex/check_complete'=>'無效文件清理完畢',
+    'admin/annex/info_tip'=>'正在檢測...共%s條，分%s次檢測，每次%s條，當前第%s次',
 
     'admin/images/title'=>'圖片管理',
     'admin/images/sync_complete'=>'同步操作完畢!',
@@ -1797,7 +1790,7 @@ return [
     'admin/upload/test_write_ok'=>'測試寫入成功',
     'admin/upload/test_write_ok'=>'寫入失敗，請檢查臨時文件目錄權限',
     'admin/upload/not_find_extend'=>'未找到第三方擴展上傳類庫',
-    'admin/upload/no_input_file'=>'未找到上傳的文件(原因：表單名可能錯誤，默認表單名“file”)！',
+    'admin/upload/no_input_file'=>'未找到上傳的文件(原因：表單名可能錯誤，默認表單名“file”或“imgdata”)！',
     'admin/upload/forbidden_ext'=>'非系統允許的上傳格式！',
     'admin/upload/upload_success'=>'文件上傳成功！',
     'admin/upload/upload_faild'=>'文件上傳失敗！',

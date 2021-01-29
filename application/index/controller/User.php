@@ -386,83 +386,13 @@ class User extends Base
         if ($GLOBALS['config']['user']['portrait_status'] == 0) {
             return json(['code' => 0, 'msg' => lang('index/portrait_tip1')]);
         }
-        $base64_img = input('post.imgdata');
-        $file = request()->file('file');
-        $upload_image_ext = ['jpeg','jpg','gif','png'];
 
-        $uniq = $GLOBALS['user']['user_id'] % 10;
-        // 上传附件路径
-        $_upload_path = ROOT_PATH . 'upload' . '/user/' . $uniq . '/';
-        // 附件访问路径
-        $_save_path = 'upload' . '/user/' . $uniq . '/';
-        $_save_name = $GLOBALS['user']['user_id'] . '.jpg';
-
-        if (!file_exists($_save_path)) {
-            mac_mkdirss($_save_path);
-        }
-
-        if(!empty($base64_img)){
-            if(preg_match('/^(data:\s*image\/(\w+);base64,)/', $base64_img, $result)){
-                $type = $result[2];
-                if(in_array($type, $upload_image_ext)){
-                    if(!file_put_contents($_save_path.$_save_name, base64_decode(str_replace($result[1], '', $base64_img)))){
-                        return json(['code' => 0, 'msg' => lang('index/upload_err')]);
-                    }
-                }
-                else {
-                    return json(['code' => 0, 'msg' => lang('index/portrait_ext')]);
-                }
-            }
-            else{
-                return json(['code' => 0, 'msg' => lang('index/portrait_no_upload')]);
-            }
-        }
-        elseif(!empty($file)) {
-            if ($file->checkExt($upload_image_ext)) {
-                $type = 'image';
-            }
-            else {
-                return json(['code' => 0, 'msg' => lang('index/portrait_ext')]);
-            }
-            $upfile = $file->move($_upload_path, $_save_name);
-            if (!is_file($_upload_path . $_save_name)) {
-                return json(['code' => 0, 'msg' => lang('index/upload_err')]);
-            }
-
-        }
-        else{
-            return json(['code' => 0, 'msg' => lang('index/portrait_no_upload')]);
-        }
-
-        $file = $_save_path . str_replace('\\', '/', $_save_name);
-        $config = [
-            'thumb_type' => 6,
-            'thumb_size' => $GLOBALS['config']['user']['portrait_size'],
-        ];
-
-        $new_thumb = $GLOBALS['user']['user_id'] . '.jpg';
-        $new_file = $_save_path . $new_thumb;
-        try {
-
-            $image = \think\Image::open('./' . $file);
-            $t_size = explode('x', strtolower($GLOBALS['config']['user']['portrait_size']));
-            if (!isset($t_size[1])) {
-                $t_size[1] = $t_size[0];
-            }
-            $res = $image->thumb($t_size[0], $t_size[1], 6)->save('./' . $new_file);
-
-            $update = [];
-            $update['user_portrait'] = $new_file;
-            $where = [];
-            $where['user_id'] = $GLOBALS['user']['user_id'];
-            $res = model('User')->where($where)->update($update);
-            if ($res === false) {
-                return json(['code' => 0, 'msg' => lang('index/portrait_err')]);
-            }
-            return json(['code' => 1, 'msg' => 'ok', 'file' =>  '' . MAC_PATH . $new_file . '?' . mt_rand(1, 9999)]);
-        } catch (\Exception $e) {
-            return json(['code' => 0, 'msg' => lang('index/portrait_thumb_err')]);
-        }
+        $param=[];
+        $param['input'] = 'file';
+        $param['flag'] = 'user';
+        $param['user_id'] = $GLOBALS['user']['user_id'];
+        $res = model('Upload')->upload($param);
+        return json($res);
     }
 
     public function findpass()

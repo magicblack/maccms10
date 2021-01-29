@@ -459,6 +459,7 @@ class System extends Base
             }
             unset($config['__token__']);
 
+
             $config_new['sms'] = $config['sms'];
 
             $config_old = config('maccms');
@@ -470,11 +471,11 @@ class System extends Base
             }
             return $this->success(lang('save_ok'));
         }
+        $this->assign('config', config('maccms'));
 
         $extends = mac_extends_list('sms');
         $this->assign('extends',$extends);
 
-        $this->assign('config', config('maccms'));
         $this->assign('title', lang('admin/system/configsms/title'));
         return $this->fetch('admin@system/configsms');
     }

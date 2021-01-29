@@ -3,6 +3,7 @@
 
     <div class="my-btn-box lh30" >
         <div class="layui-btn-group fl">
+            <a href="{:url('data')}" class="layui-btn layui-btn-primary "><i class="layui-icon">&#xe620;</i>{:lang('return')}</a>
             <a data-href="{:url('del')}" class="layui-btn layui-btn-primary j-page-btns confirm"><i class="layui-icon">&#xe640;</i>{:lang('del')}</a>
         </div>
         <div class="page-filter fr" >
@@ -21,7 +22,7 @@
         </thead>
 
         {if condition="$ischild eq 1"}
-        <tr><td colspan="3"><a href="{:url('images/index',['path'=>$uppath])}">...{:lang('return_parent_dir')}</a></td></tr>
+        <tr><td colspan="3"><a href="{:url('annex/file',['path'=>$uppath])}">...{:lang('return_parent_dir')}</a></td></tr>
         {/if}
 
             {volist name="files" id="vo"}
@@ -31,7 +32,7 @@
                 <td>{$vo.size}</td>
                 <td>{$vo.time|mac_day=color}</td>
                 {else}
-                <th><a href="{:url('images/index',['path'=>$vo.path])}">{$vo.name}</a></th>
+                <th><a href="{:url('annex/file',['path'=>$vo.path])}">{$vo.name}</a></th>
                 <td></td>
                 <td></td>
                 {/if}
