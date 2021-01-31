@@ -289,6 +289,35 @@
                             <button type="button" class="layui-btn layui-upload" lay-data="{data:{thumb:0,thumb_class:'upload-thumb'}}" id="upload3">{:lang('upload_pic')}</button>
                         </div>
                     </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label ">{:lang('pic_screenshot')}：</label>
+                        <div class="layui-input-inline w400 ">
+                            <div class="layui-btn-group">
+                                <button type="button" class="layui-btn screenshot"><i class="layui-icon layui-icon-upload"></i> {:lang('add')}</button>
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <div class="layui-input-block w900">
+                            <fieldset class="layui-elem-field layui-field-title" style="margin-top: 30px;">
+                                <legend>{:lang('screenshot_preview')}</legend>
+                            </fieldset>
+                            <div class="screenshot_list">
+                                {notempty name="$info.vod_pic_screenshot"}
+                                {volist name=":explode('$$$',$info.vod_pic_screenshot);" id="vo"}
+                                <div>
+                                    <input type="hidden" name="vod_pic_screenshot[]" value="{$vo}">
+                                    <a href="javascript:;" class="del_screenshot">{:lang('del')}</a>
+                                    <img src="{:mac_url_img($vo)}" alt="" class="layui-upload-img screenshot-img">
+                                </div>
+                                {/volist}
+                                {/notempty}
+                            </div>
+                        </div>
+                    </div>
+
                 <div class="layui-form-item">
                         <label class="layui-form-label">{:lang('blurb')}：</label>
                     <div class="layui-input-block">
@@ -317,7 +346,7 @@
                         {/volist}
                     </div>
                     <div class="layui-form-item">
-                        <label class=""><button class="layui-btn radius j-player-add" type="button">添加一组播放</button></label>
+                        <label class=""><button class="layui-btn radius j-player-add" type="button">{:lang('admin/vod/add_group_play')}</button></label>
                         <div class="layui-input-block">
 
                         </div>
@@ -329,7 +358,7 @@
                     <div id="downer_list" class="contents">
                         {volist name="$vod_down_list" id="vo"}
                         <div class="layui-form-item" data-i="{$key}">
-                            <label class="layui-form-label">下载{$key}：</label>
+                            <label class="layui-form-label">{:lang('down')}{$key}：</label>
                             <div class="layui-input-inline w150"><select name="vod_down_from[]"><option value="no">{:lang('admin/vod/select_downer')}.</option>{volist name="downer_list" id="vo1"}{if condition="$vo1.status eq '1'"}<option value="{$vo1.from}" {if condition="$vo1.from eq $vo.from"} selected {/if}>{$vo1.show}</option>{/if}{/volist}</select></div>
                             <div class="layui-input-inline w150"><select name="vod_down_server[]"><option value="no">{:lang('admin/vod/select_server')}.</option>{volist name="server_list" id="vo2"}{if condition="$vo2.status eq '1'"}<option value="{$vo2.from}" {if condition="$vo2.from eq $vo.server"} selected {/if}>{$vo2.show}</option>{/if}{/volist}</select></div>
                             <div class="layui-input-inline w150"><input type="text" name="vod_down_note[]" class="layui-input" value="{$vo.note}" placeholder="{:lang('remarks')}"></div>
@@ -340,7 +369,7 @@
                         {/volist}
                     </div>
                     <div class="layui-form-item">
-                        <label class=""><button class="layui-btn radius j-downer-add" type="button">添加一组下载</button></label>
+                        <label class=""><button class="layui-btn radius j-downer-add" type="button">{:lang('admin/vod/add_group_down')}</button></label>
                         <div class="layui-input-block">
 
                         </div>
@@ -529,11 +558,25 @@
             }
         });
 
-
         form.on('select(type_id)', function(data){
             getExtend(data.value);
         });
 
+        //多图片上传
+        upload.render({
+            elem: '.screenshot'
+            ,url: "{:url('upload/upload')}?flag=vod_screenshot"
+            ,multiple: true
+            ,before: function(obj){
+                obj.preview(function(index, file, result){
+
+                });
+            }
+            ,done: function(res){
+                var val = res.data.file;
+                $('.screenshot_list').append('<div><input type="hidden" name="vod_pic_screenshot[]" value="'+val+'"><a href="javascript:;" class="del_screenshot">{:lang('del')}</a><img src="{php}echo MAC_PATH;{/php}'+ val +'" alt="" class="layui-upload-img screenshot-img"></div>')
+            }
+        });
 
         upload.render({
             elem: '.layui-upload'
@@ -582,7 +625,6 @@
         });
 
         function initUpload(flag) {
-
             layui.each($('#'+ flag +'er_list').find('.j-editor-upload').last(), function(index, elem){
                 upload.render({
                     elem: elem
@@ -607,11 +649,7 @@
                     }
                 });
             });
-
-
         }
-
-
 
         $('.upload-input').hover(function (e){
             var e = window.event || e;
@@ -625,7 +663,6 @@
         },function (e){
             $(".showpic").css("display","none");
         });
-
 
         $("#btn_rnd").click(function(){
             $("#vod_hits").val( rndNum(5000,9999) );
@@ -854,7 +891,11 @@
             var tpl='<div class="layui-form-item" data-i="'+plot_arr_len+'"><label class="layui-form-label">{:lang('admin/vod/plot')}'+(plot_arr_len)+'：</label><div class="layui-input-inline w500"><input type="text" name="vod_plot_name[]" class="layui-input" placeholder="{:lang('admin/vod/plot_name')}"></div><div class="layui-input-inline w400 p10"><a href="javascript:void(0)" class="j-editor-clear">{:lang('clear')}</a>&nbsp;<a href="javascript:void(0)" class="j-editor-remove">{:lang('del')}</a>&nbsp;<a href="javascript:void(0)" class="j-editor-up">{:lang('admin/vod/move_up')}</a>&nbsp;<a href="javascript:void(0)" class="j-editor-down">{:lang('admin/vod/move_down')}</a>&nbsp;</div><div class="p10 m20"></div><div class="layui-input-block"><textarea id="vod_content'+(plot_arr_len)+'" name="vod_plot_detail[]" class="layui-textarea" style="width:99%;height:250px"></textarea></div></div>';
             $("#plot_list").append(tpl);
         });
-
+        $(document).on('click', '.del_screenshot', function() {
+            var src=$(this).parent().find('input').val();
+            $(this).parent().remove();
+            $.get("{:url('annex/del')}", {ids:src}, function(res){});
+        });
         if(players_arr_len==0 && downers_arr_len==0) {
             $('.j-player-add').click();
         }

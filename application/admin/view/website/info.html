@@ -146,15 +146,42 @@
                         </div>
                     </div>
 
-                <div class="layui-form-item">
-                    <label class="layui-form-label">{:lang('pic')}：</label>
-                    <div class="layui-input-inline w500 upload">
-                        <input type="text" class="layui-input upload-input" style="max-width:100%;" value="{$info.website_pic}" placeholder="" id="website_pic" name="website_pic">
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:lang('pic')}：</label>
+                        <div class="layui-input-inline w500 upload">
+                            <input type="text" class="layui-input upload-input" style="max-width:100%;" value="{$info.website_pic}" placeholder="" id="website_pic" name="website_pic">
+                        </div>
+                        <div class="layui-input-inline ">
+                            <button type="button" class="layui-btn layui-upload" lay-data="{data:{thumb:1,thumb_class:'upload-thumb'}}" id="upload1">{:lang('upload_pic')}</button>
+                        </div>
                     </div>
-                    <div class="layui-input-inline ">
-                        <button type="button" class="layui-btn layui-upload" lay-data="{data:{thumb:1,thumb_class:'upload-thumb'}}" id="upload1">{:lang('upload_pic')}</button>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label ">{:lang('pic_screenshot')}：</label>
+                        <div class="layui-input-inline w400 ">
+                            <div class="layui-btn-group">
+                                <button type="button" class="layui-btn screenshot"><i class="layui-icon layui-icon-upload"></i> {:lang('add')}</button>
+
+                            </div>
+                        </div>
                     </div>
-                </div>
+                    <div class="layui-form-item">
+                        <div class="layui-input-block w900">
+                            <fieldset class="layui-elem-field layui-field-title" style="margin-top: 30px;">
+                                <legend>{:lang('screenshot_preview')}</legend>
+                            </fieldset>
+                            <div class="screenshot_list">
+                                {notempty name="$info.website_pic_screenshot"}
+                                {volist name=":explode('$$$',$info.website_pic_screenshot);" id="vo"}
+                                <div>
+                                    <input type="hidden" name="website_pic_screenshot[]" value="{$vo}">
+                                    <a href="javascript:;" class="del_screenshot">{:lang('del')}</a>
+                                    <img src="{:mac_url_img($vo)}" alt="" class="layui-upload-img screenshot-img">
+                                </div>
+                                {/volist}
+                                {/notempty}
+                            </div>
+                        </div>
+                    </div>
 
 
                     <div class="layui-form-item">
@@ -310,6 +337,21 @@
             getExtend(data.value);
         });
 
+        //多图片上传
+        upload.render({
+            elem: '.screenshot'
+            ,url: "{:url('upload/upload')}?flag=website_screenshot"
+            ,multiple: true
+            ,before: function(obj){
+                obj.preview(function(index, file, result){
+
+                });
+            }
+            ,done: function(res){
+                var val = res.data.file;
+                $('.screenshot_list').append('<div><input type="hidden" name="website_pic_screenshot[]" value="'+val+'"><a href="javascript:;" class="del_screenshot">{:lang('del')}</a><img src="{php}echo MAC_PATH;{/php}'+ val +'" alt="" class="layui-upload-img screenshot-img"></div>')
+            }
+        });
         upload.render({
             elem: '.layui-upload'
             ,url: "{:url('upload/upload')}?flag=website"
@@ -348,7 +390,6 @@
             $(".showpic").css("display","none");
         });
 
-
         $("#btn_rnd").click(function(){
             $("#website_hits").val( rndNum(5000,9999) );
             $("#website_hits_month").val( rndNum(1000,4999) );
@@ -360,7 +401,11 @@
             $("#website_score_all").val( rndNum(1000) );
             $("#website_score_num").val( rndNum(100) );
         });
-
+        $(document).on('click', '.del_screenshot', function() {
+            var src=$(this).parent().find('input').val();
+            $(this).parent().remove();
+            $.get("{:url('annex/del')}", {ids:src}, function(res){});
+        });
         var ue = editor_getEditor('website_content');
     });
 

@@ -7,7 +7,7 @@
 *內部處理key：開頭 model/、controller/、只在模塊內使用
 */
 return [
-    'lang_ver'=>'1063+',
+    'lang_ver'=>'1064+',
     'hello'  => '歡迎使用',
     'maccms_name'=>'蘋果CMS-v10',
     'maccms_copyright'=>'© MacCMS All Rights Reserved.',
@@ -85,7 +85,7 @@ return [
     'just'=>'剛剛',
     'day_after_tomorrow'=>'後天',
     'tomorrow'=>'明天',
-    'year'=>'年',
+    'year'=>'年份',
     'month'=>'月',
     'day'=>'日',
     'yes'=>'是',
@@ -252,6 +252,7 @@ return [
     'pic'=>'圖片',
     'pic_thumb'=>'縮略圖',
     'pic_slide'=>'海報圖',
+    'pic_screenshot'=>'截圖',
     'upload'=>'上傳',
     'upload_pic'=>'上傳圖片',
     'blurb'=>'簡介',
@@ -480,6 +481,8 @@ return [
     'merge'=>'合並',
     'douban_id'=>'豆瓣ID',
     'rel_name'=>'關聯數據名稱',
+    'preview'=>'預覽',
+    'screenshot_preview'=>'截圖預覽',
 
     'menu/index'=>'首頁',
     'menu/welcome'=>'歡迎頁面',
@@ -1440,7 +1443,6 @@ return [
     'admin/vod/version'=>'資源版本',
     'admin/vod/state'=>'資源類別',
     'admin/vod/isend'=>'完結',
-
     'admin/vod/tpl'=>'內容頁模板',
     'admin/vod/tpl_play'=>'播放頁模板',
     'admin/vod/tpl_down'=>'下載頁模板',
@@ -1453,8 +1455,8 @@ return [
     'admin/vod/select_plot'=>'選擇分集劇情',
     'admin/vod/copyright'=>'版權',
     'admin/vod/serialize'=>'連載',
-
-
+    'admin/vod/add_group_play'=>'添加壹組播放',
+    'admin/vod/add_group_down'=>'添加壹組下載',
     'admin/batch_tip'=>'共%s條數據需要處理，每頁%s條，共%s頁，正在處理第%s頁',
 
 
@@ -1532,6 +1534,7 @@ return [
     'admin/cj/next_page_rule'=>'下壹頁規則',
     'admin/cj/next_page_tip'=>'請填寫下壹頁超鏈接中間的代碼。如：<a href="http://www.xxx.com/page_1.html">下壹頁</a>，他的“下壹頁規則”為“下壹頁”。',
     'admin/cj/add_group'=>'添加壹組',
+
     'admin/cj/content_page'=>'內容分頁',
     'admin/cj/no_page'=>'不分頁',
     'admin/cj/original_page'=>'按原文分頁',
@@ -1591,7 +1594,18 @@ return [
     'admin/annex/title'=>'附件管理',
     'admin/annex/check'=>'檢測無效文件',
     'admin/annex/check_complete'=>'無效文件清理完畢',
-    'admin/annex/info_tip'=>'正在檢測...共%s條，分%s次檢測，每次%s條，當前第%s次',
+    'admin/annex/info_tip'=>'共%s數據，分%s次檢測，每次%s條，當前第%s次',
+
+    'admin/annex/init_tip'=>'<strong>附件數據初始化1.0版本</strong><br>
+                            1，將對分類表、視頻、文章、網址、演員、角色、會員等表進行檢索。<br>
+                            2，將包含本地圖片地址內容插入到附件表中。<br>
+                            3，建議升級的版本執行壹次。',
+    'admin/annex/init_data'=>'數據初始化',
+    'admin/annex/dir_model'=>'文件夾模式',
+    'admin/annex/check_ok'=>'附件數據初始化結束',
+    'admin/annex/check_tip1'=>'正在檢測%s表...共%s條，分%s次檢測，每次%s條，當前第%s次',
+    'admin/annex/check_jump'=>'表%s檢測完畢，稍後繼續...',
+
 
     'admin/images/title'=>'圖片管理',
     'admin/images/sync_complete'=>'同步操作完畢!',

@@ -112,7 +112,7 @@
                     <div class="layui-form-item">
                         <label class="layui-form-label">{:lang('rel_vod')}：</label>
                         <div class="layui-input-inline w500">
-                            <input type="text" class="layui-input" value="{$info.art_rel_vod}" placeholder="如“变形金刚”1、2、3部ID分别为11,12,13或将每部都填“变形金刚”" name="art_rel_vod">
+                            <input type="text" class="layui-input" value="{$info.art_rel_vod}" placeholder="{:lang('admin/vod/rel_vod_tip')}" name="art_rel_vod">
                         </div>
                         <div class="layui-input-inline ">
                             <a class="layui-btn j-iframe" data-href="{:url('vod/data')}?select=1&input=art_rel_vod" href="javascript:;" title="{:lang('search_data')}">{:lang('search_data')}</a>
@@ -121,7 +121,7 @@
                     <div class="layui-form-item">
                         <label class="layui-form-label">{:lang('rel_art')}：</label>
                         <div class="layui-input-inline w500">
-                            <input type="text" class="layui-input" value="{$info.art_rel_art}" placeholder="如“变形金刚资讯”1、2、3部ID分别为11,12,13或将每部都填“变形金刚资讯”" name="art_rel_art">
+                            <input type="text" class="layui-input" value="{$info.art_rel_art}" placeholder="{:lang('admin/vod/rel_art_tip')}" name="art_rel_art">
                         </div>
                         <div class="layui-input-inline ">
                             <a class="layui-btn j-iframe" data-href="{:url('art/data')}?select=1&input=art_rel_art" href="javascript:;" title="{:lang('search_data')}">{:lang('search_data')}</a>
@@ -139,7 +139,7 @@
                     </div>
 
                 <div class="layui-form-item">
-                    <label class="layui-form-label">图片：</label>
+                    <label class="layui-form-label">{:lang('pic')}：</label>
                     <div class="layui-input-inline w500 upload">
                         <input type="text" class="layui-input upload-input" style="max-width:100%;" value="{$info.art_pic}" placeholder="" id="art_pic" name="art_pic">
                     </div>
@@ -165,7 +165,33 @@
                             <button type="button" class="layui-btn layui-upload" lay-data="{data:{thumb:0,thumb_class:'upload-thumb'}}" id="upload3">{:lang('upload_pic')}</button>
                         </div>
                     </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label ">{:lang('pic_screenshot')}：</label>
+                        <div class="layui-input-inline w400 ">
+                            <div class="layui-btn-group">
+                                <button type="button" class="layui-btn screenshot"><i class="layui-icon layui-icon-upload"></i> {:lang('add')}</button>
 
+                            </div>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <div class="layui-input-block w900">
+                            <fieldset class="layui-elem-field layui-field-title" style="margin-top: 30px;">
+                                <legend>{:lang('screenshot_preview')}</legend>
+                            </fieldset>
+                            <div class="screenshot_list">
+                                {notempty name="$info.art_pic_screenshot"}
+                                {volist name=":explode('$$$',$info.art_pic_screenshot);" id="vo"}
+                                <div>
+                                    <input type="hidden" name="art_pic_screenshot[]" value="{$vo}">
+                                    <a href="javascript:;" class="del_screenshot">{:lang('del')}</a>
+                                    <img src="{:mac_url_img($vo)}" alt="" class="layui-upload-img screenshot-img">
+                                </div>
+                                {/volist}
+                                {/notempty}
+                            </div>
+                        </div>
+                    </div>
                 <div class="layui-form-item">
                         <label class="layui-form-label">{:lang('blurb')}：</label>
                     <div class="layui-input-block">
@@ -350,6 +376,22 @@
             getExtend(data.value);
         });
 
+        //多图片上传
+        upload.render({
+            elem: '.screenshot'
+            ,url: "{:url('upload/upload')}?flag=art_screenshot"
+            ,multiple: true
+            ,before: function(obj){
+                obj.preview(function(index, file, result){
+
+                });
+            }
+            ,done: function(res){
+                var val = res.data.file;
+                $('.screenshot_list').append('<div><input type="hidden" name="art_pic_screenshot[]" value="'+val+'"><a href="javascript:;" class="del_screenshot">{:lang('del')}</a><img src="{php}echo MAC_PATH;{/php}'+ val +'" alt="" class="layui-upload-img screenshot-img"></div>')
+            }
+        });
+
         upload.render({
             elem: '.layui-upload'
             ,url: "{:url('upload/upload')}?flag=art"
@@ -449,6 +491,11 @@
 
         });
 
+        $(document).on('click', '.del_screenshot', function() {
+            var src=$(this).parent().find('input').val();
+            $(this).parent().remove();
+            $.get("{:url('annex/del')}", {ids:src}, function(res){});
+        });
         if(content_arr_len==0){
             $('.j-editor-add').click();
         }

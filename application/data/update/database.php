@@ -1,4 +1,17 @@
 <?php
+/*2020.1000.1064*/
+if(empty($col_list[$pre.'website']['website_pic_screenshot'])){
+    $sql .= "ALTER TABLE `mac_website` ADD `website_pic_screenshot`  text  DEFAULT  '';";
+    $sql .="\r";
+}
+if(empty($col_list[$pre.'art']['art_pic_screenshot'])){
+    $sql .= "ALTER TABLE `mac_art` ADD `art_pic_screenshot`  text DEFAULT  '';";
+    $sql .="\r";
+}
+if(empty($col_list[$pre.'vod']['vod_pic_screenshot'])){
+    $sql .= "ALTER TABLE `mac_vod` ADD `vod_pic_screenshot`  text  DEFAULT  '';";
+    $sql .="\r";
+}
 /*2020.1000.1063*/
 if(empty($col_list[$pre.'annex'])){
     $sql .= "CREATE TABLE `mac_annex` (  `annex_id` int(10) unsigned NOT NULL AUTO_INCREMENT,  `annex_time` int(10) unsigned NOT NULL DEFAULT '0',  `annex_file` varchar(255) NOT NULL DEFAULT '',  `annex_size` int(10) unsigned NOT NULL DEFAULT '0',  `annex_type` varchar(8) NOT NULL DEFAULT '',  PRIMARY KEY (`annex_id`),  KEY `annex_time` (`annex_time`),  KEY `annex_file` (`annex_file`),  KEY `annex_type` (`annex_type`)) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 ;";

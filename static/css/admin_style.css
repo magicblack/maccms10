@@ -333,3 +333,17 @@ body{background-color:#fff; font-family:"微软雅黑"; }
 .topLevelMenus-winner {float: left;z-index:1100;position: absolute;left: -20px;top: 60px;width: 150px;}
 .topLevelMenus-winner .layui-nav-item {background-color: #23262e; }
 .topLevelMenus-winner .layui-nav-item.layui-this {background-color: rgba(0,0,0,0.5); }
+
+.screenshot_list div{float: left;position:relative;}
+.screenshot_list div .del_screenshot{
+    position: absolute;
+    background-color: aliceblue;
+    padding: 4px;
+    top: 5px;
+    right: 15px;
+}
+.screenshot_list div img {
+    width: 160px;
+    height: 92px;
+    margin: 0 10px 10px 0;
+}

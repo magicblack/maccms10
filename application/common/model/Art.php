@@ -459,11 +459,12 @@ class Art extends Base {
         if(empty($data['art_en'])){
             $data['art_en'] = Pinyin::get($data['art_name']);
         }
-
         if(empty($data['art_letter'])){
             $data['art_letter'] = strtoupper(substr($data['art_en'],0,1));
         }
-
+        if(!empty($data['art_pic_screenshot'])){
+            $data['art_pic_screenshot'] = join('$$$',$data['art_pic_screenshot']);
+        }
         if(!empty($data['art_content'])) {
             $data['art_content'] = join('$$$', $data['art_content']);
             $data['art_title'] = join('$$$', $data['art_title']);

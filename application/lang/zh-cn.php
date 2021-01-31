@@ -7,7 +7,7 @@
 *内部处理key：开头 model/、controller/、只在模块内使用
 */
 return [
-    'lang_ver'=>'1063+',
+    'lang_ver'=>'1064+',
     'hello'  => '欢迎使用',
     'maccms_name'=>'苹果CMS-v10',
     'maccms_copyright'=>'© MacCMS All Rights Reserved.',
@@ -85,7 +85,7 @@ return [
     'just'=>'刚刚',
     'day_after_tomorrow'=>'后天',
     'tomorrow'=>'明天',
-    'year'=>'年',
+    'year'=>'年份',
     'month'=>'月',
     'day'=>'日',
     'yes'=>'是',
@@ -252,6 +252,7 @@ return [
     'pic'=>'图片',
     'pic_thumb'=>'缩略图',
     'pic_slide'=>'海报图',
+    'pic_screenshot'=>'截图',
     'upload'=>'上传',
     'upload_pic'=>'上传图片',
     'blurb'=>'简介',
@@ -480,6 +481,8 @@ return [
     'merge'=>'合并',
     'douban_id'=>'豆瓣ID',
     'rel_name'=>'关联数据名称',
+    'preview'=>'预览',
+    'screenshot_preview'=>'截图预览',
 
     'menu/index'=>'首页',
     'menu/welcome'=>'欢迎页面',
@@ -1440,7 +1443,6 @@ return [
     'admin/vod/version'=>'资源版本',
     'admin/vod/state'=>'资源类别',
     'admin/vod/isend'=>'完结',
-
     'admin/vod/tpl'=>'内容页模板',
     'admin/vod/tpl_play'=>'播放页模板',
     'admin/vod/tpl_down'=>'下载页模板',
@@ -1453,8 +1455,8 @@ return [
     'admin/vod/select_plot'=>'选择分集剧情',
     'admin/vod/copyright'=>'版权',
     'admin/vod/serialize'=>'连载',
-
-
+    'admin/vod/add_group_play'=>'添加一组播放',
+    'admin/vod/add_group_down'=>'添加一组下载',
     'admin/batch_tip'=>'共%s条数据需要处理，每页%s条，共%s页，正在处理第%s页',
 
 
@@ -1532,6 +1534,7 @@ return [
     'admin/cj/next_page_rule'=>'下一页规则',
     'admin/cj/next_page_tip'=>'请填写下一页超链接中间的代码。如：<a href="http://www.xxx.com/page_1.html">下一页</a>，他的“下一页规则”为“下一页”。',
     'admin/cj/add_group'=>'添加一组',
+
     'admin/cj/content_page'=>'内容分页',
     'admin/cj/no_page'=>'不分页',
     'admin/cj/original_page'=>'按原文分页',
@@ -1591,10 +1594,12 @@ return [
     'admin/annex/title'=>'附件管理',
     'admin/annex/check'=>'检测无效文件',
     'admin/annex/check_complete'=>'无效文件清理完毕',
+    'admin/annex/info_tip'=>'共%s数据，分%s次检测，每次%s条，当前第%s次',
 
     'admin/annex/init_tip'=>'<strong>附件数据初始化1.0版本</strong><br>
-                            1，将对分类表，视频表，文章表，会员表等表结构进行检索。<br>
-                            2，将包含本地图片地址内容插入到附件表中。',
+                            1，将对分类表、视频、文章、网址、演员、角色、会员等表进行检索。<br>
+                            2，将包含本地图片地址内容插入到附件表中。<br>
+                            3，建议升级的版本执行一次。',
     'admin/annex/init_data'=>'数据初始化',
     'admin/annex/dir_model'=>'文件夹模式',
     'admin/annex/check_ok'=>'附件数据初始化结束',

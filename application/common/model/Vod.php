@@ -567,7 +567,9 @@ class Vod extends Base {
         if(empty($data['vod_down_url'])){
             $data['vod_down_url'] = '';
         }
-
+        if(!empty($data['vod_pic_screenshot'])){
+            $data['vod_pic_screenshot'] = join('$$$',$data['vod_pic_screenshot']);
+        }
         if(!empty($data['vod_play_from'])) {
             $data['vod_play_from'] = join('$$$', $data['vod_play_from']);
             $data['vod_play_server'] = join('$$$', $data['vod_play_server']);

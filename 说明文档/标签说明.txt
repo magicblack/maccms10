@@ -421,6 +421,7 @@ plot是否包含分集剧情 0,1
 {$obj.vod_pic} 图片
 {$obj.vod_pic_thumb} 缩略图
 {$obj.vod_pic_slide} 幻灯图
+{$obj.vod_pic_screenshot}截图多个图片用$$$连接
 {$obj.vod_actor} 主演
 {$obj.vod_director} 导演
 {$obj.vod_writer}编剧
@@ -486,11 +487,20 @@ plot是否包含分集剧情 0,1
 {$obj.vod_plot_name} 分集剧情名称
 {$obj.vod_plot_detail} 分集剧情详情
 
+
 {:mac_url_vod_detail($obj)}  视频详情页链接
 {:mac_url_vod_play($obj,['sid'=>1,'nid'=>1])}   视频播放页链接
 {:mac_url_vod_play($obj,'first')}   视频播放页第一条链接
 {:mac_url_vod_down($obj,['sid'=>1,'nid'=>1])}   视频下载页链接
 {:mac_url_vod_down($obj,'first')}   视频下载页第一条链接
+
+
+多个截图获取调用例子
+{notempty name="$obj.vod_pic_screenshot"}
+{volist name=":explode('$$$',$obj.vod_pic_screenshot);" id="vo2"}
+    <img src="{:mac_url_img($vo2)}" >
+{/volist}
+{/notempty}
 
 =======视频播放地址和下载地址标签=======
 
@@ -551,7 +561,6 @@ plot是否包含分集剧情 0,1
 {$vo.note} 备注
 {$vo.url}  url地址
 {$vo.url_count} 集数
-
 
 
 
@@ -666,6 +675,7 @@ cachetime自定义缓存时间单位秒
 {$obj.art_pic} 主图
 {$obj.art_pic_thumb} 缩略图
 {$obj.art_pic_slide} 幻灯图
+{$obj.art_pic_screenshot}截图多个图片用$$$连接
 {$obj.art_blurb} 简介
 {$obj.art_remarks} 备注
 {$obj.art_jumpurl} 跳转url
@@ -1024,6 +1034,7 @@ cachetime自定义缓存时间单位秒
 {$obj.website_tag} tags
 {$obj.website_class} 扩展分类
 {$obj.website_pic} 截图
+{$obj.website_pic_screenshot}截图多个图片用$$$连接
 {$obj.website_logo} logo
 {$obj.website_sort} 排序
 {$obj.website_level} 推荐值

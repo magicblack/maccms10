@@ -465,11 +465,12 @@ class Website extends Base {
         if(empty($data['website_en'])){
             $data['website_en'] = Pinyin::get($data['website_name']);
         }
-
         if(empty($data['website_letter'])){
             $data['website_letter'] = strtoupper(substr($data['website_en'],0,1));
         }
-
+        if(!empty($data['website_pic_screenshot'])){
+            $data['website_pic_screenshot'] = join('$$$',$data['website_pic_screenshot']);
+        }
         if($data['uptime']==1){
             $data['website_time'] = time();
         }
