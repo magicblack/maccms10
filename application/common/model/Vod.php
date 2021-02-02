@@ -501,6 +501,9 @@ class Vod extends Base {
             if (!empty($info['vod_plot_name'])) {
                 $info['vod_plot_list'] = mac_plot_list($info['vod_plot_name'], $info['vod_plot_detail']);
             }
+            if(!empty($info['vod_pic_screenshot'])){
+                $info['vod_pic_screenshot_list'] = mac_screenshot_list($info['vod_pic_screenshot']);
+            }
 
             //分类
             if (!empty($info['type_id'])) {
@@ -568,7 +571,7 @@ class Vod extends Base {
             $data['vod_down_url'] = '';
         }
         if(!empty($data['vod_pic_screenshot'])){
-            $data['vod_pic_screenshot'] = join('$$$',$data['vod_pic_screenshot']);
+            $data['vod_pic_screenshot'] = str_replace( array(chr(10),chr(13)), array('','#'),$data['vod_pic_screenshot']);
         }
         if(!empty($data['vod_play_from'])) {
             $data['vod_play_from'] = join('$$$', $data['vod_play_from']);

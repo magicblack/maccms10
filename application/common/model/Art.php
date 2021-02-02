@@ -418,6 +418,9 @@ class Art extends Base {
                 $info['art_page_list'] = mac_art_list($info['art_title'], $info['art_note'], $info['art_content']);
                 $info['art_page_total'] = count($info['art_page_list']);
             }
+            if(!empty($info['art_pic_screenshot'])){
+                $info['art_pic_screenshot_list'] = mac_screenshot_list($info['art_pic_screenshot']);
+            }
             //分类
             if (!empty($info['type_id'])) {
                 $type_list = model('Type')->getCache('type_list');
@@ -463,7 +466,7 @@ class Art extends Base {
             $data['art_letter'] = strtoupper(substr($data['art_en'],0,1));
         }
         if(!empty($data['art_pic_screenshot'])){
-            $data['art_pic_screenshot'] = join('$$$',$data['art_pic_screenshot']);
+            $data['art_pic_screenshot'] = str_replace( array(chr(10),chr(13)), array('','#'),$data['art_pic_screenshot']);
         }
         if(!empty($data['art_content'])) {
             $data['art_content'] = join('$$$', $data['art_content']);

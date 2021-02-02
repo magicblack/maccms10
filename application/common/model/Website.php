@@ -431,6 +431,9 @@ class Website extends Base {
                 return ['code' => 1002, 'msg' => lang('obtain_err')];
             }
             $info = $info->toArray();
+            if(!empty($info['website_pic_screenshot'])){
+                $info['website_pic_screenshot_list'] = mac_screenshot_list($info['website_pic_screenshot']);
+            }
             //分类
             if (!empty($info['type_id'])) {
                 $type_list = model('Type')->getCache('type_list');
@@ -469,7 +472,7 @@ class Website extends Base {
             $data['website_letter'] = strtoupper(substr($data['website_en'],0,1));
         }
         if(!empty($data['website_pic_screenshot'])){
-            $data['website_pic_screenshot'] = join('$$$',$data['website_pic_screenshot']);
+            $data['website_pic_screenshot'] = str_replace( array(chr(10),chr(13)), array('','#'),$data['website_pic_screenshot']);
         }
         if($data['uptime']==1){
             $data['website_time'] = time();

@@ -517,3 +517,12 @@ function getDataTime(ts,ty) {
     }
     return r;
 }
+
+function mac_url_img(url)
+{
+    url = url.replace('mac:','http:');
+    if (url.indexOf("http") == -1 || url.indexOf("//") == -1){
+        url = ROOT_PATH+"/"+url;
+    }
+    return url;
+}
