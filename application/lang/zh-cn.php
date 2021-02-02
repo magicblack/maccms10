@@ -1277,7 +1277,10 @@ return [
     'admin/system/configupload/mode_remote'=>'远程访问',
     'admin/system/configupload/remoteurl'=>'图片远程URL',
     'admin/system/configupload/remoteurl_tip'=>'本地图片如存在远程，可使用此功',
-
+    'admin/system/configupload/img_key'=>'反盗链标识',
+    'admin/system/configupload/img_key_tip'=>'需要处理防盗链的域名或关键字多个请用|连接',
+    'admin/system/configupload/img_api'=>'反盗链接口',
+    'admin/system/configupload/img_api_tip'=>'处理防盗链图片的接口地址',
 
     'admin/system/configsms/title'=>'短信发送配置',
     'admin/system/configsms/tip'=>'提示信息：<br>

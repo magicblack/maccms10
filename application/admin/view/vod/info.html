@@ -521,6 +521,7 @@
     var player_select='{volist name="player_list" id="vo"}{if condition="$vo.status eq '1'"}<option value="{$vo.from}">{$vo.show}</option>{/if}{/volist}';
     var downer_select='{volist name="downer_list" id="vo"}{if condition="$vo.status eq '1'"}<option value="{$vo.from}">{$vo.show}</option>{/if}{/volist}';
     var server_select='{volist name="server_list" id="vo"}{if condition="$vo.status eq '1'"}<option value="{$vo.from}">{$vo.show}</option>{/if}{/volist}';
+    var UPLOAD_IMG_KEY="{$GLOBALS['config']['upload']['img_key']}";UPLOAD_IMG_API="{$GLOBALS['config']['upload']['img_api']}";
 
     layui.use(['form','upload', 'layer'], function () {
         // 操作对象

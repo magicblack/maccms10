@@ -1455,6 +1455,9 @@ function mac_url_img($url)
             $url = MAC_PATH . $url;
         }
     }
+    elseif(!empty($GLOBALS['config']['upload']['img_key']) && preg_match('/'.$GLOBALS['config']['upload']['img_key'].'/',$url)){
+        $url = $GLOBALS['config']['upload']['img_api'] . '' . $url;
+    }
     return $url;
 }
 

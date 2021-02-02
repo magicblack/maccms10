@@ -524,5 +524,11 @@ function mac_url_img(url)
     if (url.indexOf("http") == -1 || url.indexOf("//") == -1){
         url = ROOT_PATH+"/"+url;
     }
+    else if(UPLOAD_IMG_KEY !='' && UPLOAD_IMG_API !=''){
+        var reg=eval("/" + UPLOAD_IMG_KEY + "/i");
+        if(reg.test(url)!=false){
+            url = UPLOAD_IMG_API + url;
+        }
+    }
     return url;
 }

@@ -26,7 +26,20 @@
                         }
                       ?>
                     </blockquote>
-
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:lang('admin/system/configupload/img_key')}：</label>
+                        <div class="layui-input-inline w500">
+                            <input type="text" name="upload[img_key]" placeholder="" value="{$config['upload']['img_key']}" class="layui-input">
+                        </div>
+                        <div class="layui-form-mid layui-word-aux">{:lang('admin/system/configupload/img_key_tip')}</div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:lang('admin/system/configupload/img_api')}：</label>
+                        <div class="layui-input-inline w500">
+                            <input type="text" name="upload[img_api]" placeholder="" value="{$config['upload']['img_api']}" class="layui-input">
+                        </div>
+                        <div class="layui-form-mid layui-word-aux">{:lang('admin/system/configupload/img_api_tip')}</div>
+                    </div>
                     <div class="layui-form-item">
                         <label class="layui-form-label">{:lang('pic_thumb')}：</label>
                         <div class="layui-input-inline">
