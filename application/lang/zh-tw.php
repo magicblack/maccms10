@@ -7,7 +7,7 @@
 *內部處理key：開頭 model/、controller/、只在模塊內使用
 */
 return [
-    'lang_ver'=>'1064+',
+    'lang_ver'=>'1065+',
     'hello'  => '歡迎使用',
     'maccms_name'=>'蘋果CMS-v10',
     'maccms_copyright'=>'© MacCMS All Rights Reserved.',
@@ -483,6 +483,11 @@ return [
     'rel_name'=>'關聯數據名稱',
     'preview'=>'預覽',
     'screenshot_preview'=>'截圖預覽',
+    'screenshot_tip'=>'每行壹個圖片地址支持遠程url、本地路徑、自定義名稱備註，例如：
+圖1$upload/test.jpg
+圖2$https://www.baidu.com/logo.png
+https://www.baidu.com/123.jpg
+    ',
 
     'menu/index'=>'首頁',
     'menu/welcome'=>'歡迎頁面',

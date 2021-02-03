@@ -496,12 +496,10 @@ plot是否包含分集剧情 0,1
 {:mac_url_vod_down($obj,'first')}   视频下载页第一条链接
 
 
-多个截图获取调用例子
-{notempty name="$obj.vod_pic_screenshot"}
-{volist name=":explode('$$$',$obj.vod_pic_screenshot);" id="vo2"}
-    <img src="{:mac_url_img($vo2)}" >
-{/volist}
-{/notempty}
+=======多个截图获取调用例子=======
+{maccms:foreach name="obj.vod_pic_screenshot_list" id="vo"}
+    <img src="{$vo.url}" alt="{$vo.name}" />
+{/maccms:foreach}
 
 =======视频播放地址和下载地址标签=======
 

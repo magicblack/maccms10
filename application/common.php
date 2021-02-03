@@ -1238,10 +1238,10 @@ function mac_screenshot_list($screenshot)
         list($title, $url) = explode('$', $val);
         if ( empty($url) ) {
             $url_list[$key+1]['name'] = ($key+1);
-            $url_list[$key+1]['url'] = mac_url_img($title);
+            $url_list[$key+1]['url'] = $title;
         }else{
             $url_list[$key+1]['name'] = $title;
-            $url_list[$key+1]['url'] = mac_url_img($url);
+            $url_list[$key+1]['url'] = $url;
         }
     }
     return $url_list;
