@@ -1,15 +1,15 @@
 <?php
 /*2020.1000.1064*/
 if(empty($col_list[$pre.'website']['website_pic_screenshot'])){
-    $sql .= "ALTER TABLE `mac_website` ADD `website_pic_screenshot`  text  DEFAULT  '';";
+    $sql .= "ALTER TABLE `mac_website` ADD `website_pic_screenshot`  text;";
     $sql .="\r";
 }
 if(empty($col_list[$pre.'art']['art_pic_screenshot'])){
-    $sql .= "ALTER TABLE `mac_art` ADD `art_pic_screenshot`  text DEFAULT  '';";
+    $sql .= "ALTER TABLE `mac_art` ADD `art_pic_screenshot`  text;";
     $sql .="\r";
 }
 if(empty($col_list[$pre.'vod']['vod_pic_screenshot'])){
-    $sql .= "ALTER TABLE `mac_vod` ADD `vod_pic_screenshot`  text  DEFAULT  '';";
+    $sql .= "ALTER TABLE `mac_vod` ADD `vod_pic_screenshot`  text;";
     $sql .="\r";
 }
 /*2020.1000.1063*/
