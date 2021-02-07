@@ -9,7 +9,7 @@ class Index extends Controller
 
     public function index()
     {
-        $this->error("当前插件暂无前台页面");
+        exit("当前插件暂无前台页面");
     }
 
 }
