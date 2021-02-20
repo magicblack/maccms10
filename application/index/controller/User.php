@@ -383,16 +383,18 @@ class User extends Base
 
     public function portrait()
     {
-        if ($GLOBALS['config']['user']['portrait_status'] == 0) {
-            return json(['code' => 0, 'msg' => lang('index/portrait_tip1')]);
+        if(request()->isPost()){
+            if ($GLOBALS['config']['user']['portrait_status'] == 0) {
+                return json(['code' => 0, 'msg' => lang('index/portrait_tip1')]);
+            }
+            $param=[];
+            $param['input'] = 'file';
+            $param['flag'] = 'user';
+            $param['user_id'] = $GLOBALS['user']['user_id'];
+            $res = model('Upload')->upload($param);
+            return json($res);
         }
-
-        $param=[];
-        $param['input'] = 'file';
-        $param['flag'] = 'user';
-        $param['user_id'] = $GLOBALS['user']['user_id'];
-        $res = model('Upload')->upload($param);
-        return json($res);
+        return $this->fetch('user/portrait');
     }
 
     public function findpass()

@@ -39,8 +39,9 @@ class Upload extends Base {
     {
         $param = input();
         if(!empty($p)){
-            $param = $p;
+            $param = array_merge($param,$p);
         }
+
         $param['from'] = empty($param['from']) ? '' : $param['from'];
         $param['input'] = empty($param['input']) ? 'file' : $param['input'];
         $param['flag'] = empty($param['flag']) ? 'vod' : $param['flag'];
@@ -117,11 +118,11 @@ class Upload extends Base {
         if(!empty($base64_img)){
             if(preg_match('/^(data:\s*image\/(\w+);base64,)/', $base64_img, $result)){
                 $type = $result[2];
-                if(in_array($type, $upload_image_ext)){
+                if(in_array($type, explode(',', $upload_image_ext))){
                     if(!file_put_contents($_save_path.$_save_name, base64_decode(str_replace($result[1], '', $base64_img)))){
                         return self::upload_return(lang('admin/upload/upload_faild'), $param['from']);
                     }
-
+                    $file_size = round(filesize('./'.$_save_path.$_save_name)/1024, 2);
                 }
                 else {
                     return self::upload_return(lang('admin/upload/forbidden_ext'), $param['from']);
@@ -132,7 +133,6 @@ class Upload extends Base {
             }
         }
         else {
-
             $file = request()->file($param['input']);
             if (empty($file)) {
                 return self::upload_return(lang('admin/upload/no_input_file'), $param['from']);
@@ -150,17 +150,17 @@ class Upload extends Base {
             } else {
                 return self::upload_return(lang('admin/upload/forbidden_ext'), $param['from']);
             }
-        }
-
-        $upfile = $file->move($_upload_path,$_save_name);
-        if (!is_file($_upload_path.$upfile->getSaveName())) {
-            return self::upload_return(lang('admin/upload/upload_faild'), $param['from']);
+            $upfile = $file->move($_upload_path,$_save_name);
+            if (!is_file($_upload_path.$upfile->getSaveName())) {
+                return self::upload_return(lang('admin/upload/upload_faild'), $param['from']);
+            }
+            $file_size = round($upfile->getInfo('size')/1024, 2);
+            $_save_name = str_replace('\\', '/', $upfile->getSaveName());
         }
 
         $file_count = 1;
-        $file_size = round($upfile->getInfo('size')/1024, 2);
         $data = [
-            'file'  => $_save_path.str_replace('\\', '/', $upfile->getSaveName()),
+            'file'  => $_save_path.$_save_name,
             'type'  => $type,
             'size'  => $file_size,
             'flag' => $param['flag'],
@@ -181,7 +181,7 @@ class Upload extends Base {
                     $t_size[1] = $t_size[0];
                 }
                 $image->thumb($t_size[0], $t_size[1], 6)->save('./' . $new_file);
-                $file_size = round($upfile->getInfo('size')/1024, 2);
+                $file_size = round(filesize('./' .$new_file)/1024, 2);
             }
             catch(\Exception $e){
                 return self::upload_return(lang('admin/upload/make_thumb_faild'), $param['from']);
