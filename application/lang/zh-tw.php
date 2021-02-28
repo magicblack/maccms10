@@ -7,7 +7,7 @@
 *內部處理key：開頭 model/、controller/、只在模塊內使用
 */
 return [
-    'lang_ver'=>'1065+',
+    'lang_ver'=>'1068+',
     'hello'  => '歡迎使用',
     'maccms_name'=>'蘋果CMS-v10',
     'maccms_copyright'=>'© MacCMS All Rights Reserved.',
@@ -259,7 +259,7 @@ return [
     'content'=>'詳情',
     'blurb_auto_tip'=>'不填寫將自動從第壹頁詳情裏獲取前100個字',
     'up'=>'頂',
-    'down'=>'踩',
+    'hate'=>'踩',
     'rnd_make'=>'隨機生成',
     'score'=>'平均分',
     'score_all'=>'總評分',

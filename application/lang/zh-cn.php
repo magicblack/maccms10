@@ -7,7 +7,7 @@
 *内部处理key：开头 model/、controller/、只在模块内使用
 */
 return [
-    'lang_ver'=>'1065+',
+    'lang_ver'=>'1068+',
     'hello'  => '欢迎使用',
     'maccms_name'=>'苹果CMS-v10',
     'maccms_copyright'=>'© MacCMS All Rights Reserved.',
@@ -259,7 +259,7 @@ return [
     'content'=>'详情',
     'blurb_auto_tip'=>'不填写将自动从第一页详情里获取前100个字',
     'up'=>'顶',
-    'down'=>'踩',
+    'hate'=>'踩',
     'rnd_make'=>'随机生成',
     'score'=>'平均分',
     'score_all'=>'总评分',

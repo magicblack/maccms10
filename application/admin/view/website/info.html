@@ -172,7 +172,7 @@
                             <div class="screenshot_list">
                                 {volist name="$info.website_pic_screenshot_list" id="vo"}
                                 <div data-src="{$vo['url']}"><a href="javascript:;" class="del_screenshot">{:lang('del')}</a>
-                                    <img src="{$vo['url']}" alt="" class="layui-upload-img screenshot-img">
+                                    <img src="{$vo['url']|mac_url_img}" alt="" class="layui-upload-img screenshot-img">
                                 </div>
                                 {/volist}
                             </div>
@@ -201,7 +201,7 @@
                             <div class="layui-input-inline ">
                                 <input type="text" class="layui-input" value="{$info.website_up}" placeholder="" id="website_up" name="website_up">
                             </div>
-                            <label class="layui-form-label">{:lang('down')}：</label>
+                            <label class="layui-form-label">{:lang('hate')}：</label>
                             <div class="layui-input-inline ">
                                 <input type="text" class="layui-input" value="{$info.website_down}" placeholder="" id="website_down" name="website_down">
                             </div>
@@ -347,9 +347,10 @@
                 var val = res.data.file;
                 var input = $("#website_pic_screenshot")
                 var content = input.val();
-                if(content){
-                    content += '\r\n'+val;
+                if(content!=''){
+                    content += '\r\n';
                 }
+                content += val;
                 input.val(content);
                 $('.screenshot_list').append('<div data-src="'+val+'"><a href="javascript:;" class="del_screenshot">{:lang(\'del\')}</a><img src="'+mac_url_img(val)+'" alt="" class="layui-upload-img screenshot-img"></div>');
             }

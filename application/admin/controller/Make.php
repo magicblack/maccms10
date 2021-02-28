@@ -214,7 +214,7 @@ class Make extends Base
                 $_REQUEST['page'] = $i;
             }
 
-            $link = 'rss/'.$this->_param['ac2'].'.html';
+            $link = 'rss/'.$this->_param['ac2'].'.xml';
             $this->buildHtml($link,'./','rss/'.$this->_param['ac2']);
 
             $this->echoLink($link,'/'.$link);

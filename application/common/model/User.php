@@ -658,6 +658,7 @@ class User extends Base
         $where['user_id'] = $GLOBALS['user']['user_id'];
         $where['msg_time'] = ['gt',$stime];
         $where['msg_type'] = ['eq', $param['type'] ];
+        $where['msg_to'] = ['eq', $param['to'] ];
         $res = model('msg')->infoData($where);
         if($res['code'] ==1){
             return ['code'=>9002,'msg'=>lang('model/user/do_not_send_frequently')];
