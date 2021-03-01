@@ -186,6 +186,14 @@ class Upload extends Base {
             catch(\Exception $e){
                 return self::upload_return(lang('admin/upload/make_thumb_faild'), $param['from']);
             }
+            $update = [];
+            $update['user_portrait'] = $new_file;
+            $where = [];
+            $where['user_id'] = $GLOBALS['user']['user_id'];
+            $res = model('User')->where($where)->update($update);
+            if ($res === false) {
+                return self::upload_return(lang('index/portrait_err'), $param['from']);
+            }
         }
         else {
             if ($type == 'image') {
