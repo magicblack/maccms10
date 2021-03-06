@@ -7,7 +7,7 @@
 *內部處理key：開頭 model/、controller/、只在模塊內使用
 */
 return [
-    'lang_ver'=>'1068+',
+    'lang_ver'=>'1069+',
     'hello'  => '歡迎使用',
     'maccms_name'=>'蘋果CMS-v10',
     'maccms_copyright'=>'© MacCMS All Rights Reserved.',
@@ -160,10 +160,10 @@ return [
     'report'=>'舉報',
 
     'use'=>'使用',
-    'the_last_time'=>'最後壹次',
+    'the_last_time'=>'最後一次',
     'that_day'=>'當天',
-    'in_a_week'=>'壹周內',
-    'in_a_month'=>'壹月內',
+    'in_a_week'=>'一周內',
+    'in_a_month'=>'一月內',
 
     'calcel_level'=>'取消推薦',
     'pic_empty'=>'無圖片',
@@ -185,7 +185,7 @@ return [
     'del_ok'=>'刪除成功',
     'del_err'=>'刪除失敗',
     'del_empty'=>'刪除為空',
-    'add_group'=>'添加壹組',
+    'add_group'=>'添加一組',
 
     'id'=>'編號',
     'sub'=>'副標',
@@ -257,7 +257,7 @@ return [
     'upload_pic'=>'上傳圖片',
     'blurb'=>'簡介',
     'content'=>'詳情',
-    'blurb_auto_tip'=>'不填寫將自動從第壹頁詳情裏獲取前100個字',
+    'blurb_auto_tip'=>'不填寫將自動從第一頁詳情裏獲取前100個字',
     'up'=>'頂',
     'hate'=>'踩',
     'rnd_make'=>'隨機生成',
@@ -368,8 +368,8 @@ return [
     'audit_confirm'=>'確認審核數據嗎？',
 
     'clear'=>'清空',
-    'del_auto_keep_min'=>'壹鍵刪重[保留小ID]',
-    'del_auto_keep_max'=>'壹鍵刪重[保留大ID]',
+    'del_auto_keep_min'=>'一鍵刪重[保留小ID]',
+    'del_auto_keep_max'=>'一鍵刪重[保留大ID]',
     'num_id'=>'數字ID',
     'encode_id'=>'加密ID',
     'vod_id'=>'視頻ID',
@@ -386,7 +386,7 @@ return [
     'page_title'=>'頁標題',
     'page_note'=>'頁備註',
     'page_content'=>'分頁內容',
-    'page_add'=>'添加壹頁內容',
+    'page_add'=>'添加一頁內容',
     'from'=>'來源',
     'paging'=>'分頁',
     'referer'=>'來路',
@@ -425,7 +425,7 @@ return [
     'space'=>'空間',
     'return_parent_dir'=>'返回上級目錄',
     'phone'=>'電話',
-    'server_rest'=>'讓服務器休息壹會，稍後繼續',
+    'server_rest'=>'讓服務器休息一會，稍後繼續',
     'to'=>'到',
     'director'=>'導演',
     'clear_ok'=>'清理成功',
@@ -483,7 +483,7 @@ return [
     'rel_name'=>'關聯數據名稱',
     'preview'=>'預覽',
     'screenshot_preview'=>'截圖預覽',
-    'screenshot_tip'=>'每行壹個圖片地址支持遠程url、本地路徑、自定義名稱備註，例如：
+    'screenshot_tip'=>'每行一個圖片地址支持遠程url、本地路徑、自定義名稱備註，例如：
 圖1$upload/test.jpg
 圖2$https://www.baidu.com/logo.png
 https://www.baidu.com/123.jpg
@@ -639,7 +639,7 @@ https://www.baidu.com/123.jpg
 
     'model/user/not_open_reg'=>'未開放註冊',
     'model/user/input_require'=>'請填寫必填項',
-    'model/user/pass_not_pass2'=>'密碼與確認密碼不壹致',
+    'model/user/pass_not_pass2'=>'密碼與確認密碼不一致',
     'model/user/haved_reg'=>'用戶名已被註冊，請更換',
     'model/user/name_contain'=>'用戶名只能包含字母和數字，請更換',
     'model/user/name_filter'=>'用戶名禁止包含：%s等字符，請重試',
@@ -650,7 +650,7 @@ https://www.baidu.com/123.jpg
     'model/user/reg_ok'=>'註冊成功,請登錄去會員中心完善個人信息',
     'model/user/input_old_pass'=> '請輸入原密碼',
     'model/user/old_pass_err'=> '原密碼錯誤',
-    'model/user/pass_not_same_pass2'=> '兩次輸入的新密碼不壹致',
+    'model/user/pass_not_same_pass2'=> '兩次輸入的新密碼不一致',
     'model/user/not_found'=>'獲取用戶信息失敗',
     'model/user/update_login_err'=>'更新登錄信息失敗',
     'model/user/update_expire_err'=>'更新會員組過期信息失敗',
@@ -708,8 +708,8 @@ https://www.baidu.com/123.jpg
     'index/require_content'=>'內容不能為空',
     'index/require_cn'=>'內容必須包含中文,請重新輸入',
     'index/mid_err'=>'模型mid錯誤',
-    'index/thanks_msg_audit'=>'謝謝，我們會盡快審核妳的留言！',
-    'index/thanks_msg'=>'感謝妳的留言！',
+    'index/thanks_msg_audit'=>'謝謝，我們會盡快審核你的留言！',
+    'index/thanks_msg'=>'感謝你的留言！',
     'index/payment_status'=>'該支付選項未開啟！',
     'index/payment_not'=>'未找到支付選項！',
     'index/payment_ok'=>'支付完成！',
@@ -743,7 +743,7 @@ https://www.baidu.com/123.jpg
     'index/page_down'=>'下載頁',
     'index/try_see'=>'試看',
 
-    'admin/public/head/title'=>'安全第壹請勿泄露後臺地址 - Copyright by 蘋果CMS內容管理系統',
+    'admin/public/head/title'=>'安全第一請勿泄露後臺地址 - Copyright by 蘋果CMS內容管理系統',
     'admin/public/jump/title'=>'跳轉提示',
 
     'admin/index/login/title'=>'後臺管理中心 - Copyright by 蘋果CMS內容管理系統',
@@ -774,7 +774,7 @@ https://www.baidu.com/123.jpg
     'admin/index/index/menu_close_empty' =>'沒有可以關閉的窗口了@_@',
 
     'admin/index/quickmenu/name' =>'自定義快捷菜單',
-    'admin/index/quickmenu/tip' =>'格式要求：1.菜單名稱,菜單鏈接地址；2.每個快捷菜單各占壹行；<br>
+    'admin/index/quickmenu/tip' =>'格式要求：1.菜單名稱,菜單鏈接地址；2.每個快捷菜單各占一行；<br>
         1，支持遠程地址，例如： 更新日誌,//www.baidu.com/<br>
         2，支持插件文件，例如： 插件文件菜單,/application/xxxx.html<br>
         3，支持系統模塊，例如： 文章管理,art/data<br>
@@ -801,6 +801,7 @@ https://www.baidu.com/123.jpg
     'admin/index/title'=>'後臺管理中心',
     'admin/index/welcome/title'=>'歡迎頁面',
     'admin/index/quickmenu/title'=>'快捷菜單配置',
+    'admin/index/cache_data'=>'發現配置緩存，請及時清理...',
     'admin/index/clear_ok'=>'緩存清理成功',
     'admin/index/clear_err'=>'緩存清理失敗',
     'admin/index/iframe'=>'布局切換成功，跳轉中',
@@ -862,7 +863,7 @@ https://www.baidu.com/123.jpg
     'admin/system/config/cache_test'=>'測試連接',
 
     'admin/system/config/cache_flag'=>'緩存標識',
-    'admin/system/config/cache_flag_tip'=>'多站共用壹個服務器上memcache、redis時需區分開',
+    'admin/system/config/cache_flag_tip'=>'多站共用一個服務器上memcache、redis時需區分開',
     'admin/system/config/cache_flag_auto'=>'留空將自動生成',
     'admin/system/config/cache_core'=>'數據緩存',
     'admin/system/config/cache_time'=>'數據緩存時間',
@@ -890,11 +891,11 @@ https://www.baidu.com/123.jpg
     'admin/system/config/collect_timespan'=>'采集間隔',
     'admin/system/config/collect_timespan_tip'=>'單位秒，建議設置為3秒以上',
     'admin/system/config/pagesize'=>'後臺每頁數',
-    'admin/system/config/pagesize_tip'=>'每頁顯示數據量、壹般設置為20左右',
+    'admin/system/config/pagesize_tip'=>'每頁顯示數據量、一般設置為20左右',
     'admin/system/config/lang'=>'後臺語言包',
 
     'admin/system/config/makesize'=>'生成每頁數',
-    'admin/system/config/makesize_tip'=>'批量生成每次生成都少頁、壹般設置為20左右',
+    'admin/system/config/makesize_tip'=>'批量生成每次生成都少頁、一般設置為20左右',
     'admin/system/config/admin_login_verify'=>'後臺登錄驗證碼',
     'admin/system/config/editor'=>'富文本編輯器',
     'admin/system/config/editor_tip'=>'系統默認帶ueditor，使用其他請先到官網下載擴展包',
@@ -916,7 +917,7 @@ https://www.baidu.com/123.jpg
     'admin/system/config/filter_words'=>'詞語過濾',
     'admin/system/config/filter_words_tip'=>'用戶交互如評論留言的禁用詞匯；多個用,號分隔',
     'admin/system/config/extra_var'=>'自定義參數',
-    'admin/system/config/extra_var_tip'=>'每行壹個變量,例如aa$$$我是老王；模板調用方法$GLOBALS[\'config\'][\'extra\'][\'aa\']',
+    'admin/system/config/extra_var_tip'=>'每行一個變量,例如aa$$$我是老王；模板調用方法$GLOBALS[\'config\'][\'extra\'][\'aa\']',
     'admin/system/config/test_err'=>'發生錯誤，請檢查是否開啟擴展庫和配置項!',
 
     'admin/system/configapi/title'=>'采集接口API配置',
@@ -981,7 +982,7 @@ https://www.baidu.com/123.jpg
     'admin/system/configcollect/class_filter'=>'擴展分類優化',
     'admin/system/configcollect/class_filter_tip'=>'將自動過濾擴分類名稱裏的[片,劇],例如動作片會變為動作;歐美劇會變成歐美;',
     'admin/system/configcollect/psename'=>'名稱同義詞替換',
-    'admin/system/configcollect/psename_tip'=>'自動轉換名稱同義詞，降低重復率。例如:第1季=第壹季;',
+    'admin/system/configcollect/psename_tip'=>'自動轉換名稱同義詞，降低重復率。例如:第1季=第一季;',
     'admin/system/configcollect/psernd'=>'詳情隨機插入語句',
     'admin/system/configcollect/psesyn'=>'詳情同義詞替換',
     'admin/system/configcollect/inrule'=>'入庫重復規則',
@@ -994,9 +995,9 @@ https://www.baidu.com/123.jpg
     'admin/system/configcollect/content'=>'詳情',
     'admin/system/configcollect/playurl'=>'播放地址',
     'admin/system/configcollect/downurl'=>'下載地址',
-    'admin/system/configcollect/words_tip'=>'同義詞庫：每行壹個，不要有空行，格式：替換前=替換}後，不允許出現#號。<br>
-                    隨機詞庫：字符段壹般20條左右即可，可以是笑話小故事，也可以加入超鏈接。<br>
-                    此項功能影響采集性能，請不要壹次加入太多詞條 。適當的偽原創有助於搜索引擎收錄。<br>
+    'admin/system/configcollect/words_tip'=>'同義詞庫：每行一個，不要有空行，格式：替換前=替換}後，不允許出現#號。<br>
+                    隨機詞庫：字符段一般20條左右即可，可以是笑話小故事，也可以加入超鏈接。<br>
+                    此項功能影響采集性能，請不要一次加入太多詞條 。適當的偽原創有助於搜索引擎收錄。<br>
                     不使用詞庫功能請在【采集參數設置中禁用】。',
     'admin/system/configcollect/vod_namewords'=>'視頻名稱同義庫',
     'admin/system/configcollect/vod_thesaurus'=>'視頻詳情同義詞庫',
@@ -1061,7 +1062,7 @@ https://www.baidu.com/123.jpg
     'admin/system/configinterface/pass_check'=>'保存失敗，安全起見入庫密碼必須大於等於16位!',
     'admin/system/configinterface/title'=>'站外入庫配置',
     'admin/system/configinterface/tip'=>'提示信息：<br>
-                        1.轉換分類每個各占壹行;<br>
+                        1.轉換分類每個各占一行;<br>
                         2.本地分類在前,采集分類在後(動作片=動作);<br>
                         3.不要有多余的空行;<br>
                         4.視頻播放器、備註、地址、服務器組、文章分頁等多頁數據連接符都是$$$<br>
@@ -1120,21 +1121,21 @@ https://www.baidu.com/123.jpg
     'admin/system/configplay/flag_tip'=>'本地播放器',
     'admin/system/configplay/colors'=>'播放器顏色',
     'admin/system/configplay/select_colors'=>'選擇顏色',
-    'admin/system/configplay/select_colors_tip'=>'顏色使用16進制表示法，不帶#號，以逗號分割，壹共15個可配置顏色!
+    'admin/system/configplay/select_colors_tip'=>'顏色使用16進制表示法，不帶#號，以逗號分割，一共15個可配置顏色!
                         <br>依次是：背景色，文字顏色，鏈接顏色，分組標題背景色，分組標題顏色，當前分組標題顏色，當前集數顏色，集數列表滾動條凸出部分的顏色，滾動條上下按鈕上三角箭頭的顏色，滾動條的背景顏色，滾動條空白部分的顏色，滾動條立體滾動條陰影的顏色 ，滾動條亮邊的顏色，滾動條強陰影的顏色，滾動條的基本顏色',
 
 
     'admin/system/configweixin/title'=>'微信對接配置',
-    'admin/system/configweixin/tip'=>'公眾號對接域名、公眾號搜索域名、網站域名通常壹致，因公眾號可能產生的封域名問題，妳可以單獨設置域名進行對接。<br>
+    'admin/system/configweixin/tip'=>'公眾號對接域名、公眾號搜索域名、網站域名通常一致，因公眾號可能產生的封域名問題，你可以單獨設置域名進行對接。<br>
                     接口地址/api.php/wechat',
     'admin/system/configweixin/duijie'=>'對接域名',
     'admin/system/configweixin/duijie_tip'=>'請以http 或 https開頭，公眾號後臺的對接地址為【http://wx.test.com/inc/weixin.php】',
     'admin/system/configweixin/sousuo'=>'搜索域名',
-    'admin/system/configweixin/sousuo_tip'=>'用來在公共號內顯示的域名，壹般紅名更換此域名即可，請以http 或 https開頭',
+    'admin/system/configweixin/sousuo_tip'=>'用來在公共號內顯示的域名，一般紅名更換此域名即可，請以http 或 https開頭',
     'admin/system/configweixin/token'=>'對接TOKEN',
     'admin/system/configweixin/token_tip'=>'公眾號後臺對接的token密鑰',
     'admin/system/configweixin/guanzhu'=>'關註回復',
-    'admin/system/configweixin/guanzhu_tip'=>'用戶關註妳的公眾號時自動回復的壹句話',
+    'admin/system/configweixin/guanzhu_tip'=>'用戶關註你的公眾號時自動回復的一句話',
     'admin/system/configweixin/wuziyuan'=>'無資源回復',
     'admin/system/configweixin/wuziyuan_tip'=>'用戶搜索不到資源時默認返回的信息',
     'admin/system/configweixin/wuziyuanlink'=>'無資源回復鏈接',
@@ -1173,11 +1174,11 @@ https://www.baidu.com/123.jpg
     'admin/system/configuser/invite_visit_points_tip'=>'成功邀請訪問賺取獎勵積分',
     'admin/system/configuser/invite_visit_num_tip'=>'每個IP每日限制可以獲取幾次推廣訪問積分',
     'admin/system/configuser/reward_status'=>'三級分銷狀態',
-    'admin/system/configuser/reward_ratio'=>'壹級提成比例',
+    'admin/system/configuser/reward_ratio'=>'一級提成比例',
     'admin/system/configuser/reward_ratio2'=>'二級提成比例',
     'admin/system/configuser/reward_ratio3'=>'三級提成比例',
     'admin/system/configuser/reward_unit'=>'單位百分比',
-    'admin/system/configuser/reward_tip'=>'用戶支付成功分銷推廣者都可獲得壹定比例的積分,提成不足1積分將忽略。',
+    'admin/system/configuser/reward_tip'=>'用戶支付成功分銷推廣者都可獲得一定比例的積分,提成不足1積分將忽略。',
     'admin/system/configuser/cash_status'=>'提現狀態',
     'admin/system/configuser/cash_ratio'=>'兌換比例',
     'admin/system/configuser/cash_ratio_tip'=>'兌換比例1元=多少積分',
@@ -1203,7 +1204,7 @@ https://www.baidu.com/123.jpg
     'admin/system/configurl/route'=>'路由偽靜態設置',
     'admin/system/configurl/dynamic'=>'動態模式',
     'admin/system/configurl/static'=>'靜態模式',
-    'admin/system/configurl/static_one'=>'靜態每集壹頁',
+    'admin/system/configurl/static_one'=>'靜態每集一頁',
     'admin/system/configurl/index'=>'首頁',
     'admin/system/configurl/map'=>'地圖',
     'admin/system/configurl/search'=>'搜索',
@@ -1228,7 +1229,7 @@ https://www.baidu.com/123.jpg
     'admin/system/configurl/common_ext'=>'文件後綴',
     'admin/system/configurl/route_tip'=>'提示信息：<br>
                         1.動態下,開啟路由狀態將自動重寫URL; <br>
-                        2.路由規則每行壹條,中間用=>隔開,左邊是路由表達式,右邊是路由地址; <br>
+                        2.路由規則每行一條,中間用=>隔開,左邊是路由表達式,右邊是路由地址; <br>
                         3.路由地址是系統提供的，原則上不會變，只需要調整路由表達式。<br>
                         4.不要有多余的空行;<br>
                         5.ID類型根據需要自行選擇，選擇拼音時，數據中不能有重復的拼音，否則獲取數據會出現問題。<br>
@@ -1356,7 +1357,7 @@ https://www.baidu.com/123.jpg
     'admin/voddowner/title'=>'下載器管理',
     'admin/vodplayer/alone_api_url'=>'獨立接口地址',
     'admin/vodplayer/alone_api_url'=>'獨立接口地址',
-    'admin/vodplayer/code_tip'=>'唯壹標識英文、純數字會自動加_，禁止出現./\\等符號',
+    'admin/vodplayer/code_tip'=>'唯一標識英文、純數字會自動加_，禁止出現./\\等符號',
     'admin/vodplayer/name_tip'=>'中文名稱',
     'admin/vodplayer/api_url'=>'接口地址',
     'admin/vodplayer/api_url_tip'=>'獨立接口地址，權重高於全局播放器設置的接口',
@@ -1367,7 +1368,7 @@ https://www.baidu.com/123.jpg
 
 
     'admin/timming/title'=>'定時任務管理',
-    'admin/timming/unique_id'=>'唯壹標識英文',
+    'admin/timming/unique_id'=>'唯一標識英文',
     'admin/timming/call_method'=>'調用方法',
     'admin/timming/exec_file'=>'執行文件',
     'admin/timming/collect'=>'自定義采集collect',
@@ -1380,7 +1381,7 @@ https://www.baidu.com/123.jpg
     'admin/timming/exec_cycle'=>'執行周期',
     'admin/timming/exec_time'=>'執行時間',
 
-    'monday'=>'周壹',
+    'monday'=>'周一',
     'tuesday'=>'周二',
     'wednesday'=>'周三',
     'thursday'=>'周四',
@@ -1393,7 +1394,7 @@ https://www.baidu.com/123.jpg
     'admin/domain/help_tip'=>'提示信息：<br>
                         1，此功能支持非靜態模式下同1個數據庫不同域名顯示不同的模板和網站配置信息<br>
                         2，不限制域名網站數量<br>
-                        3，導入文本格式是：域名$網站名稱$關鍵字$描述$模板$模板目錄$廣告目錄。每行壹個網站。清空原有數據。<br>',
+                        3，導入文本格式是：域名$網站名稱$關鍵字$描述$模板$模板目錄$廣告目錄。每行一個網站。清空原有數據。<br>',
 
     'admin/domain/title'=>'站群管理',
 
@@ -1463,8 +1464,8 @@ https://www.baidu.com/123.jpg
     'admin/vod/select_plot'=>'選擇分集劇情',
     'admin/vod/copyright'=>'版權',
     'admin/vod/serialize'=>'連載',
-    'admin/vod/add_group_play'=>'添加壹組播放',
-    'admin/vod/add_group_down'=>'添加壹組下載',
+    'admin/vod/add_group_play'=>'添加一組播放',
+    'admin/vod/add_group_down'=>'添加一組下載',
     'admin/batch_tip'=>'共%s條數據需要處理，每頁%s條，共%s頁，正在處理第%s頁',
 
 
@@ -1516,18 +1517,18 @@ https://www.baidu.com/123.jpg
     'admin/cj/url_type'=>'網址類型',
     'admin/cj/sequence_url'=>'序列網址',
     'admin/cj/multi_url'=>'多個網址',
-    'admin/cj/one_url'=>'單壹網址',
+    'admin/cj/one_url'=>'單一網址',
     'admin/cj/wildcard_tip'=>'作為通配符',
     'admin/cj/page_num_config'=>'頁碼配置',
     'admin/cj/page_num_increment'=>'頁碼遞增',
-    'admin/cj/one_per_line'=>'每行壹條',
+    'admin/cj/one_per_line'=>'每行一條',
     'admin/cj/url_config'=>'網址配置',
     'admin/cj/url_must_contain'=>'網址中必須包含',
     'admin/cj/url_not_contain'=>'網址中不得包含',
     'admin/cj/collect_interval'=>'采集區間',
     'admin/cj/wildcard_prompt'=>'<p>1、匹配規則請設置開始和結束符，具體內容使用“[內容]”做為通配符 。</p>
                                     <p>2、匹配規則也可以是固定內容，只要不出現“[內容]”通配符就視為固定內容。</p>
-                                    <p>3、過濾選項格式為“要過濾的內容[|]替換值”，要過濾的內容支持正則表達式，每行壹條。</p>',
+                                    <p>3、過濾選項格式為“要過濾的內容[|]替換值”，要過濾的內容支持正則表達式，每行一條。</p>',
 
 
 
@@ -1539,9 +1540,9 @@ https://www.baidu.com/123.jpg
     'admin/cj/page_mode'=>'分頁模式',
     'admin/cj/list_all_mode'=>'全部列出模式',
     'admin/cj/next_page_mode'=>'上下頁模式',
-    'admin/cj/next_page_rule'=>'下壹頁規則',
-    'admin/cj/next_page_tip'=>'請填寫下壹頁超鏈接中間的代碼。如：<a href="http://www.xxx.com/page_1.html">下壹頁</a>，他的“下壹頁規則”為“下壹頁”。',
-    'admin/cj/add_group'=>'添加壹組',
+    'admin/cj/next_page_rule'=>'下一頁規則',
+    'admin/cj/next_page_tip'=>'請填寫下一頁超鏈接中間的代碼。如：<a href="http://www.xxx.com/page_1.html">下一頁</a>，他的“下一頁規則”為“下一頁”。',
+    'admin/cj/add_group'=>'添加一組',
 
     'admin/cj/content_page'=>'內容分頁',
     'admin/cj/no_page'=>'不分頁',
@@ -1561,7 +1562,7 @@ https://www.baidu.com/123.jpg
     'admin/collect/name'=>'資源名稱',
     'admin/collect/api_url'=>'接口地址',
     'admin/collect/attach_param'=>'附加參數',
-    'admin/collect/attach_param_tip'=>'提示信息：壹般&開頭，例如老版xml格式采集下載地址需加入&ct=1',
+    'admin/collect/attach_param_tip'=>'提示信息：一般&開頭，例如老版xml格式采集下載地址需加入&ct=1',
     'admin/collect/api_type'=>'接口類型',
     'admin/collect/data_type'=>'資源類型',
     'admin/collect/data_opt'=>'數據操作',
@@ -1607,7 +1608,7 @@ https://www.baidu.com/123.jpg
     'admin/annex/init_tip'=>'<strong>附件數據初始化1.0版本</strong><br>
                             1，將對分類表、視頻、文章、網址、演員、角色、會員等表進行檢索。<br>
                             2，將包含本地圖片地址內容插入到附件表中。<br>
-                            3，建議升級的版本執行壹次。',
+                            3，建議升級的版本執行一次。',
     'admin/annex/init_data'=>'數據初始化',
     'admin/annex/dir_model'=>'文件夾模式',
     'admin/annex/check_ok'=>'附件數據初始化結束',
@@ -1629,7 +1630,7 @@ https://www.baidu.com/123.jpg
 
     'admin/database/title'=>'數據庫管理',
     'admin/database/select_export_table'=>'請選擇您要備份的數據表！',
-    'admin/database/lock_check'=>'檢測到有壹個備份任務正在執行，請稍後再試！！',
+    'admin/database/lock_check'=>'檢測到有一個備份任務正在執行，請稍後再試！！',
     'admin/database/backup_err'=>'備份出錯！',
     'admin/database/backup_ok'=>'備份完成！',
     'admin/database/select_file'=>'請選擇您要恢復的備份文件！',
@@ -1729,7 +1730,7 @@ https://www.baidu.com/123.jpg
     'admin/make/all_info'=>'全部內容',
     'admin/make/today_info'=>'當天內容',
     'admin/make/no_make_info'=>'未生成的',
-    'admin/make/one_today'=>'壹鍵當天',
+    'admin/make/one_today'=>'一鍵當天',
     'admin/make/topic_list'=>'專題列表',
     'admin/make/select_topic'=>'選擇專題',
     'admin/make/all_topic'=>'全部專題',
@@ -1796,7 +1797,7 @@ https://www.baidu.com/123.jpg
 
     'admin/ulog/title'=>'日誌管理',
 
-    'admin/update/step1_a'=>'在線升級進行中第壹步【文件升級】,請稍後......',
+    'admin/update/step1_a'=>'在線升級進行中第一步【文件升級】,請稍後......',
     'admin/update/step1_b'=>'正在下載升級文件包...',
     'admin/update/download_err'=>'下載升級包失敗，請重試...',
     'admin/update/download_ok'=>'下載升級包完畢...',
@@ -1844,11 +1845,11 @@ https://www.baidu.com/123.jpg
     'admin/user/pass_empty'=>'請輸入密碼',
 
     'admin/user/reward/select_level'=>'選擇級別',
-    'admin/user/reward/one_distribution'=>'壹級分銷',
+    'admin/user/reward/one_distribution'=>'一級分銷',
     'admin/user/reward/two_distribution'=>'二級分銷',
     'admin/user/reward/three_distribution'=>'三級分銷',
     'admin/user/reward/distribution_level'=>'三級分銷',
-    'admin/user/reward/one_people_num'=>'壹級分銷總人數',
+    'admin/user/reward/one_people_num'=>'一級分銷總人數',
     'admin/user/reward/two_people_num'=>'二級分銷總人數',
     'admin/user/reward/three_people_num'=>'三級分銷總人數',
     'admin/user/reward/total_commission_points'=>'總提成積分',
@@ -1861,12 +1862,12 @@ https://www.baidu.com/123.jpg
     'api/pass_err'=>'非法使用err',
     'api/pass_safe_err'=>'安全起見入庫密碼必須大於等於16位',
     'api/require_name'=>'名稱必須err',
-    'api/require_type'=>'分類名稱和分類ID至少填寫壹項err',
+    'api/require_type'=>'分類名稱和分類ID至少填寫一項err',
     'api/require_sex'=>'性別必須err',
     'api/require_actor_name'=>'演員名必須err',
     'api/require_role_name'=>'角色名必須err',
-    'api/require_rel_vod'=>'關聯數據名vod_name或豆瓣編號douban_id至少填寫壹項err',
-    'api/require_rel_name'=>'關聯數據名rel_name或豆瓣編號douban_id至少填寫壹項err',
+    'api/require_rel_vod'=>'關聯數據名vod_name或豆瓣編號douban_id至少填寫一項err',
+    'api/require_rel_name'=>'關聯數據名rel_name或豆瓣編號douban_id至少填寫一項err',
     'api/require_mid'=>'模塊ID必須err',
     'api/require_comment_name'=>'評論昵稱須err',
     'api/require_comment_name'=>'評論內容必須err',
@@ -1883,12 +1884,12 @@ https://www.baidu.com/123.jpg
 
     'install/user_agreement_title'=>'蘋果CMS用戶協議 適用於所有用戶',
     'install/user_agreement'=>' 請您在使用(蘋果CMS)前仔細閱讀如下條款。包括免除或者限制作者責任的免責條款及對用戶的權利限制。您的安裝使用行為將視為對本《用戶許可協議》的接受，並同意接受本《用戶許可協議》各項條款的約束。 <br /><br />
-                壹、安裝和使用： <br />
+                一、安裝和使用： <br />
                 (蘋果CMS)是免費和開源提供給您使用的，您可安裝無限制數量副本。 您必須保證在不進行非法活動，不違反所在國家相關政策法規的前提下使用本軟件。 <br /><br />
                 二、免責聲明：  <br />
-                本軟件並無附帶任何形式的明示的或暗示的保證，包括任何關於本軟件的適用性, 無侵犯知識產權或適合作某壹特定用途的保證。  <br />
+                本軟件並無附帶任何形式的明示的或暗示的保證，包括任何關於本軟件的適用性, 無侵犯知識產權或適合作某一特定用途的保證。  <br />
                 在任何情況下，對於因使用本軟件或無法使用本軟件而導致的任何損害賠償，作者均無須承擔法律責任。作者不保證本軟件所包含的資料,文字、圖形、鏈接或其它事項的準確性或完整性。作者可隨時更改本軟件，無須另作通知。  <br />
-                所有由用戶自己制作、下載、使用的第三方信息數據和插件所引起的壹切版權問題或糾紛，本軟件概不承擔任何責任。<br /><br />
+                所有由用戶自己制作、下載、使用的第三方信息數據和插件所引起的一切版權問題或糾紛，本軟件概不承擔任何責任。<br /><br />
                 三、協議規定的約束和限制：  <br />
                 禁止去除(蘋果CMS)源碼裏的版權信息，商業授權版本可去除後臺界面及前臺界面的相關版權信息。</br>
                 禁止在(蘋果CMS)整體或任何部分基礎上發展任何派生版本、修改版本或第三方版本用於重新分發。</br></br>
@@ -1907,15 +1908,15 @@ https://www.baidu.com/123.jpg
     'install/func_ext'=>'函數/擴展',
     'install/type'=>'類型',
     'install/result'=>'結果',
-    'install/back_step'=>'返回上壹步',
-    'install/next_step'=>'進行下壹步',
+    'install/back_step'=>'返回上一步',
+    'install/next_step'=>'進行下一步',
     'install/question'=>'常見問題解決辦法',
     'install/database_config'=>'數據庫配置',
 
     'install/server_address'=>'服務器地址',
-    'install/server_address_tip'=>'數據庫服務器地址，壹般為127.0.0.1',
+    'install/server_address_tip'=>'數據庫服務器地址，一般為127.0.0.1',
     'install/database_port'=>'數據庫端口',
-    'install/database_port_tip'=>'系統數據庫端口，壹般為3306',
+    'install/database_port_tip'=>'系統數據庫端口，一般為3306',
     'install/database_name'=>'數據庫名稱',
     'install/database_name_tip'=>'系統數據庫名,必須包含字母',
     'install/database_username'=>'數據庫賬號',
@@ -1942,7 +1943,7 @@ https://www.baidu.com/123.jpg
     'install/exec'=>'立即執行安裝',
     'install/submit_tip'=>'請先點擊並通過測試數據連接!',
 
-    'install/environment_failed'=>'環境檢測未通過，不能進行下壹步操作！',
+    'install/environment_failed'=>'環境檢測未通過，不能進行下一步操作！',
     'install/init_err'=>'初始失敗！',
     'install/write_read_err'=>'無讀寫權限！',
     'install/not_found'=>'不存在',

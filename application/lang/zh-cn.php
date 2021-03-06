@@ -7,7 +7,7 @@
 *内部处理key：开头 model/、controller/、只在模块内使用
 */
 return [
-    'lang_ver'=>'1068+',
+    'lang_ver'=>'1069+',
     'hello'  => '欢迎使用',
     'maccms_name'=>'苹果CMS-v10',
     'maccms_copyright'=>'© MacCMS All Rights Reserved.',
@@ -801,6 +801,7 @@ https://www.baidu.com/123.jpg
     'admin/index/title'=>'后台管理中心',
     'admin/index/welcome/title'=>'欢迎页面',
     'admin/index/quickmenu/title'=>'快捷菜单配置',
+    'admin/index/cache_data'=>'发现配置缓存，请及时清理...',
     'admin/index/clear_ok'=>'缓存清理成功',
     'admin/index/clear_err'=>'缓存清理失败',
     'admin/index/iframe'=>'布局切换成功，跳转中',

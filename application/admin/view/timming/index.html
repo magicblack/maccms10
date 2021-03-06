@@ -34,7 +34,7 @@
                 </td>
                 <td>{$vo.runtime|mac_day}</td>
                 <td>
-                    <a class="layui-badge-rim" target="_blank" href="{php}echo $GLOBALS['config']['site']['install_dir'];{/php}api.php/timming/index.html?name={$vo['name']|rawurlencode}" title="{:lang('test')}">{:lang('test')}</a>
+                    <a class="layui-badge-rim" target="_blank" href="{php}echo $GLOBALS['config']['site']['install_dir'];{/php}api.php/timming/index.html?enforce=1&name={$vo['name']|rawurlencode}" title="{:lang('test')}">{:lang('test')}</a>
                     <a class="layui-badge-rim j-iframe" data-href="{:url('info')}?id={$vo['name']|rawurlencode}" href="javascript:;" title="{:lang('edit')}">{:lang('edit')}</a>
                     <a class="layui-badge-rim j-tr-del" data-href="{:url('del')}?ids={$vo['name']|rawurlencode}" href="javascript:;" title="{:lang('del')}">{:lang('del')}</a>
                 </td>

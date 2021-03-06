@@ -55,7 +55,7 @@ class VodPlayer extends Base
             if($res===false){
                 return $this->error(lang('wirte_err_codefile'));
             }
-
+            cache('cache_data','1');
             return $this->success(lang('save_ok'));
         }
 
@@ -78,7 +78,7 @@ class VodPlayer extends Base
         if($res===false){
             return $this->error(lang('del_err'));
         }
-
+        cache('cache_data','1');
         return $this->success(lang('del_ok'));
     }
 

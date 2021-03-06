@@ -214,9 +214,12 @@ class Make extends Base
                 $_REQUEST['page'] = $i;
             }
 
-            $link = 'rss/'.$this->_param['ac2'].'.xml';
+            $link = 'rss/'.$this->_param['ac2'];
+            if($par['page']>1){
+                $link .= $GLOBALS['config']['path']['page_sp'] . $par['page'];
+            }
+            $link .='.xml';
             $this->buildHtml($link,'./','rss/'.$this->_param['ac2']);
-
             $this->echoLink($link,'/'.$link);
         }
         if(ENTRANCE=='admin') {

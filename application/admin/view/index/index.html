@@ -296,8 +296,22 @@
             $('body').removeClass('site-mobile');
             $('.Menus-winner').addClass('topLevelMenus');//解决top导航
         });
-
     });
+    $(function(){
+        setInterval("checkCache()", 30*1000);
+    });
+    //检查缓存并保持登录状态
+    function checkCache(){
+        $.ajax({
+            url: "{:url('checkcache')}",
+            cache: false,
+            success: function(r){
+                if(r=='haved'){
+                    layer.msg('{:lang("admin/index/cache_data")}', {time: 3000});
+                }
+            }
+        });
+    }
 </script>
 
 </body>

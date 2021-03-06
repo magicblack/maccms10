@@ -25,7 +25,7 @@ return array (
     'site_icp' => 'icp123',
     'site_qq' => '123456',
     'site_email' => '123456@test.cn',
-    'install_dir' => '/v10/',
+    'install_dir' => '/',
     'site_logo' => 'static/images/logo.jpg',
     'site_waplogo' => 'static/images/logo.jpg',
     'template_dir' => 'default_pc',
@@ -46,7 +46,7 @@ return array (
     'popedom_filter' => '0',
     'cache_type' => 'file',
     'cache_host' => '127.0.0.1',
-    'cache_port' => '11211',
+    'cache_port' => '6379',
     'cache_username' => '',
     'cache_password' => '',
     'cache_flag' => 'a6bcf9aa58',
@@ -62,11 +62,7 @@ return array (
     'copyright_status' => '1',
     'copyright_notice' => '该视频由于版权限制，暂不提供播放。',
     'browser_junmp' => '0',
-    'collect_timespan' => '3',
-    'pagesize' => '20',
-    'makesize' => '30',
-    'admin_login_verify' => '1',
-    'editor' => 'ueditor',
+    'page_404' => '404',
     'player_sort' => '1',
     'encrypt' => '0',
     'search_hot' => '变形金刚,火影忍者,复仇者联盟,战狼,红海行动',
@@ -76,11 +72,17 @@ return array (
     'vod_extend_version' => '高清版,剧场版,抢先版,OVA,TV,影院版',
     'vod_extend_area' => '大陆,香港,台湾,美国,韩国,日本,泰国,新加坡,马来西亚,印度,英国,法国,加拿大,西班牙,俄罗斯,其它',
     'vod_extend_lang' => '国语,英语,粤语,闽南语,韩语,日语,法语,德语,其它',
-    'vod_extend_year' => '2018,2017,2016,2015,2014,2013,2012,2011,2010,2009,2008,2007,2006,2005,2004,2003,2002,2001,2000',
+    'vod_extend_year' => '2021,2020,2019,2018,2017,2016,2015,2014,2013,2012,2011,2010,2009,2008,2007,2006,2005,2004,2003,2002,2001,2000',
     'vod_extend_weekday' => '一,二,三,四,五,六,日',
     'actor_extend_area' => '大陆,香港,台湾,美国,韩国,日本,泰国,新加坡,马来西亚,印度,英国,法国,加拿大,西班牙,俄罗斯,其它',
     'filter_words' => 'www,http,com,net',
     'extra_var' => '',
+    'collect_timespan' => '3',
+    'pagesize' => '20',
+    'makesize' => '30',
+    'admin_login_verify' => '1',
+    'editor' => 'Ueditor',
+    'lang' => 'zh-cn',
   ),
   'user' => 
   array (
@@ -92,10 +94,10 @@ return array (
     'reg_verify' => '0',
     'login_verify' => '0',
     'reg_points' => '10',
-    'reg_num' => '',
+    'reg_num' => '1',
     'invite_reg_points' => '10',
     'invite_visit_points' => '1',
-    'invite_visit_num' => '',
+    'invite_visit_num' => '1',
     'reward_status' => '0',
     'reward_ratio' => '1',
     'reward_ratio_2' => '3',
@@ -104,8 +106,8 @@ return array (
     'cash_ratio' => '100',
     'cash_min' => '1',
     'trysee' => '0',
-    'vod_points_type' => '0',
-    'art_points_type' => '0',
+    'vod_points_type' => '1',
+    'art_points_type' => '1',
     'portrait_status' => '1',
     'portrait_size' => '100x100',
     'filter_words' => 'admin,cao,sex,xxx',
@@ -130,17 +132,19 @@ return array (
   ),
   'upload' => 
   array (
+    'img_key' => 'baidu|douban|tvmao',
+    'img_api' => '/img.php?url=',
     'thumb' => '0',
     'thumb_size' => '300x300',
     'thumb_type' => '1',
     'watermark' => '0',
     'watermark_location' => '7',
-    'watermark_content' => 'maccms.com',
+    'watermark_content' => 'test',
     'watermark_size' => '40',
     'watermark_color' => '#FF0000',
     'protocol' => 'http',
     'mode' => 'local',
-    'remoteurl' => 'http://img.maccms.com/',
+    'remoteurl' => 'http://img.test.com/',
     'api' => 
     array (
       'ftp' => 
@@ -158,6 +162,12 @@ return array (
         'accesskey' => '',
         'secretkey' => '',
         'url' => '',
+      ),
+      'uomg' => 
+      array (
+        'openid' => '',
+        'key' => '',
+        'type' => 'sogou',
       ),
       'upyun' => 
       array (
@@ -178,10 +188,12 @@ return array (
   ),
   'interface' => 
   array (
-    'status' => '1',
-    'pass' => 'TBAKOMRQBCCQCBLK',
+    'status' => 0,
+    'pass' => '2RK20D7UKAWWC5RV',
     'vodtype' => '动作片=动作',
     'arttype' => '头条=头条',
+    'actortype' => '',
+    'websitetype' => '',
   ),
   'pay' => 
   array (
@@ -200,7 +212,7 @@ return array (
     'codepay' => 
     array (
       'appid' => '40625',
-      'appkey' => 'cI1YHggnYbQyA8lLpOu7wXhtuVjULqZZ',
+      'appkey' => '',
       'type' => '1,2',
       'act' => '0',
     ),
@@ -213,7 +225,7 @@ return array (
     'zhapay' => 
     array (
       'appid' => '18039',
-      'appkey' => 'bW2V5oo3TdeXzwyjCwVwhX3guDGO8YDX',
+      'appkey' => '',
       'type' => '1,2',
       'act' => '2',
     ),
@@ -240,7 +252,7 @@ return array (
       'filter' => '色戒,色即是空',
       'namewords' => '第1季=第一季#第2季=第二季#第3季=第三季#第4季=第四季',
       'thesaurus' => ' =',
-      'words' => '',
+      'words' => 'aaa#bbb#ccc#ddd#eee',
     ),
     'art' => 
     array (
@@ -288,15 +300,41 @@ return array (
       'pic' => '0',
       'psernd' => '0',
       'psesyn' => '0',
-      'uprule' => 
-      array (
-        0 => 'a',
-        1 => 'b',
-        2 => 'c',
-      ),
+      'uprule' => ',a,b,c',
       'filter' => '',
       'thesaurus' => '',
       'words' => '',
+      'inrule' => ',a',
+    ),
+    'website' => 
+    array (
+      'status' => '0',
+      'hits_start' => '',
+      'hits_end' => '',
+      'updown_start' => '',
+      'updown_end' => '',
+      'score' => '0',
+      'pic' => '0',
+      'psernd' => '0',
+      'psesyn' => '0',
+      'filter' => '',
+      'thesaurus' => '',
+      'words' => '',
+      'inrule' => ',a',
+      'uprule' => ',',
+    ),
+    'comment' => 
+    array (
+      'status' => '0',
+      'updown_start' => '1',
+      'updown_end' => '100',
+      'psernd' => '0',
+      'psesyn' => '0',
+      'inrule' => ',b',
+      'filter' => '',
+      'thesaurus' => '',
+      'words' => '',
+      'uprule' => ',',
     ),
   ),
   'api' => 
@@ -306,31 +344,54 @@ return array (
       'status' => 0,
       'charge' => '0',
       'pagesize' => '20',
-      'imgurl' => 'http://img.maccms.com/',
+      'imgurl' => 'http://img.test.com/',
       'typefilter' => '',
       'datafilter' => ' vod_status=1',
       'cachetime' => '',
       'from' => '',
-      'auth' => 'maccms.com#163.com',
+      'auth' => 'test.com#163.com',
     ),
     'art' => 
     array (
       'status' => 0,
       'charge' => '0',
       'pagesize' => '20',
-      'imgurl' => 'http://img2.maccms.com/',
+      'imgurl' => '',
       'typefilter' => '',
       'datafilter' => 'art_status=1',
       'cachetime' => '',
-      'auth' => 'qq.com#baidu.com',
+      'auth' => '',
     ),
     'actor' => 
     array (
-      'status' => '1',
+      'status' => '0',
       'charge' => '0',
       'pagesize' => '20',
-      'imgurl' => 'http://img2.maccms.com/',
+      'imgurl' => '',
+      'typefilter' => '',
       'datafilter' => 'actor_status=1',
+      'cachetime' => '',
+      'auth' => '',
+    ),
+    'role' => 
+    array (
+      'status' => '0',
+      'charge' => '0',
+      'pagesize' => '20',
+      'imgurl' => '',
+      'typefilter' => '',
+      'datafilter' => 'role_status=1',
+      'cachetime' => '',
+      'auth' => '',
+    ),
+    'website' => 
+    array (
+      'status' => '0',
+      'charge' => '0',
+      'pagesize' => '20',
+      'imgurl' => '',
+      'typefilter' => '',
+      'datafilter' => 'website_status=1',
       'cachetime' => '',
       'auth' => '',
     ),
@@ -353,13 +414,14 @@ return array (
   'weixin' => 
   array (
     'status' => '1',
-    'duijie' => 'wx.maccms.com',
-    'sousuo' => 'wx.maccms.com',
+    'duijie' => 'wx.test.com',
+    'sousuo' => 'wx.test.com',
     'token' => 'qweqwe',
     'guanzhu' => '欢迎关注',
     'wuziyuan' => '没找到资源，请更换关键词或等待更新',
-    'wuziyuanlink' => 'demo.maccms.com',
+    'wuziyuanlink' => 'demo.test.com',
     'bofang' => '0',
+    'msgtype' => '0',
     'gjc1' => '关键词1',
     'gjcm1' => '长城',
     'gjci1' => 'http://img.aolusb.com/im/201610/2016101222371965996.jpg',
@@ -413,12 +475,15 @@ return array (
     'suffix_hide' => '0',
     'route_status' => '0',
     'status' => '0',
+    'encode_key' => 'abcdefg',
+    'encode_len' => '6',
     'vod_id' => '0',
     'art_id' => '0',
     'type_id' => '0',
     'topic_id' => '0',
     'actor_id' => '0',
     'role_id' => '0',
+    'website_id' => '0',
     'route' => 'map   => map/index
 rss   => rss/index
 
@@ -450,6 +515,8 @@ vodplay/<id>-<sid>-<nid>   => vod/play
 voddown/<id>-<sid>-<nid>   => vod/down
 vodshow/<id>-<area?>-<by?>-<class?>-<lang?>-<letter?>-<level?>-<order?>-<page?>-<state?>-<tag?>-<year?>   => vod/show
 vodsearch/<wd?>-<actor?>-<area?>-<by?>-<class?>-<director?>-<lang?>-<letter?>-<level?>-<order?>-<page?>-<state?>-<tag?>-<year?>   => vod/search
+vodplot/<id>-<page?>   => vod/plot
+vodplot/<id>   => vod/plot
 
 
 arttype/<id>-<page?>   => art/type
@@ -461,16 +528,36 @@ artrss-<id>-<page>   => art/rss
 artshow/<id>-<by?>-<class?>-<level?>-<letter?>-<order?>-<page?>-<tag?>   => art/show
 artsearch/<wd?>-<by?>-<class?>-<level?>-<letter?>-<order?>-<page?>-<tag?>   => art/search
 
-label-<file> => label/index',
+label-<file> => label/index
+
+plotdetail/<id>-<page?>   => plot/plot
+plotdetail/<id>   => plot/detail',
   ),
   'email' => 
   array (
-    'host' => 'smtp.qq.com',
-    'port' => '587',
-    'username' => '123456@qq.com',
-    'password' => '',
-    'nick' => '苹果CMS',
-    'test' => '123456@qq.com',
+    'type' => 'Phpmailer',
+    'time' => '5',
+    'nick' => 'test',
+    'test' => 'test@qq.com',
+    'tpl' => 
+    array (
+      'test_title' => '【{$maccms.site_name}】测试邮件标题',
+      'test_body' => '【{$maccms.site_name}】当您看到这封邮件说明邮件配置正确了！感谢支持开源程序！',
+      'user_reg_title' => '【{$maccms.site_name}】的会员您好，请认真阅读邮件正文并按要求操作完成注册',
+      'user_reg_body' => '【{$maccms.site_name}】的会员您好，注册验证码为：{$code}，请在{$time}分钟内完成验证。',
+      'user_bind_title' => '【{$maccms.site_name}】的会员您好，请认真阅读邮件正文并按要求操作完成绑定',
+      'user_bind_body' => '【{$maccms.site_name}】的会员您好，绑定验证码为：{$code}，请在{$time}分钟内完成验证。',
+      'user_findpass_title' => '【{$maccms.site_name}】的会员您好，请认真阅读邮件正文并按要求操作完成找回',
+      'user_findpass_body' => '【{$maccms.site_name}】的会员您好，找回验证码为：{$code}，请在{$time}分钟内完成验证。',
+    ),
+    'phpmailer' => 
+    array (
+      'host' => 'smtp.qq.com',
+      'port' => '587',
+      'secure' => 'tsl',
+      'username' => 'test@qq.com',
+      'password' => 'test',
+    ),
   ),
   'play' => 
   array (
@@ -483,7 +570,7 @@ label-<file> => label/index',
     'second' => '5',
     'prestrain' => '//union.maccms.com/html/prestrain.html',
     'buffer' => '//union.maccms.com/html/buffer.html',
-    'parse' => '//api.maccms.com/parse/?url=',
+    'parse' => '',
     'autofull' => '0',
     'showtop' => '1',
     'showlist' => '1',
@@ -493,12 +580,20 @@ label-<file> => label/index',
   'sms' => 
   array (
     'type' => '',
-    'appid' => 'xxx',
-    'appkey' => 'xxxx',
-    'sign' => '苹果CMS',
+    'sign' => '我的网站',
     'tpl_code_reg' => 'SMS_144850895',
     'tpl_code_bind' => 'SMS_144940283',
     'tpl_code_findpass' => 'SMS_144851023',
+    'aliyun' => 
+    array (
+      'appid' => '',
+      'appkey' => '',
+    ),
+    'qcloud' => 
+    array (
+      'appid' => '',
+      'appkey' => '',
+    ),
   ),
   'extra' => 
   array (
@@ -534,6 +629,17 @@ label-<file> => label/index',
       'name' => '剧情首页',
       'key' => '剧情连载,剧情更新,剧情前瞻,剧情完结',
       'des' => '提供最新的剧情信息',
+    ),
+  ),
+  'urlsend' => 
+  array (
+    'baidu' => 
+    array (
+      'token' => '111',
+    ),
+    'baidufast' => 
+    array (
+      'token' => '222',
     ),
   ),
 );
