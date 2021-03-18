@@ -58,7 +58,7 @@ class Urlsend extends Base
                 $where['vod_status'] = ['eq',1];
 
                 if($ac2=='today'){
-                    $where['vod_time'] = ['gt',$today];
+                    $where['vod_time_add'] = ['gt',$today];
                 }
                 if(!empty($ids)){
                     $where['vod_id'] = ['in',$ids];

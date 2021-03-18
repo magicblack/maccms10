@@ -1185,7 +1185,7 @@ https://www.baidu.com/123.jpg
     'admin/system/configuser/cash_min'=>'最低提现金额',
     'admin/system/configuser/cash_min_tip'=>'最低提现多少金额',
     'admin/system/configuser/trysee'=>'试看时长',
-    'admin/system/configuser/trysee_tip'=>'全局设置无权限需要积分点播的试看时长，单位分钟；0表示{:lang(\'close\')}全局试看；',
+    'admin/system/configuser/trysee_tip'=>'全局设置无权限需要积分点播的试看时长，单位分钟；0表示关闭全局试看；',
     'admin/system/configuser/vod_points_type'=>'视频收费方式',
     'admin/system/configuser/vod_points_0'=>'每集',
     'admin/system/configuser/vod_points_1'=>'每数据',

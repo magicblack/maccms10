@@ -148,7 +148,7 @@ class User extends Base
         }
 
         if ($data['ulog_points'] > $GLOBALS['user']['user_points']) {
-            return json(['code' => 2002, 'msg' => lang('index/buy_popedom1',[$data['ulog_points'],$GLOBALS['user']['user_points']])]);
+            return json(['code' => 2002, 'msg' => lang('index/buy_popedom3',[$data['ulog_points'],$GLOBALS['user']['user_points']])]);
         } else {
             $where = [];
             $where['user_id'] = $GLOBALS['user']['user_id'];
