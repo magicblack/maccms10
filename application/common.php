@@ -1014,7 +1014,7 @@ function mac_get_ulog_type_text($data)
 
 function mac_get_plog_type_text($data)
 {
-    $arr = [1=>lang('integral_recharge'),2=>lang('registration_promotion'),3=>lang('visit_promotion'),4=>lang('three_level_distribution'),7=>lang('points_upgrade'),8=>lang('integral_consumption'),9=>lang('integral_withdrawal')];
+    $arr = [1=>lang('integral_recharge'),2=>lang('registration_promotion'),3=>lang('visit_promotion'),4=>lang('one_level_distribution'),5=>lang('two_level_distribution'),6=>lang('three_level_distribution'),7=>lang('points_upgrade'),8=>lang('integral_consumption'),9=>lang('integral_withdrawal')];
     return $arr[$data];
 }
 

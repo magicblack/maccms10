@@ -16,15 +16,14 @@ class Image extends Base {
 
     public function down_exec($url,$config,$flag='vod')
     {
-        $upload_image_ext = 'jpg,png,gif';
-        $ext = strrchr($url,'.');
-
-        if(strpos($upload_image_ext,$ext)===false){
-            $ext = '.jpg';
+        $upload_image_ext = 'jpg,jpeg,png,gif,webp';
+        $ext = strtolower(pathinfo($url, PATHINFO_EXTENSION));
+        if(!in_array($ext, explode(',', $upload_image_ext))){
+            $ext = 'jpg';
         }
         $img = mac_curl_get($url);
         if($img){
-            $file_name = md5(uniqid()) . $ext;
+            $file_name = md5(uniqid()) .'.' . $ext;
             // 上传附件路径
             $_upload_path = ROOT_PATH . 'upload' . '/' . $flag . '/';
             // 附件访问路径

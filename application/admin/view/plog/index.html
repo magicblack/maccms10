@@ -10,7 +10,9 @@
                         <option value="1" {if condition="$param['type'] eq '1'"}selected {/if}>{:lang('admin/plog/points_recharge')}</option>
                         <option value="2" {if condition="$param['type'] eq '2'"}selected {/if}>{:lang('admin/plog/reg_promote')}</option>
                         <option value="3" {if condition="$param['type'] eq '3'"}selected {/if}>{:lang('admin/plog/visit_promote')}</option>
-                        <option value="4" {if condition="$param['type'] eq '4'"}selected {/if}>{:lang('admin/plog/three_distribution')}</option>
+                        <option value="4" {if condition="$param['type'] eq '4'"}selected {/if}>{:lang('one_level_distribution')}</option>
+                        <option value="5" {if condition="$param['type'] eq '5'"}selected {/if}>{:lang('two_level_distribution')}</option>
+                        <option value="6" {if condition="$param['type'] eq '6'"}selected {/if}>{:lang('three_level_distribution')}</option>
                         <option value="7" {if condition="$param['type'] eq '7'"}selected {/if}>{:lang('admin/plog/points_upgrade')}</option>
                         <option value="8" {if condition="$param['type'] eq '8'"}selected {/if}>{:lang('admin/plog/points_buy')}</option>
                         <option value="9" {if condition="$param['type'] eq '9'"}selected {/if}>{:lang('admin/plog/points_withdrawal')}</option>
@@ -50,7 +52,7 @@
                 <td>{$vo.plog_id}</td>
                 <td>[{$vo.user_id}]{$vo.user_name}</td>
                 <td>{$vo.plog_type|mac_get_plog_type_text}</td>
-                <td>{if condition="in_array($vo.plog_type,[1,2,3,4])"}+{else/}-{/if}{$vo.plog_points}</td>
+                <td>{if condition="in_array($vo.plog_type,[1,2,3,4,5,6])"}+{else/}-{/if}{$vo.plog_points}</td>
                 <td>{$vo.plog_remarks}</td>
                 <td>{$vo.plog_time|mac_day=color}</td>
                 <td>

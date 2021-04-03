@@ -913,7 +913,7 @@ class User extends Base
                     if($r){
                         $data = [];
                         $data['user_id'] = $GLOBALS['user']['user_pid_2'];
-                        $data['plog_type'] = 4;
+                        $data['plog_type'] = 5;
                         $data['plog_points'] = $points;
                         $data['plog_remarks'] =lang('model/user/reward_tip',[$GLOBALS['user']['user_id'],$GLOBALS['user']['user_name'],$fee_points,$points]);
                         model('Plog')->saveData($data);
@@ -929,7 +929,7 @@ class User extends Base
                     if($r){
                         $data = [];
                         $data['user_id'] = $GLOBALS['user']['user_pid_3'];
-                        $data['plog_type'] = 4;
+                        $data['plog_type'] = 6;
                         $data['plog_points'] = $points;
                         $data['plog_remarks'] = lang('model/user/reward_tip',[$GLOBALS['user']['user_id'],$GLOBALS['user']['user_name'],$fee_points,$points]);
                         model('Plog')->saveData($data);

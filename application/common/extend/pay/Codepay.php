@@ -43,7 +43,7 @@ class Codepay {
         }
 
         $query = $urls . '&sign='.md5($sign.trim( $GLOBALS['config']['pay']['codepay']['appkey'] )); //创建订单所需的参数
-        $url = "http://api2.fateqq.com:52888/creat_order/?{$query}"; //支付页面
+        $url = "https://api.xiuxiu888.com/creat_order/?{$query}"; //支付页面
 
         mac_redirect($url);
     }

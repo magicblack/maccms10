@@ -52,7 +52,7 @@ class Upload extends Base {
         $data = [];
         $config = config('maccms.site');
         $pre= $config['install_dir'];
-        $upload_image_ext = 'jpg,jpeg,png,gif';
+        $upload_image_ext = 'jpg,jpeg,png,gif,webp';
         $upload_file_ext = 'doc,docx,xls,xlsx,ppt,pptx,pdf,wps,txt,rar,zip,torrent';
         $upload_media_ext = 'rm,rmvb,avi,mkv,mp4,mp3';
         $add_rnd = false;

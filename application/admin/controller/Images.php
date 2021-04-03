@@ -152,9 +152,8 @@ class Images extends Base
 
             if($param['col'] == 2){
                 $content = $v[$col_pic];
-                $rule = mac_buildregx("<img[^>]*src\s*=\s*['".chr(34)."]?([\w/\-\:.]*)['".chr(34)."]?[^>]*>","is");
+                $rule = mac_buildregx('<img[^>]*src=[\'"]?([^>\'"\s]*)[\'"]?[^>]*>',"is");
                 preg_match_all($rule,$content,$matches);
-
                 $matchfieldarr=$matches[1];
                 $matchfieldstrarr=$matches[0];
                 $matchfieldvalue="";
@@ -162,8 +161,8 @@ class Images extends Base
                 {
                     $matchfieldvalue=$matchfieldstrarr[$f];
                     $img_old = trim(preg_replace("/[ \r\n\t\f]{1,}/"," ",$matchfieldstr));
-
                     $img_url = model('Image')->down_load($img_old, $config, $param['tab']);
+
                     $des = '';
                     if(in_array($config['mode'],['local']) || substr($img_url,0,7)=='upload/'){
                         $img_url = MAC_PATH . $img_url;

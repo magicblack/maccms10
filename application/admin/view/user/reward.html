@@ -49,7 +49,7 @@
                 <td>{$vo.user_name}</td>
                 <td>{$vo.group_name}</td>
                 <td>{if condition="$vo['user_status'] eq 1"}<span class="layui-badge layui-bg-green">{:lang('open')}</span>{else/}<span class="layui-badge">{:lang('close')}</span>{/if}</td>
-                <td>{if condition="$vo['user_pid'] eq $param['uid']"}{:lang('admin/user/reward/one_distribution')}{elseif condition="$vo['user_pid_2'] eq $param['uid']"}{:lang('admin/user/reward/two_distribution')}{else/}{/if}</td>
+                <td>{if condition="$vo['user_pid'] eq $param['uid']"}{:lang('admin/user/reward/one_distribution')}{elseif condition="$vo['user_pid_2'] eq $param['uid']"}{:lang('admin/user/reward/two_distribution')}{else/}{:lang('admin/user/reward/three_distribution')}{/if}</td>
                 <td>{$vo.user_reg_time|mac_day=color}</td>
             </tr>
             {/volist}

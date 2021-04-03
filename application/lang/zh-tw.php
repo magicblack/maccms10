@@ -7,7 +7,7 @@
 *內部處理key：開頭 model/、controller/、只在模塊內使用
 */
 return [
-    'lang_ver'=>'1069+',
+    'lang_ver'=>'1072+',
     'hello'  => '歡迎使用',
     'maccms_name'=>'蘋果CMS-v10',
     'maccms_copyright'=>'© MacCMS All Rights Reserved.',
@@ -67,6 +67,8 @@ return [
     'integral_recharge'=>'積分充值',
     'registration_promotion'=>'註冊推廣',
     'visit_promotion'=>'訪問推廣',
+    'one_level_distribution'=>'一級分銷',
+    'two_level_distribution'=>'二級分銷',
     'three_level_distribution'=>'三級分銷',
     'points_upgrade'=>'積分升級',
     'integral_consumption'=>'積分消費',
@@ -341,6 +343,7 @@ return [
     'cj_time'=>'采集時間',
     'reply_time'=>'回復時間',
     'log_time'=>'日誌時間',
+    'reg_time'=>'註冊時間',
     'related'=>'關聯',
 
     'card_no'=>'卡號',

@@ -7,7 +7,7 @@
 *内部处理key：开头 model/、controller/、只在模块内使用
 */
 return [
-    'lang_ver'=>'1069+',
+    'lang_ver'=>'1072+',
     'hello'  => '欢迎使用',
     'maccms_name'=>'苹果CMS-v10',
     'maccms_copyright'=>'© MacCMS All Rights Reserved.',
@@ -67,6 +67,8 @@ return [
     'integral_recharge'=>'积分充值',
     'registration_promotion'=>'注册推广',
     'visit_promotion'=>'访问推广',
+    'one_level_distribution'=>'一级分销',
+    'two_level_distribution'=>'二级分销',
     'three_level_distribution'=>'三级分销',
     'points_upgrade'=>'积分升级',
     'integral_consumption'=>'积分消费',
@@ -341,6 +343,7 @@ return [
     'cj_time'=>'采集时间',
     'reply_time'=>'回复时间',
     'log_time'=>'日志时间',
+    'reg_time'=>'注册时间',
     'related'=>'关联',
 
     'card_no'=>'卡号',

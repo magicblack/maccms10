@@ -59,11 +59,8 @@ class User extends Base
         $param = input();
         $param['page'] = intval($param['page']) <1 ? 1 : $param['page'];
         $param['limit'] = intval($param['limit']) <1 ? $this->_pagesize : $param['limit'];
-
         $param['uid'] = intval($param['uid']);
-
         $where=[];
-
         if(!empty($param['level'])){
             if($param['level']=='1'){
                 $where['user_pid'] = ['eq', $param['uid']];
@@ -86,34 +83,34 @@ class User extends Base
 
         $order='user_id desc';
         $res = model('User')->listData($where,$order,$param['page'],$param['limit']);
-
-        $list=[];
+        $group_list = model('Group')->getCache('group_list');
+        foreach($res['list'] as $k=>$v){
+            $res['list'][$k]['group_name'] = $group_list[$v['group_id']]['group_name'];
+        }
 
         $where2=[];
         $where2['user_pid'] = ['eq', $param['uid']];
-        $user_ids_1 = Db::name('User')->where($where2)->column('user_id');
-        $level_cc_1 = count($user_ids_1);
-        $where3=[];
-        $where3['user_id_1'] = ['in',$user_ids_1];
+        $level_cc_1 = Db::name('User')->where($where2)->count();
+        $where3 = [];
+        $where3['user_id'] = $param['uid'];
+        $where3['plog_type'] = 4;
         $points_cc_1 = Db::name('Plog')->where($where3)->sum('plog_points');
-
 
         $where2=[];
         $where2['user_pid_2'] = ['eq', $param['uid']];
-        $user_ids_2 = Db::name('User')->where($where2)->column('user_id');
-        $level_cc_2 = count($user_ids_2);
-        $where3=[];
-        $where3['user_id_1'] = ['in',$user_ids_2];
+        $level_cc_2 = Db::name('User')->where($where2)->count();
+        $where3 = [];
+        $where3['user_id'] = $param['uid'];
+        $where3['plog_type'] = 5;
         $points_cc_2 = Db::name('Plog')->where($where3)->sum('plog_points');
 
         $where2=[];
         $where2['user_pid_3'] = ['eq', $param['uid']];
-        $user_ids_3 = Db::name('User')->where($where2)->column('user_id');
-        $level_cc_3 = count($user_ids_3);
-        $where3=[];
-        $where3['user_id_1'] = ['in',$user_ids_3];
+        $level_cc_3 = Db::name('User')->where($where2)->count();
+        $where3 = [];
+        $where3['user_id'] = $param['uid'];
+        $where3['plog_type'] = 6;
         $points_cc_3 = Db::name('Plog')->where($where3)->sum('plog_points');
-
 
         $data=[];
         $data['level_cc_1'] = intval($level_cc_1);
