@@ -7,7 +7,7 @@
 *內部處理key：開頭 model/、controller/、只在模塊內使用
 */
 return [
-    'lang_ver'=>'1072+',
+    'lang_ver'=>'1073+',
     'hello'  => '歡迎使用',
     'maccms_name'=>'蘋果CMS-v10',
     'maccms_copyright'=>'© MacCMS All Rights Reserved.',
@@ -87,7 +87,8 @@ return [
     'just'=>'剛剛',
     'day_after_tomorrow'=>'後天',
     'tomorrow'=>'明天',
-    'year'=>'年份',
+    'year'=>'年',
+    'years'=>'年份',
     'month'=>'月',
     'day'=>'日',
     'yes'=>'是',
@@ -570,7 +571,7 @@ https://www.baidu.com/123.jpg
     'menu/cjs'=>'采集',
     'menu/union'=>'推薦資源',
     'menu/collect_timming'=>'定時掛機',
-    'menu/collect'=>'自定義資源',
+    'menu/collect'=>'自定義接口',
     'menu/cj'=>'自定義規則',
     'menu/db'=>'數據庫',
     'menu/database'=>'數據庫管理',
@@ -598,7 +599,7 @@ https://www.baidu.com/123.jpg
     'model/cash/mush_money_err'=>'提現太多了,沒有這麽多積分哦！',
 
     'model/collect/flag_err'=>'flag標識錯誤，請勿非法請求！',
-    'model/collect/get_html_err'=>'連接API資源庫失敗，通常為服務器網絡不穩定或禁用了采集！',
+    'model/collect/get_html_err'=>'連接API接口失敗，通常為服務器網絡不穩定、IP被封、禁用相關函數！',
     'model/collect/json_err'=>'JSON格式不正確，不支持采集',
     'model/collect/xml_err'=>'XML格式不正確，不支持采集',
     'model/collect/data_tip1'=>'當前采集任務<strong class="green">%s</strong>/<span class="green">%s</span>頁 采集地址&nbsp;%s',
@@ -1821,6 +1822,7 @@ https://www.baidu.com/123.jpg
     'admin/upload/upload_success'=>'文件上傳成功！',
     'admin/upload/upload_faild'=>'文件上傳失敗！',
     'admin/upload/make_thumb_faild'=>'文件上傳失敗！',
+    'admin/upload/upload_safe'=>'文件包含危險內容！',
 
     'admin/urlsend/title'=>'URL推送管理',
     'admin/urlsend/no_data'=>'沒有獲取到數據',

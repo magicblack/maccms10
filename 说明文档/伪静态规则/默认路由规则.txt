@@ -1,5 +1,11 @@
 map   => map/index
-rss   => rss/index
+rss/index   => rss/index
+rss/baidu => rss/baidu
+rss/google => rss/google
+rss/sogou => rss/sogou
+rss/so => rss/so
+rss/bing => rss/bing
+rss/sm => rss/sm
 
 index-<page?>   => index/index
 

@@ -158,6 +158,22 @@ class Upload extends Base {
             $_save_name = str_replace('\\', '/', $upfile->getSaveName());
         }
 
+
+        $resource = fopen($_save_path.$_save_name, 'rb');
+        $fileSize = filesize($_save_path.$_save_name);
+        fseek($resource, 0);
+        if ($fileSize>512){
+            $hexCode = bin2hex(fread($resource, 512));
+            fseek($resource, $fileSize - 512);
+            $hexCode .= bin2hex(fread($resource, 512));
+        } else {
+            $hexCode = bin2hex(fread($resource, $fileSize));
+        }
+        fclose($resource);
+        if(preg_match("/(3c25.*?28.*?29.*?253e)|(3c3f.*?28.*?29.*?3f3e)|(3C534352495054)|(2F5343524950543E)|(3C736372697074)|(2F7363726970743E)/is", $hexCode)){
+            return self::upload_return(lang('admin/upload/upload_safe'), $param['from']);
+        }
+
         $file_count = 1;
         $data = [
             'file'  => $_save_path.$_save_name,

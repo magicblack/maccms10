@@ -7,7 +7,7 @@
 *内部处理key：开头 model/、controller/、只在模块内使用
 */
 return [
-    'lang_ver'=>'1072+',
+    'lang_ver'=>'1073+',
     'hello'  => '欢迎使用',
     'maccms_name'=>'苹果CMS-v10',
     'maccms_copyright'=>'© MacCMS All Rights Reserved.',
@@ -87,7 +87,8 @@ return [
     'just'=>'刚刚',
     'day_after_tomorrow'=>'后天',
     'tomorrow'=>'明天',
-    'year'=>'年份',
+    'year'=>'年',
+    'years'=>'年份',
     'month'=>'月',
     'day'=>'日',
     'yes'=>'是',
@@ -570,7 +571,7 @@ https://www.baidu.com/123.jpg
     'menu/cjs'=>'采集',
     'menu/union'=>'推荐资源',
     'menu/collect_timming'=>'定时挂机',
-    'menu/collect'=>'自定义资源',
+    'menu/collect'=>'自定义接口',
     'menu/cj'=>'自定义规则',
     'menu/db'=>'数据库',
     'menu/database'=>'数据库管理',
@@ -598,7 +599,7 @@ https://www.baidu.com/123.jpg
     'model/cash/mush_money_err'=>'提现太多了,没有这么多积分哦！',
 
     'model/collect/flag_err'=>'flag标识错误，请勿非法请求！',
-    'model/collect/get_html_err'=>'连接API资源库失败，通常为服务器网络不稳定或禁用了采集！',
+    'model/collect/get_html_err'=>'连接API接口失败，通常为服务器网络不稳定、IP被封、禁用相关函数！',
     'model/collect/json_err'=>'JSON格式不正确，不支持采集',
     'model/collect/xml_err'=>'XML格式不正确，不支持采集',
     'model/collect/data_tip1'=>'当前采集任务<strong class="green">%s</strong>/<span class="green">%s</span>页 采集地址&nbsp;%s',
@@ -1821,6 +1822,7 @@ https://www.baidu.com/123.jpg
     'admin/upload/upload_success'=>'文件上传成功！',
     'admin/upload/upload_faild'=>'文件上传失败！',
     'admin/upload/make_thumb_faild'=>'文件上传失败！',
+    'admin/upload/upload_safe'=>'文件包含危险内容！',
 
     'admin/urlsend/title'=>'URL推送管理',
     'admin/urlsend/no_data'=>'没有获取到数据',

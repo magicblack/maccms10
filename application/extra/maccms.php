@@ -28,10 +28,10 @@ return array (
     'install_dir' => '/',
     'site_logo' => 'static/images/logo.jpg',
     'site_waplogo' => 'static/images/logo.jpg',
-    'template_dir' => 'default_pc',
+    'template_dir' => 'default',
     'html_dir' => 'html',
     'mob_status' => '0',
-    'mob_template_dir' => 'default_wap',
+    'mob_template_dir' => 'default',
     'mob_html_dir' => 'html',
     'site_tj' => '统计代码',
     'site_status' => '1',
@@ -98,10 +98,10 @@ return array (
     'invite_reg_points' => '10',
     'invite_visit_points' => '1',
     'invite_visit_num' => '1',
-    'reward_status' => '0',
-    'reward_ratio' => '1',
-    'reward_ratio_2' => '3',
-    'reward_ratio_3' => '5',
+    'reward_status' => '1',
+    'reward_ratio' => '10',
+    'reward_ratio_2' => '30',
+    'reward_ratio_3' => '50',
     'cash_status' => '1',
     'cash_ratio' => '100',
     'cash_min' => '1',
@@ -485,7 +485,13 @@ return array (
     'role_id' => '0',
     'website_id' => '0',
     'route' => 'map   => map/index
-rss   => rss/index
+rss/index   => rss/index
+rss/baidu => rss/baidu
+rss/google => rss/google
+rss/sogou => rss/sogou
+rss/so => rss/so
+rss/bing => rss/bing
+rss/sm => rss/sm
 
 index-<page?>   => index/index
 
