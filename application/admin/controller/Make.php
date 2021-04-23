@@ -900,6 +900,10 @@ class Make extends Base
         if(empty($ids)){
             return $this->error(lang('param_err'));
         }
+        if( count( explode("./",$ids) ) > 1){
+            $this->error(lang('param_err').'2');
+            return;
+        }
         if(!is_array($ids)){
             $ids = explode(',',$ids);
         }

@@ -61,35 +61,35 @@ class Timming extends Base
         }
     }
 
-    public function collect($param)
+    protected function collect($param)
     {
         @parse_str($param,$output);
         $request = controller('admin/collect');
         $request->api($output);
     }
 
-    public function make($param)
+    protected function make($param)
     {
         @parse_str($param,$output);
         $request = controller('admin/make');
         $request->make($output);
     }
 
-    public function cj($param)
+    protected function cj($param)
     {
         @parse_str($param,$output);
         $request = controller('admin/cj');
         $request->col_all($output);
     }
 
-    public function cache($param)
+    protected function cache($param)
     {
         @parse_str($param,$output);
         $request = controller('admin/index');
         $request->clear();
     }
 
-    public function urlsend($param)
+    protected function urlsend($param)
     {
         @parse_str($param,$output);
         $request = controller('admin/urlsend');

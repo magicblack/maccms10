@@ -615,7 +615,7 @@ class User extends Base
         }
 
         $where=[];
-        $where['user_id'] = $GLOBALS['user']['user_id'];
+        $where['user_id'] = intval($GLOBALS['user']['user_id']);
         $where['msg_time'] = ['gt',$stime];
         $where['msg_code'] = ['eq',$param['code']];
         $where['msg_type'] = ['eq', $param['type'] ];
@@ -655,7 +655,7 @@ class User extends Base
             $stime = strtotime('-'.$GLOBALS['config']['email']['time'].' min');
         }
         $where=[];
-        $where['user_id'] = $GLOBALS['user']['user_id'];
+        $where['user_id'] = intval($GLOBALS['user']['user_id']);
         $where['msg_time'] = ['gt',$stime];
         $where['msg_type'] = ['eq', $param['type'] ];
         $where['msg_to'] = ['eq', $param['to'] ];
@@ -684,7 +684,7 @@ class User extends Base
         
         if($res_code==1){
             $data=[];
-            $data['user_id'] = $GLOBALS['user']['user_id'];
+            $data['user_id'] = intval($GLOBALS['user']['user_id']);
             $data['msg_type'] = $param['type'];
             $data['msg_status'] = 0;
             $data['msg_to'] = $to;
