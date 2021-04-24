@@ -900,6 +900,7 @@ class Make extends Base
         if(empty($ids)){
             return $this->error(lang('param_err'));
         }
+        $ids = str_replace('\\','/',$ids);
         if( count( explode("./",$ids) ) > 1){
             $this->error(lang('param_err').'2');
             return;
