@@ -143,7 +143,7 @@ var MAC={
     },
     'Qrcode':{
         'Init':function(){
-            $('.mac_qrcode').attr('src','//api.maccms.com/qrcode/index/w/150/h/150/url/' + MAC.Url);
+            $('.mac_qrcode').attr('src','//api.maccms.la/qrcode/index/w/150/h/150/url/' + MAC.Url);
         }
     },
     'Shorten': {
@@ -155,7 +155,7 @@ var MAC={
         },
         'Get':function(url,call){
             url=url||location.href;
-            MAC.Ajax('//api.maccms.com/shorten/index/url/'+ encodeURIComponent(url),'get','jsonp','',function(r){
+            MAC.Ajax('//api.maccms.la/shorten/index/url/'+ encodeURIComponent(url),'get','jsonp','',function(r){
                 if (r.code == 1) {
                     if($('.mac_shorten').length>0) {
                         $('.mac_shorten').val(r.data.url_short);
