@@ -14,7 +14,7 @@ class Vod extends Base
         $param = input();
         $param['page'] = intval($param['page']) <1 ? 1 : $param['page'];
         $param['limit'] = intval($param['limit']) <1 ? $this->_pagesize : $param['limit'];
-
+        
         $where = [];
         if(!empty($param['type'])){
             $where['type_id|type_id_1'] = ['eq',$param['type']];

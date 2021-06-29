@@ -143,7 +143,7 @@ var MAC={
     },
     'Qrcode':{
         'Init':function(){
-            $('.mac_qrcode').attr('src','//api.maccms.la/qrcode/index/w/150/h/150/url/' + MAC.Url);
+            $('.mac_qrcode').attr('src', maccms.path +'/index.php/qrcode/index.html?url='+ MAC.Url);
         }
     },
     'Shorten': {
