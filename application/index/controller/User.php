@@ -571,7 +571,7 @@ class User extends Base
             unset($type_tree[$k1]['type_extend']);
             foreach ($ids as $a => $b) {
                 $n++;
-                if ($v1['type_mid'] == 2 && $a > 2) {
+                if ($v1['type_mid'] != 1 && $a > 2) {
                     break;
                 }
                 $type_tree[$k1]['popedom'][$b] = model('User')->popedom($v1['type_id'], $a, $GLOBALS['user']['group_id']);
@@ -580,7 +580,7 @@ class User extends Base
                 unset($type_tree[$k1]['child'][$k2]['type_extend']);
                 foreach ($ids as $a => $b) {
                     $n++;
-                    if ($v2['type_mid'] == 2 && $a > 2) {
+                    if ($v2['type_mid'] != 1 && $a > 2) {
                         break;
                     }
                     $type_tree[$k1]['child'][$k2]['popedom'][$b] = model('User')->popedom($v2['type_id'], $a, $GLOBALS['user']['group_id']);
