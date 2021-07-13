@@ -1,7 +1,7 @@
 <?php
 namespace app\index\controller;
 use think\captcha\Captcha;
-use think\config;
+use think\Config;
 use think\Controller;
 
 class Verify extends Controller
