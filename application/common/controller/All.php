@@ -153,12 +153,11 @@ class All extends Controller
     protected function label_type($view=0)
     {
         $param = mac_param_url();
+        $info = mac_label_type($param);
         if(!empty($GLOBALS['config']['app']['wall_filter'])){
             $param = mac_escape_param($param);
         }
         $this->assign('param',$param);
-        $info = mac_label_type($param);
-
         $this->assign('obj',$info);
         if(empty($info)){
             return $this->error(lang('controller/get_type_err'));
