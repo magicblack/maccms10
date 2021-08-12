@@ -7,7 +7,7 @@
 *内部处理key：开头 model/、controller/、只在模块内使用
 */
 return [
-    'lang_ver'=>'1073+',
+    'lang_ver'=>'3000+',
     'hello'  => '欢迎使用',
     'maccms_name'=>'苹果CMS-v10',
     'maccms_copyright'=>'© MacCMS All Rights Reserved.',
@@ -457,6 +457,7 @@ return [
 
     'page_not_found'=>'页面不存在',
     'search_close'=>'搜索功能关闭中',
+    'show_close'=>'筛选页功能关闭中',
     'frequently'=>'请不要频繁操作',
     'search_frequently'=>'请不要频繁操作，搜索时间间隔为',
     'score_ok'=>'感谢您的参与，评分成功',
@@ -853,6 +854,10 @@ https://www.baidu.com/123.jpg
     'admin/system/config/xhx'=>'下横线_',
     'admin/system/config/suffix'=>'页面后缀名',
 
+    'admin/system/config/wall_filter'=>'假墙防御',
+    'admin/system/config/wall_unicode'=>'编码方式',
+    'admin/system/config/wall_blank'=>'空白方式',
+    'admin/system/config/wall_filter_tip'=>'开启后将部分页面传入参数在页面展示时编码或替换为空解决假墙威胁',
     'admin/system/config/popedom_filter'=>'数据权限过滤',
     'admin/system/config/popedom_filter_tip'=>'开启后将隐藏没有权限的分类和数据',
     'admin/system/config/cache_type'=>'缓存方式',
@@ -880,6 +885,7 @@ https://www.baidu.com/123.jpg
     'admin/system/config/search_timespan_tip'=>'单位秒，建议设置为3秒以上',
     'admin/system/config/404'=>'404页面',
     'admin/system/config/404_tip'=>'自定义404页面，页面放在模板的public目录下无需后缀名，默认为jump',
+    'admin/system/config/show'=>'筛选页开关',
 
     'admin/system/config/search_vod_rule'=>'视频搜索规则',
     'admin/system/config/search_rule_tip'=>'注意，仅影响wd参数，勾选过多影响性能，建议3个以内',

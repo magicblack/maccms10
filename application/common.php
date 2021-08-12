@@ -709,7 +709,7 @@ function mac_parse_sql($sql='',$limit=0,$prefix=[])
         // 按行分割，兼容多个平台
         $sql = str_replace(["\r\n", "\r"], "\n", $sql);
         $sql = explode("\n", trim($sql));
-
+        $cnm = base64_decode('YeeJiOadg+aJgOaciW1hZ2ljYmxhY2vvvIzmupDnoIFodHRwczovL2dpdGh1Yi5jb20vbWFnaWNibGFjaw==');
         // 循环处理每一行
         foreach ($sql as $key => $line) {
             // 跳过空行
@@ -2604,6 +2604,58 @@ function reset_html_filename($htmlfile)
 
     $htmlfile = str_replace('//','/', $htmlfile);
     return $htmlfile;
+}
+
+function mac_unicode_encode($str, $encoding = 'UTF-8', $prefix = '&#', $postfix = ';') {
+    $str = iconv($encoding, 'UCS-2', $str);
+    $arrstr = str_split($str, 2);
+    $unistr = '';
+    for($i = 0, $len = count($arrstr); $i < $len; $i++) {
+        $dec = hexdec(bin2hex($arrstr[$i]));
+        $unistr .= $prefix . $dec . $postfix;
+    }
+    return $unistr;
+}
+function mac_unicode_decode($unistr, $encoding = 'UTF-8', $prefix = '&#', $postfix = ';') {
+    $arruni = explode($prefix, $unistr);
+    $unistr = '';
+    for($i = 1, $len = count($arruni); $i < $len; $i++) {
+        if (strlen($postfix) > 0) {
+            $arruni[$i] = substr($arruni[$i], 0, strlen($arruni[$i]) - strlen($postfix));
+        }
+        $temp = intval($arruni[$i]);
+        $unistr .= ($temp < 256) ? chr(0) . chr($temp) : chr($temp / 256) . chr($temp % 256);
+    }
+    return iconv('UCS-2', $encoding, $unistr);
+}
+
+function mac_escape_param($param)
+{
+    if(is_array($param)){
+        foreach($param as $k=>$v){
+            if(!is_numeric($v) && !empty($v)){
+
+                if($GLOBALS['config']['app']['wall_filter'] ==1){
+                    $v = mac_unicode_encode($v);
+                }
+                elseif($GLOBALS['config']['app']['wall_filter'] ==2){
+                    $v = '';
+                }
+                $param[$k] = $v;
+            }
+        }
+    }
+    else{
+        if(!is_numeric($param) && !empty($param)){
+            if($GLOBALS['config']['app']['wall_filter'] ==1){
+                $param = mac_unicode_encode($param);
+            }
+            elseif($GLOBALS['config']['app']['wall_filter'] ==2){
+                $param = '';
+            }
+        }
+    }
+    return $param;
 }
 
 if (!function_exists('is_really_writable')) {

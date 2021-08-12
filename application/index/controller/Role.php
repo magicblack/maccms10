@@ -17,12 +17,14 @@ class Role extends Base
 
     public function show()
     {
+        $this->check_show();
         $this->label_role();
         return $this->label_fetch('role/show');
     }
 
     public function ajax_show()
     {
+        $this->check_show();
         $this->label_role();
         return $this->label_fetch('role/ajax_show');
     }
@@ -31,8 +33,22 @@ class Role extends Base
     {
         $param = mac_param_url();
         $this->check_search($param);
+        if(!empty($GLOBALS['config']['app']['wall_filter'])){
+            $param = mac_escape_param($param);
+        }
         $this->assign('param',$param);
         return $this->label_fetch('role/search');
+    }
+
+    public function ajax_search()
+    {
+        $param = mac_param_url();
+        $this->check_search($param);
+        if(!empty($GLOBALS['config']['app']['wall_filter'])){
+            $param = mac_escape_param($param);
+        }
+        $this->assign('param',$param);
+        return $this->label_fetch('role/ajax_search');
     }
 
     public function detail()

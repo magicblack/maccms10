@@ -19,8 +19,22 @@ class Topic extends Base
     {
         $param = mac_param_url();
         $this->check_search($param);
+        if(!empty($GLOBALS['config']['app']['wall_filter'])){
+            $param = mac_escape_param($param);
+        }
         $this->assign('param',$param);
         return $this->label_fetch('topic/search');
+    }
+
+    public function ajax_search()
+    {
+        $param = mac_param_url();
+        $this->check_search($param);
+        if(!empty($GLOBALS['config']['app']['wall_filter'])){
+            $param = mac_escape_param($param);
+        }
+        $this->assign('param',$param);
+        return $this->label_fetch('topic/ajax_search');
     }
 
     public function detail()

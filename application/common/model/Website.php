@@ -121,6 +121,8 @@ class Website extends Base {
         $pageurl = $lp['pageurl'];
         $level = $lp['level'];
         $wd = $lp['wd'];
+        $tag = $lp['tag'];
+        $class = $lp['class'];
         $name = $lp['name'];
         $area = $lp['area'];
         $lang = $lp['lang'];
@@ -184,6 +186,15 @@ class Website extends Base {
             }
             if(!empty($param['wd'])) {
                 $wd = $param['wd'];
+            }
+            if(!empty($param['name'])) {
+                $name = $param['name'];
+            }
+            if(!empty($param['tag'])) {
+                $tag = $param['tag'];
+            }
+            if(!empty($param['class'])) {
+                $class = $param['class'];
             }
             if(!empty($param['by'])){
                 $by = $param['by'];
@@ -359,6 +370,12 @@ class Website extends Base {
         }
         if(!empty($wd)) {
             $where['website_name|website_en'] = ['like', '%' . $wd . '%'];
+        }
+        if(!empty($tag)) {
+            $where['website_tag'] = ['like', mac_like_arr($tag),'OR'];
+        }
+        if(!empty($class)) {
+            $where['website_class'] = ['like',mac_like_arr($class),'OR'];
         }
         if($by=='rnd'){
             $data_count = $this->countData($where);
@@ -548,7 +565,7 @@ class Website extends Base {
         return ['code'=>1,'msg'=>lang('set_ok')];
     }
 
-    public function updateToday($flag='art')
+    public function updateToday($flag='website')
     {
         $today = strtotime(date('Y-m-d'));
         $where = [];

@@ -26,9 +26,17 @@ class Base extends All
         exit;
     }
 
+    protected function check_show()
+    {
+        if($GLOBALS['config']['app']['show'] ==0){
+            echo $this->error(lang('show_close'));
+            exit;
+        }
+    }
+
     protected function check_search($param)
     {
-        if($GLOBALS['config']['app']['search'] !='1'){
+        if($GLOBALS['config']['app']['search'] ==0){
             echo $this->error(lang('search_close'));
             exit;
         }

@@ -18,6 +18,9 @@ class Plot extends Base
     {
         $param = mac_param_url();
         $this->check_search($param);
+        if(!empty($GLOBALS['config']['app']['wall_filter'])){
+            $param = mac_escape_param($param);
+        }
         $this->assign('param',$param);
         return $this->label_fetch('plot/search');
     }
@@ -26,6 +29,9 @@ class Plot extends Base
     {
         $param = mac_param_url();
         $this->check_search($param);
+        if(!empty($GLOBALS['config']['app']['wall_filter'])){
+            $param = mac_escape_param($param);
+        }
         $this->assign('param',$param);
         return $this->label_fetch('plot/ajax_search');
     }

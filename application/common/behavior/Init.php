@@ -43,7 +43,7 @@ class Init
             }
         }
 
-        define('MAC_URL','http://www.maccms.la/');
+        define('MAC_URL','http'.'://'.'www'.'.'.'maccms'.'.'.'la'.'/');
         define('MAC_NAME','苹果CMS');
         define('MAC_PATH', $config['site']['install_dir'] .'');
         define('MAC_MOB', $TMP_ISWAP);
@@ -53,7 +53,8 @@ class Init
         define('MAC_PATH_ADS', MAC_PATH_TEMPLATE. $TMP_ADSDIR  .'/');
         define('MAC_PAGE_SP', $config['path']['page_sp'] .'');
         define('MAC_PLAYER_SORT', $config['app']['player_sort'] );
-        //define('ADDON_PATH', ROOT_PATH . 'addons' . DS);
+        define('MAC_ADDON_PATH', ROOT_PATH . 'addons' . '/');
+        define('MAC_ADDON_PATH_STATIC', ROOT_PATH . 'static/addons/');
 
         $GLOBALS['MAC_ROOT_TEMPLATE'] = ROOT_PATH .'template/'.$TMP_TEMPLATEDIR.'/'. $TMP_HTMLDIR .'/';
         $GLOBALS['MAC_PATH_TEMPLATE'] = MAC_PATH.'template/'.$TMP_TEMPLATEDIR.'/';

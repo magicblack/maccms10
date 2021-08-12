@@ -167,6 +167,7 @@ class Images extends Base
                     if(in_array($config['mode'],['local']) || substr($img_url,0,7)=='upload/'){
                         $img_url = MAC_PATH . $img_url;
                         $link = $img_url;
+                        $link = str_replace('//', '/', $link);
                     }
                     else{
                         $link = str_replace('mac:', $config['protocol'].':', $img_url);
@@ -199,6 +200,7 @@ class Images extends Base
                 $des = '';
                 if(in_array($config['mode'],['local']) || substr($img_url,0,7)=='upload/'){
                     $link = MAC_PATH . $img_url;
+                    $link = str_replace('//', '/', $link);
                 }
                 else{
                     $link = str_replace('mac:', $config['protocol'].':', $img_url);

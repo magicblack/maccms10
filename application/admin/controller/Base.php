@@ -95,9 +95,11 @@ class Base extends All
                 $path .= '.bak';
             }
             $fc = @file_get_contents($path);
-            $jsb = mac_get_body($fc, '//缓存开始', '//缓存结束');
-            $fc = str_replace($jsb, "\r\n" . $content . "\r\n", $fc);
-            @fwrite(fopen('./static/js/playerconfig.js', 'wb'), $fc);
+            if(!empty($fc)){
+	            $jsb = mac_get_body($fc, '//缓存开始', '//缓存结束');
+	            $fc = str_replace($jsb, "\r\n" . $content . "\r\n", $fc);
+	            @fwrite(fopen('./static/js/playerconfig.js', 'wb'), $fc);
+            }
         }
 
         Dir::delDir(RUNTIME_PATH.'cache/');

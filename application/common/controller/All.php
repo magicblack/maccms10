@@ -153,6 +153,9 @@ class All extends Controller
     protected function label_type($view=0)
     {
         $param = mac_param_url();
+        if(!empty($GLOBALS['config']['app']['wall_filter'])){
+            $param = mac_escape_param($param);
+        }
         $this->assign('param',$param);
         $info = mac_label_type($param);
 
@@ -219,6 +222,9 @@ class All extends Controller
     protected function label_role($total='')
     {
         $param = mac_param_url();
+        if(!empty($GLOBALS['app']['wall_filter'])){
+            $param = mac_escape_param($param);
+        }
         $this->assign('param',$param);
     }
 
