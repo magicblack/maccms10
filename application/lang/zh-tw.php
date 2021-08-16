@@ -32,7 +32,7 @@ return [
     'status'=>'狀態',
     'status_parse'=>'解析狀態',
     'test'=>'測試',
-    'copy'=>'復制',
+    'copy'=>'復製',
     'run'=>'執行',
     'run_ok'=>'執行成功',
     'skip'=>'跳過',
@@ -648,7 +648,7 @@ https://www.baidu.com/123.jpg
     'model/user/haved_reg'=>'用戶名已被註冊，請更換',
     'model/user/name_contain'=>'用戶名只能包含字母和數字，請更換',
     'model/user/name_filter'=>'用戶名禁止包含：%s等字符，請重試',
-    'model/user/ip_limit'=> '每IP每日限制註冊%s次',
+    'model/user/ip_limit'=> '每IP每日限製註冊%s次',
     'model/user/phone_haved'=> '手機號已被使用，請更換',
     'model/user/email_haved'=> '郵箱已被使用，請更換',
     'model/user/reg_err'=> '註冊失敗，請重試',
@@ -764,7 +764,7 @@ https://www.baidu.com/123.jpg
     'admin/index/login/verify_pass'=>'請輸入密碼',
     'admin/index/login/verify_verify'=>'請輸入驗證碼',
 
-    'admin/index/index/name' =>'超級控制臺',
+    'admin/index/index/name' =>'超級控製臺',
     'admin/index/index/menu_switch' =>'打開/關閉左側導航',
     'admin/index/index/menu_index' =>'網站首頁',
     'admin/index/index/menu_lock' =>'鎖屏操作',
@@ -790,7 +790,7 @@ https://www.baidu.com/123.jpg
     'admin/index/welcome/filed_host' =>'服務器IP/端口',
     'admin/index/welcome/filed_php_ver' =>'PHP版本',
     'admin/index/welcome/filed_thinkphp_ver' =>'ThinkPHP版本',
-    'admin/index/welcome/filed_max_upload' =>'最大上傳限制',
+    'admin/index/welcome/filed_max_upload' =>'最大上傳限製',
     'admin/index/welcome/filed_date' =>'服務器日期',
     'admin/index/welcome/filed_ver' =>'程序版本',
     'admin/index/welcome/filed_license' =>'授權類型',
@@ -881,12 +881,16 @@ https://www.baidu.com/123.jpg
     'admin/system/config/cache_time_page'=>'頁面緩存時間',
     'admin/system/config/compress'=>'壓縮頁面',
     'admin/system/config/search'=>'搜索開關',
+    'admin/system/config/search_verify'=>'搜索驗證碼',
     'admin/system/config/search_timespan'=>'搜索間隔',
     'admin/system/config/search_timespan_tip'=>'單位秒，建議設置為3秒以上',
     'admin/system/config/404'=>'404頁面',
     'admin/system/config/404_tip'=>'自定義404頁面，頁面放在模板的public目錄下無需後綴名，默認為jump',
-
     'admin/system/config/show'=>'篩選頁開關',
+    'admin/system/config/show_verify'=>'篩選驗證碼',
+    'admin/system/config/input_type'=>'參數獲取方式',
+    'admin/system/config/input_type_tip'=>'建議采用get方式，安全並且容易分析日誌',
+
     'admin/system/config/search_vod_rule'=>'視頻搜索規則',
     'admin/system/config/search_rule_tip'=>'註意，僅影響wd參數，勾選過多影響性能，建議3個以內',
     'admin/system/config/search_art_rule'=>'文章搜索規則',
@@ -1131,7 +1135,7 @@ https://www.baidu.com/123.jpg
     'admin/system/configplay/flag_tip'=>'本地播放器',
     'admin/system/configplay/colors'=>'播放器顏色',
     'admin/system/configplay/select_colors'=>'選擇顏色',
-    'admin/system/configplay/select_colors_tip'=>'顏色使用16進制表示法，不帶#號，以逗號分割，一共15個可配置顏色!
+    'admin/system/configplay/select_colors_tip'=>'顏色使用16進製表示法，不帶#號，以逗號分割，一共15個可配置顏色!
                         <br>依次是：背景色，文字顏色，鏈接顏色，分組標題背景色，分組標題顏色，當前分組標題顏色，當前集數顏色，集數列表滾動條凸出部分的顏色，滾動條上下按鈕上三角箭頭的顏色，滾動條的背景顏色，滾動條空白部分的顏色，滾動條立體滾動條陰影的顏色 ，滾動條亮邊的顏色，滾動條強陰影的顏色，滾動條的基本顏色',
 
 
@@ -1176,13 +1180,13 @@ https://www.baidu.com/123.jpg
     'admin/system/configuser/login_verify'=>'登錄驗證碼',
     'admin/system/configuser/reg_points'=>'註冊贈分',
     'admin/system/configuser/reg_points_tip'=>'用戶註冊成功後默認贈送積分',
-    'admin/system/configuser/reg_num'=>'每IP限制',
-    'admin/system/configuser/reg_num_tip'=>'每個IP每日限制註冊次數',
+    'admin/system/configuser/reg_num'=>'每IP限製',
+    'admin/system/configuser/reg_num_tip'=>'每個IP每日限製註冊次數',
     'admin/system/configuser/invite_reg_points'=>'邀請註冊積分',
     'admin/system/configuser/invite_reg_points_tip'=>'成功邀請用戶賺取獎勵積分',
     'admin/system/configuser/invite_visit_points'=>'推廣訪問積分',
     'admin/system/configuser/invite_visit_points_tip'=>'成功邀請訪問賺取獎勵積分',
-    'admin/system/configuser/invite_visit_num_tip'=>'每個IP每日限制可以獲取幾次推廣訪問積分',
+    'admin/system/configuser/invite_visit_num_tip'=>'每個IP每日限製可以獲取幾次推廣訪問積分',
     'admin/system/configuser/reward_status'=>'三級分銷狀態',
     'admin/system/configuser/reward_ratio'=>'一級提成比例',
     'admin/system/configuser/reward_ratio2'=>'二級提成比例',
@@ -1304,7 +1308,7 @@ https://www.baidu.com/123.jpg
     'admin/system/configsms/type'=>'服務商',
     'admin/system/configsms/sign'=>'短信簽名',
     'admin/system/configsms/tpl_code_reg'=>'註冊模板編號',
-    'admin/system/configsms/tpl_code_tip'=>'模板編號需要在服務商短信控制臺中申請',
+    'admin/system/configsms/tpl_code_tip'=>'模板編號需要在服務商短信控製臺中申請',
     'admin/system/configsms/tpl_code_bind'=>'綁定模板編號',
     'admin/system/configsms/tpl_code_findpass'=>'找回密碼模板編號',
     'admin/system/configsms/test_err'=>'發生錯誤，請檢查是否開啟相應擴展庫!',
@@ -1347,7 +1351,7 @@ https://www.baidu.com/123.jpg
     'admin/admin/title'=>'管理員管理',
     'admin/admin/del_cur_err'=>'禁止刪除當前登錄賬號',
     'admin/admin/popedom_tip'=>'提示：<br>
-                    1.權限控制精準到每個操作，創始人ID為1的管理員擁有所有權限。
+                    1.權限控製精準到每個操作，創始人ID為1的管理員擁有所有權限。
                     2.--開頭的是頁面內按鈕操作選項。',
 
 
@@ -1403,7 +1407,7 @@ https://www.baidu.com/123.jpg
     'admin/domain/title'=>'站群管理',
     'admin/domain/help_tip'=>'提示信息：<br>
                         1，此功能支持非靜態模式下同1個數據庫不同域名顯示不同的模板和網站配置信息<br>
-                        2，不限制域名網站數量<br>
+                        2，不限製域名網站數量<br>
                         3，導入文本格式是：域名$網站名稱$關鍵字$描述$模板$模板目錄$廣告目錄。每行一個網站。清空原有數據。<br>',
 
     'admin/domain/title'=>'站群管理',
@@ -1602,7 +1606,7 @@ https://www.baidu.com/123.jpg
     'admin/group/pack_year'=>'包年',
     'admin/group/popedom'=>'相關權限',
     'admin/group/popedom_tip'=>'提示：<br>
-                    1.列表頁、內容頁、播放頁、下載頁4個權限，控制是否可以進入頁面，沒權限會直接返回提示信息。<br>
+                    1.列表頁、內容頁、播放頁、下載頁4個權限，控製是否可以進入頁面，沒權限會直接返回提示信息。<br>
                     2.試看權限：如果沒有訪問播放頁的權限、或者有權限但是需要積分購買的數據，開啟了試看權限也是可以進入頁面的。',
     'admin/group/popedom_list'=>'列表頁',
     'admin/group/popedom_detail'=>'內容頁',
@@ -1894,14 +1898,14 @@ https://www.baidu.com/123.jpg
     'install/lang_tip'=>'請根據自己身需要選擇後臺語言包',
 
     'install/user_agreement_title'=>'蘋果CMS用戶協議 適用於所有用戶',
-    'install/user_agreement'=>' 請您在使用(蘋果CMS)前仔細閱讀如下條款。包括免除或者限制作者責任的免責條款及對用戶的權利限制。您的安裝使用行為將視為對本《用戶許可協議》的接受，並同意接受本《用戶許可協議》各項條款的約束。 <br /><br />
+    'install/user_agreement'=>' 請您在使用(蘋果CMS)前仔細閱讀如下條款。包括免除或者限製作者責任的免責條款及對用戶的權利限製。您的安裝使用行為將視為對本《用戶許可協議》的接受，並同意接受本《用戶許可協議》各項條款的約束。 <br /><br />
                 一、安裝和使用： <br />
-                (蘋果CMS)是免費和開源提供給您使用的，您可安裝無限制數量副本。 您必須保證在不進行非法活動，不違反所在國家相關政策法規的前提下使用本軟件。 <br /><br />
+                (蘋果CMS)是免費和開源提供給您使用的，您可安裝無限製數量副本。 您必須保證在不進行非法活動，不違反所在國家相關政策法規的前提下使用本軟件。 <br /><br />
                 二、免責聲明：  <br />
                 本軟件並無附帶任何形式的明示的或暗示的保證，包括任何關於本軟件的適用性, 無侵犯知識產權或適合作某一特定用途的保證。  <br />
                 在任何情況下，對於因使用本軟件或無法使用本軟件而導致的任何損害賠償，作者均無須承擔法律責任。作者不保證本軟件所包含的資料,文字、圖形、鏈接或其它事項的準確性或完整性。作者可隨時更改本軟件，無須另作通知。  <br />
-                所有由用戶自己制作、下載、使用的第三方信息數據和插件所引起的一切版權問題或糾紛，本軟件概不承擔任何責任。<br /><br />
-                三、協議規定的約束和限制：  <br />
+                所有由用戶自己製作、下載、使用的第三方信息數據和插件所引起的一切版權問題或糾紛，本軟件概不承擔任何責任。<br /><br />
+                三、協議規定的約束和限製：  <br />
                 禁止去除(蘋果CMS)源碼裏的版權信息，商業授權版本可去除後臺界面及前臺界面的相關版權信息。</br>
                 禁止在(蘋果CMS)整體或任何部分基礎上發展任何派生版本、修改版本或第三方版本用於重新分發。</br></br>
                 <strong>版權所有 (c) 2020，蘋果CMS,保留所有權利</strong>。',
@@ -1972,7 +1976,7 @@ https://www.baidu.com/123.jpg
     'install/php'=>'php版本',
     'install/gd'=>'GD庫',
 
-    'install/not_limited'=>'不限制',
+    'install/not_limited'=>'不限製',
     'install/not_installed'=>'未安裝',
     'install/read_and_write'=>'讀寫',
     'install/not_writable'=>'不可寫',

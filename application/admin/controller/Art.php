@@ -208,7 +208,7 @@ class Art extends Base
 
         $info = $res['info'];
         $this->assign('info',$info);
-        $this->assign('art_page_list',$info['art_page_list']);
+        $this->assign('art_page_list',(array)$info['art_page_list']);
 
         $type_tree = model('Type')->getCache('type_tree');
         $this->assign('type_tree',$type_tree);

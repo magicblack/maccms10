@@ -757,11 +757,12 @@ function mac_parse_sql($sql='',$limit=0,$prefix=[])
 
         // 只返回一条语句
         if ($limit == 1) {
-            return implode($pure_sql, "");
+            return implode("",$pure_sql);
         }
 
+
         // 以数组形式返回sql语句
-        $pure_sql = implode($pure_sql, "\n");
+        $pure_sql = implode("\n",$pure_sql);
         $pure_sql = explode(";\n", $pure_sql);
         return $pure_sql;
     } else {
@@ -1369,9 +1370,11 @@ function mac_find_array($text,$start,$end)
 /*前台页面*/
 function mac_param_url(){
     $input = input() ;
+    if($GLOBALS['config']['app']['input_type']==0 && request()->isPost()){
+        $input = input('get.');
+    }
     $param = [];
     $input = array_merge($input,$_REQUEST);
-
     //$param['id'] = intval($input['id']);
     $param['page'] = intval($input['page']) <1 ? 1 : intval($input['page']);
     $param['ajax'] = intval($input['ajax']);
@@ -1413,6 +1416,7 @@ function mac_param_url(){
 
     return $param;
 }
+
 function mac_get_page($page)
 {
     if(empty($page)) {

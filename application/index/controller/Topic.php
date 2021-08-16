@@ -19,6 +19,12 @@ class Topic extends Base
     {
         $param = mac_param_url();
         $this->check_search($param);
+        if($GLOBALS['config']['app']['search_verify'] ==1){
+            if(empty(session('search_verify'))){
+                $this->assign('type','search');
+                return $this->label_fetch('public/verify');
+            }
+        }
         if(!empty($GLOBALS['config']['app']['wall_filter'])){
             $param = mac_escape_param($param);
         }

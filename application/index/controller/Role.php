@@ -18,6 +18,12 @@ class Role extends Base
     public function show()
     {
         $this->check_show();
+        if($GLOBALS['config']['app']['show_verify'] ==1){
+            if(empty(session('show_verify'))){
+                $this->assign('type','show');
+                return $this->label_fetch('public/verify');
+            }
+        }
         $this->label_role();
         return $this->label_fetch('role/show');
     }
@@ -33,6 +39,12 @@ class Role extends Base
     {
         $param = mac_param_url();
         $this->check_search($param);
+        if($GLOBALS['config']['app']['search_verify'] ==1){
+            if(empty(session('search_verify'))){
+                $this->assign('type','search');
+                return $this->label_fetch('public/verify');
+            }
+        }
         if(!empty($GLOBALS['config']['app']['wall_filter'])){
             $param = mac_escape_param($param);
         }

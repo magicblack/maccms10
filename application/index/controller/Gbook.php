@@ -1,6 +1,5 @@
 <?php
 namespace app\index\controller;
-use think\Controller;
 
 class Gbook extends Base
 {
@@ -35,14 +34,6 @@ class Gbook extends Base
     }
 
     public function report()
-    {
-        $param = mac_param_url();
-        $this->assign('param',$param);
-        $this->assign('gbook',$GLOBALS['config']['gbook']);
-        return $this->label_fetch('gbook/report');
-    }
-
-    public function error()
     {
         $param = mac_param_url();
         $this->assign('param',$param);

@@ -262,6 +262,14 @@
                         </div>
                     </div>
                 <div class="layui-form-item">
+                    <label class="layui-form-label">{:lang('admin/system/config/input_type')}：</label>
+                    <div class="layui-input-inline w600">
+                        <input type="radio" name="app[input_type]" value="0" title="{:lang('get')}" {if condition="$config['app']['input_type'] neq 1"}checked {/if}>
+                        <input type="radio" name="app[input_type]" value="1" title="{:lang('get+post')}" {if condition="$config['app']['input_type'] eq 1"}checked {/if}>
+                    </div>
+                    <div class="layui-form-mid layui-word-aux">{:lang('admin/system/config/input_type_tip')}</div>
+                </div>
+                <div class="layui-form-item">
                     <label class="layui-form-label">{:lang('admin/system/config/wall_filter')}：</label>
                     <div class="layui-input-inline w600">
                         <input type="radio" name="app[wall_filter]" value="0" title="{:lang('close')}" {if condition="$config['app']['wall_filter'] neq 1 && $config['app']['wall_filter'] neq 2"}checked {/if}>
@@ -278,10 +286,24 @@
                     </div>
                 </div>
                 <div class="layui-form-item">
+                    <label class="layui-form-label">{:lang('admin/system/config/show_verify')}：</label>
+                    <div class="layui-input-block">
+                        <input type="radio" name="app[show_verify]" value="0" title="{:lang('close')}" {if condition="$config['app']['show_verify'] neq 1"}checked {/if}>
+                        <input type="radio" name="app[show_verify]" value="1" title="{:lang('open')}" {if condition="$config['app']['show_verify'] eq 1"}checked {/if}>
+                    </div>
+                </div>
+                <div class="layui-form-item">
                     <label class="layui-form-label">{:lang('admin/system/config/search')}：</label>
                     <div class="layui-input-block">
                         <input type="radio" name="app[search]" value="0" title="{:lang('close')}" {if condition="$config['app']['search'] neq 1"}checked {/if}>
                         <input type="radio" name="app[search]" value="1" title="{:lang('open')}" {if condition="$config['app']['search'] eq 1"}checked {/if}>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">{:lang('admin/system/config/search_verify')}：</label>
+                    <div class="layui-input-block">
+                        <input type="radio" name="app[search_verify]" value="0" title="{:lang('close')}" {if condition="$config['app']['search_verify'] neq 1"}checked {/if}>
+                        <input type="radio" name="app[search_verify]" value="1" title="{:lang('open')}" {if condition="$config['app']['search_verify'] eq 1"}checked {/if}>
                     </div>
                 </div>
                 <div class="layui-form-item">

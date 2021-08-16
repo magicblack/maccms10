@@ -436,9 +436,9 @@ class Vod extends Base
         $this->assign('server_list',$server_list);
 
         //播放组、下载租
-        $this->assign('vod_play_list',$info['vod_play_list']);
-        $this->assign('vod_down_list',$info['vod_down_list']);
-        $this->assign('vod_plot_list',$info['vod_plot_list']);
+        $this->assign('vod_play_list',(array)$info['vod_play_list']);
+        $this->assign('vod_down_list',(array)$info['vod_down_list']);
+        $this->assign('vod_plot_list',(array)$info['vod_plot_list']);
 
 
         $this->assign('title',lang('admin/vod/title'));

@@ -65,7 +65,7 @@ class Type extends Base {
                     $list[$k]['childids'] = $type_list[$v['type_id']]['childids'];
                 }
                 else {
-                    $list[$k]['childids'] = join(',', $childs[$v['type_id']]);
+                    $list[$k]['childids'] = join(',', (array)$childs[$v['type_id']]);
                 }
             }
             else {

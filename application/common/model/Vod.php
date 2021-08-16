@@ -485,12 +485,17 @@ class Vod extends Base {
         if($GLOBALS['config']['app']['cache_core']==1 && $data_cache) {
             $info = Cache::get($key);
         }
+
         if($GLOBALS['config']['app']['cache_core']==0 || $cache==0 || empty($info['vod_id'])) {
             $info = $this->field($field)->where($where)->find();
             if (empty($info)) {
                 return ['code' => 1002, 'msg' => lang('obtain_err')];
             }
             $info = $info->toArray();
+            $info['vod_play_list']=[];
+            $info['vod_down_list']=[];
+            $info['vod_plot_list']=[];
+            $info['vod_pic_screenshot_list']=[];
 
             if (!empty($info['vod_play_from'])) {
                 $info['vod_play_list'] = mac_play_list($info['vod_play_from'], $info['vod_play_url'], $info['vod_play_server'], $info['vod_play_note'], 'play');
@@ -504,6 +509,7 @@ class Vod extends Base {
             if(!empty($info['vod_pic_screenshot'])){
                 $info['vod_pic_screenshot_list'] = mac_screenshot_list($info['vod_pic_screenshot']);
             }
+
 
             //分类
             if (!empty($info['type_id'])) {

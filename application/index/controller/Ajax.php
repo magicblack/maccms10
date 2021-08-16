@@ -456,4 +456,18 @@ class Ajax extends Base
         session($key,'1');
         return json(['code'=>1,'msg'=>'ok']);
     }
+
+    public function verify_check()
+    {
+        $param = input();
+        if(!in_array($param['type'],['search','show'])){
+            return ['code' => 1001, 'msg' => lang('param_err')];
+        }
+
+        if (!captcha_check($param['verify'])){
+            return ['code' => 1002, 'msg' => lang('verify_err')];
+        }
+        session($param['type'].'_verify','1');
+        return json(['code'=>1,'msg'=>lang('ok')]);
+    }
 }

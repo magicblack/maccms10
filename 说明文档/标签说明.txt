@@ -37,6 +37,7 @@ public/paging.html     分页样式模板
 public/digg.html       顶踩样式模板
 public/score.html      普通评分样式模板
 public/star.html       星星评分样式模板
+public/verify.html     搜索筛选页验证码模板
 │
 comment/index.html     评论页
 comment/ajax.html     评论页

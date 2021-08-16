@@ -58,7 +58,7 @@ class Urlsend extends Base
                 $where['vod_status'] = ['eq',1];
 
                 if($ac2=='today'){
-                    $where['vod_time_add'] = ['gt',$today];
+                    $where['vod_time'] = ['gt',$today];
                 }
                 if(!empty($ids)){
                     $where['vod_id'] = ['in',$ids];
@@ -76,7 +76,7 @@ class Urlsend extends Base
                 $where['art_status'] = ['eq',1];
 
                 if($ac2=='today'){
-                    $where['art_time_add'] = ['gt',$today];
+                    $where['art_time'] = ['gt',$today];
 
                 }
                 if(!empty($ids)){
@@ -95,7 +95,7 @@ class Urlsend extends Base
                 $where['topic_status'] = ['eq',1];
 
                 if($ac2=='today'){
-                    $where['topic_time_add'] = ['gt',$today];
+                    $where['topic_time'] = ['gt',$today];
 
                 }
                 if(!empty($ids)){
@@ -114,7 +114,7 @@ class Urlsend extends Base
                 $where['actor_status'] = ['eq',1];
 
                 if($ac2=='today'){
-                    $where['actor_time_add'] = ['gt',$today];
+                    $where['actor_time'] = ['gt',$today];
 
                 }
                 if(!empty($ids)){
@@ -132,7 +132,7 @@ class Urlsend extends Base
                 $where['role_status'] = ['eq',1];
 
                 if($ac2=='today'){
-                    $where['role_time_add'] = ['gt',$today];
+                    $where['role_time'] = ['gt',$today];
 
                 }
                 if(!empty($ids)){
@@ -150,7 +150,7 @@ class Urlsend extends Base
                 $where['website_status'] = ['eq',1];
 
                 if($ac2=='today'){
-                    $where['website_time_add'] = ['gt',$today];
+                    $where['website_time'] = ['gt',$today];
 
                 }
                 if(!empty($ids)){
