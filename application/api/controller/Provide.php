@@ -10,7 +10,10 @@ class Provide extends Base
     public function __construct()
     {
         parent::__construct();
-        $this->_param = input('get.','','trim,urldecode');
+        $this->_param = input('','','trim,urldecode');
+        if($GLOBALS['config']['app']['input_type']==0 && request()->isPost()){
+            $this->_param = input('get.');
+        }
     }
 
     public function index()
