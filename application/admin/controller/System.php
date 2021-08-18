@@ -105,6 +105,7 @@ class System extends Base
                 unset($tmp,$tmp2);
             }
 
+            $config['site']['site_tj'] = html_entity_decode($config['site']['site_tj']);
             $config_new['site'] = $config['site'];
             $config_new['app'] = $config['app'];
             $config_new['extra'] = $config['extra'];
@@ -113,7 +114,7 @@ class System extends Base
             $config_new = array_merge($config_old, $config_new);
 
 
-            $tj = html_entity_decode($config_new['site']['site_tj']);
+            $tj = $config_new['site']['site_tj'];
             if(strpos($tj,'document.w') ===false){
                 $tj = 'document.write(\'' . str_replace("'","\'",$tj) . '\')';
             }
@@ -155,7 +156,7 @@ class System extends Base
     public function configurl()
     {
         if (Request()->isPost()) {
-            $config = input('','','htmlentities');
+            $config = input();
 
             $validate = \think\Loader::validate('Token');
             if(!$validate->check($config)){

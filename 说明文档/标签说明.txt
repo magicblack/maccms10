@@ -131,7 +131,7 @@ website/type.html       网址分类页
 {$maccms.site_icp}备案号
 {$maccms.site_qq}站长qq
 {$maccms.site_email}站长email
-{$maccms.site_tj}统计代码；也可以用{$maccms.path}static/js/tj.js 来动态引入统计代码。
+{$maccms.site_tj|html_entity_decode}统计代码；也可以用{$maccms.path}static/js/tj.js 来动态引入统计代码。
 {$maccms.site_status}网站状态1开启0关闭
 {$maccms.site_close_tip}网站关闭提示信息
 
