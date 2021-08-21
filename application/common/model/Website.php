@@ -141,8 +141,8 @@ class Website extends Base {
         $cachetime = $lp['cachetime'];
         $typenot = $lp['typenot'];
         $refermonth = $lp['refermonth'];
-        $referweek = $lp['refermonth'];
-        $referday = $lp['refermonth'];
+        $referweek = $lp['referweek'];
+        $referday = $lp['referday'];
         $refer = $lp['refer'];
 
         $page = 1;
@@ -390,7 +390,7 @@ class Website extends Base {
             $order = 'desc';
         }
 
-        if(!in_array($by, ['id', 'time','time_add','score','hits','hits_day','hits_week','hits_month','up','down','level','rnd','in'])) {
+        if(!in_array($by, ['id', 'time','time_add','score','hits','hits_day','hits_week','hits_month','up','down','level','rnd','in','referer','referer_day','referer_week','referer_month'])) {
             $by = 'time';
         }
         if(!in_array($order, ['asc', 'desc'])) {

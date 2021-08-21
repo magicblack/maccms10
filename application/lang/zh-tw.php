@@ -1709,7 +1709,7 @@ https://www.baidu.com/123.jpg
                         TRUNCATE {pre}vod',
     'admin/database/exec'=>'確認執行',
     'admin/database/inspect'=>'掛馬檢測',
-    'admin/database/inspect_tip'=>'<strong>掛馬檢測1.0版本</strong><br>
+    'admin/database/inspect_tip'=>'<strong>掛馬檢測3.0版本</strong><br>
                             1，將對分類表，視頻表，文章表，會員表等表結構進行檢查。<br>
                             2，檢測包含script,iframe等特殊字符串。<br>
                             3，將自動清除掛馬代碼。<br>

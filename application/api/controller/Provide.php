@@ -110,7 +110,7 @@ class Provide extends Base
             } else {
                 $html = json_encode($this->vod_json($res),JSON_UNESCAPED_UNICODE);
             }
-
+            $html = mac_filter_tags($html);
             if($cache_time>0) {
                 Cache::set($cach_name, $html, $cache_time);
             }
@@ -396,7 +396,7 @@ class Provide extends Base
                 $res['class'] = $class;
             }
             $html = json_encode($res,JSON_UNESCAPED_UNICODE);
-
+            $html = mac_filter_tags($html);
             if($cache_time>0) {
                 Cache::set($cach_name, $html, $cache_time);
             }
@@ -520,7 +520,7 @@ class Provide extends Base
             }
 
             $html = json_encode($res,JSON_UNESCAPED_UNICODE);
-
+            $html = mac_filter_tags($html);
             if($cache_time>0) {
                 Cache::set($cach_name, $html, $cache_time);
             }
@@ -632,7 +632,7 @@ class Provide extends Base
             }
 
             $html = json_encode($res,JSON_UNESCAPED_UNICODE);
-
+            $html = mac_filter_tags($html);
             if($cache_time>0) {
                 Cache::set($cach_name, $html, $cache_time);
             }
@@ -756,7 +756,7 @@ class Provide extends Base
             }
 
             $html = json_encode($res,JSON_UNESCAPED_UNICODE);
-
+            $html = mac_filter_tags($html);
             if($cache_time>0) {
                 Cache::set($cach_name, $html, $cache_time);
             }

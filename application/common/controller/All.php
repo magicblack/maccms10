@@ -150,16 +150,9 @@ class All extends Controller
         $this->assign('comment',$comment);
     }
 
-    protected function label_search($param,$aj=0)
+    protected function label_search($param)
     {
         $param = mac_search_len_check($param);
-        if($GLOBALS['config']['app']['search_verify'] ==1 && $aj ==0){
-            if(empty(session('search_verify'))){
-                $this->assign('type','search');
-                echo $this->label_fetch('public/verify');
-                exit;
-            }
-        }
         if(!empty($GLOBALS['config']['app']['wall_filter'])){
             $param = mac_escape_param($param);
         }

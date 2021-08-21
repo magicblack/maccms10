@@ -26,11 +26,19 @@ class Base extends All
         exit;
     }
 
-    protected function check_show()
+    protected function check_show($aj=0)
     {
         if($GLOBALS['config']['app']['show'] ==0){
             echo $this->error(lang('show_close'));
             exit;
+        }
+        if($GLOBALS['config']['app']['show_verify'] ==1 && $aj==0){
+            if(empty(session('show_verify'))){
+                mac_no_cahche();
+                $this->assign('type','show');
+                echo $this->label_fetch('public/verify');
+                exit;
+            }
         }
     }
 
@@ -42,15 +50,23 @@ class Base extends All
         }
     }
 
-    protected function check_search($param)
+    protected function check_search($param,$aj=0)
     {
         if($GLOBALS['config']['app']['search'] ==0){
             echo $this->error(lang('search_close'));
             exit;
         }
-        if ( $param['page']==1 && mac_get_time_span("last_searchtime") < $GLOBALS['config']['app']['search_timespan']){
+        if($param['page']==1 && mac_get_time_span("last_searchtime") < $GLOBALS['config']['app']['search_timespan']){
             echo $this->error(lang('search_frequently')."".$GLOBALS['config']['app']['search_timespan']."".lang('seconds'));
             exit;
+        }
+        if($GLOBALS['config']['app']['search_verify'] ==1 && $aj ==0){
+            if(empty(session('search_verify'))){
+                mac_no_cahche();
+                $this->assign('type','search');
+                echo $this->label_fetch('public/verify');
+                exit;
+            }
         }
     }
 

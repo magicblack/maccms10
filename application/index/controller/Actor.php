@@ -24,12 +24,6 @@ class Actor extends Base
     public function show()
     {
         $this->check_show();
-        if($GLOBALS['config']['app']['show_verify'] ==1){
-            if(empty(session('show_verify'))){
-                $this->assign('type','show');
-                return $this->label_fetch('public/verify');
-            }
-        }
         $info = $this->label_type();
         return $this->label_fetch( mac_tpl_fetch('actor',$info['type_tpl_list'],'show') );
     }
@@ -37,7 +31,7 @@ class Actor extends Base
     public function ajax_show()
     {
         $this->check_ajax();
-        $this->check_show();
+        $this->check_show(1);
         $info = $this->label_type();
         return $this->label_fetch('actor/ajax_show');
     }
@@ -54,8 +48,8 @@ class Actor extends Base
     {
         $param = mac_param_url();
         $this->check_ajax();
-        $this->check_search($param);
-        $this->label_search($param,1);
+        $this->check_search($param,1);
+        $this->label_search($param);
         return $this->label_fetch('actor/ajax_search');
     }
 

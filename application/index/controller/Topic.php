@@ -27,8 +27,8 @@ class Topic extends Base
     {
         $param = mac_param_url();
         $this->check_ajax();
-        $this->check_search($param);
-        $this->label_search($param,1);
+        $this->check_search($param,1);
+        $this->label_search($param);
         return $this->label_fetch('topic/ajax_search');
     }
 

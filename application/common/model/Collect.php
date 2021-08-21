@@ -162,11 +162,10 @@ class Collect extends Base {
         }
         $url .= http_build_query($url_param). base64_decode($param['param']);
         $html = mac_curl_get($url);
-
         if(empty($html)){
             return ['code'=>1001, 'msg'=>lang('model/collect/get_html_err')];
         }
-
+        $html = mac_filter_tags($html);
         $xml = @simplexml_load_string($html);
         if(empty($xml)){
             $labelRule = '<pic>'."(.*?)".'</pic>';
@@ -310,7 +309,7 @@ class Collect extends Base {
         if(empty($html)){
             return ['code'=>1001, 'msg'=>lang('model/collect/get_html_err')];
         }
-
+        $html = mac_filter_tags($html);
         $json = json_decode($html,true);
         if(!$json){
             return ['code'=>1002, 'msg'=>lang('model/collect/json_err')];
@@ -988,7 +987,7 @@ class Collect extends Base {
         if(empty($html)){
             return ['code'=>1001, 'msg'=>lang('model/collect/get_html_err')];
         }
-
+        $html = mac_filter_tags($html);
         $json = json_decode($html,true);
         if(!$json){
             return ['code'=>1002, 'msg'=>lang('model/collect/json_err')];
@@ -1310,7 +1309,7 @@ class Collect extends Base {
         if(empty($html)){
             return ['code'=>1001, 'msg'=>lang('model/collect/get_html_err')];
         }
-
+        $html = mac_filter_tags($html);
         $json = json_decode($html,true);
         if(!$json){
             return ['code'=>1002, 'msg'=>lang('model/collect/json_err')];
@@ -1597,7 +1596,7 @@ class Collect extends Base {
         if(empty($html)){
             return ['code'=>1001, 'msg'=>lang('model/collect/get_html_err')];
         }
-
+        $html = mac_filter_tags($html);
         $json = json_decode($html,true);
         if(!$json){
             return ['code'=>1002, 'msg'=>lang('model/collect/json_err')];
@@ -1891,7 +1890,7 @@ class Collect extends Base {
         if(empty($html)){
             return ['code'=>1001, 'msg'=>lang('model/collect/get_html_err')];
         }
-
+        $html = mac_filter_tags($html);
         $json = json_decode($html,true);
         if(!$json){
             return ['code'=>1002, 'msg'=>lang('model/collect/json_err')];
@@ -2176,7 +2175,7 @@ class Collect extends Base {
         if(empty($html)){
             return ['code'=>1001, 'msg'=>lang('model/collect/get_html_err')];
         }
-
+        $html = mac_filter_tags($html);
         $json = json_decode($html,true);
         if(!$json){
             return ['code'=>1002, 'msg'=>lang('model/collect/json_err')];

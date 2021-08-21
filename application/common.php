@@ -2678,6 +2678,31 @@ function mac_search_len_check($param)
     return $param;
 }
 
+function mac_no_cahche()
+{
+    @header('Expires: Mon, 26 Jul 1997 05:00:00 GMT');
+    @header('Last-Modified: ' . gmdate('D, d M Y H:i:s') . 'GMT');
+    @header('Cache-Control: no-cache, must-revalidate');
+    @header('Pragma: no-cache');
+}
+
+function mac_filter_tags($rs)
+{
+    $rex = array('{:','<script','<iframe','<frameset','<object','onerror');
+    if(is_array($rs)){
+        foreach($rs as $k2=>$v2){
+            if(!is_numeric($v2)){
+                $rs[$k2] = str_ireplace($rex,'*',$rs[$k2]);
+            }
+        }
+    }
+    else{
+        if(!is_numeric($rs)){
+            $rs = str_ireplace($rex,'*',$rs);
+        }
+    }
+    return $rs;
+}
 
 if (!function_exists('is_really_writable')) {
 

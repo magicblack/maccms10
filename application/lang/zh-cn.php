@@ -1709,7 +1709,7 @@ https://www.baidu.com/123.jpg
                         TRUNCATE {pre}vod',
     'admin/database/exec'=>'确认执行',
     'admin/database/inspect'=>'挂马检测',
-    'admin/database/inspect_tip'=>'<strong>挂马检测1.0版本</strong><br>
+    'admin/database/inspect_tip'=>'<strong>挂马检测3.0版本</strong><br>
                             1，将对分类表，视频表，文章表，会员表等表结构进行检查。<br>
                             2，检测包含script,iframe等特殊字符串。<br>
                             3，将自动清除挂马代码。<br>

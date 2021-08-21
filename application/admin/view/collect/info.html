@@ -56,8 +56,8 @@
             <div class="layui-input-block">
                 <input name="collect_filter" type="radio" value="0" title="{:lang('admin/collect/no_filter')}" {if condition="$info['collect_filter'] eq 0"}checked {/if}>
                 <input name="collect_filter" type="radio" value="1" title="{:lang('admin/collect/add_update')}" {if condition="$info['collect_filter'] eq 1"}checked {/if}>
-                <input name="collect_filter" type="radio" value="1" title="{:lang('admin/collect/add')}" {if condition="$info['collect_filter'] eq 2"}checked {/if}>
-                <input name="collect_filter" type="radio" value="2" title="{:lang('admin/collect/update')}" {if condition="$info['collect_filter'] eq 3"}checked {/if}>
+                <input name="collect_filter" type="radio" value="2" title="{:lang('admin/collect/add')}" {if condition="$info['collect_filter'] eq 2"}checked {/if}>
+                <input name="collect_filter" type="radio" value="3" title="{:lang('admin/collect/update')}" {if condition="$info['collect_filter'] eq 3"}checked {/if}>
             </div>
         </div>
         <div class="layui-form-item row_filer" {if condition="$info['collect_mid'] neq '1'"} style="display:none;" {/if}>

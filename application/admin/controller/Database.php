@@ -317,10 +317,23 @@ class Database extends Base
                 die;
             }
 
-
-            $check_arr = ["<script>", "<iframe>","{php}"];
-            $rel_val = ["/<script[\s\S]*?<\/script>/is","/<iframe[\s\S]*?<\/iframe>/is","/{php}[\s\S]*?{\/php}/is"];
-
+            $check_arr = ["<script","<iframe","{php}","{:"];
+            $rel_val = [
+                [
+                    "/<script[\s\S]*?<\/(.*)>/is",
+                    "/<script[\s\S]*?>/is",
+                ],
+                [
+                    "/<iframe[\s\S]*?<\/(.*)>/is",
+                    "/<iframe[\s\S]*?>/is",
+                ],
+                [
+                    "/{php}[\s\S]*?{\/php}/is",
+                ],
+                [
+                    "/{:[\s\S]*?}/is",
+                ]
+            ];
             mac_echo('<style type="text/css">body{font-size:12px;color: #333333;line-height:21px;}span{font-weight:bold;color:#FF0000}</style>');
 
 
@@ -353,11 +366,12 @@ class Database extends Base
                         $where2 = [];
                         $where2[$col_id] = $val_id;
                         foreach ($v3 as $k4 => $v4) {
-
                             if ($k4 != $col_id) {
                                 $val = $v4;
                                 foreach ($check_arr as $kk => $vv) {
-                                    $val = preg_replace($rel_val[$kk], "", $val);
+                                    foreach($rel_val[$kk] as $k5=>$v5){
+                                        $val = preg_replace($v5, "", $val);
+                                    }
                                 }
                                 if ($val !== $v4) {
                                     $update[$k4] = $val;
