@@ -30,6 +30,7 @@ class Role extends Base
 
     public function ajax_show()
     {
+        $this->check_ajax();
         $this->check_show();
         $this->label_role();
         return $this->label_fetch('role/ajax_show');
@@ -39,27 +40,16 @@ class Role extends Base
     {
         $param = mac_param_url();
         $this->check_search($param);
-        if($GLOBALS['config']['app']['search_verify'] ==1){
-            if(empty(session('search_verify'))){
-                $this->assign('type','search');
-                return $this->label_fetch('public/verify');
-            }
-        }
-        if(!empty($GLOBALS['config']['app']['wall_filter'])){
-            $param = mac_escape_param($param);
-        }
-        $this->assign('param',$param);
+        $this->label_search($param);
         return $this->label_fetch('role/search');
     }
 
     public function ajax_search()
     {
         $param = mac_param_url();
+        $this->check_ajax();
         $this->check_search($param);
-        if(!empty($GLOBALS['config']['app']['wall_filter'])){
-            $param = mac_escape_param($param);
-        }
-        $this->assign('param',$param);
+        $this->label_search($param,1);
         return $this->label_fetch('role/ajax_search');
     }
 
@@ -71,8 +61,14 @@ class Role extends Base
 
     public function ajax_detail()
     {
+        $this->check_ajax();
         $info = $this->label_role_detail();
         return $this->label_fetch('role/ajax_detail');
     }
 
+    public function rss()
+    {
+        $info = $this->label_role_detail();
+        return $this->label_fetch('role/rss');
+    }
 }

@@ -270,6 +270,14 @@
                     <div class="layui-form-mid layui-word-aux">{:lang('admin/system/config/input_type_tip')}</div>
                 </div>
                 <div class="layui-form-item">
+                    <label class="layui-form-label">{:lang('admin/system/config/ajax_page')}：</label>
+                    <div class="layui-input-inline w600">
+                        <input type="radio" name="app[ajax_page]" value="0" title="{:lang('close')}" {if condition="$config['app']['ajax_page'] neq 1"}checked {/if}>
+                        <input type="radio" name="app[ajax_page]" value="1" title="{:lang('open')}" {if condition="$config['app']['ajax_page'] eq 1"}checked {/if}>
+                    </div>
+                    <div class="layui-form-mid layui-word-aux">{:lang('admin/system/config/ajax_page_tip')}</div>
+                </div>
+                <div class="layui-form-item">
                     <label class="layui-form-label">{:lang('admin/system/config/wall_filter')}：</label>
                     <div class="layui-input-inline w600">
                         <input type="radio" name="app[wall_filter]" value="0" title="{:lang('close')}" {if condition="$config['app']['wall_filter'] neq 1 && $config['app']['wall_filter'] neq 2"}checked {/if}>
@@ -305,6 +313,13 @@
                         <input type="radio" name="app[search_verify]" value="0" title="{:lang('close')}" {if condition="$config['app']['search_verify'] neq 1"}checked {/if}>
                         <input type="radio" name="app[search_verify]" value="1" title="{:lang('open')}" {if condition="$config['app']['search_verify'] eq 1"}checked {/if}>
                     </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">{:lang('admin/system/config/search_len')}：</label>
+                    <div class="layui-input-inline">
+                        <input type="text" name="app[search_len]" placeholder="" value="{$config['app']['search_len']}" class="layui-input w150">
+                    </div>
+                    <div class="layui-form-mid layui-word-aux">{:lang('admin/system/config/search_len_tip')}</div>
                 </div>
                 <div class="layui-form-item">
                     <label class="layui-form-label">{:lang('admin/system/config/search_timespan')}：</label>

@@ -34,23 +34,28 @@ class Base extends All
         }
     }
 
+    protected function check_ajax()
+    {
+        if($GLOBALS['config']['app']['ajax_page'] ==0){
+            echo $this->error(lang('ajax_close'));
+            exit;
+        }
+    }
+
     protected function check_search($param)
     {
         if($GLOBALS['config']['app']['search'] ==0){
             echo $this->error(lang('search_close'));
             exit;
         }
-
         if ( $param['page']==1 && mac_get_time_span("last_searchtime") < $GLOBALS['config']['app']['search_timespan']){
             echo $this->error(lang('search_frequently')."".$GLOBALS['config']['app']['search_timespan']."".lang('seconds'));
             exit;
         }
-
     }
 
     protected function check_site_status()
     {
-        //站点关闭中
         if ($GLOBALS['config']['site']['site_status'] == 0) {
             $this->assign('close_tip',$GLOBALS['config']['site']['site_close_tip']);
             echo $this->fetch('public/close');

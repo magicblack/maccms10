@@ -2667,6 +2667,18 @@ function mac_escape_param($param)
     return $param;
 }
 
+function mac_search_len_check($param)
+{
+    $psm = array('wd','tag','class','letter','name','state','level','area','lang','version','actor','director','starsign','blood');
+    foreach($psm as $v){
+        if(mb_strlen($param[$v]) > $GLOBALS['config']['app']['search_len']){
+            $param[$v] = mac_substring($param[$v],$GLOBALS['config']['app']['search_len']);
+        }
+    }
+    return $param;
+}
+
+
 if (!function_exists('is_really_writable')) {
 
     /**

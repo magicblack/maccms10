@@ -111,8 +111,8 @@ class Role extends Base {
         }
         $param = mac_param_url();
         if($paging=='yes') {
+            $param = mac_search_len_check($param);
             $totalshow = 1;
-
             if(!empty($param['rid'])) {
                 $rid = intval($param['rid']);
             }

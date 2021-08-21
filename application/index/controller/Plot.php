@@ -34,11 +34,9 @@ class Plot extends Base
     public function ajax_search()
     {
         $param = mac_param_url();
+        $this->check_ajax();
         $this->check_search($param);
-        if(!empty($GLOBALS['config']['app']['wall_filter'])){
-            $param = mac_escape_param($param);
-        }
-        $this->assign('param',$param);
+        $this->label_search($param,1);
         return $this->label_fetch('plot/ajax_search');
     }
 
@@ -50,6 +48,7 @@ class Plot extends Base
 
     public function ajax_detail()
     {
+        $this->check_ajax();
         $info = $this->label_vod_detail();
         return $this->label_fetch('plot/ajax_detail');
     }

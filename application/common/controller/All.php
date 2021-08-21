@@ -150,9 +150,26 @@ class All extends Controller
         $this->assign('comment',$comment);
     }
 
+    protected function label_search($param,$aj=0)
+    {
+        $param = mac_search_len_check($param);
+        if($GLOBALS['config']['app']['search_verify'] ==1 && $aj ==0){
+            if(empty(session('search_verify'))){
+                $this->assign('type','search');
+                echo $this->label_fetch('public/verify');
+                exit;
+            }
+        }
+        if(!empty($GLOBALS['config']['app']['wall_filter'])){
+            $param = mac_escape_param($param);
+        }
+        $this->assign('param',$param);
+    }
+
     protected function label_type($view=0)
     {
         $param = mac_param_url();
+        $param = mac_search_len_check($param);
         $info = mac_label_type($param);
         if(!empty($GLOBALS['config']['app']['wall_filter'])){
             $param = mac_escape_param($param);
@@ -221,6 +238,7 @@ class All extends Controller
     protected function label_role($total='')
     {
         $param = mac_param_url();
+        $param = mac_search_len_check($param);
         if(!empty($GLOBALS['app']['wall_filter'])){
             $param = mac_escape_param($param);
         }
