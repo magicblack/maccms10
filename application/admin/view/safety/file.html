@@ -5,14 +5,13 @@
         <input name="ck" value="1" type="hidden">
         <div class="layui-tab">
             <ul class="layui-tab-title">
-                <li class="layui-this">{:lang('admin/database/inspect')}</li>
+                <li class="layui-this">{:lang('admin/safety/file_inspect')}</li>
             </ul>
             <div class="layui-tab-content">
                 <div class="layui-tab-item layui-show">
-
                     <div class="layui-input-block" >
                         <blockquote class="layui-elem-quote layui-quote-nm">
-                            {:lang('admin/database/inspect_tip')}
+                            {:lang('admin/safety/file_inspect_tip')}
                         </blockquote>
                     </div>
                 </div>
@@ -20,7 +19,7 @@
         </div>
         <div class="layui-form-item center">
             <div class="layui-input-block">
-                <button type="submit" class="layui-btn" >{:lang('admin/database/exec')}</button>
+                <button type="submit" class="layui-btn" >{:lang('admin/safety/exec')}</button>
             </div>
         </div>
     </form>
@@ -28,7 +27,11 @@
 
 {include file="../../../application/admin/view/public/foot" /}
 <script type="text/javascript">
-
+    $(function(){
+       $('.layui-btn').click(function(){
+           layer.msg("{:lang('wait_submit')}");
+       });
+    });
 </script>
 
 </body>

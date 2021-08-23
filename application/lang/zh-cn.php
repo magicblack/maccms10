@@ -7,7 +7,7 @@
 *内部处理key：开头 model/、controller/、只在模块内使用
 */
 return [
-    'lang_ver'=>'3000+',
+    'lang_ver'=>'3008+',
     'hello'  => '欢迎使用',
     'maccms_name'=>'苹果CMS-v10',
     'maccms_copyright'=>'© MacCMS All Rights Reserved.',
@@ -583,7 +583,8 @@ https://www.baidu.com/123.jpg
     'menu/apps'=>'应用',
     'menu/addon'=>'应用市场',
     'menu/urlsend'=>'URL推送',
-
+    'menu/safety_file'=>'文件安全检测',
+    'menu/safety_data'=>'数据挂马检测',
 
     'model/admin/update_login_err'=>'更新登录信息失败',
     'model/admin/login_ok'=>'登录成功',
@@ -1707,17 +1708,30 @@ https://www.baidu.com/123.jpg
                         <br>
                         5.清空数据ID重新从1开始
                         TRUNCATE {pre}vod',
-    'admin/database/exec'=>'确认执行',
-    'admin/database/inspect'=>'挂马检测',
-    'admin/database/inspect_tip'=>'<strong>挂马检测3.0版本</strong><br>
+
+    'admin/safety/data_inspect'=>'挂马检测',
+    'admin/safety/data_inspect_tip'=>'<strong>挂马检测3.0版本</strong><br>
                             1，将对分类表，视频表，文章表，会员表等表结构进行检查。<br>
                             2，检测包含script,iframe等特殊字符串。<br>
                             3，将自动清除挂马代码。<br>
                             4，不能保证100%清除，如还有问题请自行进入phpmyadmin或其他数据库管理工具里清除。<br>
                             5，建议清理多次，直到没有出现问题数据。',
-    'admin/database/clear_ok'=>'清理结束,请再次执行,以免有漏掉的数据',
-    'admin/database/check_tip1'=>'开始检测%s表...',
-    'admin/database/check_tip2'=>'共检测到%s条危险数据...',
+    'admin/safety/data_clear_ok'=>'清理结束,请再次执行,以免有漏掉的数据',
+    'admin/safety/data_check_tip1'=>'开始检测%s表...',
+    'admin/safety/data_check_tip2'=>'共检测到%s条危险数据...',
+
+    'admin/safety/exec'=>'确认执行',
+    'admin/safety/file_inspect'=>'文件安全检测',
+    'admin/safety/file_inspect_tip'=>'<strong>安全检测3.0版本</strong><br>
+                            1，将对网站内所有文件进行比对筛选进行检查。<br>
+                            2，将原版程序包内自带文件将比对md5罗列出。<br>
+                            3，将原版程序包内没有的新增文件罗列出。<br>
+                            4，不能保证100%正确，如还有问题请到官网github提报。<br>
+                            5，建议多次检测，详细检查每个罗列出的文件。',
+    'admin/safety/file_msg1'=>'获取官方文件数据失败，请重试',
+    'admin/safety/file_msg2'=>'获取本地文件列表失败，请重试',
+    'admin/safety/file_msg3'=>'新增文件',
+    'admin/safety/file_msg4'=>'与原版有差异',
 
     'admin/link/title'=>'友情链接管理',
     'admin/link/text_link'=>'文字链接',

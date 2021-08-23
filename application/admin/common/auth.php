@@ -253,12 +253,12 @@ return array(
 
         '102' => array("show"=>1,'name' => lang('menu/database_sql'), 'controller' => 'database',		'action' => 'sql'),
         '103' => array("show"=>1,'name' => lang('menu/database_rep'), 'controller' => 'database',		'action' => 'rep'),
-        '104' => array("show"=>1,'name' => lang('menu/database_inspect'), 'controller' => 'database',		'action' => 'inspect'),
     )),
     '11' => array('name' => lang('menu/apps'), 'icon' => 'xe621', 'sub' => array(
         '111' => array("show"=>1,'name' => lang('menu/addon'), 'controller' => 'addon',		'action' => 'index', 'param'=>''),
-
         '112' => array("show"=>1,'name' => lang('menu/urlsend'), 'controller' => 'urlsend',		'action' => 'index', 'param'=>''),
+        '113' => array("show"=>1,'name' => lang('menu/safety_file'), 'controller' => 'safety',		'action' => 'file', 'param'=>''),
+        '114' => array("show"=>1,'name' => lang('menu/safety_data'), 'controller' => 'safety',		'action' => 'data', 'param'=>''),
         '11200' => array("show"=>0,'name' => '--推送入口', 'controller' => 'urlsend',		'action' => 'push'),
         '11201' => array("show"=>0,'name' => '--百度主动推送', 'controller' => 'urlsend',		'action' => 'baidu_push'),
         '11202' => array("show"=>0,'name' => '--百度熊掌推送', 'controller' => 'urlsend',		'action' => 'baidu_bear'),
