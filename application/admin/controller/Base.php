@@ -36,6 +36,7 @@ class Base extends All
             }
         }
         $this->assign('cl',$this->_cl);
+        $this->assign('MAC_VERSION',config('version')['code']);
     }
 
     public function check_auth($c,$a)
