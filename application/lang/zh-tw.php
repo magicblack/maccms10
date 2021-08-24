@@ -934,7 +934,7 @@ https://www.baidu.com/123.jpg
     'admin/system/config/vod_extend_year'=>'視頻年代',
     'admin/system/config/actor_extend_area'=>'演員地區',
     'admin/system/config/filter_words'=>'詞語過濾',
-    'admin/system/config/filter_words_tip'=>'用戶交互如評論留言的禁用詞匯；多個用,號分隔',
+    'admin/system/config/filter_words_tip'=>'應用於搜索參數、評論、留言的禁用詞匯；多個用,號分隔',
     'admin/system/config/extra_var'=>'自定義參數',
     'admin/system/config/extra_var_tip'=>'每行一個變量,例如aa$$$我是老王；模板調用方法$GLOBALS[\'config\'][\'extra\'][\'aa\']',
     'admin/system/config/test_err'=>'發生錯誤，請檢查是否開啟擴展庫和配置項!',

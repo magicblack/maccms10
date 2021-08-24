@@ -1271,14 +1271,19 @@ function mac_play_list_one($url_one, $from_one, $server_one=''){
     return $url_list;
 }
 
-function mac_filter_words($str)
+function mac_filter_words($p)
 {
     $config = config('maccms.app');
     $arr = explode(",",$config['filter_words']);
-    foreach($arr as $a){
-        $str= str_replace($a,"***",$str);
+    if(is_array($p)){
+        foreach($p as $k=>$v){
+            $p[$k] = str_replace($arr,"***",$v);
+        }
     }
-    return $str;
+    else{
+        $p = str_replace($arr,"***",$p);
+    }
+    return $p;
 }
 
 function mac_long2ip($ip){

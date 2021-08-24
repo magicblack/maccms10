@@ -152,6 +152,7 @@ class All extends Controller
 
     protected function label_search($param)
     {
+        $param = mac_filter_words($param);
         $param = mac_search_len_check($param);
         if(!empty($GLOBALS['config']['app']['wall_filter'])){
             $param = mac_escape_param($param);
@@ -162,6 +163,7 @@ class All extends Controller
     protected function label_type($view=0)
     {
         $param = mac_param_url();
+        $param = mac_filter_words($param);
         $param = mac_search_len_check($param);
         $info = mac_label_type($param);
         if(!empty($GLOBALS['config']['app']['wall_filter'])){
@@ -231,6 +233,7 @@ class All extends Controller
     protected function label_role($total='')
     {
         $param = mac_param_url();
+        $param = mac_filter_words($param);
         $param = mac_search_len_check($param);
         if(!empty($GLOBALS['app']['wall_filter'])){
             $param = mac_escape_param($param);
