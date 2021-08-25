@@ -38,6 +38,10 @@ class Safety extends Base
     {
         $param = input();
         if($param['ck']){
+            $ft = $param['ft'];
+            if(empty($ft)){
+                $ft = ['1','2'];
+            }
             mac_echo('<style type="text/css">body{font-size:12px;color: #333333;line-height:21px;}span{font-weight:bold;color:#FF0000}</style>');
             $url = base64_decode("aHR0cDovL3VwZGF0ZS5tYWNjbXMubGEv") . "v10/mac_files_".config('version')['code'].'.html';
             $html = mac_curl_get($url);
@@ -54,11 +58,11 @@ class Safety extends Base
             foreach($this->_files as $k=>$v){
                 $color = '';
                 $msg = 'ok';
-                if(empty($json[$k])){
+                if(empty($json[$k]) && in_array('1',$ft)){
                     $color = 'BlueViolet';
                     $msg = lang('admin/safety/file_msg3');
                 }
-                elseif($v['md5'] != $json[$k]['md5']){
+                elseif(!empty($json[$k]) && $v['md5'] != $json[$k]['md5'] && in_array('2',$ft)){
                     $color = 'red';
                     $msg = lang('admin/safety/file_msg4');
                 }

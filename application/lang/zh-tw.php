@@ -1731,7 +1731,7 @@ https://www.baidu.com/123.jpg
     'admin/safety/file_msg1'=>'獲取官方文件數據失敗，請重試',
     'admin/safety/file_msg2'=>'獲取本地文件列表失敗，請重試',
     'admin/safety/file_msg3'=>'新增文件',
-    'admin/safety/file_msg4'=>'與原版有差異',
+    'admin/safety/file_msg4'=>'差異文件',
 
     'admin/link/title'=>'友情鏈接管理',
     'admin/link/text_link'=>'文字鏈接',
