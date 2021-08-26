@@ -1376,7 +1376,7 @@ function mac_find_array($text,$start,$end)
 function mac_param_url(){
     $input = input() ;
     $param = [];
-    if($GLOBALS['config']['app']['input_type']==0 && request()->isPost()){
+    if($GLOBALS['config']['app']['input_type']==0 && request()->isPost() && ENTRANCE!=='admin'){
         $input = input('get.');
         $tmp = $_GET;
     }
