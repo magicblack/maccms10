@@ -7,7 +7,7 @@ class Addon extends Base {
 
     public function onlineData($page=1)
     {
-        $html = mac_curl_get( base64_decode('aHR0cDovL2FwaS5tYWNjbXMubGEv').'store/?page=' . $page);
+        $html = mac_curl_get( base64_decode('6aKE55WZ5Yqf6IO9').'store/?page=' . $page);
         $json = json_decode($html, true);
         if (!$json) {
             return ['code' => 1001, 'msg' => lang('obtain_err')];

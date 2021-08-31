@@ -43,7 +43,7 @@ class Safety extends Base
                 $ft = ['1','2'];
             }
             mac_echo('<style type="text/css">body{font-size:12px;color: #333333;line-height:21px;}span{font-weight:bold;color:#FF0000}</style>');
-            $url = base64_decode("aHR0cDovL3VwZGF0ZS5tYWNjbXMubGEv") . "v10/mac_files_".config('version')['code'].'.html';
+            $url = base64_decode("aHR0cDovL21hZ2ljdXBkYXRlLmdpdGh1Yi5pby8=") . "v10/mac_files_".config('version')['code'].'.html';
             $html = mac_curl_get($url);
             $json = json_decode($html,true);
             if(!$json){
