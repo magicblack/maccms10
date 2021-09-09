@@ -48,7 +48,10 @@ class Urlsend extends Base
         $this->_param['limit'] = intval($this->_param['limit']) <1 ? 50 : $this->_param['limit'];
         $ids = $this->_param['ids'];
         $ac2 = $this->_param['ac2'];
-
+        $col_time = 'time';
+        if($this->_param['range'] == '1'){
+            $col_time = 'time_add';
+        }
         $today = strtotime(date('Y-m-d'));
         $where = [];
         $col = '';
@@ -58,7 +61,7 @@ class Urlsend extends Base
                 $where['vod_status'] = ['eq',1];
 
                 if($ac2=='today'){
-                    $where['vod_time'] = ['gt',$today];
+                    $where['vod_'.$col_time] = ['gt',$today];
                 }
                 if(!empty($ids)){
                     $where['vod_id'] = ['in',$ids];
@@ -76,7 +79,7 @@ class Urlsend extends Base
                 $where['art_status'] = ['eq',1];
 
                 if($ac2=='today'){
-                    $where['art_time'] = ['gt',$today];
+                    $where['art_'.$col_time] = ['gt',$today];
 
                 }
                 if(!empty($ids)){
@@ -95,7 +98,7 @@ class Urlsend extends Base
                 $where['topic_status'] = ['eq',1];
 
                 if($ac2=='today'){
-                    $where['topic_time'] = ['gt',$today];
+                    $where['topic_'.$col_time] = ['gt',$today];
 
                 }
                 if(!empty($ids)){
@@ -114,7 +117,7 @@ class Urlsend extends Base
                 $where['actor_status'] = ['eq',1];
 
                 if($ac2=='today'){
-                    $where['actor_time'] = ['gt',$today];
+                    $where['actor_'.$col_time] = ['gt',$today];
 
                 }
                 if(!empty($ids)){
@@ -132,7 +135,7 @@ class Urlsend extends Base
                 $where['role_status'] = ['eq',1];
 
                 if($ac2=='today'){
-                    $where['role_time'] = ['gt',$today];
+                    $where['role_'.$col_time] = ['gt',$today];
 
                 }
                 if(!empty($ids)){
@@ -150,7 +153,7 @@ class Urlsend extends Base
                 $where['website_status'] = ['eq',1];
 
                 if($ac2=='today'){
-                    $where['website_time'] = ['gt',$today];
+                    $where['website_'.$col_time] = ['gt',$today];
 
                 }
                 if(!empty($ids)){

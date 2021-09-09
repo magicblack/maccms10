@@ -40,6 +40,15 @@
                 </select>
             </div>
         </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">{:lang('admin/urlsend/send_range')}：</label>
+            <div class="layui-input-inline">
+                <div class="layui-input-inline w300">
+                    <input type="radio" name="range" value="0" title="{:lang('admin/urlsend/add_update')}" checked >
+                    <input type="radio" name="range" value="1" title="{:lang('admin/urlsend/add')}">
+                </div>
+            </div>
+        </div>
 
         <div class="layui-form-item">
             <label class="layui-form-label">{:lang('admin/urlsend/page_send_num')}：</label>
@@ -109,8 +118,9 @@
         var limit = $('#limit').val();
         var page = $('#page').val();
         var ac = $('#ac').val();
+        var range = $('input[name="range"]:checked').val();
 
-        $("#form_post").attr("action", curUrl + "?"+ 'ac=' +ac +'&limit='+limit +'&page='+page +'&' + p);
+        $("#form_post").attr("action", curUrl + "?"+ 'ac=' +ac +'&limit='+limit +'&page='+page + '&range=' + range +'&' + p );
         $("#form_post").submit();
     }
 

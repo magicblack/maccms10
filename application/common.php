@@ -1481,7 +1481,20 @@ function mac_url_content_img($content)
     if(empty($protocol)){
         $protocol = 'http';
     }
-    return str_replace('mac:',$protocol.':',$content);
+    $content = str_replace('mac:',$protocol.':',$content);
+    if(!empty($GLOBALS['config']['upload']['img_key'])){
+        $rule = mac_buildregx("<img[^>]*src\s*=\s*['" . chr(34) . "]?([\w/\-\:.]*)['" . chr(34) . "]?[^>]*>", "is");
+        preg_match_all($rule, $content, $matches);
+        if(is_array($matches[1])){
+            foreach ($matches[1] as $f => $matchfieldstr) {
+                $img_src = trim(preg_replace("/[ \r\n\t\f]{1,}/", " ", $matchfieldstr));
+                if(preg_match('/'.$GLOBALS['config']['upload']['img_key'].'/',$img_src)){
+                    $content = str_replace($img_src,$GLOBALS['config']['upload']['img_api'] . '' . $img_src,$content);
+                }
+            }
+        }
+    }
+    return $content;
 }
 
 function mac_alphaID($in, $to_num=false, $pad_up=false, $passKey='')

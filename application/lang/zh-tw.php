@@ -7,7 +7,7 @@
 *內部處理key：開頭 model/、controller/、只在模塊內使用
 */
 return [
-    'lang_ver'=>'3008+',
+    'lang_ver'=>'3021+',
     'hello'  => '歡迎使用',
     'maccms_name'=>'蘋果CMS-v10',
     'maccms_copyright'=>'© MacCMS All Rights Reserved.',
@@ -1863,6 +1863,9 @@ https://www.baidu.com/123.jpg
     'admin/urlsend/page_send_num'=>'每頁推送數',
     'admin/urlsend/start_page'=>'起始頁碼',
     'admin/urlsend/in_break_point_exec'=>'進入斷點繼續執行',
+    'admin/urlsend/send_range'=>'推送範圍',
+    'admin/urlsend/add_update'=>'新增+更新',
+    'admin/urlsend/add'=>'新增',
 
     'admin/user/title'=>'用戶管理',
     'admin/user/comment_record'=>'評論記錄',
