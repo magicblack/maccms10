@@ -1,0 +1,16 @@
+.idea
+/.vscode
+*.DS_Store
+/vendor
+.env
+.tags*
+.swp
+sftp-config*
+bs-config*
+.coding-ide/*
+nohup*
+*.log
+.wepycache
+.well-known
+/upload
+node_modules/
