@@ -50,9 +50,9 @@ function mac_run_statistics()
 
 function mac_format_size($s=0)
 {
-	if($s==0){ return '0 kb'; }
-	$unit=array('b','kb','mb','gb','tb','pb');
-	return round($s/pow(1024,($i=floor(log($s,1024)))),2).' '.$unit[$i];
+    if($s==0){ return '0 kb'; }
+    $unit=array('b','kb','mb','gb','tb','pb');
+    return round($s/pow(1024,($i=floor(log($s,1024)))),2).' '.$unit[$i];
 }
 
 function mac_read_file($f)
@@ -891,14 +891,14 @@ function mac_rep_pse_syn($psearr,$txt)
 }
 
 function mac_get_tag($title,$content){
-    $url = base64_decode('aHR0cDovL3d3dy5iYWlkdS5jb20v').'keyword/index?name='.rawurlencode($title).'&txt='.rawurlencode($title).rawurlencode(mac_substring(strip_tags($content),200));
+    $url = base64_decode('aHR0cDovL2FwaS5tYWNjbXMubGE=').'/keyword/index?name='.rawurlencode($title).'&txt='.rawurlencode($title).rawurlencode(mac_substring(strip_tags($content),200));
     $data = mac_curl_get($url);
-	$json = @json_decode($data,true);
-	if($json){
-		if($json['code']==1){
-			return implode(',',$json['data']);
-		}
-	}
+    $json = @json_decode($data,true);
+    if($json){
+        if($json['code']==1){
+            return implode(',',$json['data']);
+        }
+    }
     return false;
 }
 
@@ -1381,7 +1381,7 @@ function mac_param_url(){
         $tmp = $_GET;
     }
     else{
-    	$tmp = $_REQUEST;
+        $tmp = $_REQUEST;
     }
     
     $input = array_merge($input,$tmp);

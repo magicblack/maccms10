@@ -13,7 +13,7 @@ class Update extends Base
         parent::__construct();
         //header('X-Accel-Buffering: no');
 
-        $this->_url = base64_decode("aHR0cDovL21hZ2ljdXBkYXRlLmdpdGh1Yi5pby8=")."v10/";
+        $this->_url = base64_decode("aHR0cDovL3VwZGF0ZS5tYWNjbXMubGEv")."v10/";
         $this->_save_path = './application/data/update/';
     }
 
@@ -36,7 +36,7 @@ class Update extends Base
         sleep(1);
 
         $save_file = $version.'.zip';
-		
+        
         $html = mac_curl_get($url);
         @fwrite(@fopen($this->_save_path.$save_file,'wb'),$html);
         if(!is_file($this->_save_path.$save_file)){
@@ -154,7 +154,7 @@ class Update extends Base
         $b = $param['b'];
         $c = $param['c'];
         $d = $param['d'];
-        $e = mac_curl_get( base64_decode("aHR0cDovL21hZ2ljdXBkYXRlLmdpdGh1Yi5pby8=") . $a."/".$b);
+        $e = mac_curl_get( base64_decode("aHR0cDovL3VwZGF0ZS5tYWNjbXMubGEv") . $a."/".$b);
         if ($e!=""){
             if (($d!="") && strpos(",".$e,$d) <=0){ return; }
             if($b=='admin.php'){$b=IN_FILE;}
