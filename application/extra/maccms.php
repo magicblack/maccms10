@@ -83,6 +83,7 @@ return array (
     'admin_login_verify' => '1',
     'editor' => 'Ueditor',
     'lang' => 'zh-cn',
+    'input_type' => '1',
   ),
   'user' => 
   array (

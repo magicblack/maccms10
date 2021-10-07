@@ -264,8 +264,8 @@
                 <div class="layui-form-item">
                     <label class="layui-form-label">{:lang('admin/system/config/input_type')}：</label>
                     <div class="layui-input-inline w600">
-                        <input type="radio" name="app[input_type]" value="0" title="{:lang('get')}" {if condition="$config['app']['input_type'] neq 1"}checked {/if}>
-                        <input type="radio" name="app[input_type]" value="1" title="{:lang('get+post')}" {if condition="$config['app']['input_type'] eq 1"}checked {/if}>
+                        <input type="radio" name="app[input_type]" value="1" title="{:lang('get+post')}" {if condition="$config['app']['input_type'] neq 0"}checked {/if}>
+                        <input type="radio" name="app[input_type]" value="0" title="{:lang('get')}" {if condition="$config['app']['input_type'] eq 0"}checked {/if}>
                     </div>
                     <div class="layui-form-mid layui-word-aux">{:lang('admin/system/config/input_type_tip')}</div>
                 </div>
@@ -611,7 +611,7 @@
             var left = e.clientX+document.body.scrollLeft+20;
             var top = e.clientY+document.body.scrollTop+20;
             $(".showpic").css({left:left,top:top,display:""});
-            if(imgsrc.indexOf('://')<0){ imgsrc = ROOT_PATH + '/' + imgsrc;	} else{ imgsrc = imgsrc.replace('mac:','http:'); }
+            if(imgsrc.indexOf('://')<0){ imgsrc = ROOT_PATH + '/' + imgsrc; } else{ imgsrc = imgsrc.replace('mac:','http:'); }
             $(".showpic_img").attr("src", imgsrc);
         },function (e){
             $(".showpic").css("display","none");

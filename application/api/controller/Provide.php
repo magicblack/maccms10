@@ -11,7 +11,7 @@ class Provide extends Base
     {
         parent::__construct();
         $this->_param = input('','','trim,urldecode');
-        if($GLOBALS['config']['app']['input_type']==0 && request()->isPost()){
+        if(isset($GLOBALS['config']['app']['input_type']) && $GLOBALS['config']['app']['input_type'] == 0 && request()->isPost()){
             $this->_param = input('get.');
         }
     }
