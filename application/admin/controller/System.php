@@ -147,6 +147,10 @@ class System extends Base
         $this->assign('editors',$editors);
 
         $config = config('maccms');
+        // 默认get+post
+        if (!isset($config['app']['input_type'])) {
+            $config['app']['input_type'] = 1;
+        }
         $this->assign('config', $config);
         $this->assign('title', lang('admin/system/config/title'));
         return $this->fetch('admin@system/config');
