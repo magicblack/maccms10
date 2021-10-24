@@ -1053,6 +1053,11 @@ function mac_filter_html($str)
     return strip_tags($str);
 }
 
+function mac_filter_xss($str)
+{
+    return htmlspecialchars(strip_tags(trim($str)), ENT_QUOTES);
+}
+
 function mac_format_text($str)
 {
     return str_replace(array('/','，','|','、',' ',',,,'),',',$str);

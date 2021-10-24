@@ -434,7 +434,7 @@ class Collect extends Base {
                     }
                 }
 
-                $v['vod_name'] = trim($v['vod_name']);
+                $v['vod_name'] = mac_filter_xss($v['vod_name']);
                 $v['type_id_1'] = intval($type_list[$v['type_id']]['type_pid']);
                 $v['vod_en'] = Pinyin::get($v['vod_name']);
                 $v['vod_letter'] = strtoupper(substr($v['vod_en'],0,1));
@@ -505,6 +505,7 @@ class Collect extends Base {
                 if ($config['psename'] == 1) {
                     $v['vod_name'] = mac_rep_pse_syn($pse_name, $v['vod_name']);
                 }
+                $v['vod_content'] = mac_filter_xss($v['vod_content']);
                 if ($config['psernd'] == 1) {
                     $v['vod_content'] = mac_rep_pse_rnd($pse_rnd, $v['vod_content']);
                 }
