@@ -248,7 +248,10 @@ class Database extends Base
             if(!empty($sql)){
                 $sql = str_replace('{pre}',config('database.prefix'),$sql);
                 //查询语句返回结果集
-                if(strtolower(substr($sql,0,6))=="select"){
+                if(
+                    strtolower(substr($sql,0,6))=="select" || 
+                    stripos($sql, ' outfile') !== false
+                ){
 
                 }
                 else{

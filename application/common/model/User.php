@@ -350,6 +350,9 @@ class User extends Base
             if (empty($data['openid']) || empty($data['col'])) {
                 return ['code' => 1001, 'msg' => lang('model/user/input_require')];
             }
+            if (!in_array($data['col'], ['user_openid_qq', 'user_openid_weixin'])) {
+                return ['code' => 1002, 'msg' => lang('param_err') . ': col'];
+            }
             $where[$data['col']] = $data['openid'];
         }
         $where['user_status'] = ['eq', 1];
