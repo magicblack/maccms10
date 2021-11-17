@@ -142,7 +142,19 @@ function mac_compress_html($s){
 
 function mac_build_regx($regstr,$regopt)
 {
-    return '/'.str_replace('/','\/',$regstr).'/'.$regopt;
+    return '/'.str_replace([
+        '/',
+        '$',
+        '+',
+        '-',
+        '{',
+    ],[
+        '\/',
+        '\$',
+        '\+',
+        '\-',
+        '\{',
+    ],$regstr).'/'.$regopt;
 }
 
 function mac_reg_replace($str,$rule,$value)
