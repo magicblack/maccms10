@@ -124,6 +124,7 @@ class User extends Base
         $data['user_pwd2'] = htmlspecialchars(urldecode(trim($param['user_pwd2'])));
         $data['verify'] = $param['verify'];
         $uid = $param['uid'];
+        $is_from_3rdparty = !empty($param['user_openid_qq']) || !empty($param['user_openid_weixin']);
 
 
         if ($config['user']['status'] == 0 || $config['user']['reg_open'] == 0) {
@@ -132,8 +133,7 @@ class User extends Base
         if (empty($data['user_name']) || empty($data['user_pwd']) || empty($data['user_pwd2'])) {
             return ['code' => 1002, 'msg' => lang('model/user/input_require')];
         }
-        if (empty($param['user_openid_qq']) && empty($param['user_openid_weixin'])
-            && !captcha_check($data['verify']) &&  $config['user']['reg_verify']==1) {
+        if (!$is_from_3rdparty && !captcha_check($data['verify']) && $config['user']['reg_verify'] == 1) {
             return ['code' => 1003, 'msg' => lang('verify_err')];
         }
         if ($data['user_pwd'] != $data['user_pwd2']) {
@@ -190,43 +190,46 @@ class User extends Base
         $fields['user_openid_qq'] = (string)$param['user_openid_qq'];
         $fields['user_openid_weixin'] = (string)$param['user_openid_weixin'];
 
-        if($config['user']['reg_phone_sms'] == '1'){
-            $param['type'] = 3;
-            $res = $this->check_msg($param);
-            if($res['code'] >1){
-                return ['code'=>$res['code'],'msg'=>$res['msg']];
-            }
-            $fields['user_phone'] = $param['to'];
+        if (!$is_from_3rdparty) {
+            // https://github.com/magicblack/maccms10/issues/418
+            if($config['user']['reg_phone_sms'] == '1'){
+                $param['type'] = 3;
+                $res = $this->check_msg($param);
+                if($res['code'] >1){
+                    return ['code'=>$res['code'],'msg'=>$res['msg']];
+                }
+                $fields['user_phone'] = $param['to'];
 
-            $update=[];
-            $update['user_phone'] = '';
-            $where2=[];
-            $where2['user_phone'] = $param['to'];
+                $update=[];
+                $update['user_phone'] = '';
+                $where2=[];
+                $where2['user_phone'] = $param['to'];
 
-            $row = $this->where($where2)->find();
-            if (!empty($row)) {
-                return ['code' => 1011, 'msg' =>lang('model/user/phone_haved')];
+                $row = $this->where($where2)->find();
+                if (!empty($row)) {
+                    return ['code' => 1011, 'msg' =>lang('model/user/phone_haved')];
+                }
+                //$this->where($where2)->update($update);
             }
-            //$this->where($where2)->update($update);
-        }
-        elseif($config['user']['reg_email_sms'] == '1'){
-            $param['type'] = 3;
-            $res = $this->check_msg($param);
-            if($res['code'] >1){
-                return ['code'=>$res['code'],'msg'=>$res['msg']];
-            }
-            $fields['user_email'] = $param['to'];
+            elseif($config['user']['reg_email_sms'] == '1'){
+                $param['type'] = 3;
+                $res = $this->check_msg($param);
+                if($res['code'] >1){
+                    return ['code'=>$res['code'],'msg'=>$res['msg']];
+                }
+                $fields['user_email'] = $param['to'];
 
-            $update=[];
-            $update['user_email'] = '';
-            $where2=[];
-            $where2['user_email'] = $param['to'];
+                $update=[];
+                $update['user_email'] = '';
+                $where2=[];
+                $where2['user_email'] = $param['to'];
 
-            $row = $this->where($where2)->find();
-            if (!empty($row)) {
-                return ['code' => 1012, 'msg' => lang('model/user/email_haved')];
+                $row = $this->where($where2)->find();
+                if (!empty($row)) {
+                    return ['code' => 1012, 'msg' => lang('model/user/email_haved')];
+                }
+                //$this->where($where2)->update($update);
             }
-            //$this->where($where2)->update($update);
         }
 
         $res = $this->insert($fields);
