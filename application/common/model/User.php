@@ -170,7 +170,8 @@ class User extends Base
 
         if( $GLOBALS['config']['user']['reg_num'] > 0){
             $where2=[];
-            $where2['user_reg_ip'] =['eq',$ip];
+            $where2['user_reg_ip'] = ['eq', $ip];
+            $where2['user_reg_time'] = ['gt', strtotime('today')];
             $cc = $this->where($where2)->count();
             if($cc >= $GLOBALS['config']['user']['reg_num']){
                 return ['code' => 1009, 'msg' => lang('model/user/ip_limit',[$GLOBALS['config']['user']['reg_num']])];
