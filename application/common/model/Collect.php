@@ -213,7 +213,7 @@ class Collect extends Base {
             $array_data[$key]['vod_name'] = (string)$video->name;
             $array_data[$key]['vod_sub'] = (string)$video->subname;
             $array_data[$key]['vod_remarks'] = (string)$video->note;
-            $array_data[$key]['type_name'] = (string)$video->type;
+            $array_data[$key]['type_name'] = mac_filter_xss((string)$video->type);
             $array_data[$key]['vod_pic'] = (string)$video->pic;
             $array_data[$key]['vod_lang'] = (string)$video->lang;
             $array_data[$key]['vod_area'] = (string)$video->area;
@@ -274,7 +274,7 @@ class Collect extends Base {
         if($param['ac'] == 'list'){
             foreach($xml->class->ty as $ty){
                 $array_type[$key]['type_id'] = (string)$ty->attributes()->id;
-                $array_type[$key]['type_name'] = (string)$ty;
+                $array_type[$key]['type_name'] = mac_filter_xss((string)$ty);
                 $key++;
             }
         }
@@ -364,7 +364,7 @@ class Collect extends Base {
         if($param['ac'] == 'list'){
             foreach($json['class'] as $k=>$v){
                 $array_type[$key]['type_id'] = $v['type_id'];
-                $array_type[$key]['type_name'] = $v['type_name'];
+                $array_type[$key]['type_name'] = mac_filter_xss($v['type_name']);
                 $key++;
             }
         }
@@ -1023,7 +1023,7 @@ class Collect extends Base {
         if($param['ac'] == 'list'){
             foreach($json['class'] as $k=>$v){
                 $array_type[$key]['type_id'] = $v['type_id'];
-                $array_type[$key]['type_name'] = $v['type_name'];
+                $array_type[$key]['type_name'] = mac_filter_xss($v['type_name']);
                 $key++;
             }
         }
@@ -1345,7 +1345,7 @@ class Collect extends Base {
         if($param['ac'] == 'list'){
             foreach($json['class'] as $k=>$v){
                 $array_type[$key]['type_id'] = $v['type_id'];
-                $array_type[$key]['type_name'] = $v['type_name'];
+                $array_type[$key]['type_name'] = mac_filter_xss($v['type_name']);
                 $key++;
             }
         }
@@ -1926,7 +1926,7 @@ class Collect extends Base {
         if($param['ac'] == 'list'){
             foreach($json['class'] as $k=>$v){
                 $array_type[$key]['type_id'] = $v['type_id'];
-                $array_type[$key]['type_name'] = $v['type_name'];
+                $array_type[$key]['type_name'] = mac_filter_xss($v['type_name']);
                 $key++;
             }
         }
