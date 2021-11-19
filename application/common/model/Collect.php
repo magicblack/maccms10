@@ -19,7 +19,7 @@ class Collect extends Base {
     protected $insert     = [];
     protected $update     = [];
 
-    public function listData($where,$order,$page,$limit=20)
+    public function listData($where,$order,$page=1,$limit=20,$start=0)
     {
         $total = $this->where($where)->count();
         $list = Db::name('Collect')->where($where)->order($order)->page($page)->limit($limit)->select();
