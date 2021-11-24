@@ -31,7 +31,7 @@
                 <th>{$vo.name}</a></th>
                 <td>{$vo.note}</td>
                 <td>{$vo.size}</td>
-                <td>{$vo.time|mac_day=color}</td>
+                <td>{$vo.time|mac_day='color'}</td>
                 <td>
                     <a class="layui-badge-rim j-iframe" data-full="1" data-href="{:url('info')}?fpath={$vo.path}&fname={$vo.name}" href="javascript:;" title="{:lang('edit')}">{:lang('edit')}</a>
                     <a class="layui-badge-rim j-tr-del" data-href="{:url('del')}?fname={$vo.fullname}" href="javascript:;" title="{:lang('del')}">{:lang('del')}</a>
@@ -40,7 +40,7 @@
                 <th><a href="{:url('template/index',['path'=>$vo.path])}">{$vo.name}</a></th>
                 <td>{$vo.note}</td>
                 <td></td>
-                <td>{$vo.time|mac_day=color}</td>
+                <td>{$vo.time|mac_day='color'}</td>
                 <td></td>
                 {/if}
             </tr>

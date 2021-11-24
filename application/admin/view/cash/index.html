@@ -57,8 +57,8 @@
                 <td>{$vo.cash_bank_no|htmlspecialchars}</td>
                 <td>{$vo.cash_payee_name|htmlspecialchars}</td>
                 <td>{$vo.cash_remarks|htmlspecialchars}</td>
-                <td>{$vo.cash_time|mac_day=color}</td>
-                <td>{$vo.cash_time_audit|mac_day=color}</td>
+                <td>{$vo.cash_time|mac_day='color'}</td>
+                <td>{$vo.cash_time_audit|mac_day='color'}</td>
                 <td>
                     <a class="layui-badge-rim j-tr-del" data-href="{:url('del?ids='.$vo['cash_id'])}" href="javascript:;" title="{:lang('del')}">{:lang('del')}</a>
                     {if condition="$vo.cash_status neq '1'"}

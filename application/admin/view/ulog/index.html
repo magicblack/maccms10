@@ -63,7 +63,7 @@
                 <td>{$vo.ulog_points}</td>
                 <td>{$vo.ulog_rid} {if condition="$vo.ulog_sid gt 0"}-{$vo.ulog_sid}{/if}{if condition="$vo.ulog_nid gt 0"}-{$vo.ulog_nid}{/if}</td>
                 <td>[{$vo.data.name}]</td>
-                <td>{$vo.ulog_time|mac_day=color}</td>
+                <td>{$vo.ulog_time|mac_day='color'}</td>
                 <td>
                     <a class="layui-badge-rim j-tr-del" data-href="{:url('del?ids='.$vo['ulog_id'])}" href="javascript:;" title="{:lang('del')}">{:lang('del')}</a>
                 </td>

@@ -62,7 +62,7 @@
                     <input type="checkbox" name="status" {if condition="$vo['user_status'] eq 1"}checked{/if} value="{$vo['user_status']}" lay-skin="switch" lay-filter="switchStatus" lay-text="{:lang('open')}|{:lang('close')}" data-href="{:url('field?col=user_status&ids='.$vo['user_id'])}">
                 </td>
                 <td>{$vo.user_points}</td>
-                <td>{$vo.user_login_time|mac_day=color}</td>
+                <td>{$vo.user_login_time|mac_day='color'}</td>
                 <td>{$vo.user_login_ip|long2ip}</td>
                 <td>{$vo.user_login_num}</td>
                 <td>

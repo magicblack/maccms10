@@ -658,7 +658,7 @@ function mac_array2xml($arr,$level=1)
         if(!is_array($value)) {
             $s .= "<{$tagname}>".(!is_numeric($value) ? '<![CDATA[' : '').$value.(!is_numeric($value) ? ']]>' : '')."</{$tagname}>";
         } else {
-            $s .= "<{$tagname}>" . $this->array2xml($value, $level + 1)."</{$tagname}>";
+            $s .= "<{$tagname}>" . mac_array2xml($value, $level + 1)."</{$tagname}>";
         }
     }
     $s = preg_replace("/([\x01-\x08\x0b-\x0c\x0e-\x1f])+/", ' ', $s);

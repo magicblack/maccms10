@@ -68,9 +68,9 @@
                 <td>{$vo.card_pwd|htmlspecialchars}</td>
                 <td>{$vo.card_money}</td>
                 <td>{$vo.card_points}</td>
-                <td>{$vo.card_add_time|mac_day=color}</td>
+                <td>{$vo.card_add_time|mac_day='color'}</td>
                 <td>{$vo.user_id}、{$vo.user.user_name}</td>
-                <td>{if condition="$vo.card_use_time eq 0"} {else}{$vo.card_use_time|mac_day=color}{/if}</td>
+                <td>{if condition="$vo.card_use_time eq 0"} {else}{$vo.card_use_time|mac_day='color'}{/if}</td>
                 <td>
                     <a class="layui-badge-rim j-tr-del" data-href="{:url('del?ids='.$vo['card_id'])}" href="javascript:;" title="{:lang('del')}">{:lang('del')}</a>
                 </td>

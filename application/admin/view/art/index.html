@@ -124,7 +124,7 @@
                 <td><a data-href="{:url('index/select')}?tab=art&col=art_level&tpl=select_level&url=art/field&ids={$vo.art_id}" data-width="270" data-height="100" class=" j-select"><span class="layui-badge layui-bg-orange">{$vo.art_level}</span></a></td>
                 <td>{if condition="$vo.ismake eq 1"}<a target="_blank" class="layui-badge layui-bg-green " href="{:mac_url_art_detail($vo)}">Y</a>{else/}<a class="layui-badge" href="{:url('make/make?ac=info&tab=art')}?ids={$vo.art_id}&ref=1">N</a>{/if}</td>
                 <td>{$vo.art_author|htmlspecialchars}</td>
-                <td>{$vo.art_time|mac_day=color}</td>
+                <td>{$vo.art_time|mac_day='color'}</td>
                 <td>
                     <a class="layui-badge-rim j-iframe" data-full="1" data-href="{:url('info?id='.$vo['art_id'])}" href="javascript:;" title="{:lang('edit')}">{:lang('edit')}</a>
                     <a class="layui-badge-rim j-tr-del" data-href="{:url('del?ids='.$vo['art_id'])}" href="javascript:;" title="{:lang('del')}">{:lang('del')}</a>

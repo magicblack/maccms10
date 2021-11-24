@@ -97,7 +97,7 @@
                 <td>{$vo.role_sort}</td>
                 <td>{$vo.role_hits}</td>
                 <td><a data-href="{:url('index/select')}?tab=role&col=role_level&tpl=select_level&url=role/field&ids={$vo.role_id}" data-width="270" data-height="100" class=" j-select"><span class="layui-badge layui-bg-orange">{$vo.role_level}</span></a></td>
-                <td>{$vo.role_time|mac_day=color}</td>
+                <td>{$vo.role_time|mac_day='color'}</td>
                 <td>
                     <a class="layui-badge-rim j-iframe" data-full="1" data-href="{:url('info?id='.$vo['role_id'])}" href="javascript:;" title="{:lang('edit')}">{:lang('edit')}</a>
                     <a class="layui-badge-rim j-tr-del" data-href="{:url('del?ids='.$vo['role_id'])}" href="javascript:;" title="{:lang('del')}">{:lang('del')}</a>

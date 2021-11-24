@@ -30,7 +30,7 @@
                 {if condition="$vo.isfile eq 1"}
                 <th><input type="checkbox" name="ids[]" value=".{$vo.path}" class="layui-checkbox checkbox-ids" lay-skin="primary"> <a href="{$vo.path}" target="_blank">{$vo.name}</a></th>
                 <td>{$vo.size}</td>
-                <td>{$vo.time|mac_day=color}</td>
+                <td>{$vo.time|mac_day='color'}</td>
                 {else}
                 <th><a href="{:url('annex/file',['path'=>$vo.path])}">{$vo.name}</a></th>
                 <td></td>

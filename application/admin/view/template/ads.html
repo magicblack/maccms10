@@ -27,7 +27,7 @@
                 <th>{$vo.name}</a></th>
                 <td>{$vo.note}</td>
                 <td>{$vo.size}</td>
-                <td>{$vo.time|mac_day=color}</td>
+                <td>{$vo.time|mac_day='color'}</td>
                 <td>
                     <input id="txt{$key}" type="text" value='<script src="{literal}{$maccms.path_ads}{/literal}{$vo.name}"></script>' size="60">
                 </td>

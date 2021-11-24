@@ -58,7 +58,7 @@
                 <td>{$vo.annex_id}</td>
                 <td>{:round($vo['annex_size']/1024, 2)}K</td>
                 <td>{$vo.annex_type|htmlspecialchars}</td>
-                <td>{$vo.annex_time|mac_day=color}</td>
+                <td>{$vo.annex_time|mac_day='color'}</td>
                 <td><a target="_blank" class="layui-badge-rim " href="{php}echo MAC_PATH;{/php}{$vo.annex_file}">{$vo.annex_file}</a></td>
             </tr>
             {/volist}

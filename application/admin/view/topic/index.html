@@ -52,7 +52,7 @@
                 <td>{$vo.topic_score}</td>
                 <td><a data-href="{:url('index/select')}?tab=topic&col=topic_level&tpl=select_level&url=topic/field&ids={$vo.topic_id}" data-width="270" data-height="100" class=" j-select"><span class="layui-badge layui-bg-orange">{$vo.topic_level}</span></a></td>
                 <td>{if condition="$vo.ismake eq 1"}<a target="_blank" class="layui-badge layui-bg-green " href="{:mac_url_topic_detail($vo)}">Y</a>{else/}<a class="layui-badge" href="{:url('make/make?ac=topic_info')}?topic={$vo.topic_id}&ref=1">N</a>{/if}</td>
-                <td>{$vo.topic_time|mac_day=color}</td>
+                <td>{$vo.topic_time|mac_day='color'}</td>
                 <td>
                     <a class="layui-badge-rim j-iframe" data-full="1" data-href="{:url('info?id='.$vo['topic_id'])}" href="javascript:;" title="{:lang('edit')}">{:lang('edit')}</a>
                     <a class="layui-badge-rim j-tr-del" data-href="{:url('del?ids='.$vo['topic_id'])}" href="javascript:;" title="{:lang('del')}">{:lang('del')}</a>

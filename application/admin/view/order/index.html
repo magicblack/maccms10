@@ -49,9 +49,9 @@
                 <td>{$vo.order_code}</td>
                 <td>{$vo.order_price}</td>
                 <td>{$vo.order_status|mac_get_order_status_text}</td>
-                <td>{$vo.order_time|mac_day=color}</td>
+                <td>{$vo.order_time|mac_day='color'}</td>
                 <td>{$vo.order_type}</td>
-                <td>{$vo.order_paytime|mac_day=color}</td>
+                <td>{$vo.order_paytime|mac_day='color'}</td>
                 <td>{$vo.user_id}、{$vo.user_name}</td>
                 <td>
                     <a class="layui-badge-rim j-tr-del" data-href="{:url('del?ids='.$vo['order_id'])}" href="javascript:;" title="{:lang('del')}">{:lang('del')}</a>

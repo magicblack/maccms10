@@ -109,7 +109,7 @@
                 <td>{$vo.actor_height|htmlspecialchars}</td>
                 <td>{$vo.actor_weight|htmlspecialchars}</td>
                 <td><a data-href="{:url('index/select')}?tab=actor&col=actor_level&tpl=select_level&url=actor/field&ids={$vo.actor_id}" data-width="270" data-height="100" class=" j-select"><span class="layui-badge layui-bg-orange">{$vo.actor_level}</span></a></td>
-                <td>{$vo.actor_time|mac_day=color}</td>
+                <td>{$vo.actor_time|mac_day='color'}</td>
                 <td>
                     <a class="layui-badge-rim j-iframe" data-full="1" data-href="{:url('info?id='.$vo['actor_id'])}" href="javascript:;" title="{:lang('edit')}">{:lang('edit')}</a>
                     <a class="layui-badge-rim j-tr-del" data-href="{:url('del?ids='.$vo['actor_id'])}" href="javascript:;" title="{:lang('del')}">{:lang('del')}</a>

@@ -124,7 +124,7 @@
                 <td>{$vo.website_referer}</td>
                 <td><a data-href="{:url('index/select')}?tab=website&col=website_level&tpl=select_level&url=website/field&ids={$vo.website_id}" data-width="270" data-height="100" class=" j-select"><span class="layui-badge layui-bg-orange">{$vo.website_level}</span></a></td>
                 <td>{if condition="$vo.ismake eq 1"}<a target="_blank" class="layui-badge layui-bg-green " href="{:mac_url_website_detail($vo)}">Y</a>{else/}<a class="layui-badge" href="{:url('make/make?ac=info&tab=website')}?ids={$vo.website_id}&ref=1">N</a>{/if}</td>
-                <td>{$vo.website_time|mac_day=color}</td>
+                <td>{$vo.website_time|mac_day='color'}</td>
                 <td>
                     <a class="layui-badge-rim j-iframe" data-full="1" data-href="{:url('visit/index?mid=11').'?wd='.parse_url($vo['website_jumpurl'])['host']}" href="javascript:;" title="">{:lang('referer')}</a>
                     <a class="layui-badge-rim j-ajax" data-href="{:url('index/check_back_link')}?url={$vo['website_jumpurl']}" refresh="no" href="javascript:;" title="{:lang('detect')}">{:lang('detect')}</a>

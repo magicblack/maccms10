@@ -53,7 +53,7 @@
                 <td>[{$vo.user_id}]{$vo.user_name}</td>
                 <td>{$vo.visit_mid|mac_get_mid_text}</td>
                 <td>{$vo.visit_ly}</td>
-                <td>{$vo.visit_time|mac_day=color}</td>
+                <td>{$vo.visit_time|mac_day='color'}</td>
                 <td>
                     <a class="layui-badge-rim j-tr-del" data-href="{:url('del?ids='.$vo['visit_id'])}" href="javascript:;" title="{:lang('del')}">{:lang('del')}</a>
                 </td>
