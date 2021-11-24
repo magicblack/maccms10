@@ -11,9 +11,10 @@ class Provide extends Base
     {
         parent::__construct();
         $this->_param = input('','','trim,urldecode');
-        if(isset($GLOBALS['config']['app']['input_type']) && $GLOBALS['config']['app']['input_type'] == 0 && request()->isPost()){
-            $this->_param = input('get.');
-        }
+        // 因搜索兼容性问题暂时移除
+//        if(isset($GLOBALS['config']['app']['input_type']) && $GLOBALS['config']['app']['input_type'] == 0 && request()->isPost()){
+//            $this->_param = input('get.');
+//        }
     }
 
     public function index()

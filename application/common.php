@@ -1393,13 +1393,15 @@ function mac_find_array($text,$start,$end)
 function mac_param_url(){
     $input = input() ;
     $param = [];
-    if(isset($GLOBALS['config']['app']['input_type']) && $GLOBALS['config']['app']['input_type'] == 0 && request()->isPost() && ENTRANCE!=='admin'){
-        $input = input('get.');
-        $tmp = $_GET;
-    }
-    else{
-        $tmp = $_REQUEST;
-    }
+    // 因搜索兼容性问题暂时移除
+//    if(isset($GLOBALS['config']['app']['input_type']) && $GLOBALS['config']['app']['input_type'] == 0 && request()->isPost() && ENTRANCE!=='admin'){
+//        $input = input('get.');
+//        $tmp = $_GET;
+//    }
+//    else{
+//        $tmp = $_REQUEST;
+//    }
+    $tmp = $_REQUEST;
     
     $input = array_merge($input,$tmp);
     //$param['id'] = intval($input['id']);

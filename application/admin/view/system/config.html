@@ -261,7 +261,7 @@
                             <input type="radio" name="app[compress]" value="1" title="{:lang('open')}" {if condition="$config['app']['compress'] eq 1"}checked {/if}>
                         </div>
                     </div>
-                <div class="layui-form-item">
+                <div class="layui-form-item layui-hide">
                     <label class="layui-form-label">{:lang('admin/system/config/input_type')}：</label>
                     <div class="layui-input-inline w600">
                         <input type="radio" name="app[input_type]" value="1" title="{:lang('get+post')}" {if condition="$config['app']['input_type'] neq 0"}checked {/if}>
