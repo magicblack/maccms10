@@ -615,6 +615,44 @@ class Vod extends Base {
         unset($data['uptime']);
         unset($data['uptag']);
 
+        // xss过滤
+        $filter_fields = [
+            'vod_name',
+            'vod_sub',
+            'vod_en',
+            'vod_color',
+            'vod_tag',
+            'vod_class',
+            'vod_pic',
+            'vod_pic_thumb',
+            'vod_pic_slide',
+            'vod_actor',
+            'vod_director',
+            'vod_writer',
+            'vod_behind',
+            'vod_blurb',
+            'vod_remarks',
+            'vod_pubdate',
+            'vod_serial',
+            'vod_tv',
+            'vod_weekday',
+            'vod_area',
+            'vod_lang',
+            'vod_year',
+            'vod_version',
+            'vod_state',
+            'vod_author',
+            'vod_tpl',
+            'vod_tpl_play',
+            'vod_tpl_down',
+        ];
+        foreach ($filter_fields as $filter_field) {
+            if (!isset($data[$filter_field])) {
+                continue;
+            }
+            $data[$filter_field] = mac_filter_xss($data[$filter_field]);
+        }
+
         if(!empty($data['vod_id'])){
             $where=[];
             $where['vod_id'] = ['eq',$data['vod_id']];

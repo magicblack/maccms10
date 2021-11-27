@@ -424,6 +424,36 @@ class Actor extends Base {
         unset($data['uptime']);
         unset($data['uptag']);
 
+        // xss过滤
+        $filter_fields = [
+            'actor_name',
+            'actor_en',
+            'actor_alias',
+            'actor_color',
+            'actor_pic',
+            'actor_blurb',
+            'actor_remarks',
+            'actor_area',
+            'actor_height',
+            'actor_weight',
+            'actor_birthday',
+            'actor_birtharea',
+            'actor_blood',
+            'actor_starsign',
+            'actor_school',
+            'actor_works',
+            'actor_tag',
+            'actor_class',
+            'actor_tpl',
+            'actor_jumpurl',
+        ];
+        foreach ($filter_fields as $filter_field) {
+            if (!isset($data[$filter_field])) {
+                continue;
+            }
+            $data[$filter_field] = mac_filter_xss($data[$filter_field]);
+        }
+
         if(!empty($data['actor_id'])){
             $where=[];
             $where['actor_id'] = ['eq',$data['actor_id']];

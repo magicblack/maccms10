@@ -214,6 +214,18 @@ class Comment extends Base {
             return ['code'=>1001,'msg'=>lang('param_err').'：'.$validate->getError() ];
         }
 
+        // xss过滤
+        $filter_fields = [
+            'comment_name',
+            'comment_content',
+        ];
+        foreach ($filter_fields as $filter_field) {
+            if (!isset($data[$filter_field])) {
+                continue;
+            }
+            $data[$filter_field] = mac_filter_xss($data[$filter_field]);
+        }
+
         if(!empty($data['comment_id'])){
             $where=[];
             $where['comment_id'] = ['eq',$data['comment_id']];

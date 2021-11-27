@@ -244,6 +244,30 @@ class Type extends Base {
             $data['type_en'] = Pinyin::get($data['type_name']);
         }
 
+        // xss过滤
+        $filter_fields = [
+            'type_name',
+            'type_en',
+            'type_tpl',
+            'type_tpl_list',
+            'type_tpl_detail',
+            'type_tpl_play',
+            'type_tpl_down',
+            'type_key',
+            'type_des',
+            'type_title',
+            'type_union',
+            'type_logo',
+            'type_pic',
+            'type_jumpurl',
+        ];
+        foreach ($filter_fields as $filter_field) {
+            if (!isset($data[$filter_field])) {
+                continue;
+            }
+            $data[$filter_field] = mac_filter_xss($data[$filter_field]);
+        }
+
         if(!empty($data['type_id'])){
             $where=[];
             $where['type_id'] = ['eq',$data['type_id']];

@@ -137,6 +137,18 @@ class Gbook extends Base {
             return ['code'=>1001,'msg'=>lang('param_err').'：'.$validate->getError() ];
         }
 
+        // xss过滤
+        $filter_fields = [
+            'gbook_name',
+            'gbook_content',
+            'gbook_reply',
+        ];
+        foreach ($filter_fields as $filter_field) {
+            if (!isset($data[$filter_field])) {
+                continue;
+            }
+            $data[$filter_field] = mac_filter_xss($data[$filter_field]);
+        }
 
         if(!empty($data['gbook_id'])){
             if(!empty($data['gbook_reply'])){

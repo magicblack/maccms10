@@ -396,7 +396,7 @@ class Collect extends Base {
     public function vod_data($param,$data,$show=1)
     {
         if($show==1) {
-            mac_echo(lang('model/collect/data_tip1',[$data['page']['page'],$data['page']['pagecount'],$data['page']['url']]));
+            mac_echo('[' . __FUNCTION__ . '] ' . lang('model/collect/data_tip1',[$data['page']['page'],$data['page']['pagecount'],$data['page']['url']]));
         }
 
         $config = config('maccms.collect');
@@ -1035,7 +1035,7 @@ class Collect extends Base {
     public function art_data($param,$data,$show=1)
     {
         if($show==1) {
-            mac_echo(lang('model/collect/data_tip1',[$data['page']['page'],$data['page']['pagecount'],$data['page']['url']]));
+            mac_echo('[' . __FUNCTION__ . '] ' . lang('model/collect/data_tip1',[$data['page']['page'],$data['page']['pagecount'],$data['page']['url']]));
         }
 
         $config = config('maccms.collect');
@@ -1357,7 +1357,7 @@ class Collect extends Base {
     public function actor_data($param,$data,$show=1)
     {
         if($show==1) {
-            mac_echo(lang('model/collect/data_tip1',[$data['page']['page'],$data['page']['pagecount'],$data['page']['url']]));
+            mac_echo('[' . __FUNCTION__ . '] ' . lang('model/collect/data_tip1',[$data['page']['page'],$data['page']['pagecount'],$data['page']['url']]));
         }
 
         $config = config('maccms.collect');
@@ -1624,7 +1624,7 @@ class Collect extends Base {
     public function role_data($param,$data,$show=1)
     {
         if($show==1) {
-            mac_echo(lang('model/collect/data_tip1',[$data['page']['page'],$data['page']['pagecount'],$data['page']['url']]));
+            mac_echo('[' . __FUNCTION__ . '] ' . lang('model/collect/data_tip1',[$data['page']['page'],$data['page']['pagecount'],$data['page']['url']]));
         }
 
         $config = config('maccms.collect');
@@ -1938,7 +1938,7 @@ class Collect extends Base {
     public function website_data($param,$data,$show=1)
     {
         if($show==1) {
-            mac_echo(lang('model/collect/data_tip1',[$data['page']['page'],$data['page']['pagecount'],$data['page']['url']]));
+            mac_echo('[' . __FUNCTION__ . '] ' . lang('model/collect/data_tip1',[$data['page']['page'],$data['page']['pagecount'],$data['page']['url']]));
         }
 
         $config = config('maccms.collect');
@@ -2203,7 +2203,7 @@ class Collect extends Base {
     public function comment_data($param,$data,$show=1)
     {
         if($show==1) {
-            mac_echo(lang('model/collect/data_tip1',[$data['page']['page'],$data['page']['pagecount'],$data['page']['url']]));
+            mac_echo('[' . __FUNCTION__ . '] ' . lang('model/collect/data_tip1',[$data['page']['page'],$data['page']['pagecount'],$data['page']['url']]));
         }
 
         $config = config('maccms.collect');
