@@ -1491,6 +1491,8 @@ function mac_url_img($url)
     elseif(!empty($GLOBALS['config']['upload']['img_key']) && preg_match('/'.$GLOBALS['config']['upload']['img_key'].'/',$url)){
         $url = $GLOBALS['config']['upload']['img_api'] . '' . $url;
     }
+    $url = mac_filter_xss($url);
+    $url = str_replace('&quot;&gt;', '', $url);
     return $url;
 }
 
