@@ -30,6 +30,7 @@ class System extends Base
         View::instance()->assign(['code'=>$code,'time'=>$GLOBALS['config']['email']['time']]);
         $title =  View::instance()->display($title);
         $msg =  View::instance()->display($msg);
+        $msg = htmlspecialchars_decode($msg);
         $res = mac_send_mail($to, $title, $msg, $conf);
         if ($res['code']==1) {
             return json(['code' => 1, 'msg' => lang('test_ok')]);
