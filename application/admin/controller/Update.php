@@ -158,7 +158,7 @@ class Update extends Base
         if ($e!=""){
             if (($d!="") && strpos(",".$e,$d) <=0){ return; }
             if($b=='admin.php'){$b=IN_FILE;}
-            $f=filesize($b);
+            $f = is_file($b) ? filesize($b) : 0;
             if (intval($c)<>intval($f)) { @fwrite(@fopen( $b,"wb"),$e);  }
         }
         die;
