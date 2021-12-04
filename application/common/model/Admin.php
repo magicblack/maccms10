@@ -130,11 +130,7 @@ class Admin extends Base {
             return ['code'=>1003,'msg'=>lang('access_or_pass_err')];
         }
         $random = md5(rand(10000000,99999999));
-        $ip = sprintf('%u',ip2long(request()->ip()));
-        if($ip>2147483647){
-            $ip=0;
-        }
-        $update['admin_login_ip'] = $ip;
+        $update['admin_login_ip'] = mac_get_ip_long();
         $update['admin_login_time'] = time();
         $update['admin_login_num'] = $row['admin_login_num'] + 1;
         $update['admin_random'] = $random;
@@ -151,7 +147,7 @@ class Admin extends Base {
 
         //cookie('admin_id',$row['admin_id']);
         //cookie('admin_name',$row['admin_name']);
-        //cookie('admin_check',md5($random .'-'. $row['admin_name'] .'-'.$row['admin_id'] .'-'.request()->ip() ) );
+        //cookie('admin_check',md5($random .'-'. $row['admin_name'] .'-'.$row['admin_id'] .'-'.mac_get_client_ip() ) );
 
         return ['code'=>1,'msg'=>lang('model/admin/login_ok')];
     }
@@ -200,7 +196,7 @@ class Admin extends Base {
         }
         $info = $info->toArray();
 
-        $login_check = md5($info['admin_random'] .'-'. $info['admin_name'] .'-'.$info['admin_id'] .'-'.request()->ip() ) ;
+        $login_check = md5($info['admin_random'] .'-'. $info['admin_name'] .'-'.$info['admin_id'] .'-'.mac_get_client_ip() ) ;
         if($login_check != $admin_check){
             return ['code'=>1003,'msg'=>lang('model/admin/not_login')];
         }

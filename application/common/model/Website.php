@@ -587,11 +587,7 @@ class Website extends Base {
 
     public function visit($param)
     {
-        $ip = sprintf('%u', ip2long(request()->ip()));
-        if ($ip > 2147483647) {
-            $ip = 0;
-        }
-
+        $ip = mac_get_ip_long();
         $max_cc = $GLOBALS['config']['website']['refer_visit_num'];
         if(empty($max_cc)){
             $max_cc=1;

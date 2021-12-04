@@ -161,13 +161,7 @@ class User extends Base
             }
         }
 
-        $ip = sprintf('%u',ip2long(request()->ip()));
-        if($ip>2147483647){
-            $ip=0;
-        }
-
-
-
+        $ip = mac_get_ip_long();
         if( $GLOBALS['config']['user']['reg_num'] > 0){
             $where2=[];
             $where2['user_reg_ip'] = ['eq', $ip];
@@ -177,8 +171,6 @@ class User extends Base
                 return ['code' => 1009, 'msg' => lang('model/user/ip_limit',[$GLOBALS['config']['user']['reg_num']])];
             }
         }
-
-
 
         $fields = [];
         $fields['user_name'] = $data['user_name'];
@@ -372,12 +364,8 @@ class User extends Base
         }
 
         $random = md5(rand(10000000, 99999999));
-        $ip = sprintf('%u',ip2long(request()->ip()));
-        if($ip>2147483647){
-            $ip=0;
-        }
         $update['user_random'] = $random;
-        $update['user_login_ip'] = $ip;
+        $update['user_login_ip'] = mac_get_ip_long();
         $update['user_login_time'] = time();
         $update['user_login_num'] = $row['user_login_num'] + 1;
         $update['user_last_login_time'] = $row['user_login_time'];
@@ -848,11 +836,7 @@ class User extends Base
             return ['code' => 101, 'msg' =>lang('model/user/id_err')];
         }
 
-        $ip = sprintf('%u', ip2long(request()->ip()));
-        if ($ip > 2147483647) {
-            $ip = 0;
-        }
-
+        $ip = mac_get_ip_long();
         $max_cc = $GLOBALS['config']['user']['invite_visit_num'];
         if(empty($max_cc)){
             $max_cc=1;

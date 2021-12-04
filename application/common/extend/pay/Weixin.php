@@ -17,7 +17,7 @@ class Weixin {
         $data['fee_type'] =  'CNY';//标价币种
         $data['out_trade_no'] = $order['order_code'];//商户订单号
         $data['total_fee'] = $total_fee*100;//金额，单位分
-        $data['spbill_create_ip'] =  request()->ip();//终端IP
+        $data['spbill_create_ip'] =  mac_get_client_ip();//终端IP
         $data['notify_url'] =  $GLOBALS['http_type'] . $_SERVER['HTTP_HOST'] . '/index.php/payment/notify/pay_type/weixin';
         $data['trade_type'] =  'NATIVE';//交易类型 JSAPI，NATIVE，APP
         $data['product_id'] = '1';//商品ID

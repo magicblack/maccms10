@@ -914,6 +914,57 @@ function mac_get_tag($title,$content){
     return false;
 }
 
+function mac_get_client_ip()
+{
+    static $final;
+    if (!is_null($final)) {
+        return $final;
+    }
+    $ips = array();
+    if (!empty($_SERVER['HTTP_CF_CONNECTING_IP'])) {
+        $ips[] = $_SERVER['HTTP_CF_CONNECTING_IP'];
+    }
+    if (!empty($_SERVER['HTTP_ALI_CDN_REAL_IP'])) {
+        $ips[] = $_SERVER['HTTP_ALI_CDN_REAL_IP'];
+    }
+    if (!empty($_SERVER['HTTP_CLIENT_IP'])) {
+        $ips[] = $_SERVER['HTTP_CLIENT_IP'];
+    }
+    if (!empty($_SERVER['HTTP_PROXY_USER'])) {
+        $ips[] = $_SERVER['HTTP_PROXY_USER'];
+    }
+    $real_ip = getenv('HTTP_X_REAL_IP');
+    if (!empty($real_ip)) {
+        $ips[] = $real_ip;
+    }
+    if (!empty($_SERVER['REMOTE_ADDR'])) {
+        $ips[] = $_SERVER['REMOTE_ADDR'];
+    }
+    // 选第一个最合法的，或最后一个正常的IP
+    foreach ($ips as $ip) {
+        $long = ip2long($ip);
+        $long && $final = $ip;
+        // 排除不正确的或私有IP
+        if ($long > 0 && $ip_long < 0xFFFFFFFF) {
+            $final = long2ip($long);
+            break;
+        }
+    }
+    empty($final) && $final = '0.0.0.0';
+    return $final;
+}
+
+function mac_get_ip_long($ip_addr = '')
+{
+    $ip_addr = !empty($ip_addr) ? $ip_addr : mac_get_client_ip();
+    $ip_long = sprintf('%u',ip2long($ip_addr));
+    // 排除不正确的或私有IP
+    if ($ip_long < 0 || $ip_long >= 0xFFFFFFFF) {
+        $ip_long = 0;
+    }
+    return $ip_long;
+}
+
 function mac_get_uniqid_code($code_prefix='')
 {
     $code_prefix = strtoupper($code_prefix);
@@ -970,18 +1021,54 @@ function mac_unescape($str)
 /*特殊字段的值转换*/
 function mac_get_mid_code($data)
 {
-    $arr = [1=>'vod',2=>'art',3=>'topic',4=>'comment',5=>'gbook',6=>'user',7=>'label',8=>'actor',9=>'role',10=>'plot',11=>'website'];
+    $arr = [
+        1  => 'vod',
+        2  => 'art',
+        3  => 'topic',
+        4  => 'comment',
+        5  => 'gbook',
+        6  => 'user',
+        7  => 'label',
+        8  => 'actor',
+        9  => 'role',
+        10 => 'plot',
+        11 => 'website',
+    ];
     return $arr[$data];
 }
 function mac_get_mid_text($data)
 {
-    $arr = [1=>lang('vod'),2=>lang('art'),3=>lang('topic'),4=>lang('comment'),5=>lang('gbook'),6=>lang('user'),7=>lang('label'),8=>lang('actor'),9=>lang('role'),10=>lang('plot'),11=>lang('website')];
+    $arr = [
+        1  => lang('vod'),
+        2  => lang('art'),
+        3  => lang('topic'),
+        4  => lang('comment'),
+        5  => lang('gbook'),
+        6  => lang('user'),
+        7  => lang('label'),
+        8  => lang('actor'),
+        9  => lang('role'),
+        10 => lang('plot'),
+        11 => lang('website'),
+    ];
     return $arr[$data];
 }
 function mac_get_mid($controller)
 {
     $controller=strtolower($controller);
-    $arr = ['vod'=>1,'art'=>2,'topic'=>3,'comment'=>4,'gbook'=>5,'user'=>6,'label'=>7,'actor'=>8,'role'=>9,'plot'=>10,'website'=>11];
+    $arr = [
+        'vod'     => 1,
+        'art'     => 2,
+        'topic'   => 3,
+        'comment' => 4,
+        'gbook'   => 5,
+        'user'    => 6,
+        'label'   => 7,
+        'actor'   => 8,
+        'role'    => 9,
+        'plot'    => 10,
+        'website' => 11,
+    ];
     return $arr[$controller];
 }
 function mac_get_aid($controller,$action='')
@@ -1010,44 +1097,77 @@ function mac_get_aid($controller,$action='')
 
 function mac_get_user_status_text($data)
 {
-    $arr = [0=>lang('disable'),1=>lang('enable')];
+    $arr = [
+        0 => lang('disable'),
+        1 => lang('enable'),
+    ];
     return $arr[$data];
 }
 function mac_get_user_flag_text($data)
 {
-    $arr = [0=>lang('counting_points'),1=>lang('counting_times'),2=>lang('counting_ips')];
+    $arr = [
+        0 => lang('counting_points'),
+        1 => lang('counting_times'),
+        2 => lang('counting_ips'),
+    ];
     return $arr[$data];
 }
 
 function mac_get_ulog_type_text($data)
 {
-    $arr = [1=>lang('browse'),2=>lang('collect'),3=>lang('want_see'),4=>lang('play'),5=>lang('down')];
+    $arr = [
+        1 => lang('browse'),
+        2 => lang('collect'),
+        3 => lang('want_see'),
+        4 => lang('play'),
+        5 => lang('down'),
+    ];
     return $arr[$data];
 }
 
 function mac_get_plog_type_text($data)
 {
-    $arr = [1=>lang('integral_recharge'),2=>lang('registration_promotion'),3=>lang('visit_promotion'),4=>lang('one_level_distribution'),5=>lang('two_level_distribution'),6=>lang('three_level_distribution'),7=>lang('points_upgrade'),8=>lang('integral_consumption'),9=>lang('integral_withdrawal')];
+    $arr = [
+        1 => lang('integral_recharge'),
+        2 => lang('registration_promotion'),
+        3 => lang('visit_promotion'),
+        4 => lang('one_level_distribution'),
+        5 => lang('two_level_distribution'),
+        6 => lang('three_level_distribution'),
+        7 => lang('points_upgrade'),
+        8 => lang('integral_consumption'),
+        9 => lang('integral_withdrawal'),
+    ];
     return $arr[$data];
 }
 
 function mac_get_card_sale_status_text($data)
 {
-    $arr = [0=>lang('not_sale'),1=>lang('sold')];
+    $arr = [
+        0 => lang('not_sale'),
+        1 => lang('sold'),
+    ];
     return $arr[$data];
 }
 
 function mac_get_card_use_status_text($data)
 {
-    $arr = [0=>lang('not_used'),1=>lang('used')];
+    $arr = [
+        0 => lang('not_used'),
+        1 => lang('used'),
+    ];
     return $arr[$data];
 }
 
 function mac_get_order_status_text($data)
 {
-    $arr = [0=>lang('not_paid'),1=>lang('paid')];
+    $arr = [
+        0 => lang('not_paid'),
+        1 => lang('paid'),
+    ];
     return $arr[$data];
 }
+
 function mac_get_user_portrait($user_id)
 {
     $res = MAC_PATH . 'static/images/touxiang.png';

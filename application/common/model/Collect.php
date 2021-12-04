@@ -2241,7 +2241,7 @@ class Collect extends Base {
                 $v['comment_down'] = intval($v['comment_down']);
                 $v['comment_mid'] = intval($v['comment_mid']);
                 if(!empty($v['comment_ip']) && !is_numeric($v['comment_ip'])){
-                    $v['comment_ip'] = ip2long($v['comment_ip']);
+                    $v['comment_ip'] = mac_get_ip_long($v['comment_ip']);
                 }
 
                 if($config['updown_start']>0 && $config['updown_end']){

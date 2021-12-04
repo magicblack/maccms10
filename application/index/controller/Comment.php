@@ -26,15 +26,15 @@ class Comment extends Base
 
         return $this->label_fetch('comment/index');
     }
-	
-	public function ajax() {
-		$param = mac_param_url();
+    
+    public function ajax() {
+        $param = mac_param_url();
         $this->assign('param',$param);
         $this->assign('comment',$GLOBALS['config']['comment']);
         return $this->label_fetch('comment/ajax',0,'json');
-	}
+    }
 
-	public function saveData() {
+    public function saveData() {
         $param = input();
 
         if($GLOBALS['config']['comment']['verify'] == 1){
@@ -86,13 +86,9 @@ class Comment extends Base
             $param['comment_status'] = 0;
         }
 
-        $ip = sprintf('%u',ip2long(request()->ip()));
-        if($ip>2147483647){
-            $ip=0;
-        }
-        $param['comment_ip'] = $ip;
+        $param['comment_ip'] = mac_get_ip_long();
 
-		$res = model('Comment')->saveData($param);
+        $res = model('Comment')->saveData($param);
         if($res['code']>1){
             return $res;
         }
@@ -106,7 +102,7 @@ class Comment extends Base
             }
             return $res;
         }
-	}
+    }
 
     public function report()
     {

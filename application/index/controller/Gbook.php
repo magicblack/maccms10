@@ -91,11 +91,7 @@ class Gbook extends Base
             $param['gbook_status'] = 0;
         }
 
-        $ip = sprintf('%u',ip2long(request()->ip()));
-        if($ip>2147483647){
-            $ip=0;
-        }
-        $param['gbook_ip'] = $ip;
+        $param['gbook_ip'] = mac_get_ip_long();
 
         $res = model('Gbook')->saveData($param);
 
