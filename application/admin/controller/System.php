@@ -218,9 +218,9 @@ class System extends Base
                 if (strpos($r, '=>') !== false) {
                     $a = explode('=>', $r);
                     $rule = [];
-                    if (strpos($a, ':id') !== false) {
+//                    if (strpos($a, ':id') !== false) {
                         //$rule['id'] = '\w+';
-                    }
+//                    }
                     $route[trim($a[0])] = [trim($a[1]), [], $rule];
                 }
             }
