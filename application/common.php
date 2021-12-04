@@ -944,8 +944,8 @@ function mac_get_client_ip()
     foreach ($ips as $ip) {
         $long = ip2long($ip);
         $long && $final = $ip;
-        // 排除不正确的或私有IP
-        if ($long > 0 && $ip_long < 0xFFFFFFFF) {
+        // 排除不正确的IP
+        if ($long > 0 && $long < 0xFFFFFFFF) {
             $final = long2ip($long);
             break;
         }
@@ -958,7 +958,7 @@ function mac_get_ip_long($ip_addr = '')
 {
     $ip_addr = !empty($ip_addr) ? $ip_addr : mac_get_client_ip();
     $ip_long = sprintf('%u',ip2long($ip_addr));
-    // 排除不正确的或私有IP
+    // 排除不正确的IP
     if ($ip_long < 0 || $ip_long >= 0xFFFFFFFF) {
         $ip_long = 0;
     }
