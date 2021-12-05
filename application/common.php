@@ -27,6 +27,11 @@ function slog($logs)
 //$log = $_SERVER['PHP_SELF'] . '---get:' .$getData .'---post:' . $postData .'---'. json_encode($_POST).'---cookie:' . $cookieData ;
 //slog($log);
 
+// 是否IP
+function mac_string_is_ip($string) {
+    return preg_match('/^(\d{1,3}\.){3}\d{1,3}(:\d{1,5})?$/', $string) === 1;
+}
+
 // 应用公共文件
 function mac_return($msg,$code=1,$data=''){
     if(is_array($msg)){
