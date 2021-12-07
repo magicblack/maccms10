@@ -3,9 +3,24 @@ namespace app\install\controller;
 use think\Controller;
 use think\Db;
 use think\Lang;
+use think\Request;
 
 class Index extends Controller
 {
+
+    /**
+     * 构造方法
+     * @access public
+     * @param Request $request Request 对象
+     */
+    public function __construct(Request $request = null)
+    {
+        // 仅安装脚本可进入
+        if (!defined('BIND_MODULE') || BIND_MODULE != 'install') {
+            header('HTTP/1.1 403 Forbidden');
+            exit();
+        }
+    }
 
     public function index($step = 0)
     {
