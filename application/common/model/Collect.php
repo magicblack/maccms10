@@ -161,6 +161,10 @@ class Collect extends Base {
             $url .='&';
         }
         $url .= http_build_query($url_param). base64_decode($param['param']);
+        $result = $this->checkCjUrl($url);
+        if ($result['code'] > 1) {
+            return $result;
+        }
         $html = mac_curl_get($url);
         if(empty($html)){
             return ['code'=>1001, 'msg'=>lang('model/collect/get_html_err')];
@@ -305,6 +309,10 @@ class Collect extends Base {
             $url .='&';
         }
         $url .= http_build_query($url_param). base64_decode($param['param']);
+        $result = $this->checkCjUrl($url);
+        if ($result['code'] > 1) {
+            return $result;
+        }
         $html = mac_curl_get($url);
         if(empty($html)){
             return ['code'=>1001, 'msg'=>lang('model/collect/get_html_err')];
@@ -984,6 +992,10 @@ class Collect extends Base {
         }
 
         $url .= http_build_query($url_param). base64_decode($param['param']);
+        $result = $this->checkCjUrl($url);
+        if ($result['code'] > 1) {
+            return $result;
+        }
         $html = mac_curl_get($url);
         if(empty($html)){
             return ['code'=>1001, 'msg'=>lang('model/collect/get_html_err')];
@@ -1306,6 +1318,10 @@ class Collect extends Base {
             $url .='&';
         }
         $url .= http_build_query($url_param).base64_decode($param['param']);
+        $result = $this->checkCjUrl($url);
+        if ($result['code'] > 1) {
+            return $result;
+        }
         $html = mac_curl_get($url);
         if(empty($html)){
             return ['code'=>1001, 'msg'=>lang('model/collect/get_html_err')];
@@ -1593,6 +1609,10 @@ class Collect extends Base {
             $url .='&';
         }
         $url .= http_build_query($url_param).base64_decode($param['param']);
+        $result = $this->checkCjUrl($url);
+        if ($result['code'] > 1) {
+            return $result;
+        }
         $html = mac_curl_get($url);
         if(empty($html)){
             return ['code'=>1001, 'msg'=>lang('model/collect/get_html_err')];
@@ -1887,6 +1907,10 @@ class Collect extends Base {
             $url .='&';
         }
         $url .= http_build_query($url_param).base64_decode($param['param']);
+        $result = $this->checkCjUrl($url);
+        if ($result['code'] > 1) {
+            return $result;
+        }
         $html = mac_curl_get($url);
         if(empty($html)){
             return ['code'=>1001, 'msg'=>lang('model/collect/get_html_err')];
@@ -2172,6 +2196,10 @@ class Collect extends Base {
             $url .='&';
         }
         $url .= http_build_query($url_param).base64_decode($param['param']);
+        $result = $this->checkCjUrl($url);
+        if ($result['code'] > 1) {
+            return $result;
+        }
         $html = mac_curl_get($url);
         if(empty($html)){
             return ['code'=>1001, 'msg'=>lang('model/collect/get_html_err')];
@@ -2414,4 +2442,16 @@ class Collect extends Base {
         }
     }
 
+    /**
+     * 检查url合法性
+     * https://github.com/magicblack/maccms10/issues/763
+     */
+    private function checkCjUrl($url)
+    {
+        $result = parse_url($url);
+        if (empty($result['host']) || in_array($result['host'], ['127.0.0.1', 'localhost'])) {
+            return ['code' => 1001, 'msg' => lang('model/collect/cjurl_err')];
+        }
+        return ['code' => 1];
+    }
 }

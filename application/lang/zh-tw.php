@@ -602,6 +602,7 @@ https://www.baidu.com/123.jpg
     'model/cash/mush_money_err'=>'提現太多了,沒有這麽多積分哦！',
 
     'model/collect/flag_err'=>'flag標識錯誤，請勿非法請求！',
+    'model/collect/cjurl_err'=>'採集鏈接有誤或不能為本地鏈接',
     'model/collect/get_html_err'=>'連接API接口失敗，通常為服務器網絡不穩定、IP被封、禁用相關函數！',
     'model/collect/json_err'=>'JSON格式不正確，不支持采集',
     'model/collect/xml_err'=>'XML格式不正確，不支持采集',
