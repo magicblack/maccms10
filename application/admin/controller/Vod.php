@@ -132,20 +132,7 @@ class Vod extends Base
         $this->assign('type_tree',$type_tree);
 
         //播放器
-        $player_list = config('vodplayer');
-        $downer_list = config('voddowner');
-        $server_list = config('vodserver');
-
-        $player_list = mac_multisort($player_list,'sort',SORT_DESC,'status','1');
-        $downer_list = mac_multisort($downer_list,'sort',SORT_DESC,'status','1');
-        $server_list = mac_multisort($server_list,'sort',SORT_DESC,'status','1');
-
-
-        $this->assign('player_list',$player_list);
-        $this->assign('downer_list',$downer_list);
-        $this->assign('server_list',$server_list);
-
-
+        $this->assignBaseListByConfig();
         $this->assign('title',lang('admin/vod/title'));
         return $this->fetch('admin@vod/index');
     }
@@ -370,20 +357,7 @@ class Vod extends Base
         $this->assign('type_tree',$type_tree);
 
         //播放器
-        $player_list = config('vodplayer');
-        $downer_list = config('voddowner');
-        $server_list = config('vodserver');
-
-        $player_list = mac_multisort($player_list,'sort',SORT_DESC,'status','1');
-        $downer_list = mac_multisort($downer_list,'sort',SORT_DESC,'status','1');
-        $server_list = mac_multisort($server_list,'sort',SORT_DESC,'status','1');
-
-
-        $this->assign('player_list',$player_list);
-        $this->assign('downer_list',$downer_list);
-        $this->assign('server_list',$server_list);
-
-
+        $this->assignBaseListByConfig();
         $this->assign('title',lang('admin/vod/title'));
         return $this->fetch('admin@vod/batch');
     }
@@ -424,17 +398,7 @@ class Vod extends Base
         $this->assign('group_list',$group_list);
 
         //播放器
-        $player_list = config('vodplayer');
-        $downer_list = config('voddowner');
-        $server_list = config('vodserver');
-
-        $player_list = mac_multisort($player_list,'sort',SORT_DESC,'status','1');
-        $downer_list = mac_multisort($downer_list,'sort',SORT_DESC,'status','1');
-        $server_list = mac_multisort($server_list,'sort',SORT_DESC,'status','1');
-
-        $this->assign('player_list',$player_list);
-        $this->assign('downer_list',$downer_list);
-        $this->assign('server_list',$server_list);
+        $this->assignBaseListByConfig();
 
         //播放组、下载租
         $this->assign('vod_play_list',(array)$info['vod_play_list']);
@@ -550,4 +514,15 @@ class Vod extends Base
         return json($res);
     }
 
+    private function assignBaseListByConfig() {
+        $player_list = config('vodplayer');
+        $downer_list = config('voddowner');
+        $server_list = config('vodserver');
+        $player_list = mac_multisort($player_list,'sort',SORT_DESC,'status','1');
+        $downer_list = mac_multisort($downer_list,'sort',SORT_DESC,'status','1');
+        $server_list = mac_multisort($server_list,'sort',SORT_DESC,'status','1');
+        $this->assign('player_list',$player_list);
+        $this->assign('downer_list',$downer_list);
+        $this->assign('server_list',$server_list);
+    }
 }

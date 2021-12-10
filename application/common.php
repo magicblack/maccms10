@@ -1452,12 +1452,13 @@ function mac_multisort($arr,$col_sort,$sort_order,$col_status='',$status_val='')
 {
     $sort=[];
     foreach($arr as $k=>$v){
-        $sort[] = $v[$col_sort];
         if($col_status!='' && $v[$col_status] != $status_val){
             unset($arr[$k]);
-        }
+       } else {
+            $sort[] = isset($v[$col_sort]) ? $v[$col_sort] : 0;
+       }
     }
-    array_multisort($sort, SORT_DESC, SORT_FLAG_CASE, $arr);
+    array_multisort($sort, $sort_order, SORT_FLAG_CASE, $arr);
     return $arr;
 }
 
