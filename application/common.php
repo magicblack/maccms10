@@ -114,6 +114,10 @@ function mac_arr2file($f,$arr='')
     }
     $con = "<?php\nreturn $con;";
     mac_write_file($f, $con);
+    // opcache清理以实时生效配置
+    if (function_exists('opcache_invalidate')) {
+        opcache_invalidate($f, true);
+    }
 }
 
 function mac_replace_text($txt,$type=1)
@@ -1518,14 +1522,6 @@ function mac_find_array($text,$start,$end)
 function mac_param_url(){
     $input = input() ;
     $param = [];
-    // 因搜索兼容性问题暂时移除
-//    if(isset($GLOBALS['config']['app']['input_type']) && $GLOBALS['config']['app']['input_type'] == 0 && request()->isPost() && ENTRANCE!=='admin'){
-//        $input = input('get.');
-//        $tmp = $_GET;
-//    }
-//    else{
-//        $tmp = $_REQUEST;
-//    }
     $tmp = $_REQUEST;
     
     $input = array_merge($input,$tmp);

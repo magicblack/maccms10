@@ -154,6 +154,7 @@ class All extends Controller
     {
         $param = mac_filter_words($param);
         $param = mac_search_len_check($param);
+        // vod/search 各个参数下都可能出现回显关键词
         if(!empty($GLOBALS['config']['app']['wall_filter'])){
             $param = mac_escape_param($param);
         }
@@ -167,7 +168,7 @@ class All extends Controller
         $param = mac_search_len_check($param);
         $info = mac_label_type($param);
         if(!empty($GLOBALS['config']['app']['wall_filter'])){
-            $param = mac_escape_param($param);
+            $param['wd'] = mac_escape_param($param['wd']);
         }
         $this->assign('param',$param);
         $this->assign('obj',$info);
@@ -236,7 +237,7 @@ class All extends Controller
         $param = mac_filter_words($param);
         $param = mac_search_len_check($param);
         if(!empty($GLOBALS['app']['wall_filter'])){
-            $param = mac_escape_param($param);
+            $param['wd'] = mac_escape_param($param['wd']);
         }
         $this->assign('param',$param);
     }
