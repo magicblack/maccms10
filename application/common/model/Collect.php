@@ -455,7 +455,11 @@ class Collect extends Base {
                 $v['type_id_1'] = intval($type_list[$v['type_id']]['type_pid']);
                 $v['vod_en'] = Pinyin::get($v['vod_name']);
                 $v['vod_letter'] = strtoupper(substr($v['vod_en'],0,1));
-                $v['vod_time_add'] = time();
+                // 使用资源站的添加时间，更新时间保持当前
+                // https://github.com/magicblack/maccms10/issues/780
+                if (empty($v['vod_time_add']) || strlen($v['vod_time_add']) != 10) {
+                    $v['vod_time_add'] = time();
+                }
                 $v['vod_time'] = time();
                 $v['vod_status'] = intval($config['status']);
                 $v['vod_lock'] = intval($v['vod_lock']);
@@ -668,7 +672,7 @@ class Collect extends Base {
 
 
                 if (!$info) {
-
+                    // 新增
                     if($param['opt'] == 2){
                         $des= lang('model/collect/not_check_add');
                     }
@@ -683,7 +687,6 @@ class Collect extends Base {
                             $v['vod_down_server'] = (string)join('$$$', $collect_filter['down'][$param['filter']]['cj_down_server_arr']);
                             $v['vod_down_note'] = (string)join('$$$', $collect_filter['down'][$param['filter']]['cj_down_note_arr']);
                         }
-
                         $tmp = $this->syncImages($config_sync_pic,  $v['vod_pic'], 'vod');
                         $v['vod_pic'] = mac_filter_xss((string)$tmp['pic']);
                         $msg = $tmp['msg'];
@@ -695,6 +698,7 @@ class Collect extends Base {
                         $des = lang('model/collect/add_ok');
                     }
                 } else {
+                    // 更新
                     if(empty($config['uprule'])){
                         $des = lang('model/collect/uprule_empty');
                     }
@@ -702,7 +706,7 @@ class Collect extends Base {
                         $des = lang('model/collect/data_lock');
                     }
                     elseif($param['opt'] == 1){
-                        $des= lang('model/collect/not_check_update');
+                        $des = lang('model/collect/not_check_update');
                     }
                     else {
                         unset($v['vod_time_add']);
