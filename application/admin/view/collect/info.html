@@ -67,6 +67,16 @@
             </div>
             <div class="layui-form-mid layui-word-aux" style="margin-left:110px; ">{:lang('admin/collect/filter_code_tip')}</div>
         </div>
+        <div class="layui-form-item row_filer">
+            <label class="layui-form-label">{:lang('pic_sync')}：</label>
+            <div class="layui-input-block">
+                <input name="collect_sync_pic_opt" type="radio" value="0" title="{:lang('follow_global')}" {if condition="$info['collect_sync_pic_opt'] eq 0"}checked {/if}>
+                <input name="collect_sync_pic_opt" type="radio" value="1" title="{:lang('open')}" {if condition="$info['collect_sync_pic_opt'] eq 1"}checked {/if}>
+                <input name="collect_sync_pic_opt" type="radio" value="2" title="{:lang('close')}" {if condition="$info['collect_sync_pic_opt'] eq 2"}checked {/if}>
+            </div>
+        </div>
+
+        <br>
         <div class="layui-form-item center">
             <div class="layui-input-block">
                 <button class="layui-btn layui-btn-normal" type="button" id="btnTest" >{:lang('test')}</button>

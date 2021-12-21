@@ -1019,7 +1019,7 @@ cachetime自定义缓存时间单位秒
 {maccms:website num="10" paging="no" order="asc" by="sort"}
    内部同下方，{$obj.改为{$vo.开头即可
 {/maccms:website}
-=======角色内容页独有标签=======
+=======网址内容页独有标签=======
 {$obj.website_id} 网址id
 {$obj.type_id} 分类id
 {$obj.type_id_1} 一级分类id

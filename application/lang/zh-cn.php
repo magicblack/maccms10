@@ -226,7 +226,6 @@ return [
     'birthday'=>'生日',
     'starsign'=>'星座',
     'school'=>'毕业学校',
-    'author'=>'作者',
     'view'=>'查看',
     'multi_set'=>'批量设置',
     'multi_separate_tip'=>'多个用,号分隔',
@@ -283,6 +282,7 @@ return [
     'opt_err'=>'操作失败',
     'update_ok'=>'更新成功',
     'update_err'=>'更新失败',
+    'follow_global'=>'跟随全局',
 
     'btn_save' =>'保 存',
     'btn_reset' =>'还 原',
@@ -1595,7 +1595,6 @@ https://www.baidu.com/123.jpg
     'admin/collect/filter_code'=>'过滤代码',
     'admin/collect/filter_code_tip'=>'过滤提示：多组地址的资源开启白名单后只会入库指定代码的地址。比如 youku,iqiyi',
     'admin/collect/test_ok'=>'测试类型成功，接口类型',
-
 
     'admin/comment/title'=>'评论管理',
 

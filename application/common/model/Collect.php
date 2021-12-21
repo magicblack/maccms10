@@ -381,7 +381,15 @@ class Collect extends Base {
         return $res;
     }
 
-    public function syncImages($pic_status,$pic_url,$flag='vod')
+    /**
+     * 同步图片
+     *
+     * @param $pic_status int 是否同步。为1时，同步图片
+     * @param $pic_url
+     * @param string $flag
+     * @return array
+     */
+    private function syncImages($pic_status,$pic_url,$flag='vod')
     {
         if($pic_status == 1){
             $img_url = model('Image')->down_load($pic_url, $GLOBALS['config']['upload'], $flag);
@@ -404,11 +412,12 @@ class Collect extends Base {
     public function vod_data($param,$data,$show=1)
     {
         if($show==1) {
-            mac_echo('[' . __FUNCTION__ . '] ' . lang('model/collect/data_tip1',[$data['page']['page'],$data['page']['pagecount'],$data['page']['url']]));
+            mac_echo('[' . __FUNCTION__ . '] ' . lang('model/collect/data_tip1', [$data['page']['page'],$data['page']['pagecount'],$data['page']['url']]));
         }
 
         $config = config('maccms.collect');
         $config = $config['vod'];
+        $config_sync_pic = $param['sync_pic_opt'] > 0 ? $param['sync_pic_opt'] : $config['pic'];
         $players = config('vodplayer');
         $downers = config('voddowner');
 
@@ -675,7 +684,7 @@ class Collect extends Base {
                             $v['vod_down_note'] = (string)join('$$$', $collect_filter['down'][$param['filter']]['cj_down_note_arr']);
                         }
 
-                        $tmp = $this->syncImages($config['pic'], $v['vod_pic'], 'vod');
+                        $tmp = $this->syncImages($config_sync_pic,  $v['vod_pic'], 'vod');
                         $v['vod_pic'] = mac_filter_xss((string)$tmp['pic']);
                         $msg = $tmp['msg'];
                         $res = model('Vod')->insert($v);
@@ -850,7 +859,7 @@ class Collect extends Base {
                             $update['vod_lang'] = $v['vod_lang'];
                         }
                         if (strpos(',' . $config['uprule'], 'j')!==false && (substr($info["vod_pic"], 0, 4) == "http" || empty($info['vod_pic']) ) && $v['vod_pic']!=$info['vod_pic'] ) {
-                            $tmp = $this->syncImages($config['pic'],$v['vod_pic'],'vod');
+                            $tmp = $this->syncImages($config_sync_pic, $v['vod_pic'],'vod');
                             $update['vod_pic'] = mac_filter_xss((string)$tmp['pic']);
                             $msg =$tmp['msg'];
                         }
@@ -1052,6 +1061,7 @@ class Collect extends Base {
 
         $config = config('maccms.collect');
         $config = $config['art'];
+        $config_sync_pic = $param['sync_pic_opt'] > 0 ? $param['sync_pic_opt'] : $config['pic'];
 
         $type_list = model('Type')->getCache('type_list');
         $filter_arr = explode(',',$config['filter']); $filter_arr = array_filter($filter_arr);
@@ -1163,7 +1173,7 @@ class Collect extends Base {
 
                 $info = model('Art')->where($where)->find();
                 if (!$info) {
-                    $tmp = $this->syncImages($config['pic'],$v['art_pic'],'art');
+                    $tmp = $this->syncImages($config_sync_pic, $v['art_pic'],'art');
                     $v['art_pic'] = mac_filter_xss((string)$tmp['pic']);
 
                     $msg = $tmp['msg'];
@@ -1210,7 +1220,7 @@ class Collect extends Base {
                             }
 
                             if(strpos(','.$config['uprule'],'d')!==false && (substr($info["art_pic"], 0, 4) == "http" || empty($info['art_pic']))  && $v['art_pic']!=$info['art_pic'] ){
-                                $tmp = $this->syncImages($config['pic'],$v['art_pic'],'art');
+                                $tmp = $this->syncImages($config_sync_pic, $v['art_pic'],'art');
                                 $update['art_pic'] = mac_filter_xss((string)$tmp['pic']);
                                 $msg =$tmp['msg'];
                             }
@@ -1378,6 +1388,7 @@ class Collect extends Base {
 
         $config = config('maccms.collect');
         $config = $config['actor'];
+        $config_sync_pic = $param['sync_pic_opt'] > 0 ? $param['sync_pic_opt'] : $config['pic'];
 
         $type_list = model('Type')->getCache('type_list');
         $filter_arr = explode(',',$config['filter']); $filter_arr = array_filter($filter_arr);
@@ -1472,7 +1483,7 @@ class Collect extends Base {
 
                 $info = model('Actor')->where($where)->find();
                 if (!$info) {
-                    $tmp = $this->syncImages($config['pic'],$v['actor_pic'],'actor');
+                    $tmp = $this->syncImages($config_sync_pic, $v['actor_pic'],'actor');
                     $v['actor_pic'] = $tmp['pic'];
                     $msg = $tmp['msg'];
                     $res = model('Actor')->insert($v);
@@ -1508,7 +1519,7 @@ class Collect extends Base {
                                 $update['actor_works'] = $v['actor_works'];
                             }
                             if(strpos(','.$config['uprule'],'e')!==false && (substr($info["actor_pic"], 0, 4) == "http" ||empty($info['actor_pic']) ) && $v['actor_pic']!=$info['actor_pic'] ){
-                                $tmp = $this->syncImages($config['pic'],$v['actor_pic'],'actor');
+                                $tmp = $this->syncImages($config_sync_pic, $v['actor_pic'],'actor');
                                 $update['actor_pic'] =$tmp['pic'];
                                 $msg =$tmp['msg'];
                             }
@@ -1649,6 +1660,7 @@ class Collect extends Base {
 
         $config = config('maccms.collect');
         $config = $config['role'];
+        $config_sync_pic = $param['sync_pic_opt'] > 0 ? $param['sync_pic_opt'] : $config['pic'];
 
         $filter_arr = explode(',',$config['filter']); $filter_arr = array_filter($filter_arr);
         $pse_rnd = explode('#',$config['words']); $pse_rnd = array_filter($pse_rnd);
@@ -1774,7 +1786,7 @@ class Collect extends Base {
                     $where['role_rid'] = $vod_info['vod_id'];
                     $info = model('Role')->where($where)->find();
                     if (!$info) {
-                        $tmp = $this->syncImages($config['pic'], $v['role_pic'], 'role');
+                        $tmp = $this->syncImages($config_sync_pic,  $v['role_pic'], 'role');
                         $v['role_pic'] = $tmp['pic'];
                         $msg = $tmp['msg'];
                         $res = model('Role')->insert($v);
@@ -1804,7 +1816,7 @@ class Collect extends Base {
                                     $update['role_remarks'] = $v['role_remarks'];
                                 }
                                 if (strpos(',' . $config['uprule'], 'c') !== false && (substr($info["role_pic"], 0, 4) == "http" || empty($info['role_pic'])) && $v['role_pic'] != $info['role_pic']) {
-                                    $tmp = $this->syncImages($config['pic'], $v['role_pic'], 'role');
+                                    $tmp = $this->syncImages($config_sync_pic,  $v['role_pic'], 'role');
                                     $update['role_pic'] = $tmp['pic'];
                                     $msg = $tmp['msg'];
                                 }
@@ -1967,6 +1979,7 @@ class Collect extends Base {
 
         $config = config('maccms.collect');
         $config = $config['website'];
+        $config_sync_pic = $param['sync_pic_opt'] > 0 ? $param['sync_pic_opt'] : $config['pic'];
 
         $type_list = model('Type')->getCache('type_list');
         $filter_arr = explode(',',$config['filter']); $filter_arr = array_filter($filter_arr);
@@ -2059,7 +2072,7 @@ class Collect extends Base {
 
                 $info = model('Website')->where($where)->find();
                 if (!$info) {
-                    $tmp = $this->syncImages($config['pic'],$v['website_pic'],'website');
+                    $tmp = $this->syncImages($config_sync_pic, $v['website_pic'],'website');
                     $v['website_pic'] = $tmp['pic'];
                     $msg = $tmp['msg'];
                     $res = model('Website')->insert($v);
@@ -2095,7 +2108,7 @@ class Collect extends Base {
                                 $update['website_jumpurl'] = $v['website_jumpurl'];
                             }
                             if(strpos(','.$config['uprule'],'e')!==false && (substr($info["website_pic"], 0, 4) == "http" ||empty($info['website_pic']) ) && $v['website_pic']!=$info['website_pic'] ){
-                                $tmp = $this->syncImages($config['pic'],$v['website_pic'],'website');
+                                $tmp = $this->syncImages($config_sync_pic, $v['website_pic'],'website');
                                 $update['website_pic'] =$tmp['pic'];
                                 $msg =$tmp['msg'];
                             }
@@ -2236,6 +2249,7 @@ class Collect extends Base {
 
         $config = config('maccms.collect');
         $config = $config['comment'];
+        $config_sync_pic = $param['sync_pic_opt'] > 0 ? $param['sync_pic_opt'] : $config['pic'];
 
         $filter_arr = explode(',',$config['filter']); $filter_arr = array_filter($filter_arr);
         $pse_rnd = explode('#',$config['words']); $pse_rnd = array_filter($pse_rnd);

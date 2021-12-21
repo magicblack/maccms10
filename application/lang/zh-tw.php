@@ -226,7 +226,6 @@ return [
     'birthday'=>'生日',
     'starsign'=>'星座',
     'school'=>'畢業學校',
-    'author'=>'作者',
     'view'=>'查看',
     'multi_set'=>'批量設置',
     'multi_separate_tip'=>'多個用,號分隔',
@@ -283,6 +282,7 @@ return [
     'opt_err'=>'操作失敗',
     'update_ok'=>'更新成功',
     'update_err'=>'更新失敗',
+    'follow_global'=>'跟隨全局',
 
     'btn_save' =>'保 存',
     'btn_reset' =>'還 原',
