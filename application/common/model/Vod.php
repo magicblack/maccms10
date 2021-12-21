@@ -615,42 +615,60 @@ class Vod extends Base {
         unset($data['uptime']);
         unset($data['uptag']);
 
-        // xss过滤
+        // xss过滤、长度裁剪
         $filter_fields = [
-            'vod_name',
-            'vod_sub',
-            'vod_en',
-            'vod_color',
-            'vod_tag',
-            'vod_class',
-            'vod_pic',
-            'vod_pic_thumb',
-            'vod_pic_slide',
-            'vod_actor',
-            'vod_director',
-            'vod_writer',
-            'vod_behind',
-            'vod_blurb',
-            'vod_remarks',
-            'vod_pubdate',
-            'vod_serial',
-            'vod_tv',
-            'vod_weekday',
-            'vod_area',
-            'vod_lang',
-            'vod_year',
-            'vod_version',
-            'vod_state',
-            'vod_author',
-            'vod_tpl',
-            'vod_tpl_play',
-            'vod_tpl_down',
+            'vod_name'         => 255,
+            'vod_sub'          => 255,
+            'vod_en'           => 255,
+            'vod_color'        => 6,
+            'vod_tag'          => 100,
+            'vod_class'        => 255,
+            'vod_pic'          => 255,
+            'vod_pic_thumb'    => 255,
+            'vod_pic_slide'    => 255,
+            'vod_actor'        => 255,
+            'vod_director'     => 255,
+            'vod_writer'       => 100,
+            'vod_behind'       => 100,
+            'vod_blurb'        => 255,
+            'vod_remarks'      => 100,
+            'vod_pubdate'      => 100,
+            'vod_serial'       => 20,
+            'vod_tv'           => 30,
+            'vod_weekday'      => 30,
+            'vod_area'         => 20,
+            'vod_lang'         => 10,
+            'vod_year'         => 10,
+            'vod_version'      => 30,
+            'vod_state'        => 30,
+            'vod_author'       => 60,
+            'vod_jumpurl'      => 150,
+            'vod_tpl'          => 30,
+            'vod_tpl_play'     => 30,
+            'vod_tpl_down'     => 30,
+            'vod_duration'     => 10,
+            'vod_reurl'        => 255,
+            'vod_rel_vod'      => 255,
+            'vod_rel_art'      => 255,
+            'vod_pwd'          => 10,
+            'vod_pwd_url'      => 255,
+            'vod_pwd_play'     => 10,
+            'vod_pwd_play_url' => 255,
+            'vod_pwd_down'     => 10,
+            'vod_pwd_down_url' => 255,
+            'vod_play_from'    => 255,
+            'vod_play_server'  => 255,
+            'vod_play_note'    => 255,
+            'vod_down_from'    => 255,
+            'vod_down_server'  => 255,
+            'vod_down_note'    => 255,
         ];
-        foreach ($filter_fields as $filter_field) {
+        foreach ($filter_fields as $filter_field => $field_length) {
             if (!isset($data[$filter_field])) {
                 continue;
             }
             $data[$filter_field] = mac_filter_xss($data[$filter_field]);
+            $data[$filter_field] = mac_substring($data[$filter_field], $field_length);
         }
 
         if(!empty($data['vod_id'])){
