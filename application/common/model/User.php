@@ -119,9 +119,10 @@ class User extends Base
         $config = config('maccms');
 
         $data = [];
-        $data['user_name'] = $this->formatSpecialChars($param['user_name']);
-        $data['user_pwd'] = $this->formatSpecialChars($param['user_pwd']);
-        $data['user_pwd2'] = $this->formatSpecialChars($param['user_pwd2']);
+        $password_raw = trim($param['user_pwd']);
+        $data['user_name'] = htmlspecialchars(urldecode(trim($param['user_name'])));
+        $data['user_pwd'] = htmlspecialchars(urldecode(trim($param['user_pwd'])));
+        $data['user_pwd2'] = htmlspecialchars(urldecode(trim($param['user_pwd2'])));
         $data['verify'] = $param['verify'];
         $uid = $param['uid'];
         $is_from_3rdparty = !empty($param['user_openid_qq']) || !empty($param['user_openid_weixin']);
@@ -174,7 +175,7 @@ class User extends Base
 
         $fields = [];
         $fields['user_name'] = $data['user_name'];
-        $fields['user_pwd'] = md5($data['user_pwd']);
+        $fields['user_pwd'] = md5($password_raw);
         $fields['group_id'] = $this->_def_group;
         $fields['user_points'] = intval($config['user']['reg_points']);
         $fields['user_status'] = intval($config['user']['reg_status']);
@@ -291,7 +292,9 @@ class User extends Base
         if (empty($param['user_pwd'])) {
             return ['code' => 1001, 'msg' => lang('model/user/input_old_pass')];
         }
-        if (md5($param['user_pwd']) != $GLOBALS['user']['user_pwd']) {
+        $password_raw = trim($param['user_pwd']);
+        $password_formatted = htmlspecialchars(urldecode(trim($param['user_pwd'])));
+        if (!in_array($GLOBALS['user']['user_pwd'], [md5($password_raw), md5($password_formatted)])) {
             return ['code' => 1002, 'msg' => lang('model/user/old_pass_err')];
         }
         if ($param['user_pwd1'] != $param['user_pwd2']) {
@@ -308,7 +311,7 @@ class User extends Base
         $data['user_question'] = htmlspecialchars(urldecode(trim($param['user_question'])));
         $data['user_answer'] = htmlspecialchars(urldecode(trim($param['user_answer'])));
         if (!empty($param['user_pwd2'])) {
-            $data['user_pwd'] = $this->formatSpecialChars($param['user_pwd2']);
+            $data['user_pwd'] = trim($param['user_pwd2']);
         }
         return $this->saveData($data);
     }
@@ -316,8 +319,9 @@ class User extends Base
     public function login($param)
     {
         $data = [];
-        $data['user_name'] = $this->formatSpecialChars($param['user_name'], true);
-        $data['user_pwd'] = $this->formatSpecialChars($param['user_pwd'], true);
+        $password_raw = trim($param['user_pwd']);
+        $data['user_name'] = htmlspecialchars(urldecode(trim($param['user_name'])));
+        $data['user_pwd'] = htmlspecialchars(urldecode(trim($param['user_pwd'])));
         $data['verify'] = $param['verify'];
         $data['openid'] = htmlspecialchars(urldecode(trim($param['openid'])));
         $data['col'] = htmlspecialchars(urldecode(trim($param['col'])));
@@ -326,22 +330,18 @@ class User extends Base
             if (empty($data['user_name']) || empty($data['user_pwd'])) {
                 return ['code' => 1001, 'msg' => lang('model/user/input_require')];
             }
-
             if ($GLOBALS['config']['user']['login_verify'] ==1 && !captcha_check($data['verify'])) {
                 return ['code' => 1002, 'msg' => lang('verify_err')];
             }
-
-            $pwd = md5($data['user_pwd']);
             $where = [];
-
             $pattern = '/\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*/';
             if (!preg_match($pattern, $data['user_name'])) {
                 $where['user_name'] = ['eq', $data['user_name']];
             } else {
                 $where['user_email'] = ['eq', $data['user_name']];
             }
-
-            $where['user_pwd'] = ['eq', $pwd];
+            // https://github.com/magicblack/maccms10/issues/781 兼容密码
+            $where['user_pwd'] = [['eq', md5($password_raw)], ['eq', $data['user_pwd']], 'or'];
         } else {
             if (empty($data['openid']) || empty($data['col'])) {
                 return ['code' => 1001, 'msg' => lang('model/user/input_require')];
@@ -478,12 +478,12 @@ class User extends Base
     public function findpass($param)
     {
         $data = [];
-        $user_pwd_formatted = $this->formatSpecialChars($param['user_pwd']);
-        $data['user_name'] = $this->formatSpecialChars($param['user_name'], true);
+        $password_raw = trim($param['user_pwd']);
+        $data['user_name'] = htmlspecialchars(urldecode(trim($param['user_name'])));
         $data['user_question'] = htmlspecialchars(urldecode(trim($param['user_question'])));
         $data['user_answer'] = htmlspecialchars(urldecode(trim($param['user_answer'])));
-        $data['user_pwd'] = $this->formatSpecialChars($param['user_pwd'], true);
-        $data['user_pwd2'] = $this->formatSpecialChars($param['user_pwd2'], true);
+        $data['user_pwd'] = htmlspecialchars(urldecode(trim($param['user_pwd'])));
+        $data['user_pwd2'] = htmlspecialchars(urldecode(trim($param['user_pwd2'])));
         $data['verify'] = $param['verify'];
 
         if (empty($data['user_name']) || empty($data['user_question']) || empty($data['user_answer']) || empty($data['user_pwd']) || empty($data['user_pwd2']) || empty($data['verify'])) {
@@ -510,7 +510,7 @@ class User extends Base
         }
 
         $update = [];
-        $update['user_pwd'] = md5($user_pwd_formatted);
+        $update['user_pwd'] = md5($password_raw);
 
         $where = [];
         $where['user_id'] = $info['user_id'];
@@ -775,10 +775,10 @@ class User extends Base
             $to = htmlspecialchars(urldecode(trim($param['to'])));
         }
 
-        $user_pwd_formatted = $this->formatSpecialChars($param['user_pwd']);
+        $password_raw = trim($param['user_pwd']);
         $param['code'] = htmlspecialchars(urldecode(trim($param['code'])));
-        $param['user_pwd'] = $this->formatSpecialChars($param['user_pwd']);
-        $param['user_pwd2'] = $this->formatSpecialChars($param['user_pwd2']);
+        $param['user_pwd'] = htmlspecialchars(urldecode(trim($param['user_pwd'])));
+        $param['user_pwd2'] = htmlspecialchars(urldecode(trim($param['user_pwd2'])));
 
 
         if (strlen($param['user_pwd']) < 6) {
@@ -822,9 +822,8 @@ class User extends Base
             }
         }
 
-        $update=[];
-        $update['user_pwd'] = md5($user_pwd_formatted);
-
+        $update = [];
+        $update['user_pwd'] = md5($password_raw);
         $res = $this->where($where)->update($update);
         if($res===false){
             return ['code'=>2009,'msg'=>lang('model/user/pass_reset_err')];
@@ -936,16 +935,4 @@ class User extends Base
         return ['code'=>1,'msg'=>lang('model/user/reward_ok')];
     }
 
-    /**
-     * 处理特殊字符
-     * @param $string
-     * @param false $compatibility bool 是否需要兼容
-     */
-    private function formatSpecialChars($string, $compatibility = false)
-    {
-        if ($compatibility === true) {
-            return htmlspecialchars(urldecode(trim($string)));
-        }
-        return htmlspecialchars(trim($string));
-    }
 }
