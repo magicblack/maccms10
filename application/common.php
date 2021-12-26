@@ -2698,18 +2698,22 @@ function mac_label_vod_role($param)
     return $res;
 }
 
-function mac_label_type($param)
+function mac_label_type($param, $type_id_specified)
 {
-    if($GLOBALS['config']['rewrite']['type_id']==1){
+    if ($type_id_specified > 0) {
+        $type_id = $type_id_specified;
+    } else {
+        if($GLOBALS['config']['rewrite']['type_id']==1){
 
-    }
-    else{
-        if($GLOBALS['config']['rewrite']['type_id']==2) {
-            $param['id'] = mac_alphaID($param['id'], true, $GLOBALS['config']['rewrite']['encode_len'],$GLOBALS['config']['rewrite']['encode_key'] );
         }
+        else{
+            if($GLOBALS['config']['rewrite']['type_id']==2) {
+                $param['id'] = mac_alphaID($param['id'], true, $GLOBALS['config']['rewrite']['encode_len'],$GLOBALS['config']['rewrite']['encode_key'] );
+            }
+        }
+        $type_id = $param['id'];
     }
-
-    $type_info = model('Type')->getCacheInfo($param['id']);
+    $type_info = model('Type')->getCacheInfo($type_id);
 
     $GLOBALS['type_id'] =$type_info['type_id'];
     $GLOBALS['type_pid'] = $type_info['type_pid'];

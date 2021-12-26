@@ -161,12 +161,12 @@ class All extends Controller
         $this->assign('param',$param);
     }
 
-    protected function label_type($view=0)
+    protected function label_type($view=0, $type_id_specified = 0)
     {
         $param = mac_param_url();
         $param = mac_filter_words($param);
         $param = mac_search_len_check($param);
-        $info = mac_label_type($param);
+        $info = mac_label_type($param, $type_id_specified);
         if(!empty($GLOBALS['config']['app']['wall_filter'])){
             $param['wd'] = mac_escape_param($param['wd']);
         }
