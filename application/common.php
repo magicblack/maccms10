@@ -1248,10 +1248,11 @@ function mac_array_check_num($arr)
 function mac_like_arr($s)
 {
     $tmp = explode(',',$s);
-    foreach($tmp as $k=>$v){
-        $tmp[$k] = '%'.$v.'%';
+    $like_arr = [];
+    foreach($tmp as $v){
+        $like_arr[] = '%'.$v.'%';
     }
-    return $tmp;
+    return $like_arr;
 }
 
 function mac_art_list($art_title,$art_note,$art_content)

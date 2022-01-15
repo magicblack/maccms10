@@ -382,11 +382,12 @@ abstract class Builder
         } elseif ('LIKE' == $exp || 'NOT LIKE' == $exp) {
             // 模糊匹配
             if (is_array($value)) {
+                $array = [];
                 foreach ($value as $item) {
                     $array[] = $key . ' ' . $exp . ' ' . $this->parseValue($item, $field);
                 }
                 $logic = isset($val[2]) ? $val[2] : 'AND';
-                $whereStr .= '(' . implode($array, ' ' . strtoupper($logic) . ' ') . ')';
+                $whereStr .= '(' . implode(' ' . strtoupper($logic) . ' ', $array) . ')';
             } else {
                 $whereStr .= $key . ' ' . $exp . ' ' . $this->parseValue($value, $field);
             }

@@ -420,6 +420,7 @@ class Collect extends Base {
         $config_sync_pic = $param['sync_pic_opt'] > 0 ? $param['sync_pic_opt'] : $config['pic'];
         $players = config('vodplayer');
         $downers = config('voddowner');
+        $vod_search = model('VodSearch');
 
         $type_list = model('Type')->getCache('type_list');
         $filter_arr = explode(',',$config['filter']); $filter_arr = array_filter($filter_arr);
@@ -553,8 +554,13 @@ class Collect extends Base {
                 if (strpos($config['inrule'], 'e')!==false) {
                     $where['vod_lang'] = $v['vod_lang'];
                 }
+                $vod_search_actor = false;
+                $search_actor_id_list = [];
                 if (strpos($config['inrule'], 'f')!==false) {
-                    $where['vod_actor'] = ['like', mac_like_arr($v['vod_actor']), 'OR'];
+                    // $where['vod_actor'] = ['like', mac_like_arr($v['vod_actor']), 'OR'];
+                    $vod_search_actor = true;
+                    $search_actor_id_list = $vod_search->getResultIdList($v['vod_actor'], 'vod_actor', true);
+                    $search_actor_id_list = empty($search_actor_id_list) ? [0] : $search_actor_id_list;
                 }
                 if (strpos($config['inrule'], 'g')!==false) {
                     $where['vod_director'] = $v['vod_director'];
@@ -563,10 +569,10 @@ class Collect extends Base {
                     $v['vod_tag'] = mac_get_tag($v['vod_name'], $v['vod_content']);
                 }
 
-                if(!empty($where['vod_actor']) && !empty($where['vod_director'])){
+                if($vod_search_actor === true && !empty($where['vod_director'])){
                     $blend = true;
                     $GLOBALS['blend'] = [
-                        'vod_actor' => $where['vod_actor'],
+                        'vod_id' => ['IN', $search_actor_id_list],
                         'vod_director' => $where['vod_director']
                     ];
                     unset($where['vod_actor'],$where['vod_director']);
@@ -665,7 +671,7 @@ class Collect extends Base {
                     $info = model('Vod')->where($where)
                         ->where(function($query){
                             $query->where('vod_director',$GLOBALS['blend']['vod_director'])
-                                    ->whereOr('vod_actor',$GLOBALS['blend']['vod_actor']);
+                                    ->whereOr('vod_id', ['IN', $search_actor_id_list]);
                         })
                         ->find();
                 }
@@ -690,12 +696,15 @@ class Collect extends Base {
                         $tmp = $this->syncImages($config_sync_pic,  $v['vod_pic'], 'vod');
                         $v['vod_pic'] = mac_filter_xss((string)$tmp['pic']);
                         $msg = $tmp['msg'];
-                        $res = model('Vod')->insert($v);
-                        if ($res === false) {
-
+                        $vod_id = model('Vod')->insert($v, false, true);
+                        if ($vod_id > 0) {
+                            $vod_search->checkAndUpdateTopResults($v + ['vod_id' => $vod_id], true);
+                            $color = 'green';
+                            $des = lang('model/collect/add_ok');
+                        } else {
+                            $color = 'red';
+                            $des = 'vod insert failed';
                         }
-                        $color = 'green';
-                        $des = lang('model/collect/add_ok');
                     }
                 } else {
                     // 更新
@@ -927,7 +936,7 @@ class Collect extends Base {
                 }
             }
             if($show==1) {
-                mac_echo( ($k + 1) .'、'. $v['vod_name'] . "<font color=$color>" .$des .'</font>'. $msg.'' );
+                mac_echo( ($k + 1) .'、'. $v['vod_name'] . " <font color='{$color}'>" .$des .'</font>'. $msg.'' );
             }
             else{
                 return ['code'=>($color=='red' ? 1001 : 1),'msg'=>$des ];

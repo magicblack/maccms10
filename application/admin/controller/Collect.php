@@ -152,6 +152,8 @@ class Collect extends Base
             $param['page'] = $param['pg'];
             unset($param['pg']);
         }
+        @session_write_close();
+        
         if ($param['mid'] == '' || $param['mid'] == '1') {
             return $this->vod($param);
         } elseif ($param['mid'] == '2') {
