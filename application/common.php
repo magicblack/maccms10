@@ -1616,6 +1616,7 @@ function mac_url_img($url)
     }
     $url = mac_filter_xss($url);
     $url = str_replace('&quot;&gt;', '', $url);
+    $url = str_replace('&amp;', '&', $url);
     return $url;
 }
 
