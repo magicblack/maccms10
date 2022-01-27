@@ -32,10 +32,11 @@ class Cj extends Base {
         if(!empty($data['nodeid'])){
             $where=[];
             $where['nodeid'] = ['eq',$data['nodeid']];
-
             $res = Db::name('cj_node')->where($where)->update($data);
         }
         else{
+            $data['urlpage'] = isset($data['urlpage']) ? (string)$data['urlpage'] : '';
+            $data['page_base'] = isset($data['page_base']) ? (string)$data['page_base'] : '';
             $res = Db::name('cj_node')->insert($data);
         }
         if(false === $res){

@@ -42,7 +42,7 @@ class Cj extends Base
         if (Request()->isPost()) {
             $param = input();
             $data = $param['data'];
-            $data['urlpage'] = $param['urlpage'.$data['sourcetype']];
+            $data['urlpage'] = (string)$param['urlpage'.$data['sourcetype']];
             if(!empty($data['customize_config'])){
                 $customize_config = $data['customize_config'];
                 unset($data['customize_config']);
@@ -463,7 +463,7 @@ class Cj extends Base
     {
         $param = input();
         $data = $param['data'];
-        $data['urlpage'] = $param['urlpage'.$data['sourcetype']];
+        $data['urlpage'] = (string)$param['urlpage'.$data['sourcetype']];
         $collection = new cjOper();
         $urls = $collection->url_list($data);
 
