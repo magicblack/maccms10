@@ -1079,7 +1079,7 @@ class Collect extends Base {
         $type_list = model('Type')->getCache('type_list');
         $filter_arr = explode(',',$config['filter']); $filter_arr = array_filter($filter_arr);
         $pse_rnd = explode('#',$config['words']); $pse_rnd = array_filter($pse_rnd);
-        $pse_syn = mac_txt_explain($config['thesaurus']);
+        $pse_syn = mac_txt_explain($config['thesaurus'], true);
 
 
         foreach($data['data'] as $k=>$v){
@@ -1406,7 +1406,7 @@ class Collect extends Base {
         $type_list = model('Type')->getCache('type_list');
         $filter_arr = explode(',',$config['filter']); $filter_arr = array_filter($filter_arr);
         $pse_rnd = explode('#',$config['words']); $pse_rnd = array_filter($pse_rnd);
-        $pse_syn = mac_txt_explain($config['thesaurus']);
+        $pse_syn = mac_txt_explain($config['thesaurus'], true);
 
         foreach($data['data'] as $k=>$v){
 
@@ -1677,7 +1677,7 @@ class Collect extends Base {
 
         $filter_arr = explode(',',$config['filter']); $filter_arr = array_filter($filter_arr);
         $pse_rnd = explode('#',$config['words']); $pse_rnd = array_filter($pse_rnd);
-        $pse_syn = mac_txt_explain($config['thesaurus']);
+        $pse_syn = mac_txt_explain($config['thesaurus'], true);
 
         foreach($data['data'] as $k=>$v){
 
@@ -1997,7 +1997,7 @@ class Collect extends Base {
         $type_list = model('Type')->getCache('type_list');
         $filter_arr = explode(',',$config['filter']); $filter_arr = array_filter($filter_arr);
         $pse_rnd = explode('#',$config['words']); $pse_rnd = array_filter($pse_rnd);
-        $pse_syn = mac_txt_explain($config['thesaurus']);
+        $pse_syn = mac_txt_explain($config['thesaurus'], true);
 
         foreach($data['data'] as $k=>$v){
 
@@ -2266,7 +2266,7 @@ class Collect extends Base {
 
         $filter_arr = explode(',',$config['filter']); $filter_arr = array_filter($filter_arr);
         $pse_rnd = explode('#',$config['words']); $pse_rnd = array_filter($pse_rnd);
-        $pse_syn = mac_txt_explain($config['thesaurus']);
+        $pse_syn = mac_txt_explain($config['thesaurus'], true);
 
         foreach($data['data'] as $k=>$v){
 
