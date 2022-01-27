@@ -103,6 +103,13 @@
                         <input type="radio" name="collect[vod][psesyn]" value="1" title="{:lang('open')}" {if condition="$config['collect']['vod']['psesyn'] eq 1"}checked {/if}>
                     </div>
                 </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">{:lang('admin/system/configcollect/pseplayer')}：</label>
+                    <div class="layui-input-inline">
+                        <input type="radio" name="collect[vod][pseplayer]" value="0" title="{:lang('close')}" {if condition="$config['collect']['vod']['pseplayer'] neq 1"}checked {/if}>
+                        <input type="radio" name="collect[vod][pseplayer]" value="1" title="{:lang('open')}" {if condition="$config['collect']['vod']['pseplayer'] eq 1"}checked {/if}>
+                    </div>
+                </div>
 
                 <div class="layui-form-item">
                     <label class="layui-form-label">{:lang('admin/system/configcollect/urlrole')}：</label>
@@ -612,6 +619,13 @@
                     <label class="layui-form-label">{:lang('admin/system/configcollect/vod_thesaurus')}：</label>
                     <div class="layui-input-block">
                         <textarea name="collect[vod][thesaurus]" class="layui-textarea">{$config['collect']['vod']['thesaurus']|mac_replace_text}</textarea>
+                    </div>
+                </div>
+
+                <div class="layui-form-item">
+                    <label class="layui-form-label">{:lang('admin/system/configcollect/vod_playerwords')}：</label>
+                    <div class="layui-input-block">
+                        <textarea name="collect[vod][playerwords]" class="layui-textarea">{$config['collect']['vod']['playerwords']|mac_replace_text}</textarea>
                     </div>
                 </div>
 

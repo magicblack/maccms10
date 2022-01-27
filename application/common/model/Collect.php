@@ -320,7 +320,7 @@ class Collect extends Base {
         $html = mac_filter_tags($html);
         $json = json_decode($html,true);
         if(!$json){
-            return ['code'=>1002, 'msg'=>lang('model/collect/json_err')];
+            return ['code'=>1002, 'msg'=>lang('model/collect/json_err') . ': ' . mb_substr($html, 0, 15)];
         }
 
         $array_page = [];
@@ -423,10 +423,13 @@ class Collect extends Base {
         $vod_search = model('VodSearch');
 
         $type_list = model('Type')->getCache('type_list');
-        $filter_arr = explode(',',$config['filter']); $filter_arr = array_filter($filter_arr);
-        $pse_rnd = explode('#',$config['words']); $pse_rnd = array_filter($pse_rnd);
-        $pse_name =  mac_txt_explain($config['namewords'], true);
+        $filter_arr = explode(',',$config['filter']);
+        $filter_arr = array_filter($filter_arr);
+        $pse_rnd = explode('#',$config['words']);
+        $pse_rnd = array_filter($pse_rnd);
+        $pse_name = mac_txt_explain($config['namewords'], true);
         $pse_syn = mac_txt_explain($config['thesaurus'], true);
+        $pse_player = mac_txt_explain($config['playerwords'], true);
 
         foreach($data['data'] as $k=>$v){
             $color='red';
@@ -533,6 +536,9 @@ class Collect extends Base {
                 }
                 if ($config['psesyn'] == 1) {
                     $v['vod_content'] = mac_rep_pse_syn($pse_syn, $v['vod_content']);
+                }
+                if ($config['pseplayer'] == 1) {
+                    $v['vod_play_from'] = mac_rep_pse_syn($pse_player, $v['vod_play_from']);
                 }
 
                 if(empty($v['vod_blurb'])){
@@ -669,9 +675,9 @@ class Collect extends Base {
                 }
                 else{
                     $info = model('Vod')->where($where)
-                        ->where(function($query){
+                        ->where(function($query) {
                             $query->where('vod_director',$GLOBALS['blend']['vod_director'])
-                                    ->whereOr('vod_id', ['IN', $search_actor_id_list]);
+                                    ->whereOr('vod_id', $GLOBALS['blend']['vod_id']);
                         })
                         ->find();
                 }
@@ -1025,7 +1031,7 @@ class Collect extends Base {
         $html = mac_filter_tags($html);
         $json = json_decode($html,true);
         if(!$json){
-            return ['code'=>1002, 'msg'=>lang('model/collect/json_err')];
+            return ['code'=>1002, 'msg'=>lang('model/collect/json_err') . ': ' . mb_substr($html, 0, 15)];
         }
 
         $array_page = [];
@@ -1352,7 +1358,7 @@ class Collect extends Base {
         $html = mac_filter_tags($html);
         $json = json_decode($html,true);
         if(!$json){
-            return ['code'=>1002, 'msg'=>lang('model/collect/json_err')];
+            return ['code'=>1002, 'msg'=>lang('model/collect/json_err') . ': ' . mb_substr($html, 0, 15)];
         }
 
         $array_page = [];
@@ -1644,7 +1650,7 @@ class Collect extends Base {
         $html = mac_filter_tags($html);
         $json = json_decode($html,true);
         if(!$json){
-            return ['code'=>1002, 'msg'=>lang('model/collect/json_err')];
+            return ['code'=>1002, 'msg'=>lang('model/collect/json_err') . ': ' . mb_substr($html, 0, 15)];
         }
 
         $array_page = [];
@@ -1943,7 +1949,7 @@ class Collect extends Base {
         $html = mac_filter_tags($html);
         $json = json_decode($html,true);
         if(!$json){
-            return ['code'=>1002, 'msg'=>lang('model/collect/json_err')];
+            return ['code'=>1002, 'msg'=>lang('model/collect/json_err') . ': ' . mb_substr($html, 0, 15)];
         }
 
         $array_page = [];
@@ -2233,7 +2239,7 @@ class Collect extends Base {
         $html = mac_filter_tags($html);
         $json = json_decode($html,true);
         if(!$json){
-            return ['code'=>1002, 'msg'=>lang('model/collect/json_err')];
+            return ['code'=>1002, 'msg'=>lang('model/collect/json_err') . ': ' . mb_substr($html, 0, 15)];
         }
 
         $array_page = [];
