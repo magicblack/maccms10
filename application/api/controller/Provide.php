@@ -181,11 +181,11 @@ class Provide extends Base
 
                 if (!empty($GLOBALS['config']['api']['vod']['typefilter'])){
                     if(in_array($v['type_id'],$typefilter)) {
-                        $class[] = ['type_id' => $v['type_id'], 'type_name' => $v['type_name']];
+                        $class[] = ['type_id' => $v['type_id'], 'type_pid' => $v['type_pid'], 'type_name' => $v['type_name']];
                     }
                 }
                 else {
-                    $class[] = ['type_id' => $v['type_id'], 'type_name' => $v['type_name']];
+                    $class[] = ['type_id' => $v['type_id'], 'type_pid' => $v['type_pid'], 'type_name' => $v['type_name']];
                 }
             }
             $res['class'] = $class;
@@ -363,10 +363,10 @@ class Provide extends Base
 
                         if (!empty($GLOBALS['config']['api']['art']['typefilter'])) {
                             if (in_array($v['type_id'], $typefilter)) {
-                                $class[] = ['type_id' => $v['type_id'], 'type_name' => $v['type_name']];
+                                $class[] = ['type_id' => $v['type_id'], 'type_pid' => $v['type_pid'], 'type_name' => $v['type_name']];
                             }
                         } else {
-                            $class[] = ['type_id' => $v['type_id'], 'type_name' => $v['type_name']];
+                            $class[] = ['type_id' => $v['type_id'], 'type_pid' => $v['type_pid'], 'type_name' => $v['type_name']];
                         }
                     }
                 }
@@ -474,10 +474,10 @@ class Provide extends Base
 
                         if (!empty($GLOBALS['config']['api']['actor']['typefilter'])) {
                             if (in_array($v['type_id'], $typefilter)) {
-                                $class[] = ['type_id' => $v['type_id'], 'type_name' => $v['type_name']];
+                                $class[] = ['type_id' => $v['type_id'], 'type_pid' => $v['type_pid'], 'type_name' => $v['type_name']];
                             }
                         } else {
-                            $class[] = ['type_id' => $v['type_id'], 'type_name' => $v['type_name']];
+                            $class[] = ['type_id' => $v['type_id'], 'type_pid' => $v['type_pid'], 'type_name' => $v['type_name']];
                         }
                     }
                 }
@@ -686,10 +686,10 @@ class Provide extends Base
 
                         if (!empty($GLOBALS['config']['api']['website']['typefilter'])) {
                             if (in_array($v['type_id'], $typefilter)) {
-                                $class[] = ['type_id' => $v['type_id'], 'type_name' => $v['type_name']];
+                                $class[] = ['type_id' => $v['type_id'], 'type_pid' => $v['type_pid'], 'type_name' => $v['type_name']];
                             }
                         } else {
-                            $class[] = ['type_id' => $v['type_id'], 'type_name' => $v['type_name']];
+                            $class[] = ['type_id' => $v['type_id'], 'type_pid' => $v['type_pid'], 'type_name' => $v['type_name']];
                         }
                     }
                 }
