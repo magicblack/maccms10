@@ -50,13 +50,13 @@ class Upload extends Base {
         $param['user_id'] = empty($param['user_id']) ? '0' : $param['user_id'];
         $base64_img = $param['imgdata'];
         $data = [];
-        $config = config('maccms.site');
+        $config = (array)config('maccms.site');
         $pre= $config['install_dir'];
         $upload_image_ext = 'jpg,jpeg,png,gif,webp';
         $upload_file_ext = 'doc,docx,xls,xlsx,ppt,pptx,pdf,wps,txt,rar,zip,torrent';
         $upload_media_ext = 'rm,rmvb,avi,mkv,mp4,mp3';
         $add_rnd = false;
-        $config = config('maccms.upload');
+        $config = (array)config('maccms.upload');
 
         if(!empty($param['from'])){
             $cp = 'app\\common\\extend\\editor\\' . ucfirst($param['from']);
