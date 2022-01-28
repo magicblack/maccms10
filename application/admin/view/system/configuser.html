@@ -55,6 +55,18 @@
                             <input type="radio" name="user[reg_email_sms]" value="1" title="{:lang('open')}" {if condition="$config['user']['reg_email_sms'] eq 1"}checked {/if}>
                         </div>
                     </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:lang('admin/system/configuser/email_white_hosts')}：</label>
+                        <div class="layui-input-block">
+                            <textarea name="user[email_white_hosts]" class="layui-textarea" placeholder="{:lang('admin/system/configuser/email_white_hosts_tip')}">{$config['user']['email_white_hosts']}</textarea>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:lang('admin/system/configuser/email_black_hosts')}：</label>
+                        <div class="layui-input-block">
+                            <textarea name="user[email_black_hosts]" class="layui-textarea" placeholder="{:lang('admin/system/configuser/email_black_hosts_tip')}">{$config['user']['email_black_hosts']}</textarea>
+                        </div>
+                    </div>
 
                     <div class="layui-form-item">
                         <label class="layui-form-label">{:lang('admin/system/configuser/reg_verify')}：</label>

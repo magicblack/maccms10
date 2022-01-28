@@ -1,7 +1,9 @@
 <?php
 namespace app\common\model;
+
 use think\Db;
 use think\View;
+use app\common\validate\User as UserValidate;
 
 class User extends Base
 {
@@ -190,7 +192,7 @@ class User extends Base
                 $param['type'] = 3;
                 $res = $this->check_msg($param);
                 if($res['code'] >1){
-                    return ['code'=>$res['code'],'msg'=>$res['msg']];
+                    return $res;
                 }
                 $fields['user_phone'] = $param['to'];
 
@@ -209,7 +211,7 @@ class User extends Base
                 $param['type'] = 3;
                 $res = $this->check_msg($param);
                 if($res['code'] >1){
-                    return ['code'=>$res['code'],'msg'=>$res['msg']];
+                    return $res;
                 }
                 $fields['user_email'] = $param['to'];
 
@@ -604,6 +606,13 @@ class User extends Base
         if(!in_array($param['ac'],['email','phone']) || empty($param['to']) || empty($param['code']) || empty($param['type'])){
             return ['code'=>9001,'msg'=>lang('param_err')];
         }
+        // https://github.com/magicblack/maccms10/issues/792 邮箱增加黑白名单校验
+        if ($param['ac'] == 'email' && in_array($param['type'], [1, 3])) {
+            $result = UserValidate::validateEmail($param['to']);
+            if ($result['code'] > 1) {
+                return $result;
+            }
+        }
         //msg_type  1绑定2找回3注册
         $stime = strtotime('-5 min');
         if($param['ac']=='email' && intval($GLOBALS['config']['email']['time'])>0){
@@ -627,16 +636,21 @@ class User extends Base
         $param['to'] = htmlspecialchars(urldecode(trim($param['to'])));
         $param['code'] = htmlspecialchars(urldecode(trim($param['code'])));
 
-
-        if(!in_array($param['ac'],['email','phone']) || !in_array($param['type'],['1','2','3']) || empty($param['to'])  || empty($param['type'])){
-            return ['code'=>9001,'msg'=>lang('param_err')];
-        }
-
         $type_arr = [
             1=>['des'=>lang('bind'),'flag'=>'bind'],
             2=>['des'=>lang('findpass'),'flag'=>'findpass'],
             3=>['des'=>lang('register'),'flag'=>'reg'],
-            ];
+        ];
+        if(!in_array($param['ac'],['email','phone']) || !isset($type_arr[$param['type']]) || empty($param['to'])  || empty($param['type'])){
+            return ['code'=>9001,'msg'=>lang('param_err')];
+        }
+        // https://github.com/magicblack/maccms10/issues/792 邮箱增加黑白名单校验
+        if ($param['ac'] == 'email' && in_array($param['type'], [1, 3])) {
+            $result = UserValidate::validateEmail($param['to']);
+            if ($result['code'] > 1) {
+                return $result;
+            }
+        }
 
         $type_des = $type_arr[$param['type']]['des'];
         $type_flag = $type_arr[$param['type']]['flag'];
