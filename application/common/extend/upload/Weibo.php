@@ -7,6 +7,11 @@ class Weibo
 {
     public $name = '新浪图床';
     public $ver = '1.0';
+    private $config = [];
+
+    public function __construct($config = []) {
+        $this->config = $config;
+    }
 
     public function submit($file_path)
     {

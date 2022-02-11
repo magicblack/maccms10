@@ -27,7 +27,7 @@ class Upload extends Base {
         if(!in_array($config['mode'],['local','remote'])){
             $cp = 'app\\common\\extend\\upload\\' . ucfirst($config['mode']);
             if (class_exists($cp)) {
-                $c = new $cp;
+                $c = new $cp($config);
                 $file_path = $c->submit($file_path);
             }
         }

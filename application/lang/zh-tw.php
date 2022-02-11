@@ -1314,6 +1314,8 @@ https://www.baidu.com/123.jpg
     'admin/system/configupload/img_key_tip'=>'需要處理防盜鏈的域名或關鍵字多個請用|連接',
     'admin/system/configupload/img_api'=>'反盜鏈接口',
     'admin/system/configupload/img_api_tip'=>'處理防盜鏈圖片的接口地址',
+    'admin/system/configupload/keep_local'=>'保留本地',
+    'admin/system/configupload/keep_local_tip'=>'如果選擇上傳到遠程，上傳完成後，本地也將保留一份',
 
     'admin/system/configsms/title'=>'短信發送配置',
     'admin/system/configsms/tip'=>'提示信息：<br>

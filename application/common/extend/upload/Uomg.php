@@ -5,6 +5,11 @@ class Uomg
 {
     public $name = '优启梦云存储';
     public $ver = '1.0';
+    private $config = [];
+
+    public function __construct($config = []) {
+        $this->config = $config;
+    }
 
     public function submit($file_path)
     {
@@ -31,7 +36,7 @@ class Uomg
         $json = @json_decode($html,true);
         if($json['code']=='1'){
             $file_path = $json['imgurl'];
-            @unlink($filePath);
+            empty($this->config['keep_local']) && @unlink($filePath);
         }
 
         return $file_path;

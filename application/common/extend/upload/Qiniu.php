@@ -8,6 +8,11 @@ class Qiniu
 {
     public $name = '七牛云存储';
     public $ver = '1.0';
+    private $config = [];
+
+    public function __construct($config = []) {
+        $this->config = $config;
+    }
 
     public function submit($file_path)
     {
@@ -24,7 +29,7 @@ class Qiniu
         $filePath = ROOT_PATH . $file_path;
         $uploadMgr = new UploadManager();
         $a = $uploadMgr->putFile($token, $file_path, $filePath);
-        @unlink($filePath);
+        empty($this->config['keep_local']) && @unlink($filePath);
         return $GLOBALS['config']['upload']['api']['qiniu']['url'] . '/' . $file_path;
     }
 }

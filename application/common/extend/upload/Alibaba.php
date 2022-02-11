@@ -5,6 +5,11 @@ class Alibaba
 {
     public $name = '阿里巴巴云存储';
     public $ver = '1.0';
+    private $config = [];
+
+    public function __construct($config = []) {
+        $this->config = $config;
+    }
 
     public function submit($file_path)
     {
@@ -45,7 +50,7 @@ class Alibaba
 
         if($json['code']=='0'){
             $file_path = $json['url'];
-            @unlink($filePath);
+            empty($this->config['keep_local']) && @unlink($filePath);
         }
 
         return $file_path;

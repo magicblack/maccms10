@@ -8,6 +8,11 @@ class Upyun
 {
     public $name = '又拍云存储';
     public $ver = '1.0';
+    private $config = [];
+
+    public function __construct($config = []) {
+        $this->config = $config;
+    }
 
     public function submit($file_path)
     {
@@ -22,7 +27,7 @@ class Upyun
         $a = $client->write($file_path, $_file);
         $filePath = ROOT_PATH . $file_path;
         unset($_file);
-        @unlink($filePath);
+        empty($this->config['keep_local']) && @unlink($filePath);
         return $GLOBALS['config']['upload']['api']['upyun']['url'] . '/' . $file_path;
     }
 }

@@ -138,6 +138,14 @@
                         </select>
                     </div>
                 </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">{:lang('admin/system/configupload/keep_local')}：</label>
+                    <div class="layui-input-inline">
+                        <input type="radio" name="upload[keep_local]" value="0" title="{:lang('close')}" {if condition="$config['upload']['keep_local'] neq 1"}checked {/if}>
+                        <input type="radio" name="upload[keep_local]" value="1" title="{:lang('open')}" {if condition="$config['upload']['keep_local'] eq 1"}checked {/if}>
+                    </div>
+                    <div class="layui-form-mid layui-word-aux">{:lang('admin/system/configupload/keep_local_tip')}</div>
+                </div>
 
                 <div class="layui-form-item upload_mode mode_remote" {if condition="$config['upload']['mode'] neq 'remote'"}style="display:none;" {/if}>
                     <label class="layui-form-label">{:lang('admin/system/configupload/remoteurl')}：</label>
