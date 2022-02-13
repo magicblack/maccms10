@@ -89,11 +89,10 @@ class Addon extends Base
         $onlineaddons = Cache::get($key);
         if (!is_array($onlineaddons)) {
             $onlineaddons = [];
-            $result = mac_curl_get( "h"."t"."t"."p:/"."/a"."p"."i"."."."m"."a"."c"."c"."m"."s."."c"."o"."m"."/" . 'addon/index');
-            if ($result['ret']) {
-                $json = json_decode($result['msg'], TRUE);
-                $rows = isset($json['rows']) ? $json['rows'] : [];
-                foreach ($rows as $index => $row) {
+            $response = mac_curl_get( "h"."t"."t"."p:/"."/a"."p"."i"."."."m"."a"."c"."c"."m"."s."."c"."o"."m"."/" . 'addon/index');
+            $json = !empty($response) ? json_decode($response, true) : [];
+            if (!empty($json['rows'])) {
+                foreach ($json['rows'] as $row) {
                     $onlineaddons[$row['name']] = $row;
                 }
             }
