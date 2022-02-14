@@ -695,7 +695,7 @@ class Vod extends Base {
             $data['vod_time'] = time();
             $res = $this->allowField(true)->insert($data, false, true);
             if ($res > 0) {
-                model('VodSearch')->checkAndUpdateTopResults($data + ['vod_id' => $res]);
+                model('VodSearch')->checkAndUpdateTopResults(['vod_id' => $res] + $data);
             }
         }
         if(false === $res){

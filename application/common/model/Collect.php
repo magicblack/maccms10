@@ -705,7 +705,7 @@ class Collect extends Base {
                         $msg = $tmp['msg'];
                         $vod_id = model('Vod')->insert($v, false, true);
                         if ($vod_id > 0) {
-                            $vod_search->checkAndUpdateTopResults($v + ['vod_id' => $vod_id], true);
+                            $vod_search->checkAndUpdateTopResults(['vod_id' => $vod_id] + $v, true);
                             $color = 'green';
                             $des = lang('model/collect/add_ok');
                         } else {
