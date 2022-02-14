@@ -679,7 +679,7 @@ class Vod extends Base {
                 continue;
             }
             $data[$filter_field] = mac_filter_xss($data[$filter_field]);
-            $data[$filter_field] = mb_substr($data[$filter_field], 0, $field_length);
+            $data[$filter_field] = mb_substr($data[$filter_field], 0, $field_length - 1);
         }
 
         if(!empty($data['vod_id'])){

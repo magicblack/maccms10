@@ -955,7 +955,7 @@ https://www.baidu.com/123.jpg
     'admin/system/configapi/pagesize'=>'列表每頁顯示數量',
     'admin/system/configapi/pagesize_tip'=>'數據每頁顯示量，不建議超過50',
     'admin/system/configapi/imgurl'=>'圖片域名',
-    'admin/system/configapi/imgurl_tip'=>'顯示圖片的完整訪問路徑所需要，以http:開頭,/結尾，不包含upload目錄',
+    'admin/system/configapi/imgurl_tip'=>'顯示圖片的完整訪問路徑所需要，以http(s):開頭,/結尾，不包含upload目錄',
     'admin/system/configapi/typefilter'=>'分類過濾參數',
     'admin/system/configapi/typefilter_tip'=>'列出需要顯示的分類ids例如 11,12,13',
     'admin/system/configapi/datafilter'=>'數據過濾參數',
