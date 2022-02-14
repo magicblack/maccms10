@@ -703,6 +703,7 @@ class Collect extends Base {
                         $tmp = $this->syncImages($config_sync_pic,  $v['vod_pic'], 'vod');
                         $v['vod_pic'] = mac_filter_xss((string)$tmp['pic']);
                         $msg = $tmp['msg'];
+                        $v = model('Vod')->formatDataBeforeDb($v);
                         $vod_id = model('Vod')->insert($v, false, true);
                         if ($vod_id > 0) {
                             $vod_search->checkAndUpdateTopResults(['vod_id' => $vod_id] + $v, true);
@@ -929,6 +930,7 @@ class Collect extends Base {
                             $update['vod_time'] = time();
                             $where = [];
                             $where['vod_id'] = $info['vod_id'];
+                            $update = model('Vod')->formatDataBeforeDb($update);
                             $res = model('Vod')->where($where)->update($update);
                             $color = 'green';
                             if ($res === false) {

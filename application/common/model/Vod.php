@@ -626,7 +626,32 @@ class Vod extends Base {
         unset($data['uptime']);
         unset($data['uptag']);
 
-        // xss过滤、长度裁剪
+        $data = $this->formatDataBeforeDb($data);
+        if(!empty($data['vod_id'])){
+            $where=[];
+            $where['vod_id'] = ['eq',$data['vod_id']];
+            $res = $this->allowField(true)->where($where)->update($data);
+        }
+        else{
+            $data['vod_plot'] = 0;
+            $data['vod_plot_name']='';
+            $data['vod_plot_detail']='';
+            $data['vod_time_add'] = time();
+            $data['vod_time'] = time();
+            $res = $this->allowField(true)->insert($data, false, true);
+            if ($res > 0) {
+                model('VodSearch')->checkAndUpdateTopResults(['vod_id' => $res] + $data);
+            }
+        }
+        if(false === $res){
+            return ['code'=>1002,'msg'=>lang('save_err').'：'.$this->getError() ];
+        }
+        return ['code'=>1,'msg'=>lang('save_ok')];
+    }
+
+    // xss过滤、长度裁剪
+    public function formatDataBeforeDb($data)
+    {
         $filter_fields = [
             'vod_name'         => 255,
             'vod_sub'          => 255,
@@ -679,29 +704,9 @@ class Vod extends Base {
                 continue;
             }
             $data[$filter_field] = mac_filter_xss($data[$filter_field]);
-            $data[$filter_field] = mb_substr($data[$filter_field], 0, $field_length - 1);
+            $data[$filter_field] = mb_substr($data[$filter_field], 0, $field_length);
         }
-
-        if(!empty($data['vod_id'])){
-            $where=[];
-            $where['vod_id'] = ['eq',$data['vod_id']];
-            $res = $this->allowField(true)->where($where)->update($data);
-        }
-        else{
-            $data['vod_plot'] = 0;
-            $data['vod_plot_name']='';
-            $data['vod_plot_detail']='';
-            $data['vod_time_add'] = time();
-            $data['vod_time'] = time();
-            $res = $this->allowField(true)->insert($data, false, true);
-            if ($res > 0) {
-                model('VodSearch')->checkAndUpdateTopResults(['vod_id' => $res] + $data);
-            }
-        }
-        if(false === $res){
-            return ['code'=>1002,'msg'=>lang('save_err').'：'.$this->getError() ];
-        }
-        return ['code'=>1,'msg'=>lang('save_ok')];
+        return $data;
     }
 
     public function savePlot($data)
