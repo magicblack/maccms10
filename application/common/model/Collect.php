@@ -241,7 +241,7 @@ class Collect extends Base {
             $array_server=[];
             $array_note=[];
             //videolist|list播放列表不同
-            if($count=count($video->dl->dd)){
+            if(isset($video->dl->dd) && $count=count($video->dl->dd)){
                 for($i=0; $i<$count; $i++){
                     $array_from[$i] = (string)$video->dl->dd[$i]['flag'];
                     $array_url[$i] = $this->vod_xml_replace((string)$video->dl->dd[$i]);
