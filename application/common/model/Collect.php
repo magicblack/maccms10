@@ -2495,7 +2495,7 @@ class Collect extends Base {
     {
         $result = parse_url($url);
         if (empty($result['host']) || in_array($result['host'], ['127.0.0.1', 'localhost'])) {
-            return ['code' => 1001, 'msg' => lang('model/collect/cjurl_err')];
+            return ['code' => 1001, 'msg' => lang('model/collect/cjurl_err') . ': ' . $url];
         }
         return ['code' => 1];
     }
