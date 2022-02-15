@@ -399,32 +399,60 @@ class Vod extends Base {
         }
 
         $vod_search = model('VodSearch');
-        $search_id_list = [];
-        if(!empty($wd)) {
-            $role = 'vod_name';
-            if(!empty($GLOBALS['config']['app']['search_vod_rule'])){
-                $role .= '|'.$GLOBALS['config']['app']['search_vod_rule'];
+        $vod_search_enabled = $vod_search->isFrontendEnabled();
+        if ($vod_search_enabled) {
+            // 开启搜索优化，查询并缓存Id
+            $search_id_list = [];
+            if(!empty($wd)) {
+                $role = 'vod_name';
+                if(!empty($GLOBALS['config']['app']['search_vod_rule'])){
+                    $role .= '|'.$GLOBALS['config']['app']['search_vod_rule'];
+                }
+                $search_id_list += $vod_search->getResultIdList($wd, $role);
             }
-            $search_id_list += $vod_search->getResultIdList($wd, $role);
-        }
-        if(!empty($name)) {
-            $search_id_list += $vod_search->getResultIdList($name, 'vod_name');
-        }
-        if(!empty($tag)) {
-            $search_id_list += $vod_search->getResultIdList($tag, 'vod_tag', true);
-        }
-        if(!empty($class)) {
-            $search_id_list += $vod_search->getResultIdList($class, 'vod_class', true);
-        }
-        if(!empty($actor)) {
-            $search_id_list += $vod_search->getResultIdList($actor, 'vod_actor', true);
-        }
-        if(!empty($director)) {
-            $search_id_list += $vod_search->getResultIdList($director, 'vod_director', true);
-        }
-        $search_id_list = array_unique($search_id_list);
-        if (!empty($search_id_list)) {
-            $where['_string'] = "vod_id IN (" . join(',', $search_id_list) . ")";
+            if(!empty($name)) {
+                $search_id_list += $vod_search->getResultIdList($name, 'vod_name');
+            }
+            if(!empty($tag)) {
+                $search_id_list += $vod_search->getResultIdList($tag, 'vod_tag', true);
+            }
+            if(!empty($class)) {
+                $search_id_list += $vod_search->getResultIdList($class, 'vod_class', true);
+            }
+            if(!empty($actor)) {
+                $search_id_list += $vod_search->getResultIdList($actor, 'vod_actor', true);
+            }
+            if(!empty($director)) {
+                $search_id_list += $vod_search->getResultIdList($director, 'vod_director', true);
+            }
+            $search_id_list = array_unique($search_id_list);
+            if (!empty($search_id_list)) {
+                $where['_string'] = "vod_id IN (" . join(',', $search_id_list) . ")";
+            }
+        } else {
+            // 不开启搜索优化，使用默认条件
+            if(!empty($wd)) {
+                $role = 'vod_name';
+                if(!empty($GLOBALS['config']['app']['search_vod_rule'])){
+                    $role .= '|'.$GLOBALS['config']['app']['search_vod_rule'];
+                }
+                $where[$role] = ['like', '%' . $wd . '%'];
+            }
+            if(!empty($name)) {
+                $where['vod_name'] = ['like',mac_like_arr($name),'OR'];
+            }
+            if(!empty($tag)) {
+                $where['vod_tag'] = ['like',mac_like_arr($tag),'OR'];
+            }
+            if(!empty($class)) {
+                $where['vod_class'] = ['like',mac_like_arr($class), 'OR'];
+            }
+            if(!empty($actor)) {
+                $where['vod_actor'] = ['like', mac_like_arr($actor), 'OR'];
+            }
+            if(!empty($director)) {
+                $where['vod_director'] = ['like',mac_like_arr($director),'OR'];
+            }
         }
         if(in_array($plot,['0','1'])){
             $where['vod_plot'] = $plot;
@@ -639,7 +667,7 @@ class Vod extends Base {
             $data['vod_time_add'] = time();
             $data['vod_time'] = time();
             $res = $this->allowField(true)->insert($data, false, true);
-            if ($res > 0) {
+            if ($res > 0 && model('VodSearch')->isFrontendEnabled()) {
                 model('VodSearch')->checkAndUpdateTopResults(['vod_id' => $res] + $data);
             }
         }

@@ -7,8 +7,8 @@ use think\Cache;
 class VodSearch extends Base {
     // 设置数据表（不含前缀）
     protected $name = 'vod_search';
-    private $resultCacheDays = 30;
-    private $updateTopCount  = 100000;
+    private $resultCacheDays = 14;
+    private $updateTopCount  = 50000;
 
     /**
      * 获取结果Id列表
@@ -59,6 +59,34 @@ class VodSearch extends Base {
         $id_list = array_map('intval', $id_list);
         $id_list = empty($id_list) ? [0] : $id_list;
         return $id_list;
+    }
+
+    /**
+     * 前端是否开启
+     */
+    public function isFrontendEnabled()
+    {
+        $config = config('maccms');
+        // 未设置时，默认打开
+        if (!isset($config['app']['vod_search_optimise'])) {
+            return true;
+        }
+        $list = explode('|', $config['app']['vod_search_optimise']);
+        return in_array('frontend', $list);
+    }
+
+    /**
+     * 采集是否开启
+     */
+    public function isCollectEnabled()
+    {
+        $config = config('maccms');
+        // 未设置时，默认关闭
+        if (!isset($config['app']['vod_search_optimise'])) {
+            return false;
+        }
+        $list = explode('|', $config['app']['vod_search_optimise']);
+        return in_array('collect', $list);
     }
 
     /**

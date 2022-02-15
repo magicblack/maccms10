@@ -92,6 +92,7 @@ class System extends Base
 
             $config['app']['search_vod_rule'] = join('|', $config['app']['search_vod_rule']);
             $config['app']['search_art_rule'] = join('|', $config['app']['search_art_rule']);
+            $config['app']['vod_search_optimise'] = join('|', $config['app']['vod_search_optimise']);
 
             $config['extra'] = [];
             if(!empty($config['app']['extra_var'])){
@@ -151,6 +152,10 @@ class System extends Base
         // 默认get+post
         if (!isset($config['app']['input_type'])) {
             $config['app']['input_type'] = 1;
+        }
+        // 视频搜索优化，默认frontend
+        if (!isset($config['app']['vod_search_optimise'])) {
+            $config['app']['vod_search_optimise'] = 'frontend';
         }
         $this->assign('config', $config);
         $this->assign('title', lang('admin/system/config/title'));

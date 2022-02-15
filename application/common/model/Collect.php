@@ -315,12 +315,12 @@ class Collect extends Base {
         }
         $html = mac_curl_get($url);
         if(empty($html)){
-            return ['code'=>1001, 'msg'=>lang('model/collect/get_html_err')];
+            return ['code'=>1001, 'msg'=>lang('model/collect/get_html_err') . ', url: ' . $url];
         }
         $html = mac_filter_tags($html);
         $json = json_decode($html,true);
         if(!$json){
-            return ['code'=>1002, 'msg'=>lang('model/collect/json_err') . ': ' . mb_substr($html, 0, 15)];
+            return ['code'=>1002, 'msg'=>lang('model/collect/json_err') . ', url: ' . $url . ', response: ' . mb_substr($html, 0, 15)];
         }
 
         $array_page = [];
@@ -422,6 +422,7 @@ class Collect extends Base {
         $players = config('vodplayer');
         $downers = config('voddowner');
         $vod_search = model('VodSearch');
+        $vod_search_enabled = $vod_search->isCollectEnabled();
 
         $type_list = model('Type')->getCache('type_list');
         $filter_arr = explode(',',$config['filter']);
@@ -561,13 +562,13 @@ class Collect extends Base {
                 if (strpos($config['inrule'], 'e')!==false) {
                     $where['vod_lang'] = $v['vod_lang'];
                 }
-                $vod_search_actor = false;
                 $search_actor_id_list = [];
                 if (strpos($config['inrule'], 'f')!==false) {
-                    // $where['vod_actor'] = ['like', mac_like_arr($v['vod_actor']), 'OR'];
-                    $vod_search_actor = true;
-                    $search_actor_id_list = $vod_search->getResultIdList($v['vod_actor'], 'vod_actor', true);
-                    $search_actor_id_list = empty($search_actor_id_list) ? [0] : $search_actor_id_list;
+                    $where['vod_actor'] = ['like', mac_like_arr($v['vod_actor']), 'OR'];
+                    if ($vod_search_enabled) {
+                        $search_actor_id_list = $vod_search->getResultIdList($v['vod_actor'], 'vod_actor', true);
+                        $search_actor_id_list = empty($search_actor_id_list) ? [0] : $search_actor_id_list;
+                    }
                 }
                 if (strpos($config['inrule'], 'g')!==false) {
                     $where['vod_director'] = $v['vod_director'];
@@ -576,12 +577,17 @@ class Collect extends Base {
                     $v['vod_tag'] = mac_get_tag($v['vod_name'], $v['vod_content']);
                 }
 
-                if($vod_search_actor === true && !empty($where['vod_director'])){
+                if(!empty($where['vod_actor']) && !empty($where['vod_director'])){
                     $blend = true;
                     $GLOBALS['blend'] = [
-                        'vod_id' => ['IN', $search_actor_id_list],
-                        'vod_director' => $where['vod_director']
+                        'vod_actor'    => $where['vod_actor'],
+                        'vod_director' => $where['vod_director'],
                     ];
+                    // 结果太大时，筛选更耗时。仅在结果数量较小时，才加入
+                    $GLOBALS['blend']['vod_id'] = null;
+                    if ($vod_search_enabled && count($search_actor_id_list) < 1000) {
+                        $GLOBALS['blend']['vod_id'] = ['IN', $search_actor_id_list];
+                    }
                     unset($where['vod_actor'],$where['vod_director']);
                 }
 
@@ -677,12 +683,15 @@ class Collect extends Base {
                 else{
                     $info = model('Vod')->where($where)
                         ->where(function($query) {
-                            $query->where('vod_director',$GLOBALS['blend']['vod_director'])
-                                    ->whereOr('vod_id', $GLOBALS['blend']['vod_id']);
+                            $query->where('vod_director',$GLOBALS['blend']['vod_director']);
+                            if (!empty($GLOBALS['blend']['vod_id'])) {
+                                $query->whereOr('vod_id', $GLOBALS['blend']['vod_id']);
+                            } else {
+                                $query->whereOr('vod_actor', $GLOBALS['blend']['vod_actor']);
+                            }
                         })
                         ->find();
                 }
-
 
                 if (!$info) {
                     // 新增
@@ -706,7 +715,7 @@ class Collect extends Base {
                         $v = model('Vod')->formatDataBeforeDb($v);
                         $vod_id = model('Vod')->insert($v, false, true);
                         if ($vod_id > 0) {
-                            $vod_search->checkAndUpdateTopResults(['vod_id' => $vod_id] + $v, true);
+                            $vod_search_enabled && $vod_search->checkAndUpdateTopResults(['vod_id' => $vod_id] + $v, true);
                             $color = 'green';
                             $des = lang('model/collect/add_ok');
                         } else {

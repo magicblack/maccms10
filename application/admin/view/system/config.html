@@ -354,6 +354,15 @@
                 </div>
 
                 <div class="layui-form-item">
+                    <label class="layui-form-label">{:lang('admin/system/config/vod_search_optimise')}：</label>
+                    <div class="layui-input-inline w600">
+                        <input type="checkbox" lay-skin="primary" name="app[vod_search_optimise][]" value="frontend" title="{:lang('admin/system/config/vod_search_optimise/frontend')}" {if condition="strpos($config['app']['vod_search_optimise'],'frontend') !==false"}checked {/if}>
+                        <input type="checkbox" lay-skin="primary" name="app[vod_search_optimise][]" value="collect" title="{:lang('admin/system/config/vod_search_optimise/collect')}" {if condition="strpos($config['app']['vod_search_optimise'],'collect') !==false"}checked {/if}>
+                    </div>
+                    <div class="layui-form-mid layui-word-aux">{:lang('admin/system/config/vod_search_optimise_tip')}</div>
+                </div>
+
+                <div class="layui-form-item">
                     <label class="layui-form-label">{:lang('admin/system/config/copyright_status')}：</label>
                     <div class="layui-input-block">
                         <input type="radio" name="app[copyright_status]" value="0" title="{:lang('close')}" {if condition="$config['app']['copyright_status'] eq 0"}checked {/if}>
