@@ -4,6 +4,7 @@ use think\Db;
 use think\Cache;
 use app\common\util\Pinyin;
 use think\Request;
+use app\common\validate\Vod as VodValidate;
 
 class Collect extends Base {
 
@@ -167,7 +168,7 @@ class Collect extends Base {
         }
         $html = mac_curl_get($url);
         if(empty($html)){
-            return ['code'=>1001, 'msg'=>lang('model/collect/get_html_err')];
+            return ['code'=>1001, 'msg'=>lang('model/collect/get_html_err') . ', url: ' . $url];
         }
         $html = mac_filter_tags($html);
         $xml = @simplexml_load_string($html);
@@ -423,6 +424,7 @@ class Collect extends Base {
         $downers = config('voddowner');
         $vod_search = model('VodSearch');
         $vod_search_enabled = $vod_search->isCollectEnabled();
+        $vs_max_id_count = $vod_search->maxIdCount;
 
         $type_list = model('Type')->getCache('type_list');
         $filter_arr = explode(',',$config['filter']);
@@ -585,7 +587,7 @@ class Collect extends Base {
                     ];
                     // 结果太大时，筛选更耗时。仅在结果数量较小时，才加入
                     $GLOBALS['blend']['vod_id'] = null;
-                    if ($vod_search_enabled && count($search_actor_id_list) < 1000) {
+                    if ($vod_search_enabled && count($search_actor_id_list) <= $vs_max_id_count) {
                         $GLOBALS['blend']['vod_id'] = ['IN', $search_actor_id_list];
                     }
                     unset($where['vod_actor'],$where['vod_director']);
@@ -712,7 +714,7 @@ class Collect extends Base {
                         $tmp = $this->syncImages($config_sync_pic,  $v['vod_pic'], 'vod');
                         $v['vod_pic'] = mac_filter_xss((string)$tmp['pic']);
                         $msg = $tmp['msg'];
-                        $v = model('Vod')->formatDataBeforeDb($v);
+                        $v = VodValidate::formatDataBeforeDb($v);
                         $vod_id = model('Vod')->insert($v, false, true);
                         if ($vod_id > 0) {
                             $vod_search_enabled && $vod_search->checkAndUpdateTopResults(['vod_id' => $vod_id] + $v, true);
@@ -939,7 +941,7 @@ class Collect extends Base {
                             $update['vod_time'] = time();
                             $where = [];
                             $where['vod_id'] = $info['vod_id'];
-                            $update = model('Vod')->formatDataBeforeDb($update);
+                            $update = VodValidate::formatDataBeforeDb($update);
                             $res = model('Vod')->where($where)->update($update);
                             $color = 'green';
                             if ($res === false) {
@@ -1038,7 +1040,7 @@ class Collect extends Base {
         }
         $html = mac_curl_get($url);
         if(empty($html)){
-            return ['code'=>1001, 'msg'=>lang('model/collect/get_html_err')];
+            return ['code'=>1001, 'msg'=>lang('model/collect/get_html_err') . ', url: ' . $url];
         }
         $html = mac_filter_tags($html);
         $json = json_decode($html,true);
@@ -1365,7 +1367,7 @@ class Collect extends Base {
         }
         $html = mac_curl_get($url);
         if(empty($html)){
-            return ['code'=>1001, 'msg'=>lang('model/collect/get_html_err')];
+            return ['code'=>1001, 'msg'=>lang('model/collect/get_html_err') . ', url: ' . $url];
         }
         $html = mac_filter_tags($html);
         $json = json_decode($html,true);
@@ -1657,7 +1659,7 @@ class Collect extends Base {
         }
         $html = mac_curl_get($url);
         if(empty($html)){
-            return ['code'=>1001, 'msg'=>lang('model/collect/get_html_err')];
+            return ['code'=>1001, 'msg'=>lang('model/collect/get_html_err') . ', url: ' . $url];
         }
         $html = mac_filter_tags($html);
         $json = json_decode($html,true);
@@ -1956,7 +1958,7 @@ class Collect extends Base {
         }
         $html = mac_curl_get($url);
         if(empty($html)){
-            return ['code'=>1001, 'msg'=>lang('model/collect/get_html_err')];
+            return ['code'=>1001, 'msg'=>lang('model/collect/get_html_err') . ', url: ' . $url];
         }
         $html = mac_filter_tags($html);
         $json = json_decode($html,true);
@@ -2246,7 +2248,7 @@ class Collect extends Base {
         }
         $html = mac_curl_get($url);
         if(empty($html)){
-            return ['code'=>1001, 'msg'=>lang('model/collect/get_html_err')];
+            return ['code'=>1001, 'msg'=>lang('model/collect/get_html_err') . ', url: ' . $url];
         }
         $html = mac_filter_tags($html);
         $json = json_decode($html,true);

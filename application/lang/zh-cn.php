@@ -694,7 +694,7 @@ https://www.baidu.com/123.jpg
     'model/user/visit_tip'=>'每日仅能获取%s次推广访问积分',
     'model/user/visit_err'=>'插入推广记录失败，请重试',
     'model/user/visit_ok'=>'推广成功',
-    'model/user/reward_tip'=>'用户【%s、%s】消费%S积分，获得奖励%s积分',
+    'model/user/reward_tip'=>'用户【%s、%s】消费%s积分，获得奖励%s积分',
     'model/user/reward_ok'=>'分销提成成功',
 
     'model/website/refer_max'=> '每日仅能%s次来路记录',
@@ -1921,8 +1921,8 @@ https://www.baidu.com/123.jpg
     'api/require_comment_name'=>'评论昵称须err',
     'api/require_comment_name'=>'评论内容必须err',
     'api/never'=>'从未',
-    'api/task_tip_exec'=>'任务：%s，状态：%s，上次执行时间：%S---执行',
-    'api/task_tip_jump'=>'任务：%s，状态：%s，上次执行时间：%S---跳过',
+    'api/task_tip_exec'=>'任务：%s，状态：%s，上次执行时间：%s---执行',
+    'api/task_tip_jump'=>'任务：%s，状态：%s，上次执行时间：%s---跳过',
 
 
     'install/title'=>'苹果CMS-V10系统安装',

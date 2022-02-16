@@ -153,10 +153,6 @@ class System extends Base
         if (!isset($config['app']['input_type'])) {
             $config['app']['input_type'] = 1;
         }
-        // 视频搜索优化，默认frontend
-        if (!isset($config['app']['vod_search_optimise'])) {
-            $config['app']['vod_search_optimise'] = 'frontend';
-        }
         $this->assign('config', $config);
         $this->assign('title', lang('admin/system/config/title'));
         return $this->fetch('admin@system/config');

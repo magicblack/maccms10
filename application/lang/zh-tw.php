@@ -694,7 +694,7 @@ https://www.baidu.com/123.jpg
     'model/user/visit_tip'=>'每日僅能獲取%s次推廣訪問積分',
     'model/user/visit_err'=>'插入推廣記錄失敗，請重試',
     'model/user/visit_ok'=>'推廣成功',
-    'model/user/reward_tip'=>'用戶【%s、%s】消費%S積分，獲得獎勵%s積分',
+    'model/user/reward_tip'=>'用戶【%s、%s】消費%s積分，獲得獎勵%s積分',
     'model/user/reward_ok'=>'分銷提成成功',
 
     'model/website/refer_max'=> '每日僅能%s次來路記錄',
@@ -1922,8 +1922,8 @@ https://www.baidu.com/123.jpg
     'api/require_comment_name'=>'評論昵稱須err',
     'api/require_comment_name'=>'評論內容必須err',
     'api/never'=>'從未',
-    'api/task_tip_exec'=>'任務：%s，狀態：%s，上次執行時間：%S---執行',
-    'api/task_tip_jump'=>'任務：%s，狀態：%s，上次執行時間：%S---跳過',
+    'api/task_tip_exec'=>'任務：%s，狀態：%s，上次執行時間：%s---執行',
+    'api/task_tip_jump'=>'任務：%s，狀態：%s，上次執行時間：%s---跳過',
 
 
     'install/title'=>'蘋果CMS-V10系統安裝',

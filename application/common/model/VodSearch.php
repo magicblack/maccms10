@@ -7,8 +7,11 @@ use think\Cache;
 class VodSearch extends Base {
     // 设置数据表（不含前缀）
     protected $name = 'vod_search';
+    // 最大Id数量，使用IN查询时，超过一定数量，查询不使用索引了
+    public $maxIdCount = 1000;
     private $resultCacheDays = 14;
     private $updateTopCount  = 50000;
+
 
     /**
      * 获取结果Id列表
@@ -67,9 +70,9 @@ class VodSearch extends Base {
     public function isFrontendEnabled()
     {
         $config = config('maccms');
-        // 未设置时，默认打开
+        // 未设置时，默认关闭
         if (!isset($config['app']['vod_search_optimise'])) {
-            return true;
+            return false;
         }
         $list = explode('|', $config['app']['vod_search_optimise']);
         return in_array('frontend', $list);
