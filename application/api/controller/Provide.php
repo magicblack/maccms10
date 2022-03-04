@@ -11,10 +11,6 @@ class Provide extends Base
     {
         parent::__construct();
         $this->_param = input('','','trim,urldecode');
-        // 因搜索兼容性问题暂时移除
-//        if(isset($GLOBALS['config']['app']['input_type']) && $GLOBALS['config']['app']['input_type'] == 0 && request()->isPost()){
-//            $this->_param = input('get.');
-//        }
     }
 
     public function index()
@@ -141,7 +137,7 @@ class Provide extends Base
             $v['vod_time'] = date('Y-m-d H:i:s',$v['vod_time']);
 
             if(substr($v["vod_pic"],0,4)=="mac:"){
-                $v["vod_pic"] = str_replace('mac:','http:',$v["vod_pic"]);
+                $v["vod_pic"] = str_replace('mac:',$this->getImgUrlProtocol('vod'), $v["vod_pic"]);
             }
             elseif(!empty($v["vod_pic"]) && substr($v["vod_pic"],0,4)!="http" && substr($v["vod_pic"],0,2)!="//"){
                 $v["vod_pic"] = $GLOBALS['config']['api']['vod']['imgurl'] . $v["vod_pic"];
@@ -210,7 +206,7 @@ class Provide extends Base
             $xml .= '<name><![CDATA['.$v['vod_name'].']]></name>';
             $xml .= '<type>'.$type_info['type_name'].'</type>';
             if(substr($v["vod_pic"],0,4)=="mac:"){
-                $v["vod_pic"] = str_replace('mac:','http:',$v["vod_pic"]);
+                $v["vod_pic"] = str_replace('mac:',$this->getImgUrlProtocol('vod'), $v["vod_pic"]);
             }
             elseif(!empty($v["vod_pic"]) && substr($v["vod_pic"],0,4)!="http"  && substr($v["vod_pic"],0,2)!="//"){
                 $v["vod_pic"] = $GLOBALS['config']['api']['vod']['imgurl'] . $v["vod_pic"];
@@ -734,12 +730,13 @@ class Provide extends Base
 
     private function getImgUrlProtocol($key)
     {
+        $default = (isset($GLOBALS['config']['upload']['protocol']) ? $GLOBALS['config']['upload']['protocol'] : 'http') . ':';
         if (!isset($GLOBALS['config']['api'][$key]['imgurl'])) {
-            return 'http:';
+            return $default;
         }
         if (substr($GLOBALS['config']['api'][$key]['imgurl'], 0, 5) == 'https') {
             return 'https:';
         }
-        return 'http:';
+        return $default;
     }
 }
