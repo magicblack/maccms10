@@ -92,7 +92,7 @@ class System extends Base
 
             $config['app']['search_vod_rule'] = join('|', $config['app']['search_vod_rule']);
             $config['app']['search_art_rule'] = join('|', $config['app']['search_art_rule']);
-            $config['app']['vod_search_optimise'] = join('|', $config['app']['vod_search_optimise']);
+            $config['app']['vod_search_optimise'] = join('|', !empty($config['app']['vod_search_optimise']) ? (array)$config['app']['vod_search_optimise'] : []);
 
             $config['extra'] = [];
             if(!empty($config['app']['extra_var'])){

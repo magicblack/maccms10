@@ -1208,6 +1208,13 @@ function mac_filter_xss($str)
     return htmlspecialchars(strip_tags(trim($str)), ENT_QUOTES);
 }
 
+function mac_restore_htmlfilter($str) {
+    if (stripos($str, '&amp;') !== false) {
+        return htmlspecialchars_decode($str, ENT_QUOTES);
+    }
+    return $str;
+}
+
 function mac_format_text($str)
 {
     return str_replace(array('/','，','|','、',' ',',,,'),',',$str);

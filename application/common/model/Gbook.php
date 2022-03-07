@@ -31,6 +31,8 @@ class Gbook extends Base {
         $list = Db::name('Gbook')->where($where)->order($order)->limit($limit_str)->select();
         foreach ($list as $k=>$v){
             $list[$k]['user_portrait'] = mac_get_user_portrait($v['user_id']);
+            $list[$k]['gbook_content'] = mac_restore_htmlfilter($list[$k]['gbook_content']);
+            $list[$k]['gbook_reply'] = mac_restore_htmlfilter($list[$k]['gbook_reply']);
         }
         return ['code'=>1,'msg'=>lang('data_list'),'page'=>$page,'limit'=>$limit,'total'=>$total,'list'=>$list];
     }

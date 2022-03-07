@@ -41,6 +41,7 @@ class Comment extends Base {
         $user_ids=[];
         foreach($list as $k=>$v){
             $list[$k]['user_portrait'] = mac_get_user_portrait($v['user_id']);
+            $list[$k]['comment_content'] = mac_restore_htmlfilter($list[$k]['comment_content']);
 
             $where2=[];
             $where2['comment_pid'] = $v['comment_id'];
@@ -49,6 +50,7 @@ class Comment extends Base {
             $list[$k]['sub'] = $sub;
             foreach($sub as $k2=>$v2){
                 $list[$k]['sub'][$k2]['user_portrait'] = mac_get_user_portrait($v2['user_id']);
+                $list[$k]['sub'][$k2]['comment_content'] = mac_restore_htmlfilter($list[$k]['sub'][$k2]['comment_content']);
             }
             $list[$k]['data'] = [];
             if($v['comment_mid'] == 1){
