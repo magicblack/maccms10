@@ -1205,7 +1205,7 @@ function mac_filter_html($str)
 
 function mac_filter_xss($str)
 {
-    return htmlspecialchars(strip_tags(trim($str)), ENT_QUOTES);
+    return trim(htmlspecialchars(strip_tags($str), ENT_QUOTES));
 }
 
 function mac_restore_htmlfilter($str) {

@@ -215,22 +215,22 @@ class Collect extends Base {
             }
             $array_data[$key]['vod_id'] = (string)$video->id;
             //$array_data[$key]['type_id'] = (string)$video->tid;
-            $array_data[$key]['vod_name'] = mac_filter_xss((string)$video->name);
-            $array_data[$key]['vod_sub'] = mac_filter_xss((string)$video->subname);
-            $array_data[$key]['vod_remarks'] = mac_filter_xss((string)$video->note);
-            $array_data[$key]['type_name'] = mac_filter_xss((string)$video->type);
-            $array_data[$key]['vod_pic'] = mac_filter_xss((string)$video->pic);
-            $array_data[$key]['vod_lang'] = mac_filter_xss((string)$video->lang);
-            $array_data[$key]['vod_area'] = mac_filter_xss((string)$video->area);
-            $array_data[$key]['vod_year'] = mac_filter_xss((string)$video->year);
-            $array_data[$key]['vod_serial'] = mac_filter_xss((string)$video->state);
-            $array_data[$key]['vod_actor'] = mac_filter_xss((string)$video->actor);
-            $array_data[$key]['vod_director'] = mac_filter_xss((string)$video->director);
+            $array_data[$key]['vod_name'] = (string)$video->name;
+            $array_data[$key]['vod_sub'] = (string)$video->subname;
+            $array_data[$key]['vod_remarks'] = (string)$video->note;
+            $array_data[$key]['type_name'] = (string)$video->type;
+            $array_data[$key]['vod_pic'] = (string)$video->pic;
+            $array_data[$key]['vod_lang'] = (string)$video->lang;
+            $array_data[$key]['vod_area'] = (string)$video->area;
+            $array_data[$key]['vod_year'] = (string)$video->year;
+            $array_data[$key]['vod_serial'] = (string)$video->state;
+            $array_data[$key]['vod_actor'] = (string)$video->actor;
+            $array_data[$key]['vod_director'] = (string)$video->director;
             $array_data[$key]['vod_content'] = (string)$video->des;
 
             $array_data[$key]['vod_status'] = 1;
-            $array_data[$key]['vod_type'] = mac_filter_xss($array_data[$key]['list_name']);
-            $array_data[$key]['vod_time'] = mac_filter_xss((string)$video->last);
+            $array_data[$key]['vod_type'] = $array_data[$key]['list_name'];
+            $array_data[$key]['vod_time'] = (string)$video->last;
             $array_data[$key]['vod_total'] = 0;
             $array_data[$key]['vod_isend'] = 1;
             if($array_data[$key]['vod_serial']){
@@ -279,7 +279,7 @@ class Collect extends Base {
         if($param['ac'] == 'list'){
             foreach($xml->class->ty as $ty){
                 $array_type[$key]['type_id'] = (string)$ty->attributes()->id;
-                $array_type[$key]['type_name'] = mac_filter_xss((string)$ty);
+                $array_type[$key]['type_name'] = (string)$ty;
                 $key++;
             }
         }
@@ -373,7 +373,7 @@ class Collect extends Base {
         if($param['ac'] == 'list'){
             foreach($json['class'] as $k=>$v){
                 $array_type[$key]['type_id'] = $v['type_id'];
-                $array_type[$key]['type_name'] = mac_filter_xss($v['type_name']);
+                $array_type[$key]['type_name'] = $v['type_name'];
                 $key++;
             }
         }
@@ -459,7 +459,7 @@ class Collect extends Base {
                     }
                 }
 
-                $v['vod_name'] = mac_filter_xss($v['vod_name']);
+                $v['vod_name'] = $v['vod_name'];
                 $v['type_id_1'] = intval($type_list[$v['type_id']]['type_pid']);
                 $v['vod_en'] = Pinyin::get($v['vod_name']);
                 $v['vod_letter'] = strtoupper(substr($v['vod_en'],0,1));
@@ -500,8 +500,8 @@ class Collect extends Base {
                 $v['vod_class'] = mac_format_text($v['vod_class']);
                 $v['vod_tag'] = mac_format_text($v['vod_tag']);
 
-                $v['vod_plot_name'] = mac_filter_xss((string)$v['vod_plot_name']);
-                $v['vod_plot_detail'] = mac_filter_xss((string)$v['vod_plot_detail']);
+                $v['vod_plot_name'] = (string)$v['vod_plot_name'];
+                $v['vod_plot_detail'] = (string)$v['vod_plot_detail'];
 
                 if(!empty($v['vod_plot_name'])){
                     $v['vod_plot'] = 1;
@@ -534,7 +534,7 @@ class Collect extends Base {
                 if ($config['psename'] == 1) {
                     $v['vod_name'] = mac_rep_pse_syn($pse_name, $v['vod_name']);
                 }
-                $v['vod_content'] = mac_filter_xss($v['vod_content']);
+                $v['vod_content'] = $v['vod_content'];
                 if ($config['psernd'] == 1) {
                     $v['vod_content'] = mac_rep_pse_rnd($pse_rnd, $v['vod_content']);
                 }
@@ -550,7 +550,7 @@ class Collect extends Base {
                 }
 
                 $where = [];
-                $where['vod_name'] = $v['vod_name'];
+                $where['vod_name'] = mac_filter_xss($v['vod_name']);
                 $blend=false;
                 if (strpos($config['inrule'], 'b')!==false) {
                     $where['type_id'] = $v['type_id'];
@@ -566,17 +566,17 @@ class Collect extends Base {
                 }
                 $search_actor_id_list = [];
                 if (strpos($config['inrule'], 'f')!==false) {
-                    $where['vod_actor'] = ['like', mac_like_arr($v['vod_actor']), 'OR'];
+                    $where['vod_actor'] = ['like', mac_like_arr(mac_filter_xss($v['vod_actor'])), 'OR'];
                     if ($vod_search_enabled) {
-                        $search_actor_id_list = $vod_search->getResultIdList($v['vod_actor'], 'vod_actor', true);
+                        $search_actor_id_list = $vod_search->getResultIdList(mac_filter_xss($v['vod_actor']), 'vod_actor', true);
                         $search_actor_id_list = empty($search_actor_id_list) ? [0] : $search_actor_id_list;
                     }
                 }
                 if (strpos($config['inrule'], 'g')!==false) {
-                    $where['vod_director'] = $v['vod_director'];
+                    $where['vod_director'] = mac_filter_xss($v['vod_director']);
                 }
                 if ($config['tag'] == 1) {
-                    $v['vod_tag'] = mac_get_tag($v['vod_name'], $v['vod_content']);
+                    $v['vod_tag'] = mac_filter_xss(mac_get_tag($v['vod_name'], $v['vod_content']));
                 }
 
                 if(!empty($where['vod_actor']) && !empty($where['vod_director'])){
@@ -712,7 +712,7 @@ class Collect extends Base {
                             $v['vod_down_note'] = (string)join('$$$', $collect_filter['down'][$param['filter']]['cj_down_note_arr']);
                         }
                         $tmp = $this->syncImages($config_sync_pic,  $v['vod_pic'], 'vod');
-                        $v['vod_pic'] = mac_filter_xss((string)$tmp['pic']);
+                        $v['vod_pic'] = (string)$tmp['pic'];
                         $msg = $tmp['msg'];
                         $v = VodValidate::formatDataBeforeDb($v);
                         $vod_id = model('Vod')->insert($v, false, true);
@@ -892,7 +892,7 @@ class Collect extends Base {
                         }
                         if (strpos(',' . $config['uprule'], 'j')!==false && (substr($info["vod_pic"], 0, 4) == "http" || empty($info['vod_pic']) ) && $v['vod_pic']!=$info['vod_pic'] ) {
                             $tmp = $this->syncImages($config_sync_pic, $v['vod_pic'],'vod');
-                            $update['vod_pic'] = mac_filter_xss((string)$tmp['pic']);
+                            $update['vod_pic'] = (string)$tmp['pic'];
                             $msg =$tmp['msg'];
                         }
                         if (strpos(',' . $config['uprule'], 'k')!==false && !empty($v['vod_content']) && $v['vod_content']!=$info['vod_content']) {
@@ -1077,7 +1077,7 @@ class Collect extends Base {
         if($param['ac'] == 'list'){
             foreach($json['class'] as $k=>$v){
                 $array_type[$key]['type_id'] = $v['type_id'];
-                $array_type[$key]['type_name'] = mac_filter_xss($v['type_name']);
+                $array_type[$key]['type_name'] = $v['type_name'];
                 $key++;
             }
         }
@@ -1207,7 +1207,7 @@ class Collect extends Base {
                 $info = model('Art')->where($where)->find();
                 if (!$info) {
                     $tmp = $this->syncImages($config_sync_pic, $v['art_pic'],'art');
-                    $v['art_pic'] = mac_filter_xss((string)$tmp['pic']);
+                    $v['art_pic'] = (string)$tmp['pic'];
 
                     $msg = $tmp['msg'];
                     $res = model('Art')->insert($v);
@@ -1254,7 +1254,7 @@ class Collect extends Base {
 
                             if(strpos(','.$config['uprule'],'d')!==false && (substr($info["art_pic"], 0, 4) == "http" || empty($info['art_pic']))  && $v['art_pic']!=$info['art_pic'] ){
                                 $tmp = $this->syncImages($config_sync_pic, $v['art_pic'],'art');
-                                $update['art_pic'] = mac_filter_xss((string)$tmp['pic']);
+                                $update['art_pic'] = (string)$tmp['pic'];
                                 $msg =$tmp['msg'];
                             }
                             if(strpos(','.$config['uprule'],'e')!==false && !empty($v['art_tag']) && $v['art_tag']!=$info['art_tag']){
@@ -1404,7 +1404,7 @@ class Collect extends Base {
         if($param['ac'] == 'list'){
             foreach($json['class'] as $k=>$v){
                 $array_type[$key]['type_id'] = $v['type_id'];
-                $array_type[$key]['type_name'] = mac_filter_xss($v['type_name']);
+                $array_type[$key]['type_name'] = $v['type_name'];
                 $key++;
             }
         }
@@ -1995,7 +1995,7 @@ class Collect extends Base {
         if($param['ac'] == 'list'){
             foreach($json['class'] as $k=>$v){
                 $array_type[$key]['type_id'] = $v['type_id'];
-                $array_type[$key]['type_name'] = mac_filter_xss($v['type_name']);
+                $array_type[$key]['type_name'] = $v['type_name'];
                 $key++;
             }
         }
