@@ -71,7 +71,7 @@ class Provide extends Base
                 $GLOBALS['config']['api']['vod']['from'] = $this->_param['from'];
             }
             if (!empty($GLOBALS['config']['api']['vod']['from'])) {
-                $where['vod_play_from'] = ['like', '%' . $GLOBALS['config']['api']['vod']['from'] . '%'];
+                $where['vod_play_from'] = ['eq', trim($GLOBALS['config']['api']['vod']['from'])];
             }
 
             if (!empty($GLOBALS['config']['api']['vod']['datafilter'])) {
