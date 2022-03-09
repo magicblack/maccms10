@@ -80,6 +80,10 @@ class Provide extends Base
             if (empty($this->_param['pg'])) {
                 $this->_param['pg'] = 1;
             }
+            $pagesize = $GLOBALS['config']['api']['vod']['pagesize'];
+            if (!empty($this->_param['pagesize']) && $this->_param['pagesize'] > 0) {
+                $pagesize = min((int)$this->_param['pagesize'], 100);
+            }
 
             $order = 'vod_time desc';
             $field = 'vod_id,vod_name,type_id,"" as type_name,vod_en,vod_time,vod_remarks,vod_play_from,vod_time';
@@ -87,7 +91,7 @@ class Provide extends Base
             if ($this->_param['ac'] == 'videolist' || $this->_param['ac'] == 'detail') {
                 $field = '*';
             }
-            $res = model('vod')->listData($where, $order, $this->_param['pg'], $GLOBALS['config']['api']['vod']['pagesize'], 0, $field, 0);
+            $res = model('vod')->listData($where, $order, $this->_param['pg'], $pagesize, 0, $field, 0);
 
 
             if ($this->_param['at'] == 'xml') {
