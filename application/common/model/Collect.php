@@ -494,10 +494,10 @@ class Collect extends Base {
 
                 $v['vod_class'] = mac_txt_merge($v['vod_class'],$v['type_name']);
 
-                $v['vod_actor'] = mac_format_text($v['vod_actor']);
-                $v['vod_director'] = mac_format_text($v['vod_director']);
-                $v['vod_class'] = mac_format_text($v['vod_class']);
-                $v['vod_tag'] = mac_format_text($v['vod_tag']);
+                $v['vod_actor'] = mac_format_text($v['vod_actor'], true);
+                $v['vod_director'] = mac_format_text($v['vod_director'], true);
+                $v['vod_class'] = mac_format_text($v['vod_class'], true);
+                $v['vod_tag'] = mac_format_text($v['vod_tag'], true);
 
                 $v['vod_plot_name'] = (string)$v['vod_plot_name'];
                 $v['vod_plot_detail'] = (string)$v['vod_plot_detail'];

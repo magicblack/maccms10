@@ -1215,9 +1215,13 @@ function mac_restore_htmlfilter($str) {
     return $str;
 }
 
-function mac_format_text($str)
+function mac_format_text($str, $allow_space = false)
 {
-    return str_replace(array('/','，','|','、',' ',',,,'),',',$str);
+    $finder = array('/', '，', '|', '、', ',,', ',,,');
+    if ($allow_space === false) {
+        $finder[] = ' ';
+    }
+    return str_replace($finder, ',', $str);
 }
 function mac_format_count($str)
 {
