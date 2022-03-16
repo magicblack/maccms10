@@ -66,7 +66,29 @@ class Provide extends Base
             if (!empty($this->_param['wd'])) {
                 $where['vod_name'] = ['like', '%' . $this->_param['wd'] . '%'];
             }
-
+            // 增加年份筛选 https://github.com/magicblack/maccms10/issues/815
+            if (!empty($this->_param['year'])) {
+                $param_year = trim($this->_param['year']);
+                if (strlen($param_year) == 4) {
+                    $year = intval($param_year);
+                } elseif (strlen($param_year) == 9) {
+                    $start = (int)substr($param_year, 0, 4);
+                    $end = (int)substr($param_year, 5, 4);
+                    if ($start > $end) {
+                        $tmp_num = $end;
+                        $end = $start;
+                        $start = $tmp_num;
+                    }
+                    $tmp_arr = [];
+                    $start = max($start, 1900);
+                    $end = min($end, date('Y') + 3);
+                    for ($i = $start; $i <= $end; $i++) {
+                        $tmp_arr[] = $i;
+                    }
+                    $year = join(',', $tmp_arr);
+                }
+                $where['vod_year'] = ['in', explode(',', $year)];
+            }
             if (empty($GLOBALS['config']['api']['vod']['from']) && !empty($this->_param['from'])) {
                 $GLOBALS['config']['api']['vod']['from'] = $this->_param['from'];
             }
@@ -85,7 +107,8 @@ class Provide extends Base
                 $pagesize = min((int)$this->_param['pagesize'], 100);
             }
 
-            $order = 'vod_time desc';
+            $sort_direction = !empty($this->_param['sort_direction']) && $this->_param['sort_direction'] == 'asc' ? 'asc' : 'desc';
+            $order = 'vod_time ' . $sort_direction;
             $field = 'vod_id,vod_name,type_id,"" as type_name,vod_en,vod_time,vod_remarks,vod_play_from,vod_time';
 
             if ($this->_param['ac'] == 'videolist' || $this->_param['ac'] == 'detail') {
