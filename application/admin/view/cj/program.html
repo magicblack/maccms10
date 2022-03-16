@@ -1,7 +1,7 @@
 {include file="../../../application/admin/view/public/head" /}
 <div class="page-container p10">
     <form class="layui-form layui-form-pane" action="">
-        <input type="hidden" name="id" value="{$param.id}">
+        <input type="hidden" name="id" value="{$param.id|mac_filter_xss}">
         <fieldset class="layui-elem-field">
             <legend>{:lang('admin/cj/label_data_rel')}</legend>
         </fieldset>

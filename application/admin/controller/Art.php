@@ -41,7 +41,7 @@ class Art extends Base
             }
         }
         if(!empty($param['wd'])){
-            $param['wd'] = htmlspecialchars(urldecode($param['wd']));
+            $param['wd'] = mac_filter_xss($param['wd']);
             $where['art_name'] = ['like','%'.$param['wd'].'%'];
         }
 

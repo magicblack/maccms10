@@ -14,9 +14,9 @@
                     </select>
                 </div>
                 <div class="layui-input-inline">
-                    <input type="text" autocomplete="off" placeholder="{:lang('wd')}" class="layui-input" name="wd" value="{$param['wd']}">
+                    <input type="text" autocomplete="off" placeholder="{:lang('wd')}" class="layui-input" name="wd" value="{$param['wd']|mac_filter_xss}">
                 </div>
-                <input type="hidden" name="uid" value="{$param['uid']}">
+                <input type="hidden" name="uid" value="{$param['uid']|mac_filter_xss}">
                 <button class="layui-btn mgl-20 j-search" >{:lang('btn_search')}</button>
             </form>
         </div>

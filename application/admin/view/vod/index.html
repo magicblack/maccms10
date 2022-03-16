@@ -17,8 +17,8 @@
 
         <div class="center mb10">
             <form class="layui-form " method="post" action="{:url('data')}">
-                <input type="hidden" value="{$param.select}" name="select">
-                <input type="hidden" value="{$param.input}" name="input">
+                <input type="hidden" value="{$param.select|mac_filter_xss}" name="select">
+                <input type="hidden" value="{$param.input|mac_filter_xss}" name="input">
                 <div class="layui-input-inline w150">
                     <select name="type">
                         <option value="">{:lang('select_type')}</option>
@@ -162,9 +162,9 @@
 
 
                 <div class="layui-input-inline">
-                    <input type="text" autocomplete="off" placeholder="{:lang('wd')}" class="layui-input" name="wd" value="{$param['wd']}">
+                    <input type="text" autocomplete="off" placeholder="{:lang('wd')}" class="layui-input" name="wd" value="{$param['wd']|mac_restore_htmlfilter}">
                 </div>
-                <input type="hidden" name="repeat" value="{$param['repeat']}" />
+                <input type="hidden" name="repeat" value="{$param['repeat']|mac_filter_xss}" />
                 <button class="layui-btn mgl-20 j-search" >{:lang('btn_search')}</button>
             </form>
         </div>
