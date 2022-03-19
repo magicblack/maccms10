@@ -499,6 +499,12 @@ class All extends Controller
         $player_info['link'] = $urlfun($info,['sid'=>'{sid}','nid'=>'{nid}']);
         $player_info['link_next'] = '';
         $player_info['link_pre'] = '';
+        $player_info['vod_data'] = [
+            'vod_name'     => $info['vod_name'],
+            'vod_actor'    => $info['vod_actor'],
+            'vod_director' => $info['vod_director'],
+            'vod_class'    => $info['vod_class'],
+        ];
         if($param['nid']>1){
             $player_info['link_pre'] = $urlfun($info,['sid'=>$param['sid'],'nid'=>$param['nid']-1]);
         }

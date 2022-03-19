@@ -174,7 +174,7 @@
             <a data-href="{:url('del')}" class="layui-btn layui-btn-primary j-page-btns confirm"><i class="layui-icon">&#xe640;</i>{:lang('del')}</a>
             <a data-href="{:url('index/select')}?tab=vod&col=type_id&tpl=select_type&url=vod/field" data-width="270" data-height="100" data-checkbox="1" class="layui-btn layui-btn-primary j-select"><i class="layui-icon">&#xe620;</i>{:lang('type')}</a>
             <a data-href="{:url('index/select')}?tab=vod&col=vod_level&tpl=select_level&url=vod/field" data-width="270" data-height="100" data-checkbox="1" class="layui-btn layui-btn-primary j-select"><i class="layui-icon">&#xe620;</i>{:lang('level')}</a>
-            <a data-href="{:url('index/select')}?tab=vod&col=vod_hits&tpl=select_hits&url=vod/field" data-width="470" data-height="100" data-checkbox="1" class="layui-btn layui-btn-primary j-select"><i class="layui-icon">&#xe620;</i>{:lang('hits')}</a>
+            <a data-href="{:url('index/select')}?tab=vod&col=vod_hits&tpl=select_hits&url=vod/field" data-width="470" data-height="100" data-checkbox="1" class="layui-btn layui-btn-primary j-select"><i class="layui-icon">&#xe620;</i>{:lang('hits')}</a>            
             <a data-href="{:url('index/select')}?tab=vod&col=vod_status&tpl=select_status&url=vod/field" data-width="270" data-height="100" data-checkbox="1" class="layui-btn layui-btn-primary j-select"><i class="layui-icon">&#xe620;</i>{:lang('status')}</a>
             <a data-href="{:url('index/select')}?tab=vod&col=vod_lock&tpl=select_lock&url=vod/field" data-width="270" data-height="100" data-checkbox="1" class="layui-btn layui-btn-primary j-select"><i class="layui-icon">&#xe620;</i>{:lang('lock')}</a>
             <a data-href="{:url('index/select')}?tab=vod&col=vod_copyright&tpl=select_copyright&url=vod/field" data-width="270" data-height="100" data-checkbox="1" class="layui-btn layui-btn-primary j-select"><i class="layui-icon">&#xe620;</i>{:lang('admin/vod/copyright')}</a>
@@ -201,6 +201,7 @@
                 <th width="40">{:lang('id')}</th>
                 <th >{:lang('name')}</th>
                 <th width="50">{:lang('hits')}</th>
+                <th width="50">{:lang('hits_week')}</th>
                 <th width="40">{:lang('score')}</th>
                 <th width="30">{:lang('level')}</th>
                 <th width="30">{:lang('browse')}</th>
@@ -224,6 +225,7 @@
                     {if condition="$vo.vod_copyright eq 1"} <span class="layui-badge layui-bg-black">{:lang('admin/vod/copyright')}</span>{/if}
                 </td>
                 <td>{$vo.vod_hits}</td>
+                <td>{$vo.vod_hits_week}</td>
                 <td>{$vo.vod_score}</td>
                 <td><a data-href="{:url('index/select')}?tab=vod&col=vod_level&tpl=select_level&url=vod/field&ids={$vo.vod_id}" data-width="270" data-height="100" class=" j-select"><span class="layui-badge layui-bg-orange">{$vo.vod_level}</span></a></td>
                 <td>{if condition="$vo.ismake eq 1"}<a target="_blank" class="layui-badge layui-bg-green " href="{:mac_url_vod_detail($vo)}">Y</a>{else/}<a class="layui-badge" href="{:url('make/make?ac=info&tab=vod')}?ids={$vo.vod_id}&ref=1">N</a>{/if}</td>
