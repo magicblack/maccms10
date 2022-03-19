@@ -63,10 +63,9 @@ class Comment extends Base
         }
 
         $param['comment_content']= htmlentities(mac_filter_words($param['comment_content']));
-        $pattern = '/[^\x00-\x80]/';
-        if(!preg_match($pattern,$param['comment_content'])){
-            return ['code'=>1005,'msg'=>lang('index/require_cn')];
-        }
+        // if(!preg_match('/[^\x00-\x80]/',$param['comment_content'])){
+        //     return ['code'=>1005,'msg'=>lang('index/require_cn')];
+        // }
 
         if(!in_array($param['comment_mid'],['1','2','3','8','9','11'])){
             return ['code'=>1006,'msg'=>lang('index/mid_err')];

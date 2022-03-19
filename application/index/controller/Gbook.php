@@ -70,10 +70,9 @@ class Gbook extends Base
         }
 
         $param['gbook_content']= htmlentities(mac_filter_words($param['gbook_content']));
-        $pattern = '/[^\x00-\x80]/';
-        if(!preg_match($pattern,$param['gbook_content'])){
-            return ['code'=>1005,'msg'=>lang('index/require_cn')];
-        }
+        // if(!preg_match('/[^\x00-\x80]/',$param['gbook_content'])){
+        //     return ['code'=>1005,'msg'=>lang('index/require_cn')];
+        // }
 
         $param['gbook_reply'] = '';
 
