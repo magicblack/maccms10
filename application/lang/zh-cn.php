@@ -956,6 +956,8 @@ https://www.baidu.com/123.jpg
                             2,视频详情地址/api.php/provide/vod/?ac=detail',
     'admin/system/configapi/status'=>'接口开关',
     'admin/system/configapi/charge'=>'是否收费',
+    'admin/system/configapi/detail_inc_hits'=>'增加点击',
+    'admin/system/configapi/detail_inc_hits_tip'=>'ac=detail且ids只有一个时，点击量+1',
     'admin/system/configapi/pagesize'=>'列表每页显示数量',
     'admin/system/configapi/pagesize_tip'=>'数据每页显示量，不建议超过50',
     'admin/system/configapi/imgurl'=>'图片域名',

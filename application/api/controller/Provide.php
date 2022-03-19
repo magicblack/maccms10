@@ -127,6 +127,14 @@ class Provide extends Base
                 Cache::set($cach_name, $html, $cache_time);
             }
         }
+        // https://github.com/magicblack/maccms10/issues/818 影片的播放量+1
+        if (
+            isset($this->_param['ac']) && $this->_param['ac'] == 'detail' && 
+            !empty($this->_param['ids']) && (int)$this->_param['ids'] == $this->_param['ids'] && 
+            !empty($GLOBALS['config']['api']['vod']['detail_inc_hits'])
+        ) {
+            model('Vod')->fieldData(['vod_id' => (int)$this->_param['ids']], ['vod_hits' => ['inc', 1]]);
+        }
         echo $html;
         exit;
     }
