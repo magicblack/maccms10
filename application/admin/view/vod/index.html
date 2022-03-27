@@ -229,7 +229,7 @@
                 <td>{$vo.vod_score}</td>
                 <td><a data-href="{:url('index/select')}?tab=vod&col=vod_level&tpl=select_level&url=vod/field&ids={$vo.vod_id}" data-width="270" data-height="100" class=" j-select"><span class="layui-badge layui-bg-orange">{$vo.vod_level}</span></a></td>
                 <td>{if condition="$vo.ismake eq 1"}<a target="_blank" class="layui-badge layui-bg-green " href="{:mac_url_vod_detail($vo)}">Y</a>{else/}<a class="layui-badge" href="{:url('make/make?ac=info&tab=vod')}?ids={$vo.vod_id}&ref=1">N</a>{/if}</td>
-                <td><span title="{$vo.vod_play_from|str_replace='$$$',',',###}-{$vo.vod_down_from|str_replace='$$$',',',###}">{$vo.vod_play_from|str_replace='$$$',',',###}-{$vo.vod_down_from|str_replace='$$$',',',###}</span></td>
+                <td><span title="{$vo['vod_play_from']|str_replace='$$$',',',###}-{$vo['vod_down_from']|str_replace='$$$',',',###}">{$vo['vod_play_from']|str_replace='$$$',',',###}-{$vo['vod_down_from']|str_replace='$$$',',',###}</span></td>
                 <td>{$vo.vod_time|mac_day='color'}</td>
                 <td>
                     <a class="layui-badge-rim j-iframe" data-full="1" data-href="{:url('info?id='.$vo['vod_id'])}" href="javascript:;" title="{:lang('edit')}">{:lang('edit')}</a>
