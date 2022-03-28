@@ -199,7 +199,7 @@
             <tr>
                 <th width="25"><input type="checkbox" lay-skin="primary" lay-filter="allChoose"></th>
                 <th width="40">{:lang('id')}</th>
-                <th >{:lang('name')}</th>
+                <th id="table_th_vod_name">{:lang('name')}</th>
                 <th width="50">{:lang('hits')}</th>
                 <th width="50">{:lang('hits_week')}</th>
                 <th width="40">{:lang('score')}</th>
@@ -256,6 +256,7 @@
         var laypage = layui.laypage
                 , layer = layui.layer,
                 form = layui.form;
+                $ = layui.jquery;
 
         laypage.render({
             elem: 'pages'
@@ -269,6 +270,11 @@
                 }
             }
         });
+
+        // 小屏幕下名称问题
+        if ($('body').width() <= 600) {
+            $('#table_th_vod_name').attr('width', '300');
+        }
 
     });
 </script>
