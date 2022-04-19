@@ -4,25 +4,25 @@
 
     <div class="my-toolbar-box">
 
-        <div class="layui-btn-group">
-            <a data-href="{:url('info')}" class="layui-btn layui-btn-primary j-iframe" data-width="800px" data-height="610px"><i class="layui-icon">&#xe654;</i>{:lang('add')}</a>
-            <a data-href="{:url('del')}" class="layui-btn layui-btn-primary j-page-btns confirm"><i class="layui-icon">&#xe640;</i>{:lang('del')}</a>
-            <a data-href="{:url('clearbind')}" class="layui-btn layui-btn-primary j-page-btns confirm" data-checkbox="false" data-ajax="yes"><i class="layui-icon">&#xe640;</i>{:lang('admin/collect/clear_bind')}</a>
+        <div class="pear-btn-group">
+            <a data-href="{:url('info')}" class="pear-btn pear-btn-primary j-iframe" data-width="800px" data-height="610px"><i class="layui-icon">&#xe654;</i>{:lang('add')}</a>
+            <a data-href="{:url('del')}" class="pear-btn pear-btn-primary j-page-btns confirm"><i class="layui-icon">&#xe640;</i>{:lang('del')}</a>
+            <a data-href="{:url('clearbind')}" class="pear-btn pear-btn-primary j-page-btns confirm" data-checkbox="false" data-ajax="yes"><i class="layui-icon">&#xe640;</i>{:lang('admin/collect/clear_bind')}</a>
 
                 {if condition="$collect_break_vod neq ''"}
-                <a href="{:url('load')}?flag=vod" class="layui-btn layui-btn-danger ">【进入视频断点采集】</a>
+                <a href="{:url('load')}?flag=vod" class="pear-btn pear-btn-danger ">【进入视频断点采集】</a>
                 {/if}
                 {if condition="$collect_break_art neq ''"}
-                <a href="{:url('load')}?flag=art" class="layui-btn layui-btn-danger ">【进入文章断点采集】</a>
+                <a href="{:url('load')}?flag=art" class="pear-btn pear-btn-danger ">【进入文章断点采集】</a>
                 {/if}
                 {if condition="$collect_break_actor neq ''"}
-                <a href="{:url('load')}?flag=actor" class="layui-btn layui-btn-danger ">【进入明星断点采集】</a>
+                <a href="{:url('load')}?flag=actor" class="pear-btn pear-btn-danger ">【进入明星断点采集】</a>
                 {/if}
                 {if condition="$collect_break_role neq ''"}
-                <a href="{:url('load')}?flag=role" class="layui-btn layui-btn-danger ">【进入角色断点采集】</a>
+                <a href="{:url('load')}?flag=role" class="pear-btn pear-btn-danger ">【进入角色断点采集】</a>
                 {/if}
                 {if condition="$collect_break_website neq ''"}
-                <a href="{:url('load')}?flag=website" class="layui-btn layui-btn-danger ">【进入网址断点采集】</a>
+                <a href="{:url('load')}?flag=website" class="pear-btn pear-btn-danger ">【进入网址断点采集】</a>
                 {/if}
 
         </div>

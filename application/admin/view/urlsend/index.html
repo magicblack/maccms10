@@ -18,8 +18,8 @@
         </div>
         <div class="layui-form-item ">
             <div class="layui-input-block">
-                <button type="submit" class="layui-btn" lay-submit="" lay-filter="formSubmit">{:lang('btn_save')}</button>
-                <button class="layui-btn layui-btn-warm" type="reset">{:lang('btn_reset')}</button>
+                <button type="submit" class="pear-btn" lay-submit="" lay-filter="formSubmit">{:lang('btn_save')}</button>
+                <button class="pear-btn pear-btn-warming" type="reset">{:lang('btn_reset')}</button>
             </div>
         </div>
     </form>
@@ -66,26 +66,26 @@
         </div>
 
         <hr class="layui-bg-gray">
-        <input type="button" value="{:lang('that_day')}{:lang('vod')}" class="layui-btn layui-btn-primary" onclick="post('ac2=today&mid=1');">
-        <input type="button" value="{:lang('all')}{:lang('vod')}" class="layui-btn layui-btn-primary" onclick="post('ac2=all&mid=1');">
+        <input type="button" value="{:lang('that_day')}{:lang('vod')}" class="pear-btn pear-btn-primary" onclick="post('ac2=today&mid=1');">
+        <input type="button" value="{:lang('all')}{:lang('vod')}" class="pear-btn pear-btn-primary" onclick="post('ac2=all&mid=1');">
 
-        <input type="button" value="{:lang('that_day')}{:lang('art')}" class="layui-btn layui-btn-primary" onclick="post('ac2=today&mid=2');">
-        <input type="button" value="{:lang('all')}{:lang('art')}" class="layui-btn layui-btn-primary" onclick="post('ac2=all&mid=2');">
+        <input type="button" value="{:lang('that_day')}{:lang('art')}" class="pear-btn pear-btn-primary" onclick="post('ac2=today&mid=2');">
+        <input type="button" value="{:lang('all')}{:lang('art')}" class="pear-btn pear-btn-primary" onclick="post('ac2=all&mid=2');">
         <hr class="layui-bg-gray">
-        <input type="button" value="{:lang('that_day')}{:lang('topic')}" class="layui-btn layui-btn-primary" onclick="post('ac2=today&mid=3');">
-        <input type="button" value="{:lang('all')}{:lang('topic')}" class="layui-btn layui-btn-primary" onclick="post('ac2=all&mid=3');">
+        <input type="button" value="{:lang('that_day')}{:lang('topic')}" class="pear-btn pear-btn-primary" onclick="post('ac2=today&mid=3');">
+        <input type="button" value="{:lang('all')}{:lang('topic')}" class="pear-btn pear-btn-primary" onclick="post('ac2=all&mid=3');">
 
-        <input type="button" value="{:lang('that_day')}{:lang('actor')}" class="layui-btn layui-btn-primary" onclick="post('ac2=today&mid=8');">
-        <input type="button" value="{:lang('all')}{:lang('actor')}" class="layui-btn layui-btn-primary" onclick="post('ac2=all&mid=8');">
+        <input type="button" value="{:lang('that_day')}{:lang('actor')}" class="pear-btn pear-btn-primary" onclick="post('ac2=today&mid=8');">
+        <input type="button" value="{:lang('all')}{:lang('actor')}" class="pear-btn pear-btn-primary" onclick="post('ac2=all&mid=8');">
         <hr class="layui-bg-gray">
-        <input type="button" value="{:lang('that_day')}{:lang('role')}" class="layui-btn layui-btn-primary" onclick="post('ac2=today&mid=9');">
-        <input type="button" value="{:lang('all')}{:lang('role')}" class="layui-btn layui-btn-primary" onclick="post('ac2=all&mid=9');">
+        <input type="button" value="{:lang('that_day')}{:lang('role')}" class="pear-btn pear-btn-primary" onclick="post('ac2=today&mid=9');">
+        <input type="button" value="{:lang('all')}{:lang('role')}" class="pear-btn pear-btn-primary" onclick="post('ac2=all&mid=9');">
 
-        <input type="button" value="{:lang('that_day')}{:lang('website')}" class="layui-btn layui-btn-primary" onclick="post('ac2=today&mid=11');">
-        <input type="button" value="{:lang('all')}{:lang('website')}" class="layui-btn layui-btn-primary" onclick="post('ac2=all&mid=11');">
+        <input type="button" value="{:lang('that_day')}{:lang('website')}" class="pear-btn pear-btn-primary" onclick="post('ac2=today&mid=11');">
+        <input type="button" value="{:lang('all')}{:lang('website')}" class="pear-btn pear-btn-primary" onclick="post('ac2=all&mid=11');">
         <hr class="layui-bg-gray">
         {if condition="$urlsend_break_baidu_push neq ''"}
-        <a href="{$urlsend_break_baidu_push}" class="layui-btn layui-btn-danger ">【{:lang('admin/urlsend/in_break_point_exec')}】</a>
+        <a href="{$urlsend_break_baidu_push}" class="pear-btn pear-btn-danger ">【{:lang('admin/urlsend/in_break_point_exec')}】</a>
         {/if}
 
     </form>

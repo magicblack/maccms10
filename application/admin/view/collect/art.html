@@ -25,7 +25,7 @@
                 <div class="layui-input-inline">
                     <input type="text" autocomplete="off" placeholder="{:lang('wd')}" class="layui-input" id="wd" name="wd" value="{$param['wd']|mac_filter_xss}">
                 </div>
-                <button type="button" class="layui-btn mgl-20 j-btn" >{:lang('btn_search')}</button>
+                <button type="button" class="pear-btn mgl-20 j-btn" >{:lang('btn_search')}</button>
             </form>
         </div>
 
@@ -55,15 +55,15 @@
             {/volist}
             </tbody>
         </table>
-        <div class="layui-btn-group">
+        <div class="pear-btn-group">
             {php}
                 $p1 = $param;
                 unset($p1['ac']);
                 $p1_str = http_build_query($p1);
             {/php}
-            <a data-href="{:url('api')}?{$p1_str}&ac=cjsel" data-ajax="no" class="layui-btn layui-btn-primary j-page-btns"><i class="layui-icon">&#xe654;</i>{:lang('admin/collect/cj_select')}</a>
-            <a data-href="{:url('api')}?{$p1_str}&h=24&ac=cjday" data-checkbox="no" data-ajax="no" class="layui-btn layui-btn-primary j-page-btns"><i class="layui-icon">&#xe654;</i>{:lang('admin/collect/cj_today')}</a>
-            <a data-href="{:url('api')}?{$p1_str}&ac=cjall" data-checkbox="no" data-ajax="no" class="layui-btn layui-btn-primary j-page-btns"><i class="layui-icon">&#xe654;</i>{:lang('admin/collect/cj_all')}</a>
+            <a data-href="{:url('api')}?{$p1_str}&ac=cjsel" data-ajax="no" class="pear-btn pear-btn-primary j-page-btns"><i class="layui-icon">&#xe654;</i>{:lang('admin/collect/cj_select')}</a>
+            <a data-href="{:url('api')}?{$p1_str}&h=24&ac=cjday" data-checkbox="no" data-ajax="no" class="pear-btn pear-btn-primary j-page-btns"><i class="layui-icon">&#xe654;</i>{:lang('admin/collect/cj_today')}</a>
+            <a data-href="{:url('api')}?{$p1_str}&ac=cjall" data-checkbox="no" data-ajax="no" class="pear-btn pear-btn-primary j-page-btns"><i class="layui-icon">&#xe654;</i>{:lang('admin/collect/cj_all')}</a>
         </div>
 
         <div id="pages" class="center"></div>

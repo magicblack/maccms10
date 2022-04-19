@@ -1,302 +1,110 @@
-{include file="../../../application/admin/view/public/head" /}
-
-<style type="text/css">
-    .hs-iframe{width:100%;height:100%;}
-    .layui-tab-content {top: 41px; position: absolute; bottom: 0; width: 100%; padding: 0; }
-    .layui-tab-item{height:100%;}
-    .layui-tab-title .layui-this {background-color: #009688; color: #fff; }
-    .layui-tab-title .layui-this:after {border: none; }
-    .layui-tab-title li { border-right: 1px solid #e6e6e6;}
-    .footer{position:fixed;left:0;bottom:0;z-index:998;}
-</style>
-<div class="layui-layout layui-layout-admin">
-    <div class="layui-header header-top">
-	
-	<div class="top-logo">{:lang('admin/index/index/name')}</div>
-	<ul class="layout-right" lay-filter="">	
-		 <li class="nav-item">
-			<a href="__ROOT__/" target="_blank"><i class="layui-icon layui-icon-home size-14"></i></a>
-	     </li> 
-		 <li class="nav-item ">
-			   <a href="{:url('index/clear')}" class="j-ajax " refresh="yes"><i class="layui-icon layui-icon-delete size-16"></i></a>
-		 </li>
-		 <li class="nav-item">
-			   <a href="javascript:;" id="admin_name">
-                   <i class="layui-icon layui-icon-app  size-14"></i>
-			   </a>
-			 
-		 </li>
-	</ul>	
-		
-	</div>
-
-	<div class="layui-header">
-	    <div class="fl header-logo">{:lang('admin/index/index/name')}</div>
-		<div class="fl header-fold topLevelMenus"><a href="javascript:;" title="{:lang('admin/index/index/menu_switch')}" class="aicon ai-caidan" id="foldSwitch"><i class="layui-icon">&#xe65f;</i></a></div>
-		 <a href="javascript:;" class=" site-tree-mobile layui-mobile layui-show-xs-block layui-hide-lg"><i class="layui-icon layui-icon-spread-left size-20"></i></a>
-	    <div class="bottom-nav">	
-		  <ul class="layui-nav fl nobg main-nav " >
-            {volist name="menus" id="vo"}
-            {if condition="($i eq 1)"}
-               <li class="layui-nav-item layui-this main-nav mob-nav" data-i="{$i}">
-                {else /}
-               <li class="layui-nav-item main-nav mob-nav">
-                {/if}
-                <a href="javascript:;" data-i="{$i}">{$vo['name']}</a>
-			  </li>
-             {/volist}
-           </ul>
-			<ul class="layui-nav layui-layout-right" lay-filter="">
-				 <li class="layui-nav-item layui-hide-xs">
-					<a href="javascript:void(0);">{:lang('opt')}&nbsp;&nbsp;</a>
-					<dl class="layui-nav-child">
-                        <dd><a href="{:url('index/clear')}" class="j-ajax" refresh="yes">{:lang('admin/index/index/menu_cache_clear')}</a></dd>
-						<dd><a href="javascript:void(0);" id="lockScreen">{:lang('admin/index/index/menu_lock')}</a></dd>
-						<dd><a href="{:url('index/logout')}">{:lang('admin/index/index/menu_logout')}</a></dd>
-					</dl>
-				</li>
-				<li class="layui-nav-item layui-hide-xs">
-                    <a href="__ROOT__/" target="_blank">{:lang('admin/index/index/menu_index')}</a>
-                </li>
-			</ul>
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+		<title> Pear Admin - MACCMS </title>
+		<!-- 依 赖 样 式 -->
+		<link rel="stylesheet" href="__STATIC__/component/pear/css/pear.css" />
+		<!-- 加 载 样 式 -->
+		<link rel="stylesheet" href="__STATIC__/css/loader.css" />
+		<!-- 布 局 样 式 -->
+		<link rel="stylesheet" href="__STATIC__/css/admin.css" />
+	</head>
+	<!-- 结 构 代 码 -->
+	<body class="layui-layout-body pear-admin">
+		<!-- 布 局 框 架 -->
+		<div class="layui-layout layui-layout-admin">
+			<!-- 顶 部 样 式 -->
+			<div class="layui-header">
+				<!-- 菜 单 顶 部 -->
+				<div class="layui-logo">
+					<!-- 图 标 -->
+					<img class="logo"></img>
+					<!-- 标 题 -->
+					<span class="title"></span>
+				</div>
+				<!-- 顶 部 左 侧 功 能 -->
+				<ul class="layui-nav layui-layout-left">
+					<li class="collaspe layui-nav-item"><a href="#" class="layui-icon layui-icon-shrink-right"></a></li>
+					<li class="refresh layui-nav-item"><a href="#" class="layui-icon layui-icon-refresh-1" loading = 600></a></li>
+				</ul>
+				<!-- 多 系 统 菜 单 -->
+				<div id="control" class="layui-layout-control"></div>
+				<!-- 顶 部 右 侧 菜 单 -->
+				<ul class="layui-nav layui-layout-right">
+					<li class="layui-nav-item layui-hide-xs"><a href="#" class="fullScreen layui-icon layui-icon-screen-full"></a></li>
+					<li class="layui-nav-item layui-hide-xs"><a href="http://www.pearadmin.com" class="layui-icon layui-icon-website"></a></li>
+					<li class="layui-nav-item layui-hide-xs"><a href="https://github.com/magicblack/maccms10" class="layui-icon layui-icon-website"></a></li>
+					<li class="layui-nav-item user">
+						<!-- 头 像 -->
+						<a class="layui-icon layui-icon-username" href="javascript:;"></a>
+						<!-- 功 能 菜 单 -->
+						<dl class="layui-nav-child">
+						    <dd><a href="javascript:void(0);" id="lockScreen">{:lang('admin/index/index/menu_lock')}</a></dd>
+						    <dd><a href="{:url('index/clear')}" class="j-ajax" refresh="yes">{:lang('admin/index/index/menu_cache_clear')}</a></dd>
+						    <dd class="logout"><a href="{:url('index/logout')}">{:lang('admin/index/index/menu_logout')}</a></dd>
+						</dl>
+					</li>
+					<!-- 主 题 配 置 -->
+					<li class="layui-nav-item setting"><a href="#" class="layui-icon layui-icon-more-vertical"></a></li>
+				</ul>
+			</div>
+			<!-- 侧 边 区 域 -->
+			<div class="layui-side layui-bg-black">
+				<!-- 菜 单 顶 部 -->
+				<div class="layui-logo">
+					<!-- 图 标 -->
+					<img class="logo"></img>
+					<!-- 标 题 -->
+					<span class="title"></span>
+				</div>
+				<!-- 菜 单 内 容 -->
+				<div class="layui-side-scroll">
+					<div id="sideMenu"></div>
+				</div>
+			</div>
+			<!-- 视 图 页 面 -->
+			<div class="layui-body">
+				<!-- 内 容 页 面 -->
+				<div id="content"></div>
+			</div>
+			<!-- 遮 盖 层 -->
+			<div class="pear-cover"></div>
+			<!-- 加 载 动 画 -->
+			<div class="loader-main">
+				<!-- 动 画 对 象 -->
+				<div class="loader"></div>
+			</div>
 		</div>
-	</div>
- 
-	<div class="nav-item-ul">
-	  <div class="">
-		  <ul class="layui-nav">
-			  <li class="layui-nav-item"><a href="__ROOT__/" target="_blank">{:lang('admin/index/index/menu_index')}</a></li>
-			  <li class="layui-nav-item"><a href="javascript:void(0);" id="lockScreen">{:lang('admin/index/index/menu_lock')}</a></li>
-			  <li class="layui-nav-item"><a href="{:url('index/clear')}" class="j-ajax" refresh="yes">{:lang('admin/index/index/menu_cache_clear')}</a></li>
-			  <li class="layui-nav-item"><a href="{:url('index/logout')}">{:lang('admin/index/index/menu_logout')}</a></li>
-		  </ul>
-		
-	  </div>
-	</div>
-
-    <div class="layui-side layui-bg-black" id="switchNav">
-        <div class="layui-side-scroll navBar" id="navBar">
-            {volist name="menus" id="v"}
-            {if condition="($i eq 1)"}
-            <ul class="layui-nav layui-nav-tree">
-                {else /}
-                <ul class="layui-nav layui-nav-tree" style="display:none;">
-                    {/if}
-                    <li class="layui-nav-item layui-nav-itemed">
-                    <a href="javascript:;"><i class="{$v['icon']}"></i>{$v['name']}<span class="layui-nav-more"></span></a>
-
-                    <dl class="layui-nav-child">
-                        {volist name="v['sub']" id="vv" key="kk"}
-                        <dd>
-                            {if condition="($vv['url'] !=='###')"}
-                            <a class="admin-nav-item" data-id="{$key}{$kk}" href="{$vv['url']}"><i class="{$vv['icon']}"></i> {$vv['name']}</a>
-                            {else}
-                            <hr class="layui-bg-gray">
-                            {/if}
-                        </dd>
-                        {/volist}
-                    </dl>
-                    </li>
-                </ul>
-                {/volist}
-        </div>
-    </div>
-    <div class="site-tree-mobile layui-hide">
-        <i class="layui-icon"></i>
-    </div>
-    <div class="site-mobile-shade"></div>
-
-    <div class="layui-body" id="switchBody">
-        <div class="layui-tab mag0" id="top_tabs_box" lay-filter="macTab" lay-allowClose="true">
-            <div class="tab-go-refresh" id="J_refresh"><i class="layui-icon layui-icon-refresh"></i></div>
-            <div class="tab-go-left" id="page-prev"><i class="layui-icon layui-icon-zuozuo"></i></div>
-            <ul class="layui-tab-title top_tab" id="B_history">
-                <li lay-id="111" class="layui-this">{:lang('admin/index/index/menu_welcome')}</li>
-            </ul>
-            <div class="tab-right">
-                <div class="tab-go-right" id="page-next"><i class="layui-icon layui-icon-youyou"></i></div>
-                <ul class="layui-nav closeBox">
-                    <li class="layui-nav-item" >
-                        <a href="javascript:;">{:lang('admin/index/index/menu_opt')}</a>
-                        <dl class="layui-nav-child">
-                            <dd><a href="javascript:;" class="closePageAll">&nbsp;{:lang('admin/index/index/menu_close_all')}</a></dd>
-                            <dd><a href="javascript:;" class="closePageOther">&nbsp;{:lang('admin/index/index/menu_close_other')}</a></dd>
-                        </dl>
-                    </li>
-                </ul>
-            </div>
-            <div class="layui-tab-content">
-                <div class="layui-tab-item layui-show">
-                    <iframe lay-id="111" src="{:url('index/welcome')}" width="100%" height="100%" frameborder="0" scrolling="yes" class="hs-iframe"></iframe>
-                </div>
-            </div>
-
-        </div>
-
-    </div>
-
-    <div class="layui-footer footer">
-        <div class="fl"></div>
-        <div class="fr"> {:lang('maccms_copyright')}</div>
-    </div>
-</div>
-
-{include file="../../../application/admin/view/public/foot" /}
-<!--请在下方写此页面业务相关的脚本-->
-<script>
-    window.localStorage.clear();
-    var LAYUI_OFFSET = 60;
-	
-	$('#admin_name').click(function(){
-		 $('body').toggleClass('drawer-body-right');
-	})
-</script>
-
-<script type="text/javascript">
-    layui.use(['element', 'layer'], function() {
-        var $ = layui.jquery, element = layui.element, layer = layui.layer;
-        $('.layui-tab-content').height($(window).height() - 145);
-        var tab = {
-            add: function(title, url, id) {
-                element.tabAdd('macTab', {
-                        title: title,
-                        content: '<iframe width="100%" height="100%" lay-id="'+id+'" frameborder="0" src="'+url+'" scrolling="yes" class="x-iframe"></iframe>',
-                        id: id
-            });
-            }, change: function(id) {
-                element.tabChange('macTab', id);
-            }
-        };
-        $('.admin-nav-item').click(function(event) {
-            var that = $(this);
-            var id = that.attr('data-id');
-            if ($('iframe[lay-id="'+id+'"]')[0]) {
-                tab.change(id);
-                event.stopPropagation();
-                $("iframe[lay-id='"+id+"']")[0].contentWindow.location.reload(true);//切换后刷新框架
-                return false;
-            }
-            if ($('iframe').length == 10) {
-                layer.msg("{:lang('admin/index/index/menu_max')}");
-                return false;
-            }
-            that.css({color:'#fff'});
-            tab.add(that.text(), that.attr('href'), that.attr('data-id'));
-            tab.change(that.attr('data-id'));
-            event.stopPropagation();
-            return false;
-        });
-        $(document).on('click', '.layui-tab-close', function() {
-            $('.layui-nav-child a[data-id="'+$(this).parent('li').attr('lay-id')+'"]').css({color:'rgba(255,255,255,.7)'});
-        });
-
-
-        //显示顶部导航时作位置判断，点击左边菜单、上一tab、下一tab时公用
-        function showTab(li) {
-            if (li.length) {
-                var ul = $('#B_history'),
-                    li_offset = li.offset(),
-                    li_width = li.outerWidth(true),
-                    next_left = $('#page-next').offset().left, //右边按钮的界限位置
-                    prev_right = $('#page-prev').offset().left + $('#page-prev').outerWidth(true); //左边按钮的界限位置
-                if (li_offset.left + li_width > next_left) { //如果将要移动的元素在不可见的右边，则需要移动
-                    var distance = li_offset.left + li_width - next_left; //计算当前父元素的右边距离，算出右移多少像素
-                    ul.animate({
-                        left: '-=' + distance
-                    }, 200, 'swing');
-                } else if (li_offset.left < prev_right) { //如果将要移动的元素在不可见的左边，则需要移动
-                    var distance = prev_right - li_offset.left; //计算当前父元素的左边距离，算出左移多少像素
-                    ul.animate({
-                        left: '+=' + distance
-                    }, 200, 'swing');
-                }
-                li.trigger('click');
-            }
-        }
-
-        //上一个选项卡
-        $('#page-prev').click(function(e) {
-            e.preventDefault();
-            e.stopPropagation();
-            var ul = $('#B_history'),
-                current = ul.find('.layui-this'),
-                li = current.prev('li');
-            showTab(li);
-        });
-
-
-        //下一个选项卡
-        $('#page-next').click(function(e) {
-            e.preventDefault();
-            e.stopPropagation();
-            var ul = $('#B_history'),
-                current = ul.find('.layui-this'),
-                li = current.next('li');
-            showTab(li);
-        });
-
-        //刷新
-        $('#J_refresh').click(function(e) {
-            e.preventDefault();
-            e.stopPropagation();
-            var index = layer.load();
-            var id = $('#B_history .layui-this').attr('lay-id'),
-                iframe = $("iframe[lay-id='"+id+"']")[0];
-            if (iframe.contentWindow) {
-                iframe.contentWindow.location.reload(true);
-                layer.close(index);
-            }
-        });
-
-        //关闭全部选项卡
-        $(".closePageAll").on("click", function() {
-            if ($("#B_history li").length > 1) {
-                $("#B_history li").each(function() {
-                    data_id = $(this).attr('lay-id');
-                    if (data_id != '' && data_id != '111') {
-                        element.tabDelete("macTab", data_id);
-                        $("iframe[lay-id='"+data_id+"']").remove(); //移除iframe页面
-                    }
-                })
-
-            } else {
-                layer.msg("{:lang('admin/index/index/menu_close_empty')}");
-            }
-        });
-        //关闭其他选项卡
-        $(".closePageOther").on("click", function() {
-            if ($("#B_history li").length > 1) {
-                var cid = $('#B_history .layui-this').attr('lay-id');
-                $("#B_history li").each(function() {
-                    data_id = $(this).attr('lay-id');
-                    if (data_id != '' && data_id != '111' && data_id != cid) {
-                        element.tabDelete("macTab", data_id);
-                        $("iframe[lay-id='"+data_id+"']").remove(); //移除iframe页面
-                    }
-                })
-
-            } else {
-                layer.msg("{:lang('admin/index/index/menu_close_empty')}");
-            }
-        });
-
-        $('.mob-nav').on("click", function() {
-            $('.site-tree-mobile').click();
-        });
-        //手机设备的简单适配
-        var treeMobile = $('.site-tree-mobile'),
-            shadeMobile = $('.site-mobile-shade')
-        treeMobile.on('click', function() {
-            $('body').addClass('site-mobile');
-            $('.Menus-winner').removeClass('topLevelMenus');//解决top导航
-            $('.Menus-winner').addClass('topLevelMenus-winner');//解决top导航
-
-        });
-        shadeMobile.on('click', function() {
-            $('body').removeClass('site-mobile');
-            $('.Menus-winner').addClass('topLevelMenus');//解决top导航
-        });
-    });
+		<!-- 移 动 端 便 捷 操 作 -->
+		<div class="pear-collasped-pe collaspe">
+			<a href="#" class="layui-icon layui-icon-shrink-right"></a>
+		</div>
+		<!-- 依 赖 脚 本 -->
+		{include file="../../../application/admin/view/public/foot" /}
+		<!-- 框 架 初 始 化 -->
+		<script>
+			layui.use(['admin','jquery','popup'], function() {
+				var $ = layui.jquery;
+				var admin = layui.admin;
+				var popup = layui.popup,
+				layer = layui.layer;
+				
+				admin.setConfigType("json");
+				admin.setConfigPath("./pearconfig");
+				
+				admin.render();
+				
+				// 登出逻辑 
+				admin.logout(function(){
+					popup.success("注销成功",function(){
+						location.href = "{:url('index/logout')}";
+					})
+					// 注销逻辑 返回 true / false
+					return true;
+				});
+			});
     $(function(){
         setInterval("checkCache()", 30*1000);
     });
@@ -312,7 +120,6 @@
             }
         });
     }
-</script>
-
-</body>
+		</script>
+	</body>
 </html>

@@ -168,7 +168,7 @@
                     <div class="layui-form-item">
                         <label class="layui-form-label ">{:lang('pic_screenshot')}：</label>
                         <div class="layui-input-inline w400 ">
-                            <div class="layui-btn-group">
+                            <div class="pear-btn-group">
                                 <button type="button" class="layui-btn screenshot"><i class="layui-icon layui-icon-upload"></i> {:lang('upload_pic')}</button>
                             </div>
                         </div>
@@ -216,7 +216,7 @@
 
 
                     <div class="layui-form-item">
-                        <label class=""><button class="layui-btn radius j-editor-add" type="button">{:lang('page_add')}</button></label>
+                        <label class=""><button class="pear-btn radius j-editor-add" type="button">{:lang('page_add')}</button></label>
                         <div class="layui-input-block">
 
                         </div>
@@ -234,7 +234,7 @@
                             <div class="layui-input-inline ">
                                 <input type="text" class="layui-input" value="{$info.art_down}" placeholder="" id="art_down" name="art_down">
                             </div>
-                            <button class="layui-btn" type="button" id="btn_rnd">{:lang('rnd_make')}</button>
+                            <button class="pear-btn" type="button" id="btn_rnd">{:lang('rnd_make')}</button>
                         </div>
 
                         <div class="layui-form-item">
@@ -324,8 +324,8 @@
 
                 <div class="layui-form-item center">
                     <div class="layui-input-block">
-                        <button type="submit" class="layui-btn" lay-submit="" lay-filter="formSubmit" data-child="">{:lang('btn_save')}</button>
-                        <button class="layui-btn layui-btn-warm" type="reset">{:lang('btn_reset')}</button>
+                        <button type="submit" class="pear-btn" lay-submit="" lay-filter="formSubmit" data-child="">{:lang('btn_save')}</button>
+                        <button class="pear-btn pear-btn-warming" type="reset">{:lang('btn_reset')}</button>
                     </div>
                 </div>
     </form>
@@ -540,7 +540,7 @@
                     $('.art_'+key+"_label").html('');
                     if(value != ''){
                         $.each(value, function(key2, value2){
-                            $(".art_"+key+"_label").append('<a class="layui-btn layui-btn-xs extend" href="javascript:;" data-id="art_'+key+'">'+value2+'</a>');
+                            $(".art_"+key+"_label").append('<a class="pear-btn pear-btn-xs extend" href="javascript:;" data-id="art_'+key+'">'+value2+'</a>');
                         });
                     }
                 });

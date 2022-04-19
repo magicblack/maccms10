@@ -1,0 +1,72 @@
+.pear-notice .layui-this {
+	color: #5FB878 !important;
+	font-weight: 500;
+}
+
+.pear-notice {
+	box-shadow: 0 6px 16px -8px rgb(0 0 0 / 8%), 0 9px 28px 0 rgb(0 0 0 / 5%), 0 12px 48px 16px rgb(0 0 0 / 3%)!important;
+}
+
+.pear-notice .layui-tab-title {
+	text-align: center;
+	border-right: 1px solid whitesmoke;
+}
+
+.pear-notice * {
+	color: dimgray !important;
+}
+
+.pear-notice {
+	width: 360px !important;
+}
+
+.pear-notice img {
+	margin-left: 8px;
+	width: 33px !important;
+	height: 33px !important;
+	border-radius: 50px;
+	margin-right: 15px;
+}
+
+.pear-notice-item {
+	height: 45px !important;
+	line-height: 45px !important;
+	padding-right: 20px;
+	padding-left: 20px;
+	border-bottom: 1px solid whitesmoke;
+	padding-top: 10px;
+	padding-bottom: 15px;
+}
+.pear-notice-end {
+	float: right;
+	right: 10px;
+}
+
+.pear-notice-item span{
+	height: 40px;
+	line-height: 40px;
+}
+
+/** 滚动条样式 */
+.pear-notice *::-webkit-scrollbar {
+	width: 0px;
+	height: 0px;
+}
+
+.pear-notice *::-webkit-scrollbar-track {
+	background: white;
+	border-radius: 2px;
+}
+
+.pear-notice *::-webkit-scrollbar-thumb {
+	background: #E6E6E6;
+	border-radius: 2px;
+}
+
+.pear-notice *::-webkit-scrollbar-thumb:hover {
+	background: #E6E6E6;
+}
+
+.pear-notice *::-webkit-scrollbar-corner {
+	background: #f6f6f6;
+}

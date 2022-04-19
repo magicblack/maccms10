@@ -17,14 +17,14 @@
                     <input type="text" autocomplete="off" placeholder="{:lang('wd')}" class="layui-input" name="wd" value="{$param['wd']|mac_filter_xss}">
                 </div>
                 <input type="hidden" name="uid" value="{$param['uid']|mac_filter_xss}">
-                <button class="layui-btn mgl-20 j-search" >{:lang('btn_search')}</button>
+                <button class="pear-btn mgl-20 j-search" >{:lang('btn_search')}</button>
             </form>
         </div>
 
-        <div class="layui-btn-group">
+        <div class="pear-btn-group">
             <a class="layui-btn ">{:lang('admin/user/reward/one_people_num')}【{$data.level_cc_1}】{:lang('admin/user/reward/total_commission_points')}【{$data.points_cc_1}】</a>
-            <a class="layui-btn layui-btn-normal">{:lang('admin/user/reward/two_people_num')}【{$data.level_cc_2}】{:lang('admin/user/reward/total_commission_points')}【{$data.points_cc_2}】</a>
-            <a class="layui-btn layui-btn-warm">{:lang('admin/user/reward/three_people_num')}【{$data.level_cc_3}】{:lang('admin/user/reward/total_commission_points')}【{$data.points_cc_3}】</a>
+            <a class="pear-btn pear-btn-success">{:lang('admin/user/reward/two_people_num')}【{$data.level_cc_2}】{:lang('admin/user/reward/total_commission_points')}【{$data.points_cc_2}】</a>
+            <a class="pear-btn pear-btn-warming">{:lang('admin/user/reward/three_people_num')}【{$data.level_cc_3}】{:lang('admin/user/reward/total_commission_points')}【{$data.points_cc_3}】</a>
         </div>
 
     </div>

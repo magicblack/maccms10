@@ -27,16 +27,16 @@
                 <div class="layui-input-inline">
                     <input type="text" autocomplete="off" placeholder="{:lang('wd')}" class="layui-input" name="wd" value="{$param['wd']|mac_filter_xss}">
                 </div>
-                <button class="layui-btn mgl-20 j-search" >{:lang('btn_search')}</button>
+                <button class="pear-btn mgl-20 j-search" >{:lang('btn_search')}</button>
             </form>
         </div>
         {/if}
 
-        <div class="layui-btn-group">
-            <a data-href="{:url('del')}" class="layui-btn layui-btn-primary j-page-btns confirm"><i class="layui-icon">&#xe640;</i>{:lang('del')}</a>
-            <a href="{:url('file')}" class="layui-btn layui-btn-primary "><i class="layui-icon">&#xe620;</i>{:lang('admin/annex/dir_model')}</a>
-            <a class="layui-btn layui-btn-primary j-iframe" data-href="{:url('annex/check')}" href="javascript:;" title="{:lang('admin/annex/check')}"><i class="layui-icon">&#xe620;</i>{:lang('admin/annex/check')}</a>
-            <a href="{:url('init')}" class="layui-btn layui-btn-primary "><i class="layui-icon">&#xe620;</i>{:lang('admin/annex/init_data')}</a>
+        <div class="pear-btn-group">
+            <a data-href="{:url('del')}" class="pear-btn pear-btn-primary j-page-btns confirm"><i class="layui-icon">&#xe640;</i>{:lang('del')}</a>
+            <a href="{:url('file')}" class="pear-btn pear-btn-primary "><i class="layui-icon">&#xe620;</i>{:lang('admin/annex/dir_model')}</a>
+            <a class="pear-btn pear-btn-primary j-iframe" data-href="{:url('annex/check')}" href="javascript:;" title="{:lang('admin/annex/check')}"><i class="layui-icon">&#xe620;</i>{:lang('admin/annex/check')}</a>
+            <a href="{:url('init')}" class="pear-btn pear-btn-primary "><i class="layui-icon">&#xe620;</i>{:lang('admin/annex/init_data')}</a>
         </div>
     </div>
 
