@@ -4,45 +4,42 @@ use think\image\Exception;
 
 class Image extends Base {
 
-    public function down_load($url,$config,$flag='vod')
+    public function down_load($url, $config, $flag = 'vod')
     {
-        if(substr($url,0,4)=='http'){
-            return $this->down_exec($url,$config,$flag);
-        }
-        else{
+        if (substr($url, 0, 4) == 'http') {
+            return $this->down_exec($url, $config, $flag);
+        } else {
             return $url;
         }
     }
 
-    public function down_exec($url,$config,$flag='vod')
+    public function down_exec($url, $config, $flag = 'vod')
     {
         $upload_image_ext = 'jpg,jpeg,png,gif,webp';
         $ext = strtolower(pathinfo($url, PATHINFO_EXTENSION));
-        if(!in_array($ext, explode(',', $upload_image_ext))){
+        if (!in_array($ext, explode(',', $upload_image_ext))) {
             $ext = 'jpg';
         }
         $img = mac_curl_get($url);
-        if($img){
-            $file_name = md5(uniqid()) .'.' . $ext;
-            // 上传附件路径
-            $_upload_path = ROOT_PATH . 'upload' . '/' . $flag . '/';
-            // 附件访问路径
-            $_save_path = 'upload'. '/' . $flag . '/' ;
-            $ymd = date('Ymd');
-            $n_dir = $ymd;
-            for($i=1;$i<=100;$i++){
-                $n_dir = $ymd .'-'.$i;
-                $path1 = $_upload_path . $n_dir. '/';
-                if(file_exists($path1)){
-                    $farr = glob($path1.'*.*');
-                    if($farr){
-                        $fcount = count($farr);
-                        if($fcount>999){
-                            continue;
-                        }
-                        else{
-                            break;
-                        }
+        if (!$img) {
+            return $url;
+        }
+        $file_name = md5(uniqid()) .'.' . $ext;
+        // 上传附件路径
+        $_upload_path = ROOT_PATH . 'upload' . '/' . $flag . '/';
+        // 附件访问路径
+        $_save_path = 'upload'. '/' . $flag . '/' ;
+        $ymd = date('Ymd');
+        $n_dir = $ymd;
+        for($i=1;$i<=100;$i++){
+            $n_dir = $ymd .'-'.$i;
+            $path1 = $_upload_path . $n_dir. '/';
+            if(file_exists($path1)){
+                $farr = glob($path1.'*.*');
+                if($farr){
+                    $fcount = count($farr);
+                    if($fcount>999){
+                        continue;
                     }
                     else{
                         break;
@@ -52,45 +49,45 @@ class Image extends Base {
                     break;
                 }
             }
-
-            $_upload_path .= $n_dir . '/';
-            $_save_path .= $n_dir . '/';
-
-            //附件访问地址
-            $_file_path = $_save_path.$file_name;
-            //写入文件
-            $r = mac_write_file($_upload_path.$file_name,$img);
-            if(!$r){
-                return $url;
+            else{
+                break;
             }
-            $file_size = filesize($_upload_path.$file_name);
-            // 水印
-            if ($config['watermark'] == 1) {
-                $this->watermark($_file_path,$config,$flag);
-            }
-            // 缩略图
-            if ($config['thumb'] == 1) {
-                $this->makethumb($_file_path,$config,$flag);
-            }
-            //上传到远程
-            $_file_path = model('Upload')->api($_file_path,$config);
-
-            $tmp = $_file_path;
-            if((substr($tmp,0,7) == "/upload")){
-                $tmp = substr($tmp,1);
-            }
-            if((substr($tmp,0,6) == "upload")){
-                $annex = [];
-                $annex['annex_file'] = $tmp;
-                $annex['annex_type'] = 'image';
-                $annex['annex_size'] = $file_size;
-                model('Annex')->saveData($annex);
-            }
-            return $_file_path;
         }
-        else{
+
+        $_upload_path .= $n_dir . '/';
+        $_save_path .= $n_dir . '/';
+
+        //附件访问地址
+        $_file_path = $_save_path.$file_name;
+        //写入文件
+        $r = mac_write_file($_upload_path.$file_name,$img);
+        if(!$r){
             return $url;
         }
+        $file_size = filesize($_upload_path.$file_name);
+        // 水印
+        if ($config['watermark'] == 1) {
+            $this->watermark($_file_path,$config,$flag);
+        }
+        // 缩略图
+        if ($config['thumb'] == 1) {
+            $this->makethumb($_file_path,$config,$flag);
+        }
+        //上传到远程
+        $_file_path = model('Upload')->api($_file_path, $config);
+
+        $tmp = $_file_path;
+        if (str_starts_with($tmp, '/upload')) {
+            $tmp = substr($tmp,1);
+        }
+        if (str_starts_with($tmp, 'upload')) {
+            $annex = [];
+            $annex['annex_file'] = $tmp;
+            $annex['annex_type'] = 'image';
+            $annex['annex_size'] = $file_size;
+            model('Annex')->saveData($annex);
+        }
+        return $_file_path;
     }
 
     public function watermark($file_path,$config,$flag='vod')

@@ -390,25 +390,26 @@ class Collect extends Base {
      * @param string $flag
      * @return array
      */
-    private function syncImages($pic_status,$pic_url,$flag='vod')
+    private function syncImages($pic_status, $pic_url, $flag = 'vod')
     {
-        $config = (array)config('maccms.upload');
-        if($pic_status == 1){
-            $img_url = model('Image')->down_load($pic_url, $config, $flag);
-            if(substr($img_url,0,7)=='upload/'){
-                $link = MAC_PATH . $img_url;
-            }
-            else{
-                $link = str_replace('mac:', $config['protocol'].':', $img_url);
-            }
-            if ($img_url == $pic_url) {
+        $img_url_downloaded = $pic_url;
+        if ($pic_status == 1) {
+            $config = (array)config('maccms.upload');
+            $img_url_downloaded = model('Image')->down_load($pic_url, $config, $flag);
+            if ($img_url_downloaded == $pic_url) {
+                // 下载失败，显示老图信息
                 $des = '<a href="' . $pic_url . '" target="_blank">' . $pic_url . '</a><font color=red>'.lang('download_err').'!</font>';
             } else {
-                $pic_url = $img_url;
+                // 下载成功，显示新图信息
+                if (str_starts_with($img_url_downloaded, 'upload/')) {
+                    $link = MAC_PATH . $img_url_downloaded;
+                } else {
+                    $link = str_replace('mac:', $config['protocol'] . ':', $img_url_downloaded);
+                }
                 $des = '<a href="' . $link . '" target="_blank">' . $link . '</a><font color=green>'.lang('download_ok').'!</font>';
             }
         }
-        return ['pic'=>$pic_url,'msg'=>$des];
+        return ['pic' => $img_url_downloaded, 'msg' => $des];
     }
 
     public function vod_data($param,$data,$show=1)
