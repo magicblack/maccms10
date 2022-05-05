@@ -468,7 +468,12 @@ class Collect extends Base {
                 if (empty($v['vod_time_add']) || strlen($v['vod_time_add']) != 10) {
                     $v['vod_time_add'] = time();
                 }
+                // 支持外部自定义修改时间
+                // https://github.com/magicblack/maccms10/issues/862
                 $v['vod_time'] = time();
+                if (!empty($v['vod_time_update']) && strlen($v['vod_time_update']) == 10) {
+                    $v['vod_time'] = (int)$v['vod_time_update'];
+                }
                 $v['vod_status'] = intval($config['status']);
                 $v['vod_lock'] = intval($v['vod_lock']);
                 if(!empty($v['vod_status'])) {
