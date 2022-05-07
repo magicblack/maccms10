@@ -435,6 +435,8 @@ class Collect extends Base {
         $pse_name = mac_txt_explain($config['namewords'], true);
         $pse_syn = mac_txt_explain($config['thesaurus'], true);
         $pse_player = mac_txt_explain($config['playerwords'], true);
+        $pse_area = mac_txt_explain($config['areawords'], true);
+        $pse_lang = mac_txt_explain($config['langwords'], true);
 
         foreach($data['data'] as $k=>$v){
             $color='red';
@@ -547,6 +549,12 @@ class Collect extends Base {
                 }
                 if ($config['pseplayer'] == 1) {
                     $v['vod_play_from'] = mac_rep_pse_syn($pse_player, $v['vod_play_from']);
+                }
+                if ($config['psearea'] == 1) {
+                    $v['vod_area'] = mac_rep_pse_syn($pse_area, $v['vod_area']);
+                }
+                if ($config['pselang'] == 1) {
+                    $v['vod_lang'] = mac_rep_pse_syn($pse_lang, $v['vod_lang']);
                 }
 
                 if(empty($v['vod_blurb'])){
