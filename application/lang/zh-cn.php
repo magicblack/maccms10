@@ -1192,7 +1192,7 @@ https://www.baidu.com/123.jpg
                         1.开启试看功能的话,播放窗口将采用iframe动态页面方式载入，可能影响性能哦; <br>',
     'admin/system/configuser/model'=>'会员模块',
     'admin/system/configuser/reg_open'=>'注册开关',
-    'admin/system/configuser/reg_status'=>'注册开关',
+    'admin/system/configuser/reg_status'=>'注册默认状态',
     'admin/system/configuser/phone_reg_verify'=>'手机注册验证',
     'admin/system/configuser/email_reg_verify'=>'邮箱注册验证',
     'admin/system/configuser/email_white_hosts'=>'邮箱白名单',
