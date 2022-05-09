@@ -973,7 +973,7 @@ https://www.baidu.com/123.jpg
     'admin/system/configapi/cachetime'=>'數據緩存時間',
     'admin/system/configapi/cachetime_tip'=>'數據緩存時間',
     'admin/system/configapi/from'=>'指定播放組',
-    'admin/system/configapi/from_tip'=>'指定播放組例如youku',
+    'admin/system/configapi/from_tip'=>'多個用,號分隔，如: youku,iqiyi,qvod',
     'admin/system/configapi/auth'=>'授權域名',
     'admin/system/configapi/art_tip'=>'提示信息：<br>
                             1,文章列表地址/api.php/provide/art/?ac=list<br>

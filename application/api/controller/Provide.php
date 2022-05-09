@@ -89,13 +89,22 @@ class Provide extends Base
                 }
                 $where['vod_year'] = ['in', explode(',', $year)];
             }
-            if (empty($GLOBALS['config']['api']['vod']['from']) && !empty($this->_param['from'])) {
+            if (empty($GLOBALS['config']['api']['vod']['from']) && !empty($this->_param['from']) && strlen($this->_param['from']) > 2) {
                 $GLOBALS['config']['api']['vod']['from'] = $this->_param['from'];
             }
+            // 采集播放组支持多个播放器
+            // https://github.com/magicblack/maccms10/issues/888
             if (!empty($GLOBALS['config']['api']['vod']['from'])) {
-                $where['vod_play_from'] = ['eq', trim($GLOBALS['config']['api']['vod']['from'])];
+                $vod_play_from_list = explode(',', trim($GLOBALS['config']['api']['vod']['from']));
+                $vod_play_from_list = array_unique($vod_play_from_list);
+                $vod_play_from_list = array_filter($vod_play_from_list);
+                if (!empty($vod_play_from_list)) {
+                    $where['vod_play_from'] = ['or'];
+                    foreach ($vod_play_from_list as $vod_play_from) {
+                        array_unshift($where['vod_play_from'], ['like', '%' . trim($vod_play_from) . '%']);
+                    }
+                }
             }
-
             if (!empty($GLOBALS['config']['api']['vod']['datafilter'])) {
                 $where['_string'] .= ' ' . $GLOBALS['config']['api']['vod']['datafilter'];
             }
@@ -148,7 +157,7 @@ class Provide extends Base
         for ($i=0;$i<$arr2count;$i++){
             if ($arr1count >= $i){
                 if($from!=''){
-                    if($arr2[$i]==$from){
+                    if($arr2[$i]==$from || str_contains($from, $arr2[$i])){
                         $res_xml .=  '<dd flag="'. $arr2[$i] .'"><![CDATA[' . $arr1[$i]. ']]></dd>';
                         $res_json[$arr2[$i]] = $arr1[$i];
                     }
@@ -184,18 +193,21 @@ class Provide extends Base
                     $arr_url = explode('$$$',$v['vod_play_url']);
                     $arr_server = explode('$$$',$v['vod_play_server']);
                     $arr_note = explode('$$$',$v['vod_play_note']);
-
-                    $key = array_search($GLOBALS['config']['api']['vod']['from'],$arr_from);
-                    $res['list'][$k]['vod_play_from'] = $GLOBALS['config']['api']['vod']['from'];
+                    if (str_contains($GLOBALS['config']['api']['vod']['from'], ',')) {
+                        $key = 0;
+                    } else {
+                        $key = array_search($GLOBALS['config']['api']['vod']['from'],$arr_from);
+                        $key = $key > 0 ? $key : 0;
+                    }
+                    $res['list'][$k]['vod_play_from'] = $arr_from[$key];
                     $res['list'][$k]['vod_play_url'] = $arr_url[$key];
                     $res['list'][$k]['vod_play_server'] = $arr_server[$key];
                     $res['list'][$k]['vod_play_note'] = $arr_note[$key];
-
                 }
 
             }
             else {
-                if ($GLOBALS['config']['api']['vod']['from'] != '') {
+                if ($GLOBALS['config']['api']['vod']['from'] != '' && !str_contains($GLOBALS['config']['api']['vod']['from'], ',')) {
                     $res['list'][$k]['vod_play_from'] = $GLOBALS['config']['api']['vod']['from'];
                 } else {
                     $res['list'][$k]['vod_play_from'] = str_replace('$$$', ',', $v['vod_play_from']);
@@ -262,7 +274,7 @@ class Provide extends Base
                 $xml .= '<des><![CDATA['.$v['vod_content'].']]></des>';
             }
             else {
-                if ($GLOBALS['config']['api']['vod']['from'] != ''){
+                if ($GLOBALS['config']['api']['vod']['from'] != '' && !str_contains($GLOBALS['config']['api']['vod']['from'], ',')){
                     $xml .= '<dt>' . $GLOBALS['config']['api']['vod']['from'] . '</dt>';
                 }
                 else{
