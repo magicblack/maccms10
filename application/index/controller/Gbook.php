@@ -83,8 +83,12 @@ class Gbook extends Base
         else{
             $param['gbook_name'] = cookie('user_name');
             $param['user_id'] = intval(cookie('user_id'));
+            $user_data = model('User')->field('user_nick_name')->where(['user_id' => $param['user_id']])->find();
+            if (!empty($user_data['user_nick_name'])) {
+                $param['gbook_name'] = $user_data['user_nick_name'];
+            }
         }
-        $param['gbook_name'] = htmlentities($param['gbook_name']);
+        $param['gbook_name'] = htmlentities(trim($param['gbook_name']));
 
         if($GLOBALS['config']['gbook']['audit'] ==1){
             $param['gbook_status'] = 0;
