@@ -21,7 +21,7 @@ class Image extends Base {
             $ext = 'jpg';
         }
         $img = mac_curl_get($url);
-        if (!$img) {
+        if (empty($img) || strlen($img) < 10) {
             return $url;
         }
         $file_name = md5(uniqid()) .'.' . $ext;
@@ -60,8 +60,20 @@ class Image extends Base {
         //附件访问地址
         $_file_path = $_save_path.$file_name;
         //写入文件
-        $r = mac_write_file($_upload_path.$file_name,$img);
+        $saved_img_path = $_upload_path . $file_name;
+        $r = mac_write_file($saved_img_path, $img);
         if(!$r){
+            return $url;
+        }
+        // 重新获取文件类型，不满足时，返回老链接
+        $image_info = getimagesize($saved_img_path);
+        $extension_hash = [
+            '1'  => 'gif',
+            '2'  => 'jpg',
+            '3'  => 'png',
+            '18' => 'webp',
+        ];
+        if (!isset($image_info[2]) || !isset($extension_hash[$image_info[2]])) {
             return $url;
         }
         $file_size = filesize($_upload_path.$file_name);

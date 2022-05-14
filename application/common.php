@@ -2455,9 +2455,21 @@ function mac_url_create($str,$type='actor',$flag='vod',$ac='search',$sp='&nbsp;'
         return '未知';
     }
     $res = [];
-    $str = str_replace(array('/','|',',','，',' '),',',$str);
-    $arr = explode(',',$str);
-    foreach($arr as $k=>$v){
+    // 分割时，中文关键词允许空格分割，英文不用空格（英文名中间是空格分隔的问题）
+    $base_finder = array(' / ', '/', '|', ',', '，', ',,');
+    $str = str_replace($base_finder, ',', $str);
+    $str = trim($str, ',');
+    $arr = [];
+    foreach (explode(',', $str) as $tag) {
+        if (preg_match("/[\x{2E80}-\x{9FFF}]+/u", $tag) && str_contains($tag, ' ')) {
+            foreach (explode(' ', $tag) as $tag_exp) {
+                $arr[] = $tag_exp;
+            }
+        } else {
+            $arr[] = $tag;
+        }
+    }
+    foreach ($arr as $k => $v) {
         $res[$k] = '<a href="'.mac_url($flag.'/'.$ac,[$type=>$v]).'" target="_blank">'.$v.'</a>'.$sp;
     }
     return implode('',$res);

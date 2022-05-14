@@ -435,6 +435,8 @@ class Collect extends Base {
         $pse_name = mac_txt_explain($config['namewords'], true);
         $pse_syn = mac_txt_explain($config['thesaurus'], true);
         $pse_player = mac_txt_explain($config['playerwords'], true);
+        $pse_area = mac_txt_explain($config['areawords'], true);
+        $pse_lang = mac_txt_explain($config['langwords'], true);
 
         foreach($data['data'] as $k=>$v){
             $color='red';
@@ -468,7 +470,12 @@ class Collect extends Base {
                 if (empty($v['vod_time_add']) || strlen($v['vod_time_add']) != 10) {
                     $v['vod_time_add'] = time();
                 }
+                // 支持外部自定义修改时间
+                // https://github.com/magicblack/maccms10/issues/862
                 $v['vod_time'] = time();
+                if (!empty($v['vod_time_update']) && strlen($v['vod_time_update']) == 10) {
+                    $v['vod_time'] = (int)$v['vod_time_update'];
+                }
                 $v['vod_status'] = intval($config['status']);
                 $v['vod_lock'] = intval($v['vod_lock']);
                 if(!empty($v['vod_status'])) {
@@ -542,6 +549,12 @@ class Collect extends Base {
                 }
                 if ($config['pseplayer'] == 1) {
                     $v['vod_play_from'] = mac_rep_pse_syn($pse_player, $v['vod_play_from']);
+                }
+                if ($config['psearea'] == 1) {
+                    $v['vod_area'] = mac_rep_pse_syn($pse_area, $v['vod_area']);
+                }
+                if ($config['pselang'] == 1) {
+                    $v['vod_lang'] = mac_rep_pse_syn($pse_lang, $v['vod_lang']);
                 }
 
                 if(empty($v['vod_blurb'])){
@@ -853,6 +866,16 @@ class Collect extends Base {
                                     } else {
                                         $color = 'green';
                                         $des .= lang('model/collect/downgroup_update_ok',[$cj_down_from]);
+                                        // “采集参数配置--地址二更规则”配置需要对下载地址生效
+                                        // https://github.com/magicblack/maccms10/issues/893
+                                        if ($config['urlrole'] == 1) {
+                                            $tmp1 = explode('#',$arr1[$down_key]);
+                                            $tmp2 = explode('#',$cj_down_url);
+                                            $tmp1 = array_merge($tmp1,$tmp2);
+                                            $tmp1 = array_unique($tmp1);
+                                            $cj_down_url = join('#',$tmp1);
+                                            unset($tmp1,$tmp2);
+                                        }
                                         $arr1[$down_key] = $cj_down_url;
                                         $ec=true;
                                     }
