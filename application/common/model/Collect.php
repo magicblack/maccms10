@@ -780,6 +780,7 @@ class Collect extends Base {
                                 } elseif (empty($cj_play_from)) {
                                     $des .= lang('model/collect/playfrom_empty');
                                 } elseif (strpos('$$$'.$info['vod_play_from'].'$$$', '$$$'.$cj_play_from.'$$$') === false) {
+                                    // 新类型播放组，加入
                                     $color = 'green';
                                     $des .= lang('model/collect/playgroup_add_ok',[$cj_play_from]);
                                     if(!empty($old_play_from)){
@@ -794,6 +795,7 @@ class Collect extends Base {
                                     $old_play_note .= "" . $cj_play_note;
                                     $ec=true;
                                 }  elseif (!empty($cj_play_url)) {
+                                    // 同类型播放组
                                     $arr1 = explode("$$$", $old_play_url);
                                     $arr2 = explode("$$$", $old_play_from);
                                     $play_key = array_search($cj_play_from, $arr2);
@@ -802,6 +804,7 @@ class Collect extends Base {
                                     } else {
                                         $color = 'green';
                                         $des .= lang('model/collect/playgroup_update_ok',[$cj_play_from]);
+                                        // 根据「地址二更规则」配置，替换或合并
                                         if ($config['urlrole'] == 1) {
                                             $tmp1 = explode('#',$arr1[$play_key]);
                                             $tmp2 = explode('#',$cj_play_url);
@@ -866,6 +869,7 @@ class Collect extends Base {
                                     } else {
                                         $color = 'green';
                                         $des .= lang('model/collect/downgroup_update_ok',[$cj_down_from]);
+                                        // 根据「地址二更规则」配置，替换或合并
                                         // “采集参数配置--地址二更规则”配置需要对下载地址生效
                                         // https://github.com/magicblack/maccms10/issues/893
                                         if ($config['urlrole'] == 1) {
@@ -893,6 +897,11 @@ class Collect extends Base {
 
                         if (strpos(',' . $config['uprule'], 'c')!==false && !empty($v['vod_serial']) && $v['vod_serial']!=$info['vod_serial']) {
                             $update['vod_serial'] = $v['vod_serial'];
+                            // 连载数如果均为整数，则取较大值
+                            // https://github.com/magicblack/maccms10/issues/878
+                            if (floor($v['vod_serial']) == $v['vod_serial'] && floor($info['vod_serial']) == $info['vod_serial']) {
+                                $update['vod_serial'] = max($v['vod_serial'], $info['vod_serial']);
+                            }
                         }
                         if (strpos(',' . $config['uprule'], 'd')!==false && !empty($v['vod_remarks']) && $v['vod_remarks']!=$info['vod_remarks']) {
                             $update['vod_remarks'] = $v['vod_remarks'];

@@ -1021,6 +1021,8 @@ https://www.baidu.com/123.jpg
     'admin/system/configcollect/uprule'=>'二次更新規則',
     'admin/system/configcollect/filter'=>'數據過濾',
     'admin/system/configcollect/urlrole'=>'地址二更規則',
+    'admin/system/configcollect/urlrole/use_more'=>'集數多優先',
+    // 'admin/system/configcollect/urlrole_tip'=>'二次更新地址遇到同類型播放器。替換：只保留新提交的地址。合並：整合原有地址和新地址去重。集數多優先：兩次資源里連載集數多的優先替換使用。',
     'admin/system/configcollect/urlrole_tip'=>'二次更新地址遇到同類型播放器。替換：只保留新提交的地址。合並：整合原有地址和新地址去重。',
     'admin/system/configcollect/content'=>'詳情',
     'admin/system/configcollect/playurl'=>'播放地址',
