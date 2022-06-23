@@ -11,6 +11,24 @@ use think\View;
 
 error_reporting(E_ERROR | E_PARSE );
 
+
+
+if (!function_exists('str_starts_with')) {
+    function str_starts_with($haystack, $needle) {
+        return (string)$needle !== '' && strncmp($haystack, $needle, strlen($needle)) === 0;
+    }
+}
+if (!function_exists('str_ends_with')) {
+    function str_ends_with($haystack, $needle) {
+        return $needle !== '' && substr($haystack, -strlen($needle)) === (string)$needle;
+    }
+}
+if (!function_exists('str_contains')) {
+    function str_contains($haystack, $needle) {
+        return $needle !== '' && mb_strpos($haystack, $needle) !== false;
+    }
+}
+
 //访问日志记录，根目录创建log目录
 function slog($logs)
 {
@@ -1205,12 +1223,23 @@ function mac_filter_html($str)
 
 function mac_filter_xss($str)
 {
-    return htmlspecialchars(strip_tags(trim($str)), ENT_QUOTES);
+    return trim(htmlspecialchars(strip_tags($str), ENT_QUOTES));
 }
 
-function mac_format_text($str)
+function mac_restore_htmlfilter($str) {
+    if (stripos($str, '&amp;') !== false) {
+        return htmlspecialchars_decode($str, ENT_QUOTES);
+    }
+    return $str;
+}
+
+function mac_format_text($str, $allow_space = false)
 {
-    return str_replace(array('/','，','|','、',' ',',,,'),',',$str);
+    $finder = array('/', '，', '|', '、', ',,', ',,,');
+    if ($allow_space === false) {
+        $finder[] = ' ';
+    }
+    return str_replace($finder, ',', $str);
 }
 function mac_format_count($str)
 {
@@ -2426,9 +2455,21 @@ function mac_url_create($str,$type='actor',$flag='vod',$ac='search',$sp='&nbsp;'
         return '未知';
     }
     $res = [];
-    $str = str_replace(array('/','|',',','，',' '),',',$str);
-    $arr = explode(',',$str);
-    foreach($arr as $k=>$v){
+    // 分割时，中文关键词允许空格分割，英文不用空格（英文名中间是空格分隔的问题）
+    $base_finder = array(' / ', '/', '|', ',', '，', ',,');
+    $str = str_replace($base_finder, ',', $str);
+    $str = trim($str, ',');
+    $arr = [];
+    foreach (explode(',', $str) as $tag) {
+        if (preg_match("/[\x{2E80}-\x{9FFF}]+/u", $tag) && str_contains($tag, ' ')) {
+            foreach (explode(' ', $tag) as $tag_exp) {
+                $arr[] = $tag_exp;
+            }
+        } else {
+            $arr[] = $tag;
+        }
+    }
+    foreach ($arr as $k => $v) {
         $res[$k] = '<a href="'.mac_url($flag.'/'.$ac,[$type=>$v]).'" target="_blank">'.$v.'</a>'.$sp;
     }
     return implode('',$res);

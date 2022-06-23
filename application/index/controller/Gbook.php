@@ -70,10 +70,9 @@ class Gbook extends Base
         }
 
         $param['gbook_content']= htmlentities(mac_filter_words($param['gbook_content']));
-        $pattern = '/[^\x00-\x80]/';
-        if(!preg_match($pattern,$param['gbook_content'])){
-            return ['code'=>1005,'msg'=>lang('index/require_cn')];
-        }
+        // if(!preg_match('/[^\x00-\x80]/',$param['gbook_content'])){
+        //     return ['code'=>1005,'msg'=>lang('index/require_cn')];
+        // }
 
         $param['gbook_reply'] = '';
 
@@ -84,8 +83,12 @@ class Gbook extends Base
         else{
             $param['gbook_name'] = cookie('user_name');
             $param['user_id'] = intval(cookie('user_id'));
+            $user_data = model('User')->field('user_nick_name')->where(['user_id' => $param['user_id']])->find();
+            if (!empty($user_data['user_nick_name'])) {
+                $param['gbook_name'] = $user_data['user_nick_name'];
+            }
         }
-        $param['gbook_name'] = htmlentities($param['gbook_name']);
+        $param['gbook_name'] = htmlentities(trim($param['gbook_name']));
 
         if($GLOBALS['config']['gbook']['audit'] ==1){
             $param['gbook_status'] = 0;

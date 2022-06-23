@@ -29,8 +29,8 @@
 </div>
 <script>
 var total_page = {$total_page};
-var page = {$param['page']};
-var id = {$param['id']};
+var page = {$param['page']|mac_filter_xss};
+var id = {$param['id']|mac_filter_xss};
 if (total_page > page) {
     var url = "{:url('cj/col_url_list')}";
 	page += 1;

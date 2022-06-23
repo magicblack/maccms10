@@ -8,7 +8,7 @@
             {volist name="type" id="vo"}
             <div class="layui-input-inline w150 m5">
                 <a href="javascript:;" data-id="{$vo.type_id}" class="select_type">{$vo.type_name|htmlspecialchars}</a>
-                <a id="{$param['cjflag']}_{$vo.type_id}" data-href="{:url('index/select')}?tab=actor&col={$param['cjflag']}_{$vo.type_id}&ids=1&tpl=select_type&refresh=no&url=collect/bind" data-width="270" data-height="100" class="j-select" >
+                <a id="{$param['cjflag']|mac_filter_xss}_{$vo.type_id}" data-href="{:url('index/select')}?tab=actor&col={$param['cjflag']|mac_filter_xss}_{$vo.type_id}&ids=1&tpl=select_type&refresh=no&url=collect/bind" data-width="270" data-height="100" class="j-select" >
                     {if condition="$vo.isbind eq 1"}
                     <span class="red">[{$vo.local_type_name}]</span>
                     {else}
@@ -23,7 +23,7 @@
         <div class="center mb10">
             <form class="layui-form " method="">
                 <div class="layui-input-inline">
-                    <input type="text" autocomplete="off" placeholder="{:lang('wd')}" class="layui-input" name="wd" value="{$param['wd']}">
+                    <input type="text" autocomplete="off" placeholder="{:lang('wd')}" class="layui-input" name="wd" value="{$param['wd']|mac_filter_xss}">
                 </div>
                 <button type="button" class="layui-btn mgl-20 j-btn" >{:lang('btn_search')}</button>
             </form>

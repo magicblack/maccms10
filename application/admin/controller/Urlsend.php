@@ -195,7 +195,6 @@ class Urlsend extends Base
             $this->_param = $pp;
         }
         $ac = $this->_param['ac'];
-
         $cp = 'app\\common\\extend\\urlsend\\' . ucfirst($ac);
         if (class_exists($cp)) {
             $data = $this->data();

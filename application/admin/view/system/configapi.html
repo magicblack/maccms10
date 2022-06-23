@@ -32,6 +32,14 @@
                         <input type="radio" name="api[vod][charge]" value="1" title="{:lang('open')}" {if condition="$config['api']['vod']['charge'] eq 1"}checked {/if}>
                     </div>
                 </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">{:lang('admin/system/configapi/detail_inc_hits')}：</label>
+                    <div class="layui-input-inline w200">
+                        <input type="radio" name="api[vod][detail_inc_hits]" value="0" title="{:lang('close')}" {if condition="$config['api']['vod']['detail_inc_hits'] neq 1"}checked {/if}>
+                        <input type="radio" name="api[vod][detail_inc_hits]" value="1" title="{:lang('open')}" {if condition="$config['api']['vod']['detail_inc_hits'] eq 1"}checked {/if}>
+                    </div>
+                    <div class="layui-form-mid layui-word-aux">{:lang('admin/system/configapi/detail_inc_hits_tip')}</div>
+                </div>
 
                 <div class="layui-form-item">
                     <label class="layui-form-label">

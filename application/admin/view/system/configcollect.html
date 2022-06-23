@@ -110,12 +110,27 @@
                         <input type="radio" name="collect[vod][pseplayer]" value="1" title="{:lang('open')}" {if condition="$config['collect']['vod']['pseplayer'] eq 1"}checked {/if}>
                     </div>
                 </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">{:lang('admin/system/configcollect/psearea')}：</label>
+                    <div class="layui-input-inline">
+                        <input type="radio" name="collect[vod][psearea]" value="0" title="{:lang('close')}" {if condition="$config['collect']['vod']['psearea'] neq 1"}checked {/if}>
+                        <input type="radio" name="collect[vod][psearea]" value="1" title="{:lang('open')}" {if condition="$config['collect']['vod']['psearea'] eq 1"}checked {/if}>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">{:lang('admin/system/configcollect/pselang')}：</label>
+                    <div class="layui-input-inline">
+                        <input type="radio" name="collect[vod][pselang]" value="0" title="{:lang('close')}" {if condition="$config['collect']['vod']['pselang'] neq 1"}checked {/if}>
+                        <input type="radio" name="collect[vod][pselang]" value="1" title="{:lang('open')}" {if condition="$config['collect']['vod']['pselang'] eq 1"}checked {/if}>
+                    </div>
+                </div>
 
                 <div class="layui-form-item">
                     <label class="layui-form-label">{:lang('admin/system/configcollect/urlrole')}：</label>
                     <div class="layui-input-inline">
                         <input type="radio" name="collect[vod][urlrole]" value="0" title="{:lang('replace')}" {if condition="$config['collect']['vod']['urlrole'] neq 1"}checked {/if}>
                         <input type="radio" name="collect[vod][urlrole]" value="1" title="{:lang('merge')}" {if condition="$config['collect']['vod']['urlrole'] eq 1"}checked {/if}>
+                        <!-- <input type="radio" name="collect[vod][urlrole]" value="2" title="{:lang('admin/system/configcollect/urlrole/use_more')}" {if condition="$config['collect']['vod']['urlrole'] eq 2"}checked {/if}> -->
                     </div>
                     <div class="layui-form-mid layui-word-aux">{:lang('admin/system/configcollect/urlrole_tip')}</div>
                 </div>
@@ -626,6 +641,20 @@
                     <label class="layui-form-label">{:lang('admin/system/configcollect/vod_playerwords')}：</label>
                     <div class="layui-input-block">
                         <textarea name="collect[vod][playerwords]" class="layui-textarea">{$config['collect']['vod']['playerwords']|mac_replace_text}</textarea>
+                    </div>
+                </div>
+
+                <div class="layui-form-item">
+                    <label class="layui-form-label">{:lang('admin/system/configcollect/vod_areawords')}：</label>
+                    <div class="layui-input-block">
+                        <textarea name="collect[vod][areawords]" class="layui-textarea">{$config['collect']['vod']['areawords']|mac_replace_text}</textarea>
+                    </div>
+                </div>
+
+                <div class="layui-form-item">
+                    <label class="layui-form-label">{:lang('admin/system/configcollect/vod_langwords')}：</label>
+                    <div class="layui-input-block">
+                        <textarea name="collect[vod][langwords]" class="layui-textarea">{$config['collect']['vod']['langwords']|mac_replace_text}</textarea>
                     </div>
                 </div>
 

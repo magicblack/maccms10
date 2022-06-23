@@ -15,7 +15,7 @@ class Alibaba
     {
         $filePath = ROOT_PATH . $file_path;
 
-        $url = 'https://kfupload.alibaba.com/mupload';
+        $url = 'https://kfupload.alibaba.com/kupload';
         $data = [];
         $data['scene'] = 'aeMessageCenterV2ImageRule';
         $data['name'] = 'player.jpg';

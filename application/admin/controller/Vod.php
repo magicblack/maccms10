@@ -70,8 +70,9 @@ class Vod extends Base
             $where['vod_weekday'] = ['like','%'.$param['weekday'].'%'];
         }
         if(!empty($param['wd'])){
-            $param['wd'] = htmlspecialchars(urldecode($param['wd']));
-            $where['vod_name|vod_actor'] = ['like','%'.$param['wd'].'%'];
+            $param['wd'] = urldecode($param['wd']);
+            $param['wd'] = mac_filter_xss($param['wd']);
+            $where['vod_name|vod_actor|vod_sub'] = ['like','%'.$param['wd'].'%'];
         }
         if(!empty($param['player'])){
             if($param['player']=='no'){
