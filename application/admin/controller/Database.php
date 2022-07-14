@@ -267,8 +267,11 @@ class Database extends Base
     {
         $param = input();
         $table = $param['table'];
-        if(!empty($table)){
-            $list = Db::query('SHOW COLUMNS FROM '.$table);
+        if (!empty($table) && !$this->isValidTable($table)) {
+            return $this->error('Table is invalid.');
+        }
+        if (!empty($table)) {
+            $list = Db::query('SHOW COLUMNS FROM ' . $table);
             $this->success(lang('obtain_ok'),null, $list);
         }
         $this->error(lang('param_err'));
@@ -288,8 +291,10 @@ class Database extends Base
             if(!$validate->check($param)){
                 return $this->error($validate->getError());
             }
-
-            if(!empty($table) && !empty($field) && !empty($findstr) && !empty($tostr)){
+            if (!empty($table) && !$this->isValidTable($table)) {
+                return $this->error('Table is invalid.');
+            }
+            if(!empty($field) && !empty($findstr) && !empty($tostr)){
                 $sql = "UPDATE ".$table." set ".$field."=Replace(".$field.",'".$findstr."','".$tostr."') where 1=1 ". $where;
                 Db::execute($sql);
                 return $this->success(lang('run_ok'));
@@ -300,5 +305,15 @@ class Database extends Base
         $list = Db::query("SHOW TABLE STATUS");
         $this->assign('list',$list);
         return $this->fetch('admin@database/rep');
+    }
+
+    private function isValidTable($table) {
+        $list = Db::query("SHOW TABLE STATUS");
+        foreach ($list as $table_raw) {
+            if ($table_raw['Name'] == $table) {
+                return true;
+            }
+        }
+        return false;
     }
 }
