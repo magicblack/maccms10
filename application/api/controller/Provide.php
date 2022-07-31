@@ -188,17 +188,13 @@ class Provide extends Base
             }
 
             if($this->_param['ac']=='videolist' || $this->_param['ac']=='detail'){
-                if ($GLOBALS['config']['api']['vod']['from'] != '') {
+                if ($GLOBALS['config']['api']['vod']['from'] != '' && !str_contains($GLOBALS['config']['api']['vod']['from'], ',')) {
                     $arr_from = explode('$$$',$v['vod_play_from']);
                     $arr_url = explode('$$$',$v['vod_play_url']);
                     $arr_server = explode('$$$',$v['vod_play_server']);
                     $arr_note = explode('$$$',$v['vod_play_note']);
-                    if (str_contains($GLOBALS['config']['api']['vod']['from'], ',')) {
-                        $key = 0;
-                    } else {
-                        $key = array_search($GLOBALS['config']['api']['vod']['from'],$arr_from);
-                        $key = $key > 0 ? $key : 0;
-                    }
+                    $key = array_search($GLOBALS['config']['api']['vod']['from'],$arr_from);
+                    $key = $key > 0 ? $key : 0;
                     $res['list'][$k]['vod_play_from'] = $arr_from[$key];
                     $res['list'][$k]['vod_play_url'] = $arr_url[$key];
                     $res['list'][$k]['vod_play_server'] = $arr_server[$key];
