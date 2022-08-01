@@ -54,6 +54,10 @@ class Provide extends Base
                     $where['type_id'] = $this->_param['t'];
                 }
             }
+            // 支持isend参数，是否完结
+            if (isset($this->_param['isend'])) {
+                $where['vod_isend'] = $this->_param['isend'] == 1 ? 1 : 0;
+            }
             if (!empty($this->_param['h'])) {
                 $todaydate = date('Y-m-d', strtotime('+1 days'));
                 $tommdate = date('Y-m-d H:i:s', strtotime('-' . $this->_param['h'] . ' hours'));

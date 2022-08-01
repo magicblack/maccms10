@@ -241,6 +241,9 @@ class Vod extends Base {
             if(!empty($param['page'])){
                 $page = intval($param['page']);
             }
+            if(isset($param['isend'])){
+                $isend = intval($param['isend']);
+            }
 
             foreach($param as $k=>$v){
                 if(empty($v)){
