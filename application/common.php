@@ -329,6 +329,10 @@ function mac_get_rndstr($length=32,$f='')
     for($i=0; $i<$length; $i++){
         $res .= $pattern[mt_rand(0,$len)];
     }
+    // 开头为0的随机替换为1~9，优化导出格式问题
+    if (str_starts_with($res, '0')) {
+        $res = mt_rand(1, 9) . substr($res, 1);
+    }
     return $res;
 }
 

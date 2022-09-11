@@ -56,7 +56,7 @@ class Card extends Base
 
             echo ''.lang('admin/card/import_tip') .  "\n";
             foreach($res['list'] as  $k=>$v){
-                echo $v['card_no'] . "," . $v['card_pwd'] . "," . date('Y-m-d H:i:s',$v['card_add_time']) . "\n";
+                echo '="' . $v['card_no'] . '"' . ",=\"" . $v['card_pwd'] . "\"," . date('Y-m-d H:i:s',$v['card_add_time']) . "\n";
             }
 
             exit;
