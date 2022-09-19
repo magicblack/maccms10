@@ -29,9 +29,9 @@
                 <td>{:round($vo['size']/1024, 2)} K</td>
                 <td>{:date('Y-m-d H:i:s', $vo['time'])}</td>
                 <td>
-                    <div class="layui-btn-group">
-                        <a data-href="{:url('import?id='.strtotime($key))}" class="layui-badge-rim layui-btn-small j-ajax" confirm="{:lang('admin/database/import_confirm')}">{:lang('admin/database/import')}</a>
-                        <a data-href="{:url('del?id='.strtotime($key))}" class="layui-badge-rim layui-btn-small j-tr-del">{:lang('del')}</a>
+                    <div class="pear-btn-group">
+                        <a data-href="{:url('import?id='.strtotime($key))}" class="layui-badge-rim pear-btn-sm j-ajax" confirm="{:lang('admin/database/import_confirm')}">{:lang('admin/database/import')}</a>
+                        <a data-href="{:url('del?id='.strtotime($key))}" class="layui-badge-rim pear-btn-sm j-tr-del">{:lang('del')}</a>
                     </div>
                 </td>
             </tr>

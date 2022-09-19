@@ -42,7 +42,7 @@ class Dir {
      * 取得目录下面的文件信息
      * @param mixed $pathname 路径
      */
-    public static function listFile($pathname, $pattern = '*') {
+    public function listFile($pathname, $pattern = '*') {
         static $_listDirs = array();
         $guid = md5($pathname . $pattern);
         if (!isset($_listDirs[$guid])) {
@@ -72,11 +72,11 @@ class Dir {
                 $dir[$i]['isReadable'] = is_readable($file);
                 $dir[$i]['isWritable'] = is_writable($file);
             }
-            $cmp_func = create_function('$a,$b', '
-            $k  =  "isDir";
-            if($a[$k]  ==  $b[$k])  return  0;
-            return  $a[$k]>$b[$k]?-1:1;
-            ');
+            $cmp_func = function($a,$b){
+                $k  =  "isDir";
+                if($a[$k]  ==  $b[$k])  return  0;
+                return  $a[$k]>$b[$k]?-1:1;
+            };
             // 对结果排序 保证目录在前面
             usort($dir, $cmp_func);
             $this->_values = $dir;
@@ -90,7 +90,7 @@ class Dir {
      * 返回数组中的当前元素（单元）
      * @return array
      */
-    public static function current($arr) {
+    public function current($arr) {
         if (!is_array($arr)) {
             return false;
         }
@@ -101,7 +101,7 @@ class Dir {
      * 文件上次访问时间
      * @return integer
      */
-    public static function getATime() {
+    public function getATime() {
         $current = $this->current($this->_values);
         return $current['atime'];
     }
@@ -110,7 +110,7 @@ class Dir {
      * 取得文件的 inode 修改时间
      * @return integer
      */
-    public static function getCTime() {
+    public function getCTime() {
         $current = $this->current($this->_values);
         return $current['ctime'];
     }
@@ -119,7 +119,7 @@ class Dir {
      * 遍历子目录文件信息
      * @return DirectoryIterator
      */
-    public static function getChildren() {
+    public function getChildren() {
         $current = $this->current($this->_values);
         if ($current['isDir']) {
             return new Dir($current['pathname']);
@@ -131,7 +131,7 @@ class Dir {
      * 取得文件名
      * @return string
      */
-    public static function getFilename() {
+    public function getFilename() {
         $current = $this->current($this->_values);
         return $current['filename'];
     }
@@ -140,7 +140,7 @@ class Dir {
      * 取得文件的组
      * @return integer
      */
-    public static function getGroup() {
+    public function getGroup() {
         $current = $this->current($this->_values);
         return $current['group'];
     }
@@ -149,7 +149,7 @@ class Dir {
      * 取得文件的 inode
      * @return integer
      */
-    public static function getInode() {
+    public function getInode() {
         $current = $this->current($this->_values);
         return $current['inode'];
     }
@@ -158,7 +158,7 @@ class Dir {
      * 取得文件的上次修改时间
      * @return integer
      */
-    public static function getMTime() {
+    public function getMTime() {
         $current = $this->current($this->_values);
         return $current['mtime'];
     }
@@ -176,7 +176,7 @@ class Dir {
      * 取得文件路径，不包括文件名
      * @return string
      */
-    public static function getPath() {
+    public function getPath() {
         $current = $this->current($this->_values);
         return $current['path'];
     }
@@ -185,7 +185,7 @@ class Dir {
      * 取得文件的完整路径，包括文件名
      * @return string
      */
-    public static function getPathname() {
+    public function getPathname() {
         $current = $this->current($this->_values);
         return $current['pathname'];
     }
@@ -194,7 +194,7 @@ class Dir {
      * 取得文件的权限
      * @return integer
      */
-    public static function getPerms() {
+    public function getPerms() {
         $current = $this->current($this->_values);
         return $current['perms'];
     }
@@ -203,7 +203,7 @@ class Dir {
      * 取得文件的大小
      * @return integer
      */
-    public static function getSize() {
+    public function getSize() {
         $current = $this->current($this->_values);
         return $current['size'];
     }
@@ -212,7 +212,7 @@ class Dir {
      * 取得文件类型
      * @return string
      */
-    public static function getType() {
+    public function getType() {
         $current = $this->current($this->_values);
         return $current['type'];
     }
@@ -221,7 +221,7 @@ class Dir {
      * 是否为目录
      * @return boolen
      */
-    public static function isDir() {
+    public function isDir() {
         $current = $this->current($this->_values);
         return $current['isDir'];
     }
@@ -230,7 +230,7 @@ class Dir {
      * 是否为文件
      * @return boolen
      */
-    public static function isFile() {
+    public function isFile() {
         $current = $this->current($this->_values);
         return $current['isFile'];
     }
@@ -239,7 +239,7 @@ class Dir {
      * 文件是否为一个符号连接
      * @return boolen
      */
-    public static function isLink() {
+    public function isLink() {
         $current = $this->current($this->_values);
         return $current['isLink'];
     }
@@ -248,7 +248,7 @@ class Dir {
      * 文件是否可以执行
      * @return boolen
      */
-    public static function isExecutable() {
+    public function isExecutable() {
         $current = $this->current($this->_values);
         return $current['isExecutable'];
     }
@@ -257,7 +257,7 @@ class Dir {
      * 文件是否可读
      * @return boolen
      */
-    public static function isReadable() {
+    public function isReadable() {
         $current = $this->current($this->_values);
         return $current['isReadable'];
     }
@@ -266,12 +266,13 @@ class Dir {
      * 获取foreach的遍历方式
      * @return string
      */
-    public static function getIterator() {
+    /*
+    public function getIterator() {
         return new ArrayObject($this->_values);
-    }
+    }*/
 
     // 返回目录的数组信息
-    public static function toArray() {
+    public function toArray() {
         return $this->_values;
     }
 

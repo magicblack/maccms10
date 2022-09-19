@@ -71,26 +71,26 @@
                 <div class="layui-input-inline">
                     <input type="text" autocomplete="off" placeholder="{:lang('wd')}" class="layui-input" name="wd" value="{$param['wd']|mac_restore_htmlfilter}">
                 </div>
-                <button class="layui-btn mgl-20 j-search" >{:lang('btn_search')}</button>
+                <button class="pear-btn mgl-20 j-search" >{:lang('btn_search')}</button>
             </form>
         </div>
 
-        <div class="layui-btn-group">
-            <a data-href="{:url('info')}" data-full="1" class="layui-btn layui-btn-primary j-iframe"><i class="layui-icon">&#xe654;</i>{:lang('add')}</a>
-            <a data-href="{:url('del')}" class="layui-btn layui-btn-primary j-page-btns confirm"><i class="layui-icon">&#xe640;</i>{:lang('del')}</a>
-            <a data-href="{:url('index/select')}?tab=art&col=type_id&tpl=select_type&url=art/field" data-width="270" data-height="100" data-checkbox="1" class="layui-btn layui-btn-primary j-select"><i class="layui-icon">&#xe620;</i>{:lang('type')}</a>
-            <a data-href="{:url('index/select')}?tab=art&col=art_level&tpl=select_level&url=art/field" data-width="270" data-height="100" data-checkbox="1" class="layui-btn layui-btn-primary j-select"><i class="layui-icon">&#xe620;</i>{:lang('level')}</a>
-            <a data-href="{:url('index/select')}?tab=art&col=art_hits&tpl=select_hits&url=art/field" data-width="470" data-height="100" data-checkbox="1" class="layui-btn layui-btn-primary j-select"><i class="layui-icon">&#xe620;</i>{:lang('hits')}</a>
-            <a data-href="{:url('index/select')}?tab=art&col=art_status&tpl=select_status&url=art/field" data-width="470" data-height="100" data-checkbox="1" class="layui-btn layui-btn-primary j-select"><i class="layui-icon">&#xe620;</i>{:lang('status')}</a>
-            <a data-href="{:url('index/select')}?tab=art&col=art_lock&tpl=select_lock&url=art/field" data-width="470" data-height="100" data-checkbox="1" class="layui-btn layui-btn-primary j-select"><i class="layui-icon">&#xe620;</i>{:lang('lock')}</a>
-            <a class="layui-btn layui-btn-primary j-iframe" data-href="{:url('images/opt?tab=art')}" href="javascript:;" title="{:lang('pic_sync')}"><i class="layui-icon">&#xe620;</i>{:lang('pic_sync')}</a>
-            <a class="layui-btn layui-btn-primary j-iframe" data-checkbox="true" data-href="{:url('make/make?ac=info&tab=art')}" href="javascript:;" title="{:lang('make_page')}"><i class="layui-icon">&#xe620;</i>{:lang('make_page')}</a>
+        <div class="pear-btn-group">
+            <a data-href="{:url('info')}" data-full="1" class="pear-btn pear-btn-primary j-iframe"><i class="layui-icon">&#xe654;</i>{:lang('add')}</a>
+            <a data-href="{:url('del')}" class="pear-btn pear-btn-primary j-page-btns confirm"><i class="layui-icon">&#xe640;</i>{:lang('del')}</a>
+            <a data-href="{:url('index/select')}?tab=art&col=type_id&tpl=select_type&url=art/field" data-width="270" data-height="100" data-checkbox="1" class="pear-btn pear-btn-primary j-select"><i class="layui-icon">&#xe620;</i>{:lang('type')}</a>
+            <a data-href="{:url('index/select')}?tab=art&col=art_level&tpl=select_level&url=art/field" data-width="270" data-height="100" data-checkbox="1" class="pear-btn pear-btn-primary j-select"><i class="layui-icon">&#xe620;</i>{:lang('level')}</a>
+            <a data-href="{:url('index/select')}?tab=art&col=art_hits&tpl=select_hits&url=art/field" data-width="470" data-height="100" data-checkbox="1" class="pear-btn pear-btn-primary j-select"><i class="layui-icon">&#xe620;</i>{:lang('hits')}</a>
+            <a data-href="{:url('index/select')}?tab=art&col=art_status&tpl=select_status&url=art/field" data-width="470" data-height="100" data-checkbox="1" class="pear-btn pear-btn-primary j-select"><i class="layui-icon">&#xe620;</i>{:lang('status')}</a>
+            <a data-href="{:url('index/select')}?tab=art&col=art_lock&tpl=select_lock&url=art/field" data-width="470" data-height="100" data-checkbox="1" class="pear-btn pear-btn-primary j-select"><i class="layui-icon">&#xe620;</i>{:lang('lock')}</a>
+            <a class="pear-btn pear-btn-primary j-iframe" data-href="{:url('images/opt?tab=art')}" href="javascript:;" title="{:lang('pic_sync')}"><i class="layui-icon">&#xe620;</i>{:lang('pic_sync')}</a>
+            <a class="pear-btn pear-btn-primary j-iframe" data-checkbox="true" data-href="{:url('make/make?ac=info&tab=art')}" href="javascript:;" title="{:lang('make_page')}"><i class="layui-icon">&#xe620;</i>{:lang('make_page')}</a>
             {if condition="$param.select eq 1"}
-            <a data-href="" onclick="parent.onSelectResult('{$param.input}',$('.checkbox-ids:checked'))" class="layui-btn layui-btn-normal">{:lang('select_return')}</a>
+            <a data-href="" onclick="parent.onSelectResult('{$param.input}',$('.checkbox-ids:checked'))" class="pear-btn pear-btn-success">{:lang('select_return')}</a>
             {/if}
             {if condition="$param['repeat'] neq ''"}
-            <a data-href="{:url('del')}?repeat=1&retain=min" data-checkbox="no" class="layui-btn layui-btn-primary j-page-btns confirm"><i class="layui-icon">&#xe640;</i>{:lang('del_auto_keep_min')}</a>
-            <a data-href="{:url('del')}?repeat=1&retain=max" data-checkbox="no" class="layui-btn layui-btn-primary j-page-btns confirm"><i class="layui-icon">&#xe640;</i>{:lang('del_auto_keep_max')}</a>
+            <a data-href="{:url('del')}?repeat=1&retain=min" data-checkbox="no" class="pear-btn pear-btn-primary j-page-btns confirm"><i class="layui-icon">&#xe640;</i>{:lang('del_auto_keep_min')}</a>
+            <a data-href="{:url('del')}?repeat=1&retain=max" data-checkbox="no" class="pear-btn pear-btn-primary j-page-btns confirm"><i class="layui-icon">&#xe640;</i>{:lang('del_auto_keep_max')}</a>
             {/if}
         </div>
 

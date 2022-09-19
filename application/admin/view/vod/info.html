@@ -179,7 +179,7 @@
                             <input type="text" class="layui-input" value="{$info.vod_douban_id}" placeholder="" name="vod_douban_id" id="vod_douban_id">
                         </div>
                         <div class="layui-input-inline ">
-                            <button type="button" class="layui-btn" id="btn_douban">{:lang('search_data')}</button>
+                            <button type="button" class="pear-btn" id="btn_douban">{:lang('search_data')}</button>
                         </div>
                     </div>
 
@@ -293,7 +293,7 @@
                     <div class="layui-form-item">
                         <label class="layui-form-label ">{:lang('pic_screenshot')}：</label>
                         <div class="layui-input-inline w400 ">
-                            <div class="layui-btn-group">
+                            <div class="pear-btn-group">
                                 <button type="button" class="layui-btn screenshot"><i class="layui-icon layui-icon-upload"></i> {:lang('upload_pic')}</button>
                             </div>
                         </div>
@@ -342,7 +342,7 @@
                         {/volist}
                     </div>
                     <div class="layui-form-item">
-                        <label class=""><button class="layui-btn radius j-player-add" type="button">{:lang('admin/vod/add_group_play')}</button></label>
+                        <label class=""><button class="pear-btn radius j-player-add" type="button">{:lang('admin/vod/add_group_play')}</button></label>
                         <div class="layui-input-block">
 
                         </div>
@@ -365,7 +365,7 @@
                         {/volist}
                     </div>
                     <div class="layui-form-item">
-                        <label class=""><button class="layui-btn radius j-downer-add" type="button">{:lang('admin/vod/add_group_down')}</button></label>
+                        <label class=""><button class="pear-btn radius j-downer-add" type="button">{:lang('admin/vod/add_group_down')}</button></label>
                         <div class="layui-input-block">
 
                         </div>
@@ -389,7 +389,7 @@
                             <div class="layui-input-inline ">
                                 <input type="text" class="layui-input" value="{$info.vod_down}" placeholder="" id="vod_down" name="vod_down">
                             </div>
-                            <button class="layui-btn" type="button" id="btn_rnd">{:lang('rnd_make')}</button>
+                            <button class="pear-btn" type="button" id="btn_rnd">{:lang('rnd_make')}</button>
                         </div>
 
                         <div class="layui-form-item">
@@ -507,8 +507,8 @@
 
                 <div class="layui-form-item center">
                     <div class="layui-input-block">
-                        <button type="submit" class="layui-btn" lay-submit="" lay-filter="formSubmit" data-child="">{:lang('btn_save')}</button>
-                        <button class="layui-btn layui-btn-warm" type="reset">{:lang('btn_reset')}</button>
+                        <button type="submit" class="pear-btn" lay-submit="" lay-filter="formSubmit" data-child="">{:lang('btn_save')}</button>
+                        <button class="pear-btn pear-btn-warming" type="reset">{:lang('btn_reset')}</button>
                     </div>
                 </div>
     </form>
@@ -940,7 +940,7 @@
                     $('.vod_'+key+"_label").html('');
                     if(value != ''){
                         $.each(value, function(key2, value2){
-                            $(".vod_"+key+"_label").append('<a class="layui-btn layui-btn-xs extend" href="javascript:;" data-id="vod_'+key+'">'+value2+'</a>');
+                            $(".vod_"+key+"_label").append('<a class="pear-btn pear-btn-xs extend" href="javascript:;" data-id="vod_'+key+'">'+value2+'</a>');
                         });
                     }
                 });

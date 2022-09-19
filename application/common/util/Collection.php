@@ -179,7 +179,7 @@ class Collection {
                 $xml = pc_base::load_sys_class('xml');
                 $html = $xml->xml_unserialize($html);
                 if (pc_base::load_config('system', 'charset') == 'gbk') {
-                    $html = array_iconv($html, 'utf-8', 'gbk');
+                    $html = iconv($html, 'utf-8', 'gbk');
                 }
                 $data = array();
                 if (is_array($html['rss']['channel']['item']))foreach ($html['rss']['channel']['item'] as $k=>$v) {
@@ -267,7 +267,7 @@ class Collection {
      */
     protected static function replace_item($html, $config) {
         if (empty($config)) return $html;
-        $config = explode("\n", $config);
+        //$config = explode("\n", $config);
         $patterns = $replace = array();
         $p = 0;
         foreach ($config as $k=>$v) {

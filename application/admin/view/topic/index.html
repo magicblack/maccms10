@@ -15,15 +15,15 @@
                 <div class="layui-input-inline">
                     <input type="text" autocomplete="off" placeholder="{:lang('wd')}" class="layui-input" name="wd" value="{$param['wd']|mac_filter_xss}">
                 </div>
-                <button class="layui-btn mgl-20 j-search" >{:lang('btn_search')}</button>
+                <button class="pear-btn mgl-20 j-search" >{:lang('btn_search')}</button>
             </form>
         </div>
-        <div class="layui-btn-group">
-            <a data-full="1" data-href="{:url('info')}" class="layui-btn layui-btn-primary j-iframe"><i class="layui-icon">&#xe654;</i>{:lang('add')}</a>
-            <a data-href="{:url('del')}" class="layui-btn layui-btn-primary j-page-btns confirm"><i class="layui-icon">&#xe640;</i>{:lang('del')}</a>
-            <a data-href="{:url('index/select')}?tab=topic&col=topic_level&tpl=select_level&url=topic/field" data-width="270" data-height="100" data-checkbox="1" class="layui-btn layui-btn-primary j-select"><i class="layui-icon">&#xe620;</i>{:lang('level')}</a>
-            <a data-href="{:url('index/select')}?tab=topic&col=topic_status&tpl=select_status&url=topic/field" data-width="470" data-height="100" data-checkbox="1" class="layui-btn layui-btn-primary j-select"><i class="layui-icon">&#xe620;</i>{:lang('status')}</a>
-            <a class="layui-btn layui-btn-primary j-iframe" data-href="{:url('images/opt?tab=topic')}" href="javascript:;" title="{:lang('pic_sync')}"><i class="layui-icon">&#xe620;</i>{:lang('pic_sync')}</a>
+        <div class="pear-btn-group">
+            <a data-full="1" data-href="{:url('info')}" class="pear-btn pear-btn-primary j-iframe"><i class="layui-icon">&#xe654;</i>{:lang('add')}</a>
+            <a data-href="{:url('del')}" class="pear-btn pear-btn-primary j-page-btns confirm"><i class="layui-icon">&#xe640;</i>{:lang('del')}</a>
+            <a data-href="{:url('index/select')}?tab=topic&col=topic_level&tpl=select_level&url=topic/field" data-width="270" data-height="100" data-checkbox="1" class="pear-btn pear-btn-primary j-select"><i class="layui-icon">&#xe620;</i>{:lang('level')}</a>
+            <a data-href="{:url('index/select')}?tab=topic&col=topic_status&tpl=select_status&url=topic/field" data-width="470" data-height="100" data-checkbox="1" class="pear-btn pear-btn-primary j-select"><i class="layui-icon">&#xe620;</i>{:lang('status')}</a>
+            <a class="pear-btn pear-btn-primary j-iframe" data-href="{:url('images/opt?tab=topic')}" href="javascript:;" title="{:lang('pic_sync')}"><i class="layui-icon">&#xe620;</i>{:lang('pic_sync')}</a>
         </div>
     </div>
 

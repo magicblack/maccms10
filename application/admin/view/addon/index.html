@@ -14,7 +14,7 @@
             <div class="layui-input-inline w300">
                 <input type="text" autocomplete="off" placeholder="{:lang('wd')}" class="layui-input" name="wd" value="{$param['wd']|mac_filter_xss}">
             </div>
-            <button class="layui-btn mgl-20 j-search" >{:lang('btn_search')}</button>
+            <button class="pear-btn mgl-20 j-search" >{:lang('btn_search')}</button>
         </form>
         </div>
     </div>
@@ -108,16 +108,16 @@
                     h ='<div class="layui-col-md3"><div class="addon"> <a href="#" target="_blank"> <img src="'+row.image+'" class="add-logo"> </a> <div class="addon-caption"> <h4>'+row.title+'<span class="layui-badge layui-bg-green">{:lang('level')}</span></h4> <p><b>￥'+row.price+'</b></p> <p>{:lang('author')}: '+row.author+'</p> <p>{:lang('intro')}: '+row.intro+'</p> <p>{:lang('ver')}: '+row.version+'</p> <p>{:lang('update_time')}: '+ getDataTime(row.createtime)+'</p>';
                     h+='<div class="operate"><span class="btn-group">';
                     if(row.install =='1'){
-                        h+='<a href="javascript:;" class="layui-btn layui-btn-normal layui-btn-sm j-iframe" data-name="'+row.name+'" data-href="{:url('config')}?name='+row.name+'" ><i class="layui-icon">&#xe614;</i>{:lang('config')}</a>';
+                        h+='<a href="javascript:;" class="pear-btn pear-btn-success pear-btn-sm j-iframe" data-name="'+row.name+'" data-href="{:url('config')}?name='+row.name+'" ><i class="layui-icon">&#xe614;</i>{:lang('config')}</a>';
                         if(row.state=='1'){
-                            h+='<a href="javascript:;" class="layui-btn layui-btn-warm layui-btn-sm btn-disable" data-name="'+row.name+'" data-action="disable"><i class="layui-icon">&#x1006;</i>{:lang('disable')}</a>';
+                            h+='<a href="javascript:;" class="pear-btn pear-btn-warming pear-btn-sm btn-disable" data-name="'+row.name+'" data-action="disable"><i class="layui-icon">&#x1006;</i>{:lang('disable')}</a>';
                         }
                         else{
-                            h+='<a href="javascript:;" class="layui-btn  layui-btn-sm btn-enable" data-name="'+row.name+'" data-action="enable"><i class="layui-icon">&#xe605;</i>{:lang('enable')}</a><a href="javascript:;" class="layui-btn layui-btn-danger layui-btn-sm btn-uninstall" data-name="'+row.name+'"><i class="layui-icon">&#x1006;</i>{:lang('uninstall')}</a>';
+                            h+='<a href="javascript:;" class="layui-btn  pear-btn-sm btn-enable" data-name="'+row.name+'" data-action="enable"><i class="layui-icon">&#xe605;</i>{:lang('enable')}</a><a href="javascript:;" class="pear-btn pear-btn-danger pear-btn-sm btn-uninstall" data-name="'+row.name+'"><i class="layui-icon">&#x1006;</i>{:lang('uninstall')}</a>';
                         }
                     }
                     else{
-                        h+='<a href="javascript:;" class="layui-btn layui-btn-sm btn-install"><i class="layui-icon">&#xe601;</i>{:lang('install')}</a>';
+                        h+='<a href="javascript:;" class="layui-btn pear-btn-sm btn-install"><i class="layui-icon">&#xe601;</i>{:lang('install')}</a>';
                     }
                     h+='</span> <span class="fr" style="margin-top:10px;"> <a href="javascript:;" class="btn-info text-gray " data-name="'+row.name+'" title="{:lang('detail')}"><i class="layui-icon">&#xe63c;</i></a> </span> </div> </div> </div> </div>';
 
