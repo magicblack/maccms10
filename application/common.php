@@ -381,7 +381,7 @@ function mac_send_sms($to,$code,$type_flag,$type_des,$msg)
     if(empty($GLOBALS['config']['sms']['type'])){
         return ['code'=>9005,'msg'=> lang('sms_not_config')];
     }
-    $pattern = "/^1{1}\d{10}$/";
+    $pattern = "/^1[345789][0-9]{9}$/";
     if(!preg_match($pattern,$to)){
         return ['code'=>999,'msg'=>lang('phone_format_err')];
     }
