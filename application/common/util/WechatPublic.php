@@ -10,9 +10,8 @@ class WechatPublic
     }
 
     public function valid() {
-        $echoStr = $_GET["echostr"];
         if($this->checkSignature()){
-            echo $echoStr;
+            echo htmlspecialchars(strip_tags($_GET["echostr"]), ENT_QUOTES);
             exit;
         }
     }
