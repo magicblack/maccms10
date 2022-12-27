@@ -61,8 +61,23 @@ class Maccms extends Taglib {
         if(empty($tag['key'])){
             $tag['key'] = 'key';
         }
+        // foreach标签强化
+        // https://github.com/magicblack/maccms10/issues/984
+        $parse_addon = '';
+        if(!empty($tag['offset'])){
+            $parse_addon .= ' offset="'.$tag['offset'].'"';
+        }
+        if(!empty($tag['length'])){
+            $parse_addon .= ' length="'.$tag['length'].'"';
+        }
+        if(!empty($tag['mod'])){
+            $parse_addon .= ' mod="'.$tag['mod'].'"';
+        }
+        if(!empty($tag['empty'])){
+            $parse_addon .= ' empty="'.$tag['empty'].'"';
+        }
         $parse='';
-        $parse .= '{foreach name="'.$tag['name'].'" id="'.$tag['id'].'" key="'.$tag['key'].'"}';
+        $parse .= '{foreach name="'.$tag['name'].'" id="'.$tag['id'].'" key="'.$tag['key'].'"' . $parse_addon . '}';
         $parse .= $content;
         $parse .= '{/foreach}';
         
