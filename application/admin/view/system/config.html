@@ -355,11 +355,18 @@
 
                 <div class="layui-form-item">
                     <label class="layui-form-label">{:lang('admin/system/config/vod_search_optimise')}：</label>
-                    <div class="layui-input-inline w600">
+                    <div class="layui-input-inline">
                         <input type="checkbox" lay-skin="primary" name="app[vod_search_optimise][]" value="frontend" title="{:lang('admin/system/config/vod_search_optimise/frontend')}" {if condition="strpos($config['app']['vod_search_optimise'],'frontend') !==false"}checked {/if}>
                         <input type="checkbox" lay-skin="primary" name="app[vod_search_optimise][]" value="collect" title="{:lang('admin/system/config/vod_search_optimise/collect')}" {if condition="strpos($config['app']['vod_search_optimise'],'collect') !==false"}checked {/if}>
                     </div>
                     <div class="layui-form-mid layui-word-aux">{:lang('admin/system/config/vod_search_optimise_tip')}</div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">{:lang('admin/system/config/vod_search_optimise_cache_minutes')}：</label>
+                    <div class="layui-input-inline">
+                        <input type="text" name="app[vod_search_optimise_cache_minutes]" placeholder="" value="{$config['app']['vod_search_optimise_cache_minutes']}" class="layui-input w150">
+                    </div>
+                    <div class="layui-form-mid layui-word-aux">{:lang('admin/system/config/vod_search_optimise_cache_minutes_tip')}</div>
                 </div>
 
                 <div class="layui-form-item">

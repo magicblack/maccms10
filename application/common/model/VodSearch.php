@@ -9,8 +9,7 @@ class VodSearch extends Base {
     protected $name = 'vod_search';
     // 最大Id数量，使用IN查询时，超过一定数量，查询不使用索引了
     public $maxIdCount = 1000;
-    private $resultCacheDays = 14;
-    private $updateTopCount  = 50000;
+    private $updateTopCount = 50000;
 
 
     /**
@@ -129,22 +128,42 @@ class VodSearch extends Base {
     }
 
     /**
+     * 获取结果缓存的分钟数，后台配置覆盖默认值
+     */
+    public function getResultCacheMinutes($config = []) {
+        // 默认14天
+        $minutes = 20160;
+        $config = $config ?: config('maccms');
+        if (isset($config['app']['vod_search_optimise_cache_minutes']) && (int)$config['app']['vod_search_optimise_cache_minutes'] > 0) {
+            $minutes = (int)$config['app']['vod_search_optimise_cache_minutes'];
+        }
+        return $minutes;
+    }
+
+    /**
      * 清理老的数据
      */
-    public function clearOldResult() 
+    public function clearOldResult($force = false) 
     {
+        // 清理多久前的
+        $clear_seconds = $this->getResultCacheMinutes() * 60;
         // 设置间隔，每天最多清理1次
-        $cach_name = 'interval_vod_search_clear_old_result_v1';
+        $cach_name = 'interval_vs_clear_old_v1_' . $clear_seconds;
         $cache_data = Cache::get($cach_name);
-        if (!empty($cache_data)) {
+        if ($force === false && !empty($cache_data)) {
             return;
         }
-        Cache::set($cach_name, 1, 86400);
+        Cache::set($cach_name, 1, min($clear_seconds, 86400));
         // vod_actor在采集的时候可提高效率，暂不清理
-        $this->where([
+        $where = [
             'search_field'       => ['neq', 'vod_actor'],
-            'search_update_time' => ['lt', time() - $this->resultCacheDays * 86400],
-        ])->delete();
+            'search_update_time' => ['lt', time() - $clear_seconds],
+        ];
+        // 后台强制清理时，都清掉
+        if ($force === true) {
+            unset($where['search_field']);
+        }
+        $this->where($where)->delete();
     }
 
 }

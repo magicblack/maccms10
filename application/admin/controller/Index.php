@@ -158,6 +158,8 @@ class Index extends Base
         if(!$res) {
             $this->error(lang('admin/index/clear_err'));
         }
+        // 搜索缓存结果清理
+        model('VodSearch')->clearOldResult(true);
         return $this->success(lang('admin/index/clear_ok'));
     }
 

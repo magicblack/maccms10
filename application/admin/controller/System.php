@@ -93,6 +93,7 @@ class System extends Base
             $config['app']['search_vod_rule'] = join('|', $config['app']['search_vod_rule']);
             $config['app']['search_art_rule'] = join('|', $config['app']['search_art_rule']);
             $config['app']['vod_search_optimise'] = join('|', !empty($config['app']['vod_search_optimise']) ? (array)$config['app']['vod_search_optimise'] : []);
+            $config['app']['vod_search_optimise_cache_minutes'] = (int)$config['app']['vod_search_optimise_cache_minutes'];
 
             $config['extra'] = [];
             if(!empty($config['app']['extra_var'])){
@@ -153,6 +154,7 @@ class System extends Base
         if (!isset($config['app']['input_type'])) {
             $config['app']['input_type'] = 1;
         }
+        $config['app']['vod_search_optimise_cache_minutes'] = model('VodSearch')->getResultCacheMinutes($config);
         $this->assign('config', $config);
         $this->assign('title', lang('admin/system/config/title'));
         return $this->fetch('admin@system/config');

@@ -905,6 +905,8 @@ https://www.baidu.com/123.jpg
     'admin/system/config/vod_search_optimise/frontend'=>'前臺',
     'admin/system/config/vod_search_optimise/collect'=>'採集',
     'admin/system/config/vod_search_optimise_tip'=>'緩存LIKE模糊查詢的結果',
+    'admin/system/config/vod_search_optimise_cache_minutes'=>'搜索緩存分鐘',
+    'admin/system/config/vod_search_optimise_cache_minutes_tip'=>'視頻LIKE模糊查詢緩存時間（分鐘），最小1分鐘，建議60分鐘以上',
     'admin/system/config/copyright_status'=>'版權提示',
     'admin/system/config/copyright_msg'=>'提示信息',
     'admin/system/config/copyright_jump_detail'=>'內容頁跳轉',
