@@ -177,7 +177,7 @@ class Database {
             $sql .= $this->config['compress'] ? gzgets($gz) : fgets($gz);
 
             if(preg_match('/.*;$/', trim($sql))){
-                if(false !== Db::query($sql)){
+                if(false !== Db::execute($sql)){
                     $start += strlen($sql);
                 } else {
                     return false;
