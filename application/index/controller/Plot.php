@@ -11,6 +11,9 @@ class Plot extends Base
 
     public function index()
     {
+        // https://github.com/magicblack/maccms10/issues/960
+        $param = mac_param_url();
+        $this->assign('param',$param);
         return $this->label_fetch('plot/index');
     }
 
