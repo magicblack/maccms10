@@ -27,7 +27,9 @@ class All extends Controller
             $cach_name = $_SERVER['HTTP_HOST']. '_'. MAC_MOB . '_'. $GLOBALS['config']['app']['cache_flag']. '_' .$tpl .'_'. http_build_query(mac_param_url());
             $res = Cache::get($cach_name);
             if ($res) {
-                if($type=='json'){
+                // 修复后台开启页面缓存时，模板json请求解析问题
+                // https://github.com/magicblack/maccms10/issues/965
+                if($type=='json' || str_contains(request()->header('accept'), 'application/json')){
                     $res = json_encode($res);
                 }
                 echo $res;

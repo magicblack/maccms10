@@ -497,7 +497,7 @@ class Vod extends Base {
                 }
             }
         }
-        // 随机视频排序rnd的性能问题
+        // 优化随机视频排序rnd的性能问题
         // https://github.com/magicblack/maccms10/issues/967
         $use_rand = false;
         if($by=='rnd'){
