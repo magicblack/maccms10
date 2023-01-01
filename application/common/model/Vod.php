@@ -269,7 +269,6 @@ class Vod extends Base {
                 $pageurl = mac_url($pageurl,$param);
             }
         }
-
         $where['vod_status'] = ['eq',1];
         if(!empty($ids)) {
             if($ids!='all'){
@@ -498,14 +497,18 @@ class Vod extends Base {
                 }
             }
         }
+        // 随机视频排序rnd的性能问题
+        // https://github.com/magicblack/maccms10/issues/967
+        $use_rand = false;
         if($by=='rnd'){
-            $data_count = $this->countData($where);
-            $page_total = floor($data_count / $lp['num']) + 1;
-            if($data_count < $lp['num']){
-                $lp['num'] = $data_count;
+            $row = Db::query("SELECT MAX(vod_id) AS id_max, MIN(vod_id) AS id_min FROM mac_vod");
+            if (!empty($row[0]['id_min']) && !empty($row[0]['id_max']) && $row[0]['id_max'] > $row[0]['id_min']) {
+                $id_list = range($row[0]['id_min'], $row[0]['id_max']);
+                $specified_list = array_rand($id_list, 1000);
+                $where['_string'] .= " AND vod_id IN (" . join(',', $specified_list) . ")";
+                $where['_string'] = trim($where['_string'], " AND ");
             }
-            $randi = @mt_rand(1, $page_total);
-            $page = $randi;
+            $use_rand = true;
             $by = 'hits_week';
             $order = 'desc';
         }
@@ -518,7 +521,7 @@ class Vod extends Base {
         }
         $order= 'vod_'.$by .' ' . $order;
         $where_cache = $where;
-        if(!empty($randi)){
+        if($use_rand){
             unset($where_cache['vod_id']);
             $where_cache['order'] = 'rnd';
         }
