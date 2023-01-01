@@ -192,23 +192,51 @@ class Provide extends Base
             }
 
             if($this->_param['ac']=='videolist' || $this->_param['ac']=='detail'){
-                if ($GLOBALS['config']['api']['vod']['from'] != '' && !str_contains($GLOBALS['config']['api']['vod']['from'], ',')) {
-                    $arr_from = explode('$$$',$v['vod_play_from']);
-                    $arr_url = explode('$$$',$v['vod_play_url']);
-                    $arr_server = explode('$$$',$v['vod_play_server']);
-                    $arr_note = explode('$$$',$v['vod_play_note']);
-                    $key = array_search($GLOBALS['config']['api']['vod']['from'],$arr_from);
-                    $key = $key > 0 ? $key : 0;
-                    $res['list'][$k]['vod_play_from'] = $arr_from[$key];
-                    $res['list'][$k]['vod_play_url'] = $arr_url[$key];
-                    $res['list'][$k]['vod_play_server'] = $arr_server[$key];
-                    $res['list'][$k]['vod_play_note'] = $arr_note[$key];
+                // 如果指定返回播放组，则只返回对应播放组的播放数据
+                // https://github.com/magicblack/maccms10/issues/957
+                if (!empty($GLOBALS['config']['api']['vod']['from'])) {
+                    // 准备数据，逐个处理
+                    $arr_from = explode('$$$', $v['vod_play_from']);
+                    $arr_url = explode('$$$', $v['vod_play_url']);
+                    $arr_server = explode('$$$', $v['vod_play_server']);
+                    $arr_note = explode('$$$', $v['vod_play_note']);
+                    $vod_play_from_list = explode(',', trim($GLOBALS['config']['api']['vod']['from']));
+                    $vod_play_from_list = array_unique($vod_play_from_list);
+                    $vod_play_from_list = array_filter($vod_play_from_list);
+                    $vod_play_url_list = [];
+                    $vod_play_server_list = [];
+                    $vod_play_note_list = [];
+                    foreach ($vod_play_from_list as $vod_play_from_index => $vod_play_from) {
+                        $key = array_search($vod_play_from, $arr_from);
+                        if ($key === false) {
+                            unset($vod_play_from_list[$vod_play_from_index]);
+                            continue;
+                        }
+                        $vod_play_url_list[] = $arr_url[$key];
+                        $vod_play_server_list[] = $arr_server[$key];
+                        $vod_play_note_list[] = $arr_note[$key];
+                    }
+                    $res['list'][$k]['vod_play_from'] = join(',', $vod_play_from_list);
+                    $res['list'][$k]['vod_play_url'] = join('$$$', $vod_play_url_list);
+                    $res['list'][$k]['vod_play_server'] = join('$$$', $vod_play_server_list);
+                    $res['list'][$k]['vod_play_note'] = join('$$$', $vod_play_note_list);
                 }
-
             }
             else {
-                if ($GLOBALS['config']['api']['vod']['from'] != '' && !str_contains($GLOBALS['config']['api']['vod']['from'], ',')) {
-                    $res['list'][$k]['vod_play_from'] = $GLOBALS['config']['api']['vod']['from'];
+                if (!empty($GLOBALS['config']['api']['vod']['from'])) {
+                    // 准备数据，逐个处理
+                    $arr_from = explode('$$$', $v['vod_play_from']);
+                    $vod_play_from_list = explode(',', trim($GLOBALS['config']['api']['vod']['from']));
+                    $vod_play_from_list = array_unique($vod_play_from_list);
+                    $vod_play_from_list = array_filter($vod_play_from_list);
+                    foreach ($vod_play_from_list as $vod_play_from_index => $vod_play_from) {
+                        $key = array_search($vod_play_from, $arr_from);
+                        if ($key === false) {
+                            unset($vod_play_from_list[$vod_play_from_index]);
+                            continue;
+                        }
+                    }
+                    $res['list'][$k]['vod_play_from'] = join(',', $vod_play_from_list);
                 } else {
                     $res['list'][$k]['vod_play_from'] = str_replace('$$$', ',', $v['vod_play_from']);
                 }
@@ -274,7 +302,7 @@ class Provide extends Base
                 $xml .= '<des><![CDATA['.$v['vod_content'].']]></des>';
             }
             else {
-                if ($GLOBALS['config']['api']['vod']['from'] != '' && !str_contains($GLOBALS['config']['api']['vod']['from'], ',')){
+                if ($GLOBALS['config']['api']['vod']['from'] != ''){
                     $xml .= '<dt>' . $GLOBALS['config']['api']['vod']['from'] . '</dt>';
                 }
                 else{
