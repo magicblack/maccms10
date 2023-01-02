@@ -504,21 +504,27 @@ class Vod extends Base {
             $use_rand = true;
             $algo2_threshold = 2000;
             $data_count = $this->countData($where);
-            if ($data_count <= $algo2_threshold) {
+            $where_string_addon = "";
+            if ($data_count > $algo2_threshold) {
+                $row = Db::query("SELECT MAX(vod_id) AS id_max, MIN(vod_id) AS id_min FROM mac_vod");
+                if (!empty($row[0]['id_min']) && !empty($row[0]['id_max']) && $row[0]['id_max'] > $row[0]['id_min']) {
+                    $id_list = range($row[0]['id_min'], $row[0]['id_max']);
+                    $specified_list = array_rand($id_list, intval($algo2_threshold / 2));
+                    if (!empty($specified_list)) {
+                        $where_string_addon = " AND vod_id IN (" . join(',', $specified_list) . ")";
+                    }
+                }
+            }
+            if (!empty($where_string_addon)) {
+                $where['_string'] .= $where_string_addon;
+                $where['_string'] = trim($where['_string'], " AND ");
+            } else {
                 $page_total = floor($data_count / $lp['num']) + 1;
                 if($data_count < $lp['num']){
                     $lp['num'] = $data_count;
                 }
                 $randi = @mt_rand(1, $page_total);
                 $page = $randi;
-            } else {
-                $row = Db::query("SELECT MAX(vod_id) AS id_max, MIN(vod_id) AS id_min FROM mac_vod");
-                if (!empty($row[0]['id_min']) && !empty($row[0]['id_max']) && $row[0]['id_max'] > $row[0]['id_min']) {
-                    $id_list = range($row[0]['id_min'], $row[0]['id_max']);
-                    $specified_list = array_rand($id_list, intval($algo2_threshold / 2));
-                    $where['_string'] .= " AND vod_id IN (" . join(',', $specified_list) . ")";
-                    $where['_string'] = trim($where['_string'], " AND ");
-                }
             }
             $by = 'hits_week';
             $order = 'desc';
