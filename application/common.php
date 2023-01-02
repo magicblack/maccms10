@@ -2536,6 +2536,10 @@ function mac_url_vod_plot($info,$param=[])
 {
     return mac_url('vod/plot',$param,$info);
 }
+function mac_url_vod_role($info,$param=[])
+{
+    return mac_url('vod/role',$param,$info);
+}
 function mac_url_website_index($param=[])
 {
     return mac_url('website/index',['page'=>$param['page']]);
