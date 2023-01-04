@@ -506,9 +506,15 @@ class Vod extends Base {
             $data_count = $this->countData($where);
             $where_string_addon = "";
             if ($data_count > $algo2_threshold) {
-                $row = Db::query("SELECT MAX(vod_id) AS id_max, MIN(vod_id) AS id_min FROM mac_vod");
-                if (!empty($row[0]['id_min']) && !empty($row[0]['id_max']) && $row[0]['id_max'] > $row[0]['id_min']) {
-                    $id_list = range($row[0]['id_min'], $row[0]['id_max']);
+                $row = $this->field("MAX(vod_id) AS id_max, MIN(vod_id) AS id_min")->find();
+                if (
+                    !empty($row) && 
+                    !empty($row_data = $row->toArray()) && 
+                    !empty($row_data['id_min']) && 
+                    !empty($row_data['id_max']) && 
+                    $row_data['id_max'] > $row_data['id_min']
+                ) {
+                    $id_list = range($row_data['id_min'], $row_data['id_max']);
                     $specified_list = array_rand($id_list, intval($algo2_threshold / 2));
                     if (!empty($specified_list)) {
                         $where_string_addon = " AND vod_id IN (" . join(',', $specified_list) . ")";
