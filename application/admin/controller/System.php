@@ -131,15 +131,15 @@ class System extends Base
         }
 
 
-        $templates = glob('./template' . '/*', GLOB_ONLYDIR);
-        foreach ($templates as $k => &$v) {
-            $v = str_replace('./template/', '', $v);
+        $abs_templates = glob(ROOT_PATH . 'template' . '/*', GLOB_ONLYDIR);
+        foreach ($abs_templates as $k => &$v) {
+            $v = str_replace(ROOT_PATH . 'template/', '', $v);
         }
-        $this->assign('templates', $templates);
+        $this->assign('templates', $abs_templates);
 
-        $langs = glob('./application/lang/*.php');
+        $langs = glob(ROOT_PATH . 'application/lang/*.php');
         foreach ($langs as $k => &$v) {
-            $v = str_replace(['./application/lang/','.php'],['',''],$v);
+            $v = str_replace([ROOT_PATH . 'application/lang/','.php'],['',''],$v);
         }
         $this->assign('langs', $langs);
 

@@ -25,15 +25,15 @@ class Index extends Controller
 
     public function index($step = 0)
     {
-        $langs = glob('./application/lang/*.php');
+        $langs = glob(ROOT_PATH.'application/lang/*.php'); // TODO
         foreach ($langs as $k => &$v) {
-            $v = str_replace(['./application/lang/','.php'],['',''],$v);
+            $v = str_replace([ROOT_PATH.'application/lang/','.php'],['',''],$v);
         }
         $this->assign('langs', $langs);
 
         if(in_array(session('lang'),$langs)){
             $lang = Lang::range(session('lang'));
-            Lang::load('./application/lang/'.$lang.'.php',$lang);
+            Lang::load(ROOT_PATH.'application/lang/'.$lang.'.php',$lang); // TODO
         }
 
         switch ($step) {
@@ -66,7 +66,7 @@ class Index extends Controller
                     $param['lang'] = 'zh-cn';
                 }
                 $lang = Lang::range($param['lang']);
-                Lang::load('./application/lang/'.$lang.'.php',$lang);
+                Lang::load(ROOT_PATH.'application/lang/'.$lang.'.php',$lang); // TODO
                 session('lang',$param['lang']);
                 $this->assign('lang',$param['lang']);
 
@@ -89,7 +89,7 @@ class Index extends Controller
         $this->assign('data', $data);
         return $this->fetch('install@index/step2');
     }
-    
+
     /**
      * 第三步：初始化配置
      * @return mixed
@@ -101,7 +101,7 @@ class Index extends Controller
         $this->assign('install_dir',$install_dir);
         return $this->fetch('install@index/step3');
     }
-    
+
     /**
      * 第四步：执行安装
      * @return mixed
@@ -122,6 +122,7 @@ class Index extends Controller
                 'prefix|'.lang('install/database_pre') => 'require|regex:^[a-z0-9]{1,20}[_]{1}',
                 'cover|'.lang('install/overwrite_database') => 'require|in:0,1',
             ];
+
             $validate = $this->validate($data, $rule);
             if (true !== $validate) {
                 return $this->error($validate);
@@ -169,7 +170,7 @@ class Index extends Controller
             return $this->error(lang('install/access_denied'));
         }
     }
-    
+
     /**
      * 第五步：数据库安装
      * @return mixed
@@ -270,7 +271,7 @@ class Index extends Controller
         $root_dir  = preg_replace(['/install.php$/'], [''], $root_dir);
         return $this->success(lang('install/is_ok'), $root_dir.'admin.php');
     }
-    
+
     /**
      * 环境检测
      * @return array
@@ -297,7 +298,7 @@ class Index extends Controller
         */
         return $items;
     }
-    
+
     /**
      * 目录权限检查
      * @return array
@@ -305,13 +306,13 @@ class Index extends Controller
     private function checkDir()
     {
         $items = [
-            ['file', './application/database.php', lang('install/read_and_write'), lang('install/read_and_write'), 'ok'],
-            ['file', './application/route.php', lang('install/read_and_write'), lang('install/read_and_write'), 'ok'],
-            ['dir', './application/extra', lang('install/read_and_write'), lang('install/read_and_write'), 'ok'],
-            ['dir', './application/data/backup', lang('install/read_and_write'), lang('install/read_and_write'), 'ok'],
-            ['dir', './application/data/update', lang('install/read_and_write'), lang('install/read_and_write'), 'ok'],
-            ['dir', './runtime', lang('install/read_and_write'), lang('install/read_and_write'), 'ok'],
-            ['dir', './upload', lang('install/read_and_write'), lang('install/read_and_write'), 'ok'],
+            ['file', ROOT_PATH.'application/database.php', lang('install/read_and_write'), lang('install/read_and_write'), 'ok'],
+            ['file', ROOT_PATH.'application/route.php', lang('install/read_and_write'), lang('install/read_and_write'), 'ok'],
+            ['dir', ROOT_PATH.'application/extra', lang('install/read_and_write'), lang('install/read_and_write'), 'ok'],
+            ['dir', ROOT_PATH.'application/data/backup', lang('install/read_and_write'), lang('install/read_and_write'), 'ok'],
+            ['dir', ROOT_PATH.'application/data/update', lang('install/read_and_write'), lang('install/read_and_write'), 'ok'],
+            ['dir', ROOT_PATH.'runtime', lang('install/read_and_write'), lang('install/read_and_write'), 'ok'],
+            ['dir', ROOT_PATH.'upload', lang('install/read_and_write'), lang('install/read_and_write'), 'ok'],
         ];
         foreach ($items as &$v) {
             if ($v[0] == 'dir') {// 文件夹
@@ -335,7 +336,7 @@ class Index extends Controller
         }
         return $items;
     }
-    
+
     /**
      * 函数及扩展检查
      * @return array
@@ -367,7 +368,7 @@ class Index extends Controller
 
         return $items;
     }
-    
+
     /**
      * 生成数据库配置文件
      * @return array

@@ -65,13 +65,15 @@ class Template extends Base
         $sum_size = 0;
         $files = [];
 
-        if(is_dir($pp)) {
-            $farr = glob($filters);
+        $abs_pp = ROOT_PATH . $pp; // TODO
+        $abs_filters = ROOT_PATH . $filters; // TODO
+        if(is_dir($abs_pp)) {
+            $farr = glob($abs_filters);
             if ($farr) {
                 foreach ($farr as $f) {
-
                     if(is_dir($f)) {
                             $num_path++;
+                            $f = str_replace(ROOT_PATH, '', $f); // TODO
                             $tmp_path = str_replace('./template/', '.@template/', $f);
                             $tmp_path = str_replace('/', '@', $tmp_path);
                             $tmp_name = str_replace($path . '@', '', $tmp_path);
@@ -81,6 +83,7 @@ class Template extends Base
                     }
                     elseif(is_file($f)) {
                         $num_file++;
+                        $f = str_replace(ROOT_PATH, '', $f); // TODO
                         $fsize = filesize($f);
                         $sum_size += $fsize;
                         $fsize = mac_format_size($fsize);
@@ -160,12 +163,12 @@ class Template extends Base
         $fpath = str_replace('@','/',$fpath);
         $fullname = $fpath .'/' .$fname;
         $fullname = str_replace('\\','/',$fullname);
-
         if( (substr($fullname,0,10) != "./template") || count( explode("./",$fullname) ) > 2) {
             $this->error(lang('param_err').'2');
             return;
         }
-        $path = pathinfo($fullname);
+        $abs_fullname = ROOT_PATH . $fullname; //TODO
+        $path = pathinfo($abs_fullname);
         if(!empty($fname)) {
             $extarr = array('html', 'htm', 'js', 'xml');
             if (!in_array($path['extension'], $extarr)) {
@@ -194,7 +197,7 @@ class Template extends Base
                 $this->error(lang('admin/template/php_safe_tip'));
                 return;
             }
-            $res = @fwrite(fopen($fullname,'wb'),$fcontent);
+            $res = @fwrite(fopen(ROOT_PATH . $fullname,'wb'),$fcontent); // TODO
 
             if($res===false){
                 return $this->error(lang('save_err'));

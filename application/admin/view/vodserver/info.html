@@ -1,4 +1,4 @@
-{include file="../../../application/admin/view/public/head" /}
+{include file="../application/admin/view/public/head.html" /}
 <div class="page-container p10">
     <form class="layui-form layui-form-pane" method="post" action="">
         <input type="hidden" name="__token__" value="{$Request.token}" />
@@ -49,7 +49,7 @@
     </form>
 
 </div>
-{include file="../../../application/admin/view/public/foot" /}
+{include file="../application/admin/view/public/foot.html" /}
 <script type="text/javascript">
 
     layui.use(['form', 'layer'], function () {

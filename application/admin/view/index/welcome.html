@@ -1,4 +1,4 @@
-{include file="../../../application/admin/view/public/head" /}
+{include file="../application/admin/view/public/head.html" /}
 <script>
     var MAC_VERSION='{$version.code}',PHP_VERSION='{php}echo PHP_VERSION{/php}',THINK_VERSION='{php}echo THINK_VERSION{/php}';MAC_LANG='{$mac_lang}';
 </script>
@@ -46,6 +46,6 @@
     <table class="tbinfo pleft layui-table" ><thead><th colspan="2">{:lang('admin/index/welcome/tip_update_db')}</th></thead><tr><td colspan="2"><font class="tif s20">{:lang('admin/index/welcome/tip_update_db_txt')}</font><a class="j-iframe" title="{:lang('admin/index/welcome/tip_update_go')}" data-href="{:url('update/step2')}"><font class="tit s20">{:lang('admin/index/welcome/tip_update_go')}</font></a> </td></tr></table>
     {/if}
 </div>
-{include file="../../../application/admin/view/public/foot" /}
+{include file="../application/admin/view/public/foot.html" /}
 </body>
 </html>

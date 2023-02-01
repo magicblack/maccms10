@@ -1,4 +1,4 @@
-{include file="../../../application/admin/view/public/head" /}
+{include file="../application/admin/view/public/head.html" /}
 <div class="page-container">
     <form class="layui-form layui-form-pane" action="">
         <div class="layui-tab">
@@ -53,7 +53,7 @@
     </form>
 </div>
 
-{include file="../../../application/admin/view/public/foot" /}
+{include file="../application/admin/view/public/foot.html" /}
 <script type="text/javascript">
     var curUrl="{:url('cj/publish',$param)}";
     layui.use(['laypage', 'layer'], function() {

@@ -68,7 +68,7 @@ class Init
             config('dispatch_error_tmpl','public/jump');
         }
 
-        config('template.view_path', 'template/' . $TMP_TEMPLATEDIR .'/' . $TMP_HTMLDIR .'/');
+        config('template.view_path', ROOT_PATH . 'template/' . $TMP_TEMPLATEDIR .'/' . $TMP_HTMLDIR .'/');
 
         if(ENTRANCE=='admin'){
             if(!file_exists('./template/' . $TMP_TEMPLATEDIR .'/' . $TMP_HTMLDIR .'/')){
