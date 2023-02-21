@@ -682,14 +682,14 @@ class Collect extends Base {
                         }
                     }
                 }
-                $v['vod_play_from'] = (string)join('$$$',$cj_play_from_arr);
-                $v['vod_play_url'] = (string)join('$$$',$cj_play_url_arr);
-                $v['vod_play_server'] = (string)join('$$$',$cj_play_server_arr);
-                $v['vod_play_note'] = (string)join('$$$',$cj_play_note_arr);
-                $v['vod_down_from'] = (string)join('$$$',$cj_down_from_arr);
-                $v['vod_down_url'] = (string)join('$$$',$cj_down_url_arr);
-                $v['vod_down_server'] = (string)join('$$$',$cj_down_server_arr);
-                $v['vod_down_note'] = (string)join('$$$',$cj_down_note_arr);
+                $v['vod_play_from'] = (string)join('$$$', (array)$cj_play_from_arr);
+                $v['vod_play_url'] = (string)join('$$$', (array)$cj_play_url_arr);
+                $v['vod_play_server'] = (string)join('$$$', (array)$cj_play_server_arr);
+                $v['vod_play_note'] = (string)join('$$$', (array)$cj_play_note_arr);
+                $v['vod_down_from'] = (string)join('$$$', (array)$cj_down_from_arr);
+                $v['vod_down_url'] = (string)join('$$$', (array)$cj_down_url_arr);
+                $v['vod_down_server'] = (string)join('$$$', (array)$cj_down_server_arr);
+                $v['vod_down_note'] = (string)join('$$$', (array)$cj_down_note_arr);
 
                 if($blend===false){
                     $info = model('Vod')->where($where)->find();
@@ -714,14 +714,14 @@ class Collect extends Base {
                     }
                     else {
                         if ($param['filter'] == 1 || $param['filter'] == 2) {
-                            $v['vod_play_from'] = (string)join('$$$', $collect_filter['play'][$param['filter']]['cj_play_from_arr']);
-                            $v['vod_play_url'] = (string)join('$$$', $collect_filter['play'][$param['filter']]['cj_play_url_arr']);
-                            $v['vod_play_server'] = (string)join('$$$', $collect_filter['play'][$param['filter']]['cj_play_server_arr']);
-                            $v['vod_play_note'] = (string)join('$$$', $collect_filter['play'][$param['filter']]['cj_play_note_arr']);
-                            $v['vod_down_from'] = (string)join('$$$', $collect_filter['down'][$param['filter']]['cj_down_from_arr']);
-                            $v['vod_down_url'] = (string)join('$$$', $collect_filter['down'][$param['filter']]['cj_down_url_arr']);
-                            $v['vod_down_server'] = (string)join('$$$', $collect_filter['down'][$param['filter']]['cj_down_server_arr']);
-                            $v['vod_down_note'] = (string)join('$$$', $collect_filter['down'][$param['filter']]['cj_down_note_arr']);
+                            $v['vod_play_from'] = (string)join('$$$', (array)$collect_filter['play'][$param['filter']]['cj_play_from_arr']);
+                            $v['vod_play_url'] = (string)join('$$$', (array)$collect_filter['play'][$param['filter']]['cj_play_url_arr']);
+                            $v['vod_play_server'] = (string)join('$$$', (array)$collect_filter['play'][$param['filter']]['cj_play_server_arr']);
+                            $v['vod_play_note'] = (string)join('$$$', (array)$collect_filter['play'][$param['filter']]['cj_play_note_arr']);
+                            $v['vod_down_from'] = (string)join('$$$', (array)$collect_filter['down'][$param['filter']]['cj_down_from_arr']);
+                            $v['vod_down_url'] = (string)join('$$$', (array)$collect_filter['down'][$param['filter']]['cj_down_url_arr']);
+                            $v['vod_down_server'] = (string)join('$$$', (array)$collect_filter['down'][$param['filter']]['cj_down_server_arr']);
+                            $v['vod_down_note'] = (string)join('$$$', (array)$collect_filter['down'][$param['filter']]['cj_down_note_arr']);
                         }
                         $tmp = $this->syncImages($config_sync_pic,  $v['vod_pic'], 'vod');
                         $v['vod_pic'] = (string)$tmp['pic'];
@@ -810,13 +810,13 @@ class Collect extends Base {
                                             $tmp2 = explode('#',$cj_play_url);
                                             $tmp1 = array_merge($tmp1,$tmp2);
                                             $tmp1 = array_unique($tmp1);
-                                            $cj_play_url = join('#',$tmp1);
+                                            $cj_play_url = join('#', (array)$tmp1);
                                             unset($tmp1,$tmp2);
                                         }
                                         $arr1[$play_key] = $cj_play_url;
                                         $ec=true;
                                     }
-                                    $old_play_url = join('$$$', $arr1);
+                                    $old_play_url = join('$$$', (array)$arr1);
                                 }
                             }
                             if($ec) {
@@ -877,13 +877,13 @@ class Collect extends Base {
                                             $tmp2 = explode('#',$cj_down_url);
                                             $tmp1 = array_merge($tmp1,$tmp2);
                                             $tmp1 = array_unique($tmp1);
-                                            $cj_down_url = join('#',$tmp1);
+                                            $cj_down_url = join('#', (array)$tmp1);
                                             unset($tmp1,$tmp2);
                                         }
                                         $arr1[$down_key] = $cj_down_url;
                                         $ec=true;
                                     }
-                                    $old_down_url = join('$$$', $arr1);
+                                    $old_down_url = join('$$$', (array)$arr1);
                                 }
                             }
 
@@ -1230,9 +1230,9 @@ class Collect extends Base {
                     $tmp_title_arr[] = $cj_title_arr[$kk];
                     $tmp_note_arr[] = $cj_note_arr[$kk];
                 }
-                $v['art_title'] = join('$$$',$tmp_title_arr);
-                $v['art_note'] = join('$$$',$tmp_note_arr);
-                $v['art_content'] = join('$$$',$tmp_content_arr);
+                $v['art_title'] = join('$$$', (array)$tmp_title_arr);
+                $v['art_note'] = join('$$$', (array)$tmp_note_arr);
+                $v['art_content'] = join('$$$', (array)$tmp_content_arr);
 
 
                 $info = model('Art')->where($where)->find();
