@@ -13,6 +13,15 @@ error_reporting(E_ERROR | E_PARSE );
 
 
 
+function get_array_unique_id_list($list, $need_sort = false) {
+    $list = array_unique($list);
+    $list = array_map('intval', $list);
+    $list = array_filter($list);
+    $list = array_values($list);
+    $need_sort && sort($list);
+    return $list;
+}
+
 if (!function_exists('str_starts_with')) {
     function str_starts_with($haystack, $needle) {
         return (string)$needle !== '' && strncmp($haystack, $needle, strlen($needle)) === 0;

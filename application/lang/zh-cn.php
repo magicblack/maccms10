@@ -1616,7 +1616,9 @@ https://www.baidu.com/123.jpg
     'admin/collect/url_filter'=>'地址过滤',
     'admin/collect/no_filter'=>'不过滤',
     'admin/collect/filter_code'=>'过滤代码',
-    'admin/collect/filter_code_tip'=>'过滤提示：多组地址的资源开启白名单后只会入库指定代码的地址。比如 youku,iqiyi',
+    'admin/collect/filter_code_tip'=>'多组地址的资源开启白名单后只会入库指定代码的地址。比如 youku,iqiyi',
+    'admin/collect/filter_year'=>'过滤年份',
+    'admin/collect/filter_year_tip'=>'填写后仅入库指定年份的视频。多个年份用英文半角逗号分隔，如 2022,2023',
     'admin/collect/test_ok'=>'测试类型成功，接口类型',
 
     'admin/comment/title'=>'评论管理',

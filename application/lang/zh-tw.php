@@ -1616,9 +1616,10 @@ https://www.baidu.com/123.jpg
     'admin/collect/url_filter'=>'地址過濾',
     'admin/collect/no_filter'=>'不過濾',
     'admin/collect/filter_code'=>'過濾代碼',
-    'admin/collect/filter_code_tip'=>'過濾提示：多組地址的資源開啟白名單後只會入庫指定代碼的地址。比如 youku,iqiyi',
+    'admin/collect/filter_code_tip'=>'多組地址的資源開啟白名單後只會入庫指定代碼的地址。比如 youku,iqiyi',
+    'admin/collect/filter_year'=>'過濾年份',
+    'admin/collect/filter_year_tip'=>'填寫後僅入庫指定年份的影片。 多個年份以英文半角逗號分隔，如 2022,2023',
     'admin/collect/test_ok'=>'測試類型成功，接口類型',
-
 
     'admin/comment/title'=>'評論管理',
 

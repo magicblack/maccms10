@@ -421,6 +421,8 @@ class Collect extends Base {
         $config = config('maccms.collect');
         $config = $config['vod'];
         $config_sync_pic = $param['sync_pic_opt'] > 0 ? $param['sync_pic_opt'] : $config['pic'];
+        $filter_year = !empty($param['filter_year']) ? $param['filter_year'] : '';
+        $filter_year_list = $filter_year ? get_array_unique_id_list(explode(',', $filter_year)) : [];
         $players = config('vodplayer');
         $downers = config('voddowner');
         $vod_search = model('VodSearch');
@@ -444,16 +446,18 @@ class Collect extends Base {
             $msg='';
             $tmp='';
 
-            if($v['type_id'] ==0){
+            if ($v['type_id'] ==0) {
                 $des = lang('model/collect/type_err');
-            }
-            elseif(empty($v['vod_name'])) {
+            } elseif (empty($v['vod_name'])) {
                 $des = lang('model/collect/name_err');
-            }
-            elseif( mac_array_filter($filter_arr,$v['vod_name']) !==false) {
+            } elseif (mac_array_filter($filter_arr,$v['vod_name']) !==false) {
                 $des = lang('model/collect/name_in_filter_err');
-            }
-            else {
+            } elseif ($filter_year_list && !in_array(intval($v['vod_year']), $filter_year_list)) {
+                // 采集时，过滤年份
+                // https://github.com/magicblack/maccms10/issues/1057
+                $color = 'orange';
+                $des = 'year [' . intval($v['vod_year']) . '] not in: ' . join(',', $filter_year_list);
+            } else {
                 unset($v['vod_id']);
 
                 foreach($v as $k2=>$v2){

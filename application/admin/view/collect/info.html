@@ -63,9 +63,14 @@
         <div class="layui-form-item row_filer" {if condition="$info['collect_mid'] neq '1'"} style="display:none;" {/if}>
             <label class="layui-form-label">{:lang('admin/collect/filter_code')}：</label>
             <div class="layui-input-block">
-                <input type="text" class="layui-input" value="{$info.collect_filter_from}" placeholder="" id="collect_filter_from" name="collect_filter_from">
+                <input type="text" class="layui-input" value="{$info.collect_filter_from}" placeholder="{:lang('admin/collect/filter_code_tip')}" id="collect_filter_from" name="collect_filter_from">
             </div>
-            <div class="layui-form-mid layui-word-aux" style="margin-left:110px; ">{:lang('admin/collect/filter_code_tip')}</div>
+        </div>
+        <div class="layui-form-item row_filer" {if condition="$info['collect_mid'] neq '1'"} style="display:none;" {/if}>
+            <label class="layui-form-label">{:lang('admin/collect/filter_year')}：</label>
+            <div class="layui-input-block">
+                <input type="text" class="layui-input" value="{$info.collect_filter_year}" placeholder="{:lang('admin/collect/filter_year_tip')}" id="collect_filter_year" name="collect_filter_year">
+            </div>
         </div>
         <div class="layui-form-item row_filer">
             <label class="layui-form-label">{:lang('pic_sync')}：</label>

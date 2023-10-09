@@ -298,6 +298,7 @@ CREATE TABLE `mac_collect` (
   `collect_param` varchar(100) NOT NULL DEFAULT '' ,
   `collect_filter` tinyint(1) unsigned NOT NULL DEFAULT '0' ,
   `collect_filter_from` varchar(255) NOT NULL DEFAULT '' ,
+  `collect_filter_year` VARCHAR(255) NOT NULL DEFAULT '' COMMENT '采集时，过滤年份',
   `collect_opt` tinyint(1) unsigned NOT NULL DEFAULT '0' ,
   `collect_sync_pic_opt` tinyint(1) unsigned NOT NULL DEFAULT '0' COMMENT '同步图片选项，0-跟随全局，1-开启，2-关闭',
   PRIMARY KEY (`collect_id`)
