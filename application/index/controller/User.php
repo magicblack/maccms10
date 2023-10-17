@@ -523,7 +523,7 @@ class User extends Base
         $cp = 'app\\common\\extend\\pay\\' . ucfirst($payment);
         if (class_exists($cp)) {
             $c = new $cp;
-            $payment_res = $c->submit($this->user, $res['info'], $param);
+            $payment_res = $c->submit($GLOBALS['user'], $res['info'], $param);
         }
         //$payment_res = model('Pay' . $payment)->submit($this->user, $res['info'], $param);
         if ($payment == 'weixin') {
