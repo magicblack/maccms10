@@ -243,8 +243,8 @@ class Role extends Base {
             $by = 'hits_week';
             $order = 'desc';
         }
-
-        if(!in_array($by, ['id', 'time','time_add','score','hits','hits_day','hits_week','hits_month','up','down','level','rnd'])) {
+        // https://github.com/magicblack/maccms10/issues/1050
+        if(!in_array($by, ['id', 'time','time_add','score','hits','hits_day','hits_week','hits_month','up','down','level','rnd','sort'])) {
             $by = 'time';
         }
         if(!in_array($order, ['asc', 'desc'])) {
