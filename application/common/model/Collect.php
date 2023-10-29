@@ -713,10 +713,9 @@ class Collect extends Base {
 
                 if (!$info) {
                     // 新增
-                    if($param['opt'] == 2){
+                    if ($param['opt'] == 2) {
                         $des= lang('model/collect/not_check_add');
-                    }
-                    else {
+                    } else {
                         if ($param['filter'] == 1 || $param['filter'] == 2) {
                             $v['vod_play_from'] = (string)join('$$$', (array)$collect_filter['play'][$param['filter']]['cj_play_from_arr']);
                             $v['vod_play_url'] = (string)join('$$$', (array)$collect_filter['play'][$param['filter']]['cj_play_url_arr']);
@@ -2136,6 +2135,11 @@ class Collect extends Base {
 
                 if (strpos($config['inrule'], 'b')!==false) {
                     $where['type_id'] = $v['type_id'];
+                }
+                // 采集网址入库重复规则建议增加跳转url
+                // https://github.com/magicblack/maccms10/issues/1071
+                if (strpos($config['inrule'], 'c')!==false) {
+                    $where['website_jumpurl'] = $v['website_jumpurl'];
                 }
 
                 $info = model('Website')->where($where)->find();

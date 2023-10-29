@@ -191,7 +191,7 @@ class Provide extends Base
                 $v["vod_pic"] = $GLOBALS['config']['api']['vod']['imgurl'] . $v["vod_pic"];
             }
 
-            if($this->_param['ac']=='videolist' || $this->_param['ac']=='detail'){
+            if ($this->_param['ac']=='videolist' || $this->_param['ac']=='detail') {
                 // 如果指定返回播放组，则只返回对应播放组的播放数据
                 // https://github.com/magicblack/maccms10/issues/957
                 if (!empty($GLOBALS['config']['api']['vod']['from'])) {
@@ -221,8 +221,7 @@ class Provide extends Base
                     $res['list'][$k]['vod_play_server'] = join('$$$', $vod_play_server_list);
                     $res['list'][$k]['vod_play_note'] = join('$$$', $vod_play_note_list);
                 }
-            }
-            else {
+            } else {
                 if (!empty($GLOBALS['config']['api']['vod']['from'])) {
                     // 准备数据，逐个处理
                     $arr_from = explode('$$$', $v['vod_play_from']);
