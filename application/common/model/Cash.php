@@ -181,6 +181,12 @@ class Cash extends Base {
             if(false === $res){
                 return ['code'=>1005,'msg'=>'更新用户积分失败：'.$this->getError() ];
             }
+            //积分日志
+            $data = [];
+            $data['user_id'] = $v['user_id'];
+            $data['plog_type'] = 9;
+            $data['plog_points'] = $v['cash_points'];
+            $result = model('Plog')->saveData($data);
 
         }
         return ['code'=>1,'msg'=>'审核成功'];
