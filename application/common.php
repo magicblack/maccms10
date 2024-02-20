@@ -969,7 +969,7 @@ function mac_get_client_ip()
     if (!is_null($final)) {
         return $final;
     }
-    $ips = array();
+    $ips = [];
     if (!empty($_SERVER['HTTP_CF_CONNECTING_IP'])) {
         $ips[] = $_SERVER['HTTP_CF_CONNECTING_IP'];
     }
@@ -991,13 +991,11 @@ function mac_get_client_ip()
     }
     // 选第一个最合法的，或最后一个正常的IP
     foreach ($ips as $ip) {
-        $long = ip2long($ip);
-        $long && $final = $ip;
-        // 排除不正确的IP
-        if ($long > 0 && $long < 0xFFFFFFFF) {
-            $final = long2ip($long);
-            break;
+        $verifyResult = filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_NO_RES_RANGE);
+        if (!$verifyResult){
+            continue;
         }
+        $verifyResult && $final = $ip;
     }
     empty($final) && $final = '0.0.0.0';
     return $final;
