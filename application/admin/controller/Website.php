@@ -255,7 +255,9 @@ class Website extends Base
         $val = $param['val'];
         $start = $param['start'];
         $end = $param['end'];
-
+        if (empty($val) || $val==''){
+            return $this->error(lang('param_err'));
+        }
 
         if(!empty($ids) && in_array($col,['website_status','website_lock','website_level','website_hits','type_id'])){
             $where=[];

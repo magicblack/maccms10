@@ -256,7 +256,9 @@ class Art extends Base
         $val = $param['val'];
         $start = $param['start'];
         $end = $param['end'];
-
+        if (empty($val) || $val==''){
+            return $this->error(lang('param_err'));
+        }
 
         if(!empty($ids) && in_array($col,['art_status','art_lock','art_level','art_hits','type_id'])){
             $where=[];

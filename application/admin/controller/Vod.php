@@ -475,6 +475,9 @@ class Vod extends Base
         $start = $param['start'];
         $end = $param['end'];
 
+        if (empty($val) || $val==''){
+            return $this->error(lang('param_err'));
+        }
 
         if(!empty($ids) && in_array($col,['vod_status','vod_lock','vod_level','vod_hits','type_id','vod_copyright'])){
             $where=[];
