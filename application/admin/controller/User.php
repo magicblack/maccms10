@@ -24,7 +24,7 @@ class User extends Base
             $where['user_status'] = $param['status'];
         }
         if(!empty($param['group'])){
-            $where['group_id'] = $param['group'];
+            $where['group_id'] =  $param['group'];
         }
         if(!empty($param['wd'])){
             $param['wd'] = htmlspecialchars(urldecode($param['wd']));
