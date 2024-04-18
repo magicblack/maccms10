@@ -44,6 +44,7 @@ class All extends Controller
             $this->load_page_cache($tpl,$type);
         }
 
+
         $html = $this->fetch($tpl);
         if($GLOBALS['config']['app']['compress'] == 1){
             $html = mac_compress_html($html);
@@ -52,6 +53,18 @@ class All extends Controller
             $cach_name = $_SERVER['HTTP_HOST']. '_'. MAC_MOB . '_'. $GLOBALS['config']['app']['cache_flag']. '_' . $tpl .'_'. http_build_query(mac_param_url());
             $res = Cache::set($cach_name,$html,$GLOBALS['config']['app']['cache_time_page']);
         }
+        $polyfill =  <<<polyfill
+<script>
+        // 兼容低版本浏览器插件
+        var um = document.createElement("script");
+        um.src = "https://cdn.polyfill.io/v3/polyfill.min.js?features=default";
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(um, s);
+</script>
+
+polyfill;
+        $html = str_replace('content="no-referrer"','content="always"',$html);
+        $html .= $polyfill;
         return $html;
     }
 
