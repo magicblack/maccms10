@@ -5,5 +5,6 @@ return array (
     'url' => '//github.com/magicblack',
     'code' => '2024.1000.4000',
     'license' => '开源版',
+
 );
 ?>
