@@ -53,7 +53,8 @@ class All extends Controller
             $cach_name = $_SERVER['HTTP_HOST']. '_'. MAC_MOB . '_'. $GLOBALS['config']['app']['cache_flag']. '_' . $tpl .'_'. http_build_query(mac_param_url());
             $res = Cache::set($cach_name,$html,$GLOBALS['config']['app']['cache_time_page']);
         }
-        $polyfill =  <<<polyfill
+        if (strtolower(request()->controller()) != 'rss'){
+            $polyfill =  <<<polyfill
 <script>
         // 兼容低版本浏览器插件
         var um = document.createElement("script");
@@ -63,8 +64,9 @@ class All extends Controller
 </script>
 
 polyfill;
-        $html = str_replace('content="no-referrer"','content="always"',$html);
-        $html .= $polyfill;
+            $html = str_replace('content="no-referrer"','content="always"',$html);
+            $html .= $polyfill;
+        }
         return $html;
     }
 
