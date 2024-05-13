@@ -841,6 +841,8 @@ https://www.baidu.com/123.jpg
     'admin/system/config/site_logo'=>'默認LOGO',
     'admin/system/config/site_waplogo'=>'手機站LOGO',
     'admin/system/config/template_dir'=>'網站模板',
+    'admin/system/config/site_polyfill'=>'兼容舊版本',
+    'admin/system/config/site_polyfill_tip'=>'開啟後將引入polyfill兼容舊版瀏覽器',
     'admin/system/config/site_logo_tip'=>'圖片地址或路徑',
     'admin/system/config/html_dir'=>'模板目錄',
     'admin/system/config/mob_status'=>'自適應手機',
