@@ -1925,7 +1925,7 @@ class Collect extends Base {
                 if($res['code']>1){
                     return $this->error($res['msg']);
                 }
-                $this->actor_data($param,$res );
+                $this->role_data($param,$res );
             }
             mac_echo(lang('model/collect/is_over'));
             die;
