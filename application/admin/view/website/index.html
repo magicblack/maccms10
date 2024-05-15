@@ -86,7 +86,7 @@
             <a class="layui-btn layui-btn-primary j-iframe" data-href="{:url('images/opt?tab=website')}" href="javascript:;" title="{:lang('pic_sync')}"><i class="layui-icon">&#xe620;</i>{:lang('pic_sync')}</a>
             <a class="layui-btn layui-btn-primary j-iframe" data-checkbox="true" data-href="{:url('make/make?ac=info&tab=website')}" href="javascript:;" title="{:lang('make_page')}"><i class="layui-icon">&#xe620;</i>{:lang('make_page')}</a>
             {if condition="$param.select eq 1"}
-            <a data-href="" onclick="parent.onSelectResult('{$param.input}',$('.checkbox-ids:checked'))" class="layui-btn layui-btn-normal">{:lang('select_return')}</a>
+            <a data-href="" onclick="parent.onSelectResult('{$param.input|mac_filter_xss}', $('.checkbox-ids:checked'))" class="layui-btn layui-btn-normal">{:lang('select_return')}</a>
             {/if}
             {if condition="$param['repeat'] neq ''"}
             <a data-href="{:url('del')}?repeat=1&retain=min" data-checkbox="no" class="layui-btn layui-btn-primary j-page-btns confirm"><i class="layui-icon">&#xe640;</i>{:lang('del_auto_keep_min')}</a>
