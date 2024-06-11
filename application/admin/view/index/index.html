@@ -1,5 +1,11 @@
 {include file="../../../application/admin/view/public/head" /}
 
+<?php 
+$langs = glob('./application/lang/*.php');
+foreach ($langs as $k => &$v) {
+    $v = str_replace(['./application/lang/','.php'],['',''],$v);
+}
+?>
 <style type="text/css">
     .hs-iframe{width:100%;height:100%;}
     .layui-tab-content {top: 41px; position: absolute; bottom: 0; width: 100%; padding: 0; }
@@ -47,6 +53,15 @@
              {/volist}
            </ul>
 			<ul class="layui-nav layui-layout-right" lay-filter="">
+                <li class="layui-nav-item layui-hide-xs"></li>
+                    <div class="layui-input-inline" >
+                        <select id="languageSelect" class="w150" name="app[lang]">
+                            {volist name="langs" id="vo"}
+                            <option value="{$vo}" {if condition="$config['app']['lang'] eq $vo"}selected {/if}>{$vo}</option>
+                            {/volist}
+                        </select>
+                    </div>
+                </li>
 				 <li class="layui-nav-item layui-hide-xs">
 					<a href="javascript:void(0);">{:lang('opt')}&nbsp;&nbsp;</a>
 					<dl class="layui-nav-child">
@@ -153,6 +168,30 @@
 </script>
 
 <script type="text/javascript">
+    $(document).ready(function(){
+        $('#languageSelect').change(function(){
+            var selectedLang = $(this).val();
+            $.ajax({
+                url: "{:url('system/configlang')}",
+                type: "post",
+                dataType: "json",
+                data: {'lang': selectedLang},
+                beforeSend: function () {
+
+                },
+                error:function(r){
+                    layer.msg("configedit error",{time:1800});
+                },
+                success: function (r) {
+                    layer.msg(r.msg,{time:1800});
+                },
+                complete: function () {
+                    location.reload();
+                }
+            });
+        });
+    });
+
     layui.use(['element', 'layer'], function() {
         var $ = layui.jquery, element = layui.element, layer = layui.layer;
         $('.layui-tab-content').height($(window).height() - 145);

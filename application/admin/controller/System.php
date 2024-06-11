@@ -728,5 +728,17 @@ class System extends Base
         return $this->fetch('admin@system/configseo');
     }
 
+    public function configlang(){
+        $param = input();
+        $config_new['app']['lang'] = $param['lang'];
+        $config_old = config('maccms');
+        $config_new = array_merge($config_old, $config_new);
+
+        $res = mac_arr2file(APP_PATH . 'extra/maccms.php', $config_new);
+        if ($res === false) {
+            return $this->error(lang('save_err'));
+        }
+        return json(['code' => 1, 'msg' => 'ok']);
+    }
 
 }
