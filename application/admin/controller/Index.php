@@ -90,6 +90,7 @@ class Index extends Base
             }
         }
         $this->assign('menus',$menus);
+        $this->assign('config',config('maccms'));
 
         $this->assign('title',lang('admin/index/title'));
         return $this->fetch('admin@index/index');
