@@ -22,6 +22,9 @@ class Collect extends Base {
 
     public function listData($where,$order,$page=1,$limit=20,$start=0)
     {
+        $page = $page > 0 ? (int)$page : 1;
+        $limit = $limit ? (int)$limit : 20;
+        $start = $start ? (int)$start : 0;
         $total = $this->where($where)->count();
         $list = Db::name('Collect')->where($where)->order($order)->page($page)->limit($limit)->select();
         return ['code'=>1,'msg'=>lang('data_list'),'page'=>$page,'pagecount'=>ceil($total/$limit),'limit'=>$limit,'total'=>$total,'list'=>$list];

@@ -18,6 +18,9 @@ class Plog extends Base {
 
     public function listData($where,$order,$page=1,$limit=20,$start=0)
     {
+        $page = $page > 0 ? (int)$page : 1;
+        $limit = $limit ? (int)$limit : 20;
+        $start = $start ? (int)$start : 0;
         if(!is_array($where)){
             $where = json_decode($where,true);
         }

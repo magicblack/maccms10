@@ -34,6 +34,8 @@ class Type extends Base {
 
     public function listData($where,$order,$format='def',$mid=0,$limit=999,$start=0,$totalshow=1)
     {
+        $limit = $limit ? (int)$limit : 20;
+        $start = $start ? (int)$start : 0;
         if(!is_array($where)){
             $where = json_decode($where,true);
         }

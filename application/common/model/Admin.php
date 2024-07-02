@@ -23,6 +23,8 @@ class Admin extends Base {
 
     public function listData($where,$order,$page,$limit=20)
     {
+        $page = $page > 0 ? (int)$page : 1;
+        $limit = $limit ? (int)$limit : 20;
         $total = $this->where($where)->count();
         $list = Db::name('Admin')->where($where)->order($order)->page($page)->limit($limit)->select();
         return ['code'=>1,'msg'=>lang('data_list'),'page'=>$page,'pagecount'=>ceil($total/$limit),'limit'=>$limit,'total'=>$total,'list'=>$list];
