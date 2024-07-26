@@ -139,13 +139,14 @@
                     <label class="layui-form-label">
                         {:lang('admin/system/configcollect/inrule')}：</label>
                     <div class="layui-input-block">
-                        <input type="checkbox" lay-skin="primary" name="collect[vod][inrule][]" value="a" title="{:lang('name')}" checked disabled>
+                        <input type="checkbox" lay-skin="primary" name="collect[vod][inrule][]" value="a" title="{:lang('name')}" {if condition="strpos($config['collect']['vod']['inrule'],'a') !==false"}checked {/if}>
                         <input type="checkbox" lay-skin="primary" name="collect[vod][inrule][]" value="b" title="{:lang('type')}" {if condition="strpos($config['collect']['vod']['inrule'],'b') !==false"}checked {/if}>
                         <input type="checkbox" lay-skin="primary" name="collect[vod][inrule][]" value="c" title="{:lang('years')}" {if condition="strpos($config['collect']['vod']['inrule'],'c') !==false"}checked {/if}>
                         <input type="checkbox" lay-skin="primary" name="collect[vod][inrule][]" value="d" title="{:lang('area')}" {if condition="strpos($config['collect']['vod']['inrule'],'d') !==false"}checked {/if}>
                         <input type="checkbox" lay-skin="primary" name="collect[vod][inrule][]" value="e" title="{:lang('lang')}" {if condition="strpos($config['collect']['vod']['inrule'],'e') !==false"}checked {/if}>
                         <input type="checkbox" lay-skin="primary" name="collect[vod][inrule][]" value="f" title="{:lang('actor')}" {if condition="strpos($config['collect']['vod']['inrule'],'f') !==false"}checked {/if}>
                         <input type="checkbox" lay-skin="primary" name="collect[vod][inrule][]" value="g" title="{:lang('director')}" {if condition="strpos($config['collect']['vod']['inrule'],'g') !==false"}checked {/if}>
+                        <input type="checkbox" lay-skin="primary" name="collect[vod][inrule][]" value="h" title="{:lang('douban_id')}" {if condition="strpos($config['collect']['vod']['inrule'],'h') !==false"}checked {/if}>
                     </div>
                 </div>
 

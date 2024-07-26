@@ -97,3 +97,18 @@ if(empty($col_list[$pre.'collect']['collect_filter_year'])){
     $sql .= "ALTER TABLE `mac_collect` ADD `collect_filter_year` VARCHAR(255) NOT NULL DEFAULT '' COMMENT '采集时，过滤年份' AFTER `collect_filter_from`;";
     $sql .="\r";
 }
+// 入库重复规则设置名称
+if (version_compare(config('version.code'), '2024.1000.4043', '>=')) {
+    $file = APP_PATH . 'extra/maccms.php';
+    $backupFile = APP_PATH . 'extra/maccms_backup_' . date('Ymd_His') . '.php';
+
+    copy($file, $backupFile);
+
+    @chmod($file, 0777);
+    $config = config('maccms');
+    if (strpos($config['collect']['vod']['inrule'], 'a') === false  && !isset($config['collect']['vod']['inrule_first_change'])) {
+        $config['collect']['vod']['inrule'] = ',a' . $config['collect']['vod']['inrule'];
+        $config['collect']['vod']['inrule_first_change']= true;
+        $res = mac_arr2file($file, $config);
+    }
+}

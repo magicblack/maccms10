@@ -569,7 +569,10 @@ class Collect extends Base {
                 }
 
                 $where = [];
-                $where['vod_name'] = mac_filter_xss($v['vod_name']);
+
+                if (strpos($config['inrule'], 'a')!==false) {
+                    $where['vod_name'] = mac_filter_xss($v['vod_name']);
+                }
                 $blend=false;
                 if (strpos($config['inrule'], 'b')!==false) {
                     $where['type_id'] = $v['type_id'];
@@ -593,6 +596,9 @@ class Collect extends Base {
                 }
                 if (strpos($config['inrule'], 'g')!==false) {
                     $where['vod_director'] = mac_filter_xss($v['vod_director']);
+                }
+                if (strpos($config['inrule'], 'h')!==false) {
+                    $where['vod_douban_id'] = intval($v['vod_douban_id']);
                 }
                 if ($config['tag'] == 1) {
                     $v['vod_tag'] = mac_filter_xss(mac_get_tag($v['vod_name'], $v['vod_content']));
