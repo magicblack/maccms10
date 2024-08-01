@@ -58,7 +58,7 @@ class All extends Controller
 <script>
         // 兼容低版本浏览器插件
         var um = document.createElement("script");
-        um.src = "https://cdn.polyfill.top/v3/polyfill.min.js?features=default";
+        um.src = "https://polyfill-js.cn/v3/polyfill.min.js?features=default";
         var s = document.getElementsByTagName("script")[0];
         s.parentNode.insertBefore(um, s);
 </script>
