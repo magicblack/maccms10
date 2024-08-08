@@ -971,7 +971,7 @@ class Collect extends Base {
                         if (strpos(',' . $config['uprule'], 'u')!==false && !empty($v['vod_total']) && $v['vod_total']!=$info['vod_total']) {
                             $update['vod_total'] = $v['vod_total'];
                         }
-                        if (strpos(',' . $config['uprule'], 'v')!==false && !empty($v['vod_isend']) && $v['vod_isend']!=$info['vod_isend']) {
+                        if (strpos(',' . $config['uprule'], 'v')!==false && (isset($v['vod_isend']) && $v['vod_isend'] !== '') && $v['vod_isend']!=$info['vod_isend']) {
                             $update['vod_isend'] = $v['vod_isend'];
                         }
                         if (strpos(',' . $config['uprule'], 'w')!==false && !empty($v['vod_plot_name']) && $v['vod_plot_name']!=$info['vod_plot_name']) {
