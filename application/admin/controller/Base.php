@@ -44,7 +44,7 @@ class Base extends All
         $c = strtolower($c);
         $a = strtolower($a);
 
-        $auths = $this->_admin['admin_auth'] . ',index/index,index/welcome,';
+        $auths = $this->_admin['admin_auth'] . ',index/index,index/welcome,index/logout,';
         $cur = ','.$c.'/'.$a.',';
         if($this->_admin['admin_id'] =='1'){
             return true;
