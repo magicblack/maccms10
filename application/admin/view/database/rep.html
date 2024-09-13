@@ -84,7 +84,7 @@
                 $.post("{:url('columns')}", {table:data.value}, function(res) {
                     if (res.code == 1) {
                         $.each(res.data,function(index,row){
-                            $(".fields").append('<a class="layui-btn layui-btn-xs w80" href="javascript:setfield(\''+row.Field+'\')">'+row.Field+'</a>&nbsp;&nbsp;');
+                            $(".fields").append('<a class="layui-btn layui-btn-sm" href="javascript:setfield(\''+row.Field+'\')">'+row.Field+'</a>&nbsp;&nbsp;');
                             if(index>0 && index%5==0){
                                 //$(".fields").append('<br>');
                             }
