@@ -80,12 +80,12 @@ class Vod extends Base {
         $limit_str = ($limit * ($page-1) + $start) .",".$limit;
 
         $total = $this
-            ->join('tmpvod t','t.name1 = vod_name')
+            ->join('vod_repeat t','t.name1 = vod_name')
             ->where($where)
             ->count();
 
         $list = Db::name('Vod')
-            ->join('tmpvod t','t.name1 = vod_name')
+            ->join('vod_repeat t','t.name1 = vod_name')
             ->field($field)
             ->where($where)
             ->order($order)
@@ -748,6 +748,7 @@ class Vod extends Base {
         if(false === $res){
             return ['code'=>1002,'msg'=>lang('save_err').'：'.$this->getError() ];
         }
+        $this->cacheRepeatWithName($data['vod_name']);
         return ['code'=>1,'msg'=>lang('save_ok')];
     }
 
@@ -862,6 +863,25 @@ class Vod extends Base {
             $ids = array_unique($ids);
         }
         return ['code'=>1,'msg'=>lang('obtain_ok'),'data'=> join(',',$ids) ];
+    }
+
+    //重新缓存指定name的重名记录
+    public function cacheRepeatWithName($name)
+    {
+        //删除缓存表的name记录
+        Db::execute("delete from ". config('database.prefix') ."vod_repeat where name= ".$name);
+        Db::execute('INSERT INTO `' . config('database.prefix') . 'vod_repeat` (SELECT min(vod_id)as id1,vod_name as name1 FROM ' .
+            config('database.prefix') . 'vod WHERE name1 '.$name.' GROUP BY name1 HAVING COUNT(name1)>1)');
+    }
+    //重建重名缓存表
+    public function  createRepeatCache()
+    {
+        Db::execute('DROP TABLE IF EXISTS ' . config('database.prefix') . 'vod_repeat');
+        Db::execute('CREATE TABLE `' . config('database.prefix') . 'vod_repeat` (`id1` int unsigned DEFAULT NULL, `name1` varchar(255) NOT NULL DEFAULT \'\') ENGINE=InnoDB');
+        Db::execute('ALTER TABLE `' . config('database.prefix') . 'vod_repeat` ADD INDEX `name1` (`name1`(100))');
+        Db::execute('INSERT INTO `' . config('database.prefix') . 'vod_repeat` (SELECT min(vod_id)as id1,vod_name as name1 FROM ' .
+            config('database.prefix') . 'vod GROUP BY name1 HAVING COUNT(name1)>1)');
+        Cache::set('vod_repeat_table_created_time',time());
     }
 
 }
