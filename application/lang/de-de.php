@@ -376,6 +376,7 @@ return [
     'clear'=>'clear',
     'del_auto_keep_min'=>'Deduplizierung mit einem Klick [kleine ID beibehalten]',
     'del_auto_keep_max'=>'Deduplizierung mit einem Klick [große ID beibehalten]',
+    'update_repeat_cache'=>'Cache aktualisieren',
     'num_id'=>'Nummern-ID',
     'encode_id'=>'Verschlüsselte ID',
     'vod_id'=>'Video-ID',

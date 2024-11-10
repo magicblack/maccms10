@@ -375,6 +375,7 @@ return [
     'clear'=>'Borrar',
     'del_auto_keep_min'=>'Eliminar automáticamente [Mantener ID pequeño]',
     'del_auto_keep_max'=>'Eliminar automáticamente [Mantener ID grande]',
+    'update_repeat_cache'=>'Actualizar caché',
     'num_id'=>'ID numérico',
     'encode_id'=>'ID codificado',
     'vod_id'=>'ID de video',

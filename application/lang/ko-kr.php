@@ -374,6 +374,7 @@ return [
     'clear'=>'지우기',
     'del_auto_keep_min'=>'중복 삭제[작은 ID 유지]',
     'del_auto_keep_max'=>'중복 삭제[큰 ID 유지]',
+    'update_repeat_cache'=>'캐시 업데이트',
     'num_id'=>'숫자 ID',
     'encode_id'=>'암호화 ID',
     'vod_id'=>'동영상 ID',

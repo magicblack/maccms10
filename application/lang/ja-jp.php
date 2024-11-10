@@ -374,6 +374,7 @@ return [
     'clear'=>'クリア',
     'del_auto_keep_min'=>'重複を削除[小IDを保持]',
     'del_auto_keep_max'=>'重複を削除[大IDを保持]',
+    'update_repeat_cache'=>'キャッシュを更新する',
     'num_id'=>'数値ID',
     'encode_id'=>'暗号化ID',
     'vod_id'=>'ビデオID',
