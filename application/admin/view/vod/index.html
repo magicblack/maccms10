@@ -187,6 +187,7 @@
             {if condition="$param['repeat'] neq ''"}
             <a data-href="{:url('del')}?repeat=1&retain=min" data-checkbox="no" class="layui-btn layui-btn-primary j-page-btns confirm"><i class="layui-icon">&#xe640;</i>{:lang('del_auto_keep_min')}</a>
             <a data-href="{:url('del')}?repeat=1&retain=max" data-checkbox="no" class="layui-btn layui-btn-primary j-page-btns confirm"><i class="layui-icon">&#xe640;</i>{:lang('del_auto_keep_max')}</a>
+            <a data-href="{:url('data')}?repeat=1&cache=1" data-checkbox="no" class="layui-btn layui-btn-primary j-page-btns"><i class="layui-icon">&#xe640;</i>{:lang('update_repeat_cache')}</a>
             {/if}
         </div>
 

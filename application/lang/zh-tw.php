@@ -374,6 +374,7 @@ return [
     'clear'=>'清空',
     'del_auto_keep_min'=>'一鍵刪重[保留小ID]',
     'del_auto_keep_max'=>'一鍵刪重[保留大ID]',
+    'update_repeat_cache'=>'更新快取',
     'num_id'=>'數字ID',
     'encode_id'=>'加密ID',
     'vod_id'=>'視頻ID',

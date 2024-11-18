@@ -377,6 +377,7 @@ return [
     'clear' => 'Effacer',
     'del_auto_keep_min' => 'Suppression automatique [conserver les petits ID]',
     'del_auto_keep_max' => 'Suppression automatique [conserver les grands ID]',
+    'update_repeat_cache'=>'Mettre à jour le cache',
     'num_id' => 'ID numérique',
     'encode_id' => 'ID encodé',
     'vod_id' => 'ID vidéo',

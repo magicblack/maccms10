@@ -1005,6 +1005,8 @@ class Collect extends Base {
                 return ['code'=>($color=='red' ? 1001 : 1),'msg'=>$des ];
             }
         }
+        //一次采集完成，重建视频缓存
+        model('Vod')->createRepeatCache();
 
         $key = $GLOBALS['config']['app']['cache_flag']. '_'.'collect_break_vod';
         if(ENTRANCE=='api'){

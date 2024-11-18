@@ -80,12 +80,12 @@ class Vod extends Base {
         $limit_str = ($limit * ($page-1) + $start) .",".$limit;
 
         $total = $this
-            ->join('tmpvod t','t.name1 = vod_name')
+            ->join('vod_repeat t','t.name1 = vod_name')
             ->where($where)
             ->count();
 
         $list = Db::name('Vod')
-            ->join('tmpvod t','t.name1 = vod_name')
+            ->join('vod_repeat t','t.name1 = vod_name')
             ->field($field)
             ->where($where)
             ->order($order)
@@ -730,9 +730,18 @@ class Vod extends Base {
 
         $data = VodValidate::formatDataBeforeDb($data);
         if(!empty($data['vod_id'])){
+
             $where=[];
             $where['vod_id'] = ['eq',$data['vod_id']];
             $res = $this->allowField(true)->where($where)->update($data);
+            //编辑 先获取到之前的name
+            $old_name = $this->where('vod_id',$data['vod_id'])->value('vod_name');
+            if($old_name!=$data['vod_name']){
+                $this->cacheRepeatWithName($old_name);
+                $this->cacheRepeatWithName($data['vod_name']);
+            }else{
+                $this->cacheRepeatWithName($data['vod_name']);
+            }
         }
         else{
             $data['vod_plot'] = 0;
@@ -744,10 +753,13 @@ class Vod extends Base {
             if ($res > 0 && model('VodSearch')->isFrontendEnabled()) {
                 model('VodSearch')->checkAndUpdateTopResults(['vod_id' => $res] + $data);
             }
+            //新增 针对当前name 判断是否重复
+            $this->cacheRepeatWithName($data['vod_name']);
         }
         if(false === $res){
             return ['code'=>1002,'msg'=>lang('save_err').'：'.$this->getError() ];
         }
+
         return ['code'=>1,'msg'=>lang('save_ok')];
     }
 
@@ -862,6 +874,25 @@ class Vod extends Base {
             $ids = array_unique($ids);
         }
         return ['code'=>1,'msg'=>lang('obtain_ok'),'data'=> join(',',$ids) ];
+    }
+
+    //重新缓存指定name的重名记录
+    public function cacheRepeatWithName($name)
+    {
+        //删除缓存表的name记录
+        Db::execute('delete from `' . config('database.prefix') . 'vod_repeat` where name1 =?', [$name]);
+        //重新插入缓存表的name记录
+        Db::execute('INSERT INTO `' . config('database.prefix') . 'vod_repeat` (SELECT min(vod_id)as id1,vod_name as name1 FROM ' . config('database.prefix') . 'vod WHERE vod_name = ? GROUP BY name1 HAVING COUNT(name1)>1)', [$name]);
+    }
+    //重建重名缓存表
+    public function  createRepeatCache()
+    {
+        Db::execute('DROP TABLE IF EXISTS ' . config('database.prefix') . 'vod_repeat');
+        Db::execute('CREATE TABLE `' . config('database.prefix') . 'vod_repeat` (`id1` int unsigned DEFAULT NULL, `name1` varchar(255) NOT NULL DEFAULT \'\') ENGINE=InnoDB');
+        Db::execute('ALTER TABLE `' . config('database.prefix') . 'vod_repeat` ADD INDEX `name1` (`name1`(100))');
+        Db::execute('INSERT INTO `' . config('database.prefix') . 'vod_repeat` (SELECT min(vod_id)as id1,vod_name as name1 FROM ' .
+            config('database.prefix') . 'vod GROUP BY name1 HAVING COUNT(name1)>1)');
+        Cache::set('vod_repeat_table_created_time',time());
     }
 
 }

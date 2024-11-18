@@ -375,6 +375,7 @@ return [
     'clear'=>'Clear',
     'del_auto_keep_min'=>'One-click Delete Duplicates [Keep Small ID]',
     'del_auto_keep_max'=>'One-click Delete Duplicates [Keep Large ID]',
+    'update_repeat_cache'=>'Update cache',
     'num_id'=>'Numeric ID',
     'encode_id'=>'Encrypted ID',
     'vod_id'=>'Video ID',
