@@ -26,8 +26,8 @@
             {volist name="list" id="vo"}
             <tr>
                 <td><input type="checkbox" name="ids[]" value="{$vo.name}" class="layui-checkbox checkbox-ids" lay-skin="primary"></td>
-                <td>{$vo.name}</td>
-                <td>{$vo.des}</td>
+                <td>{$vo.name|htmlspecialchars}</td>
+                <td>{$vo.des|htmlspecialchars}</td>
                 <td>{$vo.file}</td>
                 <td>
                     <input type="checkbox" name="status" {if condition="$vo['status'] eq 1"}checked{/if} value="{$vo['status']}" lay-skin="switch" lay-filter="switchStatus" lay-text="{:lang('open')}|{:lang('close')}" data-href="{:url('field?col=status&ids='.$vo['name'])}">
