@@ -111,7 +111,7 @@ class Vod extends Base {
         return ['code'=>1,'msg'=>lang('data_list'),'page'=>$page,'pagecount'=>ceil($total/$limit),'limit'=>$limit,'total'=>$total,'list'=>$list];
     }
 
-    public function listCacheData($lp)
+    public function listCacheData($lp,$field='*')
     {
         if(!is_array($lp)){
             $lp = json_decode($lp,true);
@@ -574,7 +574,7 @@ class Vod extends Base {
             $cachetime = $GLOBALS['config']['app']['cache_time'];
         }
         if($GLOBALS['config']['app']['cache_core']==0 || empty($res)) {
-            $res = $this->listData($where, $order, $page, $num, $start,'*',1, $totalshow);
+            $res = $this->listData($where, $order, $page, $num, $start,$field,1, $totalshow);
             if($GLOBALS['config']['app']['cache_core']==1) {
                 Cache::set($cach_name, $res, $cachetime);
             }
