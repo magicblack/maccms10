@@ -997,6 +997,9 @@ class Collect extends Base {
 
                     }
                 }
+                if(Cache::has('vod_repeat_table_created_time')){
+                    Cache::rm('vod_repeat_table_created_time');
+                }
             }
             if($show==1) {
                 mac_echo( ($k + 1) .'、'. $v['vod_name'] . " <font color='{$color}'>" .$des .'</font>'. $msg.'' );
@@ -1005,8 +1008,6 @@ class Collect extends Base {
                 return ['code'=>($color=='red' ? 1001 : 1),'msg'=>$des ];
             }
         }
-        //一次采集完成，重建视频缓存
-        model('Vod')->createRepeatCache();
 
         $key = $GLOBALS['config']['app']['cache_flag']. '_'.'collect_break_vod';
         if(ENTRANCE=='api'){
