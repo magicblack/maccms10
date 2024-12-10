@@ -263,6 +263,7 @@ return [
     'up'=>'顶',
     'hate'=>'踩',
     'rnd_make'=>'随机生成',
+    'reset_zero'=>'归零',
     'score'=>'平均分',
     'score_all'=>'总评分',
     'score_num'=>'总评次',

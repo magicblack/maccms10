@@ -390,6 +390,7 @@
                                 <input type="text" class="layui-input" value="{$info.vod_down}" placeholder="" id="vod_down" name="vod_down">
                             </div>
                             <button class="layui-btn" type="button" id="btn_rnd">{:lang('rnd_make')}</button>
+                            <button class="layui-btn" type="button" id="btn_zero">{:lang('reset_zero')}</button>
                         </div>
 
                         <div class="layui-form-item">
@@ -696,6 +697,19 @@
             $("#vod_score_all").val( rndNum(1000) );
             $("#vod_score_num").val( rndNum(100) );
         });
+        //归零添加
+        $("#btn_zero").click(function(){
+            $("#vod_hits").val( '0' );
+            $("#vod_hits_month").val( '0' );
+            $("#vod_hits_week").val( '0' );
+            $("#vod_hits_day").val( '0' );
+            $("#vod_up").val( '0' );
+            $("#vod_down").val( '0' );
+            $("#vod_score").val( '0' );
+            $("#vod_score_all").val( '0' );
+            $("#vod_score_num").val( '0' );
+        });
+//归零结束
 
         var is_load=0;
         $('#btn_douban').click(function(){

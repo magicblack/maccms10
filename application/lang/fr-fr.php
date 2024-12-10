@@ -265,6 +265,7 @@ return [
     'up' => 'Haut',
     'hate' => 'Bas',
     'rnd_make' => 'Générer aléatoirement',
+    'reset_zero'=>'Réinitialiser à zéro',
     'score' => 'Score moyen',
     'score_all' => 'Score total',
     'score_num' => 'Nombre total de critiques',

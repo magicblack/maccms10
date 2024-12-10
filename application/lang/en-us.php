@@ -264,6 +264,7 @@ return [
     'up'=>'Upvote',
     'hate'=>'Downvote',
     'rnd_make'=>'Random Generate',
+    'reset_zero'=>'Reset to zero',
     'score'=>'Average Score',
     'score_all'=>'Total Score',
     'score_num'=>'Total Ratings',

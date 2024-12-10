@@ -264,6 +264,7 @@ return [
     'up'=>'top',
     'hate'=>'hate',
     'rnd_make'=>'Zufällig generiert',
+    'reset_zero'=>'Nullsetzen',
     'score'=>'durchschnittliche Punktzahl',
     'score_all'=>'Gesamtpunktzahl',
     'score_num'=>'Gesamtbewertung',

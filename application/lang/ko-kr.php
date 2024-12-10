@@ -263,6 +263,7 @@ return [
     'up'=>'좋아요',
     'hate'=>'싫어요',
     'rnd_make'=>'무작위 생성',
+    'reset_zero'=>'영으로 초기화',
     'score'=>'평균 점수',
     'score_all'=>'총점',
     'score_num'=>'총 평가 횟수',

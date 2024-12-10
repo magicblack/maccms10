@@ -265,6 +265,7 @@ return [
     'up'=>'Arriba',
     'hate'=>'Abajo',
     'rnd_make'=>'Generación aleatoria',
+    'reset_zero'=>'Restablecer a cero',
     'score'=>'Puntuación promedio',
     'score_all'=>'Puntuación total',
     'score_num'=>'Total de puntuaciones',

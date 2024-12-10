@@ -263,6 +263,7 @@ return [
     'up'=>'Curtir',
     'hate'=>'Não curtir',
     'rnd_make'=>'Geração aleatória',
+    'reset_zero'=>'Redefinir para zero',
     'score'=>'Pontuação média',
     'score_all'=>'Pontuação total',
     'score_num'=>'Número total de avaliações',

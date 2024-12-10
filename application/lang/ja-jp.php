@@ -263,6 +263,7 @@ return [
     'up'=>'上',
     'hate'=>'嫌い',
     'rnd_make'=>'ランダム生成',
+    'reset_zero'=>'ゼロに戻す',
     'score'=>'平均スコア',
     'score_all'=>'合計スコア',
     'score_num'=>'合計評価',
