@@ -115,5 +115,57 @@ class Comment extends Base
         return $this->error(lang('param_err'));
     }
 
+    /**
+     * 黑名单关键字配置
+     */
+    public function blacklist()
+    {
+        if ($this->request->isPost()) {
+            $keywords = $this->request->post('keywords');
+            // 按行分割关键字
+            $keywords_array = array_filter(explode("\n", $keywords));
+            // 过滤空行
+            $keywords_array = array_map('trim', $keywords_array);
+            $blcaks = config('blacks');
+            $blcaks['black_keyword_list'] = $keywords_array;
+            $res = mac_arr2file( APP_PATH .'extra/blacks.php', $blcaks);
+            if($res===false){
+                return $this->error(lang('write_err_config'));
+            }
+            return $this->success(lang('save_ok'));
+        }
+        $blcaks = config('blacks');
+        $black_keyword_list = implode("\n", $blcaks['black_keyword_list']);
+        $this->assign('black_keyword_list', $black_keyword_list);
+        return $this->fetch('admin@comment/blacklist');
+    }
+    /**
+     * 黑名单IP配置
+     */
+    public function blacklist_ip()
+    {
+        if ($this->request->isPost()) {
+            $keywords = $this->request->post('ip');
+            // 按行分割关键字
+            $keywords_array = array_filter(explode("\n", $keywords));
+            // 过滤空行
+            $keywords_array = array_map('trim', $keywords_array);
+            //使用mac_string_is_ip方法过滤掉非ip的内容
+            $keywords_array = array_filter($keywords_array, function ($value) {
+                return mac_string_is_ip($value);
+            });
+            $blcaks = config('blacks');
+            $blcaks['black_ip_list'] = $keywords_array;
+            $res = mac_arr2file( APP_PATH .'extra/blacks.php', $blcaks);
+            if($res===false){
+                return $this->error(lang('write_err_config'));
+            }
+            return $this->success(lang('save_ok'));
+        }
+        $blcaks = config('blacks');
+        $black_keyword_list = implode("\n", $blcaks['black_ip_list']);
+        $this->assign('black_ip_list', $black_keyword_list);
+        return $this->fetch('admin@comment/blacklist_ip');
+    }
 
 }

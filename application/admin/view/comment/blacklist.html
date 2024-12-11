@@ -1,0 +1,26 @@
+{include file="../../../application/admin/view/public/head" /}
+<div class="page-container p10">
+
+
+  <form class="layui-form layui-form-pane" method="post" action="{:url('comment/blacklist')}">
+    <div class="layui-form-item">
+      <label class="layui-form-label">{:lang('blacklist_keywords')}</label>
+      <div class="layui-input-block">
+        <textarea style="height: 500px" name="keywords" placeholder="{:lang('index/blacklist_placeholder')}" class="layui-textarea" >{$black_keyword_list}</textarea>
+      </div>
+    </div>
+    <div class="layui-form-item center">
+      <div class="layui-input-block">
+        <button type="submit" class="layui-btn" lay-submit>{:lang('save')}</button>
+        <button type="reset" class="layui-btn layui-btn-primary">{:lang('btn_reset')}</button>
+      </div>
+    </div>
+  </form>
+</div>
+
+
+{include file="../../../application/admin/view/public/foot" /}
+
+
+</body>
+</html>

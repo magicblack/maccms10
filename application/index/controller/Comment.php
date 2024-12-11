@@ -26,7 +26,7 @@ class Comment extends Base
 
         return $this->label_fetch('comment/index');
     }
-    
+
     public function ajax() {
         $param = mac_param_url();
         $this->assign('param',$param);
@@ -90,6 +90,22 @@ class Comment extends Base
         }
 
         $param['comment_ip'] = mac_get_ip_long();
+        $blcaks = config('blacks');
+        //判断黑名单关键字是否为空 不为空并且大于0则循环判断是否包含黑名单关键字
+        if(!empty($blcaks['black_keyword_list']) && count($blcaks['black_keyword_list']) > 0){
+            foreach ($blcaks['black_keyword_list'] as $key => $value) {
+                if(strpos($param['comment_content'], $value) !== false){
+                    return ['code'=>1007,'msg'=>lang('index/blacklist_keyword')];
+                }
+            }
+        }
+        //判断黑名单IP是否为空 不为空并且大于0则循环判断客户端ip是否包含黑名单ip
+        if(!empty($blcaks['black_ip_list']) && count($blcaks['black_ip_list']) > 0){
+            $client_ip = long2ip($param['comment_ip']);
+            if (in_array($client_ip, $blcaks['black_ip_list'])){
+                return ['code'=>1008,'msg'=>lang('index/blacklist_ip')];
+            }
+        }
 
         $res = model('Comment')->saveData($param);
         if($res['code']>1){
