@@ -1326,6 +1326,8 @@ https://www.baidu.com/123.jpg
     'admin/system/configupload/mode_remote'=>'Acceso Remoto',
     'admin/system/configupload/remoteurl'=>'URL Remota de Imágenes',
     'admin/system/configupload/remoteurl_tip'=>'Utilice esto si las imágenes locales están disponibles de manera remota',
+    'admin/system/configupload/s3_info'=>'Al utilizar el almacenamiento S3, asegúrese de que se haya descargado el archivo aws.phar',
+    'admin/system/configupload/s3_save_path'=>'Después de descargar, guarde como',
 
     'admin/system/configsms/title'=>'Configuración de Envío de SMS',
     'admin/system/configsms/tip'=>'Consejo:<br> Asegúrese de configurar la firma y el contenido del SMS según lo requiera el proveedor del servicio de interfaz SMS.',

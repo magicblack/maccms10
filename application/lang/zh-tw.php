@@ -1340,6 +1340,8 @@ https://www.baidu.com/123.jpg
     'admin/system/configupload/img_api_tip'=>'處理防盜鏈圖片的接口地址',
     'admin/system/configupload/keep_local'=>'保留本地',
     'admin/system/configupload/keep_local_tip'=>'如果選擇上傳到遠程，上傳完成後，本地也將保留一份',
+    'admin/system/configupload/s3_info'=>'使用S3 儲存請確保已下載好aws.phar檔案',
+    'admin/system/configupload/s3_save_path'=>'下載後請儲存為',
 
     'admin/system/configsms/title'=>'短信發送配置',
     'admin/system/configsms/tip'=>'提示信息：<br>

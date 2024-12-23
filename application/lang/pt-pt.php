@@ -1339,6 +1339,8 @@ https://www.baidu.com/123.jpg
     'admin/system/configupload/img_api_tip'=>'Endereço da interface para lidar com imagens anti-hotlink',
     'admin/system/configupload/keep_local'=>'Manter local',
     'admin/system/configupload/keep_local_tip'=>'Se você optar por fazer upload para remoto, uma cópia também será mantida localmente após o upload ser concluído',
+    'admin/system/configupload/s3_info'=>'Ao usar o armazenamento S3, certifique-se de que o arquivo aws.phar foi baixado.',
+    'admin/system/configupload/s3_save_path'=>'Após baixar, por favor salve como',
 
     'admin/system/configsms/title'=>'Configuração de envio de SMS',
     'admin/system/configsms/tip'=>'Informações de dica: <br>

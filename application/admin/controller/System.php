@@ -277,8 +277,12 @@ class System extends Base
 
     public function configupload()
     {
+        $phar_status = file_exists(ROOT_PATH . 'extend/aws/src/Aws/aws.phar');
         if (Request()->isPost()){
             $config = input('','','htmlentities');
+            if($config['upload']['mode'] == 'S3' && $phar_status == false){
+                return $this->error(lang('save_err'));
+            }
 
             $validate = \think\Loader::validate('Token');
             if(!$validate->check($config)){
@@ -299,7 +303,12 @@ class System extends Base
         }
 
         $this->assign('config', config('maccms'));
-
+        if ($phar_status) {
+            $aws_phar = 'Yes';
+        }else{
+            $aws_phar = 'No';
+        }
+        $this->assign('aws_phar',$aws_phar);
         $extends = mac_extends_list('upload');
         $this->assign('extends',$extends);
 

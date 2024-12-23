@@ -1,0 +1,26 @@
+<div class="layui-form-item upload_mode mode_S3" {if condition="$config['upload']['mode'] neq 'S3'"}style="display:none;" {/if}>
+<label class="layui-form-label">S3：</label>
+<div class="layui-input-block">
+    <a href="https://aws.amazon.com/cn/s3" target="_blank" class="layui-btn layui-btn-primary">点击申请 https://aws.amazon.com/cn/s3</a>
+</div>
+<div class="layui-form-mid layui-word-aux">{:lang('admin/system/configupload/s3_info')} <a href="https://github.com/aws/aws-sdk-php/releases/tag/3.334.6" target="_blank"
+                                                                      class="layui-btn layui-btn-primary">{:lang('down')}</a>{:lang('admin/system/configupload/s3_save_path')}:extend/aws/src/Aws/aws.phar</div>
+</div>
+<div class="layui-form-item upload_mode mode_S3" {if condition="$config['upload']['mode'] neq 'S3'"}style="display:none;" {/if}>
+<label class="layui-form-label">Bucket：</label>
+<div class="layui-input-inline w200">
+    <input type="text" name="upload[api][s3][bucket]" placeholder="S3-bucket" value="{$config['upload']['api']['s3']['bucket']}" class="layui-input"  >
+</div>
+<label class="layui-form-label">Access key ID：</label>
+<div class="layui-input-inline w200">
+    <input type="text" name="upload[api][s3][accesskey]" placeholder="S3-Access Key" value="{$config['upload']['api']['s3']['accesskey']}" class="layui-input"  >
+</div>
+<label class="layui-form-label">Secret access key：</label>
+<div class="layui-input-inline w200">
+    <input type="text" name="upload[api][s3][secretkey]" placeholder="S3-Secret Key" value="{$config['upload']['api']['s3']['secretkey']}" class="layui-input"  >
+</div>
+<label class="layui-form-label">Region：</label>
+<div class="layui-input-inline w200">
+    <input type="text" name="upload[api][s3][region]" placeholder="S3-Region" value="{$config['upload']['api']['s3']['region']}" class="layui-input"  >
+</div>
+</div>

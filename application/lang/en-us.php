@@ -1324,6 +1324,8 @@ https://www.baidu.com/123.jpg',
     'admin/system/configupload/img_api_tip'=>'Interface address for handling anti-leeching images',
     'admin/system/configupload/keep_local'=>'Keep Local Copy',
     'admin/system/configupload/keep_local_tip'=>'If uploading to remote, keep a local copy after upload completion',
+    'admin/system/configupload/s3_info'=>'When using S3 storage, make sure the aws.phar file has been downloaded',
+    'admin/system/configupload/s3_save_path'=>'After downloading, please save as',
 
     'admin/system/configsms/title'=>'SMS Sending Configuration',
     'admin/system/configsms/tip'=>'Tip:<br>

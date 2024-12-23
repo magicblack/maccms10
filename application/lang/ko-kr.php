@@ -1339,6 +1339,8 @@ https://www.baidu.com/123.jpg
     'admin/system/configupload/img_api_tip'=>'핫링크 방지 이미지를 처리하는 인터페이스 주소',
     'admin/system/configupload/keep_local'=>'로컬 유지',
     'admin/system/configupload/keep_local_tip'=>'원격으로 업로드하도록 선택하면 업로드가 완료된 후 로컬에도 복사본이 유지됩니다.',
+    'admin/system/configupload/s3_info'=>'S3 저장소를 사용할 때는 aws.phar 파일이 다운로드 되었는지 확인하십시오',
+    'admin/system/configupload/s3_save_path'=>'다운로드 후 다음 파일 형식으로 저장하십시오',
 
     'admin/system/configsms/title'=>'SMS 전송 구성',
     'admin/system/configsms/tip'=>'팁 정보: <br>
