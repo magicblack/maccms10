@@ -1,0 +1,372 @@
+{include file="../../../application/admin/view_new/public/head" /}
+<style>
+    .tagCategory .layui-btn + .layui-btn{
+        margin: 0;
+    }
+    .layui-form-label{
+        width: fit-content;
+    }
+</style>
+<div class="page-container">
+    <form class="layui-form " action="" id="movementTable">
+        <blockquote class="layui-elem-quote layui-quote-nm">
+            提示信息：部分标签参数可能不全面
+        </blockquote>
+        
+        <div class="layui-form-item tagCategory">
+            <label class="layui-form-label">标签类别：</label>
+            <div class="flex gap-2 flex-wrap">
+                <input type="button" class="layui-btn layui-btn-primary" value="link({:lang('link')})" onclick="showex('link')"/>
+                <input type="button" class="layui-btn layui-btn-primary" value="type({:lang('type')})" onclick="showex('type')"/>
+                <input type="button" class="layui-btn layui-btn-primary" value="topic({:lang('topic')})" onclick="showex('topic')"/>
+                <input type="button" class="layui-btn layui-btn-primary" value="art({:lang('art')})" onclick="showex('art')"/>
+                <input type="button" class="layui-btn layui-btn-primary" value="vod({:lang('vod')})" onclick="showex('vod')"/>
+                <input type="button" class="layui-btn layui-btn-primary" value="area({:lang('area')})" onclick="showex('area')"/>
+                <input type="button" class="layui-btn layui-btn-primary" value="lang({:lang('lang')})" onclick="showex('lang')"/>
+                <input type="button" class="layui-btn layui-btn-primary" value="year({:lang('years')})" onclick="showex('year')"/>
+                <input type="button" class="layui-btn layui-btn-primary" value="letter({:lang('letter')})" onclick="showex('letter')"/>
+                <input type="button" class="layui-btn layui-btn-primary" value="tag(Tag)" onclick="showex('tag')"/>
+                <input type="button" class="layui-btn layui-btn-primary" value="gbook({:lang('gbook')})" onclick="showex('gbook')"/>
+                <input type="button" class="layui-btn layui-btn-primary" value="comment({:lang('comment')})" onclick="showex('comment')"/>
+            </div>
+        </div>
+
+        <div class="layui-form-item vs v_link">
+            <label class="layui-form-label">{:lang('sort')}：</label>
+            <div class="layui-input-inline w100">
+                <select id="order_link"><option value="desc">{:lang('admin/template/reverse_order')}</option><option value="asc">{:lang('admin/template/positive_order')}</option></select>
+            </div>
+            <label class="layui-form-label ">{:lang('sort')}：</label>
+            <div class="layui-input-inline w100">
+                <select id="by_link"><option value="sort">{:lang('sort')}</option><option value="id">{:lang('id')}</option></select>
+            </div>
+            <label class="layui-form-label ">{:lang('genre')}：</label>
+            <div class="layui-input-inline w100">
+                <select id="type_link"><option value="all">{:lang('all')}</option><option value="font">{:lang('admin/link/text_link')}</option><option value="pic">{:lang('admin/link/pic_link')}</option></select>
+            </div>
+        </div>
+
+
+
+        <div class="layui-form-item vs v_tag" style="display: none;">
+            <label class="layui-form-label">{:lang('sort')}：</label>
+            <div class="layui-input-inline w100">
+                <select id="order_tag"><option value="asc">{:lang('admin/template/positive_order')}</option><option value="desc">{:lang('admin/template/reverse_order')}</option></select>
+            </div>
+            <label class="layui-form-label ">tag：</label>
+            <div class="layui-input-inline w200">
+                <input id="tag_tag" type="text" class="layui-input" value="aa,bb,cc,dd">
+            </div>
+        </div>
+
+
+        <div class="layui-form-item vs v_area" style="display: none;">
+            <label class="layui-form-label">{:lang('sort')}：</label>
+            <div class="layui-input-inline w100">
+                <select id="order_area"><option value="asc">{:lang('admin/template/positive_order')}</option><option value="desc">{:lang('admin/template/reverse_order')}</option></select>
+            </div>
+        </div>
+
+        <div class="layui-form-item vs v_lang" style="display: none;">
+            <label class="layui-form-label">{:lang('sort')}：</label>
+            <div class="layui-input-inline w100">
+                <select id="order_lang"><option value="asc">{:lang('admin/template/positive_order')}</option><option value="desc">{:lang('admin/template/reverse_order')}</option></select>
+            </div>
+        </div>
+
+        <div class="layui-form-item vs v_year" style="display: none;">
+            <label class="layui-form-label">{:lang('sort')}：</label>
+            <div class="layui-input-inline w100">
+                <select id="order_year"><option value="desc">{:lang('admin/template/reverse_order')}</option><option value="asc">{:lang('admin/template/positive_order')}</option></select>
+            </div>
+            <label class="layui-form-label ">{:lang('start')}：</label>
+            <div class="layui-input-inline w80">
+                <input id="start_year" type="text" class="layui-input" value="2000">
+            </div>
+            <label class="layui-form-label ">{:lang('end')}：</label>
+            <div class="layui-input-inline w80">
+                <input id="end_year" type="text" class="layui-input" value="{:date('Y')}">
+            </div>
+        </div>
+
+
+        <div class="layui-form-item vs v_letter" style="display: none;">
+            <label class="layui-form-label">{:lang('sort')}：</label>
+            <div class="layui-input-inline w100">
+                <select id="order_letter"><option value="asc">{:lang('admin/template/positive_order')}</option><option value="desc">{:lang('admin/template/reverse_order')}</option></select>
+            </div>
+        </div>
+
+        <div class="layui-form-item vs v_type" style="display: none;">
+            <label class="layui-form-label">{:lang('sort')}：</label>
+            <div class="layui-input-inline w100">
+                <select id="order_type"><option value="asc">{:lang('admin/template/positive_order')}</option><option value="desc">{:lang('admin/template/reverse_order')}</option></select>
+            </div>
+            <label class="layui-form-label ">{:lang('sort')}：</label>
+            <div class="layui-input-inline w100">
+                <select id="by_type"><option value="sort">{:lang('sort')}</option><option value="id">{:lang('id')}</option></select>
+            </div>
+            <label class="layui-form-label ">{:lang('model')}：</label>
+            <div class="layui-input-inline w100">
+                <select id="mid_type"><option value="">{:lang('all')}</option><option value="1">{:lang('vod')}</option><option value="2">{:lang('art')}</option></select>
+            </div>
+            <label class="layui-form-label ">{:lang('data')}：</label>
+            <div class="layui-input-inline w100">
+                <select id="ids_type"><option value="all">{:lang('all')}</option><option value="parent">一级{:lang('type')}</option><option value="child">二级{:lang('type')}</option><option value="1,2,3">{:lang('diy_ids')}</option></select>
+            </div>
+        </div>
+
+        <div class="layui-form-item vs v_topic" style="display: none;">
+            <label class="layui-form-label">{:lang('sort')}：</label>
+            <div class="layui-input-inline w100">
+                <select id="order_topic"><option value="desc">{:lang('admin/template/reverse_order')}</option><option value="asc">{:lang('admin/template/positive_order')}</option></select>
+            </div>
+            <label class="layui-form-label ">{:lang('sort')}：</label>
+            <div class="layui-input-inline w100">
+                <select id="by_topic"><option value="time">{:lang('update_time')}</option><option value="time_add">{:lang('add_time')}</option><option value="id">ID</option><option value="hits">{:lang('hits')}</option><option value="hits_day">{:lang('hits_day')}</option><option value="hits_week">{:lang('hits_week')}</option><option value="hits_month">{:lang('hits_month')}</option><option value="up">顶数</option><option value="down">踩数</option><option value="level">{:lang('level')}</option></select>
+            </div>
+            <label class="layui-form-label ">{:lang('data')}：</label>
+            <div class="layui-input-inline w100">
+                <select id="ids_topic"><option value="all">{:lang('all')}</option><option value="1,2,3">{:lang('diy_ids')}</option></select>
+            </div>
+            <label class="layui-form-label ">{:lang('quantity')}：</label>
+            <div class="layui-input-inline w80">
+                <input id="num_topic" type="text" class="layui-input" value="10">
+            </div>
+            <label class="layui-form-label ">{:lang('paging')}：</label>
+            <div class="layui-input-inline w100">
+                <select id="paging_topic"><option value="false">{:lang('not')}</option><option value="true">{:lang('yes')}</option></select>
+            </div>
+        </div>
+
+        <div class="layui-form-item vs v_art" style="display: none;">
+            <label class="layui-form-label">标签参数：</label>
+            <div class="layui-input-inline w100">
+                <select id="order_art"><option value="desc">{:lang('admin/template/reverse_order')}</option><option value="asc">{:lang('admin/template/positive_order')}</option></select>
+            </div>
+            <label class="layui-form-label ">{:lang('sort')}：</label>
+            <div class="layui-input-inline w100">
+                <select id="by_art"><option value="time">{:lang('update_time')}</option><option value="time_add">{:lang('add_time')}</option><option value="id">ID</option><option value="hits">{:lang('hits')}</option><option value="hits_day">{:lang('hits_day')}</option><option value="hits_week">{:lang('hits_week')}</option><option value="hits_month">{:lang('hits_month')}</option><option value="up">顶数</option><option value="down">踩数</option><option value="level">{:lang('level')}</option><option value="rnd">{:lang('rnd_data')}</option></select>
+            </div>
+            <label class="layui-form-label ">{:lang('level')}：</label>
+            <div class="layui-input-inline w100">
+                <select id="level_art"><option value="all">{:lang('all')}</option><option value="1">{:lang('level')}1</option><option value="2">{:lang('level')}2</option><option value="3">{:lang('level')}3</option><option value="4">{:lang('level')}4</option><option value="5">{:lang('level')}5</option></select>
+            </div>
+            <label class="layui-form-label ">{:lang('data')}：</label>
+            <div class="layui-input-inline w100">
+                <select id="ids_art"><option value="all">{:lang('all')}</option><option value="1,2,3">{:lang('diy_ids')}</option></select>
+            </div>
+            <label class="layui-form-label ">{:lang('quantity')}：</label>
+            <div class="layui-input-inline w80">
+                <input id="num_art" type="text" class="layui-input" value="10">
+            </div>
+            <label class="layui-form-label ">{:lang('paging')}：</label>
+            <div class="layui-input-inline w100">
+                <select id="paging_art"><option value="false">{:lang('not')}</option><option value="true">{:lang('yes')}</option></select>
+            </div>
+        </div>
+
+
+        <div class="layui-form-item vs v_vod" style="display: none;">
+            <label class="layui-form-label">{:lang('sort')}：</label>
+            <div class="layui-input-inline w100">
+                <select id="order_vod"><option value="desc">{:lang('admin/template/reverse_order')}</option><option value="asc">{:lang('admin/template/positive_order')}</option></select>
+            </div>
+            <label class="layui-form-label ">{:lang('sort')}：</label>
+            <div class="layui-input-inline w100">
+                <select id="by_vod"><option value="time">{:lang('update_time')}</option><option value="time_add">{:lang('add_time')}</option><option value="id">ID</option><option value="hits">{:lang('hits')}</option><option value="hits_day">{:lang('hits_day')}</option><option value="hits_week">{:lang('hits_week')}</option><option value="hits_month">{:lang('hits_month')}</option><option value="up">顶数</option><option value="down">踩数</option><option value="level">{:lang('level')}</option><option value="rnd">{:lang('rnd_data')}</option></select>
+            </div>
+            <label class="layui-form-label ">{:lang('level')}：</label>
+            <div class="layui-input-inline w100">
+                <select id="level_vod"><option value="all">{:lang('all')}</option><option value="1">{:lang('level')}1</option><option value="2">{:lang('level')}2</option><option value="3">{:lang('level')}3</option><option value="4">{:lang('level')}4</option><option value="5">{:lang('level')}5</option></select>
+            </div>
+            <label class="layui-form-label ">{:lang('type')}：</label>
+            <div class="layui-input-inline w100">
+                <select id="type_vod"><option value="all">{:lang('all')}</option><option value="1,2">{:lang('diy_ids')}</option></select>
+            </div>
+            <label class="layui-form-label ">{:lang('data')}：</label>
+            <div class="layui-input-inline w100">
+                <select id="ids_vod"><option value="all">{:lang('all')}</option><option value="1,2,3">{:lang('diy_ids')}</option></select>
+            </div>
+            <label class="layui-form-label ">{:lang('quantity')}：</label>
+            <div class="layui-input-inline w80">
+                <input id="num_vod" type="text" class="layui-input" value="10">
+            </div>
+            <label class="layui-form-label ">{:lang('paging')}：</label>
+            <div class="layui-input-inline w100">
+                <select id="paging_vod"><option value="false">{:lang('not')}</option><option value="true">{:lang('yes')}</option></select>
+            </div>
+        </div>
+
+
+        <div class="layui-form-item vs v_gbook" style="display: none;">
+            <label class="layui-form-label">{:lang('sort')}：</label>
+            <div class="layui-input-inline w100">
+                <select id="order_gbook"><option value="desc">{:lang('admin/template/reverse_order')}</option><option value="asc">{:lang('admin/template/positive_order')}</option></select>
+            </div>
+            <label class="layui-form-label ">{:lang('sort')}：</label>
+            <div class="layui-input-inline w100">
+                <select id="by_gbook"><option value="time">{:lang('time')}</option><option value="id">{:lang('id')}</option></select>
+            </div>
+            <label class="layui-form-label ">{:lang('quantity')}：</label>
+            <div class="layui-input-inline w80">
+                <input id="num_gbook" type="text" class="layui-input" value="10">
+            </div>
+            <label class="layui-form-label ">{:lang('paging')}：</label>
+            <div class="layui-input-inline w100">
+                <select id="paging_gbook"><option value="false">{:lang('not')}</option><option value="true">{:lang('yes')}</option></select>
+            </div>
+        </div>
+
+
+        <div class="layui-form-item vs v_comment" style="display: none;">
+            <label class="layui-form-label">{:lang('sort')}：</label>
+            <div class="layui-input-inline w100">
+                <select id="order_comment"><option value="desc">{:lang('admin/template/reverse_order')}</option><option value="asc">{:lang('admin/template/positive_order')}</option></select>
+            </div>
+            <label class="layui-form-label ">{:lang('sort')}：</label>
+            <div class="layui-input-inline w100">
+                <select id="by_comment"><option value="time">{:lang('time')}</option><option value="id">ID</option></select>
+            </div>
+            <label class="layui-form-label ">{:lang('quantity')}：</label>
+            <div class="layui-input-inline w80">
+                <input id="num_comment" type="text" class="layui-input" value="10">
+            </div>
+            <label class="layui-form-label ">{:lang('paging')}：</label>
+            <div class="layui-input-inline w100">
+                <select id="paging_comment"><option value="false">{:lang('not')}</option><option value="true">{:lang('yes')}</option></select>
+            </div>
+        </div>
+
+
+        <div class="layui-form-item">
+            <label class="layui-form-label"><span class="c-red">*</span>{:lang('content')}：</label>
+            <div class="layui-input-block">
+                <textarea id="labels" name="labels" cols="" rows="" class="layui-textarea"  placeholder="" style="width:100%;height:500px;"></textarea>
+            </div>
+        </div>
+
+    </form>
+
+</div>
+{include file="../../../application/admin/view_new/public/foot" /}
+<script>
+    var mark='link',l_order='',l_by='';
+
+    layui.use(['form','upload', 'layer'], function () {
+        // 操作对象
+        var form = layui.form
+                , layer = layui.layer
+                , $ = layui.jquery
+                , upload = layui.upload;
+
+        form.on('select', function(data){
+            labelcreate();
+        });
+
+        labelcreate();
+    });
+    
+
+    function showex(obj){
+        $(".vs").hide();
+        $(".v_"+obj).show();
+        mark=obj;
+        if(obj=='year'){
+            var d = new Date();
+            $("#end_year").val(d.getYear());
+        }
+
+        labelcreate();
+    }
+    function labelcreate()
+    {
+        var c,p;
+        var s='',par='';
+        var rc=false;
+        
+        switch(mark)
+        {
+            case 'link':
+                p= ['order','by','type'];
+                c= [ ['key',"{:lang('serial_num')}"],['link_id',"{:lang('id')}"],['link_name',"{:lang('name')}"],['link_type',"{:lang('genre')}"],['link_logo',"{:lang('logo')}"],['link_url',"{:lang('url')}"] ];
+                break;
+            case 'gbook':
+                p= ['order','by','num'];
+                c= [ ['key',"{:lang('serial_num')}"],['gbook_id',"{:lang('id')}"],['gbook_name',"{:lang('nickname')}"],['gbook_content',"{:lang('content')}"],['gbook_ip',"{:lang('ip')}"],['gbook_time',"{:lang('time')}"],['gbook_reply',"{:lang('admin/template/reply_content')}"],['gbook_reply_time',"{:lang('reply_time')}"] ]
+                break;
+            case 'comment':
+                p= ['order','by','num'];
+                c= [ ['key',"{:lang('serial_num')}"],['comment_id',"{:lang('id')}"],['comment_name',"{:lang('nickname')}"],['comment_content',"{:lang('content')}"],['comment_ip',"{:lang('ip')}"],['comment_time',"{:lang('time')}"] ]
+                break;
+            case 'letter':
+                p= ['order','by'];
+                c= [ ['key',"{:lang('serial_num')}"],['letter_name',"{:lang('name')}"],[':mac_url_vod_search(["letter"=>$vo.letter_name])',"{:lang('admin/template/filter_search')}"] ];
+                break;
+            case 'tag':
+                p= ['order','by','tag','table'];
+                c= [ ['key',"{:lang('serial_num')}"],['tag_name',"{:lang('name')}"],[':mac_url_vod_search(["tag"=>$vo.tag_name])',"{:lang('admin/template/filter_search')}"] ];
+                break;
+            case 'area':
+                p= ['order','by'];
+                c= [ ['key',"{:lang('serial_num')}"],['area_name',"{:lang('name')}"],[':mac_url_vod_search(["area"=>$vo.area_name])',"{:lang('admin/template/filter_search')}"] ];
+                break;
+            case 'lang':
+                p= ['order','by'];
+                c= [ ['key',"{:lang('serial_num')}"],['lang_name',"{:lang('name')}"],[':mac_url_vod_search(["lang"=>$vo.lang_name])',"{:lang('admin/template/filter_search')}"] ];
+                break;
+            case 'year':
+                p= ['order','by','start','end'];
+                c= [ ['key',"{:lang('serial_num')}"],['year_name',"{:lang('name')}"],[':mac_url_vod_search(["year"=>$vo.year_name])',"{:lang('admin/template/filter_search')}"] ];
+                break;
+            case 'type':
+                p= ['order','by','mid','ids'];
+                c= [ ['key',"{:lang('serial_num')}"],['type_id',"{:lang('id')}"],['type_name',"{:lang('name')}"],['type_en',"{:lang('en')}"],['type_pid',"{:lang('parent_type_id')}"],['type_sort',"{:lang('sort')}"],['type_title',"{:lang('seo_title')}"],['type_key',"{:lang('seo_key')}"],['type_des',"{:lang('seo_des')}"],[':mac_url_type($vo)',"{:lang('url')}"]  ];
+                break;
+            case 'topic':
+                p= ['order','by','num','paging','ids'];
+                c= [ ['key',"{:lang('serial_num')}"],['topic_id',"{:lang('id')}"],['topic_name',"{:lang('name')}"],['topic_en',"{:lang('en')}"],['topic_sort',"{:lang('sort')}"],['topic_title',"{:lang('seo_title')}"],['topic_key',"{:lang('seo_key')}"],['topic_des',"{:lang('seo_des')}"],['topic_link',"{:lang('url')}"],['topic_count',"{:lang('admin/topic/count')}"],['topic_pic',"{:lang('pic')}"],['topic_pic_thumb',"{:lang('pic_thumb')}"],['topic_pic_slide',"{:lang('slide')}"],['topic_time_add',"{:lang('add_time')}"],['topic_time',"{:lang('update_time')}"],['topic_level',"{:lang('level')}"],['topic_hits',"{:lang('hits')}"],['topic_hits_day',"{:lang('hits_day')}"],['topic_hits_week',"{:lang('hits_week')}"],['topic_hits_month',"{:lang('hits_month')}"],['topic_up',"{:lang('up')}"],['topic_down',"{:lang('hate')}"],['topic_score',"{:lang('score')}"],['topic_score_all',"{:lang('score_all')}"],['topic_score_num',"{:lang('score_num')}"],['topic_content',"{:lang('content')}"],['topic_remarks',"{:lang('remarks')}"],['topic_tag','tags'],[':mac_url_topic_detail($vo)',"{:lang('url')}"] ];
+                break;
+            case 'art':
+                p= ['order','by','num','paging','ids','type','level'];
+                c= [ ['key',"{:lang('serial_num')}"],['art_id',"{:lang('id')}"],['art_name',"{:lang('name')}"],['art_en',"{:lang('en')}"],['art_sub',"{:lang('sub')}"],['art_from',"{:lang('from')}"],['art_content',"{:lang('content')}"],['art_remarks',"{:lang('remarks')}"],['art_author',"{:lang('author')}"],['art_color',"{:lang('color')}"],['art_hits',"{:lang('hits')}"],['art_hits_day',"{:lang('hits_day')}"],['art_hits_week',"{:lang('hits_week')}"],['art_hits_month',"{:lang('hits_month')}"],['art_up',"{:lang('up')}"],['art_down',"{:lang('hate')}"],['art_pic',"{:lang('pic')}"],['art_pic_thumb',"{:lang('pic_thumb')}"],['art_pic_slide',"{:lang('slide')}"],['art_time_add',"{:lang('add_time')}"],['art_time',"{:lang('update_time')}"],['art_blurb',"{:lang('blurb')}"],['art_jumpurl',"{:lang('jumpurl')}"],['art_level',"{:lang('level')}"],['art_letter',"{:lang('letter')}"],['art_tag','tags'],['art_class',"{:lang('class')}"],[':mac_url_art_detail($vo)',"{:lang('url')}"],['type.type_id',"{:lang('type_id')}"],['type.type_id_1',"{:lang('parent_type_id')}"],['type.type_name',"{:lang('type_name')}"],['type.type_en',"{:lang('en')}"],['type.type_key',"{:lang('seo_key')}"],['type.type_des',"{:lang('seo_des')}"],['type.type_title',"{:lang('seo_title')}"],[':mac_url_type($vo.type)',"{:lang('type')}{:lang('url')}"] ];
+                break;
+            case 'vod':
+                p= ['order','by','num','paging','ids','type','level'];
+                c= [ ['key',"{:lang('serial_num')}"],['vod_id',"{:lang('id')}"],['vod_name',"{:lang('name')}"],['vod_en',"{:lang('en')}"],['vod_sub',"{:lang('sub')}"],['vod_content',"{:lang('content')}"],['vod_remarks',"{:lang('remarks')}"],['vod_blurb',"{:lang('blurb')}"],['vod_letter',"{:lang('letter')}"],['vod_total',"{:lang('admin/vod/total')}"],['vod_serial',"{:lang('admin/vod/serial')}"],['vod_tv',"{:lang('admin/vod/tv')}"],['vod_weekday',"{:lang('admin/vod/weekday')}"],['vod_version',"{:lang('admin/vod/version')}"],['vod_isend',"{:lang('admin/vod/isend')}"],['vod_author',"{:lang('author')}"],['vod_jumpurl',"{:lang('jumpurl')}"],['vod_color',"{:lang('color')}"],['vod_hits',"{:lang('hits')}"],['vod_hits_day',"{:lang('hits_day')}"],['vod_hits_week',"{:lang('hits_week')}"],['vod_hits_month',"{:lang('hits_month')}"],['vod_up',"{:lang('up')}"],['vod_down',"{:lang('hate')}"],['vod_time_add',"{:lang('add_time')}"],['vod_time',"{:lang('update_time')}"],['vod_level',"{:lang('level')}"],['vod_state',"{:lang('admin/vod/state')}"],['vod_pic',"{:lang('pic')}"],['vod_pic_thumb',"{:lang('pic_thumb')}"],['vod_pic_slide',"{:lang('slide')}"],['vod_tag','tag'],['vod_actor',"{:lang('actor')}"],['vod_director',"{:lang('director')}"],['vod_area',"{:lang('area')}"],['vod_year',"{:lang('years')}"],['vod_stint_play',"{:lang('admin/vod/stint_play')}"],['vod_stint_down',"{:lang('admin/vod/stint_down')}"],['vod_score',"{:lang('score')}"],['vod_score_all',"{:lang('score_all')}"],['vod_score_num',"{:lang('score_num')}"],['vod_duration',"{:lang('admin/vod/duration')}"],['vod_play_from','播放器类型'],['vod_down_from','下载器类型'],[':mac_url_vod_detail($vo)',"{:lang('url')}"],[':mac_url_vod_play($vo,1,1)',"{:lang('play')}{:lang('url')}"],[':mac_url_vod_down($vo,1,1)',"{:lang('down')}{:lang('url')}"],['type.type_id',"{:lang('type_id')}"],['type.type_id_1',"{:lang('parent_type_id')}"],['type.type_name',"{:lang('type_name')}"],['type.type_en',"{:lang('type')}{:lang('en')}"],['type.type_key',"{:lang('type')}{:lang('seo_key')}"],['type.type_des',"{:lang('type')}{:lang('seo_des')}"],['type.type_title',"{:lang('type')}{:lang('seo_title')}"],[':mac_url_type($vo.type)',"{:lang('type')}{:lang('url')}"] ];
+                break;
+        }
+
+        for(i=0;i<p.length;i++){
+            if($("#"+p[i]+'_'+mark).val() != undefined && $("#"+p[i]+'_'+mark).val() !=''){
+                if(rc)par+=' ';
+                par+= p[i]+ '="' +$("#"+p[i]+'_'+mark).val()+'"';
+                rc=true;
+            }
+        }
+
+
+        if($('#page_'+mark).val() != undefined){
+            if($('#page_'+mark).attr("checked")) par= par.replace('num=','pagesize=');
+        }
+        s='{maccms:'+mark+' '+par+'}' + '\n';
+        for(i=0;i<c.length;i++){
+            if(c[i][0]=='key'){
+                s+= '\t{\$key}' + '  ' + c[i][1] + '\n';
+            }
+            else{
+                if(c[i][0].indexOf(':')==-1){
+                    s+= '\t{\$vo.'+c[i][0]+'}' + '  ' + c[i][1] + '\n';
+                }
+                else{
+                    s+= '\t{'+c[i][0]+'}' + '  ' + c[i][1] + '\n';
+                }
+            }
+
+        }
+        s+='{/maccms:'+mark+'}';
+        $("#labels").val(s);
+    }
+</script>
+</body>
+</html>

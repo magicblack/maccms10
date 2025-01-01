@@ -139,7 +139,7 @@ polyfill;
         $user_name = cookie('user_name');
         $user_check = cookie('user_check');
 
-        $user = ['user_id'=>0,'user_name'=>lang('controller/visitor'),'user_portrait'=>'static/images/touxiang.png','group_id'=>1,'points'=>0];
+        $user = ['user_id'=>0,'user_name'=>lang('controller/visitor'),'user_portrait'=>'static_new/images/touxiang.png','group_id'=>1,'points'=>0];
         $group_list = model('Group')->getCache();
 
         if(!empty($user_id) && !empty($user_name) && !empty($user_check)){

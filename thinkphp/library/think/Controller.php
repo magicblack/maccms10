@@ -13,6 +13,7 @@ namespace think;
 
 use think\exception\ValidateException;
 use traits\controller\Jump;
+use think\Log;
 
 Loader::import('controller/Jump', TRAIT_PATH, EXT);
 
@@ -117,6 +118,13 @@ class Controller
      */
     protected function fetch($template = '', $vars = [], $replace = [], $config = [])
     {
+        if($GLOBALS['config']['site']['new_version'] == 1){
+            if (strpos($template, 'admin@') === 0) {
+                $parts = explode('@', $template);
+                $result = $parts[1];
+                $template = APP_PATH . request()->module() . '/view_new/' . $result .  '.html';
+            }
+        }
         return $this->view->fetch($template, $vars, $replace, $config);
     }
 

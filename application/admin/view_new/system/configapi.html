@@ -1,0 +1,474 @@
+{include file="../../../application/admin/view_new/public/head" /}
+
+<div class="page-container">
+    <form class="layui-form layui-form-pane" action="">
+        <input type="hidden" name="__token__" value="{$Request.token}" />
+        <div class="layui-tab" lay-filter="tb1">
+            <ul class="layui-tab-title">
+                <li class="layui-this" lay-id="configapi_1">{:lang('admin/system/configapi/vod')}</li>
+                <li lay-id="configapi_2">{:lang('admin/system/configapi/art')}</li>
+                <li lay-id="configapi_3">{:lang('admin/system/configapi/actor')}</li>
+                <li lay-id="configapi_4">{:lang('admin/system/configapi/role')}</li>
+                <li lay-id="configapi_5">{:lang('admin/system/configapi/website')}</li>
+            </ul>
+            <div class="layui-tab-content">
+                <div class="layui-tab-item layui-show" id="movementTable">
+
+                    <blockquote class="layui-elem-quote layui-quote-nm">
+                        {:lang('admin/system/configapi/vod_tip')}
+                    </blockquote>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:lang('admin/system/configapi/status')}：</label>
+                        <div class="layui-input-block">
+                            <input type="radio" name="api[vod][status]" value="0" title="{:lang('close')}" {if
+                                condition="$config['api']['vod']['status'] neq 1" }checked {/if}>
+                            <input type="radio" name="api[vod][status]" value="1" title="{:lang('open')}" {if
+                                condition="$config['api']['vod']['status'] eq 1" }checked {/if}>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:lang('admin/system/configapi/charge')}：</label>
+                        <div class="layui-input-block">
+                            <input type="radio" name="api[vod][charge]" value="0" title="{:lang('close')}" {if
+                                condition="$config['api']['vod']['charge'] neq 1" }checked {/if}>
+                            <input type="radio" name="api[vod][charge]" value="1" title="{:lang('open')}" {if
+                                condition="$config['api']['vod']['charge'] eq 1" }checked {/if}>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:lang('admin/system/configapi/detail_inc_hits')}：</label>
+                        <div class="layui-input-inline w200">
+                            <input type="radio" name="api[vod][detail_inc_hits]" value="0" title="{:lang('close')}" {if
+                                condition="$config['api']['vod']['detail_inc_hits'] neq 1" }checked {/if}>
+                            <input type="radio" name="api[vod][detail_inc_hits]" value="1" title="{:lang('open')}" {if
+                                condition="$config['api']['vod']['detail_inc_hits'] eq 1" }checked {/if}>
+                        </div>
+                        <div class="layui-form-mid layui-word-aux">{:lang('admin/system/configapi/detail_inc_hits_tip')}
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">
+                            {:lang('admin/system/configapi/pagesize')}：</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="api[vod][pagesize]"
+                                placeholder="{:lang('admin/system/configapi/pagesize_tip')}"
+                                value="{$config['api']['vod']['pagesize']}" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">
+                            {:lang('admin/system/configapi/imgurl')}：</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="api[vod][imgurl]"
+                                placeholder="{:lang('admin/system/configapi/imgurl_tip')}"
+                                value="{$config['api']['vod']['imgurl']}" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">
+                            {:lang('admin/system/configapi/typefilter')}：</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="api[vod][typefilter]"
+                                placeholder="{:lang('admin/system/configapi/typefilter_tip')}"
+                                value="{$config['api']['vod']['typefilter']}" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">
+                            {:lang('admin/system/configapi/datafilter')}：</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="api[vod][datafilter]"
+                                placeholder="{:lang('admin/system/configapi/datafilter_tip')}"
+                                value="{$config['api']['vod']['datafilter']}" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">
+                            {:lang('admin/system/configapi/cachetime')}：</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="api[vod][cachetime]"
+                                placeholder="{:lang('admin/system/configapi/cachetime_tip')}"
+                                value="{$config['api']['vod']['cachetime']}" class="layui-input">
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">
+                            {:lang('admin/system/configapi/from')}：</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="api[vod][from]"
+                                placeholder="{:lang('admin/system/configapi/from_tip')}"
+                                value="{$config['api']['vod']['from']}" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:lang('admin/system/configapi/auth')}：</label>
+                        <div class="layui-input-block">
+                            <textarea name="api[vod][auth]"
+                                class="layui-textarea">{$config['api']['vod']['auth']|mac_replace_text}</textarea>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="layui-tab-item" id="movementTable">
+
+                    <blockquote class="layui-elem-quote layui-quote-nm">
+                        {:lang('admin/system/configapi/art_tip')}
+                    </blockquote>
+
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:lang('admin/system/configapi/status')}：</label>
+                        <div class="layui-input-block">
+                            <input type="radio" name="api[art][status]" value="0" title="{:lang('close')}" {if
+                                condition="$config['api']['art']['status'] neq 1" }checked {/if}>
+                            <input type="radio" name="api[art][status]" value="1" title="{:lang('open')}" {if
+                                condition="$config['api']['art']['status'] eq 1" }checked {/if}>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:lang('admin/system/configapi/charge')}：</label>
+                        <div class="layui-input-block">
+                            <input type="radio" name="api[art][charge]" value="0" title="{:lang('close')}" {if
+                                condition="$config['api']['art']['charge'] neq 1" }checked {/if}>
+                            <input type="radio" name="api[art][charge]" value="1" title="{:lang('open')}" {if
+                                condition="$config['api']['art']['charge'] eq 1" }checked {/if}>
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">
+                            {:lang('admin/system/configapi/pagesize')}：</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="api[art][pagesize]"
+                                placeholder="{:lang('admin/system/configapi/pagesize_tip')}"
+                                value="{$config['api']['art']['pagesize']}" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">
+                            {:lang('admin/system/configapi/imgurl')}：</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="api[art][imgurl]"
+                                placeholder="{:lang('admin/system/configapi/imgurl_tip')}"
+                                value="{$config['api']['art']['imgurl']}" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">
+                            {:lang('admin/system/configapi/typefilter')}：</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="api[art][typefilter]"
+                                placeholder="{:lang('admin/system/configapi/typefilter_tip')}"
+                                value="{$config['api']['art']['typefilter']}" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">
+                            {:lang('admin/system/configapi/datafilter')}：</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="api[art][datafilter]"
+                                placeholder="{:lang('admin/system/configapi/datafilter_tip_art')}"
+                                value="{$config['api']['art']['datafilter']}" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">
+                            {:lang('admin/system/configapi/cachetime')}：</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="api[art][cachetime]"
+                                placeholder="{:lang('admin/system/configapi/cachetime_tip')}"
+                                value="{$config['api']['art']['cachetime']}" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:lang('admin/system/configapi/auth')}：</label>
+                        <div class="layui-input-block">
+                            <textarea name="api[art][auth]"
+                                class="layui-textarea">{$config['api']['art']['auth']|mac_replace_text}</textarea>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="layui-tab-item" id="movementTable">
+
+                    <blockquote class="layui-elem-quote layui-quote-nm">
+                        {:lang('admin/system/configapi/actor_tip')}
+                    </blockquote>
+
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:lang('admin/system/configapi/status')}：</label>
+                        <div class="layui-input-block">
+                            <input type="radio" name="api[actor][status]" value="0" title="{:lang('close')}" {if
+                                condition="$config['api']['actor']['status'] neq 1" }checked {/if}>
+                            <input type="radio" name="api[actor][status]" value="1" title="{:lang('open')}" {if
+                                condition="$config['api']['actor']['status'] eq 1" }checked {/if}>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:lang('admin/system/configapi/charge')}：</label>
+                        <div class="layui-input-block">
+                            <input type="radio" name="api[actor][charge]" value="0" title="{:lang('close')}" {if
+                                condition="$config['api']['actor']['charge'] neq 1" }checked {/if}>
+                            <input type="radio" name="api[actor][charge]" value="1" title="{:lang('open')}" {if
+                                condition="$config['api']['actor']['charge'] eq 1" }checked {/if}>
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">
+                            {:lang('admin/system/configapi/pagesize')}：</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="api[actor][pagesize]"
+                                placeholder="{:lang('admin/system/configapi/pagesize_tip')}"
+                                value="{$config['api']['actor']['pagesize']}" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">
+                            {:lang('admin/system/configapi/imgurl')}：</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="api[actor][imgurl]"
+                                placeholder="{:lang('admin/system/configapi/imgurl_tip')}"
+                                value="{$config['api']['actor']['imgurl']}" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">
+                            {:lang('admin/system/configapi/typefilter')}：</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="api[actor][typefilter]"
+                                placeholder="{:lang('admin/system/configapi/typefilter_tip')}"
+                                value="{$config['api']['actor']['typefilter']}" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">
+                            {:lang('admin/system/configapi/datafilter')}：</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="api[actor][datafilter]"
+                                placeholder="{:lang('admin/system/configapi/datafilter_tip_actor')}"
+                                value="{$config['api']['actor']['datafilter']}" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">
+                            {:lang('admin/system/configapi/cachetime')}：</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="api[actor][cachetime]"
+                                placeholder="{:lang('admin/system/configapi/cachetime_tip')}"
+                                value="{$config['api']['actor']['cachetime']}" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:lang('admin/system/configapi/auth')}：</label>
+                        <div class="layui-input-block">
+                            <textarea name="api[actor][auth]"
+                                class="layui-textarea">{$config['api']['actor']['auth']|mac_replace_text}</textarea>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="layui-tab-item" id="movementTable">
+
+                    <blockquote class="layui-elem-quote layui-quote-nm">
+                        {:lang('admin/system/configapi/role_tip')}
+                    </blockquote>
+
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:lang('admin/system/configapi/status')}：</label>
+                        <div class="layui-input-block">
+                            <input type="radio" name="api[role][status]" value="0" title="{:lang('close')}" {if
+                                condition="$config['api']['role']['status'] neq 1" }checked {/if}>
+                            <input type="radio" name="api[role][status]" value="1" title="{:lang('open')}" {if
+                                condition="$config['api']['role']['status'] eq 1" }checked {/if}>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:lang('admin/system/configapi/charge')}：</label>
+                        <div class="layui-input-block">
+                            <input type="radio" name="api[role][charge]" value="0" title="{:lang('close')}" {if
+                                condition="$config['api']['role']['charge'] neq 1" }checked {/if}>
+                            <input type="radio" name="api[role][charge]" value="1" title="{:lang('open')}" {if
+                                condition="$config['api']['role']['charge'] eq 1" }checked {/if}>
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">
+                            {:lang('admin/system/configapi/pagesize')}：</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="api[role][pagesize]"
+                                placeholder="{:lang('admin/system/configapi/pagesize_tip')}"
+                                value="{$config['api']['role']['pagesize']}" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">
+                            {:lang('admin/system/configapi/imgurl')}：</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="api[role][imgurl]"
+                                placeholder="{:lang('admin/system/configapi/imgurl_tip')}"
+                                value="{$config['api']['role']['imgurl']}" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">
+                            {:lang('admin/system/configapi/typefilter')}：</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="api[role][typefilter]"
+                                placeholder="{:lang('admin/system/configapi/typefilter_tip')}"
+                                value="{$config['api']['role']['typefilter']}" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">
+                            {:lang('admin/system/configapi/datafilter')}：</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="api[role][datafilter]"
+                                placeholder="{:lang('admin/system/configapi/datafilter_tip_role')}"
+                                value="{$config['api']['role']['datafilter']}" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">
+                            {:lang('admin/system/configapi/cachetime')}：</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="api[role][cachetime]"
+                                placeholder="{:lang('admin/system/configapi/cachetime_tip')}"
+                                value="{$config['api']['role']['cachetime']}" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:lang('admin/system/configapi/auth')}：</label>
+                        <div class="layui-input-block">
+                            <textarea name="api[role][auth]"
+                                class="layui-textarea">{$config['api']['role']['auth']|mac_replace_text}</textarea>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="layui-tab-item" id="movementTable">
+
+                    <blockquote class="layui-elem-quote layui-quote-nm">
+                        {:lang('admin/system/configapi/website_tip')}
+                    </blockquote>
+
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:lang('admin/system/configapi/status')}：</label>
+                        <div class="layui-input-block">
+                            <input type="radio" name="api[website][status]" value="0" title="{:lang('close')}" {if
+                                condition="$config['api']['website']['status'] neq 1" }checked {/if}>
+                            <input type="radio" name="api[website][status]" value="1" title="{:lang('open')}" {if
+                                condition="$config['api']['website']['status'] eq 1" }checked {/if}>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:lang('admin/system/configapi/charge')}：</label>
+                        <div class="layui-input-block">
+                            <input type="radio" name="api[website][charge]" value="0" title="{:lang('close')}" {if
+                                condition="$config['api']['website']['charge'] neq 1" }checked {/if}>
+                            <input type="radio" name="api[website][charge]" value="1" title="{:lang('open')}" {if
+                                condition="$config['api']['website']['charge'] eq 1" }checked {/if}>
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">
+                            {:lang('admin/system/configapi/pagesize')}：</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="api[website][pagesize]"
+                                placeholder="{:lang('admin/system/configapi/pagesize_tip')}"
+                                value="{$config['api']['website']['pagesize']}" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">
+                            {:lang('admin/system/configapi/imgurl')}：</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="api[website][imgurl]"
+                                placeholder="{:lang('admin/system/configapi/imgurl_tip')}"
+                                value="{$config['api']['website']['imgurl']}" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">
+                            {:lang('admin/system/configapi/typefilter')}：</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="api[website][typefilter]"
+                                placeholder="{:lang('admin/system/configapi/typefilter_tip')}"
+                                value="{$config['api']['website']['typefilter']}" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">
+                            {:lang('admin/system/configapi/datafilter')}：</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="api[website][datafilter]"
+                                placeholder="{:lang('admin/system/configapi/datafilter_tip_website')}"
+                                value="{$config['api']['website']['datafilter']}" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">
+                            {:lang('admin/system/configapi/cachetime')}：</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="api[website][cachetime]"
+                                placeholder="{:lang('admin/system/configapi/cachetime_tip')}"
+                                value="{$config['api']['website']['cachetime']}" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:lang('admin/system/configapi/auth')}：</label>
+                        <div class="layui-input-block">
+                            <textarea name="api[website][auth]"
+                                class="layui-textarea">{$config['api']['website']['auth']|mac_replace_text}</textarea>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+        <div class="layui-form-item center">
+            <div class="layui-input-block">
+                <button type="submit" class="layui-btn" lay-submit=""
+                    lay-filter="formSubmit">{:lang('btn_save')}</button>
+                <button class="layui-btn layui-btn-primary" type="reset">{:lang('btn_reset')}</button>
+            </div>
+        </div>
+    </form>
+</div>
+
+{include file="../../../application/admin/view_new/public/foot" /}
+<script type="text/javascript" src="__STATIC__/js/jquery.cookie.js"></script>
+<script type="text/javascript">
+    layui.use(['element', 'form', 'layer'], function () {
+        var element = layui.element
+            , form = layui.form
+            , layer = layui.layer;
+
+
+        element.on('tab(tb1)', function () {
+            $.cookie('configapi_tab', this.getAttribute('lay-id'));
+        });
+
+        if ($.cookie('configapi_tab') != null) {
+            element.tabChange('tb1', $.cookie('configapi_tab'));
+        }
+
+    });
+</script>
+
+</body>
+
+</html>

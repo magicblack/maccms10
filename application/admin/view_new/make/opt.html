@@ -1,0 +1,179 @@
+{include file="../../../application/admin/view_new/public/head" /}
+
+<div class="page-container p10">
+
+
+    <form class="layui-form layui-form-pane" method="post" action="" id="form1">
+        <div id="movementTable">
+            <div class="layui-form-item">
+                <label class="layui-form-label">{:lang('vod')}{:lang('type')}：</label>
+                <div class="flex  max-md:flex-row-reverse">
+                    <div class="layui-input-inline">
+                        <select name="vodtype[]" multiple style="width:150px;height:150px;" lay-ignore>
+                            {volist name="$vod_type_list" id="vo"}
+                            <option value="{$vo.type_id}">{$vo.type_name}</option>
+                            {/volist}
+                        </select>
+                    </div>
+                    <div class="layui-input-inline w300">
+                        <div class="layui-btn-container">
+                            <input type="button" value="{:lang('admin/make/select_type')}"
+                                class="layui-btn" onclick="post('ac=type&tab=vod');" />
+                            <input type="button" value="{:lang('admin/make/all_type')}"
+                                class="layui-btn layui-btn-normal"
+                                onclick="post('ac=type&tab=vod&vodtype={$vod_type_ids}');" />
+                            <input type="button" value="{:lang('admin/make/today_type')}"
+                                class="layui-btn layui-btn-normal"
+                                onclick="post('ac=type&tab=vod&vodtype={$vod_type_ids_today}&ac2=day');" />
+                            <input type="button" value="{:lang('admin/make/select_info')}"
+                                class="layui-btn layui-btn-normal" onclick="post('ac=info&tab=vod');" />
+                            <input type="button" value="{:lang('admin/make/all_info')}"
+                                class="layui-btn layui-btn-normal"
+                                onclick="post('ac=info&tab=vod&vodtype={$vod_type_ids}');" />
+                            <input type="button" value="{:lang('admin/make/today_info')}"
+                                class="layui-btn layui-btn-normal"
+                                onclick="post('ac=info&tab=vod&vodtype={$vod_type_ids_today}&ac2=day');" />
+                            <input type="button" value="{:lang('admin/make/no_make_info')}"
+                                class="layui-btn layui-btn-normal" onclick="post('ac=info&tab=vod&ac2=nomake');" />
+                            <input type="button" value="{:lang('admin/make/one_today')}"
+                                class="layui-btn layui-btn-normal"
+                                onclick="post('ac=info&tab=vod&vodtype={$vod_type_ids_today}&ac2=day&jump=1');" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">{:lang('art')}{:lang('type')}：</label>
+                <div class="flex  max-md:flex-row-reverse">
+                    <div class="layui-input-inline">
+                        <select name="arttype[]" multiple style="width:150px;height:150px;" lay-ignore>
+                            {volist name="$art_type_list" id="vo"}
+                            <option value="{$vo.type_id}">{$vo.type_name}</option>
+                            {/volist}
+                        </select>
+                    </div>
+                    <div class="layui-input-inline w300">
+                        <div class="layui-btn-container">
+                            <input type="button" value="{:lang('admin/make/select_type')}"
+                                class="layui-btn layui-btn-normal" onclick="post('ac=type&tab=art');" />
+                            <input type="button" value="{:lang('admin/make/all_type')}"
+                                class="layui-btn layui-btn-normal"
+                                onclick="post('ac=type&tab=art&arttype={$art_type_ids}');" />
+                            <input type="button" value="{:lang('admin/make/today_type')}"
+                                class="layui-btn layui-btn-normal"
+                                onclick="post('ac=type&tab=art&arttype={$art_type_ids_today}&ac2=day');" />
+                            <input type="button" value="{:lang('admin/make/select_info')}"
+                                class="layui-btn layui-btn-normal" onclick="post('ac=info&tab=art');" />
+                            <input type="button" value="{:lang('admin/make/all_info')}"
+                                class="layui-btn layui-btn-normal"
+                                onclick="post('ac=info&tab=art&arttype={$art_type_ids}');" />
+                            <input type="button" value="{:lang('admin/make/today_info')}"
+                                class="layui-btn layui-btn-normal"
+                                onclick="post('ac=info&tab=art&arttype={$art_type_ids_today}&ac2=day');" />
+                            <input type="button" value="{:lang('admin/make/no_make_info')}"
+                                class="layui-btn layui-btn-normal" onclick="post('ac=info&tab=art&ac2=nomake');" />
+                            <input type="button" value="{:lang('admin/make/one_today')}"
+                                class="layui-btn layui-btn-normal"
+                                onclick="post('ac=info&tab=art&arttype={$art_type_ids_today}&ac2=day&jump=1');" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <hr class="layui-bg-gray">
+            <div class="layui-form-item">
+                <label class="layui-form-label">{:lang('admin/make/topic_list')}：</label>
+                <div class="flex  max-md:flex-row-reverse">
+                    <div class="layui-input-inline">
+                        <select name="topic[]" multiple style="width:150px;height:150px;" lay-ignore>
+                            {volist name="$topic_list" id="vo"}
+                            <option value="{$vo.topic_id}">{$vo.topic_name}</option>
+                            {/volist}
+                        </select>
+                    </div>
+                    <div class="layui-input-inline w300">
+                        <div class="layui-btn-container">
+                            <input type="button" value="{:lang('admin/make/select_topic')}"
+                                class="layui-btn layui-btn-normal" onclick="post('ac=topic_info');" />
+                            <input type="button" value="{:lang('admin/make/all_topic')}"
+                                class="layui-btn layui-btn-normal"
+                                onclick="post('ac=topic_info&topic={$topic_ids}');" />
+                            <input type="button" value="{:lang('admin/make/topic_index')}"
+                                class="layui-btn layui-btn-normal" onclick="post('ac=topic_index');" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">{:lang('admin/make/label_page')}：</label>
+                <div class="flex  max-md:flex-row-reverse">
+                    <div class="layui-input-inline">
+                        <select name="label[]" multiple style="width:150px;height:150px;" lay-ignore>
+                            {volist name="$label_list" id="vo"}
+                            <option value="{$vo}">{$vo}</option>
+                            {/volist}
+                        </select>
+                    </div>
+                    <div class="layui-input-inline w300">
+                        <div class="layui-btn-container">
+                            <input type="button" value="{:lang('make_page')}" class="layui-btn layui-btn-normal"
+                                onclick="post('ac=label   ');">
+                            <input type="button" value="{:lang('make_all')}" class="layui-btn layui-btn-normal"
+                                onclick="post('ac=label&label={$label_ids}');">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <hr class="layui-bg-gray">
+            <div class="layui-form-item">
+                <label class="layui-form-label">SiteMap：</label>
+                <div class="wfull">
+                    <div class="layui-btn-container">
+                        <input type="button" value="{:lang('admin/make/rss')}" class="layui-btn layui-btn-normal"
+                            onclick="post('ac=rss&ac2=index');">
+                        <input type="button" value="{:lang('admin/make/google')}" class="layui-btn layui-btn-normal"
+                            onclick="post('ac=rss&ac2=google');">
+                        <input type="button" value="{:lang('admin/make/baidu')}" class="layui-btn layui-btn-normal"
+                            onclick="post('ac=rss&ac2=baidu');">
+                        <input type="button" value="{:lang('admin/make/so')}" class="layui-btn layui-btn-normal"
+                            onclick="post('ac=rss&ac2=so');">
+                        <input type="button" value="{:lang('admin/make/sogou')}" class="layui-btn layui-btn-normal"
+                            onclick="post('ac=rss&ac2=sogou');">
+                        <input type="button" value="{:lang('admin/make/bing')}" class="layui-btn layui-btn-normal"
+                            onclick="post('ac=rss&ac2=bing');">
+                        <input type="button" value="{:lang('admin/make/sm')}" class="layui-btn layui-btn-normal"
+                            onclick="post('ac=rss&ac2=sm');">
+                    </div>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">{:lang('admin/make/make_page_num')}：</label>
+                <div class="layui-input-inline w200">
+                    <input type="text" name="ps" class="layui-input" placeholder="" value="1" />
+                </div>
+            </div>
+        </div>
+
+    </form>
+
+</div>
+
+{include file="../../../application/admin/view_new/public/foot" /}
+
+<script type="text/javascript">
+    var curUrl = "{:url('make')}";
+    layui.use(['form', 'layer'], function () {
+        var form = layui.form
+            , layer = layui.layer;
+
+
+    });
+
+    function post(p) {
+        $("#form1").attr("action", curUrl + "?" + p);
+        $("#form1").submit();
+    }
+</script>
+</body>
+
+</html>

@@ -1,0 +1,68 @@
+{include file="../../../application/admin/view_new/public/head" /}
+<div class="page-container p10">
+
+    <div class="my-toolbar-box" >
+        <ul class="layui-tab-title mb10">
+            <li class="layui-this"><a href="{:url('index')}">{:lang('admin/database/backup_db')}</a></li>
+            <li><a href="{:url('index')}?group=import">{:lang('admin/database/import_db')}</a></li>
+        </ul>
+
+        <div class="flex gap-5 overflow-x-auto overflow-y-hidden">
+            <a data-href="{:url('export')}" class="layui-btn layui-btn-primary j-page-btns"><i class="layui-icon">&#xe62d;</i>{:lang('admin/database/backup_db')}</a>
+            <a data-href="{:url('optimize')}" class="layui-btn layui-btn-primary j-page-btns"><i class="layui-icon">&#xe631;</i>{:lang('admin/database/optimize_db')}</a>
+            <a data-href="{:url('repair')}" class="layui-btn layui-btn-primary j-page-btns"><i class="layui-icon">&#xe60c;</i>{:lang('admin/database/repair_db')}</a>
+        </div>
+    </div>
+
+    <form id="pageListForm" class="layui-form">
+        <table class="layui-table mt10" lay-even="">
+            <colgroup>
+                <col width="50">
+            </colgroup>
+            <thead>
+            <tr>
+                <th><input type="checkbox" lay-skin="primary" lay-filter="allChoose"></th>
+                <th>{:lang('admin/database/table')}</th>
+                <th>{:lang('admin/database/count')}</th>
+                <th>{:lang('admin/database/size')}</th>
+                <th>{:lang('admin/database/redundancy')}</th>
+                <th>{:lang('remarks')}</th>
+                <th width="180">{:lang('opt')}</th>
+            </tr>
+            </thead>
+            <tbody>
+            {volist name="list" id="vo"}
+            <tr>
+                <td><input type="checkbox" name="ids[]" class="layui-checkbox checkbox-ids" value="{$vo['Name']}" lay-skin="primary"></td>
+                <td>{$vo['Name']}</td>
+                <td>{$vo['Rows']}</td>
+                <td>{$vo['Data_length']/1024|round=###,2} kb</td>
+                <td>{$vo['Data_free']/1024|round=###,2} kb</td>
+                <td>{$vo['Comment']}</td>
+                <td>
+                        <a data-href="{:url('optimize?ids='.$vo['Name'])}" class="layui-badge-rim j-ajax">{:lang('admin/database/optimize')}</a>
+                        <a data-href="{:url('repair?ids='.$vo['Name'])}" class="layui-badge-rim  j-ajax">{:lang('admin/database/repair')}</a>
+                </td>
+            </tr>
+            {/volist}
+            </tbody>
+        </table>
+    </form>
+
+</div>
+{include file="../../../application/admin/view_new/public/foot" /}
+
+
+<script type="text/javascript">
+    layui.use(['form', 'layer'], function () {
+        // 操作对象
+        var form = layui.form
+                , layer = layui.layer
+                , $ = layui.jquery;
+
+
+
+    });
+</script>
+</body>
+</html>

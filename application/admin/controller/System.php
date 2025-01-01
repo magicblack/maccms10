@@ -751,4 +751,18 @@ class System extends Base
         return json(['code' => 1, 'msg' => 'ok']);
     }
 
+    public function configVersion(){
+        $param = input();
+        $config = config('maccms');
+        if (!isset($config['site'])) {
+            $config['site'] = [];
+        }
+        $config['site']['new_version'] = $param['version'];
+        $res = mac_arr2file(APP_PATH . 'extra/maccms.php', $config);
+        if ($res === false) {
+            return $this->error(lang('save_err'));
+        }
+        return json(['code' => 1, 'msg' => 'ok']);
+    }
+
 }

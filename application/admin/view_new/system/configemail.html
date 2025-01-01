@@ -1,0 +1,178 @@
+{include file="../../../application/admin/view_new/public/head" /}
+
+<div class="page-container">
+    <form class="layui-form layui-form-pane" action="">
+        <input type="hidden" name="__token__" value="{$Request.token}" />
+        <div class="layui-tab" lay-filter="tb1">
+            <ul class="layui-tab-title">
+                <li class="layui-this" lay-id="configemail_1">{:lang('admin/system/configemail/title')}</li>
+                {volist name="$extends['ext_list']" id="vo"}
+                <li data-key="{$key}" lay-id="configemail_{$i+1}">{$vo}</li>
+                {/volist}
+            </ul>
+            <div class="layui-tab-content">
+                <div class="layui-tab-item layui-show" id="movementTable">
+
+                    <blockquote class="layui-elem-quote layui-quote-nm">
+                        {:lang('admin/system/configemail/tip')}
+                    </blockquote>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:lang('admin/system/configemail/type')}：</label>
+                        <div class="layui-input-inline">
+                            <select class="w150" id="ac" name="email[type]" lay-filter="ac">
+                                <option value="">{:lang('select_please')}...</option>
+                                {volist name="$extends['ext_list']" id="vo"}
+                                <option value="{$key}" {if condition="$config['email']['type'] eq $key" }selected {/if}>{$vo}</option>
+                                {/volist}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:lang('admin/system/configemail/time')}：</label>
+                        <div class="layui-input-inline">
+                            <input type="text" name="email[time]" placeholder="" value="{$config['email']['time']}"
+                                class="layui-input w200">
+                        </div>
+                        <div class="layui-form-mid layui-word-aux ml-2">{:lang('admin/system/configemail/time_tip')}
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:lang('admin/system/configemail/nick')}：</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="nick" name="email[nick]" placeholder=""
+                                value="{$config['email']['nick']}" class="layui-input w200">
+                        </div>
+                        <div class="layui-form-mid layui-word-aux"></div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:lang('admin/system/configemail/test')}：</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="test" name="email[test]" placeholder=""
+                                value="{$config['email']['test']}" class="layui-input w200">
+                        </div>
+                        <button type="button" class="layui-btn layui-btn-normal ml-2"
+                            onclick="test_email()">{:lang('admin/system/configemail/btn_test')}</button>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:lang('admin/system/configemail/test_title')}：</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="email[tpl][test_title]" placeholder=""
+                                value="{$config['email']['tpl']['test_title']}" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:lang('admin/system/configemail/test_body')}：</label>
+                        <div class="layui-input-block">
+                            <textarea name="email[tpl][test_body]"
+                                class="layui-textarea">{$config['email']['tpl']['test_body']}</textarea>
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:lang('admin/system/configemail/user_reg_title')}：</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="email[tpl][user_reg_title]" placeholder=""
+                                value="{$config['email']['tpl']['user_reg_title']}" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:lang('admin/system/configemail/user_reg_body')}：</label>
+                        <div class="layui-input-block">
+                            <textarea name="email[tpl][user_reg_body]"
+                                class="layui-textarea">{$config['email']['tpl']['user_reg_body']}</textarea>
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:lang('admin/system/configemail/user_bind_title')}：</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="email[tpl][user_bind_title]" placeholder=""
+                                value="{$config['email']['tpl']['user_bind_title']}" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:lang('admin/system/configemail/user_bind_body')}：</label>
+                        <div class="layui-input-block">
+                            <textarea name="email[tpl][user_bind_body]"
+                                class="layui-textarea">{$config['email']['tpl']['user_bind_body']}</textarea>
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:lang('admin/system/configemail/user_findpass_title')}：</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="email[tpl][user_findpass_title]" placeholder=""
+                                value="{$config['email']['tpl']['user_findpass_title']}" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:lang('admin/system/configemail/user_findpass_body')}：</label>
+                        <div class="layui-input-block">
+                            <textarea name="email[tpl][user_findpass_body]"
+                                class="layui-textarea">{$config['email']['tpl']['user_findpass_body']}</textarea>
+                        </div>
+                    </div>
+                </div>
+                {$extends['ext_html']}
+            </div>
+
+        </div>
+        <div class="layui-form-item center">
+            <div class="layui-input-block">
+                <button type="submit" class="layui-btn" lay-submit=""
+                    lay-filter="formSubmit">{:lang('btn_save')}</button>
+                <button class="layui-btn layui-btn-primary" type="reset">{:lang('btn_reset')}</button>
+            </div>
+        </div>
+    </form>
+</div>
+
+{include file="../../../application/admin/view_new/public/foot" /}
+<script type="text/javascript" src="__STATIC__/js/jquery.cookie.js"></script>
+<script type="text/javascript">
+    layui.use(['element', 'form', 'layer'], function () {
+        var element = layui.element
+            , form = layui.form
+            , layer = layui.layer;
+
+
+        element.on('tab(tb1)', function () {
+            $.cookie('configemail_tab', this.getAttribute('lay-id'));
+        });
+
+        if ($.cookie('configemail_tab') != null) {
+            element.tabChange('tb1', $.cookie('configemail_tab'));
+        }
+
+    });
+    function test_email() {
+        var type = $('#ac').val();
+        var test = $("#test").val();
+        var nick = $("#nick").val();
+
+        layer.msg("{:lang('wait_submit')}", { time: 500000 });
+        $.ajax({
+            url: "{:url('system/test_email')}",
+            type: "post",
+            dataType: "json",
+            data: { type: type, nick: nick, test: test },
+            beforeSend: function () {
+            },
+            error: function (r) {
+                layer.msg("{:lang('admin/system/configemail/test_err')}", { time: 1800 });
+            },
+            success: function (r) {
+                layer.msg(r.msg, { time: 1800 });
+            },
+            complete: function () {
+            }
+        });
+    }
+</script>
+
+</body>
+
+</html>

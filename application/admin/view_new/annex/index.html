@@ -1,0 +1,97 @@
+{include file="../../../application/admin/view_new/public/head" /}
+<div class="page-container p10">
+
+    <div class="my-toolbar-box">
+        {if condition="$param.select neq 1"}
+        <div class=" mb10">
+            <form class="layui-form " method="post" action="{:url('data')}">
+                <input type="hidden" value="{$param.select|mac_filter_xss}" name="select">
+                <input type="hidden" value="{$param.input|mac_filter_xss}" name="input">
+                <div class="layui-input-inline w150">
+                    <select name="type">
+                        <option value="">{:lang('select_type')}</option>
+                        <option value="image" {if condition="$param['type'] eq 'image'"}selected {/if}>image</option>
+                        <option value="media" {if condition="$param['type'] eq 'media'"}selected {/if}>media</option>
+                        <option value="file" {if condition="$param['type'] eq 'file'"}selected {/if}>file</option>
+                    </select>
+                </div>
+                <div class="layui-input-inline w150">
+                    <select name="order">
+                        <option value="">{:lang('select_sort')}</option>
+                        <option value="annex_time" {if condition="$param['order'] eq 'annex_time'"}selected{/if}>{:lang('update_time')}</option>
+                        <option value="annex_id" {if condition="$param['order'] eq 'annex_id'"}selected{/if}>{:lang('id')}</option>
+                        <option value="annex_hits" {if condition="$param['order'] eq 'annex_size'"}selected{/if}>{:lang('file_size')}</option>
+                    </select>
+                </div>
+
+                <div class="layui-input-inline">
+                    <input type="text" autocomplete="off" placeholder="{:lang('wd')}" class="layui-input" name="wd" value="{$param['wd']|mac_filter_xss}">
+                </div>
+                <button class="layui-btn mgl-20 j-search" >{:lang('btn_search')}</button>
+            </form>
+        </div>
+        {/if}
+
+        <div class="flex gap-5 overflow-x-auto overflow-y-hidden">
+            <a data-href="{:url('del')}" class="layui-btn layui-btn-primary j-page-btns confirm"><i class="layui-icon">&#xe640;</i>{:lang('del')}</a>
+            <a href="{:url('file')}" class="layui-btn layui-btn-primary "><i class="layui-icon">&#xe620;</i>{:lang('admin/annex/dir_model')}</a>
+            <a class="layui-btn layui-btn-primary j-iframe" data-href="{:url('annex/check')}" href="javascript:;" title="{:lang('admin/annex/check')}"><i class="layui-icon">&#xe620;</i>{:lang('admin/annex/check')}</a>
+            <a href="{:url('init')}" class="layui-btn layui-btn-primary "><i class="layui-icon">&#xe620;</i>{:lang('admin/annex/init_data')}</a>
+        </div>
+    </div>
+
+    <form class="layui-form " method="post" id="pageListForm">
+        <table class="layui-table" lay-size="sm">
+            <thead>
+            <tr>
+                <th width="25"><input type="checkbox" lay-skin="primary" lay-filter="allChoose"></th>
+                <th width="50">{:lang('id')}</th>
+                <th width="150">{:lang('file_size')}</th>
+                <th width="150">{:lang('type')}</th>
+                <th width="150">{:lang('update_time')}</th>
+                <th >{:lang('file_name')}</th>
+            </tr>
+            </thead>
+            {volist name="list" id="vo"}
+            <tr>
+                <td><input type="checkbox" name="ids[]" value="{$vo.annex_id}" class="layui-checkbox checkbox-ids" lay-skin="primary"></td>
+                <td>{$vo.annex_id}</td>
+                <td>{:round($vo['annex_size']/1024, 2)}K</td>
+                <td>{$vo.annex_type|htmlspecialchars}</td>
+                <td>{$vo.annex_time|mac_day='color'}</td>
+                <td><a target="_blank" class="layui-badge-rim " href="{php}echo MAC_PATH;{/php}{$vo.annex_file}">{$vo.annex_file}</a></td>
+            </tr>
+            {/volist}
+            </tbody>
+        </table>
+        <div id="pages" class="center"></div>
+    </form>
+</div>
+
+{include file="../../../application/admin/view_new/public/foot" /}
+
+<script type="text/javascript">
+    var curUrl="{:url('annex/data',$param)}";
+    layui.use(['laypage', 'layer','form'], function() {
+        var laypage = layui.laypage
+                , layer = layui.layer,
+                form = layui.form;
+
+        laypage.render({
+            elem: 'pages'
+            ,count: {$total}
+            ,limit: {$limit}
+            ,curr: {$page}
+            ,layout: ['count', 'prev', 'page', 'next', 'limit', 'skip']
+            ,jump: function(obj,first){
+                if(!first){
+                    location.href = curUrl.replace('%7Bpage%7D',obj.curr).replace('%7Blimit%7D',obj.limit);
+                }
+            }
+        });
+
+
+    });
+</script>
+</body>
+</html>

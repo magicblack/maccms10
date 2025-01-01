@@ -1,0 +1,134 @@
+{include file="../../../application/admin/view_new/public/head" /}
+<div class="page-container p10">
+
+    <div class="my-toolbar-box" >
+        <div class=" mb10">
+            <form class="layui-form " method="post" action="{:url('data')}">
+                <div class="layui-input-inline w100">
+                    <select name="status">
+                        <option value="">{:lang('select_status')}</option>
+                        <option value="0" {if condition="$param['status'] == '0'"}selected {/if}>{:lang('reviewed_not')}</option>
+                        <option value="1" {if condition="$param['status'] == '1'"}selected {/if}>{:lang('reviewed')}</option>
+                    </select>
+                </div>
+                <div class="layui-input-inline w100">
+                    <select name="mid">
+                        <option value="">{:lang('select_model')}</option>
+                        <option value="1" {if condition="$param['mid'] eq '1'"}selected {/if}>{:lang('vod')}</option>
+                        <option value="2" {if condition="$param['mid'] eq '2'"}selected {/if}>{:lang('art')}</option>
+                        <option value="3" {if condition="$param['mid'] eq '3'"}selected {/if}>{:lang('topic')}</option>
+                        <option value="8" {if condition="$param['mid'] eq '8'"}selected {/if}>{:lang('actor')}</option>
+                        <option value="9" {if condition="$param['mid'] eq '9'"}selected {/if}>{:lang('role')}</option>
+                        <option value="11" {if condition="$param['mid'] eq '11'"}selected {/if}>{:lang('website')}</option>
+                    </select>
+                </div>
+                <div class="layui-input-inline w100">
+                    <select name="report">
+                        <option value="">{:lang('select_report')}</option>
+                        <option value="1" {if condition="$param['report'] eq '1'"}selected {/if}>{:lang('report_not')}</option>
+                        <option value="2" {if condition="$param['report'] eq '2'"}selected {/if}>{:lang('report_yes')}</option>
+                    </select>
+                </div>
+
+                <div class="layui-input-inline">
+                    <input type="text" autocomplete="off" placeholder="{:lang('wd')}" class="layui-input" name="wd" value="{$param['wd']|mac_filter_xss}">
+                </div>
+                <button class="layui-btn mgl-20 j-search" >{:lang('btn_search')}</button>
+            </form>
+        </div>
+
+        <div class="layui-btn-group">
+            <a data-href="{:url('del')}" class="layui-btn layui-btn-primary j-page-btns confirm"><i class="layui-icon">&#xe640;</i>{:lang('del')}</a>
+            <a data-href="{:url('index/select')}?tab=comment&col=comment_status&tpl=select_status&url=comment/field" data-width="470" data-height="100" data-checkbox="1" class="layui-btn layui-btn-primary j-select"><i class="layui-icon">&#xe620;</i>{:lang('status')}</a>
+            <a data-href="{:url('del')}?all=1" class="layui-btn layui-btn-primary j-ajax" confirm="{:lang('clear_confirm')}"><i class="layui-icon">&#xe640;</i>{:lang('clear')}</a>
+        </div>
+    </div>
+
+    <form class="layui-form" method="post" id="pageListForm" >
+        <table class="layui-table" lay-size="sm">
+            <thead>
+            <tr>
+                <th width="25"><input type="checkbox" lay-skin="primary" lay-filter="allChoose"></th>
+                <th width="60">{:lang('id')}</th>
+                <th width="60">{:lang('model')}</th>
+                <th width="100">{:lang('status')}</th>
+                <th >{:lang('content')}</th>
+                <th width="140">{:lang('opt')}</th>
+            </tr>
+            </thead>
+
+            {volist name="list" id="vo"}
+            <tr>
+                <td><input type="checkbox" name="ids[]" value="{$vo.comment_id}" class="layui-checkbox checkbox-ids" lay-skin="primary"></td>
+                <td>{$vo.comment_id}</td>
+                <td>{$vo.comment_mid|mac_get_mid_text}</td>
+                <td>{if condition="$vo.comment_status eq 0"}<span class="layui-badge">{:lang('reviewed_not')}</span>{else}<span class="layui-badge layui-bg-green">{:lang('reviewed')}</span>{/if}</td>
+                <td>
+                    <div class="c-999 f-12">
+                        <u style="cursor:pointer" class="text-primary">{$vo.comment_name|htmlspecialchars}：</u>
+                        <time>【{$vo.comment_time|mac_day='color'}】</time>
+                        <span class="ml-20">ip：【{$vo.comment_ip|long2ip}】</span>
+                        <span class="ml-20">{:lang('up')}：【{$vo.comment_up}】</span>
+                        <span class="ml-20">{:lang('hate')}：【{$vo.comment_down}】</span>
+                        <span class="ml-20">{:lang('report')}：【{$vo.comment_report}】</span>
+                        <span class="ml-20">{:lang('link')}：
+                            {if condition="!is_array($vo.data)"}
+                            【{:lang('del_data')}】
+                            {elseif condition="$vo.comment_mid eq 1"}
+                            【<a target="_blank" href="{$vo.data|mac_url_vod_detail}">{$vo.data.vod_name}</a>】</span>
+                            {elseif condition="$vo.comment_mid eq 2"}
+                            【<a target="_blank" href="{$vo.data|mac_url_art_detail}">{$vo.data.art_name}</a>】</span>
+                            {elseif condition="$vo.comment_mid eq 3"}
+                            【<a target="_blank" href="{$vo.data|mac_url_topic_detail}">{$vo.data.topic_name}</a>】</span>
+                            {elseif condition="$vo.comment_mid eq 8"}
+                            【<a target="_blank" href="{$vo.data|mac_url_actor_detail}">{$vo.data.actor_name}</a>】</span>
+                            {elseif condition="$vo.comment_mid eq 9"}
+                            【<a target="_blank" href="{$vo.data|mac_url_role_detail}">{$vo.data.role_name}</a>】</span>
+                            {/if}
+                    </div>
+                    <div class="f-12 c-999">
+                        {:lang('comment')}：{$vo.comment_content|htmlspecialchars}
+                    </div>
+                </td>
+                <td>
+                    <a class="layui-badge-rim j-iframe" data-href="{:url('info?id='.$vo['comment_id'])}" href="javascript:;" title="{:lang('edit')}">{:lang('edit')}</a>
+                    <a class="layui-badge-rim j-tr-del" data-href="{:url('del?ids='.$vo['comment_id'])}" href="javascript:;" title="{:lang('del')}">{:lang('del')}</a>
+                </td>
+            </tr>
+            {/volist}
+            </tbody>
+        </table>
+
+        <div id="pages" class="center"></div>
+
+    </form>
+</div>
+
+{include file="../../../application/admin/view_new/public/foot" /}
+
+
+<script type="text/javascript">
+    var curUrl="{:url('comment/data',$param)}";
+    layui.use(['laypage', 'layer','form'], function() {
+        var laypage = layui.laypage
+                , layer = layui.layer,
+                form = layui.form;
+
+        laypage.render({
+            elem: 'pages'
+            ,count: {$total}
+            ,limit: {$limit}
+            ,curr: {$page}
+            ,layout: ['count', 'prev', 'page', 'next', 'limit', 'skip']
+            ,jump: function(obj,first){
+                if(!first){
+                    location.href = curUrl.replace('%7Bpage%7D',obj.curr).replace('%7Blimit%7D',obj.limit);
+                }
+            }
+        });
+
+
+    });
+</script>
+</body>
+</html>

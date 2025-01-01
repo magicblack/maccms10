@@ -1,0 +1,19 @@
+<form class="layui-form m10" method="post" action="{$url}" id="movementTable">
+    <input type="hidden" name="col" value="{$col}">
+    <input type="hidden" name="ids" value="{$ids}">
+
+    <div class="layui-form-item">
+        <label class="layui-form-label ">{:lang('start')}：</label>
+        <div class="layui-input-inline w70">
+            <input type="text" class="layui-input" value="" placeholder="" name="start">
+        </div>
+        <label class="layui-form-label ">{:lang('end')}：</label>
+        <div class="layui-input-inline w70">
+            <input type="text" class="layui-input" value="" placeholder="" name="end">
+        </div>
+        <div class="layui-input-inline w70">
+            <button type="submit" class="layui-btn" lay-submit="" lay-filter="formSubmit">{:lang('btn_save')}</button>
+        </div>
+    </div>
+
+</form>

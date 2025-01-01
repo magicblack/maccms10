@@ -1,0 +1,128 @@
+{include file="../../../application/admin/view_new/public/head" /}
+<div class="page-container p10">
+
+    <div class="my-toolbar-box">
+        <div class="flex gap-5 overflow-x-auto overflow-y-hidden no-scrollbar">
+            <a data-full="1" data-href="{:url('info')}" class="layui-btn layui-btn-primary j-iframe"><i
+                    class="layui-icon">&#xe654;</i>{:lang('add')}</a>
+            <a data-href="{:url('batch')}" class="layui-btn layui-btn-primary j-page-btns confirm"><i
+                    class="layui-icon">&#xe642;</i>{:lang('edit')}</a>
+            <a data-href="{:url('del')}" class="layui-btn layui-btn-primary j-page-btns confirm"><i
+                    class="layui-icon">&#xe640;</i>{:lang('del')}</a>
+            <a data-href="{:url('index/select')}?tab=type&col=type_status&tpl=select_status&url=type/field"
+                data-width="470" data-height="100" data-checkbox="1" class="layui-btn layui-btn-primary j-select"><i
+                    class="layui-icon">&#xe620;</i>{:lang('status')}</a>
+            <a data-href="{:url('index/select')}?tab=type&col=type_status&tpl=select_type&url=type/move"
+                data-width="470" data-height="100" data-checkbox="1" class="layui-btn layui-btn-primary j-select"><i
+                    class="layui-icon">&#xe620;</i>{:lang('transfer')}</a>
+        </div>
+
+    </div>
+
+    <form class="layui-form " method="post" id="pageListForm">
+        <table class="layui-table min-w-[1240px]" lay-size="sm">
+            <thead>
+                <tr>
+                    <th width="25"><input type="checkbox" lay-skin="primary" lay-filter="allChoose"></th>
+                    <th>{:lang('name')}</th>
+                    <th width="80">{:lang('status')}</th>
+                    <th width="80">{:lang('genre')}</th>
+                    <th width="80">{:lang('sort')}</th>
+                    <th width="80">{:lang('name')}</th>
+                    <th width="120">{:lang('en')}</th>
+                    <th width="100">{:lang('admin/type/type_tpl')}</th>
+                    <th width="100">{:lang('admin/type/show_tpl')}</th>
+                    <th width="100">{:lang('admin/type/detail_tpl')}</th>
+                    <th width="230">{:lang('opt')}</th>
+                </tr>
+            </thead>
+
+            {volist name="list" id="vo"}
+                <tr>
+                    <td><input type="checkbox" name="ids[]" value="{$vo.type_id}" class="layui-checkbox checkbox-ids"
+                            lay-skin="primary"></td>
+                    <td>{$vo.type_id}、<a target="_blank" class="layui-badge-rim "
+                            href="{:mac_url_type($vo)}">{$vo.type_name}</a>
+                        <span class="layui-badge">{$vo.cc}</span>
+                    </td>
+                    <td>
+                        <input type="checkbox" name="status" {if condition="$vo['type_status'] eq 1" }checked{/if}
+                            value="{$vo['type_status']}" lay-skin="switch" lay-filter="switchStatus"
+                            data-href="{:url('field?col=type_status&ids='.$vo['type_id'])}">
+                    </td>
+                    <td>
+                        <span class="label label-success radius	">{$vo.type_mid|mac_get_mid_text}</span>
+                    </td>
+                    <td><input type="input" name="type_sort_{$vo.type_id}" value="{$vo.type_sort}" class="layui-input"></td>
+                    <td><input type="input" name="type_name_{$vo.type_id}" value="{$vo.type_name}" class="layui-input"></td>
+                    <td><input type="input" name="type_en_{$vo.type_id}" value="{$vo.type_en}" class="layui-input"></td>
+                    <td><input type="input" name="type_tpl_{$vo.type_id}" value="{$vo.type_tpl}" class="layui-input"></td>
+                    <td><input type="input" name="type_tpl_list_{$vo.type_id}" value="{$vo.type_tpl_list}"
+                            class="layui-input"></td>
+                    <td><input type="input" name="type_tpl_detail_{$vo.type_id}" value="{$vo.type_tpl_detail}"
+                            class="layui-input"></td>
+                    <td>
+                        <a class="layui-badge-rim layui-bg-green j-iframe" data-full="1"
+                            data-href="{:url('info?id='.$vo['type_id'])}" href="javascript:;"
+                            title="{:lang('edit')}">{:lang('edit')}</a>
+                        <a class="layui-badge-rim layui-bg-green j-tr-del" data-href="{:url('del?ids='.$vo['type_id'])}"
+                            href="javascript:;" title="{:lang('del')}">{:lang('del')}</a>
+                        <a class="layui-badge-rim layui-bg-green j-iframe" data-full="1"
+                            data-href="{:url('info')}?pid={$vo.type_id}" href="javascript:;"
+                            title="{:lang('add')}">{:lang('add')}</a>
+                    </td>
+                </tr>
+                {volist name="vo.child" id="ch"}
+                <tr>
+                    <td><input type="checkbox" name="ids[]" value="{$ch.type_id}" class="layui-checkbox checkbox-ids"
+                            lay-skin="primary"></td>
+                    <td>&nbsp;&nbsp;&nbsp;&nbsp;├&nbsp;{$ch.type_id}、<a target="_blank" class="layui-badge-rim "
+                            href="{:mac_url_type($ch)}">{$ch.type_name}</a>
+                        <span class="layui-badge">{$ch.cc}</span>
+                    </td>
+                    <td>
+                        <input type="checkbox" name="status" {if condition="$ch['type_status'] eq 1" }checked{/if}
+                            value="{$ch['type_status']}" lay-skin="switch" lay-filter="switchStatus"
+                            data-href="{:url('field?col=type_status&ids='.$ch['type_id'])}">
+                    </td>
+                    <td>
+                        <span class="label label-success radius	">{$ch.type_mid|mac_get_mid_text}</span>
+                    </td>
+                    <td><input type="input" name="type_sort_{$ch.type_id}" value="{$ch.type_sort}" class="layui-input"></td>
+                    <td><input type="input" name="type_name_{$ch.type_id}" value="{$ch.type_name}" class="layui-input"></td>
+                    <td><input type="input" name="type_en_{$ch.type_id}" value="{$ch.type_en}" class="layui-input"></td>
+                    <td><input type="input" name="type_tpl_{$ch.type_id}" value="{$ch.type_tpl}" class="layui-input"></td>
+                    <td><input type="input" name="type_tpl_list_{$ch.type_id}" value="{$ch.type_tpl_list}"
+                            class="layui-input"></td>
+                    <td><input type="input" name="type_tpl_detail_{$ch.type_id}" value="{$ch.type_tpl_detail}"
+                            class="layui-input"></td>
+                    <td>
+                        <a class="layui-badge-rim layui-bg-green j-iframe" data-full="1"
+                            data-href="{:url('info?id='.$ch['type_id'])}" href="javascript:;"
+                            title="{:lang('edit')}">{:lang('edit')}</a>
+                        <a class="layui-badge-rim layui-bg-green j-tr-del" data-href="{:url('del?ids='.$ch['type_id'])}"
+                            href="javascript:;" title="{:lang('del')}">{:lang('del')}</a>
+                    </td>
+                </tr>
+                {/volist}
+            {/volist}
+            </tbody>
+        </table>
+
+    </form>
+</div>
+
+{include file="../../../application/admin/view_new/public/foot" /}
+
+<script type="text/javascript">
+
+    layui.use(['laypage', 'layer'], function () {
+        var laypage = layui.laypage
+            , layer = layui.layer;
+
+
+    });
+</script>
+</body>
+
+</html>

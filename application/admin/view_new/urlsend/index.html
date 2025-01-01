@@ -1,0 +1,153 @@
+{include file="../../../application/admin/view_new/public/head" /}
+
+<div class="page-container p10">
+
+    <form class="layui-form layui-form-pane" action="">
+        <div class="layui-tab" lay-filter="tb1">
+            <ul class="layui-tab-title">
+                {volist name="$extends['ext_list']" id="vo"}
+                <li data-key="{$key}" lay-id="configpay_{$i+2}">{$vo}{:lang('config')}</li>
+                {/volist}
+
+            </ul>
+            <div class="layui-tab-content" id="movementTable">
+
+                {$extends['ext_html']}
+
+            </div>
+        </div>
+        <div class="layui-form-item ">
+            <div class="layui-input-block">
+                <button type="submit" class="layui-btn" lay-submit=""
+                    lay-filter="formSubmit">{:lang('btn_save')}</button>
+                <button class="layui-btn layui-btn-primary" type="reset">{:lang('btn_reset')}</button>
+            </div>
+        </div>
+    </form>
+
+
+    <form class="layui-form layui-form-pane" method="post" action="" target="_blank" id="form_post">
+        <div id="movementTable">
+            <blockquote class="layui-elem-quote">
+                {:lang('admin/urlsend/tip2')}{$GLOBALS['http_type'].$GLOBALS['config']['site']['site_url']}<br>
+            </blockquote>
+
+            <div class="layui-form-item">
+                <label class="layui-form-label">{:lang('admin/urlsend/send_genre')}：</label>
+                <div class="layui-input-inline">
+                    <select class="w150" id="ac" name="ac" lay-filter="ac">
+                        {volist name="$extends['ext_list']" id="vo"}
+                        <option value="{$key}">{$vo}</option>
+                        {/volist}
+                    </select>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">{:lang('admin/urlsend/send_range')}：</label>
+                <div class="layui-input-inline">
+                    <div class="layui-input-inline w300">
+                        <input type="radio" name="range" value="0" title="{:lang('admin/urlsend/add_update')}" checked>
+                        <input type="radio" name="range" value="1" title="{:lang('admin/urlsend/add')}">
+                    </div>
+                </div>
+            </div>
+
+            <div class="layui-form-item">
+                <label class="layui-form-label">{:lang('admin/urlsend/page_send_num')}：</label>
+                <div class="layui-input-inline w400">
+                    <input type="text" name="limit" id="limit" value="50" class="layui-input">
+                </div>
+                <div class="layui-form-mid layui-word-aux"></div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">{:lang('admin/urlsend/start_page')}：</label>
+                <div class="layui-input-inline w400">
+                    <input type="text" name="page" id="page" value="1" class="layui-input">
+                </div>
+                <div class="layui-form-mid layui-word-aux"></div>
+            </div>
+            <div class="space-x-2 space-y-2">
+                <hr class="layui-bg-gray">
+                <input type="button" value="{:lang('that_day')}{:lang('vod')}" class="layui-btn layui-btn-primary"
+                    onclick="post('ac2=today&mid=1');">
+                <input type="button" value="{:lang('all')}{:lang('vod')}" class="layui-btn layui-btn-primary"
+                    onclick="post('ac2=all&mid=1');">
+
+                <input type="button" value="{:lang('that_day')}{:lang('art')}" class="layui-btn layui-btn-primary"
+                    onclick="post('ac2=today&mid=2');">
+                <input type="button" value="{:lang('all')}{:lang('art')}" class="layui-btn layui-btn-primary"
+                    onclick="post('ac2=all&mid=2');">
+                <hr class="layui-bg-gray">
+                <input type="button" value="{:lang('that_day')}{:lang('topic')}" class="layui-btn layui-btn-primary"
+                    onclick="post('ac2=today&mid=3');">
+                <input type="button" value="{:lang('all')}{:lang('topic')}" class="layui-btn layui-btn-primary"
+                    onclick="post('ac2=all&mid=3');">
+
+                <input type="button" value="{:lang('that_day')}{:lang('actor')}" class="layui-btn layui-btn-primary"
+                    onclick="post('ac2=today&mid=8');">
+                <input type="button" value="{:lang('all')}{:lang('actor')}" class="layui-btn layui-btn-primary"
+                    onclick="post('ac2=all&mid=8');">
+                <hr class="layui-bg-gray">
+                <input type="button" value="{:lang('that_day')}{:lang('role')}" class="layui-btn layui-btn-primary"
+                    onclick="post('ac2=today&mid=9');">
+                <input type="button" value="{:lang('all')}{:lang('role')}" class="layui-btn layui-btn-primary"
+                    onclick="post('ac2=all&mid=9');">
+
+                <input type="button" value="{:lang('that_day')}{:lang('website')}" class="layui-btn layui-btn-primary"
+                    onclick="post('ac2=today&mid=11');">
+                <input type="button" value="{:lang('all')}{:lang('website')}" class="layui-btn layui-btn-primary"
+                    onclick="post('ac2=all&mid=11');">
+                <hr class="layui-bg-gray">
+                {if condition="$urlsend_break_baidu_push neq ''"}
+                <a href="{$urlsend_break_baidu_push}"
+                    class="layui-btn layui-btn-danger ">【{:lang('admin/urlsend/in_break_point_exec')}】</a>
+                {/if}
+            </div>
+        </div>
+
+    </form>
+
+</div>
+
+{include file="../../../application/admin/view_new/public/foot" /}
+<script type="text/javascript" src="__STATIC__/js/jquery.cookie.js"></script>
+<script type="text/javascript">
+    var curUrl = "{:url('push')}";
+    layui.use(['element', 'form', 'layer'], function () {
+        var element = layui.element
+            , form = layui.form
+            , layer = layui.layer;
+
+
+        element.on('tab(tb1)', function () {
+            $.cookie('urlsend_tab', this.getAttribute('lay-id'));
+        });
+
+        if ($.cookie('urlsend_tab') != null) {
+            element.tabChange('tb1', $.cookie('urlsend_tab'));
+        }
+
+
+
+    });
+    function post(p) {
+        var limit = $('#limit').val();
+        var page = $('#page').val();
+        var ac = $('#ac').val();
+        var range = $('input[name="range"]:checked').val();
+
+        $("#form_post").attr("action", curUrl + "?" + 'ac=' + ac + '&limit=' + limit + '&page=' + page + '&range=' + range + '&' + p);
+        $("#form_post").submit();
+    }
+
+    $(function () {
+        if ($.cookie('urlsend_tab') == undefined) {
+            $('.layui-tab-title').find('li').first().addClass('layui-this');
+            $('.layui-tab-item').first().addClass('layui-show');
+        }
+    });
+
+</script>
+</body>
+
+</html>

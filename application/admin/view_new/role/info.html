@@ -1,0 +1,277 @@
+{include file="../../../application/admin/view_new/public/head" /}
+<script type="text/javascript" src="__STATIC__/js/jquery.jscolor.js"></script>
+{include file="../../../application/admin/view_new/public/editor" flag="role_editor"/}
+<div class="page-container p10">
+    <div class="showpic" style="display:none;"><img class="showpic_img" width="120" height="160" referrerPolicy="no-referrer"></div>
+    
+    <form class="layui-form layui-form-pane" method="post" action="">
+        <input type="hidden" name="role_id" value="{$info.role_id}">
+
+        <div class="layui-tab">
+            <ul class="layui-tab-title ">
+                <li class="layui-this">{:lang('base_info')}</a></li>
+                <li>{:lang('other_info')}</li>
+            </ul>
+            <div class="layui-tab-content">
+
+                <div class="layui-tab-item layui-show">
+                    
+                <div class="layui-form-item">
+                    <label class="layui-form-label">{:lang('param')}：</label>
+                    <div class="layui-input-inline w150">
+                            <select name="role_level">
+                                <option value="0">{:lang('select_level')}</option>
+                                <option value="9" {if condition="$info.role_level eq 9"}selected{/if}>{:lang('level')}9-{:lang('slide')}</option>
+                                <option value="1" {if condition="$info.role_level eq 1"}selected{/if}>{:lang('level')}1</option>
+                                <option value="2" {if condition="$info.role_level eq 2"}selected{/if}>{:lang('level')}2</option>
+                                <option value="3" {if condition="$info.role_level eq 3"}selected{/if}>{:lang('level')}3</option>
+                                <option value="4" {if condition="$info.role_level eq 4"}selected{/if}>{:lang('level')}4</option>
+                                <option value="5" {if condition="$info.role_level eq 5"}selected{/if}>{:lang('level')}5</option>
+                                <option value="6" {if condition="$info.role_level eq 6"}selected{/if}>{:lang('level')}6</option>
+                                <option value="7" {if condition="$info.role_level eq 7"}selected{/if}>{:lang('level')}7</option>
+                                <option value="8" {if condition="$info.role_level eq 8"}selected{/if}>{:lang('level')}8</option>
+
+                            </select>
+                    </div>
+                    <div class="layui-input-inline w150">
+                            <select name="role_status">
+                                <option value="1">{:lang('reviewed')}</option>
+                                <option value="0" {if condition="$info.role_status eq '0'"}selected{/if}>{:lang('reviewed_not')}</option>
+                            </select>
+                    </div>
+                    <div class="layui-input-inline w150">
+                        <select name="role_lock">
+                            <option value="0">{:lang('unlock')}</option>
+                            <option value="1" {if condition="$info.role_lock eq 1"}selected{/if}>{:lang('lock')}</option>
+                        </select>
+                    </div>
+
+                    <div class="layui-input-inline">
+                        <input type="checkbox" name="uptime" title="{:lang('update_time')}" value="1" checked class="layui-checkbox checkbox-ids" lay-skin="primary">
+                    </div>
+                </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:lang('vod_name')}：</label>
+                        <div class="layui-input-inline w400">
+                            <input type="text" class="layui-input" value="{$data.vod_name}" readonly="readonly" placeholder="" name="">
+                        </div>
+                        <label class="layui-form-label">{:lang('vod_id')}：</label>
+                        <div class="layui-input-inline w70">
+                            <input type="text" class="layui-input" value="{$info.role_rid}" readonly="readonly" placeholder="" name="role_rid">
+                        </div>
+                        <label class="layui-form-label">{:lang('vod')}{:lang('type')}：</label>
+                        <div class="layui-input-inline w70">
+                            <input type="text" class="layui-input" value="{$data.type.type_name}" readonly="readonly" placeholder="" name="">
+                        </div>
+                    </div>
+
+
+                <div class="layui-form-item">
+                    <label class="layui-form-label">{:lang('role_name')}：</label>
+                    <div class="layui-input-inline w200">
+                        <input type="text" class="layui-input" value="{$info.role_name}" placeholder="" name="role_name">
+                    </div>
+                    <label class="layui-form-label">{:lang('actor_name')}：</label>
+                    <div class="layui-input-inline w200">
+                        <input type="text" class="layui-input" value="{$info.role_actor}" placeholder="" name="role_actor">
+                    </div>
+                    <label class="layui-form-label">{:lang('sort')}：</label>
+                    <div class="layui-input-inline w200">
+                        <input type="text" class="layui-input" value="{$info.role_sort}" placeholder="" name="role_sort">
+                    </div>
+                </div>
+
+                <div class="layui-form-item">
+                    <label class="layui-form-label">{:lang('en')}：</label>
+                    <div class="layui-input-inline w200">
+                        <input type="text" class="layui-input" value="{$info.role_en}" placeholder="" name="role_en">
+                    </div>
+                    <label class="layui-form-label">{:lang('letter')}：</label>
+                    <div class="layui-input-inline w200">
+                        <input type="text" class="layui-input" value="{$info.role_letter}" placeholder="" name="role_letter">
+                    </div>
+                    <label class="layui-form-label">{:lang('color')}：</label>
+                    <div class="layui-input-inline w200">
+                        <input type="text" class="layui-input color" value="{$info.role_color}" placeholder="" name="role_color">
+                    </div>
+                </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:lang('remarks')}：</label>
+                        <div class="layui-input-inline w400">
+                            <input type="text" class="layui-input" value="{$info.role_remarks}" placeholder="" name="role_remarks">
+                        </div>
+                    </div>
+
+                <div class="layui-form-item">
+                    <label class="layui-form-label">{:lang('pic')}：</label>
+                    <div class="layui-input-inline w400 upload">
+                        <input type="text" class="layui-input upload-input" style="max-width:100%;" value="{$info.role_pic}" placeholder="" id="role_pic" name="role_pic">
+                    </div>
+                    <div class="layui-input-inline ">
+                        <button type="button" class="layui-btn layui-upload" lay-data="" id="upload1">{:lang('upload_pic')}</button>
+                    </div>
+                </div>
+
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:lang('content')}：</label>
+                        <div class="layui-input-block">
+                            <textarea id="role_content" name="role_content" type="text/plain" style="width:99%;height:300px">{$info.role_content|mac_url_content_img}</textarea>
+                        </div>
+                    </div>
+                    
+        </div>
+
+
+                    <div class="layui-tab-item">
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">{:lang('up')}：</label>
+                            <div class="layui-input-inline ">
+                                <input type="text" class="layui-input" value="{$info.role_up}" placeholder="" id="role_up" name="role_up">
+                            </div>
+                            <label class="layui-form-label">{:lang('hate')}：</label>
+                            <div class="layui-input-inline ">
+                                <input type="text" class="layui-input" value="{$info.role_down}" placeholder="" id="role_down" name="role_down">
+                            </div>
+                            <button class="layui-btn" type="button" id="btn_rnd">{:lang('rnd_make')}</button>
+                        </div>
+
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">{:lang('hits')}：</label>
+                            <div class="layui-input-inline ">
+                                <input type="text" class="layui-input" value="{$info.role_hits}" placeholder="" id="role_hits" name="role_hits">
+                            </div>
+                            <label class="layui-form-label">{:lang('hits_month')}：</label>
+                            <div class="layui-input-inline ">
+                                <input type="text" class="layui-input" value="{$info.role_hits_month}" placeholder="" id="role_hits_month" name="role_hits_month" >
+                            </div>
+                        </div>
+
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">{:lang('hits_week')}：</label>
+                            <div class="layui-input-inline ">
+                                <input type="text" class="layui-input" value="{$info.role_hits_week}" placeholder="" id="role_hits_week" name="role_hits_week">
+                            </div>
+                            <label class="layui-form-label">{:lang('hits_day')}：</label>
+                            <div class="layui-input-inline ">
+                                <input type="text" class="layui-input " value="{$info.role_hits_day}" placeholder="" id="role_hits_day" name="role_hits_day">
+                            </div>
+                        </div>
+
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">{:lang('score')}：</label>
+                            <div class="layui-input-inline ">
+                                <input type="text" class="layui-input" value="{$info.role_score}" placeholder="" id="role_score" name="role_score">
+                            </div>
+                            <label class="layui-form-label">{:lang('score_all')}：</label>
+                            <div class="layui-input-inline ">
+                                <input type="text" class="layui-input" value="{$info.role_score_all}" placeholder="" id="role_score_all" name="role_score_all">
+                            </div>
+                            <label class="layui-form-label">{:lang('score_num')}：</label>
+                            <div class="layui-input-inline ">
+                                <input type="text" class="layui-input" value="{$info.role_score_num}" placeholder="" id="role_score_num" name="role_score_num">
+                            </div>
+                        </div>
+
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">{:lang('tpl')}：</label>
+                            <div class="layui-input-inline ">
+                                <input type="text" class="layui-input" value="{$info.role_tpl}" placeholder="" name="role_tpl">
+                            </div>
+                            <label class="layui-form-label">{:lang('jumpurl')}：</label>
+                            <div class="layui-input-inline ">
+                                <input type="text" class="layui-input" value="{$info.role_jumpurl}" placeholder="" name="role_jumpurl">
+                            </div>
+                        </div>
+                    </div>
+            </div>
+        </div>
+
+                <div class="layui-form-item center">
+                    <div class="layui-input-block">
+                        <button type="submit" class="layui-btn" lay-submit="" lay-filter="formSubmit" data-child="">{:lang('btn_save')}</button>
+                        <button class="layui-btn layui-btn-primary" type="reset">{:lang('btn_reset')}</button>
+                    </div>
+                </div>
+    </form>
+
+</div>
+{include file="../../../application/admin/view_new/public/foot" /}
+
+<script type="text/javascript">
+
+    layui.use(['form','upload', 'layer'], function () {
+        // 操作对象
+        var form = layui.form
+                , layer = layui.layer
+                , $ = layui.jquery
+                , upload = layui.upload;;
+
+        // 验证
+        form.verify({
+            role_name: function (value) {
+                if (value == "") {
+                    return "{:lang('name_empty')}";
+                }
+            }
+        });
+
+        upload.render({
+            elem: '.layui-upload'
+            ,url: "{:url('upload/upload')}?flag=role"
+            ,method: 'post'
+            ,before: function(input) {
+                layer.msg("{:lang('upload_ing')}", {time:3000000});
+            },done: function(res, index, upload) {
+                var obj = this.item;
+                if (res.code == 0) {
+                    layer.msg(res.msg);
+                    return false;
+                }
+                layer.closeAll();
+                var input = $(obj).parent().parent().find('.upload-input');
+                if ($(obj).attr('lay-type') == 'image') {
+                    input.siblings('img').attr('src', res.data.file).show();
+                }
+                input.val(res.data.file);
+
+                if(res.data.thumb_class !=''){
+                    $('.'+ res.data.thumb_class).val(res.data.thumb[0].file);
+                }
+            }
+        });
+
+        $('.upload-input').hover(function (e){
+            var e = window.event || e;
+            var imgsrc = $(this).val();
+            if(imgsrc.trim()==""){ return; }
+            var left = e.clientX+document.body.scrollLeft+20;
+            var top = e.clientY+document.body.scrollTop+20;
+            $(".showpic").css({left:left,top:top,display:""});
+            if(imgsrc.indexOf('://')<0){ imgsrc = ROOT_PATH + '/' + imgsrc;	} else{ imgsrc = imgsrc.replace('mac:','http:'); }
+            $(".showpic_img").attr("src", imgsrc);
+        },function (e){
+            $(".showpic").css("display","none");
+        });
+
+        $("#btn_rnd").click(function(){
+            $("#role_hits").val( rndNum(5000,9999) );
+            $("#role_hits_month").val( rndNum(1000,4999) );
+            $("#role_hits_week").val( rndNum(300,999) );
+            $("#role_hits_day").val( rndNum(1,299) );
+            $("#role_up").val( rndNum(1,999) );
+            $("#role_down").val( rndNum(1,999) );
+            $("#role_score").val( rndNum(10) );
+            $("#role_score_all").val( rndNum(1000) );
+            $("#role_score_num").val( rndNum(100) );
+        });
+
+        var ue = editor_getEditor('role_content');
+    });
+    
+</script>
+
+</body>
+</html>

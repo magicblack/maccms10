@@ -1,0 +1,111 @@
+body {
+  text-align: center;
+  background: url(../images/install/bg_1.png) 100% 100% no-repeat;
+  overflow: hidden;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+.header {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  margin: 30px auto 0;
+}
+
+.header h2 {
+  font-family: PingFangSC, PingFang SC;
+  font-weight: 400;
+  font-size: 40px;
+  color: #1F2937;
+  line-height: 56px;
+  font-style: normal;
+}
+
+.header h1 {
+  height: 70px;
+  font-family: PingFangSC, PingFang SC;
+  font-weight: 500;
+  font-size: 50px;
+  color: #1F2937;
+  line-height: 70px;
+  font-style: normal;
+}
+
+.install-box {
+  margin: 20px auto 0;
+  padding: 30px;
+  background: #FFFFFF;
+  border: 1px solid #E6E7EB;
+  border-radius: 10px;
+  overflow: auto;
+  display: flex;
+  flex-direction: column;
+  width: 716px;
+  height: 74vh;
+  box-sizing: border-box;
+}
+
+.protocol-box {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+
+.protocol-box .title {
+  height: 28px;
+  font-family: PingFangSC, PingFang SC;
+  font-weight: 500;
+  font-size: 20px;
+  color: #1F2937;
+  line-height: 28px;
+  text-align: center;
+  font-style: normal;
+}
+
+.protocol {
+  text-align: left;
+  height: 400px;
+  overflow-y: auto;
+  color: #4B5563;
+  line-height: 24px;
+}
+
+.protocol h2 {
+  text-align: center;
+  font-size: 16px;
+  color: #000;
+}
+
+.step-btns {
+  padding: 20px 0 10px 0;
+}
+
+.step-btns .layui-btn {
+  min-width: 300px;
+  height: 40px;
+  background: #40CC92;
+  border-radius: 6px;
+  line-height: 40px;
+}
+
+.copyright {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 40px;
+  background: #FFFFFF;
+  line-height: 40px;
+}
+
+.copyright,
+.copyright a {
+  color: #4B5563;
+}

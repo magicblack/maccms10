@@ -1,0 +1,80 @@
+{include file="../../../application/admin/view_new/public/head" /}
+<div class="page-container p10">
+    <form class="layui-form layui-form-pane" method="post" action="" id="movementTable">
+        <input type="hidden" name="__token__" value="{$Request.token}" />
+        <div class="layui-form-item">
+            <label class="layui-form-label">{:lang('status')}：</label>
+            <div class="layui-input-block">
+                <input name="status" type="radio" id="rad-1" value="0" title="{:lang('disable')}" {if condition="$info['status'] neq 1"}checked {/if}>
+                <input name="status" type="radio" id="rad-2" value="1" title="{:lang('enable')}" {if condition="$info['status'] eq 1"}checked {/if}>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">{:lang('code')}：</label>
+            <div class="layui-input-block">
+                <input type="text" class="layui-input" value="{$info.from}" placeholder="{:lang('admin/vodplayer/code_tip')}" id="from" name="from" {if condition="$info.from neq ''"} readonly="readonly"{/if}>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">{:lang('name')}：</label>
+            <div class="layui-input-block">
+                <input type="text" class="layui-input" value="{$info.show}" placeholder="" id="show" name="show">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">{:lang('admin/vodserver/url')}：</label>
+            <div class="layui-input-block">
+                <input type="text" class="layui-input" value="{$info.des}" placeholder="" id="des" name="des">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">{:lang('sort')}：</label>
+            <div class="layui-input-block">
+                <input type="text" class="layui-input" value="{$info.sort}" placeholder="{:lang('admin/vodplayer/sort_tip')}" id="sort" name="sort">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">{:lang('tip')}：</label>
+            <div class="layui-input-block">
+                <textarea name="tip" cols="" rows="" class="layui-textarea"  placeholder="" >{$info.tip}</textarea>
+            </div>
+        </div>
+
+        <div class="layui-form-item center">
+            <div class="layui-input-block">
+                <button type="submit" class="layui-btn" lay-submit="" lay-filter="formSubmit" data-child="true">{:lang('btn_save')}</button>
+                <button class="layui-btn layui-btn-primary" type="reset">{:lang('btn_reset')}</button>
+            </div>
+        </div>
+    </form>
+
+</div>
+{include file="../../../application/admin/view_new/public/foot" /}
+<script type="text/javascript">
+
+    layui.use(['form', 'layer'], function () {
+        // 操作对象
+        var form = layui.form
+                , layer = layui.layer
+                , $ = layui.jquery;
+
+        // 验证
+        form.verify({
+            from: function (value) {
+                if (value == "") {
+                    return "{:lang('admin/vodplayer/code_empty')}";
+                }
+            },
+            show: function (value) {
+                if (value == "") {
+                    return "{:lang('name_empty')}";
+                }
+            }
+        });
+
+
+    });
+</script>
+
+</body>
+</html>

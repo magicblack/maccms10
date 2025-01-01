@@ -1,0 +1,122 @@
+{include file="../../../application/admin/view_new/public/head" /}
+<div class="page-container p10">
+
+    <div class="my-toolbar-box">
+
+        <div class="mb10">
+            <div class="layui-input-inline w150 m5"><a href="javascript:;" data-id="" class="select_type red">{:lang('admin/collect/view_all_resource')}</a></div>
+            {volist name="type" id="vo"}
+            <div class="layui-input-inline w150 m5">
+                <a href="javascript:;" data-id="{$vo.type_id}" class="select_type">{$vo.type_name|htmlspecialchars}</a>
+                <a id="{$param['cjflag']|mac_filter_xss}_{$vo.type_id}" data-href="{:url('index/select')}?tab=website&col={$param['cjflag']|mac_filter_xss}_{$vo.type_id}&ids=1&tpl=select_type&refresh=no&url=collect/bind" data-width="270" data-height="100" class="j-select" >
+                    {if condition="$vo.isbind eq 1"}
+                    <span class="red">[{$vo.local_type_name}]</span>
+                    {else}
+                    [{:lang('bind')}]
+                    {/if}
+                </a>
+            </div>
+            {/volist}
+
+        </div>
+
+        <div class="">
+            <form class="layui-form " method="">
+                <div class="layui-input-inline">
+                    <input type="text" autocomplete="off" placeholder="{:lang('wd')}" class="layui-input" name="wd" value="{$param['wd']|mac_filter_xss}">
+                </div>
+                <button type="button" class="layui-btn mgl-20 j-btn" >{:lang('btn_search')}</button>
+            </form>
+        </div>
+
+    </div>
+
+
+    <form class="layui-form " method="post" id="pageListForm">
+        <table class="layui-table" lay-size="sm">
+            <thead>
+            <tr>
+                <th width="25"><input type="checkbox" lay-skin="primary" lay-filter="allChoose"></th>
+                <th >{:lang('name')}</th>
+                <th width="60">{:lang('type')}</th>
+                <th width="60">{:lang('area')}</th>
+                <th width="140">{:lang('time')}</th>
+            </tr>
+            </thead>
+
+            {volist name="list" id="vo"}
+            <tr>
+                <td><input type="checkbox" name="ids[]" value="{$vo.website_id}" class="layui-checkbox checkbox-ids" lay-skin="primary"></td>
+                <td>{$vo.website_name|htmlspecialchars}</td>
+                <td>{$vo.type_name|htmlspecialchars}</td>
+                <td>{$vo.website_area|htmlspecialchars}</td>
+                <td>{$vo.website_time|mac_day='color'}</td>
+            </tr>
+            {/volist}
+            </tbody>
+        </table>
+        <div class="layui-btn-group">
+            {php}
+                $p1 = $param;
+                unset($p1['ac']);
+                $p1_str = http_build_query($p1);
+            {/php}
+            <a data-href="{:url('api')}?{$p1_str}&ac=cjsel" data-ajax="no" class="layui-btn layui-btn-primary j-page-btns"><i class="layui-icon">&#xe654;</i>{:lang('admin/collect/cj_select')}</a>
+            <a data-href="{:url('api')}?{$p1_str}&h=24&ac=cjday" data-checkbox="no" data-ajax="no" class="layui-btn layui-btn-primary j-page-btns"><i class="layui-icon">&#xe654;</i>{:lang('admin/collect/cj_today')}</a>
+            <a data-href="{:url('api')}?{$p1_str}&ac=cjall" data-checkbox="no" data-ajax="no" class="layui-btn layui-btn-primary j-page-btns"><i class="layui-icon">&#xe654;</i>{:lang('admin/collect/cj_all')}</a>
+        </div>
+
+        <div id="pages" class="center"></div>
+    </form>
+
+</div>
+
+
+{include file="../../../application/admin/view_new/public/foot" /}
+
+<script type="text/javascript">
+    var curUrl="{:url('api')}?{$param_str}";
+    layui.use(['laypage', 'layer','form'], function() {
+        var laypage = layui.laypage
+                , layer = layui.layer,
+                form = layui.form;
+
+        laypage.render({
+            elem: 'pages'
+            ,count: {$total}
+            ,limit: {$limit}
+            ,curr: {$page}
+            ,layout: ['count', 'prev', 'page', 'next', 'limit', 'skip']
+            ,jump: function(obj,first){
+                if(!first){
+                    location.href = curUrl.replace('%7Bpage%7D',obj.curr).replace('%7Blimit%7D',obj.limit);
+                }
+            }
+        });
+
+
+        $('.j-btn').click(function(){
+           var wd = $('input[name="wd"]').val();
+            var url = changeParam(curUrl,'wd',wd);
+            location.href = url.replace('%7Bpage%7D',1).replace('%7Blimit%7D','');
+        });
+
+        $('.select_type').click(function(){
+            var t = $(this).attr('data-id');
+            var url = changeParam(curUrl,'t',t);
+            location.href = url.replace('%7Bpage%7D',1).replace('%7Blimit%7D','');
+        });
+
+    });
+    function onSubmitResult(res)
+    {
+        if(res.data.st==1){
+            $('#'+res.data.id).html("<span class=red>[{:lang('unbind')}]</span>");
+        }
+        else{
+            $('#'+res.data.id).html("[{:lang('bind')}]");
+        }
+    }
+</script>
+</body>
+</html>

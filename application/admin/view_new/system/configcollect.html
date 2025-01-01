@@ -1,0 +1,1027 @@
+{include file="../../../application/admin/view_new/public/head" /}
+<style>
+    .layui-form-pane .layui-form-label {
+        width: 140px;
+    }
+
+    .layui-form-pane .layui-input-block {
+        margin-left: 140px;
+    }
+</style>
+<div class="page-container">
+    <form class="layui-form layui-form-pane" action="">
+        <input type="hidden" name="__token__" value="{$Request.token}" />
+        <div class="layui-tab" lay-filter="tb1">
+            <ul class="layui-tab-title">
+                <li class="layui-this" lay-id="configcollect_1">{:lang('admin/system/configcollect/vod')}</li>
+                <li lay-id="configcollect_2">{:lang('admin/system/configcollect/art')}</li>
+                <li lay-id="configcollect_3">{:lang('admin/system/configcollect/actor')}</li>
+                <li lay-id="configcollect_4">{:lang('admin/system/configcollect/role')}</li>
+                <li lay-id="configcollect_5">{:lang('admin/system/configcollect/website')}</li>
+                <li lay-id="configcollect_6">{:lang('admin/system/configcollect/comment')}</li>
+                <li lay-id="configcollect_7">{:lang('admin/system/configcollect/words')}</li>
+            </ul>
+
+            <div class="layui-tab-content">
+
+                <div class="layui-tab-item layui-show" id="movementTable">
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:lang('admin/system/configcollect/status')}：</label>
+                        <div class="layui-input-block">
+                            <input type="radio" name="collect[vod][status]" value="0" title="{:lang('reviewed_not')}"
+                                {if condition="$config['collect']['vod']['status'] neq 1" }checked {/if}>
+                            <input type="radio" name="collect[vod][status]" value="1" title="{:lang('reviewed')}" {if
+                                condition="$config['collect']['vod']['status'] eq 1" }checked {/if}>
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:lang('admin/system/configcollect/hits_rnd')}：</label>
+                        <div class="layui-input-inline">
+                            <input type="text" name="collect[vod][hits_start]" placeholder="{:lang('min_val')}"
+                                value="{$config['collect']['vod']['hits_start']}" class="layui-input">
+                        </div>
+                        <div class="layui-input-inline">
+                            <input type="text" name="collect[vod][hits_end]" placeholder="{:lang('max_val')}"
+                                value="{$config['collect']['vod']['hits_end']}" class="layui-input">
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:lang('admin/system/configcollect/updown_rnd')}：</label>
+                        <div class="layui-input-inline">
+                            <input type="text" name="collect[vod][updown_start]" placeholder="{:lang('min_val')}"
+                                value="{$config['collect']['vod']['updown_start']}" class="layui-input">
+                        </div>
+                        <div class="layui-input-inline">
+                            <input type="text" name="collect[vod][updown_end]" placeholder="{:lang('max_val')}"
+                                value="{$config['collect']['vod']['updown_end']}" class="layui-input">
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:lang('admin/system/configcollect/score_rnd')}：</label>
+                        <div class="layui-input-inline">
+                            <input type="radio" name="collect[vod][score]" value="0" title="{:lang('close')}" {if
+                                condition="$config['collect']['vod']['score'] neq 1" }checked {/if}>
+                            <input type="radio" name="collect[vod][score]" value="1" title="{:lang('open')}" {if
+                                condition="$config['collect']['vod']['score'] eq 1" }checked {/if}>
+                        </div>
+                    </div>
+
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:lang('admin/system/configcollect/sync_pic')}：</label>
+                        <div class="layui-input-inline">
+                            <input type="radio" name="collect[vod][pic]" value="0" title="{:lang('close')}" {if
+                                condition="$config['collect']['vod']['pic'] neq 1" }checked {/if}>
+                            <input type="radio" name="collect[vod][pic]" value="1" title="{:lang('open')}" {if
+                                condition="$config['collect']['vod']['pic'] eq 1" }checked {/if}>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:lang('admin/system/configcollect/auto_tag')}：</label>
+                        <div class="layui-input-inline">
+                            <input type="radio" name="collect[vod][tag]" value="0" title="{:lang('close')}" {if
+                                condition="$config['collect']['vod']['tag'] neq 1" }checked {/if}>
+                            <input type="radio" name="collect[vod][tag]" value="1" title="{:lang('open')}" {if
+                                condition="$config['collect']['vod']['tag'] eq 1" }checked {/if}>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:lang('admin/system/configcollect/class_filter')}：</label>
+                        <div class="layui-input-inline">
+                            <input type="radio" name="collect[vod][class_filter]" value="0" title="{:lang('close')}" {if
+                                condition="$config['collect']['vod']['class_filter'] eq '0'" }checked {/if}>
+                            <input type="radio" name="collect[vod][class_filter]" value="1" title="{:lang('open')}" {if
+                                condition="$config['collect']['vod']['class_filter'] neq '0'" }checked {/if}>
+                        </div>
+                        <div class="layui-form-mid layui-word-aux">
+                            {:lang('admin/system/configcollect/class_filter_tip')}</div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:lang('admin/system/configcollect/psename')}：</label>
+                        <div class="layui-input-inline">
+                            <input type="radio" name="collect[vod][psename]" value="0" title="{:lang('close')}" {if
+                                condition="$config['collect']['vod']['psename'] neq 1" }checked {/if}>
+                            <input type="radio" name="collect[vod][psename]" value="1" title="{:lang('open')}" {if
+                                condition="$config['collect']['vod']['psename'] eq 1" }checked {/if}>
+                        </div>
+                        <div class="layui-form-mid layui-word-aux">{:lang('admin/system/configcollect/psename_tip')}
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:lang('admin/system/configcollect/psernd')}：</label>
+                        <div class="layui-input-inline">
+                            <input type="radio" name="collect[vod][psernd]" value="0" title="{:lang('close')}" {if
+                                condition="$config['collect']['vod']['psernd'] neq 1" }checked {/if}>
+                            <input type="radio" name="collect[vod][psernd]" value="1" title="{:lang('open')}" {if
+                                condition="$config['collect']['vod']['psernd'] eq 1" }checked {/if}>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:lang('admin/system/configcollect/psesyn')}：</label>
+                        <div class="layui-input-inline">
+                            <input type="radio" name="collect[vod][psesyn]" value="0" title="{:lang('close')}" {if
+                                condition="$config['collect']['vod']['psesyn'] neq 1" }checked {/if}>
+                            <input type="radio" name="collect[vod][psesyn]" value="1" title="{:lang('open')}" {if
+                                condition="$config['collect']['vod']['psesyn'] eq 1" }checked {/if}>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:lang('admin/system/configcollect/pseplayer')}：</label>
+                        <div class="layui-input-inline">
+                            <input type="radio" name="collect[vod][pseplayer]" value="0" title="{:lang('close')}" {if
+                                condition="$config['collect']['vod']['pseplayer'] neq 1" }checked {/if}>
+                            <input type="radio" name="collect[vod][pseplayer]" value="1" title="{:lang('open')}" {if
+                                condition="$config['collect']['vod']['pseplayer'] eq 1" }checked {/if}>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:lang('admin/system/configcollect/psearea')}：</label>
+                        <div class="layui-input-inline">
+                            <input type="radio" name="collect[vod][psearea]" value="0" title="{:lang('close')}" {if
+                                condition="$config['collect']['vod']['psearea'] neq 1" }checked {/if}>
+                            <input type="radio" name="collect[vod][psearea]" value="1" title="{:lang('open')}" {if
+                                condition="$config['collect']['vod']['psearea'] eq 1" }checked {/if}>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:lang('admin/system/configcollect/pselang')}：</label>
+                        <div class="layui-input-inline">
+                            <input type="radio" name="collect[vod][pselang]" value="0" title="{:lang('close')}" {if
+                                condition="$config['collect']['vod']['pselang'] neq 1" }checked {/if}>
+                            <input type="radio" name="collect[vod][pselang]" value="1" title="{:lang('open')}" {if
+                                condition="$config['collect']['vod']['pselang'] eq 1" }checked {/if}>
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:lang('admin/system/configcollect/urlrole')}：</label>
+                        <div class="layui-input-inline">
+                            <input type="radio" name="collect[vod][urlrole]" value="0" title="{:lang('replace')}" {if
+                                condition="$config['collect']['vod']['urlrole'] neq 1" }checked {/if}>
+                            <input type="radio" name="collect[vod][urlrole]" value="1" title="{:lang('merge')}" {if
+                                condition="$config['collect']['vod']['urlrole'] eq 1" }checked {/if}>
+                            <!-- <input type="radio" name="collect[vod][urlrole]" value="2" title="{:lang('admin/system/configcollect/urlrole/use_more')}" {if condition="$config['collect']['vod']['urlrole'] eq 2"}checked {/if}> -->
+                        </div>
+                        <div class="layui-form-mid layui-word-aux">{:lang('admin/system/configcollect/urlrole_tip')}
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">
+                            {:lang('admin/system/configcollect/inrule')}：</label>
+                        <div class="layui-input-block">
+                            <input type="checkbox" lay-skin="primary" name="collect[vod][inrule][]" value="a"
+                                title="{:lang('name')}" {if
+                                condition="strpos($config['collect']['vod']['inrule'],'a') !==false" }checked {/if}>
+                            <input type="checkbox" lay-skin="primary" name="collect[vod][inrule][]" value="b"
+                                title="{:lang('type')}" {if
+                                condition="strpos($config['collect']['vod']['inrule'],'b') !==false" }checked {/if}>
+                            <input type="checkbox" lay-skin="primary" name="collect[vod][inrule][]" value="c"
+                                title="{:lang('years')}" {if
+                                condition="strpos($config['collect']['vod']['inrule'],'c') !==false" }checked {/if}>
+                            <input type="checkbox" lay-skin="primary" name="collect[vod][inrule][]" value="d"
+                                title="{:lang('area')}" {if
+                                condition="strpos($config['collect']['vod']['inrule'],'d') !==false" }checked {/if}>
+                            <input type="checkbox" lay-skin="primary" name="collect[vod][inrule][]" value="e"
+                                title="{:lang('lang')}" {if
+                                condition="strpos($config['collect']['vod']['inrule'],'e') !==false" }checked {/if}>
+                            <input type="checkbox" lay-skin="primary" name="collect[vod][inrule][]" value="f"
+                                title="{:lang('actor')}" {if
+                                condition="strpos($config['collect']['vod']['inrule'],'f') !==false" }checked {/if}>
+                            <input type="checkbox" lay-skin="primary" name="collect[vod][inrule][]" value="g"
+                                title="{:lang('director')}" {if
+                                condition="strpos($config['collect']['vod']['inrule'],'g') !==false" }checked {/if}>
+                            <input type="checkbox" lay-skin="primary" name="collect[vod][inrule][]" value="h"
+                                title="{:lang('douban_id')}" {if
+                                condition="strpos($config['collect']['vod']['inrule'],'h') !==false" }checked {/if}>
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">
+                            {:lang('admin/system/configcollect/uprule')}：</label>
+                        <div class="layui-input-block">
+                            <input type="checkbox" lay-skin="primary" name="collect[vod][uprule][]" value="a"
+                                title="{:lang('playurl')}" {if
+                                condition="strpos($config['collect']['vod']['uprule'],'a') !==false" }checked {/if}>
+                            <input type="checkbox" lay-skin="primary" name="collect[vod][uprule][]" value="b"
+                                title="{:lang('downurl')}" {if
+                                condition="strpos($config['collect']['vod']['uprule'],'b') !==false" }checked {/if}>
+                            <input type="checkbox" lay-skin="primary" name="collect[vod][uprule][]" value="c"
+                                title="{:lang('serial')}" {if
+                                condition="strpos($config['collect']['vod']['uprule'],'c') !==false" }checked {/if}>
+                            <input type="checkbox" lay-skin="primary" name="collect[vod][uprule][]" value="d"
+                                title="{:lang('remarks')}" {if
+                                condition="strpos($config['collect']['vod']['uprule'],'d') !==false" }checked {/if}>
+                            <input type="checkbox" lay-skin="primary" name="collect[vod][uprule][]" value="e"
+                                title="{:lang('director')}" {if
+                                condition="strpos($config['collect']['vod']['uprule'],'e') !==false" }checked {/if}>
+                            <input type="checkbox" lay-skin="primary" name="collect[vod][uprule][]" value="f"
+                                title="{:lang('actor')}" {if
+                                condition="strpos($config['collect']['vod']['uprule'],'f') !==false" }checked {/if}>
+                            <input type="checkbox" lay-skin="primary" name="collect[vod][uprule][]" value="g"
+                                title="{:lang('years')}" {if
+                                condition="strpos($config['collect']['vod']['uprule'],'g') !==false" }checked {/if}>
+                            <input type="checkbox" lay-skin="primary" name="collect[vod][uprule][]" value="h"
+                                title="{:lang('area')}" {if
+                                condition="strpos($config['collect']['vod']['uprule'],'h') !==false" }checked {/if}>
+                            <input type="checkbox" lay-skin="primary" name="collect[vod][uprule][]" value="i"
+                                title="{:lang('lang')}" {if
+                                condition="strpos($config['collect']['vod']['uprule'],'i') !==false" }checked {/if}>
+                            <input type="checkbox" lay-skin="primary" name="collect[vod][uprule][]" value="j"
+                                title="{:lang('pic')}" {if
+                                condition="strpos($config['collect']['vod']['uprule'],'j') !==false" }checked {/if}>
+                            <input type="checkbox" lay-skin="primary" name="collect[vod][uprule][]" value="k"
+                                title="{:lang('content')}" {if
+                                condition="strpos($config['collect']['vod']['uprule'],'k') !==false" }checked {/if}>
+                            <input type="checkbox" lay-skin="primary" name="collect[vod][uprule][]" value="l"
+                                title="TAG" {if condition="strpos($config['collect']['vod']['uprule'],'l') !==false"
+                                }checked {/if}>
+                            <input type="checkbox" lay-skin="primary" name="collect[vod][uprule][]" value="m"
+                                title="{:lang('sub')}" {if
+                                condition="strpos($config['collect']['vod']['uprule'],'m') !==false" }checked {/if}>
+                            <input type="checkbox" lay-skin="primary" name="collect[vod][uprule][]" value="n"
+                                title="{:lang('class')}" {if
+                                condition="strpos($config['collect']['vod']['uprule'],'n') !==false" }checked {/if}>
+                            <input type="checkbox" lay-skin="primary" name="collect[vod][uprule][]" value="o"
+                                title="{:lang('writer')}" {if
+                                condition="strpos($config['collect']['vod']['uprule'],'o') !==false" }checked {/if}>
+                            <input type="checkbox" lay-skin="primary" name="collect[vod][uprule][]" value="p"
+                                title="{:lang('version')}" {if
+                                condition="strpos($config['collect']['vod']['uprule'],'p') !==false" }checked {/if}>
+                            <input type="checkbox" lay-skin="primary" name="collect[vod][uprule][]" value="q"
+                                title="{:lang('state')}" {if
+                                condition="strpos($config['collect']['vod']['uprule'],'q') !==false" }checked {/if}>
+                            <input type="checkbox" lay-skin="primary" name="collect[vod][uprule][]" value="r"
+                                title="{:lang('blurb')}" {if
+                                condition="strpos($config['collect']['vod']['uprule'],'r') !==false" }checked {/if}>
+                            <input type="checkbox" lay-skin="primary" name="collect[vod][uprule][]" value="s"
+                                title="{:lang('tv')}" {if
+                                condition="strpos($config['collect']['vod']['uprule'],'s') !==false" }checked {/if}>
+                            <input type="checkbox" lay-skin="primary" name="collect[vod][uprule][]" value="t"
+                                title="{:lang('weekday')}" {if
+                                condition="strpos($config['collect']['vod']['uprule'],'t') !==false" }checked {/if}>
+                            <input type="checkbox" lay-skin="primary" name="collect[vod][uprule][]" value="u"
+                                title="{:lang('total')}" {if
+                                condition="strpos($config['collect']['vod']['uprule'],'u') !==false" }checked {/if}>
+                            <input type="checkbox" lay-skin="primary" name="collect[vod][uprule][]" value="v"
+                                title="{:lang('isend')}" {if
+                                condition="strpos($config['collect']['vod']['uprule'],'v') !==false" }checked {/if}>
+                            <input type="checkbox" lay-skin="primary" name="collect[vod][uprule][]" value="w"
+                                title="{:lang('plot')}" {if
+                                condition="strpos($config['collect']['vod']['uprule'],'w') !==false" }checked {/if}>
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:lang('admin/system/configcollect/filter')}：</label>
+                        <div class="layui-input-block">
+                            <textarea name="collect[vod][filter]" class="layui-textarea"
+                                placeholder="{:lang('multi_separate_tip')}">{$config['collect']['vod']['filter']}</textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="layui-tab-item" id="movementTable">
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:lang('admin/system/configcollect/status')}：</label>
+                        <div class="layui-input-block">
+                            <input type="radio" name="collect[art][status]" value="0" title="{:lang('reviewed_not')}"
+                                {if condition="$config['collect']['art']['status'] neq 1" }checked {/if}>
+                            <input type="radio" name="collect[art][status]" value="1" title="{:lang('reviewed')}" {if
+                                condition="$config['collect']['art']['status'] eq 1" }checked {/if}>
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:lang('admin/system/configcollect/hits_rnd')}：</label>
+                        <div class="layui-input-inline">
+                            <input type="text" name="collect[art][hits_start]" placeholder="{:lang('min_val')}"
+                                value="{$config['collect']['art']['hits_start']}" class="layui-input">
+                        </div>
+                        <div class="layui-input-inline">
+                            <input type="text" name="collect[art][hits_end]" placeholder="{:lang('max_val')}"
+                                value="{$config['collect']['art']['hits_end']}" class="layui-input">
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:lang('admin/system/configcollect/updown_rnd')}：</label>
+                        <div class="layui-input-inline">
+                            <input type="text" name="collect[art][updown_start]" placeholder="{:lang('min_val')}"
+                                value="{$config['collect']['art']['updown_start']}" class="layui-input">
+                        </div>
+                        <div class="layui-input-inline">
+                            <input type="text" name="collect[art][updown_end]" placeholder="{:lang('max_val')}"
+                                value="{$config['collect']['art']['updown_end']}" class="layui-input">
+                        </div>
+                    </div>
+
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:lang('admin/system/configcollect/score_rnd')}：</label>
+                        <div class="layui-input-block">
+                            <input type="radio" name="collect[art][score]" value="0" title="{:lang('close')}" {if
+                                condition="$config['collect']['art']['score'] neq 1" }checked {/if}>
+                            <input type="radio" name="collect[art][score]" value="1" title="{:lang('open')}" {if
+                                condition="$config['collect']['art']['score'] eq 1" }checked {/if}>
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:lang('admin/system/configcollect/sync_pic')}：</label>
+                        <div class="layui-input-block">
+                            <input type="radio" name="collect[art][pic]" value="0" title="{:lang('close')}" {if
+                                condition="$config['collect']['art']['pic'] neq 1" }checked {/if}>
+                            <input type="radio" name="collect[art][pic]" value="1" title="{:lang('open')}" {if
+                                condition="$config['collect']['art']['pic'] eq 1" }checked {/if}>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:lang('admin/system/configcollect/auto_tag')}：</label>
+                        <div class="layui-input-block">
+                            <input type="radio" name="collect[art][tag]" value="0" title="{:lang('close')}" {if
+                                condition="$config['collect']['art']['tag'] neq 1" }checked {/if}>
+                            <input type="radio" name="collect[art][tag]" value="1" title="{:lang('open')}" {if
+                                condition="$config['collect']['art']['tag'] eq 1" }checked {/if}>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:lang('admin/system/configcollect/psernd')}：</label>
+                        <div class="layui-input-block">
+                            <input type="radio" name="collect[art][psernd]" value="0" title="{:lang('close')}" {if
+                                condition="$config['collect']['art']['psernd'] neq 1" }checked {/if}>
+                            <input type="radio" name="collect[art][psernd]" value="1" title="{:lang('open')}" {if
+                                condition="$config['collect']['art']['psernd'] eq 1" }checked {/if}>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:lang('admin/system/configcollect/psesyn')}：</label>
+                        <div class="layui-input-block">
+                            <input type="radio" name="collect[art][psesyn]" value="0" title="{:lang('close')}" {if
+                                condition="$config['collect']['art']['psesyn'] neq 1" }checked {/if}>
+                            <input type="radio" name="collect[art][psesyn]" value="1" title="{:lang('open')}" {if
+                                condition="$config['collect']['art']['psesyn'] eq 1" }checked {/if}>
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:lang('admin/system/configcollect/inrule')}：</label>
+                        <div class="layui-input-block">
+                            <input type="checkbox" lay-skin="primary" name="collect[art][inrule][]" value="a"
+                                title="{:lang('name')}" checked disabled>
+                            <input type="checkbox" lay-skin="primary" name="collect[art][inrule][]" value="b"
+                                title="{:lang('type')}" {if
+                                condition="strpos($config['collect']['art']['inrule'],'b') !==false" }checked {/if}>
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:lang('admin/system/configcollect/uprule')}：</label>
+                        <div class="layui-input-block">
+                            <input type="checkbox" lay-skin="primary" name="collect[art][uprule][]" value="a"
+                                title="{:lang('content')}" {if
+                                condition="strpos($config['collect']['art']['uprule'],'a') !==false" }checked {/if}>
+                            <input type="checkbox" lay-skin="primary" name="collect[art][uprule][]" value="b"
+                                title="{:lang('author')}" {if
+                                condition="strpos($config['collect']['art']['uprule'],'b') !==false" }checked {/if}>
+                            <input type="checkbox" lay-skin="primary" name="collect[art][uprule][]" value="c"
+                                title="{:lang('from')}" {if
+                                condition="strpos($config['collect']['art']['uprule'],'c') !==false" }checked {/if}>
+                            <input type="checkbox" lay-skin="primary" name="collect[art][uprule][]" value="d"
+                                title="{:lang('pic')}" {if
+                                condition="strpos($config['collect']['art']['uprule'],'d') !==false" }checked {/if}>
+                            <input type="checkbox" lay-skin="primary" name="collect[art][uprule][]" value="e"
+                                title="TAG" {if condition="strpos($config['collect']['art']['uprule'],'e') !==false"
+                                }checked {/if}>
+                            <input type="checkbox" lay-skin="primary" name="collect[art][uprule][]" value="f"
+                                title="{:lang('blurb')}" {if
+                                condition="strpos($config['collect']['art']['uprule'],'f') !==false" }checked {/if}>
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:lang('admin/system/configcollect/filter')}：</label>
+                        <div class="layui-input-block">
+                            <textarea name="collect[art][filter]" class="layui-textarea"
+                                placeholder="{:lang('multi_separate_tip')}">{$config['collect']['art']['filter']}</textarea>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="layui-tab-item" id="movementTable">
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:lang('admin/system/configcollect/status')}：</label>
+                        <div class="layui-input-block">
+                            <input type="radio" name="collect[actor][status]" value="0" title="{:lang('reviewed_not')}"
+                                {if condition="$config['collect']['actor']['status'] neq 1" }checked {/if}>
+                            <input type="radio" name="collect[actor][status]" value="1" title="{:lang('reviewed')}" {if
+                                condition="$config['collect']['actor']['status'] eq 1" }checked {/if}>
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:lang('admin/system/configcollect/hits_rnd')}：</label>
+                        <div class="layui-input-inline">
+                            <input type="text" name="collect[actor][hits_start]" placeholder="{:lang('min_val')}"
+                                value="{$config['collect']['actor']['hits_start']}" class="layui-input">
+                        </div>
+                        <div class="layui-input-inline">
+                            <input type="text" name="collect[actor][hits_end]" placeholder="{:lang('max_val')}"
+                                value="{$config['collect']['actor']['hits_end']}" class="layui-input">
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:lang('admin/system/configcollect/updown_rnd')}：</label>
+                        <div class="layui-input-inline">
+                            <input type="text" name="collect[actor][updown_start]" placeholder="{:lang('min_val')}"
+                                value="{$config['collect']['actor']['updown_start']}" class="layui-input">
+                        </div>
+                        <div class="layui-input-inline">
+                            <input type="text" name="collect[actor][updown_end]" placeholder="{:lang('max_val')}"
+                                value="{$config['collect']['actor']['updown_end']}" class="layui-input">
+                        </div>
+                    </div>
+
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:lang('admin/system/configcollect/score_rnd')}：</label>
+                        <div class="layui-input-block">
+                            <input type="radio" name="collect[actor][score]" value="0" title="{:lang('close')}" {if
+                                condition="$config['collect']['actor']['score'] neq 1" }checked {/if}>
+                            <input type="radio" name="collect[actor][score]" value="1" title="{:lang('open')}" {if
+                                condition="$config['collect']['actor']['score'] eq 1" }checked {/if}>
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:lang('admin/system/configcollect/sync_pic')}：</label>
+                        <div class="layui-input-block">
+                            <input type="radio" name="collect[actor][pic]" value="0" title="{:lang('close')}" {if
+                                condition="$config['collect']['actor']['pic'] neq 1" }checked {/if}>
+                            <input type="radio" name="collect[actor][pic]" value="1" title="{:lang('open')}" {if
+                                condition="$config['collect']['actor']['pic'] eq 1" }checked {/if}>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:lang('admin/system/configcollect/psernd')}：</label>
+                        <div class="layui-input-block">
+                            <input type="radio" name="collect[actor][psernd]" value="0" title="{:lang('close')}" {if
+                                condition="$config['collect']['actor']['psernd'] neq 1" }checked {/if}>
+                            <input type="radio" name="collect[actor][psernd]" value="1" title="{:lang('open')}" {if
+                                condition="$config['collect']['actor']['psernd'] eq 1" }checked {/if}>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:lang('admin/system/configcollect/psesyn')}：</label>
+                        <div class="layui-input-block">
+                            <input type="radio" name="collect[actor][psesyn]" value="0" title="{:lang('close')}" {if
+                                condition="$config['collect']['actor']['psesyn'] neq 1" }checked {/if}>
+                            <input type="radio" name="collect[actor][psesyn]" value="1" title="{:lang('open')}" {if
+                                condition="$config['collect']['actor']['psesyn'] eq 1" }checked {/if}>
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:lang('admin/system/configcollect/inrule')}：</label>
+                        <div class="layui-input-block">
+                            <input type="checkbox" lay-skin="primary" name="collect[actor][inrule][]" value="a"
+                                title="{:lang('actor_name')}" checked disabled>
+                            <input type="checkbox" lay-skin="primary" name="collect[actor][inrule][]" value="c"
+                                title="{:lang('type')}" {if
+                                condition="strpos($config['collect']['actor']['inrule'],'c') !==false" }checked {/if}>
+                            <input type="checkbox" lay-skin="primary" name="collect[actor][inrule][]" value="b"
+                                title="{:lang('sex')}" {if
+                                condition="strpos($config['collect']['actor']['inrule'],'b') !==false" }checked {/if}>
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:lang('admin/system/configcollect/uprule')}：</label>
+                        <div class="layui-input-block">
+                            <input type="checkbox" lay-skin="primary" name="collect[actor][uprule][]" value="a"
+                                title="{:lang('content')}" {if
+                                condition="strpos($config['collect']['actor']['uprule'],'a') !==false" }checked {/if}>
+                            <input type="checkbox" lay-skin="primary" name="collect[actor][uprule][]" value="b"
+                                title="{:lang('blurb')}" {if
+                                condition="strpos($config['collect']['actor']['uprule'],'b') !==false" }checked {/if}>
+                            <input type="checkbox" lay-skin="primary" name="collect[actor][uprule][]" value="c"
+                                title="{:lang('remarks')}" {if
+                                condition="strpos($config['collect']['actor']['uprule'],'c') !==false" }checked {/if}>
+                            <input type="checkbox" lay-skin="primary" name="collect[actor][uprule][]" value="d"
+                                title="{:lang('works')}" {if
+                                condition="strpos($config['collect']['actor']['uprule'],'d') !==false" }checked {/if}>
+                            <input type="checkbox" lay-skin="primary" name="collect[actor][uprule][]" value="e"
+                                title="{:lang('pic')}" {if
+                                condition="strpos($config['collect']['actor']['uprule'],'e') !==false" }checked {/if}>
+
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:lang('admin/system/configcollect/filter')}：</label>
+                        <div class="layui-input-block">
+                            <textarea name="collect[actor][filter]" class="layui-textarea"
+                                placeholder="{:lang('multi_separate_tip')}">{$config['collect']['actor']['filter']}</textarea>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="layui-tab-item" id="movementTable">
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:lang('admin/system/configcollect/status')}：</label>
+                        <div class="layui-input-block">
+                            <input type="radio" name="collect[role][status]" value="0" title="{:lang('reviewed_not')}"
+                                {if condition="$config['collect']['role']['status'] neq 1" }checked {/if}>
+                            <input type="radio" name="collect[role][status]" value="1" title="{:lang('reviewed')}" {if
+                                condition="$config['collect']['role']['status'] eq 1" }checked {/if}>
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:lang('admin/system/configcollect/hits_rnd')}：</label>
+                        <div class="layui-input-inline">
+                            <input type="text" name="collect[role][hits_start]" placeholder="{:lang('min_val')}"
+                                value="{$config['collect']['role']['hits_start']}" class="layui-input">
+                        </div>
+                        <div class="layui-input-inline">
+                            <input type="text" name="collect[role][hits_end]" placeholder="{:lang('max_val')}"
+                                value="{$config['collect']['role']['hits_end']}" class="layui-input">
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:lang('admin/system/configcollect/updown_rnd')}：</label>
+                        <div class="layui-input-inline">
+                            <input type="text" name="collect[role][updown_start]" placeholder="{:lang('min_val')}"
+                                value="{$config['collect']['role']['updown_start']}" class="layui-input">
+                        </div>
+                        <div class="layui-input-inline">
+                            <input type="text" name="collect[role][updown_end]" placeholder="{:lang('max_val')}"
+                                value="{$config['collect']['role']['updown_end']}" class="layui-input">
+                        </div>
+                    </div>
+
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:lang('admin/system/configcollect/score_rnd')}：</label>
+                        <div class="layui-input-block">
+                            <input type="radio" name="collect[role][score]" value="0" title="{:lang('close')}" {if
+                                condition="$config['collect']['role']['score'] neq 1" }checked {/if}>
+                            <input type="radio" name="collect[role][score]" value="1" title="{:lang('open')}" {if
+                                condition="$config['collect']['role']['score'] eq 1" }checked {/if}>
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:lang('admin/system/configcollect/sync_pic')}：</label>
+                        <div class="layui-input-block">
+                            <input type="radio" name="collect[role][pic]" value="0" title="{:lang('close')}" {if
+                                condition="$config['collect']['role']['pic'] neq 1" }checked {/if}>
+                            <input type="radio" name="collect[role][pic]" value="1" title="{:lang('open')}" {if
+                                condition="$config['collect']['role']['pic'] eq 1" }checked {/if}>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:lang('admin/system/configcollect/psernd')}：</label>
+                        <div class="layui-input-block">
+                            <input type="radio" name="collect[role][psernd]" value="0" title="{:lang('close')}" {if
+                                condition="$config['collect']['actor']['psernd'] neq 1" }checked {/if}>
+                            <input type="radio" name="collect[role][psernd]" value="1" title="{:lang('open')}" {if
+                                condition="$config['collect']['actor']['psernd'] eq 1" }checked {/if}>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:lang('admin/system/configcollect/psesyn')}：</label>
+                        <div class="layui-input-block">
+                            <input type="radio" name="collect[role][psesyn]" value="0" title="{:lang('close')}" {if
+                                condition="$config['collect']['role']['psesyn'] neq 1" }checked {/if}>
+                            <input type="radio" name="collect[role][psesyn]" value="1" title="{:lang('open')}" {if
+                                condition="$config['collect']['role']['psesyn'] eq 1" }checked {/if}>
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:lang('admin/system/configcollect/inrule')}：</label>
+                        <div class="layui-input-block">
+                            <input type="checkbox" lay-skin="primary" name="collect[role][inrule][]" value="a"
+                                title="{:lang('role_name')}" checked disabled>
+                            <input type="checkbox" lay-skin="primary" name="collect[role][inrule][]" value="b"
+                                title="{:lang('vod_name')}{:lang('or')}{:lang('douban_id')}" checked disabled>
+                            <input type="checkbox" lay-skin="primary" name="collect[role][inrule][]" value="c"
+                                title="{:lang('actor_name')}" {if
+                                condition="strpos($config['collect']['role']['inrule'],'c') !==false" }checked {/if}>
+                            <input type="checkbox" lay-skin="primary" name="collect[role][inrule][]" value="d"
+                                title="{:lang('director')}" {if
+                                condition="strpos($config['collect']['role']['inrule'],'d') !==false" }checked {/if}>
+                        </div>
+                        <div class="layui-form-mid layui-word-aux">{:lang('admin/system/configcollect/inrule_tip_role')}
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:lang('admin/system/configcollect/uprule')}：</label>
+                        <div class="layui-input-block">
+                            <input type="checkbox" lay-skin="primary" name="collect[role][uprule][]" value="a"
+                                title="{:lang('content')}" {if
+                                condition="strpos($config['collect']['role']['uprule'],'a') !==false" }checked {/if}>
+                            <input type="checkbox" lay-skin="primary" name="collect[role][uprule][]" value="b"
+                                title="{:lang('remarks')}" {if
+                                condition="strpos($config['collect']['role']['uprule'],'b') !==false" }checked {/if}>
+                            <input type="checkbox" lay-skin="primary" name="collect[role][uprule][]" value="c"
+                                title="{:lang('pic')}" {if
+                                condition="strpos($config['collect']['role']['uprule'],'c') !==false" }checked {/if}>
+
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:lang('admin/system/configcollect/filter')}：</label>
+                        <div class="layui-input-block">
+                            <textarea name="collect[role][filter]" class="layui-textarea"
+                                placeholder="{:lang('multi_separate_tip')}">{$config['collect']['role']['filter']}</textarea>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="layui-tab-item" id="movementTable">
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:lang('admin/system/configcollect/status')}：</label>
+                        <div class="layui-input-block">
+                            <input type="radio" name="collect[website][status]" value="0"
+                                title="{:lang('reviewed_not')}" {if
+                                condition="$config['collect']['website']['status'] neq 1" }checked {/if}>
+                            <input type="radio" name="collect[website][status]" value="1" title="{:lang('reviewed')}"
+                                {if condition="$config['collect']['website']['status'] eq 1" }checked {/if}>
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:lang('admin/system/configcollect/hits_rnd')}：</label>
+                        <div class="layui-input-inline">
+                            <input type="text" name="collect[website][hits_start]" placeholder="{:lang('min_val')}"
+                                value="{$config['collect']['website']['hits_start']}" class="layui-input">
+                        </div>
+                        <div class="layui-input-inline">
+                            <input type="text" name="collect[website][hits_end]" placeholder="{:lang('max_val')}"
+                                value="{$config['collect']['website']['hits_end']}" class="layui-input">
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:lang('admin/system/configcollect/updown_rnd')}：</label>
+                        <div class="layui-input-inline">
+                            <input type="text" name="collect[website][updown_start]" placeholder="{:lang('min_val')}"
+                                value="{$config['collect']['website']['updown_start']}" class="layui-input">
+                        </div>
+                        <div class="layui-input-inline">
+                            <input type="text" name="collect[website][updown_end]" placeholder="{:lang('max_val')}"
+                                value="{$config['collect']['website']['updown_end']}" class="layui-input">
+                        </div>
+                    </div>
+
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:lang('admin/system/configcollect/score_rnd')}：</label>
+                        <div class="layui-input-block">
+                            <input type="radio" name="collect[website][score]" value="0" title="{:lang('close')}" {if
+                                condition="$config['collect']['website']['score'] neq 1" }checked {/if}>
+                            <input type="radio" name="collect[website][score]" value="1" title="{:lang('open')}" {if
+                                condition="$config['collect']['website']['score'] eq 1" }checked {/if}>
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:lang('admin/system/configcollect/sync_pic')}：</label>
+                        <div class="layui-input-block">
+                            <input type="radio" name="collect[website][pic]" value="0" title="{:lang('close')}" {if
+                                condition="$config['collect']['website']['pic'] neq 1" }checked {/if}>
+                            <input type="radio" name="collect[website][pic]" value="1" title="{:lang('open')}" {if
+                                condition="$config['collect']['website']['pic'] eq 1" }checked {/if}>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:lang('admin/system/configcollect/psernd')}：</label>
+                        <div class="layui-input-block">
+                            <input type="radio" name="collect[website][psernd]" value="0" title="{:lang('close')}" {if
+                                condition="$config['collect']['website']['psernd'] neq 1" }checked {/if}>
+                            <input type="radio" name="collect[website][psernd]" value="1" title="{:lang('open')}" {if
+                                condition="$config['collect']['website']['psernd'] eq 1" }checked {/if}>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:lang('admin/system/configcollect/psesyn')}：</label>
+                        <div class="layui-input-block">
+                            <input type="radio" name="collect[website][psesyn]" value="0" title="{:lang('close')}" {if
+                                condition="$config['collect']['website']['psesyn'] neq 1" }checked {/if}>
+                            <input type="radio" name="collect[website][psesyn]" value="1" title="{:lang('open')}" {if
+                                condition="$config['collect']['website']['psesyn'] eq 1" }checked {/if}>
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:lang('admin/system/configcollect/inrule')}：</label>
+                        <div class="layui-input-block">
+                            <input type="checkbox" lay-skin="primary" name="collect[website][inrule][]" value="a"
+                                title="{:lang('name')}" checked disabled>
+                            <input type="checkbox" lay-skin="primary" name="collect[website][inrule][]" value="b"
+                                title="{:lang('type')}" {if
+                                condition="strpos($config['collect']['website']['inrule'],'b') !==false" }checked {/if}>
+                            <input type="checkbox" lay-skin="primary" name="collect[website][inrule][]" value="c"
+                                title="{:lang('jumpurl')}" {if
+                                condition="strpos($config['collect']['website']['inrule'],'c') !==false" }checked {/if}>
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:lang('admin/system/configcollect/uprule')}：</label>
+                        <div class="layui-input-block">
+                            <input type="checkbox" lay-skin="primary" name="collect[website][uprule][]" value="a"
+                                title="{:lang('content')}" {if
+                                condition="strpos($config['collect']['website']['uprule'],'a') !==false" }checked {/if}>
+                            <input type="checkbox" lay-skin="primary" name="collect[website][uprule][]" value="b"
+                                title="{:lang('blurb')}" {if
+                                condition="strpos($config['collect']['website']['uprule'],'b') !==false" }checked {/if}>
+                            <input type="checkbox" lay-skin="primary" name="collect[website][uprule][]" value="c"
+                                title="{:lang('remarks')}" {if
+                                condition="strpos($config['collect']['website']['uprule'],'c') !==false" }checked {/if}>
+                            <input type="checkbox" lay-skin="primary" name="collect[website][uprule][]" value="d"
+                                title="{:lang('jumpurl')}" {if
+                                condition="strpos($config['collect']['website']['uprule'],'d') !==false" }checked {/if}>
+                            <input type="checkbox" lay-skin="primary" name="collect[website][uprule][]" value="e"
+                                title="{:lang('pic')}" {if
+                                condition="strpos($config['collect']['website']['uprule'],'e') !==false" }checked {/if}>
+
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:lang('admin/system/configcollect/filter')}：</label>
+                        <div class="layui-input-block">
+                            <textarea name="collect[website][filter]" class="layui-textarea"
+                                placeholder="{:lang('multi_separate_tip')}">{$config['collect']['website']['filter']}</textarea>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="layui-tab-item" id="movementTable">
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:lang('admin/system/configcollect/status')}：</label>
+                        <div class="layui-input-block">
+                            <input type="radio" name="collect[comment][status]" value="0"
+                                title="{:lang('reviewed_not')}" {if
+                                condition="$config['collect']['comment']['status'] neq 1" }checked {/if}>
+                            <input type="radio" name="collect[comment][status]" value="1" title="{:lang('reviewed')}"
+                                {if condition="$config['collect']['comment']['status'] eq 1" }checked {/if}>
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:lang('admin/system/configcollect/updown_rnd')}：</label>
+                        <div class="layui-input-inline">
+                            <input type="text" name="collect[comment][updown_start]" placeholder="{:lang('min_val')}"
+                                value="{$config['collect']['comment']['updown_start']}" class="layui-input">
+                        </div>
+                        <div class="layui-input-inline">
+                            <input type="text" name="collect[comment][updown_end]" placeholder="{:lang('max_val')}"
+                                value="{$config['collect']['comment']['updown_end']}" class="layui-input">
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:lang('admin/system/configcollect/psernd')}：</label>
+                        <div class="layui-input-block">
+                            <input type="radio" name="collect[comment][psernd]" value="0" title="{:lang('close')}" {if
+                                condition="$config['collect']['actor']['psernd'] neq 1" }checked {/if}>
+                            <input type="radio" name="collect[comment][psernd]" value="1" title="{:lang('open')}" {if
+                                condition="$config['collect']['actor']['psernd'] eq 1" }checked {/if}>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:lang('admin/system/configcollect/psesyn')}：</label>
+                        <div class="layui-input-block">
+                            <input type="radio" name="collect[comment][psesyn]" value="0" title="{:lang('close')}" {if
+                                condition="$config['collect']['comment']['psesyn'] neq 1" }checked {/if}>
+                            <input type="radio" name="collect[comment][psesyn]" value="1" title="{:lang('open')}" {if
+                                condition="$config['collect']['comment']['psesyn'] eq 1" }checked {/if}>
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:lang('admin/system/configcollect/inrule')}：</label>
+                        <div class="layui-input-block">
+                            <input type="checkbox" lay-skin="primary" name="collect[comment][inrule][]" value="a"
+                                title="{:lang('rel_name')}{:lang('or')}{:lang('douban_id')}" checked disabled>
+                            <input type="checkbox" lay-skin="primary" name="collect[comment][inrule][]" value="b"
+                                title="{:lang('comment_content')}" {if
+                                condition="strpos($config['collect']['comment']['inrule'],'b') !==false" }checked {/if}>
+                            <input type="checkbox" lay-skin="primary" name="collect[comment][inrule][]" value="c"
+                                title="{:lang('comment_name')}" {if
+                                condition="strpos($config['collect']['comment']['inrule'],'c') !==false" }checked {/if}>
+                        </div>
+                        <div class="layui-form-mid layui-word-aux">
+                            {:lang('admin/system/configcollect/inrule_tip_comment')}</div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:lang('admin/system/configcollect/uprule')}：</label>
+                        <div class="layui-input-block">
+
+
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:lang('admin/system/configcollect/filter')}：</label>
+                        <div class="layui-input-block">
+                            <textarea name="collect[comment][filter]" class="layui-textarea"
+                                placeholder="{:lang('multi_separate_tip')}">{$config['collect']['comment']['filter']}</textarea>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="layui-tab-item" id="movementTable">
+                    <blockquote class="layui-elem-quote layui-quote-nm">
+                        {:lang('admin/system/configcollect/words_tip')}
+                    </blockquote>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:lang('admin/system/configcollect/vod_namewords')}：</label>
+                        <div class="layui-input-block">
+                            <textarea name="collect[vod][namewords]"
+                                class="layui-textarea">{$config['collect']['vod']['namewords']|mac_replace_text}</textarea>
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:lang('admin/system/configcollect/vod_thesaurus')}：</label>
+                        <div class="layui-input-block">
+                            <textarea name="collect[vod][thesaurus]"
+                                class="layui-textarea">{$config['collect']['vod']['thesaurus']|mac_replace_text}</textarea>
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:lang('admin/system/configcollect/vod_playerwords')}：</label>
+                        <div class="layui-input-block">
+                            <textarea name="collect[vod][playerwords]"
+                                class="layui-textarea">{$config['collect']['vod']['playerwords']|mac_replace_text}</textarea>
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:lang('admin/system/configcollect/vod_areawords')}：</label>
+                        <div class="layui-input-block">
+                            <textarea name="collect[vod][areawords]"
+                                class="layui-textarea">{$config['collect']['vod']['areawords']|mac_replace_text}</textarea>
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:lang('admin/system/configcollect/vod_langwords')}：</label>
+                        <div class="layui-input-block">
+                            <textarea name="collect[vod][langwords]"
+                                class="layui-textarea">{$config['collect']['vod']['langwords']|mac_replace_text}</textarea>
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:lang('admin/system/configcollect/vod_words')}：</label>
+                        <div class="layui-input-block">
+                            <textarea name="collect[vod][words]"
+                                class="layui-textarea">{$config['collect']['vod']['words']|mac_replace_text}</textarea>
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:lang('admin/system/configcollect/art_thesaurus')}：</label>
+                        <div class="layui-input-block">
+                            <textarea name="collect[art][thesaurus]"
+                                class="layui-textarea">{$config['collect']['art']['thesaurus']|mac_replace_text}</textarea>
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:lang('admin/system/configcollect/art_words')}：</label>
+                        <div class="layui-input-block">
+                            <textarea name="collect[art][words]"
+                                class="layui-textarea">{$config['collect']['art']['words']|mac_replace_text}</textarea>
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:lang('admin/system/configcollect/actor_thesaurus')}：</label>
+                        <div class="layui-input-block">
+                            <textarea name="collect[actor][thesaurus]"
+                                class="layui-textarea">{$config['collect']['actor']['thesaurus']|mac_replace_text}</textarea>
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:lang('admin/system/configcollect/actor_words')}：</label>
+                        <div class="layui-input-block">
+                            <textarea name="collect[actor][words]"
+                                class="layui-textarea">{$config['collect']['actor']['words']|mac_replace_text}</textarea>
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:lang('admin/system/configcollect/role_thesaurus')}：</label>
+                        <div class="layui-input-block">
+                            <textarea name="collect[role][thesaurus]"
+                                class="layui-textarea">{$config['collect']['role']['thesaurus']|mac_replace_text}</textarea>
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:lang('admin/system/configcollect/role_words')}：</label>
+                        <div class="layui-input-block">
+                            <textarea name="collect[role][words]"
+                                class="layui-textarea">{$config['collect']['role']['words']|mac_replace_text}</textarea>
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:lang('admin/system/configcollect/website_thesaurus')}：</label>
+                        <div class="layui-input-block">
+                            <textarea name="collect[website][thesaurus]"
+                                class="layui-textarea">{$config['collect']['website']['thesaurus']|mac_replace_text}</textarea>
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:lang('admin/system/configcollect/website_words')}：</label>
+                        <div class="layui-input-block">
+                            <textarea name="collect[website][words]"
+                                class="layui-textarea">{$config['collect']['website']['words']|mac_replace_text}</textarea>
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:lang('admin/system/configcollect/comment_thesaurus')}：</label>
+                        <div class="layui-input-block">
+                            <textarea name="collect[comment][thesaurus]"
+                                class="layui-textarea">{$config['collect']['comment']['thesaurus']|mac_replace_text}</textarea>
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:lang('admin/system/configcollect/comment_words')}：</label>
+                        <div class="layui-input-block">
+                            <textarea name="collect[comment][words]"
+                                class="layui-textarea">{$config['collect']['comment']['words']|mac_replace_text}</textarea>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        <div class="layui-form-item center">
+            <div class="layui-input-block">
+                <button type="submit" class="layui-btn" lay-submit=""
+                    lay-filter="formSubmit">{:lang('btn_save')}</button>
+                <button class="layui-btn layui-btn-primary" type="reset">{:lang('btn_reset')}</button>
+            </div>
+        </div>
+    </form>
+</div>
+
+{include file="../../../application/admin/view_new/public/foot" /}
+<script type="text/javascript" src="__STATIC__/js/jquery.cookie.js"></script>
+<script type="text/javascript">
+    layui.use(['element', 'form', 'layer'], function () {
+        var element = layui.element
+            , form = layui.form
+            , layer = layui.layer;
+
+
+        element.on('tab(tb1)', function () {
+            $.cookie('configcollect_tab', this.getAttribute('lay-id'));
+        });
+
+        if ($.cookie('configcollect_tab') != null) {
+            element.tabChange('tb1', $.cookie('configcollect_tab'));
+        }
+
+    });
+</script>
+
+</body>
+
+</html>

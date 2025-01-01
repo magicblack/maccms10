@@ -1,0 +1,84 @@
+{include file="../../../application/admin/view_new/public/head" /}
+<div class="page-container p10">
+    <div class="my-btn-box lh30" >
+        <div class="layui-btn-group fl">
+            <a data-full="1" data-href="{:url('info')}?fpath={$curpath}&fname=" class="layui-btn layui-btn-primary j-iframe"><i class="layui-icon">&#xe654;</i>{:lang('add')}</a>
+        </div>
+        <div class="page-filter fr" >
+
+        </div>
+    </div>
+
+    <form class="layui-form layui-form-pane" action="">
+        <table class="layui-table mt10">
+        <thead>
+        <tr>
+            <th>{:lang('file_name')}</th>
+            <th width="200">{:lang('file_des')}</th>
+            <th width="200">{:lang('file_size')}</th>
+            <th width="200">{:lang('file_time')}</th>
+            <th width="100">{:lang('opt')}</th>
+        </tr>
+        </thead>
+
+        {if condition="$ischild eq 1"}
+        <tr><td colspan="4"><a href="{:url('template/index',['path'=>$uppath])}">...{:lang('return_parent_dir')}</a></td></tr>
+        {/if}
+
+            {volist name="files" id="vo"}
+            <tr>
+                {if condition="$vo.isfile eq 1"}
+                <th>{$vo.name}</a></th>
+                <td>{$vo.note}</td>
+                <td>{$vo.size}</td>
+                <td>{$vo.time|mac_day='color'}</td>
+                <td>
+                    <a class="layui-badge-rim j-iframe" data-full="1" data-href="{:url('info')}?fpath={$vo.path}&fname={$vo.name}" href="javascript:;" title="{:lang('edit')}">{:lang('edit')}</a>
+                    <a class="layui-badge-rim j-tr-del" data-href="{:url('del')}?fname={$vo.fullname}" href="javascript:;" title="{:lang('del')}">{:lang('del')}</a>
+                </td>
+                {else}
+                <th><a href="{:url('template/index',['path'=>$vo.path])}">{$vo.name}</a></th>
+                <td>{$vo.note}</td>
+                <td></td>
+                <td>{$vo.time|mac_day='color'}</td>
+                <td></td>
+                {/if}
+            </tr>
+            {/volist}
+        </tbody>
+        <tfoot>
+            <tr><td colspan="5">{:lang('admin/template/current_dir')}：{$curpath|str_replace='@','/',###}，{:lang('sum')}<b class="red">{$num_path}</b>{:lang('dir')},<b class="red">{$num_file}</b>{:lang('file')},{:lang('occupies')}<b class="red">{$sum_size}</b>{:lang('space')}</td></tr>
+        </tfoot>
+    </table>
+    </form>
+</div>
+{include file="../../../application/admin/view_new/public/foot" /}
+<script type="text/javascript">
+    function data_info(path,name)
+    {
+        var index = layer.open({
+            type: 2,
+            shade:0.4,
+            title: "{:lang('edit')}",
+            content: "{:url('template/info')}?fpath="+path+'&fname='+name
+        });
+
+        layer.full(index);
+    }
+
+    function data_del(id)
+    {
+        if(!id){
+            id  = checkIds('fname[]');
+        }
+        layer.confirm("{:lang('del_confirm')}", function (index) {
+            location.href = "{:url('template/del')}?fname=" + id;
+        });
+    }
+
+    $(function(){
+
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,607 @@
+{include file="../../../application/admin/view_new/public/head" /}
+<link rel="stylesheet" href="__STATIC__/css/update.css">
+<style type="text/css">
+    .hs-iframe {
+        width: 100%;
+        height: 100%;
+    }
+
+    .layui-tab-content {
+        top: 60px;
+        position: absolute;
+        bottom: 0;
+        width: 100%;
+        padding: 20px 20px 0 20px;
+        background: #f9fafb;
+    }
+
+    .layui-tab-item {
+        height: 100%;
+    }
+
+
+    .layui-tab-title .layui-this:after {
+        border: none;
+    }
+
+
+    .footer {
+        position: fixed;
+        left: 0;
+        bottom: 0;
+        z-index: 998;
+    }
+
+    .footer .text-footer {
+        width: 100%;
+        background: #fff;
+        line-height: 30px;
+        height: 30px;
+        color: rgba(96, 101, 118, 1);
+        font-size: 12px;
+    }
+</style>
+<div class="layui-layout layui-layout-admin w-full">
+    <div class="layui-header maccmsTop max-sm:!hidden">
+        <div class="fl maccms-header-logo">
+            <img class="header-logo-img" src="__STATIC__/images/logo@2x.png" alt="" />
+            {:lang('admin/index/index/name')}
+        </div>
+    </div>
+    <div class="layui-header header-top px-2">
+        <div class="top-logo flex gap-2 items-center mr-auto">
+            <img class="size-12" src="__STATIC__/images/logo@2x.png" alt="" />
+            {:lang('admin/index/index/name')}
+        </div>
+        <ul class="layout-right" lay-filter="">
+            <li class="nav-item">
+                <a href="__ROOT__/" target="_blank"><i class="layui-icon layui-icon-home"></i></a>
+            </li>
+            <li class="nav-item ">
+                <a href="{:url('index/clear')}" class="j-ajax " refresh="yes">
+                    <i class="layui-icon layui-icon-delete size-16"></i>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="site-tree-mobile" href="javascript:;" id="admin_name">
+                    <i class="layui-icon"></i>
+                </a>
+            </li>
+        </ul>
+
+    </div>
+    <div class="layui-side" id="switchNav">
+        <div class="layui-side-scroll navBar" id="navBar">
+            {volist name="menus" id="v" key="k"}
+            <ul class="layui-nav layui-nav-tree">
+                <!-- layui-nav-itemed-->
+                <li class="layui-nav-item">
+                    <a class="nav-row" href="javascript:;">
+                        <img class="nav-icon" src="__STATIC__/images/nav/left_ic_{$k}_nor@2x.png" alt="" srcset="" />
+                        {$v['name']}
+                        <i class=" maccms-icon macCms-a-zu1679"></i>
+                    </a>
+
+                    <dl class="layui-nav-child">
+                        {volist name="v['sub']" id="vv" key="kk"}
+                        <dd>
+                            {if condition="($vv['url'] !=='###')"}
+                            <a class="admin-nav-item" data-id="{$key}{$kk}" href="{$vv['url']}">
+                                <i class="{$vv['icon']}"></i> {$vv['name']}
+                            </a>
+                            {else}
+                            <!--                            <hr class="layui-bg-gray"/>-->
+                            {/if}
+                        </dd>
+                        {/volist}
+                    </dl>
+                </li>
+            </ul>
+            {/volist}
+            <ul class="layui-nav layui-nav-tree md:hidden">
+                <li class="layui-nav-item">
+                    <a class="nav-row" href="javascript:;" onclick="chanage_version()">
+                        <svg class="nav-icon" width="20px" height="20px" viewBox="0 0 20 20" version="1.1"
+                            xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+                            <g id="页面-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                                <g id="超级控制台_首页_1122" transform="translate(-1880.000000, -21.000000)">
+                                    <g id="top_ic_old" transform="translate(1880.000000, 21.000000)">
+                                        <rect id="矩形" fill="currentColor" opacity="0" x="0" y="0" width="20"
+                                            height="20"></rect>
+                                        <path
+                                            d="M18.4424065,7.27519736 C18.4284666,7.23333945 18.4145268,7.19148155 18.3866471,7.14962365 C18.3448276,7.06590784 18.3030081,6.9682394 18.2751284,6.87057096 L18.2611886,6.85661832 C18.1914894,6.67523407 18.1078503,6.49384983 17.9963316,6.31246558 C17.703595,5.76831283 16.7975055,4.87534423 15.2641233,4.84743896 C14.4695525,4.86139159 13.3683052,5.08463374 12.6713133,6.14503396 C12.6294938,6.2008445 12.6016141,6.25665504 12.5737344,6.29851294 L9.40939105,12.9678722 L6.34262656,6.31246558 C6.13352898,5.85202864 5.57593544,5.64273912 5.11592076,5.86598127 C4.65590609,6.07527079 4.44680851,6.63337617 4.65590609,7.09381311 L7.88994864,14.0701303 L7.90388848,14.084083 C8.32208364,14.8654305 8.85179751,15.2700569 9.50696992,15.2700569 C10.1203228,15.2421516 10.622157,14.8375252 10.9845928,14.0422251 L14.2325752,7.17752891 C14.2325752,7.16357628 14.246515,7.16357628 14.246515,7.14962365 C14.3301541,7.0100973 14.5392517,6.68918671 15.2780631,6.68918671 L15.2920029,6.68918671 C16.0447542,6.70313934 16.3653705,7.12171838 16.40719,7.19148155 C16.4211299,7.21938682 16.4350697,7.26124472 16.4629494,7.27519736 C16.4908291,7.31705526 16.5326486,7.42867634 16.5744681,7.52634478 C16.6162876,7.63796585 16.672047,7.76353956 16.7278063,7.88911327 C17.0066031,8.76812925 17.1599413,9.63319258 17.1599413,10.4703507 C17.1599413,12.5492932 16.4350697,14.3212778 14.9574468,15.8700202 C13.382245,17.3769047 11.6118855,18.1163943 9.52090976,18.1163943 C7.37417461,18.1163943 5.60381511,17.3908574 4.11225238,15.8839728 C2.57887014,14.4189462 1.85399853,12.633009 1.85399853,10.4843033 C1.85399853,8.33559758 2.57887014,6.563613 4.09831255,5.04277584 C5.24137931,3.84284927 6.74688188,3.08940701 8.43360235,2.89407013 C9.24211299,2.82430696 9.57666911,2.82430696 10.5106383,2.89407013 C10.622157,2.90802276 11.5840059,3.04754911 12.3925165,3.34055443 C12.6294938,3.42427024 12.8804109,3.41031761 13.1034483,3.31264916 C13.3264857,3.20102809 13.5077036,3.03359648 13.5774028,2.79640169 L13.5913426,2.75454379 L13.5913426,2.74059115 C13.6610418,2.517349 13.647102,2.28015421 13.5495231,2.0708647 C13.4380044,1.84762254 13.2707263,1.68019093 13.0337491,1.59647512 C12.0440205,1.23370663 10.8312546,1.05232238 10.6360968,1.05232238 C9.60454879,0.982559207 9.18635363,0.982559207 8.25238445,1.05232238 C6.09170946,1.31742243 4.19589142,2.25224894 2.76008804,3.75913347 C0.89214967,5.62878649 0,7.83330274 0,10.4982559 C0,13.1632091 0.906089508,15.3677254 2.77402788,17.2234257 C4.61408657,19.0651735 6.87234043,20 9.49303008,20 C12.0440205,20 14.3022744,19.0651735 16.239912,17.2234257 C18.0660308,15.3119148 19,13.051588 19,10.4982559 C18.9860602,9.45180833 18.8048423,8.36350285 18.4424065,7.27519736 Z"
+                                            id="路径" fill="currentColor" fill-rule="nonzero"></path>
+                                    </g>
+                                </g>
+                            </g>
+                        </svg>
+                        切换旧版本
+                    </a>
+                </li>
+            </ul>
+            <ul class="layui-nav layui-nav-tree md:hidden">
+                <li class="layui-nav-item">
+                    <a class="nav-row" href="javascript:;">
+                        <svg class="nav-icon" width="20px" height="20px" viewBox="0 0 20 20" version="1.1"
+                            xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+                            <defs>
+                                <rect id="path-1" x="0" y="0" width="20" height="20"></rect>
+                            </defs>
+                            <g id="页面-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                                <g id="超级控制台_首页_1122" transform="translate(-1787.000000, -188.000000)">
+                                    <g id="编组-9" transform="translate(1787.000000, 188.000000)">
+                                        <g id="Clipped"
+                                            transform="translate(10.000000, 10.000000) scale(1, -1) translate(-10.000000, -10.000000) ">
+                                            <mask id="mask-2" fill="white">
+                                                <use xlink:href="#path-1"></use>
+                                            </mask>
+                                            <g id="align-right"></g>
+                                            <g id="编组" mask="url(#mask-2)" fill="currentColor">
+                                                <g transform="translate(2.173913, 8.847826)" id="矩形">
+                                                    <rect x="0" y="0" width="3" height="3" rx="1.5"></rect>
+                                                    <rect x="6" y="0" width="3" height="3" rx="1.5"></rect>
+                                                    <rect x="12" y="0" width="3" height="3" rx="1.5"></rect>
+                                                </g>
+                                            </g>
+                                        </g>
+                                    </g>
+                                </g>
+                            </g>
+                        </svg>
+                        操作
+                        <i class=" maccms-icon macCms-a-zu1679"></i>
+                    </a>
+                    <dl class="layui-nav-child">
+                        <dd>
+                            <a href="{:url('index/clear')}" class="j-ajax"
+                                refresh="yes">{:lang('admin/index/index/menu_cache_clear')}</a>
+                        </dd>
+                        <dd><a href="javascript:void(0);" id="lockScreen">{:lang('admin/index/index/menu_lock')}</a>
+                        </dd>
+                        <dd><a href="{:url('index/logout')}">{:lang('admin/index/index/menu_logout')}</a></dd>
+                    </dl>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="site-mobile-shade"></div>
+    <div class="layui-body" id="switchBody">
+        <div class="layui-tab mag0" id="top_tabs_box" lay-filter="macTab" lay-allowClose="true">
+            <ul class="layui-tab-title" id="B_history">
+                <li lay-id="111" class="layui-this">{:lang('admin/index/index/menu_welcome')}</li>
+            </ul>
+            <div class="bottom-nav">
+                <ul class="layui-nav layui-layout-right layui-form flex gap-1 items-center h-[60px]" lay-filter="demo">
+                    <div class="layui-input-inline  w-[150px]">
+                        <select id="languageSelect" name="app[lang]" lay-filter="lang">
+                            <option value="">{:lang('install/select_lang')}</option>
+                            {volist name="langs" id="vo"}
+                            <option value="{$vo}" {if condition="$config['app']['lang'] eq $vo" } selected {/if}>{$vo}
+                            </option>
+                            {/volist}
+                        </select>
+                    </div>
+                    <li class="layui-nav-item flex-shrink-0">
+                        <a href="javascript:void(0);" class="hover:!text-[#40CC92] cursor-pointer !px-[10px]"
+                            title="{:lang('opt')}">
+                            <svg width="20px" height="20px" viewBox="0 0 20 20" version="1.1"
+                                xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+                                <defs>
+                                    <rect id="path-1" x="0" y="0" width="20" height="20"></rect>
+                                </defs>
+                                <g id="页面-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                                    <g id="超级控制台_首页_1122" transform="translate(-1787.000000, -188.000000)">
+                                        <g id="编组-9" transform="translate(1787.000000, 188.000000)">
+                                            <g id="Clipped"
+                                                transform="translate(10.000000, 10.000000) scale(1, -1) translate(-10.000000, -10.000000) ">
+                                                <mask id="mask-2" fill="white">
+                                                    <use xlink:href="#path-1"></use>
+                                                </mask>
+                                                <g id="align-right"></g>
+                                                <g id="编组" mask="url(#mask-2)" fill="currentColor">
+                                                    <g transform="translate(2.173913, 8.847826)" id="矩形">
+                                                        <rect x="0" y="0" width="3" height="3" rx="1.5"></rect>
+                                                        <rect x="6" y="0" width="3" height="3" rx="1.5"></rect>
+                                                        <rect x="12" y="0" width="3" height="3" rx="1.5"></rect>
+                                                    </g>
+                                                </g>
+                                            </g>
+                                        </g>
+                                    </g>
+                                </g>
+                            </svg>
+                        </a>
+                        <dl class="layui-nav-child !top-[28px] !rounded-[10px]">
+                            <dd><a href="{:url('index/clear')}" class="j-ajax"
+                                    refresh="yes">{:lang('admin/index/index/menu_cache_clear')}</a>
+                            </dd>
+                            <dd><a href="javascript:void(0);" id="lockScreen">{:lang('admin/index/index/menu_lock')}</a>
+                            </dd>
+                            <dd><a href="{:url('index/logout')}">{:lang('admin/index/index/menu_logout')}</a></dd>
+                        </dl>
+                    </li>
+                    <li class="layui-nav-item flex-shrink-0">
+                        <a href="__ROOT__/" class="hover:!text-[#40CC92] cursor-pointer !px-[10px]" target="_blank"
+                            title="{:lang('admin/index/index/menu_index')}">
+                            <svg width="20px" height="20px" viewBox="0 0 20 20" version="1.1"
+                                xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+                                <defs>
+                                    <rect id="path-1" x="0" y="0" width="20" height="20"></rect>
+                                </defs>
+                                <g id="页面-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                                    <g id="超级控制台_首页_1122" transform="translate(-1840.000000, -21.000000)">
+                                        <g id="Clipped" transform="translate(1840.000000, 21.000000)">
+                                            <mask id="mask-2" fill="white">
+                                                <use xlink:href="#path-1"></use>
+                                            </mask>
+                                            <g id="home"></g>
+                                            <g id="编组" mask="url(#mask-2)" stroke="currentColor" stroke-linejoin="round"
+                                                stroke-width="2">
+                                                <g transform="translate(2.000000, 1.304348)" id="Vector">
+                                                    <path
+                                                        d="M8,0 L14.8247512,5.22983652 C15.5655919,5.79754594 16,6.67772393 16,7.61107213 L16,15.6956522 L16,15.6956522 C16,16.1565217 16.0478261,16.8521739 15.726087,17.1826087 C15.3956522,17.5043478 14.9608696,17.6956522 14.5,17.6956522 L1.73913043,17.9347826 C1.26956522,17.9347826 0.834782609,17.7434783 0.504347826,17.4217391 C0.182608696,17.0913043 0,16.6565217 0,16.1956522 L0,7.61107213 C1.1883661e-15,6.67772393 0.434408137,5.79754594 1.1752488,5.22983652 L8,0 L8,0 Z">
+                                                    </path>
+                                                    <path
+                                                        d="M4.99250848,17.6745991 L4.99250848,12.6745991 C4.99250848,11.0177448 6.33565423,9.67459908 7.99250848,9.67459908 C9.64936273,9.67459908 10.9925085,11.0177448 10.9925085,12.6745991 L10.9925085,17.6745991 L10.9925085,17.6745991"
+                                                        stroke-linecap="round"></path>
+                                                </g>
+                                            </g>
+                                        </g>
+                                    </g>
+                                </g>
+                            </svg>
+                        </a>
+                    </li>
+                    <li class="layui-nav-item flex-shrink-0 cursor-pointer">
+                        <a href="javascript:void;" class="hover:!text-[#40CC92] cursor-pointer !px-[10px]"
+                            onclick="chanage_version()" title="{:lang('admin/index/index/old_version')}">
+                            <svg width="20px" height="20px" viewBox="0 0 20 20" version="1.1"
+                                xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+                                <g id="页面-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                                    <g id="超级控制台_首页_1122" transform="translate(-1880.000000, -21.000000)">
+                                        <g id="top_ic_old" transform="translate(1880.000000, 21.000000)">
+                                            <rect id="矩形" fill="currentColor" opacity="0" x="0" y="0" width="20"
+                                                height="20"></rect>
+                                            <path
+                                                d="M18.4424065,7.27519736 C18.4284666,7.23333945 18.4145268,7.19148155 18.3866471,7.14962365 C18.3448276,7.06590784 18.3030081,6.9682394 18.2751284,6.87057096 L18.2611886,6.85661832 C18.1914894,6.67523407 18.1078503,6.49384983 17.9963316,6.31246558 C17.703595,5.76831283 16.7975055,4.87534423 15.2641233,4.84743896 C14.4695525,4.86139159 13.3683052,5.08463374 12.6713133,6.14503396 C12.6294938,6.2008445 12.6016141,6.25665504 12.5737344,6.29851294 L9.40939105,12.9678722 L6.34262656,6.31246558 C6.13352898,5.85202864 5.57593544,5.64273912 5.11592076,5.86598127 C4.65590609,6.07527079 4.44680851,6.63337617 4.65590609,7.09381311 L7.88994864,14.0701303 L7.90388848,14.084083 C8.32208364,14.8654305 8.85179751,15.2700569 9.50696992,15.2700569 C10.1203228,15.2421516 10.622157,14.8375252 10.9845928,14.0422251 L14.2325752,7.17752891 C14.2325752,7.16357628 14.246515,7.16357628 14.246515,7.14962365 C14.3301541,7.0100973 14.5392517,6.68918671 15.2780631,6.68918671 L15.2920029,6.68918671 C16.0447542,6.70313934 16.3653705,7.12171838 16.40719,7.19148155 C16.4211299,7.21938682 16.4350697,7.26124472 16.4629494,7.27519736 C16.4908291,7.31705526 16.5326486,7.42867634 16.5744681,7.52634478 C16.6162876,7.63796585 16.672047,7.76353956 16.7278063,7.88911327 C17.0066031,8.76812925 17.1599413,9.63319258 17.1599413,10.4703507 C17.1599413,12.5492932 16.4350697,14.3212778 14.9574468,15.8700202 C13.382245,17.3769047 11.6118855,18.1163943 9.52090976,18.1163943 C7.37417461,18.1163943 5.60381511,17.3908574 4.11225238,15.8839728 C2.57887014,14.4189462 1.85399853,12.633009 1.85399853,10.4843033 C1.85399853,8.33559758 2.57887014,6.563613 4.09831255,5.04277584 C5.24137931,3.84284927 6.74688188,3.08940701 8.43360235,2.89407013 C9.24211299,2.82430696 9.57666911,2.82430696 10.5106383,2.89407013 C10.622157,2.90802276 11.5840059,3.04754911 12.3925165,3.34055443 C12.6294938,3.42427024 12.8804109,3.41031761 13.1034483,3.31264916 C13.3264857,3.20102809 13.5077036,3.03359648 13.5774028,2.79640169 L13.5913426,2.75454379 L13.5913426,2.74059115 C13.6610418,2.517349 13.647102,2.28015421 13.5495231,2.0708647 C13.4380044,1.84762254 13.2707263,1.68019093 13.0337491,1.59647512 C12.0440205,1.23370663 10.8312546,1.05232238 10.6360968,1.05232238 C9.60454879,0.982559207 9.18635363,0.982559207 8.25238445,1.05232238 C6.09170946,1.31742243 4.19589142,2.25224894 2.76008804,3.75913347 C0.89214967,5.62878649 0,7.83330274 0,10.4982559 C0,13.1632091 0.906089508,15.3677254 2.77402788,17.2234257 C4.61408657,19.0651735 6.87234043,20 9.49303008,20 C12.0440205,20 14.3022744,19.0651735 16.239912,17.2234257 C18.0660308,15.3119148 19,13.051588 19,10.4982559 C18.9860602,9.45180833 18.8048423,8.36350285 18.4424065,7.27519736 Z"
+                                                id="路径" fill="currentColor" fill-rule="nonzero"></path>
+                                        </g>
+                                    </g>
+                                </g>
+                            </svg>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+            <div class="layui-tab-content max-md:!px-0 max-md:!pt-3">
+                <div class="layui-tab-item layui-show">
+                    <iframe lay-id="111" src="{:url('index/welcome')}" width="100%" height="100%" frameborder="0"
+                        scrolling="yes" class="hs-iframe"></iframe>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="layui-footer footer center">
+        <div class="text-footer">{:lang('maccms_copyright')}</div>
+    </div>
+</div>
+
+{include file="../../../application/admin/view_new/public/foot" /}
+<!--请在下方写此页面业务相关的脚本-->
+<script>
+    window.localStorage.clear();
+    var LAYUI_OFFSET = 60;
+
+    $('#admin_name').click(function () {
+        $('body').toggleClass('drawer-body-right');
+    })
+</script>
+<script>
+    var MAC_VERSION='{$version.code}',PHP_VERSION='{php}echo PHP_VERSION{/php}',THINK_VERSION='{php}echo THINK_VERSION{/php}';MAC_LANG='{$mac_lang}';
+</script>
+<script type="text/javascript">
+    var layer;
+    layui.use(['element', 'layer', 'form'], function () {
+        var $ = layui.jquery, element = layui.element, form = layui.form;
+        layer = layui.layer;
+        console.log("MAC_VERSION", MAC_VERSION)
+        if (typeof (MAC_VERSION) != 'undefined' && typeof (PHP_VERSION) != 'undefined' && typeof (THINK_VERSION) != 'undefined') {
+            $.ajax({
+                url: `https://update.maccms.la/v10/?c=check&v=${MAC_VERSION}&p=${PHP_VERSION}&tp=${THINK_VERSION}&t=${Math.random()}`,
+                type: 'GET',
+                dataType: 'text', // 确保返回的数据被视为纯文本
+                success: function (response) {
+                    // 使用正则表达式提取update_content
+                    // var updateContentRegex = /var update_content = \[((?:.|\n)*?)\].join\('<br>\');/g;
+                    var updateContentMatch = response.match(/var update_content\s*=\s*\[(.*?)\]\.join\('<br>'\);/s);
+                    console.log("updateContentMatch", updateContentMatch)
+                    if (updateContentMatch){
+                        eval(updateContentMatch[0])
+                    }
+
+                    // 使用正则表达式提取new_v
+                    var newVRegex = /var new_v = '(.*?)';/;
+                    var newVMatch = response.match(newVRegex);
+                    var newV = newVMatch ? newVMatch[1] : '未找到new_v';
+                    if (newV > MAC_VERSION) {
+                        var package = 'maccms10_update';
+                        // js 判断是否移动端
+                        var area = ['460px', '638px']
+                        var agent = navigator.userAgent.toLowerCase();
+                        var isMobile = /android|iphone|ipod|ipad|ios/.test(agent)
+                        if (isMobile) {
+                            area = ['95%', '638px']
+                        }
+                        layer.open({
+                            type: 1,
+                            area, // 宽高
+                            title: false, // 不显示标题栏
+                            closeBtn: 0,
+                            btn: ['关闭'],
+                            btnAlign: 'c',
+                            shadeClose: true, // 点击遮罩关闭层
+                            skin: 'skin_updae_from', // 加上边框
+                            content: `
+                                <div class="updae_from">
+                                    <img class="update_bg" src="__STATIC__/images/upgrade_pop_rocket_bg@2x.png" alt="" srcset="">
+                                    <div class="update_content">
+                                    <div class="update_title">
+                                        <p>更新提示</p>
+                                        <p>${newV}>>></p>
+                                    </div>
+                                    <a class="group_link" target="_blank" href="https://t.me/maccms_channel">Telegram群   https://t.me/maccms_channel</a>
+                                    <a class="group_link" target="_blank"
+                                        href="https://github.com/magicblack">Github源码   https://github.com/magicblack</a>
+                                    <div class="flex-col flex my-[20px] gap-1">
+                                        <a class="j-iframe text-[#53D19C]" title="点击进入升级"
+                                        data-href="${ADMIN_PATH}/admin/update/step1.html?file=${package}">
+                                        【点击进入在线升级】
+                                        </a>
+                                        <a href="https://github.com/magicblack/maccms_down/raw/master/maccms10_update.zip">
+                                        【下载离线升级包线路1】
+                                        </a>
+                                        <a href="https://cdn.jsdelivr.net/gh/magicblack/maccms_down@master/maccms10_update.zip">
+                                        【下载离线升级包线路2】
+                                        </a>
+                                    </div>
+                                    <div class="update_list">
+                                        ${update_content}
+                                    </div>
+                                </div>
+                            `
+                        });
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.error('AJAX请求失败:', error);
+                }
+            });
+        }
+        // layer.msg('提示信息', { time: 180000 });
+        element.init('nav', 'demo');
+        // 重新渲染select，将下拉弹层插入到body
+        form.render('select', {
+            render: true
+        });
+        form.on('select(lang)', function (data) {
+            if (data.value != '') {
+                // location.href = "{:url('index')}?lang=" + (data.value);
+                $.ajax({
+                    url: "{:url('system/configlang')}",
+                    type: "post",
+                    dataType: "json",
+                    data: { 'lang': data.value },
+                    beforeSend: function () {
+
+                    },
+                    error: function (r) {
+                        layer.msg("configedit error", { time: 1800 });
+                    },
+                    success: function (r) {
+                        layer.msg(r.msg, { time: 1800 });
+                    },
+                    complete: function () {
+                        location.reload();
+                    }
+                });
+            }
+        });
+
+        // 获取窗口宽度
+        var windowWidth = $(window).width();
+        // 设置一个阈值，例如 768px，根据实际需要调整
+        var mobileThreshold = 768;
+        // 判断是否为移动端
+        if (windowWidth < mobileThreshold) {
+            // 在移动端执行的代码
+            $('.layui-tab-content').height($(window).height() - 195);
+        } else {
+            // 在非移动端执行的代码
+            $('.layui-tab-content').height($(window).height() - 130);
+        }
+        var tab = {
+            add: function (title, url, id) {
+                element.tabAdd('macTab', {
+                    title: title,
+                    content: '<iframe width="100%" height="100%" lay-id="' + id + '" frameborder="0" src="' + url + '" scrolling="yes" class="x-iframe"></iframe>',
+                    id: id
+                });
+            }, change: function (id) {
+                element.tabChange('macTab', id);
+            }
+        };
+        $('.admin-nav-item').click(function (event) {
+            var that = $(this);
+            var id = that.attr('data-id');
+            if ($('iframe[lay-id="' + id + '"]')[0]) {
+                tab.change(id);
+                event.stopPropagation();
+                $(this).parent('dd').addClass('layui-this');
+                $("iframe[lay-id='" + id + "']")[0].contentWindow.location.reload(true);//切换后刷新框架
+                return false;
+            }
+            if ($('iframe').length == 10) {
+                layer.msg("{:lang('admin/index/index/menu_max')}");
+                return false;
+            }
+            tab.add(that.text(), that.attr('href'), that.attr('data-id'));
+            tab.change(that.attr('data-id'));
+            event.stopPropagation();
+            $(this).parent('dd').addClass('layui-this');
+            $('body').removeClass('site-mobile');
+            return false;
+        });
+        $(document).on('click', '.layui-tab-close', function () {
+            $('.layui-nav-child a[data-id="' + $(this).parent('li').attr('lay-id') + '"]').parent('dd').removeClass('layui-this');
+        });
+
+
+        //显示顶部导航时作位置判断，点击左边菜单、上一tab、下一tab时公用
+        function showTab(li) {
+            if (li.length) {
+                var ul = $('#B_history'),
+                    li_offset = li.offset(),
+                    li_width = li.outerWidth(true),
+                    next_left = $('#page-next').offset().left, //右边按钮的界限位置
+                    prev_right = $('#page-prev').offset().left + $('#page-prev').outerWidth(true); //左边按钮的界限位置
+                if (li_offset.left + li_width > next_left) { //如果将要移动的元素在不可见的右边，则需要移动
+                    var distance = li_offset.left + li_width - next_left; //计算当前父元素的右边距离，算出右移多少像素
+                    ul.animate({
+                        left: '-=' + distance
+                    }, 200, 'swing');
+                } else if (li_offset.left < prev_right) { //如果将要移动的元素在不可见的左边，则需要移动
+                    var distance = prev_right - li_offset.left; //计算当前父元素的左边距离，算出左移多少像素
+                    ul.animate({
+                        left: '+=' + distance
+                    }, 200, 'swing');
+                }
+                li.trigger('click');
+            }
+        }
+
+        //上一个选项卡
+        $('#page-prev').click(function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+            var ul = $('#B_history'),
+                current = ul.find('.layui-this'),
+                li = current.prev('li');
+            showTab(li);
+        });
+
+
+        //下一个选项卡
+        $('#page-next').click(function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+            var ul = $('#B_history'),
+                current = ul.find('.layui-this'),
+                li = current.next('li');
+            showTab(li);
+        });
+
+        //刷新
+        $('#J_refresh').click(function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+            var index = layer.load();
+            var id = $('#B_history .layui-this').attr('lay-id'),
+                iframe = $("iframe[lay-id='" + id + "']")[0];
+            if (iframe.contentWindow) {
+                iframe.contentWindow.location.reload(true);
+                layer.close(index);
+            }
+        });
+
+        //关闭全部选项卡
+        $(".closePageAll").on("click", function () {
+            if ($("#B_history li").length > 1) {
+                $("#B_history li").each(function () {
+                    data_id = $(this).attr('lay-id');
+                    if (data_id != '' && data_id != '111') {
+                        element.tabDelete("macTab", data_id);
+                        $("iframe[lay-id='" + data_id + "']").remove(); //移除iframe页面
+                    }
+                })
+
+            } else {
+                layer.msg("{:lang('admin/index/index/menu_close_empty')}");
+            }
+        });
+        //关闭其他选项卡
+        $(".closePageOther").on("click", function () {
+            if ($("#B_history li").length > 1) {
+                var cid = $('#B_history .layui-this').attr('lay-id');
+                $("#B_history li").each(function () {
+                    data_id = $(this).attr('lay-id');
+                    if (data_id != '' && data_id != '111' && data_id != cid) {
+                        element.tabDelete("macTab", data_id);
+                        $("iframe[lay-id='" + data_id + "']").remove(); //移除iframe页面
+                    }
+                })
+
+            } else {
+                layer.msg("{:lang('admin/index/index/menu_close_empty')}");
+            }
+        });
+
+        $('.mob-nav').on("click", function () {
+            $('.site-tree-mobile').click();
+        });
+        //手机设备的简单适配
+        var treeMobile = $('.site-tree-mobile'),
+            shadeMobile = $('.site-mobile-shade')
+        treeMobile.on('click', function () {
+            $('body').toggleClass('site-mobile');
+            $('.Menus-winner').toggleClass('topLevelMenus');//解决top导航
+            $('.Menus-winner').toggleClass('topLevelMenus-winner');//解决top导航
+
+        });
+        shadeMobile.on('click', function () {
+            $('body').removeClass('site-mobile');
+            $('.Menus-winner').addClass('topLevelMenus');//解决top导航
+        });
+    });
+    $(function () {
+        setInterval("checkCache()", 30 * 1000);
+    });
+
+    //检查缓存并保持登录状态
+    function checkCache() {
+        $.ajax({
+            url: "{:url('checkcache')}",
+            cache: false,
+            success: function (r) {
+                if (r == 'haved') {
+                    layer.msg('{:lang("admin/index/cache_data")}', { time: 3000 });
+                }
+            }
+        });
+    }
+
+    function chanage_version() {
+        $.ajax({
+            url: "{:url('system/configVersion')}",
+            type: "post",
+            dataType: "json",
+            data: { 'version': 0 },
+            beforeSend: function () {
+
+            },
+            error: function (r) {
+                layer.msg("configedit error", { time: 1800 });
+            },
+            success: function (r) {
+                layer.msg(r.msg, { time: 1800 });
+            },
+            complete: function () {
+                location.reload();
+            }
+        });
+    }
+</script>
+
+</body>
+
+</html>

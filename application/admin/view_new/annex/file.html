@@ -1,0 +1,57 @@
+{include file="../../../application/admin/view_new/public/head" /}
+<div class="page-container p10">
+
+    <div class="my-btn-box lh30" >
+        <div class="layui-btn-group fl">
+            <a href="{:url('data')}" class="layui-btn layui-btn-primary "><i class="layui-icon">&#xe620;</i>{:lang('return')}</a>
+            <a data-href="{:url('del')}" class="layui-btn layui-btn-primary j-page-btns confirm"><i class="layui-icon">&#xe640;</i>{:lang('del')}</a>
+        </div>
+        <div class="page-filter fr" >
+
+        </div>
+    </div>
+
+    <form class="layui-form " method="post" id="pageListForm">
+    <table class="layui-table mt10">
+        <thead>
+        <tr>
+            <th><input type="checkbox" lay-skin="primary" lay-filter="allChoose">{:lang('file_name')}</th>
+            <th width="200">{:lang('file_size')}</th>
+            <th width="200">{:lang('file_time')}</th>
+        </tr>
+        </thead>
+
+        {if condition="$ischild eq 1"}
+        <tr><td colspan="3"><a href="{:url('annex/file',['path'=>$uppath])}">...{:lang('return_parent_dir')}</a></td></tr>
+        {/if}
+
+            {volist name="files" id="vo"}
+            <tr>
+                {if condition="$vo.isfile eq 1"}
+                <th><input type="checkbox" name="ids[]" value=".{$vo.path}" class="layui-checkbox checkbox-ids" lay-skin="primary"> <a href="{$vo.path}" target="_blank">{$vo.name}</a></th>
+                <td>{$vo.size}</td>
+                <td>{$vo.time|mac_day='color'}</td>
+                {else}
+                <th><a href="{:url('annex/file',['path'=>$vo.path])}">{$vo.name}</a></th>
+                <td></td>
+                <td></td>
+                {/if}
+            </tr>
+            {/volist}
+        </tbody>
+        <tfoot>
+            <tr><td colspan="3">{:lang('sum')}<b class="red">{$num_path}</b>{:lang('dir')},<b class="red">{$num_file}</b>{:lang('file')},{:lang('occupies')}<b class="red">{$sum_size}</b>{:lang('space')}</td></tr>
+        </tfoot>
+    </table>
+    </form>
+</div>
+{include file="../../../application/admin/view_new/public/foot" /}
+<script type="text/javascript">
+
+    layui.use(['element', 'layer'], function() {
+
+
+    });
+</script>
+</body>
+</html>

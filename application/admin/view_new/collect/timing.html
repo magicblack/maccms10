@@ -1,0 +1,153 @@
+{include file="../../../application/admin/view_new/public/head" /}
+<script language="javascript">
+    var b=false;
+    var iv_cj,iv_makeinfo,iv_makeindex,iv_maketype;
+    var urln=0,typeids='{$vod_type_ids_today}';
+    var cjUrl = "{:url('collect/apis')}";
+
+    $(function(){
+        $("#btnGO").click(function(){
+            var time = new Array();
+            time['cj'] = Number($("#ds_cj").val());
+            time['makeinfo'] = Number($("#ds_makeinfo").val());
+            time['makeindex'] = Number($("#ds_makeindex").val());
+            time['maketype'] = Number($("#ds_maketype").val());
+            if(time['cj'] > 0){
+                iv_cj = window.setInterval('cj()',1000*60* time['cj']);
+            }
+            if(time['makeinfo'] > 0){
+                iv_makeinfo = window.setInterval('makeinfo()',1000*60* time['makeinfo']);
+            }
+            if(time['makeindex'] > 0){
+                iv_makeindex = window.setInterval('makeindex()',1000*60* time['makeindex']);
+            }
+            if(time['maketype'] > 0){
+                iv_maketype = window.setInterval('maketype()',1000*60* time['maketype']);
+            }
+            $("#dsinfo").css("display",'');
+            $(this).val('执行中...');
+            $("#btnGO").attr('disabled',true);
+            $("#btnCancel").attr('disabled',false);
+            $b=true;
+        });
+        $("#btnCancel").click(function(){
+            window.clearInterval(iv_cj);
+            window.clearInterval(iv_makeinfo);
+            window.clearInterval(iv_makeindex);
+            window.clearInterval(iv_maketype);
+            $("#sp_cj").html('');
+            $("#sp_makeinfo").html('');
+            $("#sp_makeindex").html('');
+            $("#sp_maketype").html('');
+            $("#dsinfo").css("display",'none');
+            $("#btnGO").val('执行任务');
+            $("#btnGO").attr('disabled',false);
+            $("#btnCancel").attr('disabled',true);
+            $b=false;
+        });
+    });
+    function cj()
+    {
+        var urlc=$("#ds_url option:selected").length;
+        $("#ds_url option:selected").each(function(k,v) {
+            if(urln < urlc){
+                if(urln==k){
+                    $("#sp_cj").html("<iframe width='100%' height='200' src='"+v.value+"' scrolling='auto'></iframe>");
+                    urln++;
+                    return false;
+                }
+            }
+            else{
+                urln=0;
+            }
+        });
+    }
+    function makeinfo()
+    {
+        $("#sp_makeinfo").html("<iframe width='100%' height='200' src='{:url('make/make')}?ac=info&tab=vod&ac2=nomake' scrolling='auto'></iframe>");
+    }
+    function makeindex()
+    {
+        $("#sp_makeindex").html("<iframe width='100%' height='200' src='{:url('make/make')}?ac=index' scrolling='auto'></iframe>");
+    }
+    function maketype()
+    {
+        if(typeids==''){
+            $("#sp_maketype").html("今日没有更新的数据，所以栏目无需更新!");
+        }
+        else{
+            $("#sp_maketype").html("<iframe width='100%' height='200' src='{:url('make/make')}?ac=type&tab=vod&vodtype="+typeids+"' scrolling='auto'></iframe>");
+        }
+    }
+    function reflogin()
+    {
+        $("#sp_reflogin").html("<iframe width='100%' height='100' src='{:url('index/welcome')}' scrolling='auto' style='display:none'></iframe>");
+    }
+
+</script>
+
+<div class="page-container p10">
+    <div style="width:650px; height:420px; margin:0 auto;">
+
+        <blockquote class="layui-elem-quote">定时采集生成插件WEB挂机版<br>注：不需要定时操作的模块,请填写0</blockquote>
+
+
+        <table style="">
+            <tr>
+                <td width="50%" rowspan="4"> <div style="">  </div></td>
+                <td>采集抓取频率(分钟/次)：</td>
+                <td><input id="ds_cj" name="ds_cj" type="text" class="layui-input w50" value="5" /></td>
+            </tr>
+            <tr>
+                <td>内容生成频率(分钟/次)： </td>
+                <td><input id="ds_makeinfo" name="ds_makeinfo" class="layui-input w50" type="text"  value="6" /></td>
+            </tr>
+            <tr>
+                <td>首页生成频率(分钟/次)： </td>
+                <td><input id="ds_makeindex" name="ds_makeindex" class="layui-input w50" type="text"  value="20"/></td>
+            </tr>
+            <tr>
+                <td>栏目生成频率(分钟/次)： </td>
+                <td><input id="ds_maketype" name="ds_maketype" class="layui-input w50" type="text" value="120"/></td>
+            </tr>
+            <tr>
+                <td colspan="2" style="text-align:center" class="p10">
+                    <input type="button" id="btnGO" class="layui-btn" value="执行任务"/>&nbsp;
+                    <input type="button" id="btnCancel" class="layui-btn layui-btn-primary" value="停止执行" disabled=true/>
+                </td>
+            </tr>
+        </table>
+
+    </div>
+
+    <div style="width:100%;height:50px;"></div>
+    <div id="dsinfo" style="width:650px;margin:0 auto;display:none;">
+        <table border='0' cellpadding='0' cellspacing='0' width='760' height='100%' align='center' style="border:1px solid #CCCCCC; font-size:12px">
+            <tr><td valign='top' style="background:#ECF5FF">视频_定时采集</td></tr>
+            <tr><td valign='top' id='sp_cj' height='150'>等侍中...</td></tr>
+            <tr><td valign='top' height='1' style="background:#e8e8e8"></td></tr>
+            <tr><td valign='top' style="background:#ECF5FF">视频_定时生成内容页</td></tr>
+            <tr><td valign='top' id='sp_makeinfo' height='150'>等侍中...</td></tr>
+            <tr><td valign='top' height='1' style="background:#e8e8e8"></td></tr>
+            <tr><td valign='top' style="background:#ECF5FF">视频_定时生成首页</td></tr>
+            <tr><td valign='top' id='sp_makeindex' height='150'>等侍中...</td></tr>
+            <tr><td valign='top' height='1' style="background:#e8e8e8"></td></tr>
+            <tr><td valign='top' style="background:#ECF5FF">视频_定时生成栏目页</td></tr>
+            <tr><td valign='top' id='sp_maketype' height='150'>等侍中...</td></tr>
+        </table>
+        <span id="sp_reflogin"></span>
+    </div>
+
+</div>
+
+{include file="../../../application/admin/view_new/public/foot" /}
+<script type="text/javascript">
+    layui.use(['laypage', 'layer'], function() {
+        var laypage = layui.laypage
+                , layer = layui.layer;
+
+
+    });
+</script>
+</body>
+</html>

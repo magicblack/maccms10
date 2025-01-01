@@ -1,0 +1,12 @@
+{php}
+use think\View;
+
+$editor= strtolower($GLOBALS['config']['app']['editor']);
+$ue_old= ROOT_PATH . 'static/ueditor/' ;
+$ue_new= ROOT_PATH . 'static/editor/'. $editor ;
+if( (!file_exists($ue_new) && file_exists($ue_old)) || $editor=='' ){
+    $editor = 'ueditor';
+}
+
+echo  View::instance()->fetch('admin@extend/editor/'.$editor.'');
+{/php}

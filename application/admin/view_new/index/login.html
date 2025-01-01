@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>{:lang('admin/index/login/title')}</title>
+    <link rel="stylesheet" href="__STATIC__/layui/css/layui.css?v=1024">
+    <link rel="stylesheet" href="__STATIC__/css/admin_style.css?v=1024">
+    <link rel="stylesheet" href="__STATIC__/css/tailwindcssOutput.css?{$MAC_VERSION}">
+</head>
+<style>
+    .layui-form-item {
+        display: flex;
+        flex-direction: column;
+        margin-bottom: 30px;
+    }
+
+    .layui-form-pane .layui-form-label {
+        width: fit-content;
+        color: #4B5563;
+        padding: 8px 0;
+    }
+
+    .layui-form-pane .layui-input-block {
+        margin-left: 0;
+        position: relative;
+    }
+
+    .layui-form-pane .layui-input {
+        border-radius: 4px;
+        padding-left: 38px;
+    }
+
+    .fix-icon {
+        width: 16px !important;
+        height: 16px !important;
+        position: absolute;
+        top: 12px;
+        left: 12px;
+        margin: 0 !important;
+    }
+</style>
+
+<body class="w-full h-full">
+    <div class="login-body body hidden  lg:flex w-full h-full">
+        <div class="fixbox">
+            <div class="login-head">
+                {:lang('admin/index/login/tip_welcome')}
+            </div>
+            <div class="login-box">
+                <form class="layui-form layui-form-pane" method="post" action="">
+                    <div class="layui-form-item mt-[20px]">
+                        <h3>{:lang('admin/index/login/tip_sys')}</h3>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:lang('account')}：</label>
+                        <div class="layui-input-block">
+                            <img class="fix-icon" src="__STATIC__/images/signin_ic_account.png" alt="" srcset="">
+                            <input type="text" name="admin_name" class="layui-input" lay-verify="admin_name"
+                                placeholder="" autocomplete="on" maxlength="20" />
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:lang('pass')}：</label>
+                        <div class="layui-input-block">
+                            <img class="fix-icon" src="__STATIC__/images/signin_ic_password.png" alt="" srcset="">
+                            <input type="password" name="admin_pwd" class="layui-input" lay-verify="admin_pwd"
+                                placeholder="" maxlength="20" />
+                        </div>
+                    </div>
+                    {if condition="$GLOBALS['config']['app']['admin_login_verify'] neq '0'"}
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:lang('verify')}：</label>
+                        <div class="layui-input-block">
+                            <img class="fix-icon" src="__STATIC__/images/signin_ic_code.png" alt="" srcset="">
+                            <input type="number" name="verify" class="layui-input" lay-verify="verify" placeholder=""
+                                maxlength="4" max="9999" /><img id="verify_img"
+                                src="__ROOT__/index.php/verify/index.html" onclick="this.src = this.src+'?'">
+                        </div>
+                    </div>
+                    {/if}
+                    <button type="button" class="layui-btn btn-submit pc-submit" lay-submit=""
+                        lay-filter="sub">{:lang('admin/index/login/btn_submit')}</button>
+                </form>
+                <div class="copyright">
+                    {:lang('maccms_copyright')}
+                </div>
+
+                <div class="flex flex-col gap-[10px]">
+                    <div class="text-[#1F2937] text-[14px]">{:lang('admin/index/login/tip_declare')}</div>
+                    <div class="text-[#1F2937] text-[14px]">
+                        {:lang('admin/index/login/tip_declare_txt')}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="lg:hidden pb-20 pt-10">
+        <div class="w-full flex flex-col">
+            <div class="text-[32px] text-center leading-9 text-[#40CC92] font-medium">
+                {:lang('admin/index/login/tip_welcome')}
+            </div>
+            <div class="w-full h-full px-10">
+                <form class="layui-form layui-form-pane" method="post" action="">
+                    <div class="layui-form-item mt-[20px] text-center">
+                        <h3 class="font-medium text-lg">{:lang('admin/index/login/tip_sys')}</h3>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:lang('account')}：</label>
+                        <div class="layui-input-block">
+                            <img class="fix-icon" src="__STATIC__/images/signin_ic_account.png" alt="" srcset="">
+                            <input type="text" name="admin_name" class="layui-input" lay-verify="admin_name"
+                                placeholder="" autocomplete="on" maxlength="20" />
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:lang('pass')}：</label>
+                        <div class="layui-input-block">
+                            <img class="fix-icon" src="__STATIC__/images/signin_ic_password.png" alt="" srcset="">
+                            <input type="password" name="admin_pwd" class="layui-input" lay-verify="admin_pwd"
+                                placeholder="" maxlength="20" />
+                        </div>
+                    </div>
+                    {if condition="$GLOBALS['config']['app']['admin_login_verify'] neq '0'"}
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:lang('verify')}：</label>
+                        <div class="layui-input-block flex gap-5">
+                            <img class="fix-icon" src="__STATIC__/images/signin_ic_code.png" alt="" srcset="">
+                            <input type="number" name="verify" class="layui-input" lay-verify="verify" placeholder=""
+                                maxlength="4" max="9999" />
+                            <img id="verify_img" src="__ROOT__/index.php/verify/index.html"
+                                onclick="this.src = this.src+'?'">
+                        </div>
+                    </div>
+                    {/if}
+                    <button type="button" class="layui-btn btn-submit w-full" lay-submit=""
+                        lay-filter="sub1">{:lang('admin/index/login/btn_submit')}</button>
+                </form>
+                <div class="copyright text-center py-5 text-lg">
+                    {:lang('maccms_copyright')}
+                </div>
+                <div class="flex flex-col gap-1">
+                    <div class="text-[#1F2937] text-[14px]">{:lang('admin/index/login/tip_declare')}</div>
+                    <div class="text-[#1F2937] text-[14px]">
+                        {:lang('admin/index/login/tip_declare_txt')}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <script type="text/javascript" src="__STATIC__/layui/layui.js"></script>
+    <script type="text/javascript" src="__STATIC__/js/admin_common.js"></script>
+    <script type="text/javascript">
+        layui.use(['form', 'layer'], function () {
+            // 操作对象
+            var form = layui.form
+                , layer = layui.layer
+                , $ = layui.jquery;
+
+            // 验证
+            form.verify({
+                admin_name: function (value) {
+                    if (value == "") {
+                        return "{:lang('admin/index/login/verify_no')}";
+                    }
+                },
+                admin_pwd: function (value) {
+                    if (value == "") {
+                        return "{:lang('admin/index/login/verify_pass')}";
+                    }
+                },
+                verify: function (value) {
+                    if (value == "") {
+                        return "{:lang('admin/index/login/verify_verify')}";
+                    }
+                }
+            });
+
+            // 提交监听
+            form.on('submit(sub)', function (data) {
+                layer.msg("{:lang('wait_submit')}", { time: 500000 });
+                $.post("{:url('index/login')}", data.field, function (r) {
+                    if (r.code == 1) {
+                        location.href = "{:url('index/index')}";
+                    }
+                    else {
+                        layer.msg(r.msg, { time: 1800 });
+                        $('#verify_img').click();
+                    }
+                });
+                return false;
+            });
+            // 提交监听
+            form.on('submit(sub1)', function (data) {
+                layer.msg("{:lang('wait_submit')}", { time: 500000 });
+                $.post("{:url('index/login')}", data.field, function (r) {
+                    if (r.code == 1) {
+                        location.href = "{:url('index/index')}";
+                    }
+                    else {
+                        layer.msg(r.msg, { time: 1800 });
+                        $('#verify_img').click();
+                    }
+                });
+                return false;
+            });
+
+
+            $("input[name='admin_name']").bind('keypress', function (event) {
+                if (event.keyCode == "13") {
+                    if ($("input[name='admin_name']").val() != '') {
+                        $("input[name='admin_pwd']").focus();
+                    }
+                }
+            });
+
+            $("input[name='admin_pwd']").bind('keypress', function (event) {
+                if (event.keyCode == "13") {
+                    if ($("input[name='admin_pwd']").val() != '') {
+                        $("input[name='verify']").focus();
+                    }
+                }
+            });
+
+            $("input[name='verify']").bind('keypress', function (event) {
+                if (event.keyCode == "13") {
+                    if ($("input[name='verify']").val() != '') {
+                        $('.pc-submit').click();
+                        // form.submit();
+                    }
+                }
+            });
+        });
+
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,54 @@
+{include file="../../../application/admin/view_new/public/head" /}
+<div class="page-container p10">
+    <div class="my-toolbar-box">
+
+        <div class="layui-btn-group">
+            <a data-href="{:url('info')}" class="layui-btn layui-btn-primary j-iframe"><i class="layui-icon">&#xe654;</i>{:lang('add')}</a>
+            <a data-href="{:url('index/select')}?tab=vod&col=status&tpl=select_state&url=timming/field" data-width="470" data-height="100" data-checkbox="1" class="layui-btn layui-btn-primary j-select"><i class="layui-icon">&#xe620;</i>{:lang('status')}</a>
+        </div>
+
+    </div>
+
+    <form class="layui-form " method="post" id="pageListForm">
+        <table class="layui-table" lay-size="sm">
+            <thead>
+            <tr>
+                <th width="25"><input type="checkbox" lay-skin="primary" lay-filter="allChoose"></th>
+
+                <th width="80">{:lang('name')}</th>
+                <th width="150">{:lang('description')}</th>
+                <th width="80">{:lang('run')}</th>
+                <th width="80">{:lang('status')}</th>
+                <th width="80">{:lang('last_run_time')}</th>
+                <th width="100">{:lang('opt')}</th>
+            </tr>
+            </thead>
+            {volist name="list" id="vo"}
+            <tr>
+                <td><input type="checkbox" name="ids[]" value="{$vo.name}" class="layui-checkbox checkbox-ids" lay-skin="primary"></td>
+                <td>{$vo.name|htmlspecialchars}</td>
+                <td>{$vo.des|htmlspecialchars}</td>
+                <td>{$vo.file}</td>
+                <td>
+                    <input type="checkbox" name="status" {if condition="$vo['status'] eq 1"}checked{/if} value="{$vo['status']}" lay-skin="switch" lay-filter="switchStatus" lay-text="{:lang('open')}|{:lang('close')}" data-href="{:url('field?col=status&ids='.$vo['name'])}">
+                </td>
+                <td>{$vo.runtime|mac_day}</td>
+                <td>
+                    <a class="layui-badge-rim" target="_blank" href="{php}echo $GLOBALS['config']['site']['install_dir'];{/php}api.php/timming/index.html?enforce=1&name={$vo['name']|rawurlencode}" title="{:lang('test')}">{:lang('test')}</a>
+                    <a class="layui-badge-rim j-iframe" data-href="{:url('info')}?id={$vo['name']|rawurlencode}" href="javascript:;" title="{:lang('edit')}">{:lang('edit')}</a>
+                    <a class="layui-badge-rim j-tr-del" data-href="{:url('del')}?ids={$vo['name']|rawurlencode}" href="javascript:;" title="{:lang('del')}">{:lang('del')}</a>
+                </td>
+            </tr>
+            {/volist}
+            </tbody>
+        </table>
+
+    </form>
+</div>
+{include file="../../../application/admin/view_new/public/foot" /}
+
+<script type="text/javascript">
+
+</script>
+</body>
+</html>

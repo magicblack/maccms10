@@ -1,0 +1,156 @@
+{include file="../../../application/admin/view_new/public/head" /}
+
+<div class="page-container">
+
+    <div class="showpic" style="display:none;"><img class="showpic_img" width="120" height="160"
+            referrerPolicy="no-referrer"></div>
+
+    <form class="layui-form layui-form-pane" action="">
+        <input type="hidden" name="__token__" value="{$Request.token}" />
+        <div class="layui-tab">
+            <ul class="layui-tab-title">
+                <li class="layui-this">{:lang('admin/system/configcomment/title')}</li>
+            </ul>
+            <div class="layui-tab-content">
+
+                <div class="layui-tab-item layui-show" id="movementTable">
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:lang('admin/system/configcomment/gbook')}：</label>
+                        <div class="layui-input-inline">
+                            <input type="radio" name="gbook[status]" value="0" title="{:lang('close')}" {if
+                                condition="$config['gbook']['status'] neq 1" }checked {/if}>
+                            <input type="radio" name="gbook[status]" value="1" title="{:lang('open')}" {if
+                                condition="$config['gbook']['status'] eq 1" }checked {/if}>
+                        </div>
+                        <div class="layui-form-mid layui-word-aux">{:lang('admin/system/configcomment/gbook_tip')}</div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:lang('admin/system/configcomment/audit')}：</label>
+                        <div class="layui-input-block">
+                            <input type="radio" name="gbook[audit]" value="0" title="{:lang('close')}" {if
+                                condition="$config['gbook']['audit'] neq 1" }checked {/if}>
+                            <input type="radio" name="gbook[audit]" value="1" title="{:lang('open')}" {if
+                                condition="$config['gbook']['audit'] eq 1" }checked {/if}>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:lang('admin/system/configcomment/login')}：</label>
+                        <div class="layui-input-block">
+                            <input type="radio" name="gbook[login]" value="0" title="{:lang('close')}" {if
+                                condition="$config['gbook']['login'] neq 1" }checked {/if}>
+                            <input type="radio" name="gbook[login]" value="1" title="{:lang('open')}" {if
+                                condition="$config['gbook']['login'] eq 1" }checked {/if}>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:lang('admin/system/configcomment/verify')}：</label>
+                        <div class="layui-input-block">
+                            <input type="radio" name="gbook[verify]" value="0" title="{:lang('close')}" {if
+                                condition="$config['gbook']['verify'] neq 1" }checked {/if}>
+                            <input type="radio" name="gbook[verify]" value="1" title="{:lang('open')}" {if
+                                condition="$config['gbook']['verify'] eq 1" }checked {/if}>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:lang('admin/system/configcomment/pagesize')}：</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="gbook[pagesize]"
+                                placeholder="{:lang('admin/system/configcomment/pagesize_tip')}"
+                                value="{$config['gbook']['pagesize']}" class="layui-input w150">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:lang('admin/system/configcomment/timespan')}：</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="gbook[timespan]"
+                                placeholder="{:lang('admin/system/configcomment/timespan_tip')}"
+                                value="{$config['gbook']['timespan']}" class="layui-input w150">
+                        </div>
+                    </div>
+
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:lang('admin/system/configcomment/comment')}：</label>
+                        <div class="layui-input-inline">
+                            <input type="radio" name="comment[status]" value="0" title="{:lang('close')}" {if
+                                condition="$config['comment']['status'] neq 1" }checked {/if}>
+                            <input type="radio" name="comment[status]" value="1" title="{:lang('open')}" {if
+                                condition="$config['comment']['status'] eq 1" }checked {/if}>
+                        </div>
+                        <div class="layui-form-mid layui-word-aux">{:lang('admin/system/configcomment/comment_tip')}
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:lang('admin/system/configcomment/audit')}：</label>
+                        <div class="layui-input-block">
+                            <input type="radio" name="comment[audit]" value="0" title="{:lang('close')}" {if
+                                condition="$config['comment']['audit'] neq 1" }checked {/if}>
+                            <input type="radio" name="comment[audit]" value="1" title="{:lang('open')}" {if
+                                condition="$config['comment']['audit'] eq 1" }checked {/if}>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:lang('admin/system/configcomment/login')}：</label>
+                        <div class="layui-input-block">
+                            <input type="radio" name="comment[login]" value="0" title="{:lang('close')}" {if
+                                condition="$config['comment']['login'] neq 1" }checked {/if}>
+                            <input type="radio" name="comment[login]" value="1" title="{:lang('open')}" {if
+                                condition="$config['comment']['login'] eq 1" }checked {/if}>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:lang('admin/system/configcomment/verify')}：</label>
+                        <div class="layui-input-block">
+                            <input type="radio" name="comment[verify]" value="0" title="{:lang('close')}" {if
+                                condition="$config['comment']['verify'] neq 1" }checked {/if}>
+                            <input type="radio" name="comment[verify]" value="1" title="{:lang('open')}" {if
+                                condition="$config['comment']['verify'] eq 1" }checked {/if}>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:lang('admin/system/configcomment/pagesize')}：</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="comment[pagesize]"
+                                placeholder="{:lang('admin/system/configcomment/pagesize_tip')}"
+                                value="{$config['comment']['pagesize']}" class="layui-input w150">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:lang('admin/system/configcomment/timespan')}：</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="comment[timespan]"
+                                placeholder="{:lang('admin/system/configcomment/timespan_tip')}"
+                                value="{$config['comment']['timespan']}" class="layui-input w150">
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="layui-form-item center">
+                    <div class="layui-input-block">
+                        <button type="submit" class="layui-btn" lay-submit=""
+                            lay-filter="formSubmit">{:lang('btn_save')}</button>
+                        <button class="layui-btn layui-btn-primary" type="reset">{:lang('btn_reset')}</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+{include file="../../../application/admin/view_new/public/foot" /}
+<script type="text/javascript">
+    layui.use(['form', 'layer'], function () {
+        // 操作对象
+        var form = layui.form
+            , layer = layui.layer
+            , upload = layui.upload;
+
+    });
+
+
+</script>
+
+</body>
+
+</html>

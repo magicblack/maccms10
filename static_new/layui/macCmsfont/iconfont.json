@@ -1,0 +1,44 @@
+{
+  "id": "4685346",
+  "name": "macCms",
+  "font_family": "maccms-icon",
+  "css_prefix_text": "macCms-",
+  "description": "",
+  "glyphs": [
+    {
+      "icon_id": "1727541",
+      "name": "308上一页、后退、返回",
+      "font_class": "shangyiyehoutuifanhui",
+      "unicode": "e8ef",
+      "unicode_decimal": 59631
+    },
+    {
+      "icon_id": "1727542",
+      "name": "309下一页、前进、查看更多",
+      "font_class": "xiayiyeqianjinchakangengduo",
+      "unicode": "e8f1",
+      "unicode_decimal": 59633
+    },
+    {
+      "icon_id": "39898990",
+      "name": "箭头",
+      "font_class": "a-zu1679",
+      "unicode": "e7a9",
+      "unicode_decimal": 59305
+    },
+    {
+      "icon_id": "20905069",
+      "name": "单选框",
+      "font_class": "danxuankuang",
+      "unicode": "e647",
+      "unicode_decimal": 58951
+    },
+    {
+      "icon_id": "11193057",
+      "name": "圆形复选框",
+      "font_class": "yuanxingfuxuankuang",
+      "unicode": "e619",
+      "unicode_decimal": 58905
+    }
+  ]
+}

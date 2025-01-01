@@ -1,0 +1,47 @@
+{include file="../../../application/admin/view_new/public/head" /}
+<div class="page-container p10">
+    <div class="my-toolbar-box">
+        <div class="mb10">
+			<blockquote class="layui-elem-quote">
+				<p>自动绑定分类说明：</p>
+				<p>比如资源站有一个“喜剧片”的分类，你程序 <b style="color:green;">也有设置“喜剧片”</b> 这个分类，则 <b style="color:green;">可以自动绑定</b></p>
+				<p>比如资源站有一个“伦理片”的分类，你程序 <b style="color:red;">没有设置“伦理片”</b> 这个分类，则 <b style="color:red;">无法自动绑定</b> </p>				
+				<p>如果你需要自定义设置分类绑定规则，请在程序“系统”-“站外入库配置”中设置分类绑定规则，优先匹配自定义规则，<a href="https://www.mycj.pro/216.html" target="_blank" class="layui-btn layui-btn-xs layui-btn-normal">点此查看规则介绍</a></p>
+			</blockquote>
+            {volist name="type" id="vo"}
+            <div class="layui-input-inline w400 m5">
+                <span data-id="{$vo.type_id}" class="select_type">{$vo.type_name|htmlspecialchars}</span>
+				->
+                <a href="javascript:;" id="{$param['cjflag']}_{$vo.type_id}" data-href="{:url('index/select')}?tab=vod&col={$param['cjflag']}_{$vo.type_id}&ids=1&tpl=select_type&refresh=no&url=collect/bind" data-width="270" data-height="100" class="j-select" >
+                    {if condition="$vo.isbind eq 1"}
+                    <span class="red">[{$vo.local_type_name}]</span> {$vo.msg}
+                    {else}
+                    [点此绑定] {$vo.msg}
+                    {/if}
+                </a>
+            </div><br>
+            {/volist}
+        </div>
+    </div>
+</div>
+
+{include file="../../../application/admin/view_new/public/foot" /}
+
+<script type="text/javascript">
+
+    layui.use(['layer','form'], function() {
+        var layer = layui.layer,
+            form = layui.form;
+    });
+    function onSubmitResult(res)
+    {
+        if(res.data.st==1){
+            $('#'+res.data.id).html('<span class="red">['+ res.data.local_type_name +']</span>');
+        }
+        else{
+            $('#'+res.data.id).html("[点此绑定]");
+        }
+    }
+</script>
+</body>
+</html>

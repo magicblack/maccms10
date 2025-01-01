@@ -1,0 +1,133 @@
+{include file="../../../application/admin/view_new/public/head" /}
+<style>
+    .layui-form-select ul {max-height:200px}
+    .layui-btn+.layui-btn{margin-left:0px; }
+</style>
+<div class="page-container">
+    <form class="layui-form layui-form-pane" action="">
+        <input type="hidden" name="__token__" value="{$Request.token}" />
+        <div class="layui-tab">
+            <ul class="layui-tab-title">
+                <li class="layui-this">{:lang('admin/database/batch_replace')}</li>
+            </ul>
+            <div class="layui-tab-content">
+                <div class="layui-tab-item layui-show" id="movementTable">
+
+                <div class="layui-form-item">
+                    <label class="layui-form-label">{:lang('admin/database/select_table')}：</label>
+                    <div class="layui-input-inline w400" >
+                        <select name="table" lay-filter="table" lay-verify="table">
+                            {volist name="list" id="vo"}
+                                <option value="{$vo.Name}">{$vo.Name}【{$vo.Comment}】</option>
+                            {/volist}
+                        </select>
+                    </div>
+                </div>
+                <div class="layui-form-item row-fields">
+                    <label class="layui-form-label">{:lang('admin/database/select_col')}：</label>
+                    <div class="layui-input-block fields" >
+
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">{:lang('admin/database/field')}：</label>
+                    <div class="layui-input-block" >
+                        <input type="text" id="field" name="field" placeholder="" lay-verify="field" class="layui-input">
+                    </div>
+                </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:lang('admin/database/findstr')}：</label>
+                        <div class="layui-input-block" >
+                            <textarea name="findstr" placeholder="" lay-verify="findstr" class="layui-textarea"></textarea>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:lang('admin/database/tostr')}：</label>
+                        <div class="layui-input-block" >
+                            <textarea name="tostr" placeholder="" lay-verify="tostr" class="layui-textarea"></textarea>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:lang('admin/database/where')}：</label>
+                        <div class="layui-input-block" >
+                            <input type="text" name="where" placeholder="" value="" class="layui-input">
+                        </div>
+                    </div>
+
+                <div class="layui-form-item">
+
+                </div>
+            </div>
+            </div>
+        </div>
+        <div class="layui-form-item center">
+            <div class="layui-input-block">
+                <button type="submit" class="layui-btn" lay-submit="" lay-filter="formSubmit">{:lang('btn_save')}</button>
+                <button class="layui-btn layui-btn-primary" type="reset">{:lang('btn_reset')}</button>
+            </div>
+        </div>
+    </form>
+</div>
+
+{include file="../../../application/admin/view_new/public/foot" /}
+<script type="text/javascript">
+    layui.use(['form', 'layer'], function(){
+        // 操作对象
+        var form = layui.form
+                , layer = layui.layer,
+                $ = layui.jquery;
+
+        form.on('select(table)', function(data){
+            $('.fields').html('');
+            if(data.value !=''){
+                $.post("{:url('columns')}", {table:data.value}, function(res) {
+                    if (res.code == 1) {
+                        $.each(res.data,function(index,row){
+                            $(".fields").append('<a class="layui-btn layui-btn-sm" href="javascript:setfield(\''+row.Field+'\')">'+row.Field+'</a>&nbsp;&nbsp;');
+                            if(index>0 && index%5==0){
+                                //$(".fields").append('<br>');
+                            }
+
+                        });
+                    }
+                    layer.msg(res.msg);
+                });
+            }
+        });
+
+
+        // 验证
+        form.verify({
+            table: function (value) {
+                if (value == "") {
+                    return "{:lang('admin/database/select_table')}";
+                }
+            },
+            field: function (value) {
+                if (value == "") {
+                    return "{:lang('admin/database/select_col')}";
+                }
+            },
+            findstr: function (value) {
+                if (value == "") {
+                    return "{:lang('admin/database/findstr')}";
+                }
+            },
+            tostr: function (value) {
+                if (value == "") {
+                    return "{:lang('admin/database/tostr')}";
+                }
+            }
+        });
+
+    });
+
+    function setfield(v){
+        $('#field').val(v);
+    }
+
+</script>
+
+</body>
+</html>

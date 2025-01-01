@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>videojs播放器</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+	<meta http-equiv="X-UA-Compatible" content="IE=11" />
+	<meta content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no" id="viewport" name="viewport">
+	<style type="text/css">
+	html,body{width:100%;height:100%; padding:0; margin:0;}
+	#playerCnt{width:100%;height:100%;}
+	</style>
+	<link rel="stylesheet" href="/static/player/videojs/video-js.min.css">
+	<script type="text/javascript" src="/static/player/videojs/video.min.js"></script>
+</head>
+<body marginwidth="0" marginheight="0">
+<video id="playerCnt" class="video-js vjs-default-skin" controls preload="none" width="100%" height="100%"></video>
+<script type="text/javascript">
+var type='video/mp4';
+
+if(parent.MacPlayer.PlayUrl.indexOf('.m3u8')>-1){
+	type='application/x-mpegURL';
+}
+else if(parent.MacPlayer.PlayUrl.indexOf('.mkv')>-1){
+	type='video/x-matroska';
+}
+
+var options = {
+sources: [{
+    src: parent.MacPlayer.PlayUrl,
+    type: type
+  }]
+};
+
+var player = videojs('playerCnt', options, function onPlayerReady() {
+  videojs.log('Your player is ready!');
+
+  // In this context, `this` is the player that was created by Video.js.
+  this.play();
+
+  // How about an event listener?
+  this.on('ended', function() {
+    videojs.log('Awww...over so soon?!');
+  });
+});
+    
+	try{
+		//document.getElementById('playerCnt').style.height = parent.MacPlayer.Height + 'px';
+	}
+	catch(e){}
+</script>
+</body>
+</html>

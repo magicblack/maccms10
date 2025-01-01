@@ -764,7 +764,7 @@ https://www.baidu.com/123.jpg
     'admin/public/jump/title'=>'跳转提示',
 
     'admin/index/login/title'=>'后台管理中心 - Copyright by 苹果CMS内容管理系统',
-    'admin/index/login/tip_welcome'=>'欢迎使用',
+    'admin/index/login/tip_welcome'=>'欢迎使用MacCMS建站',
     'admin/index/login/tip_sys'=>'系统管理',
     'admin/index/login/filed_no'=>'账号',
     'admin/index/login/filed_pass'=>'密码',
@@ -783,7 +783,7 @@ https://www.baidu.com/123.jpg
     'admin/index/index/menu_logout' =>'退出登陆',
     'admin/index/index/menu_cache' =>'缓存',
     'admin/index/index/menu_cache_clear' =>'清理缓存',
-    'admin/index/index/menu_welcome' =>'欢迎页面',
+    
     'admin/index/index/menu_opt' =>'操作',
     'admin/index/index/menu_close_all' =>'关闭全部',
     'admin/index/index/menu_close_other' =>'关闭其他',
@@ -797,7 +797,8 @@ https://www.baidu.com/123.jpg
         3，支持系统模块，例如： 文章管理,art/data<br>
         4，支持行分隔符，例如： 分隔符,###',
 
-
+    'admin/index/welcome/disk_detail_tips' =>'移动到图表上查看磁碟详细资讯',
+    'admin/index/welcome/mem_detail' =>'内存占用',
     'admin/index/welcome/filed_os' =>'运行环境',
     'admin/index/welcome/filed_host' =>'服务器IP/端口',
     'admin/index/welcome/filed_php_ver' =>'PHP版本',
@@ -813,7 +814,7 @@ https://www.baidu.com/123.jpg
     'admin/index/welcome/filed_last_login_ip' =>'上次登录IP',
     'admin/index/welcome/filed_last_login_time' =>'上次登录时间',
     'admin/index/welcome/tip_warn' =>'请不要修改系统文件，以免升级出现故障！本程序不内置任何数据，添加任何数据均是个人行为！请在遵守法律的前提下使用程序，否则后果自负！',
-
+    
     'admin/index/quick_tit'=>'↓↓↓自定义菜单区域↓↓↓',
     'admin/index/title'=>'后台管理中心',
     'admin/index/welcome/title'=>'欢迎页面',
@@ -825,6 +826,20 @@ https://www.baidu.com/123.jpg
     'admin/index/pass_err'=>'密码错误',
     'admin/index/unlock_ok'=>'解锁成功',
     'admin/index/title'=>'后台管理中心',
+    'admin/index/welcome/today_visit_count'  => '本日用户访问',
+    'admin/index/welcome/today_money_get'  => '本日入金总额',
+    'admin/index/welcome/system_status'  => '系统资讯',
+    'admin/index/welcome/disk_space_usage'  => '磁碟空间占比',
+    'admin/index/welcome/seven_day_visit_data'  => '近七日用户访问量',
+    'admin/index/welcome/seven_day_reg_data'  => '近七日用户注册量',
+    'admin/index/welcome/reg_users_count'  => '注册用户数',
+    'admin/index/welcome/active_reg_users_count'  => '已审核用户数',
+    'admin/index/index/new_version' =>'新版本', 
+    'admin/index/index/menu_notifications' =>'通知',
+    'admin/index/index/old_version' =>'旧版本',
+    'admin/index/index/menu_welcome' =>'欢迎页面',
+    'admin/index/get_system_status/title'=>'系统资讯',
+    'menu/get_system_status'=>'系统资讯',
 
 
 
@@ -1950,7 +1965,8 @@ https://www.baidu.com/123.jpg
 
 
     'install/title'=>'苹果CMS-V10系统安装',
-    'install/header'=>'感谢您选择苹果CMS-V10系搭建网站',
+    'install/header'=>'感谢您选择!',
+    'install/header1'=>'MacCMS系统建站',
     'install/lang'=>'语言包[langs]',
     'install/select_lang'=>'请选择语言包[select lang]',
     'install/lang_tip'=>'请根据自己身需要选择后台语言包',

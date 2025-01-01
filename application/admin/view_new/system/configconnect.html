@@ -1,0 +1,103 @@
+{include file="../../../application/admin/view_new/public/head" /}
+
+<div class="page-container">
+    <form class="layui-form layui-form-pane" action="">
+        <input type="hidden" name="__token__" value="{$Request.token}" />
+        <div class="layui-tab">
+            <ul class="layui-tab-title">
+                <li class="layui-this">{:lang('admin/system/configconnect/title')}</li>
+            </ul>
+            <div class="layui-tab-content">
+                <div class="layui-tab-item layui-show" id="movementTable">
+
+                    <blockquote class="layui-elem-quote layui-quote-nm">
+                        {:lang('admin/system/configconnect/tip')}
+                    </blockquote>
+
+
+                    <fieldset class="layui-elem-field layui-field-title" style="margin-top: 30px;">
+                        <legend>{:lang('admin/system/configconnect/qq')} <a target="_blank"
+                                href="http://connect.qq.com/?maccms"
+                                class="layui-btn layui-btn-primary">{:lang('admin/system/configconnect/go_reg')}</a>
+                        </legend>
+                    </fieldset>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:lang('status')}：</label>
+                        <div class="layui-input-block">
+                            <input type="radio" name="connect[qq][status]" value="0" title="{:lang('close')}" {if
+                                condition="$config['connect']['qq']['status'] neq 1" }checked {/if}>
+                            <input type="radio" name="connect[qq][status]" value="1" title="{:lang('open')}" {if
+                                condition="$config['connect']['qq']['status'] eq 1" }checked {/if}>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">APP_KEY：</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="connect[qq][key]" placeholder=""
+                                value="{$config['connect']['qq']['key']}" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">APP_SECRET：</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="connect[qq][secret]" placeholder=""
+                                value="{$config['connect']['qq']['secret']}" class="layui-input">
+                        </div>
+                    </div>
+
+
+                    <fieldset class="layui-elem-field layui-field-title" style="margin-top: 30px;">
+                        <legend>{:lang('admin/system/configconnect/wx')} <a target="_blank"
+                                href="https://open.weixin.qq.com/?maccms"
+                                class="layui-btn layui-btn-primary">{:lang('admin/system/configconnect/go_reg')}</a>
+                        </legend>
+                    </fieldset>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:lang('status')}：</label>
+                        <div class="layui-input-block">
+                            <input type="radio" name="connect[weixin][status]" value="0" title="{:lang('close')}" {if
+                                condition="$config['connect']['weixin']['status'] neq 1" }checked {/if}>
+                            <input type="radio" name="connect[weixin][status]" value="1" title="{:lang('open')}" {if
+                                condition="$config['connect']['weixin']['status'] eq 1" }checked {/if}>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">APP_KEY：</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="connect[weixin][key]" placeholder=""
+                                value="{$config['connect']['weixin']['key']}" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">APP_SECRET：</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="connect[weixin][secret]" placeholder=""
+                                value="{$config['connect']['weixin']['secret']}" class="layui-input">
+                        </div>
+                    </div>
+
+
+                </div>
+            </div>
+
+        </div>
+        <div class="layui-form-item center">
+            <div class="layui-input-block">
+                <button type="submit" class="layui-btn" lay-submit=""
+                    lay-filter="formSubmit">{:lang('btn_save')}</button>
+                <button class="layui-btn layui-btn-primary" type="reset">{:lang('btn_reset')}</button>
+            </div>
+        </div>
+    </form>
+</div>
+
+{include file="../../../application/admin/view_new/public/foot" /}
+<script type="text/javascript">
+
+</script>
+
+</body>
+
+</html>

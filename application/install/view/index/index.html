@@ -1,5 +1,15 @@
 {include file="../../../application/install/view/index/head" /}
 <div class="install-box">
+   
+
+    <div class="protocol-box">
+        <div class="title">{:lang('install/user_agreement_title')}</div>
+        <div class="protocol">
+            <p>
+                {:lang('install/user_agreement')}
+            </p>
+        </div>
+    </div>
     <form class="layui-form layui-form-pane" action="" method="post">
         <div class="layui-form-item">
             <label class="layui-form-label">{:lang('install/lang')}</label>
@@ -14,15 +24,6 @@
             <div class="layui-form-mid layui-word-aux">{:lang('install/lang_tip')}</div>
         </div>
     </form>
-
-    <fieldset class="layui-elem-field site-demo-button">
-        <legend>{:lang('install/user_agreement_title')}</legend>
-        <div class="protocol">
-            <p>
-                {:lang('install/user_agreement')}
-            </p>
-        </div>
-    </fieldset>
     <div class="step-btns">
         <a href="?step=2" class="layui-btn layui-btn-big layui-btn-normal">{:lang('install/user_agreement_agree')}</a>
     </div>

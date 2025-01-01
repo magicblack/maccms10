@@ -1,0 +1,82 @@
+{include file="../../../application/admin/view_new/public/head" /}
+
+<div class="page-container">
+    <form class="layui-form layui-form-pane" action="">
+        <input type="hidden" name="__token__" value="{$Request.token}" />
+        <div class="layui-tab">
+            <ul class="layui-tab-title">
+                <li class="layui-this">{:lang('admin/system/configinterface/title')}</li>
+            </ul>
+            <div class="layui-tab-content">
+                <div class="layui-tab-item layui-show" id="movementTable">
+
+                    <blockquote class="layui-elem-quote layui-quote-nm">
+                        {:lang('admin/system/configinterface/tip')}
+                    </blockquote>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:lang('admin/system/configinterface/status')}：</label>
+                        <div class="layui-input-block">
+                            <input type="radio" name="interface[status]" value="0" title="{:lang('close')}" {if
+                                condition="$config['interface']['status'] neq 1" }checked {/if}>
+                            <input type="radio" name="interface[status]" value="1" title="{:lang('open')}" {if
+                                condition="$config['interface']['status'] eq 1" }checked {/if}>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:lang('admin/system/configinterface/pass')}：</label>
+                        <div class="layui-input-inline w400">
+                            <input type="text" name="interface[pass]" placeholder=""
+                                value="{$config['interface']['pass']}" class="layui-input">
+                        </div>
+                        <div class="layui-form-mid layui-word-aux">{:lang('admin/system/configinterface/pass_tip')}
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:lang('admin/system/configinterface/vod_type')}：</label>
+                        <div class="layui-input-inline" style="width:230px !important;">
+                            <textarea name="interface[vodtype]" class="layui-textarea"
+                                rows="20">{$config['interface']['vodtype']|mac_replace_text}</textarea>
+                        </div>
+                        <label class="layui-form-label">{:lang('admin/system/configinterface/art_type')}：</label>
+                        <div class="layui-input-inline" style="width:230px !important;">
+                            <textarea name="interface[arttype]" class="layui-textarea"
+                                rows="20">{$config['interface']['arttype']|mac_replace_text}</textarea>
+                        </div>
+                        <label class="layui-form-label">{:lang('admin/system/configinterface/actor_type')}：</label>
+                        <div class="layui-input-inline" style="width:230px !important;">
+                            <textarea name="interface[actortype]" class="layui-textarea"
+                                rows="20">{$config['interface']['actortype']|mac_replace_text}</textarea>
+                        </div>
+                        <label class="layui-form-label">{:lang('admin/system/configinterface/website_type')}：</label>
+                        <div class="layui-input-inline" style="width:230px !important;">
+                            <textarea name="interface[websitetype]" class="layui-textarea"
+                                rows="20">{$config['interface']['websitetype']|mac_replace_text}</textarea>
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="layui-form-item center">
+            <div class="layui-input-block">
+                <button type="submit" class="layui-btn" lay-submit=""
+                    lay-filter="formSubmit">{:lang('btn_save')}</button>
+                <button class="layui-btn layui-btn-primary" type="reset">{:lang('btn_reset')}</button>
+            </div>
+        </div>
+    </form>
+</div>
+
+{include file="../../../application/admin/view_new/public/foot" /}
+<script type="text/javascript">
+
+</script>
+
+</body>
+
+</html>

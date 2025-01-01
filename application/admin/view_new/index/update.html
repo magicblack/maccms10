@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <link rel="stylesheet" href="__STATIC__/layui/css/layui.css?v=1024">
+  <link rel="stylesheet" href="__STATIC__/css/update.css?{$MAC_VERSION}">
+</head>
+
+<body>
+  <div class="updae_from">
+    <img class="update_bg" src="__STATIC__/images/upgrade_pop_rocket_bg@2x.png" alt="" srcset="">
+    <div class="update_content">
+      <div class="update_title">
+        <p>更新提示</p>
+        <p>${new_v}>>></p>
+      </div>
+      <a class="group_link" target="_blank" href="https://t.me/maccms_channel">Telegram群   https://t.me/maccms_channel</a>
+      <a class="group_link" target="_blank"
+        href="https://github.com/magicblack">Github源码   https://github.com/magicblack</a>
+      <div class="flex-col flex my-[20px] gap-1">
+        <a class="j-iframe text-[#53D19C]" title="点击进入升级"
+          data-href="${ADMIN_PATH}/admin/update/step1.html?file=${package}">
+          【点击进入在线升级】
+        </a>
+        <a href="https://github.com/magicblack/maccms_down/raw/master/maccms10_update.zip">
+          【下载离线升级包线路1】
+        </a>
+        <a href="https://cdn.jsdelivr.net/gh/magicblack/maccms_down@master/maccms10_update.zip">
+          【下载离线升级包线路2】
+        </a>
+      </div>
+      <div class="update_list">
+        ${update_content}
+      </div>
+      
+    </div>
+  </div>
+  <script type="text/javascript" src="__STATIC__/layui/layui.js"></script>
+</body>
+
+</html>

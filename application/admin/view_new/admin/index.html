@@ -1,0 +1,80 @@
+{include file="../../../application/admin/view_new/public/head" /}
+<div class="page-container p10">
+
+    <div class="my-toolbar-box">
+
+        <div class="layui-btn-group">
+            <a data-href="{:url('info')}" class="layui-btn layui-btn-primary j-iframe"><i class="layui-icon">&#xe654;</i>{:lang('add')}</a>
+            <a data-href="{:url('del')}" class="layui-btn layui-btn-primary j-page-btns confirm"><i class="layui-icon">&#xe640;</i>{:lang('del')}</a>
+        </div>
+
+    </div>
+
+    <form class="layui-form " method="post" id="pageListForm">
+        <table class="layui-table" lay-size="sm">
+            <thead>
+            <tr>
+                <th width="25"><input type="checkbox" lay-skin="primary" lay-filter="allChoose"></th>
+                <th width="100">{:lang('id')}</th>
+                <th >{:lang('name')}</th>
+                <th width="100">{:lang('status')}</th>
+                <th width="140">{:lang('last_login_time')}</th>
+                <th width="140">{:lang('last_login_ip')}</th>
+                <th width="130">{:lang('login_num')}</th>
+                <th width="140">{:lang('opt')}</th>
+            </tr>
+            </thead>
+
+            {volist name="list" id="vo"}
+            <tr>
+                <td>
+                    {if condition="$admin['admin_id'] neq $vo['admin_id']"}
+                    <input type="checkbox" name="ids[]" value="{$vo.admin_id}" class="layui-checkbox checkbox-ids" lay-skin="primary">
+                    {/if}
+                </td>
+                <td>{$vo.admin_id}</td>
+                <td>{$vo.admin_name|htmlspecialchars}</td>
+                <td>
+                    <input type="checkbox" name="status" {if condition="$vo['admin_status'] eq 1"}checked{/if} value="{$vo['admin_status']}" lay-skin="switch" lay-filter="switchStatus" lay-text="{:lang('enable')}|{:lang('disable')}" data-href="{:url('field?col=admin_status&ids='.$vo['admin_id'])}">
+                </td>
+                <td>{$vo.admin_last_login_time|mac_day='color'}</td>
+                <td>{$vo.admin_last_login_ip|long2ip}</td>
+                <td>{$vo.admin_login_num}</td>
+                <td>
+                    <a class="layui-badge-rim j-iframe" data-href="{:url('info?id='.$vo['admin_id'])}" href="javascript:;" title="{:lang('edit')}">{:lang('edit')}</a>
+                    {if condition="$admin['admin_id'] neq $vo['admin_id']"}
+                    <a class="layui-badge-rim j-tr-del" data-href="{:url('del?ids='.$vo['admin_id'])}" href="javascript:;" title="{:lang('del')}">{:lang('del')}</a>
+                    {/if}
+                </td>
+            </tr>
+            {/volist}
+            </tbody>
+        </table>
+        <div id="pages" class="center"></div>
+    </form>
+</div>
+
+{include file="../../../application/admin/view_new/public/foot" /}
+
+<script type="text/javascript">
+    var curUrl="{:url('admin/index',$param)}";
+    layui.use(['laypage', 'layer'], function() {
+        var laypage = layui.laypage
+                , layer = layui.layer;
+
+        laypage.render({
+            elem: 'pages'
+            ,count: {$total}
+            ,limit: {$limit}
+            ,curr: {$page}
+            ,layout: ['count', 'prev', 'page', 'next', 'limit', 'skip']
+            ,jump: function(obj,first){
+                if(!first){
+                    location.href = curUrl.replace('%7Bpage%7D',obj.curr).replace('%7Blimit%7D',obj.limit);
+                }
+            }
+        });
+    });
+</script>
+</body>
+</html>

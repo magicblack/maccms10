@@ -1218,7 +1218,7 @@ function mac_get_order_status_text($data)
 
 function mac_get_user_portrait($user_id)
 {
-    $res = MAC_PATH . 'static/images/touxiang.png';
+    $res = MAC_PATH . 'static_new/images/touxiang.png';
     if(!empty($user_id)){
         $res2 = 'upload/user/'.($user_id % 10 ). '/'.$user_id.'.jpg';
         if(file_exists(ROOT_PATH . $res2)){
