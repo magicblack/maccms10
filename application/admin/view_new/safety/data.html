@@ -1,0 +1,36 @@
+{include file="../../../application/admin/view_new/public/head" /}
+
+<div class="page-container">
+    <form class="layui-form layui-form-pane" method="get" action="">
+        <input name="ck" value="1" type="hidden">
+        <div class="layui-tab">
+            <ul class="layui-tab-title">
+                <li class="layui-this">{:lang('admin/safety/data_inspect')}</li>
+            </ul>
+            <div class="layui-tab-content">
+                <div class="layui-tab-item layui-show" id="movementTable">
+                        <blockquote class="layui-elem-quote layui-quote-nm">
+                            {:lang('admin/safety/data_inspect_tip')}
+                        </blockquote>
+                </div>
+            </div>
+        </div>
+        <div class="layui-form-item center">
+            <div class="layui-input-block">
+                <button type="submit" class="layui-btn" >{:lang('admin/safety/exec')}</button>
+            </div>
+        </div>
+    </form>
+</div>
+
+{include file="../../../application/admin/view_new/public/foot" /}
+<script type="text/javascript">
+    $(function(){
+        $('.layui-btn').click(function(){
+            layer.msg("{:lang('wait_submit')}");
+        });
+    });
+</script>
+
+</body>
+</html>

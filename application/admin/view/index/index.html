@@ -20,6 +20,9 @@ foreach ($langs as $k => &$v) {
 	
 	<div class="top-logo">{:lang('admin/index/index/name')}</div>
 	<ul class="layout-right" lay-filter="">	
+        <li class="nav-item">
+            <a href="javascript:void(0);"  onclick="chanage_version()">New</a>
+        </li>
 		 <li class="nav-item">
 			<a href="__ROOT__/" target="_blank"><i class="layui-icon layui-icon-home size-14"></i></a>
 	     </li> 
@@ -72,6 +75,9 @@ foreach ($langs as $k => &$v) {
 				</li>
 				<li class="layui-nav-item layui-hide-xs">
                     <a href="__ROOT__/" target="_blank">{:lang('admin/index/index/menu_index')}</a>
+                </li>
+                <li class="layui-nav-item layui-hide-xs">
+                    <a href="javascript:void(0);"  onclick="chanage_version()">{:lang('admin/index/index/new_version')}</a>
                 </li>
 			</ul>
 		</div>
@@ -350,6 +356,26 @@ foreach ($langs as $k => &$v) {
                 }
             }
         });
+    }
+    function chanage_version(){
+        $.ajax({
+                url: "{:url('system/configVersion')}",
+                type: "post",
+                dataType: "json",
+                data: {'version': 1},
+                beforeSend: function () {
+
+                },
+                error:function(r){
+                    layer.msg("configedit error",{time:1800});
+                },
+                success: function (r) {
+                    layer.msg(r.msg,{time:1800});
+                },
+                complete: function () {
+                    location.reload();
+                }
+            });
     }
 </script>
 

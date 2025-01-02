@@ -1,0 +1,160 @@
+{include file="../../../application/admin/view_new/public/head" /}
+<style>
+    body{background:#f4f4f4}
+    .addon-state{line-height:21px;font-size:12px;background-color:#2c3e50;padding:10px;font-weight:700;color:#fff;border-radius:10px;margin-bottom:10px;margin-top:20px}
+    .addon-list{padding:10px;position:relative;margin-bottom:10px;border:1px solid #fff;border-radius:10px;background:#fff;line-height:20px;font-size:12px;display:block}
+    .addon-list a{color:#2366a8;font-size:12px}
+    .addon-list span{margin:0 6px;font-size:12px;color:#999}
+    .addon-list .addon-intro{color:#888;font-size:12px}
+    .addon-list .addon-title{font-weight:700;color:#555}
+    .addon-list img{background:#f4f4f4;display:block;position:absolute;left:10px;top:14px}
+    .addon-list .addon-bottom{line-height:22px;width:100%;text-indent:50px}
+</style>
+<div style="padding:20px">
+    <div><a target="_blank" href="http://maccmsbox.com/" class="layui-btn layui-btn-radius"><i class="layui-icon">&#xe857;</i>应用中心</a></div>
+    {notempty name="addonList.addonEnable"}<div class="addon-state">已启用的插件</div>{/notempty}
+    <url>
+        {volist name="addonList.addonEnable" id="vo"}
+        <li class="addon-list layui-row">
+            <img src="{$vo.image|mac_default='https://www.maccmsbox.com/uploads/20210906/Icon.png'}" width="40" height="40" align="left">
+            <div class="addon-bottom">
+                <p class="addon-title">{$vo.title}({$vo.name})<span>{$vo.version}</span></p>
+                <p class="addon-intro">{$vo.intro}</p>
+                <div class="layui-row">
+                    <div style="float:left">
+                        {if condition="$vo.state eq 1"}
+                        {if condition="$vo.config eq 0"}<a href="javascript:" class="j-iframe" data-name="{$vo.name}" data-href="{:url('addon/config')}?name={$vo.name}">设置</a><span>|</span>{/if}
+                        {$vo.a}
+                        <a target="_blank" href="{$vo.website}">查看</a>
+                        {/if}
+                    </div>
+                    <div style="float:right">
+                        {if condition="$vo.install eq 0"}
+                        <a href="javascript:" class="btn-install" data-name="{$vo.name}" data-action="install">安装</a>
+                        {else /}
+                        {if condition="$vo.state neq 1"}
+                        <a href="javascript:" class="btn-enable" data-name="{$vo.name}" data-action="enable">启用</a><span>|</span>
+                        {else /}
+                        <a href="javascript:" class="btn-disable" data-name="{$vo.name}" data-action="disable">卸载</a><span>|</span>
+                        {/if}
+                        <a href="javascript:" style="color:red" class="btn-uninstall" data-name="{$vo.name}" data-action="uninstall">删除插件</a>
+                        {/if}
+                    </div>
+
+                </div>
+            </div>
+        </li>
+        {/volist}
+        {notempty name="addonList.addonClose"}<div class="addon-state">未启用的插件</div>{/notempty}
+        {volist name="addonList.addonClose" id="vo"}
+        <li class="addon-list layui-row">
+            <img src="{$vo.image|mac_default='https://www.maccmsbox.com/uploads/20210906/Icon.png'}" width="40" height="40" align="left">
+            <div class="addon-bottom">
+                <p class="addon-title">{$vo.title}({$vo.name})<span>{$vo.version}</span></p>
+                <p class="addon-intro">{$vo.intro}</p>
+                <div class="layui-row">
+                    <div style="float:left">
+                        {if condition="$vo.state eq 1"}
+                        {if condition="$vo.config eq 0"}<a href="javascript:" class="j-iframe" data-name="{$vo.name}" data-href="{:url('addon/config')}?name={$vo.name}">设置</a><span>|</span>{/if}
+                        {$vo.a}
+                        <a target="_blank" href="{$vo.website}">查看</a>
+                        {/if}
+                    </div>
+                    <div style="float:right">
+                        {if condition="$vo.install eq 0"}
+                        <a href="javascript:" class="btn-install" data-name="{$vo.name}" data-action="install">安装</a>
+                        {else /}
+                        {if condition="$vo.state neq 1"}
+                        <a href="javascript:" class="btn-enable" data-name="{$vo.name}" data-action="enable">启用</a><span>|</span>
+                        {else /}
+                        <a href="javascript:" class="btn-disable" data-name="{$vo.name}" data-action="disable">卸载</a><span>|</span>
+                        {/if}
+                        <a href="javascript:" style="color:red" class="btn-uninstall" data-name="{$vo.name}" data-action="uninstall">删除插件</a>
+                        {/if}
+                    </div>
+
+                </div>
+            </div>
+        </li>
+        {/volist}
+        {notempty name="addonList.addonInstall"}<div class="addon-state">未安装的插件</div>{/notempty}
+        {volist name="addonList.addonInstall" id="vo"}
+        <li class="addon-list layui-row">
+            <img src="{$vo.image|mac_default='https://www.maccmsbox.com/uploads/20210906/Icon.png'}" width="40" height="40" align="left">
+            <div class="addon-bottom">
+                <p class="addon-title">{$vo.title}({$vo.name})<span>{$vo.version}</span></p>
+                <p class="addon-intro">{$vo.intro}</p>
+                <div class="layui-row">
+                    <div style="float:left">
+                        {if condition="$vo.state eq 1"}
+                        {if condition="$vo.config eq 0"}<a href="javascript:" class="j-iframe" data-name="{$vo.name}" data-href="{:url('addon/config')}?name={$vo.name}">设置</a><span>|</span>{/if}
+                        {$vo.a}
+                        <a target="_blank" href="{$vo.website}">查看</a>
+                        {/if}
+                    </div>
+                    <div style="float:right">
+                        {if condition="$vo.install eq 0"}
+                        <a href="javascript:" class="btn-install" data-name="{$vo.name}" data-action="install">安装</a>
+                        {else /}
+                        {if condition="$vo.state neq 1"}
+                        <a href="javascript:" class="btn-enable" data-name="{$vo.name}" data-action="enable">启用</a><span>|</span>
+                        {else /}
+                        <a href="javascript:" class="btn-disable" data-name="{$vo.name}" data-action="disable">卸载</a><span>|</span>
+                        {/if}
+                        <a href="javascript:" style="color:red" class="btn-uninstall" data-name="{$vo.name}" data-action="uninstall">删除插件</a>
+                        {/if}
+                    </div>
+                </div>
+            </div>
+        </li>
+        {/volist}
+    </url>
+</div>
+{include file="../../../application/admin/view_new/public/foot" /}
+<script type="text/javascript">
+    var url='';
+    layui.use(['laypage', 'layer','element'], function() {
+        var layer = layui.layer
+            ,element = layui.element;
+        element.on('tab(tabs)', function(data){
+            if(data.index <2){
+                url = $(this).attr('data-href');
+                load_list();
+            }
+        });
+        $(document).on('click', '.btn-disable,.btn-enable', function() {
+            $.ajax({
+                type: 'get',
+                dataType:'json',
+                url: "{:url('state')}",
+                data:{name:$(this).attr('data-name'),action:$(this).attr('data-action'),force:0},
+                success:function($r){
+                    if($r.code ==1){
+                        load_list();
+                    }
+                    layer.msg($r.msg);
+                },
+            });
+        });
+        $(document).on('click', '.btn-uninstall,.btn-install', function() {
+            $.ajax({
+                type: 'get',
+                dataType:'json',
+                url: "{:url('uninstall')}",
+                data:{name:$(this).attr('data-name'),action:$(this).attr('data-action'),force:0},
+                success:function($r){
+                    if($r.code ==1){
+                        load_list();
+                    }
+                    layer.msg($r.msg);
+                }
+            });
+        });
+    });
+    function load_list(){
+        layer.msg("{:lang('wait_submit')}",{time:500000});
+        location.reload();
+    }
+</script>
+</body>
+</html>

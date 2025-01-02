@@ -1,0 +1,35 @@
+{include file="../../../application/admin/view_new/public/head" /}
+
+<div class="page-container">
+    <form class="layui-form layui-form-pane" method="get" action="">
+        <input name="ck" value="1" type="hidden">
+        <div class="layui-tab">
+            <ul class="layui-tab-title">
+                <li class="layui-this">{:lang('admin/annex/init_data')}</li>
+            </ul>
+            <div class="layui-tab-content">
+                <div class="layui-tab-item layui-show">
+
+                    <div class="layui-input-block" >
+                        <blockquote class="layui-elem-quote layui-quote-nm">
+                            {:lang('admin/annex/init_tip')}
+                        </blockquote>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="layui-form-item center">
+            <div class="layui-input-block">
+                <button type="submit" class="layui-btn" >{:lang('admin/database/exec')}</button>
+            </div>
+        </div>
+    </form>
+</div>
+
+{include file="../../../application/admin/view_new/public/foot" /}
+<script type="text/javascript">
+
+</script>
+
+</body>
+</html>

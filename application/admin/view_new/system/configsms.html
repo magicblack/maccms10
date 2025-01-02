@@ -1,0 +1,109 @@
+{include file="../../../application/admin/view_new/public/head" /}
+
+<div class="page-container">
+    <form class="layui-form layui-form-pane" action="">
+        <input type="hidden" name="__token__" value="{$Request.token}" />
+        <div class="layui-tab">
+            <ul class="layui-tab-title">
+                <li class="layui-this" lay-id="configsms_1">{:lang('admin/system/configsms/title')}</li>
+                {volist name="$extends['ext_list']" id="vo"}
+                <li data-key="{$key}" lay-id="configsms_{$i+1}">{$vo}</li>
+                {/volist}
+            </ul>
+            <div class="layui-tab-content">
+                <div class="layui-tab-item layui-show" id="movementTable">
+
+                    <blockquote class="layui-elem-quote layui-quote-nm">
+                        {:lang('admin/system/configsms/tip')}
+                    </blockquote>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:lang('admin/system/configsms/type')}：</label>
+                        <div class="layui-input-inline">
+                            <select name="sms[type]">
+                                <option value="">{:lang('select_please')}...</option>
+                                {volist name="$extends['ext_list']" id="vo"}
+                                <option value="{$key}" {if condition="$config['sms']['type'] eq $key" }selected {/if}>{$vo}</option>
+                                {/volist}
+                            </select>
+                        </div>
+                        <div class="layui-form-mid layui-word-aux"></div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:lang('admin/system/configsms/sign')}：</label>
+                        <div class="layui-input-inline w400">
+                            <input type="text" id="sign" name="sms[sign]" placeholder=""
+                                value="{$config['sms']['sign']}" class="layui-input ">
+                        </div>
+                        <div class="layui-form-mid layui-word-aux"></div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:lang('admin/system/configsms/tpl_code_reg')}：</label>
+                        <div class="layui-input-inline w400">
+                            <input type="text" id="tpl_code_reg" name="sms[tpl_code_reg]" placeholder=""
+                                value="{$config['sms']['tpl_code_reg']}" class="layui-input ">
+                        </div>
+                        <div class="layui-form-mid layui-word-aux">{:lang('admin/system/configsms/tpl_code_tip')}</div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:lang('admin/system/configsms/tpl_code_bind')}：</label>
+                        <div class="layui-input-inline w400">
+                            <input type="text" id="tpl_code_bind" name="sms[tpl_code_bind]" placeholder=""
+                                value="{$config['sms']['tpl_code_bind']}" class="layui-input ">
+                        </div>
+                        <div class="layui-form-mid layui-word-aux">{:lang('admin/system/configsms/tpl_code_tip')}</div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:lang('admin/system/configsms/tpl_code_findpass')}：</label>
+                        <div class="layui-input-inline w400">
+                            <input type="text" id="tpl_code_findpass" name="sms[tpl_code_findpass]" placeholder=""
+                                value="{$config['sms']['tpl_code_findpass']}" class="layui-input ">
+                        </div>
+                        <div class="layui-form-mid layui-word-aux">{:lang('admin/system/configsms/tpl_code_tip')}</div>
+                    </div>
+                </div>
+                {$extends['ext_html']}
+            </div>
+        </div>
+        <div class="layui-form-item center">
+            <div class="layui-input-block">
+                <button type="submit" class="layui-btn" lay-submit=""
+                    lay-filter="formSubmit">{:lang('btn_save')}</button>
+                <button class="layui-btn layui-btn-primary" type="reset">{:lang('btn_reset')}</button>
+            </div>
+        </div>
+    </form>
+</div>
+
+{include file="../../../application/admin/view_new/public/foot" /}
+<script type="text/javascript">
+    function test_email() {
+        var host = $("#host").val();
+        var username = $("#username").val();
+        var password = $("#password").val();
+        var test = $("#test").val();
+        var port = $('#port').val();
+
+        layer.msg("{:lang('wait_submit')}", { time: 500000 });
+        $.ajax({
+            url: "{:url('system/test_email')}",
+            type: "post",
+            dataType: "json",
+            data: { host: host, username: username, password: password, port: port, test: test },
+            beforeSend: function () {
+            },
+            error: function (r) {
+                layer.msg("{:lang('admin/system/configsms/test_err')}", { time: 1800 });
+            },
+            success: function (r) {
+                layer.msg(r.msg, { time: 1800 });
+            },
+            complete: function () {
+            }
+        });
+    }
+</script>
+
+</body>
+
+</html>

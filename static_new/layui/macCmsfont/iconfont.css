@@ -1,0 +1,36 @@
+@font-face {
+  font-family: "maccms-icon"; /* Project id 4685346 */
+  src: url('iconfont.woff2?t=1730342198217') format('woff2'),
+       url('iconfont.woff?t=1730342198217') format('woff'),
+       url('iconfont.ttf?t=1730342198217') format('truetype'),
+       url('iconfont.svg?t=1730342198217#maccms-icon') format('svg');
+}
+
+.maccms-icon {
+  font-family: "maccms-icon" !important;
+  font-size: 16px;
+  font-style: normal;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.macCms-shangyiyehoutuifanhui:before {
+  content: "\e8ef";
+}
+
+.macCms-xiayiyeqianjinchakangengduo:before {
+  content: "\e8f1";
+}
+
+.macCms-a-zu1679:before {
+  content: "\e7a9";
+}
+
+.macCms-danxuankuang:before {
+  content: "\e647";
+}
+
+.macCms-yuanxingfuxuankuang:before {
+  content: "\e619";
+}
+

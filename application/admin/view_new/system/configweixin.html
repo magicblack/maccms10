@@ -1,0 +1,219 @@
+{include file="../../../application/admin/view_new/public/head" /}
+
+<div class="page-container">
+    <form class="layui-form layui-form-pane" action="">
+        <input type="hidden" name="__token__" value="{$Request.token}" />
+        <div class="layui-tab">
+            <ul class="layui-tab-title">
+                <li class="layui-this">{:lang('admin/system/configweixin/title')}</li>
+            </ul>
+            <div class="layui-tab-content">
+                <div class="layui-tab-item layui-show" id="movementTable">
+                    <blockquote class="layui-elem-quote layui-quote-nm">
+                        {:lang('admin/system/configweixin/tip')}
+                    </blockquote>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:lang('status')}：</label>
+                        <div class="layui-input-block">
+                            <input type="radio" name="weixin[status]" value="0" title="{:lang('close')}" {if
+                                condition="$config['weixin']['status'] neq 1" }checked {/if}>
+                            <input type="radio" name="weixin[status]" value="1" title="{:lang('open')}" {if
+                                condition="$config['weixin']['status'] eq 1" }checked {/if}>
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:lang('admin/system/configweixin/duijie')}：</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="weixin[duijie]"
+                                placeholder="{:lang('admin/system/configweixin/duijie_tip')}"
+                                value="{$config['weixin']['duijie']}" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:lang('admin/system/configweixin/sousuo')}：</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="weixin[sousuo]"
+                                placeholder="{:lang('admin/system/configweixin/sousuo_tip')}"
+                                value="{$config['weixin']['sousuo']}" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:lang('admin/system/configweixin/token')}：</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="weixin[token]"
+                                placeholder="{:lang('admin/system/configweixin/token_tip')}"
+                                value="{$config['weixin']['token']}" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:lang('admin/system/configweixin/guanzhu')}：</label>
+                        <div class="layui-input-block">
+                            <textarea type="text" name="weixin[guanzhu]"
+                                placeholder="{:lang('admin/system/configweixin/guanzhu_tip')}" value=""
+                                class="layui-textarea">{$config['weixin']['guanzhu']}</textarea>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:lang('admin/system/configweixin/wuziyuan')}：</label>
+                        <div class="layui-input-block">
+                            <textarea type="text" name="weixin[wuziyuan]"
+                                placeholder="{:lang('admin/system/configweixin/wuziyuan_tip')}" value=""
+                                class="layui-textarea">{$config['weixin']['wuziyuan']}</textarea>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:lang('admin/system/configweixin/wuziyuanlink')}：</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="weixin[wuziyuanlink]"
+                                placeholder="{:lang('admin/system/configweixin/wuziyuanlink_tip')}"
+                                value="{$config['weixin']['wuziyuanlink']}" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:lang('admin/system/configweixin/pagelink')}：</label>
+                        <div class="layui-input-block">
+                            <input type="radio" name="weixin[bofang]" value="0"
+                                title="{:lang('admin/system/configweixin/pagelink_detail')}" {if
+                                condition="$config['weixin']['bofang'] neq 1" }checked {/if}>
+                            <input type="radio" name="weixin[bofang]" value="1"
+                                title="{:lang('admin/system/configweixin/pagelink_play')}" {if
+                                condition="$config['weixin']['bofang'] eq 1" }checked {/if}>
+                            <input type="radio" name="weixin[bofang]" value="2"
+                                title="{:lang('admin/system/configweixin/pagelink_search')}" {if
+                                condition="$config['weixin']['bofang'] eq 2" }checked {/if}>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:lang('admin/system/configweixin/msgtype')}：</label>
+                        <div class="layui-input-inline">
+                            <input type="radio" name="weixin[msgtype]" value="0"
+                                title="{:lang('admin/system/configweixin/msgtype_pic')}" {if
+                                condition="$config['weixin']['msgtype'] neq 1" }checked {/if}>
+                            <input type="radio" name="weixin[msgtype]" value="1"
+                                title="{:lang('admin/system/configweixin/msgtype_font')}" {if
+                                condition="$config['weixin']['msgtype'] eq 1" }checked {/if}>
+                        </div>
+                        <div class="layui-form-mid layui-word-aux">{:lang('admin/system/configweixin/msgtype_tip')}
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">
+                            {:lang('admin/system/configweixin/gjc')}1：</label>
+                        <div class="layui-input-inline">
+                            <input type="text" name="weixin[gjc1]"
+                                placeholder="{:lang('admin/system/configweixin/keyword')}"
+                                value="{$config['weixin']['gjc1']}" class="layui-input">
+                        </div>
+                        <div class="layui-input-inline">
+                            <input type="text" name="weixin[gjcm1]"
+                                placeholder="{:lang('admin/system/configweixin/return_text')}"
+                                value="{$config['weixin']['gjcm1']}" class="layui-input">
+                        </div>
+                        <div class="layui-input-inline">
+                            <input type="text" name="weixin[gjci1]"
+                                placeholder="{:lang('admin/system/configweixin/return_pic')}"
+                                value="{$config['weixin']['gjci1']}" class="layui-input">
+                        </div>
+                        <div class="layui-input-inline">
+                            <input type="text" name="weixin[gjcl1]"
+                                placeholder="{:lang('admin/system/configweixin/return_link')}"
+                                value="{$config['weixin']['gjcl1']}" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">
+                            {:lang('admin/system/configweixin/gjc')}2：</label>
+                        <div class="layui-input-inline">
+                            <input type="text" name="weixin[gjc2]"
+                                placeholder="{:lang('admin/system/configweixin/keyword')}"
+                                value="{$config['weixin']['gjc2']}" class="layui-input">
+                        </div>
+                        <div class="layui-input-inline">
+                            <input type="text" name="weixin[gjcm2]"
+                                placeholder="{:lang('admin/system/configweixin/return_text')}"
+                                value="{$config['weixin']['gjcm2']}" class="layui-input">
+                        </div>
+                        <div class="layui-input-inline">
+                            <input type="text" name="weixin[gjci2]"
+                                placeholder="{:lang('admin/system/configweixin/return_pic')}"
+                                value="{$config['weixin']['gjci2']}" class="layui-input">
+                        </div>
+                        <div class="layui-input-inline">
+                            <input type="text" name="weixin[gjcl2]"
+                                placeholder="{:lang('admin/system/configweixin/return_link')}"
+                                value="{$config['weixin']['gjcl2']}" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">
+                            {:lang('admin/system/configweixin/gjc')}3：</label>
+                        <div class="layui-input-inline">
+                            <input type="text" name="weixin[gjc3]"
+                                placeholder="{:lang('admin/system/configweixin/keyword')}"
+                                value="{$config['weixin']['gjc3']}" class="layui-input">
+                        </div>
+                        <div class="layui-input-inline">
+                            <input type="text" name="weixin[gjcm3]"
+                                placeholder="{:lang('admin/system/configweixin/return_text')}"
+                                value="{$config['weixin']['gjcm3']}" class="layui-input">
+                        </div>
+                        <div class="layui-input-inline">
+                            <input type="text" name="weixin[gjci3]"
+                                placeholder="{:lang('admin/system/configweixin/return_pic')}"
+                                value="{$config['weixin']['gjci3']}" class="layui-input">
+                        </div>
+                        <div class="layui-input-inline">
+                            <input type="text" name="weixin[gjcl3]"
+                                placeholder="{:lang('admin/system/configweixin/return_link')}"
+                                value="{$config['weixin']['gjcl3']}" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">
+                            {:lang('admin/system/configweixin/gjc')}4：</label>
+                        <div class="layui-input-inline">
+                            <input type="text" name="weixin[gjc4]"
+                                placeholder="{:lang('admin/system/configweixin/keyword')}"
+                                value="{$config['weixin']['gjc4']}" class="layui-input">
+                        </div>
+                        <div class="layui-input-inline">
+                            <input type="text" name="weixin[gjcm4]"
+                                placeholder="{:lang('admin/system/configweixin/return_text')}"
+                                value="{$config['weixin']['gjcm4']}" class="layui-input">
+                        </div>
+                        <div class="layui-input-inline">
+                            <input type="text" name="weixin[gjci4]"
+                                placeholder="{:lang('admin/system/configweixin/return_pic')}"
+                                value="{$config['weixin']['gjci4']}" class="layui-input">
+                        </div>
+                        <div class="layui-input-inline">
+                            <input type="text" name="weixin[gjcl4]"
+                                placeholder="{:lang('admin/system/configweixin/return_link')}"
+                                value="{$config['weixin']['gjcl4']}" class="layui-input">
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        <div class="layui-form-item center">
+            <div class="layui-input-block">
+                <button type="submit" class="layui-btn" lay-submit=""
+                    lay-filter="formSubmit">{:lang('btn_save')}</button>
+                <button class="layui-btn layui-btn-primary" type="reset">{:lang('btn_reset')}</button>
+            </div>
+        </div>
+    </form>
+</div>
+
+{include file="../../../application/admin/view_new/public/foot" /}
+<script type="text/javascript">
+
+</script>
+
+</body>
+
+</html>

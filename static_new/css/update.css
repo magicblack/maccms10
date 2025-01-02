@@ -1,0 +1,53 @@
+.updae_from {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(180deg, #C1FAE2 0%, #FFFFFF 10%);
+  border-radius: 8px;
+  position: relative;
+}
+
+.update_content {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  padding: 30px;
+}
+
+.update_title {
+  font-family: PingFangSC, PingFang SC;
+  font-weight: 500;
+  font-size: 20px;
+  color: #1F2937;
+  line-height: 28px;
+  text-align: left;
+  font-style: normal;
+  margin-bottom: 44px;
+}
+
+.update_list {
+  margin-top: 20px;
+  font-family: PingFangSC, PingFang SC;
+  font-weight: 400;
+  font-size: 16px;
+  color: #4B5563;
+  line-height: 30px;
+  text-align: left;
+  font-style: normal;
+}
+
+.group_link {
+  margin: 5px 0;
+}
+
+.update_bg {
+  width: 100%;
+  position: absolute;
+  top: -10px;
+  left: 0;
+  z-index: 0;
+}
+
+.skin_updae_from {
+  border-radius: 8px;
+}

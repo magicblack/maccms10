@@ -1,0 +1,28 @@
+{include file="../../../application/admin/view_new/public/head" /}
+
+<div class="page-container">
+    <fieldset class="layui-elem-field layui-field-title" class="mt10">
+        <legend>{:lang('admin/index/quickmenu/name')}</legend>
+    </fieldset>
+
+    <blockquote class="layui-elem-quote layui-quote-nm">
+        {:lang('admin/index/quickmenu/tip')}
+    </blockquote>
+
+    <form class="layui-form" action="">
+        <input type="hidden" name="__token__" value="{$Request.token}" />
+        <div class="layui-form-item layui-form-text">
+            <textarea name="quickmenu" placeholder="{:lang('filed_empty')}" class="layui-textarea" style="height:600px; resize:none">{$quickmenu}</textarea>
+        </div>
+        <div class="layui-form-item center">
+            <div class="layui-input-block">
+                <button type="submit" class="layui-btn" lay-submit="" lay-filter="formSubmit">{:lang('btn_save')}</button>
+                <button class="layui-btn layui-btn-primary" type="reset">{:lang('btn_reset')}</button>
+            </div>
+        </div>
+    </form>
+</div>
+{include file="../../../application/admin/view_new/public/foot" /}
+
+</body>
+</html>

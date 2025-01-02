@@ -1,0 +1,48 @@
+<div class="layui-tab-item" id="movementTable">
+
+    <blockquote class="layui-elem-quote layui-quote-nm">
+        提示信息：<br>
+        发送邮件请开启sockets ,openssl扩展库，否则可能发送失败
+    </blockquote>
+
+    <div class="layui-form-item">
+        <label class="layui-form-label">服务器：</label>
+        <div class="layui-input-inline">
+            <input type="text" id="host" name="email[phpmailer][host]" placeholder="" value="{$config['email']['phpmailer']['host']}" class="layui-input w200"  >
+        </div>
+        <div class="layui-form-mid layui-word-aux ml-2">smtp服务器</div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">端口：</label>
+        <div class="layui-input-inline">
+            <input type="text" id="port" name="email[phpmailer][port]" placeholder="" value="{$config['email']['phpmailer']['port']}" class="layui-input w200"  >
+        </div>
+        <div class="layui-form-mid layui-word-aux ml-2">smtp端口</div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">传输协议：</label>
+        <div class="layui-input-inline w200">
+            <select name="email[phpmailer][secure]" >
+                <option value="" {if condition="$config['email']['phpmailer']['secure'] eq ''"}selected{/if}>默认</option>
+                <option value="tsl" {if condition="$config['email']['phpmailer']['secure'] eq 'tsl'"}selected{/if}>TSL</option>
+                <option value="ssl" {if condition="$config['email']['phpmailer']['secure'] eq 'ssl'"}selected{/if}>SSL</option>
+            </select>
+        </div>
+        <div class="layui-form-mid layui-word-aux">根据邮件服务器要求配置</div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">帐号：</label>
+        <div class="layui-input-inline">
+            <input type="text" id="username" name="email[phpmailer][username]" placeholder="" value="{$config['email']['phpmailer']['username']}" class="layui-input w200"  >
+        </div>
+        <div class="layui-form-mid layui-word-aux ml-2">smtp服务帐号</div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">密码：</label>
+        <div class="layui-input-inline">
+            <input type="password" id="password" name="email[phpmailer][password]" placeholder="" value="{$config['email']['phpmailer']['password']}" class="layui-input w200"  >
+        </div>
+        <div class="layui-form-mid layui-word-aux ml-2">smtp服务密码</div>
+    </div>
+
+</div>

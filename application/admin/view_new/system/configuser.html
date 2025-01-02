@@ -1,0 +1,286 @@
+{include file="../../../application/admin/view_new/public/head" /}
+
+<div class="page-container">
+
+    <div class="showpic" style="display:none;"><img class="showpic_img" width="120" height="160"
+            referrerPolicy="no-referrer"></div>
+
+    <form class="layui-form layui-form-pane" action="">
+        <input type="hidden" name="__token__" value="{$Request.token}" />
+        <div class="layui-tab">
+            <ul class="layui-tab-title">
+                <li class="layui-this">{:lang('admin/system/configuser/title')}</li>
+            </ul>
+            <div class="layui-tab-content">
+
+                <div class="layui-tab-item layui-show" id="movementTable">
+
+                    <blockquote class="layui-elem-quote layui-quote-nm">
+                        {:lang('admin/system/configuser/tip')}
+                    </blockquote>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:lang('admin/system/configuser/model')}：</label>
+                        <div class="layui-input-inline">
+                            <input type="radio" name="user[status]" value="0" title="{:lang('close')}" {if
+                                condition="$config['user']['status'] neq 1" }checked {/if}>
+                            <input type="radio" name="user[status]" value="1" title="{:lang('open')}" {if
+                                condition="$config['user']['status'] eq 1" }checked {/if}>
+                        </div>
+                        <div class="layui-form-mid layui-word-aux"></div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:lang('admin/system/configuser/reg_open')}：</label>
+                        <div class="layui-input-block">
+                            <input type="radio" name="user[reg_open]" value="0" title="{:lang('close')}" {if
+                                condition="$config['user']['reg_open'] neq 1" }checked {/if}>
+                            <input type="radio" name="user[reg_open]" value="1" title="{:lang('open')}" {if
+                                condition="$config['user']['reg_open'] eq 1" }checked {/if}>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:lang('admin/system/configuser/reg_status')}：</label>
+                        <div class="layui-input-block">
+                            <input type="radio" name="user[reg_status]" value="0" title="{:lang('reviewed_not')}" {if
+                                condition="$config['user']['reg_status'] neq 1" }checked {/if}>
+                            <input type="radio" name="user[reg_status]" value="1" title="{:lang('reviewed')}" {if
+                                condition="$config['user']['reg_status'] eq 1" }checked {/if}>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:lang('admin/system/configuser/phone_reg_verify')}：</label>
+                        <div class="layui-input-block">
+                            <input type="radio" name="user[reg_phone_sms]" value="0" title="{:lang('close')}" {if
+                                condition="$config['user']['reg_phone_sms'] neq 1" }checked {/if}>
+                            <input type="radio" name="user[reg_phone_sms]" value="1" title="{:lang('open')}" {if
+                                condition="$config['user']['reg_phone_sms'] eq 1" }checked {/if}>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:lang('admin/system/configuser/email_reg_verify')}：</label>
+                        <div class="layui-input-block">
+                            <input type="radio" name="user[reg_email_sms]" value="0" title="{:lang('close')}" {if
+                                condition="$config['user']['reg_email_sms'] neq 1" }checked {/if}>
+                            <input type="radio" name="user[reg_email_sms]" value="1" title="{:lang('open')}" {if
+                                condition="$config['user']['reg_email_sms'] eq 1" }checked {/if}>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:lang('admin/system/configuser/email_white_hosts')}：</label>
+                        <div class="layui-input-block">
+                            <textarea name="user[email_white_hosts]" class="layui-textarea"
+                                placeholder="{:lang('admin/system/configuser/email_white_hosts_tip')}">{$config['user']['email_white_hosts']}</textarea>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:lang('admin/system/configuser/email_black_hosts')}：</label>
+                        <div class="layui-input-block">
+                            <textarea name="user[email_black_hosts]" class="layui-textarea"
+                                placeholder="{:lang('admin/system/configuser/email_black_hosts_tip')}">{$config['user']['email_black_hosts']}</textarea>
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:lang('admin/system/configuser/reg_verify')}：</label>
+                        <div class="layui-input-block">
+                            <input type="radio" name="user[reg_verify]" value="0" title="{:lang('close')}" {if
+                                condition="$config['user']['reg_verify'] neq 1" }checked {/if}>
+                            <input type="radio" name="user[reg_verify]" value="1" title="{:lang('open')}" {if
+                                condition="$config['user']['reg_verify'] eq 1" }checked {/if}>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:lang('admin/system/configuser/login_verify')}：</label>
+                        <div class="layui-input-block">
+                            <input type="radio" name="user[login_verify]" value="0" title="{:lang('close')}" {if
+                                condition="$config['user']['login_verify'] neq 1" }checked {/if}>
+                            <input type="radio" name="user[login_verify]" value="1" title="{:lang('open')}" {if
+                                condition="$config['user']['login_verify'] eq 1" }checked {/if}>
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:lang('admin/system/configuser/reg_points')}：</label>
+                        <div class="layui-input-inline w150">
+                            <input type="text" name="user[reg_points]" placeholder=""
+                                value="{$config['user']['reg_points']}" class="layui-input">
+                        </div>
+                        <div class="layui-form-mid layui-word-aux">{:lang('admin/system/configuser/reg_points_tip')}
+                        </div>
+                        <label class="layui-form-label">{:lang('admin/system/configuser/reg_num')}：</label>
+                        <div class="layui-input-inline w150">
+                            <input type="text" name="user[reg_num]" placeholder="" value="{$config['user']['reg_num']}"
+                                class="layui-input">
+                        </div>
+                        <div class="layui-form-mid layui-word-aux">{:lang('admin/system/configuser/reg_num_tip')}</div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:lang('admin/system/configuser/invite_reg_points')}：</label>
+                        <div class="layui-input-inline w150">
+                            <input type="text" name="user[invite_reg_points]" placeholder=""
+                                value="{$config['user']['invite_reg_points']}" class="layui-input">
+                        </div>
+                        <div class="layui-form-mid layui-word-aux">
+                            {:lang('admin/system/configuser/invite_reg_points_tip')}</div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:lang('admin/system/configuser/invite_visit_points')}：</label>
+                        <div class="layui-input-inline w150">
+                            <input type="text" name="user[invite_visit_points]" placeholder=""
+                                value="{$config['user']['invite_visit_points']}" class="layui-input">
+                        </div>
+                        <div class="layui-form-mid layui-word-aux">
+                            {:lang('admin/system/configuser/invite_visit_points_tip')}</div>
+                        <label class="layui-form-label">{:lang('admin/system/configuser/reg_num')}：</label>
+                        <div class="layui-input-inline w150">
+                            <input type="text" name="user[invite_visit_num]" placeholder=""
+                                value="{$config['user']['invite_visit_num']}" class="layui-input">
+                        </div>
+                        <div class="layui-form-mid layui-word-aux">
+                            {:lang('admin/system/configuser/invite_visit_num_tip')}</div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:lang('admin/system/configuser/reward_status')}：</label>
+                        <div class="layui-input-block">
+                            <input type="radio" name="user[reward_status]" value="0" title="{:lang('close')}" {if
+                                condition="$config['user']['reward_status'] neq 1" }checked {/if}>
+                            <input type="radio" name="user[reward_status]" value="1" title="{:lang('open')}" {if
+                                condition="$config['user']['reward_status'] eq 1" }checked {/if}>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:lang('admin/system/configuser/reward_ratio')}：</label>
+                        <div class="layui-input-inline w150">
+                            <input type="text" name="user[reward_ratio]"
+                                placeholder="{:lang('admin/system/configuser/reward_unit')}"
+                                value="{$config['user']['reward_ratio']}" class="layui-input">
+                        </div>
+                        <label class="layui-form-label">{:lang('admin/system/configuser/reward_ratio2')}：</label>
+                        <div class="layui-input-inline w150">
+                            <input type="text" name="user[reward_ratio_2]"
+                                placeholder="{:lang('admin/system/configuser/reward_unit')}"
+                                value="{$config['user']['reward_ratio_2']}" class="layui-input">
+                        </div>
+                        <label class="layui-form-label">{:lang('admin/system/configuser/reward_ratio3')}：</label>
+                        <div class="layui-input-inline w150">
+                            <input type="text" name="user[reward_ratio_3]"
+                                placeholder="{:lang('admin/system/configuser/reward_unit')}"
+                                value="{$config['user']['reward_ratio_3']}" class="layui-input">
+                        </div>
+                        <div class="layui-form-mid layui-word-aux">{:lang('admin/system/configuser/reward_tip')}</div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:lang('admin/system/configuser/cash_status')}：</label>
+                        <div class="layui-input-block">
+                            <input type="radio" name="user[cash_status]" value="0" title="{:lang('close')}" {if
+                                condition="$config['user']['cash_status'] neq 1" }checked {/if}>
+                            <input type="radio" name="user[cash_status]" value="1" title="{:lang('open')}" {if
+                                condition="$config['user']['cash_status'] eq 1" }checked {/if}>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:lang('admin/system/configuser/cash_ratio')}：</label>
+                        <div class="layui-input-inline w150">
+                            <input type="text" name="user[cash_ratio]"
+                                placeholder="{:lang('admin/system/configuser/cash_ratio_tip')}"
+                                value="{$config['user']['cash_ratio']}" class="layui-input">
+                        </div>
+                        <div class="layui-form-mid layui-word-aux">{:lang('admin/system/configuser/cash_ratio_tip')}
+                        </div>
+                        <label class="layui-form-label">{:lang('admin/system/configuser/cash_min')}：</label>
+                        <div class="layui-input-inline w150">
+                            <input type="text" name="user[cash_min]" placeholder=""
+                                value="{$config['user']['cash_min']}" class="layui-input">
+                        </div>
+                        <div class="layui-form-mid layui-word-aux">{:lang('admin/system/configuser/cash_min_tip')}</div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:lang('admin/system/configuser/trysee')}：</label>
+                        <div class="layui-input-inline w150">
+                            <input type="text" name="user[trysee]" placeholder="" value="{$config['user']['trysee']}"
+                                class="layui-input">
+                        </div>
+                        <div class="layui-form-mid layui-word-aux">{:lang('admin/system/configuser/trysee_tip')}</div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:lang('admin/system/configuser/vod_points_type')}：</label>
+                        <div class="layui-input-block">
+                            <input type="radio" name="user[vod_points_type]" value="0"
+                                title="{:lang('admin/system/configuser/vod_points_0')}" {if
+                                condition="$config['user']['vod_points_type'] neq 1" }checked {/if}>
+                            <input type="radio" name="user[vod_points_type]" value="1"
+                                title="{:lang('admin/system/configuser/vod_points_1')}" {if
+                                condition="$config['user']['vod_points_type'] eq 1" }checked {/if}>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:lang('admin/system/configuser/art_points_type')}：</label>
+                        <div class="layui-input-block">
+                            <input type="radio" name="user[art_points_type]" value="0"
+                                title="{:lang('admin/system/configuser/art_points_0')}" {if
+                                condition="$config['user']['art_points_type'] neq 1" }checked {/if}>
+                            <input type="radio" name="user[art_points_type]" value="1"
+                                title="{:lang('admin/system/configuser/art_points_1')}" {if
+                                condition="$config['user']['art_points_type'] eq 1" }checked {/if}>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:lang('admin/system/configuser/portrait_status')}：</label>
+                        <div class="layui-input-block">
+                            <input type="radio" name="user[portrait_status]" value="0" title="{:lang('close')}" {if
+                                condition="$config['user']['portrait_status'] neq 1" }checked {/if}>
+                            <input type="radio" name="user[portrait_status]" value="1" title="{:lang('open')}" {if
+                                condition="$config['user']['portrait_status'] eq 1" }checked {/if}>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:lang('admin/system/configuser/portrait_size')}：</label>
+                        <div class="layui-input-inline w150">
+                            <input type="text" name="user[portrait_size]" placeholder=""
+                                value="{$config['user']['portrait_size']}" class="layui-input">
+                        </div>
+                        <div class="layui-form-mid layui-word-aux">{:lang('admin/system/configuser/portrait_size_tip')}
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:lang('admin/system/configuser/filter_words')}：</label>
+                        <div class="layui-input-block">
+                            <textarea name="user[filter_words]" class="layui-textarea"
+                                placeholder="{:lang('admin/system/configuser/filter_words_tip')}">{$config['user']['filter_words']}</textarea>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="layui-form-item center">
+                    <div class="layui-input-block">
+                        <button type="submit" class="layui-btn" lay-submit=""
+                            lay-filter="formSubmit">{:lang('btn_save')}</button>
+                        <button class="layui-btn layui-btn-primary" type="reset">{:lang('btn_reset')}</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+{include file="../../../application/admin/view_new/public/foot" /}
+<script type="text/javascript">
+    layui.use(['form', 'layer'], function () {
+        // 操作对象
+        var form = layui.form
+            , layer = layui.layer;
+
+
+    });
+
+
+
+</script>
+
+</body>
+
+</html>

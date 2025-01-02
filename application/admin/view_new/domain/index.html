@@ -1,0 +1,114 @@
+{include file="../../../application/admin/view_new/public/head" /}
+<div class="page-container p10">
+    <div class="showpic" style="display:none;"><img class="showpic_img" width="120" height="160" referrerPolicy="no-referrer"></div>
+    
+    <form class="layui-form layui-form-pane" method="post" action="">
+        <input type="hidden" name="vod_id" value="{$info.vod_id}">
+
+        <div class="layui-tab">
+            <ul class="layui-tab-title ">
+                <li class="layui-this">{:lang('admin/domain/title')}</a></li>
+            </ul>
+            <div class="layui-tab-content">
+
+                <div class="layui-tab-item layui-show" id="movementTable">
+
+                    <blockquote class="layui-elem-quote layui-quote-nm">
+                        {:lang('admin/domain/help_tip')}
+                        <a class="layui-btn layui-btn-primary" href="{:url('export')}" >{:lang('export')}</a>
+                        <a class="layui-btn layui-btn-primary layui-upload" data-href="{:url('import')}" >{:lang('import')}</a>
+                    </blockquote>
+
+                    <script>
+                        var arr_len = {$domain_list|count};
+                    </script>
+                    {php}
+                    $n=0;
+                    {/php}
+
+                    <div id="domain_list" class="contents">
+                        {volist name="$domain_list" id="vo"}
+                        {php}
+                        $n++;
+                        {/php}
+                        <div class="layui-form-item tr" data-i="{$key}">
+                        <label class="layui-form-label">{:lang('website')}{$n}：</label>
+                            <div class="layui-input-inline w150"><input type="text" name="domain[site_url][]" class="layui-input" placeholder="{:lang('domain')}" value="{$vo.site_url}"></div>&nbsp;
+                            <div class="layui-input-inline w150"><input type="text" name="domain[site_name][]" class="layui-input" placeholder="{:lang('site_name')}" value="{$vo.site_name}"></div>&nbsp;
+                            <div class="layui-input-inline w150"><input type="text" name="domain[site_keywords][]" class="layui-input" placeholder="{:lang('keywords')}" value="{$vo.site_keywords}"></div>&nbsp;
+                            <div class="layui-input-inline w150"><input type="text" name="domain[site_description][]" class="layui-input" placeholder="{:lang('description')}" value="{$vo.site_description}"></div>&nbsp;
+                            <div class="layui-input-inline w150"><select name="domain[template_dir][]"><option value="no">{:lang('select_template')}.</option>{volist name="templates" id="vo2"}<option value="{$vo2}" {if condition="$vo2 eq $vo.template_dir"}selected{/if}>{$vo2}</option>{/volist}</select></div>
+                            <div class="layui-input-inline w150"><input type="text" name="domain[html_dir][]" class="layui-input" placeholder="{:lang('tpl_dir')}" value="{$vo.html_dir}"></div>
+                            <div class="layui-input-inline w150"><input type="text" name="domain[ads_dir][]" class="layui-input" placeholder="{:lang('ads_dir')}" value="{$vo.ads_dir}"></div>
+                            <div> <a class="layui-badge-rim j-tr-del" data-href="{:url('del?ids='.$vo['site_url'])}" href="javascript:;" title="{:lang('del')}">{:lang('del')}</a></div>
+                        </div>
+                        {/volist}
+                    </div>
+                    <div class="layui-form-item">
+                        <label class=""><button class="layui-btn radius j-player-add" type="button">{:lang('add_group')}</button></label>
+                        <div class="layui-input-block">
+
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="layui-form-item center">
+            <div class="layui-input-block">
+
+                <button type="submit" class="layui-btn" lay-submit="" lay-filter="formSubmit" data-child="">{:lang('btn_save')}</button>
+                <button class="layui-btn layui-btn-primary" type="reset">{:lang('btn_reset')}</button>
+            </div>
+        </div>
+    </form>
+
+</div>
+{include file="../../../application/admin/view_new/public/foot" /}
+
+<script type="text/javascript">
+    var template_select='{volist name="templates" id="vo"}<option value="{$vo}">{$vo}</option>{/volist}';
+
+    layui.use(['form','layer','upload'], function () {
+        // 操作对象
+        var form = layui.form
+                , layer = layui.layer
+                , $ = layui.jquery
+            , upload = layui.upload;
+
+
+        upload.render({
+            elem: '.layui-upload'
+            ,url: "{:url('domain/import')}"
+            ,method: 'post'
+            ,exts:'txt'
+            ,before: function(input) {
+                layer.msg("{:lang('upload_ing')}", {time:3000000});
+            },done: function(res, index, upload) {
+                var obj = this.item;
+                if (res.code == 0) {
+                    layer.msg(res.msg);
+                    return false;
+                }
+                location.reload();
+            }
+        });
+
+        $('.j-player-add').on('click',function(){
+            arr_len++;
+            var tpl='<div class="layui-form-item" ><label class="layui-form-label">{:lang('website')}：'+arr_len+'</label><div class="layui-input-inline w150"><input type="text" name="domain[site_url][]" class="layui-input" placeholder="{:lang('domain')}" ></div>&nbsp;<div class="layui-input-inline w150"><input type="text" name="domain[site_name][]" class="layui-input" placeholder="{:lang('site_name')}"></div>&nbsp;<div class="layui-input-inline w150"><input type="text" name="domain[site_keywords][]" class="layui-input" placeholder="{:lang('keywords')}" ></div>&nbsp;<div class="layui-input-inline w150"><input type="text" name="domain[site_description][]" class="layui-input" placeholder="{:lang('description')}" ></div>&nbsp;<div class="layui-input-inline w150"><select name="domain[template_dir][]"><option value="no">{:lang('select_template')}.</option>'+template_select+'</select></div><div class="layui-input-inline w150"><input type="text" name="domain[html_dir][]" class="layui-input" placeholder="{:lang('tpl_dir')}" ></div><div class="layui-input-inline w150"><input type="text" name="domain[ads_dir][]" class="layui-input" placeholder="{:lang('ads_dir')}" ></div><div><a href="javascript:void(0)" class="j-editor-remove">{:lang('del')}</a>&nbsp;</div></div>';
+            $("#domain_list").append(tpl);
+
+            form.render();
+        });
+
+        if(arr_len==0) {
+            $('.j-player-add').click();
+        }
+    });
+    
+</script>
+
+</body>
+</html>

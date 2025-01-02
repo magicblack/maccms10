@@ -1,0 +1,1121 @@
+{include file="../../../application/admin/view_new/public/head" /}
+<div class="page-container main-body">
+    <div class="cont-Card">
+        <!-- Card -->
+        <div class="cont-Card-body">
+            <div class="cont-Card-info ">
+                <!-- Header -->
+                <div class="cont-Card-Header ">
+                    <!-- Icon -->
+                    <span class="cont-Card-icon">
+                        <img src="__STATIC__/images/home/home_card_ic_user@2x.png" />
+                    </span>
+                    <!-- End Icon -->
+                </div>
+                <!-- End Header -->
+
+                <h2 class="cont-Card-H2 ">
+                    {:lang('admin/index/welcome/today_visit_count')}
+                </h2>
+
+                <div class="cont-Card-textinfo ">
+                    <h3 class="cont-Card-H3 ">
+                        {$dashboard_data['today_visit_count']}
+                    </h3>
+                </div>
+            </div>
+        </div>
+        <!-- End Card -->
+
+        <!-- Card -->
+        <div class="cont-Card-body">
+            <div class="cont-Card-info">
+                <!-- Header -->
+                <div class="cont-Card-Header">
+                    <!-- Icon -->
+                    <span class="cont-Card-icon">
+                        <img src="__STATIC__/images/home/home_card_ic_purse@2x.png" />
+                    </span>
+                    <!-- End Icon -->
+
+                </div>
+                <!-- End Header -->
+
+                <h2 class="cont-Card-H2">
+                    {:lang('admin/index/welcome/today_money_get')}</h2>
+
+                <div class="cont-Card-textinfo">
+                    <h3 class="cont-Card-H3">
+                        {$dashboard_data['today_money_get']}
+                    </h3>
+
+                </div>
+            </div>
+        </div>
+        <!-- End Card -->
+
+        <!-- Card -->
+        <div class="cont-Card-body">
+            <div class="cont-Card-info">
+                <!-- Header -->
+                <div class="cont-Card-Header">
+                    <!-- Icon -->
+                    <span class="cont-Card-icon">
+                        <img src="__STATIC__/images/home/home_card_ic_time@2x.png" />
+                    </span>
+                    <!-- End Icon -->
+
+                </div>
+                <!-- End Header -->
+
+                <h2 class="cont-Card-H2">
+                    {:lang('admin/index/welcome/filed_last_login_time')}</h2>
+
+                <div class="cont-Card-textinfo">
+                    <h3 class="cont-Card-H3">
+                        {$admin.admin_last_login_time|mac_day}</h3>
+
+                </div>
+            </div>
+        </div>
+        <!-- End Card -->
+
+        <!-- Card -->
+        <div class="cont-Card-body">
+            <div class="cont-Card-info">
+                <!-- Header -->
+                <div class="cont-Card-Header">
+                    <!-- Icon -->
+                    <span class="cont-Card-icon">
+                        <img src="__STATIC__/images/home/home_card_ic_ip@2x.png" />
+                    </span>
+                    <!-- End Icon -->
+
+                    <div>
+
+                    </div>
+                </div>
+                <!-- End Header -->
+
+                <h2 class="cont-Card-H2">
+                    {:lang('admin/index/welcome/filed_last_login_ip')}</h2>
+
+                <div class="cont-Card-textinfo">
+                    <h3 class="cont-Card-H3">
+                        {$admin.admin_last_login_ip|long2ip}</h3>
+                </div>
+            </div>
+            <!-- End Col -->
+        </div>
+        <!-- End Card -->
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
+        <!-- Browsers Card -->
+        <div class="Browsers-card">
+            <!-- Header -->
+            <div class="Browsers-card-header">
+                <h2 class="ms-1 inline-block font-semibold text-[16px] text-gray-800">
+                    {:lang('admin/index/welcome/system_status')}
+                </h2>
+
+                <span
+                    class="py-1 ps-1.5 pe-2 inline-flex items-center gap-x-1 text-xs font-medium rounded-[6px] bg-white border border-gray-200 text-gray-800 ">
+                    <svg class="flex-shrink-0 size-3" width="16" height="16" viewBox="0 0 16 16" fill="currentColor"
+                        xmlns="http://www.w3.org/2000/svg">
+                        <path
+                            d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z">
+                        </path>
+                    </svg>
+                    Good
+                </span>
+            </div>
+            <!-- End Header -->
+
+            <!-- Body -->
+            <div class="flex flex-col justify-between h-full pb-5 px-5">
+                <!-- Stats -->
+                <div class="mt-5">
+                    <!-- Grid -->
+                    <div class="grid grid-cols-2 gap-3 max-md:grid-cols-1">
+                        <!-- Card -->
+                        <div class="p-3  bg-[#3C82F6]  rounded-lg flex items-center">
+                            <div class="size-[46px] flex items-center justify-center rounded-full bg-white mr-3">
+                                <svg class="flex-shrink-0 size-6 text-[#3C82F6]" fill="#3C82F6"
+                                    xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+                                    <path
+                                        d="M176 24c0-13.3-10.7-24-24-24s-24 10.7-24 24V64c-35.3 0-64 28.7-64 64H24c-13.3 0-24 10.7-24 24s10.7 24 24 24H64v56H24c-13.3 0-24 10.7-24 24s10.7 24 24 24H64v56H24c-13.3 0-24 10.7-24 24s10.7 24 24 24H64c0 35.3 28.7 64 64 64v40c0 13.3 10.7 24 24 24s24-10.7 24-24V448h56v40c0 13.3 10.7 24 24 24s24-10.7 24-24V448h56v40c0 13.3 10.7 24 24 24s24-10.7 24-24V448c35.3 0 64-28.7 64-64h40c13.3 0 24-10.7 24-24s-10.7-24-24-24H448V280h40c13.3 0 24-10.7 24-24s-10.7-24-24-24H448V176h40c13.3 0 24-10.7 24-24s-10.7-24-24-24H448c0-35.3-28.7-64-64-64V24c0-13.3-10.7-24-24-24s-24 10.7-24 24V64H280V24c0-13.3-10.7-24-24-24s-24 10.7-24 24V64H176V24zM160 128H352c17.7 0 32 14.3 32 32V352c0 17.7-14.3 32-32 32H160c-17.7 0-32-14.3-32-32V160c0-17.7 14.3-32 32-32zm192 32H160V352H352V160z">
+                                    </path>
+                                </svg>
+                            </div>
+                            <p class="text-sm text-white">Cpu</p>
+                            <p class="font-semibold text-lg text-white ml-auto mr-4" id="cpu_usage">
+                                {if condition="!empty($os_data['cpu_usage'])"}
+                                {$os_data['cpu_usage']}%
+                                {/if}
+                            </p>
+                        </div>
+
+                        <!-- Card -->
+                        <div class="p-3  bg-[#40CC92]  rounded-lg flex items-center">
+                            <div class="size-[46px] flex items-center justify-center rounded-full bg-white mr-3">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="#40CC92" viewBox="0 0 576 512"
+                                    class="flex-shrink-0 size-6 ">
+                                    <path
+                                        d="M64 64C28.7 64 0 92.7 0 128v7.4c0 6.8 4.4 12.6 10.1 16.3C23.3 160.3 32 175.1 32 192s-8.7 31.7-21.9 40.3C4.4 236 0 241.8 0 248.6V320H576V248.6c0-6.8-4.4-12.6-10.1-16.3C552.7 223.7 544 208.9 544 192s8.7-31.7 21.9-40.3c5.7-3.7 10.1-9.5 10.1-16.3V128c0-35.3-28.7-64-64-64H64zM576 352H0v64c0 17.7 14.3 32 32 32H80V416c0-8.8 7.2-16 16-16s16 7.2 16 16v32h96V416c0-8.8 7.2-16 16-16s16 7.2 16 16v32h96V416c0-8.8 7.2-16 16-16s16 7.2 16 16v32h96V416c0-8.8 7.2-16 16-16s16 7.2 16 16v32h48c17.7 0 32-14.3 32-32V352zM192 160v64c0 17.7-14.3 32-32 32s-32-14.3-32-32V160c0-17.7 14.3-32 32-32s32 14.3 32 32zm128 0v64c0 17.7-14.3 32-32 32s-32-14.3-32-32V160c0-17.7 14.3-32 32-32s32 14.3 32 32zm128 0v64c0 17.7-14.3 32-32 32s-32-14.3-32-32V160c0-17.7 14.3-32 32-32s32 14.3 32 32z">
+                                    </path>
+                                </svg>
+                            </div>
+                            <p class="text-sm text-white">Ram</p>
+                            <p class="font-semibold text-lg text-white ml-auto mr-4" id="mem_usage">
+                                {if condition="!empty($os_data['mem_usage'])"}
+                                {$os_data['mem_usage']}%
+                                {/if}
+                            </p>
+                        </div>
+
+                        <!-- Card -->
+
+                        <!-- End Card -->
+                    </div>
+                    <!-- End Grid -->
+                </div>
+                <!-- End Stats -->
+
+                <div class="mt-5">
+                    <ul class="space-y-2">
+                        <li class="flex justify-between items-center">
+                            <span
+                                class="text-xs uppercase text-[#4B5563]">{:lang('admin/index/welcome/mem_detail')}</span>
+                            <span class="text-sm text-gray-800 " id="mem_detail">{$os_data['mem_used']} MB/
+                                {$os_data['mem_total']} MB</span>
+                        </li>
+                        <li class="flex justify-between items-center">
+                            <span class="text-xs uppercase text-[#4B5563]">
+                                {:lang('admin/index/welcome/filed_os')}</span>
+                            <span class="text-sm text-gray-800 ">
+                                <?php echo PHP_OS ?>
+                                (
+                                <?php echo $_SERVER['SERVER_SOFTWARE'] ?>)
+                            </span>
+                        </li>
+                        <li class="flex justify-between items-center">
+                            <span
+                                class="text-xs uppercase text-[#4B5563]">{:lang('admin/index/welcome/filed_host')}</span>
+                            <span class="text-sm text-gray-800 ">
+                                <?php echo $_SERVER['HTTP_HOST'] ?>
+                            </span>
+                        </li>
+                        <li class="flex justify-between items-center">
+                            <span
+                                class="text-xs uppercase text-[#4B5563]">{:lang('admin/index/welcome/filed_max_upload')}</span>
+                            <span class="text-sm text-gray-800 ">
+                                <?php echo get_cfg_var("file_uploads") ? get_cfg_var("upload_max_filesize") : $error;?>
+                            </span>
+                        </li>
+                        <li class="flex justify-between items-center">
+                            <span
+                                class="text-xs uppercase text-[#4B5563]">{:lang('admin/index/welcome/filed_date')}</span>
+                            <span class="text-sm text-gray-800 ">
+                                <?php echo date('Y-m-d'); ?>
+                            </span>
+                        </li>
+                        <li class="flex justify-between items-center">
+                            <span
+                                class="text-xs uppercase text-[#4B5563]">{:lang('admin/index/welcome/filed_php_ver')}</span>
+                            <span class="text-sm text-gray-800 ">
+                                <?php echo PHP_VERSION ?>
+                            </span>
+                        </li>
+                        <li class="flex justify-between items-center">
+                            <span
+                                class="text-xs uppercase text-[#4B5563]">{:lang('admin/index/welcome/filed_thinkphp_ver')}</span>
+                            <span class="text-sm text-gray-800 ">
+                                <?php echo THINK_VERSION; ?>
+                            </span>
+                        </li>
+                        </li>
+                        <li class="flex justify-between items-center">
+                            <span
+                                class="text-xs uppercase text-[#4B5563]">{:lang('admin/index/welcome/filed_ver')}</span>
+                            <span class="text-sm text-gray-800 ">{$version.code}</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <!-- End Body -->
+        </div>
+        <!-- End Browsers Card -->
+
+        <!-- Import Data Card -->
+        <div class="Browsers-card">
+            <!-- Header -->
+            <div class="Browsers-card-header">
+                <div>
+                    <h2 class="inline-block font-semibold text-gray-800 ">
+                        {:lang('admin/index/welcome/disk_space_usage')}</h2>
+                    <div class="hs-tooltip hover:z-10 inline-block">
+                        <svg class="flex-shrink-0 size-4 " xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                            viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                            stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
+                            <path d="M12 17h.01"></path>
+                        </svg>
+                        <span
+                            class="hs-tooltip-content hs-tooltip-shown:opacity-100 hs-tooltip-shown:visible opacity-0 transition-opacity invisible z-10 py-1 px-2 bg-gray-900 text-xs font-medium text-white rounded-lg shadow-sm  hidden"
+                            role="tooltip"
+                            style="position: fixed; inset: auto auto 0px 0px; margin: 0px; transform: translate(1110px, -600px);"
+                            data-popper-placement="top">
+                            {:lang('admin/index/welcome/disk_detail_tips')}
+                        </span>
+                    </div>
+                </div>
+            </div>
+            <!-- End Header -->
+
+            <!-- Body -->
+            <div class="h-full p-5 pt-0">
+                <div class="h-full flex flex-col justify-between space-y-4">
+                    <div class="space-y-4">
+                        <ul id="disk_list">
+                            {volist name="os_data['disk_datas']" id="disk_data" key="disk_count" }
+                            <li
+                                class="flex items-center gap-3 md:gap-10 justify-between gap-x-4 py-4 border-b border-solid border-[#E6E7EB]">
+                                <img class="size-[32px]" src="__STATIC__/images/home/home_ic_disk@2x.png" alt=""
+                                    srcset="" />
+                                <div class="grow flex flex-col gap-2">
+                                    <div class="flex items-center ">
+                                        <span class="flex-shrink-0 size-2.5 inline-block
+                                            {switch $disk_count%7 }
+                                                {case 1 }bg-blue-600{/case}
+                                                {case 2}bg-teal-500{/case}
+                                                {case 3}bg-orange-600{/case}
+                                                {case 4}bg-yellow-300{/case}
+                                                {case 5}bg-green-500{/case}
+                                                {case 6}bg-violet-500{/case}
+                                            {/switch}
+                                            rounded-sm me-2.5">
+                                        </span>
+                                        <span class="text-xs text-gray-800 ">
+                                            {$key}
+                                            {if condition="$os_data['os_name']=='WINDOWS'"}:/{/if}
+                                        </span>
+                                    </div>
+                                    <div class="flex items-center">
+                                        <div class="flex w-full h-2 bg-stone-200 rounded-full overflow-hidden  text-xs text-center hs-tooltip hover:z-10"
+                                            role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100">
+                                            <div class="flex flex-col justify-center overflow-hidden bg-green-600 text-xs text-white text-center rounded-full whitespace-nowrap"
+                                                style="width:{$disk_data[2]}%" id="chart_{$disk_count}"></div>
+                                            <span id="disk_data_{$disk_count}"
+                                                class="hs-tooltip-content hs-tooltip-shown:opacity-100 hs-tooltip-shown:visible opacity-0 transition-opacity invisible z-10 py-1 px-2 bg-gray-900 text-xs font-medium text-white rounded-lg shadow-sm  hidden"
+                                                role="tooltip"
+                                                style="position: fixed; inset: auto auto 0px 0px; margin: 0px; transform: translate(1110px, -600px);"
+                                                data-popper-placement="top">
+                                                {$disk_data[1]-$disk_data[0]} GB/{$disk_data[1]} GB
+                                            </span>
+                                        </div>
+
+                                    </div>
+                                </div>
+                                <span id="disk_usage_{$disk_count}" class="text-[24px] font-semibold text-[#1F2937]">
+                                    {$disk_data[2]}%
+                                </span>
+                            </li>
+                            {/volist}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <!-- End Body -->
+
+            <!-- End Footer -->
+        </div>
+        <!-- End Import Data Card -->
+
+        <!-- Sales Stats Card -->
+        <div class="Browsers-card">
+            <!-- Header -->
+            <div class="Browsers-card-header">
+                <h2 class="inline-block font-semibold text-gray-800 ">
+                    {:lang('admin/index/welcome/seven_day_reg_data')}
+                </h2>
+            </div>
+            <!-- End Header -->
+
+            <!-- Body -->
+            <div class="h-full pb-5 px-5 space-y-8">
+                <h4 class="text-4xl font-medium text-gray-800 Stats-Card-h4">
+                    <img class="w-[228px] h-[126px] absolute right-0 top-0"
+                        src="__STATIC__/images/home/home_login_bg@2x.png" alt="" srcset="" />
+                    {$dashboard_data['seven_day_reg_total_count']}
+                    {if condition="$dashboard_data['raise_reg_user_today']>0"}
+                    <svg class="inline-block align-middle size-4 text-teal-500" xmlns="http://www.w3.org/2000/svg"
+                        width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="22 7 13.5 15.5 8.5 10.5 2 17"></polyline>
+                        <polyline points="16 7 22 7 22 13"></polyline>
+                    </svg>
+                    <p class="text-sm text-green-500">
+                        {else /}
+                        <svg class="inline-block align-top mt-1 size-5 text-red-500" xmlns="http://www.w3.org/2000/svg"
+                            width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="22 17 13.5 8.5 8.5 13.5 2 7"></polyline>
+                            <polyline points="16 17 22 17 22 11"></polyline>
+                        </svg>
+                    <p class="text-sm text-red-500">
+                        {/if}
+                        <span class="text-[#4B5563]">用户注册量</span>
+                        {$dashboard_data['raise_reg_user_today']}%
+                    </p>
+                </h4>
+                <!-- List Group -->
+                <ul class="space-y-3">
+                    <!-- List Item -->
+                    <li
+                        class="flex flex-wrap py-2 justify-between items-center gap-x-2 border-b border-solid border-[#E6E7EB]">
+                        <div>
+                            <div class="flex items-center gap-x-2">
+                                <div class="inline-block size-2.5 bg-blue-600 rounded-sm"></div>
+                                <h2 class="inline-block align-middle text-gray-500 ">
+                                    {:lang('admin/index/welcome/reg_users_count')}</h2>
+                            </div>
+                        </div>
+                        <div>
+                            <span class="text-gray-800 ">
+                                {$dashboard_data['user_count']}
+                            </span>
+                        </div>
+                    </li>
+                    <!-- End List Item -->
+
+                    <!-- List Item -->
+                    <li
+                        class="flex flex-wrap py-2 justify-between items-center gap-x-2 border-b border-solid border-[#E6E7EB]">
+                        <div>
+                            <div class="flex items-center gap-x-2">
+                                <div class="inline-block size-2.5 bg-purple-600 rounded-sm"></div>
+                                <h2 class="inline-block align-middle text-gray-500 ">
+                                    {:lang('admin/index/welcome/active_reg_users_count')}</h2>
+                            </div>
+                        </div>
+                        <div>
+                            <span class="text-gray-800 ">
+                                {$dashboard_data['user_active_count']}
+                            </span>
+                        </div>
+                    </li>
+                    <!-- End List Item -->
+
+                    <!-- List Item -->
+
+                    <!-- End List Item -->
+                </ul>
+                <!-- End List Group -->
+            </div>
+            <!-- End Body -->
+
+            <!-- Footer -->
+            <div class="p-5 pt-0 space-y-8">
+                <div class="w-full">
+                    <!-- Apex Line Chart -->
+                    <div id="hs-total-sales-lines-chart" style="min-height: 100px;"></div>
+                </div>
+            </div>
+            <!-- End Footer -->
+        </div>
+        <!-- End Sales Stats Card -->
+    </div>
+
+    <div class="flex flex-col bg-white border border-gray-200 shadow-sm rounded-xl">
+        <!-- Header -->
+        <div class="Browsers-card-header">
+            <!-- Select -->
+            <div class="relative inline-block">
+                <div class="hs-select relative">
+                    <h2 class="inline-block font-semibold text-gray-800 ">
+                        {:lang('admin/index/welcome/seven_day_visit_data')}
+                    </h2>
+                </div>
+            </div>
+            <!-- End Select -->
+            <div class="md:justify-end">
+                <div class="w-48">
+                    <input type="text" class="layui-input" id="date-range" placeholder="请选择日期范围">
+                </div>
+            </div>
+            <!-- End Col -->
+        </div>
+        <!-- End Header -->
+        <div class="flex items-center w-full p-5 h-[300px] max-md:flex-col max-md:h-[500px]">
+            <div class="visits ">
+                <img class="w-full h-[82px] absolute left-0 bottom-0 max-md:w-fit max-md:left-auto max-md:right-0"
+                    src="__STATIC__/images/home/home_interview_bg@2x.png" alt="" srcset="" />
+                <h4 class="text-2xl flex gap-2 font-semibold text-gray-800 ">
+                    <div id="visit_sum">{$dashboard_data['seven_day_visit_total_count']}</div>
+                    {if condition="$dashboard_data['raise_visit_user_today']<=0"} <svg
+                        class="inline-block align-top mt-1 size-5 text-red-500" xmlns="http://www.w3.org/2000/svg"
+                        width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="22 17 13.5 8.5 8.5 13.5 2 7"></polyline>
+                        <polyline points="16 17 22 17 22 11"></polyline>
+                        </svg>
+                </h4>
+                <p class="text-sm text-red-500">
+                    {else /}
+                    <svg class="inline-block align-middle size-4 text-teal-500" xmlns="http://www.w3.org/2000/svg"
+                        width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="22 7 13.5 15.5 8.5 10.5 2 17"></polyline>
+                        <polyline points="16 7 22 7 22 13"></polyline>
+                    </svg>
+                    </h4>
+                <p class="text-sm text-green-500">
+                    {/if}
+                    {$dashboard_data['raise_visit_user_today']}%
+                </p>
+            </div>
+            <div class="flex flex-col flex-1 h-full">
+                <!-- Legend Indicator -->
+                <div class="flex px-5 justify-center sm:justify-end items-center gap-x-4 mt-5 sm:mt-0 sm:mb-6">
+                    <div class="inline-flex items-center">
+                        <span class="size-2.5 inline-block bg-blue-600 rounded-sm me-2"></span>
+                        <span class="text-[13px] text-gray-600 ">日訪問量</span>
+                    </div>
+                </div>
+                <!-- End Legend Indicator -->
+                <!-- Apex Line Chart -->
+                <div id="hs-visit-line-chart" class="h-full"></div>
+            </div>
+        </div>
+
+    </div>
+    <!-- End Double Area Chart in Card -->
+    <div class="pb-5 flex flex-col bg-white border border-stone-200 shadow-sm rounded-xl">
+        <!-- Header -->
+        <div class="Browsers-card-header">
+            <h2 class="inline-block font-semibold text-stone-800 ">
+                近七日爬虫次数
+            </h2>
+            <!-- Select -->
+            <div class="ml-auto relative inline-block layui-form layui-input-inline w-[100px]">
+                <select id="hs-pro-select-currency" lay-filter="spider_type">
+                    <option value="Google" selected>Google</option>
+                    <option value="Baidu">Baidu</option>
+                    <option value="Sogou">Sogou</option>
+                    <option value="SOSO">SOSO</option>
+                    <option value="Yahoo">Yahoo</option>
+                    <option value="MSN">MSN</option>
+                    <option value="msnbot">msnbot</option>
+                    <option value="Sohu">Sohu</option>
+                    <option value="Yodao">Yodao</option>
+                    <option value="Twiceler">Twiceler</option>
+                    <option value="Alexa">Alexa</option>
+                    <option value="360">360</option>
+                    <option value="so.com">so.com</option>
+                </select>
+            </div>
+            <!-- End Select -->
+        </div>
+        <!-- End Header -->
+
+        <!-- Apex Line Chart -->
+        <div id="hs-all-time-earnings-line-charts" class="min-h-[300px] mt-5"></div>
+    </div>
+
+
+    <!--    <blockquote class="layui-elem-quote layui-quote-nm mt10">-->
+    <!--        <p class="f-20 text-success">{:lang('admin/index/welcome/tip_warn')}</p>-->
+    <!--        <p>{:lang('admin/index/welcome/filed_login_num')}：{$admin.admin_login_num}  {:lang('admin/index/welcome/filed_last_login_ip')}：{$admin.admin_last_login_ip|long2ip}  {:lang('admin/index/welcome/filed_last_login_time')}：{$admin.admin_last_login_time|mac_day}</p>-->
+    <!--    </blockquote>-->
+
+    <!--    <table class="layui-table" >-->
+    <!--        <tbody>-->
+    <!--        <tr>-->
+    <!--            <td width="110">{:lang('admin/index/welcome/filed_os')}</td>-->
+    <!--            <td><?php echo PHP_OS ?> (<?php echo $_SERVER['SERVER_SOFTWARE'] ?>)</td>-->
+    <!--        </tr>-->
+    <!--        <tr>-->
+    <!--            <td>{:lang('admin/index/welcome/filed_host')}</td>-->
+    <!--            <td><?php echo $_SERVER['HTTP_HOST'] ?></td>-->
+    <!--        </tr>-->
+    <!--        <tr>-->
+    <!--            <td>{:lang('admin/index/welcome/filed_max_upload')}</td>-->
+    <!--            <td><?php echo get_cfg_var("file_uploads") ? get_cfg_var("upload_max_filesize") : $error;?></td>-->
+    <!--        </tr>-->
+    <!--        <tr>-->
+    <!--            <td>{:lang('admin/index/welcome/filed_date')}</td>-->
+    <!--            <td><?php echo date('Y-m-d'); ?></td>-->
+    <!--        </tr>-->
+    <!--         <tr>-->
+    <!--            <td>{:lang('admin/index/welcome/filed_php_ver')}</td>-->
+    <!--            <td><?php echo PHP_VERSION ?></td>-->
+    <!--        </tr>-->
+    <!--        <tr>-->
+    <!--            <td>{:lang('admin/index/welcome/filed_thinkphp_ver')}</td>-->
+    <!--            <td><?php echo THINK_VERSION; ?></td>-->
+    <!--        </tr>-->
+    <!--        <tr>-->
+    <!--            <td>{:lang('admin/index/welcome/filed_ver')}</td>-->
+    <!--            <td><span class="layui-badge">{$version.code}</span></td>-->
+    <!--        </tr>-->
+    <!--        </tbody>-->
+    <!--    </table>-->
+    {if condition="$update_sql"}
+    <table class="tbinfo pleft layui-table">
+        <thead>
+            <th colspan="2">{:lang('admin/index/welcome/tip_update_db')}</th>
+        </thead>
+        <tr>
+            <td colspan="2">
+                <font class="tif s20">{:lang('admin/index/welcome/tip_update_db_txt')}</font><a class="j-iframe"
+                    title="{:lang('admin/index/welcome/tip_update_go')}" data-href="{:url('update/step2')}">
+                    <font class="tit s20">{:lang('admin/index/welcome/tip_update_go')}</font>
+                </a>
+            </td>
+        </tr>
+    </table>
+    {/if}
+</div>
+<link id="apexcharts-css" rel="stylesheet" href="__STATIC__/css/apexcharts.css">
+<script src="__STATIC__/js/apexcharts.min.js"></script>
+<script src="__STATIC__/js/hs-apexcharts-helpers.js"></script>
+<script>
+    (function () {
+        buildChart(
+            "#hs-total-sales-lines-chart",
+            (mode) => ({
+                series: [
+                    {
+                        name: "{:lang('admin/index/welcome/reg_users_count')}",
+                        data: <?= json_encode($dashboard_data['seven_day_reg_count']) ?>
+                    }
+                ],
+                chart: {
+                    height: 100,
+                    type: "line",
+                    sparkline: {
+                        enabled: true
+                    }
+                },
+                stroke: {
+                    curve: "straight",
+                    width: 2
+                },
+                xaxis: {
+                    type: "category",
+                    categories: <?= json_encode($dashboard_data['seven_day_reg_day']) ?>
+        },
+                crosshairs: {
+                    show: false
+                },
+                markers: {
+                    hover: {
+                        size: 0
+                    }
+                },
+                tooltip: {
+                    custom: function (props) {
+                        const { categories } = props.ctx.opts.xaxis;
+                        const { dataPointIndex } = props;
+                        const title = categories[dataPointIndex];
+
+                        return buildTooltip(props, {
+                            title: title,
+                            mode,
+                            hasTextLabel: true,
+                            wrapperExtClasses: "kfx52",
+                            labelDivider: ":",
+                            labelExtClasses: "qupk7"
+                        });
+                    }
+                }
+            }),
+            {
+                colors: ["#9333ea"],
+                grid: {
+                    borderColor: "#e5e7eb"
+                },
+                fill: {
+                    type: "gradient",
+                    gradient: {
+                        gradientToColors: ["#fff", "#fff", "#fff"]
+                    }
+                }
+            },
+            {
+                colors: ["#3b82f6", "#a855f7", "#737373"],
+                grid: {
+                    borderColor: "#404040"
+                },
+                fill: {
+                    type: "gradient",
+                    gradient: {
+                        gradientToColors: ["#262626", "#262626", "#262626"]
+                    }
+                }
+            }
+        );
+    })();
+
+    var options = {
+        series: [{
+            name: "Visitors",
+            data: <?= json_encode($dashboard_data['seven_day_visit_count']) ?>
+        }],
+        colors: ['#2563eb', '#9333ea'],
+        fill: {
+            gradient: {
+                stops: [0, 90, 100]
+            }
+        },
+        chart: {
+            height: $('#hs-visit-line-chart').height(),
+            type: 'area',
+            toolbar: {
+                show: false
+            },
+            zoom: {
+                enabled: false
+            }
+        },
+        dataLabels: {
+            enabled: false
+        },
+        stroke: {
+            curve: 'straight',
+            width: 2
+        },
+        fill: {
+            type: 'gradient',
+            gradient: {
+                type: 'vertical',
+                shadeIntensity: 1,
+                opacityFrom: 0.2,
+                opacityTo: 0.8
+            }
+        },
+        grid: {
+            row: {
+                colors: ['#f3f3f3', 'transparent'],
+                opacity: 0.2
+            }
+        },
+        xaxis: {
+            type: 'category',
+            tickPlacement: 'on',
+            categories: <?= json_encode($dashboard_data['seven_day_visit_day']) ?>,
+            axisBorder: {
+                show: false
+            },
+            axisTicks: {
+                show: false
+            },
+            crosshairs: {
+                stroke: {
+                    dashArray: 0
+                },
+                dropShadow: {
+                    show: false
+                }
+            },
+            tooltip: {
+                x: {
+                    format: 'MMMM yyyy'
+                },
+                y: {
+                    formatter: (value) => `$${value >= 1000 ? `${value / 1000}k` : value}`
+                },
+                custom: function (props) {
+                    return buildTooltipCompareTwo(props, {
+                        title: 'Revenue',
+                        mode,
+                        hasTextLabel: true,
+                        wrapperExtClasses: 'min-w-48'
+                    });
+                }
+            },
+            labels: {
+                style: {
+                    colors: '#9ca3af',
+                    fontSize: '13px',
+                    fontFamily: 'Inter, ui-sans-serif',
+                    fontWeight: 400
+                }
+            }
+        },
+        yaxis: {
+            labels: {
+                align: 'left',
+                minWidth: 0,
+                maxWidth: 140,
+                style: {
+                    colors: '#9ca3af',
+                    fontSize: '12px',
+                    fontFamily: 'Inter, ui-sans-serif',
+                    fontWeight: 400
+                },
+                formatter: (value) => value >= 1000 ? `${value / 1000}k` : value
+            }
+        },
+        responsive: [{
+            breakpoint: 568,
+            options: {
+                chart: {
+                    height: 300
+                },
+                labels: {
+                    style: {
+                        colors: '#9ca3af',
+                        fontSize: '11px',
+                        fontFamily: 'Inter, ui-sans-serif',
+                        fontWeight: 400
+                    },
+                    offsetX: -2,
+                    formatter: (title) => title.slice(0, 3)
+                },
+                yaxis: {
+                    labels: {
+                        align: 'left',
+                        minWidth: 0,
+                        maxWidth: 140,
+                        style: {
+                            colors: '#9ca3af',
+                            fontSize: '11px',
+                            fontFamily: 'Inter, ui-sans-serif',
+                            fontWeight: 400
+                        },
+                        formatter: (value) => value >= 1000 ? `${value / 1000}k` : value
+                    }
+                }
+            }
+        }]
+    };
+
+    var chart = new ApexCharts(document.querySelector("#hs-visit-line-chart"), options);
+    chart.render();
+
+    layui.use(['laydate'], function () {
+        var laydate = layui.laydate;
+
+        //日期范围
+        laydate.render({
+            elem: '#date-range'
+            , type: 'date'
+            , range: true
+            , max: 0  //最大日期为今天
+            , value: getLastSevenDays() //默认最近7天
+            , done: function (value, date, endDate) {
+                var dates = value.split(' - ');
+                $.ajax({
+                    url: ADMIN_PATH + '/admin/index/rangeDateDailyVisit.html',
+                    data: {
+                        startDate: dates[0],
+                        endDate: dates[1]
+                    },
+                    method: "POST",
+                    success: function (data) {
+                        chart.updateOptions({
+                            xaxis: {
+                                categories: JSON.parse(data).days
+                            },
+                            series: [{
+                                name: "Visitors",
+                                data: JSON.parse(data).count
+                            }],
+                        });
+                        $('#visit_sum').text(JSON.parse(data).sum);
+                    },
+                    error: function (xhr, status, error) {
+                        layer.msg('获取数据失败');
+                    }
+                });
+            }
+        });
+
+        //获取最近7天的日期范围
+        function getLastSevenDays() {
+            var end = new Date();
+            var start = new Date();
+            start.setTime(start.getTime() - 3600 * 1000 * 24 * 6);
+            return formatDate(start) + ' - ' + formatDate(end);
+        }
+
+        //格式化日期
+        function formatDate(date) {
+            var year = date.getFullYear();
+            var month = date.getMonth() + 1;
+            var day = date.getDate();
+            month = month < 10 ? '0' + month : month;
+            day = day < 10 ? '0' + day : day;
+            return year + '-' + month + '-' + day;
+        }
+    });
+
+    var chart_spider = buildChart('#hs-all-time-earnings-line-charts', (mode) => ({
+        chart: {
+            height: 400,
+            type: 'area',
+            toolbar: {
+                show: false
+            },
+            zoom: {
+                enabled: false
+            }
+        },
+        series: [
+            {
+                name: 'Referrals',
+                data: <?= json_encode($spider_data['Google']['values']) ?>
+            }
+        ],
+        legend: {
+            show: false
+        },
+        dataLabels: {
+            enabled: false
+        },
+        stroke: {
+            curve: 'smooth',
+            width: 2
+        },
+        fill: {
+            type: 'gradient',
+            gradient: {
+                type: 'vertical',
+                shadeIntensity: 1,
+                opacityFrom: 0.2,
+                opacityTo: 0.8
+            }
+        },
+        xaxis: {
+            type: 'category',
+            tickPlacement: 'on',
+            categories: <?= json_encode($spider_data['Google']['key']) ?>,
+            axisBorder: {
+                show: false
+            },
+            axisTicks: {
+                show: false
+            },
+            crosshairs: {
+                stroke: {
+                    dashArray: 0
+                },
+                dropShadow: {
+                    show: false
+                }
+            },
+            tooltip: {
+                enabled: false
+            },
+            labels: {
+                style: {
+                    colors: '#a8a29e',
+                    fontSize: '13px',
+                    fontFamily: 'Inter, ui-sans-serif',
+                    fontWeight: 400
+                },
+                formatter: (title) => title ? title.slice(0, 3) : title
+            }
+        },
+        yaxis: {
+            labels: {
+                align: 'left',
+                minWidth: 0,
+                maxWidth: 140,
+                style: {
+                    colors: '#a8a29e',
+                    fontSize: '12px',
+                    fontFamily: 'Inter, ui-sans-serif',
+                    fontWeight: 400
+                },
+                formatter: (value) => value >= 1000 ? `${value / 1000}k` : value
+            }
+        },
+        tooltip: {
+            y: {
+                formatter: (value) => `$${value >= 1000 ? `${value / 1000}k` : value}`
+            },
+            custom: function (props) {
+                const { categories } = props.ctx.opts.xaxis;
+                const { dataPointIndex } = props;
+                const title = categories[dataPointIndex];
+                const newTitle = `${title}`;
+
+                return buildTooltip(props, {
+                    title: newTitle,
+                    mode,
+                    valuePrefix: '',
+                    hasCategory: false,
+                    hasTextLabel: true,
+                    wrapperExtClasses: 'min-w-[130px]',
+                    labelDivider: ':',
+                    labelExtClasses: 'ms-2'
+                });
+            }
+        },
+        responsive: [{
+            breakpoint: 568,
+            options: {
+                chart: {
+                    height: 200
+                },
+                labels: {
+                    style: {
+                        colors: '#a8a29e',
+                        fontSize: '11px',
+                        fontFamily: 'Inter, ui-sans-serif',
+                        fontWeight: 400
+                    },
+                    offsetX: -2,
+                    formatter: (title) => title.slice(0, 3)
+                },
+                yaxis: {
+                    labels: {
+                        align: 'left',
+                        minWidth: 0,
+                        maxWidth: 140,
+                        style: {
+                            colors: '#a8a29e',
+                            fontSize: '11px',
+                            fontFamily: 'Inter, ui-sans-serif',
+                            fontWeight: 400
+                        },
+                        formatter: (value) => value >= 1000 ? `${value / 1000}k` : value
+                    }
+                }
+            }
+        }]
+    }),
+        {
+            colors: ['#16a34a'],
+            fill: {
+                gradient: {
+                    stops: [0, 90, 100]
+                }
+            },
+            grid: {
+                strokeDashArray: 2,
+                borderColor: '#e5e5e5'
+            },
+            xaxis: {
+                labels: {
+                    style: {
+                        colors: '#a8a29e'
+                    }
+                }
+            },
+            yaxis: {
+                labels: {
+                    style: {
+                        colors: '#a8a29e'
+                    }
+                }
+            }
+        },
+        {
+            colors: ['#22c55e'],
+            fill: {
+                gradient: {
+                    stops: [100, 90, 0]
+                }
+            },
+            grid: {
+                strokeDashArray: 2,
+                borderColor: '#44403c'
+            },
+            xaxis: {
+                labels: {
+                    style: {
+                        colors: '#a3a3a3'
+                    }
+                }
+            },
+            yaxis: {
+                labels: {
+                    style: {
+                        colors: '#a3a3a3'
+                    }
+                }
+            }
+        }
+    );
+
+    function showSpiderData() {
+        console.log("showSpiderData -> showSpiderData")
+        $.ajax({
+            url: ADMIN_PATH + '/admin/index/botlist.html',
+            data: {
+                category: $('#hs-pro-select-currency').val()
+            },
+            method: "POST",
+            success: function (data) {
+                console.log("showSpiderData -> data", data.key)
+                chart_spider.updateOptions({
+                    xaxis: {
+                        categories: data.key ? data.key : data.keys
+                    },
+                    series: [{
+                        name: "Spider_Visit",
+                        data: data.values
+                    }]
+                });
+            },
+            error: function (xhr, status, error) {
+                // Handle error
+            }
+        });
+    }
+
+    function update_system_status() {
+        $.ajax({
+            url: ADMIN_PATH + '/admin/index/get_system_status.html',
+            method: "GET",
+            success: function (data) {
+                if (data.cpu_usage != 'undefine') {
+                    $('#cpu_usage').text(data.cpu_usage + '%');
+                }
+                if (data.mem_usage != 'undefine') {
+                    $('#mem_usage').text(data.mem_usage + '%');
+                }
+                var i = 1;
+                for (const [key, value] of Object.entries(data.disk_datas)) {
+                    $('#mem_detail').text(roundTo(data.mem_used, 2) + ' MB/' + roundTo(data.mem_total, 2) + ' MB');
+                    $('#chart_' + i).css('width', data.disk_datas[key][2] + '%');
+                    $('#disk_usage_' + i).text(data.disk_datas[key][2] + '%');
+                    $('#disk_data_' + i).text(roundTo(data.disk_datas[key][1] - data.disk_datas[key][0], 2) + ' GB/' + roundTo(data.disk_datas[key][1], 2) + ' GB');
+                    i++;
+                }
+            },
+            error: function (xhr, status, error) {
+                // Handle error
+            }
+        });
+    }
+
+    roundTo = function (num, decimal) {
+        return Math.round((num + Number.EPSILON) * Math.pow(10, decimal)) / Math.pow(10, decimal);
+    }
+
+    window.onload = () => {
+        update_system_status()
+        showSpiderData()
+        // $('.fade').fadeIn("slow");
+        // $('.tbinfo').css("display","none");
+    }
+    layui.use(['layer', 'form'], function (params) {
+        var $ = layui.jquery, layer = layui.layer, form = layui.form;
+        form.on('select(spider_type)', function (data) {
+            showSpiderData()
+        });
+
+    })
+</script>
+
+
+{include file="../../../application/admin/view_new/public/foot" /}
+</body>
+
+</html>

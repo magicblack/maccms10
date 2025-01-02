@@ -1,0 +1,19 @@
+<script type="text/javascript" src="__STATIC__/editor/ckeditor/ckeditor.js"></script>
+<script type="text/javascript">
+    var EDITOR = CKEDITOR;
+</script>
+<script>
+    var editor = "{$editor}";
+    function editor_getEditor(obj)
+    {
+        return CKEDITOR.replace(obj,{filebrowserImageUploadUrl:"{:url('upload/upload')}?from=ckeditor&flag={$cl|strtolower}_editor&input=upload"});
+    }
+    function editor_setContent(obj,html)
+    {
+        return obj.setData(html);
+    }
+    function editor_getContent(obj)
+    {
+        return obj.getData();
+    }
+</script>

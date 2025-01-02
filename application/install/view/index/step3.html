@@ -1,12 +1,78 @@
 {include file="../../../application/install/view/index/head" /}
 <style type="text/css">
-.layui-table td, .layui-table th{text-align:left;}
-.layui-table tbody tr.no{background-color:#f00;color:#fff;}
+    .layui-table td,
+    .layui-table th {
+        text-align: left;
+    }
+
+    .layui-table tbody tr.no {
+        background-color: #f00;
+        color: #fff;
+    }
+
+    .install-box {
+        width: 912px;
+        padding-top: 15px;
+    }
+
+    .title-run {
+        height: 28px;
+        font-family: PingFangSC, PingFang SC;
+        font-weight: 500;
+        font-size: 20px;
+        margin: 10px 0;
+        color: #1F2937;
+        line-height: 28px;
+        text-align: center;
+        font-style: normal;
+    }
+
+    .step-btns .last {
+        width: 300px;
+        height: 40px;
+        background: rgba(64, 204, 146, 0.2);
+        border-radius: 6px;
+        color: rgba(64, 204, 146, 1);
+    }
+
+    .test {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 4px;
+    }
+
+    .test .layui-btn {
+        width: 300px;
+        height: 40px;
+        background: #40CC92;
+        border-radius: 6px;
+        line-height: 40px;
+    }
+
+    .test-text {
+        font-family: PingFang-SC, PingFang-SC;
+        font-weight: 500;
+        font-size: 14px;
+        color: rgba(75, 85, 99, 0.5);
+        line-height: 24px;
+        text-align: center;
+        font-style: normal;
+    }
+
+    .layui-form-item .layui-input-inline.w200 {
+        width: 480px !important;
+        text-align: left;
+    }
+
+    .layui-form-mid {
+        color: rgba(75, 85, 99, 0.5) !important;
+    }
 </style>
 <div class="install-box">
-    <fieldset class="layui-elem-field layui-field-title">
-        <legend>{:lang('install/database_config')}</legend>
-    </fieldset>
+    <div class="title-run">
+        {:lang('install/database_config')}
+    </div>
     <form class="layui-form layui-form-pane" action="?step=4" method="post">
         <div class="layui-form-item">
             <label class="layui-form-label">{:lang('install/server_address')}</label>
@@ -58,17 +124,16 @@
             </div>
             <div class="layui-form-mid layui-word-aux">{:lang('install/overwrite_tip')}</div>
         </div>
-        <div class="layui-form-item">
-            <button type="submit" class="layui-btn fl" style="margin-left:120px;" lay-submit="" lay-filter="formTest">{:lang('install/test_connect')}</button>
-            <div class="layui-form-mid layui-word-aux">{:lang('install/test_connect_tip')}</div>
+        <div class="test">
+            <button type="submit" class="layui-btn" lay-submit=""
+                lay-filter="formTest">{:lang('install/test_connect')}</button>
+            <div class="test-text">{:lang('install/test_connect_tip')}</div>
         </div>
     </form>
     <form class="layui-form layui-form-pane" action="?step=5" method="post">
         <input type="hidden" name="install_dir" value="{$install_dir}">
         <input type="hidden" name="__token__" value="{$Request.token}" />
-        <fieldset class="layui-elem-field layui-field-title">
-            <legend>{:lang('install/other_config')}</legend>
-        </fieldset>
+        <fieldset class="layui-elem-field layui-field-title"></fieldset>
         <div class="layui-form-item">
             <label class="layui-form-label">{:lang('install/admin_name')}</label>
             <div class="layui-input-inline w200">
@@ -85,55 +150,57 @@
         </div>
         <div class="layui-form-item">
             <label class="layui-form-label">{:lang('install/init_data')}</label>
-            <div class="layui-input-inline w200" >
+            <div class="layui-input-inline w200">
                 <input type="radio" name="initdata" value="1" title="{:lang('install/create')}" checked="">
-                <input type="radio" name="initdata" value="0" title="{:lang('install/not_create')}" >
+                <input type="radio" name="initdata" value="0" title="{:lang('install/not_create')}">
             </div>
             <div class="layui-form-mid layui-word-aux">{:lang('install/create_tip')}</div>
         </div>
         <div class="step-btns">
-            <a href="?step=2" class="layui-btn layui-btn-primary layui-btn-big fl">{:lang('install/back_step')}</a>
-            <button type="submit" class="layui-btn layui-btn-big layui-btn-normal fr" lay-submit="" lay-filter="formSubmit" >{:lang('install/exec')}</button>
+            <a href="?step=2" class="layui-btn last fl">{:lang('install/back_step')}</a>
+            <button type="submit" class="layui-btn layui-btn-big layui-btn-normal fr" lay-submit=""
+                lay-filter="formSubmit">{:lang('install/exec')}</button>
         </div>
     </form>
 </div>
 <span style="display: none">
-<iframe src="//www.maccms.la/tongji.html?v10-php" MARGINWIDTH="0" MARGINHEIGHT="0" HSPACE="0" VSPACE="0" FRAMEBORDER="0" SCROLLING="no" width="0" height="0"></iframe>
+    <iframe src="//www.maccms.la/tongji.html?v10-php" MARGINWIDTH="0" MARGINHEIGHT="0" HSPACE="0" VSPACE="0"
+        FRAMEBORDER="0" SCROLLING="no" width="0" height="0"></iframe>
 </span>
 {include file="../../../application/install/view/index/foot" /}
 <script type="text/javascript">
-    var test=0;
-layui.define(['element', 'form'], function(exports) {
-    var $ = layui.jquery, layer = layui.layer, form = layui.form;
-    form.on('submit(formTest)', function(data) {
-        var _form = '';
-        if ($(this).attr('data-form')) {
-            _form = $($(this).attr('data-form'));
-        } else {
-            _form = $(this).parents('form');
-        }
-        
-        layer.msg("{:lang('wait_submit')}",{time:500000});
-        $.ajax({
-            type: "POST",
-            url: _form.attr('action'),
-            data: _form.serialize(),
-            dataType:'json',
-            success: function(res) {
-                if(res.code==1){
-                    test=1;
-                }
-                layer.msg(res.msg);
+    var test = 0;
+    layui.define(['element', 'form'], function (exports) {
+        var $ = layui.jquery, layer = layui.layer, form = layui.form;
+        form.on('submit(formTest)', function (data) {
+            var _form = '';
+            if ($(this).attr('data-form')) {
+                _form = $($(this).attr('data-form'));
+            } else {
+                _form = $(this).parents('form');
             }
-        });
-        return false;
-    });
-    form.on('submit(formSubmit)', function(data) {
-        if(test==0){
-            layer.msg("{:lang('install/submit_tip')}");
-            return false;
-        }
 
+            layer.msg("{:lang('wait_submit')}", { time: 500000 });
+            $.ajax({
+                type: "POST",
+                url: _form.attr('action'),
+                data: _form.serialize(),
+                dataType: 'json',
+                success: function (res) {
+                    if (res.code == 1) {
+                        test = 1;
+                    }
+                    layer.msg(res.msg);
+                }
+            });
+            return false;
+        });
+        form.on('submit(formSubmit)', function (data) {
+            if (test == 0) {
+                layer.msg("{:lang('install/submit_tip')}");
+                return false;
+            }
+
+        });
     });
-});
 </script>

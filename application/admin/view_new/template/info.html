@@ -1,0 +1,46 @@
+{include file="../../../application/admin/view_new/public/head" /}
+<div class="page-container">
+    <form class="layui-form layui-form-pane" method="post" action="">
+        <input type="hidden" name="__token__" value="{$Request.token}" />
+        <blockquote class="layui-elem-quote layui-quote-nm">
+            提示信息：<br>
+            为了安全考量避免通过模板写入后门文件，文件内出现以下任意字符串时禁止在线保存修改，如需修改请使用其他方式。<br>
+            {$filter}
+        </blockquote>
+        <div class="layui-form-item">
+            <label class="layui-form-label">{:lang('path')}：</label>
+            <div class="layui-input-block">
+                <input type="text" class="layui-input" value="{$fpath}" placeholder="" id="fpath" name="fpath" readonly="readonly">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">{:lang('file_name')}：</label>
+            <div class="layui-input-block">
+                <input type="text" class="layui-input" value="{$fname}" placeholder="{:lang('admin/template/name_tip')}" id="fname" name="fname" {if condition="$fname neq ''"}readonly="readonly"{/if}>
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">{:lang('content')}：</label>
+            <div class="layui-input-block">
+                <textarea name="fcontent" cols="" rows="" class="layui-textarea"  placeholder="" style="height:550px;">{$fcontent}</textarea>
+            </div>
+        </div>
+
+        <div class="layui-form-item center">
+            <div class="layui-input-block">
+                <button type="submit" class="layui-btn" lay-submit="" lay-filter="formSubmit" data-child="true">{:lang('btn_save')}</button>
+                <button class="layui-btn layui-btn-primary" type="reset">{:lang('btn_reset')}</button>
+            </div>
+        </div>
+    </form>
+
+</div>
+{include file="../../../application/admin/view_new/public/foot" /}
+
+<script type="text/javascript">
+
+</script>
+
+</body>
+</html>

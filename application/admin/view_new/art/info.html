@@ -1,0 +1,559 @@
+{include file="../../../application/admin/view_new/public/head" /}
+<script type="text/javascript" src="__STATIC__/js/jquery.jscolor.js"></script>
+{include file="../../../application/admin/view_new/public/editor" flag="art_editor"/}
+
+<div class="page-container p10">
+    <div class="showpic" style="display:none;"><img class="showpic_img" width="120" height="160" referrerPolicy="no-referrer"></div>
+    
+    <form class="layui-form layui-form-pane" method="post" action="">
+        <input type="hidden" name="art_id" value="{$info.art_id}">
+
+        <div class="layui-tab">
+            <ul class="layui-tab-title ">
+                <li class="layui-this">{:lang('base_info')}</a></li>
+                <li>{:lang('other_info')}</li>
+            </ul>
+            <div class="layui-tab-content">
+
+                <div class="layui-tab-item layui-show" id="movementTable">
+                    
+                <div class="layui-form-item">
+                    <label class="layui-form-label">{:lang('param')}：</label>
+                    <div class="layui-input-inline w150">
+                            <select name="type_id" lay-filter="type_id">
+                                <option value="">{:lang('select_type')}</option>
+                                {volist name="type_tree" id="vo"}
+                                    {if condition="$vo.type_mid eq 2"}
+                                    <option value="{$vo.type_id}" {if condition="$info.type_id eq $vo.type_id"}selected{/if}>{$vo.type_name}</option>
+                                    {volist name="$vo.child" id="ch"}
+                                    <option value="{$ch.type_id}" {if condition="$info.type_id eq $ch.type_id"}selected{/if}>&nbsp;|&nbsp;&nbsp;&nbsp;|—{$ch.type_name}</option>
+                                    {/volist}
+                                    {/if}
+                                {/volist}
+                            </select>
+                    </div>
+                    <div class="layui-input-inline w150">
+                            <select name="art_level">
+                                <option value="0">{:lang('select_level')}</option>
+                                <option value="9" {if condition="$info.art_level eq 9"}selected{/if}>{:lang('level')}9-{:lang('slide')}</option>
+                                <option value="1" {if condition="$info.art_level eq 1"}selected{/if}>{:lang('level')}1</option>
+                                <option value="2" {if condition="$info.art_level eq 2"}selected{/if}>{:lang('level')}2</option>
+                                <option value="3" {if condition="$info.art_level eq 3"}selected{/if}>{:lang('level')}3</option>
+                                <option value="4" {if condition="$info.art_level eq 4"}selected{/if}>{:lang('level')}4</option>
+                                <option value="5" {if condition="$info.art_level eq 5"}selected{/if}>{:lang('level')}5</option>
+                                <option value="6" {if condition="$info.art_level eq 6"}selected{/if}>{:lang('level')}6</option>
+                                <option value="7" {if condition="$info.art_level eq 7"}selected{/if}>{:lang('level')}7</option>
+                                <option value="8" {if condition="$info.art_level eq 8"}selected{/if}>{:lang('level')}8</option>
+
+                            </select>
+                    </div>
+                    <div class="layui-input-inline w150">
+                            <select name="art_status">
+                                <option value="1" >{:lang('reviewed')}</option>
+                                <option value="0" {if condition="$info.art_status eq '0'"}selected{/if}>{:lang('reviewed_not')}</option>
+                            </select>
+                    </div>
+                    <div class="layui-input-inline w150">
+                        <select name="art_lock">
+                            <option value="0">{:lang('unlock')}</option>
+                            <option value="1" {if condition="$info.art_lock eq 1"}selected{/if}>{:lang('lock')}</option>
+                        </select>
+                    </div>
+
+                    <div class="layui-input-inline">
+                        <input type="checkbox" name="uptime" title="{:lang('update_time')}" value="1" checked class="layui-checkbox checkbox-ids" lay-skin="primary">
+                    </div>
+                </div>
+
+                <div class="layui-form-item">
+                    <label class="layui-form-label">{:lang('name')}：</label>
+                    <div class="layui-input-inline w500">
+                        <input type="text" class="layui-input" value="{$info.art_name}" placeholder="" name="art_name">
+                    </div>
+                    <label class="layui-form-label">{:lang('sub')}：</label>
+                    <div class="layui-input-inline ">
+                        <input type="text" class="layui-input" value="{$info.art_sub}" placeholder="" name="art_sub">
+                    </div>
+
+                </div>
+
+                <div class="layui-form-item">
+                    <label class="layui-form-label">{:lang('en')}：</label>
+                    <div class="layui-input-inline w500">
+                        <input type="text" class="layui-input" value="{$info.art_en}" placeholder="" name="art_en">
+                    </div>
+                    <label class="layui-form-label">{:lang('letter')}：</label>
+                    <div class="layui-input-inline w70">
+                        <input type="text" class="layui-input" value="{$info.art_letter}" placeholder="" name="art_letter">
+                    </div>
+                    <label class="layui-form-label">{:lang('color')}：</label>
+                    <div class="layui-input-inline w70">
+                        <input type="text" class="layui-input color" value="{$info.art_color}" placeholder="" name="art_color">
+                    </div>
+                </div>
+
+                <div class="layui-form-item">
+                    <label class="layui-form-label">TAG：</label>
+                    <div class="layui-input-inline w500">
+                        <input type="text" class="layui-input" value="{$info.art_tag}" placeholder="" name="art_tag">
+                    </div>
+                    <div class="layui-input-inline w120">
+                        <input type="checkbox" name="uptag" title="{:lang('auto_make')}" value="1" class="layui-checkbox checkbox-ids" lay-skin="primary">
+                    </div>
+                </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:lang('remarks')}：</label>
+                        <div class="layui-input-inline w500">
+                            <input type="text" class="layui-input" value="{$info.art_remarks}" placeholder="" name="art_remarks">
+                        </div>
+                    </div>
+
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:lang('rel_vod')}：</label>
+                        <div class="layui-input-inline w500">
+                            <input type="text" class="layui-input" value="{$info.art_rel_vod}" placeholder="{:lang('admin/vod/rel_vod_tip')}" name="art_rel_vod">
+                        </div>
+                        <div class="layui-input-inline ">
+                            <a class="layui-btn j-iframe" data-href="{:url('vod/data')}?select=1&input=art_rel_vod" href="javascript:;" title="{:lang('search_data')}">{:lang('search_data')}</a>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:lang('rel_art')}：</label>
+                        <div class="layui-input-inline w500">
+                            <input type="text" class="layui-input" value="{$info.art_rel_art}" placeholder="{:lang('admin/vod/rel_art_tip')}" name="art_rel_art">
+                        </div>
+                        <div class="layui-input-inline ">
+                            <a class="layui-btn j-iframe" data-href="{:url('art/data')}?select=1&input=art_rel_art" href="javascript:;" title="{:lang('search_data')}">{:lang('search_data')}</a>
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:lang('class')}：</label>
+                        <div class="layui-input-inline w500">
+                            <input type="text" class="layui-input" value="{$info.art_class}" placeholder="" id="art_class" name="art_class">
+                        </div>
+                        <div class="layui-input-inline w500 art_class_label">
+
+                        </div>
+                    </div>
+
+                <div class="layui-form-item">
+                    <label class="layui-form-label">{:lang('pic')}：</label>
+                    <div class="layui-input-inline w500 upload">
+                        <input type="text" class="layui-input upload-input" style="max-width:100%;" value="{$info.art_pic}" placeholder="" id="art_pic" name="art_pic">
+                    </div>
+                    <div class="layui-input-inline ">
+                        <button type="button" class="layui-btn layui-upload" lay-data="{data:{thumb:1,thumb_class:'upload-thumb'}}" id="upload1">{:lang('upload_pic')}</button>
+                    </div>
+                </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:lang('pic_thumb')}：</label>
+                        <div class="layui-input-inline w500 upload">
+                            <input type="text" class="layui-input upload-input" style="max-width:100%;" value="{$info.art_pic_thumb}" placeholder="" id="art_pic_thumb" name="art_pic_thumb">
+                        </div>
+                        <div class="layui-input-inline ">
+                            <button type="button" class="layui-btn layui-upload" lay-data="{data:{thumb:0,thumb_class:'upload-thumb'}}" id="upload2">{:lang('upload_pic')}</button>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:lang('pic_slide')}：</label>
+                        <div class="layui-input-inline w500 upload">
+                            <input type="text" class="layui-input upload-input" style="max-width:100%;" value="{$info.art_pic_slide}" placeholder="" id="art_pic_slide" name="art_pic_slide">
+                        </div>
+                        <div class="layui-input-inline ">
+                            <button type="button" class="layui-btn layui-upload" lay-data="{data:{thumb:0,thumb_class:'upload-thumb'}}" id="upload3">{:lang('upload_pic')}</button>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label ">{:lang('pic_screenshot')}：</label>
+                        <div class="layui-input-inline w400 ">
+                            <div class="layui-btn-group">
+                                <button type="button" class="layui-btn screenshot"><i class="layui-icon layui-icon-upload"></i> {:lang('upload_pic')}</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <div class="layui-input-block">
+                            <textarea id="art_pic_screenshot" name="art_pic_screenshot" placeholder="{:lang('screenshot_tip')}" type="text/plain" style="width:100%;height:150px;">{$info.art_pic_screenshot|mac_str_correct=###,'#',chr(13)}</textarea>
+                            <fieldset class="layui-elem-field layui-field-title" style="margin-top: 30px;">
+                                <legend>{:lang('screenshot_preview')}</legend>
+                            </fieldset>
+                            <div class="screenshot_list">
+                                {volist name="$info.art_pic_screenshot_list" id="vo"}
+                                <div data-src="{$vo['url']}"><a href="javascript:;" class="del_screenshot">{:lang('del')}</a>
+                                    <img src="{$vo['url']|mac_url_img}" alt="" class="layui-upload-img screenshot-img">
+                                </div>
+                                {/volist}
+                            </div>
+                        </div>
+                    </div>
+                <div class="layui-form-item">
+                        <label class="layui-form-label">{:lang('blurb')}：</label>
+                    <div class="layui-input-block">
+                        <textarea name="art_blurb" cols="" rows="3" class="layui-textarea"  placeholder="{:lang('blurb_auto_tip')}" style="height:40px;">{$info.art_blurb}</textarea>
+                    </div>
+                </div>
+
+                    <script>
+                        var ueArray=[];
+                        var content_arr_len = {$art_page_list|count};
+                    </script>
+
+                <div id="artlist" class="contents">
+                    {volist name="$art_page_list" id="vo"}
+                    <div class="layui-form-item" data-i="{$key}">
+                        <label class="layui-form-label">{:lang('page_content')}{$key}：</label>
+                        <div class="layui-input-inline w200"><input type="text" name="art_title[]" class="layui-input" value="{$vo.title}" placeholder="{:lang('page_title')}"></div>
+                        <div class="layui-input-inline w200"><input type="text" name="art_note[]" class="layui-input" value="{$vo.note}" placeholder="{:lang('page_note')}"></div>
+                        <div class="layui-input-inline w200"><a href="javascript:void(0)" class="j-editor-clear">{:lang('clear')}</a>&nbsp;<a href="javascript:void(0)" class="j-editor-remove">{:lang('del')}</a>&nbsp;<a href="javascript:void(0)" class="j-editor-up">上移</a>&nbsp;<a href="javascript:void(0)" class="j-editor-down">下移</a>&nbsp;<br></div>
+                        <div class="p10 m20"></div>
+                        <div class="layui-input-block"><textarea id="art_content{$key}" name="art_content[]" type="text/plain" style="width:99%;height:250px">{$vo.content|mac_url_content_img}</textarea></div>
+                        <script>ueArray[{$key}] = editor_getEditor('art_content{$key}');</script>
+                    </div>
+                    {/volist}
+                </div>
+
+
+                    <div class="layui-form-item">
+                        <label class=""><button class="layui-btn radius j-editor-add" type="button">{:lang('page_add')}</button></label>
+                        <div class="layui-input-block">
+
+                        </div>
+                    </div>
+                    
+                </div>
+
+                <div class="layui-tab-item" id="movementTable">
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">{:lang('up')}：</label>
+                            <div class="layui-input-inline ">
+                                <input type="text" class="layui-input" value="{$info.art_up}" placeholder="" id="art_up" name="art_up">
+                            </div>
+                            <label class="layui-form-label">{:lang('hate')}：</label>
+                            <div class="layui-input-inline ">
+                                <input type="text" class="layui-input" value="{$info.art_down}" placeholder="" id="art_down" name="art_down">
+                            </div>
+                            <button class="layui-btn" type="button" id="btn_rnd">{:lang('rnd_make')}</button>
+                        </div>
+
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">{:lang('hits')}：</label>
+                            <div class="layui-input-inline ">
+                                <input type="text" class="layui-input" value="{$info.art_hits}" placeholder="" id="art_hits" name="art_hits">
+                            </div>
+                            <label class="layui-form-label">{:lang('hits_month')}：</label>
+                            <div class="layui-input-inline ">
+                                <input type="text" class="layui-input" value="{$info.art_hits_month}" placeholder="" id="art_hits_month" name="art_hits_month" >
+                            </div>
+                        </div>
+
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">{:lang('hits_week')}：</label>
+                            <div class="layui-input-inline ">
+                                <input type="text" class="layui-input" value="{$info.art_hits_week}" placeholder="" id="art_hits_week" name="art_hits_week">
+                            </div>
+                            <label class="layui-form-label">{:lang('hits_day')}：</label>
+                            <div class="layui-input-inline ">
+                                <input type="text" class="layui-input " value="{$info.art_hits_day}" placeholder="" id="art_hits_day" name="art_hits_day">
+                            </div>
+                        </div>
+
+
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">{:lang('score')}：</label>
+                            <div class="layui-input-inline ">
+                                <input type="text" class="layui-input" value="{$info.art_score}" placeholder="" id="art_score" name="art_score">
+                            </div>
+                            <label class="layui-form-label">{:lang('score_all')}：</label>
+                            <div class="layui-input-inline ">
+                                <input type="text" class="layui-input" value="{$info.art_score_all}" placeholder="" id="art_score_all" name="art_score_all">
+                            </div>
+                            <label class="layui-form-label">{:lang('score_num')}：</label>
+                            <div class="layui-input-inline ">
+                                <input type="text" class="layui-input" value="{$info.art_score_num}" placeholder="" id="art_score_num" name="art_score_num">
+                            </div>
+                        </div>
+
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">{:lang('points_all')}：</label>
+                            <div class="layui-input-inline ">
+                                <input type="text" class="layui-input" value="{$info.art_points}" placeholder="" name="art_points">
+                            </div>
+                            <label class="layui-form-label">{:lang('points_detail')}：</label>
+                            <div class="layui-input-inline ">
+                                <input type="text" class="layui-input" value="{$info.art_points_detail}" placeholder="" name="art_points_detail">
+                            </div>
+                            <label class="layui-form-label">{:lang('tpl')}：</label>
+                            <div class="layui-input-inline ">
+                                <input type="text" class="layui-input" value="{$info.art_tpl}" placeholder="" name="art_tpl">
+                            </div>
+                        </div>
+
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">{:lang('author')}：</label>
+                            <div class="layui-input-inline ">
+                                <input type="text" class="layui-input" value="{$info.art_author}" placeholder="" name="art_author">
+                            </div>
+                            <label class="layui-form-label">{:lang('from')}：</label>
+                            <div class="layui-input-inline ">
+                                <input type="text" class="layui-input" value="{$info.art_from}" placeholder="" name="art_from">
+                            </div>
+                            <label class="layui-form-label">{:lang('jumpurl')}：</label>
+                            <div class="layui-input-inline ">
+                                <input type="text" class="layui-input" value="{$info.art_jumpurl}" placeholder="" name="art_jumpurl">
+                            </div>
+                        </div>
+
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">{:lang('access_pwd')}：</label>
+                            <div class="layui-input-inline ">
+                                <input type="text" class="layui-input" value="{$info.art_pwd}" placeholder="{:lang('not_static_is_ok')}" name="art_pwd">
+                            </div>
+                            <label class="layui-form-label">{:lang('pwd_url')}：</label>
+                            <div class="layui-input-inline ">
+                                <input type="text" class="layui-input" value="{$info.art_pwd_url}" placeholder="" name="art_pwd_url">
+                            </div>
+
+                        </div>
+                 </div>
+
+            </div>
+        </div>
+
+                <div class="layui-form-item center">
+                    <div class="layui-input-block">
+                        <button type="submit" class="layui-btn" lay-submit="" lay-filter="formSubmit" data-child="">{:lang('btn_save')}</button>
+                        <button class="layui-btn layui-btn-primary" type="reset">{:lang('btn_reset')}</button>
+                    </div>
+                </div>
+    </form>
+
+</div>
+{include file="../../../application/admin/view_new/public/foot" /}
+
+<script type="text/javascript">
+    var UPLOAD_IMG_KEY="{$GLOBALS['config']['upload']['img_key']}";UPLOAD_IMG_API="{$GLOBALS['config']['upload']['img_api']}";
+
+    layui.use(['form','upload', 'layer'], function () {
+        // 操作对象
+        var form = layui.form
+                , layer = layui.layer
+                , $ = layui.jquery
+                , upload = layui.upload;;
+
+        // 验证
+        form.verify({
+            art_name: function (value) {
+                if (value == "") {
+                    return "{:lang('name_empty')}";
+                }
+            }
+        });
+
+        $(document).on("click", ".extend", function(){
+            $id = $(this).attr('data-id');
+            if($id == 'art_class'||$id == 'art_keywords'){
+                $val = $("input[id='"+$id+"']").val();
+                if($val!=''){
+                    $val = $val+',';
+                }
+                if($val.indexOf($(this).text())>-1){
+                    return;
+                }
+                $("input[id='"+$id+"']").val($val+$(this).text());
+            }else{
+                $("input[id='"+$id+"']").val($(this).text());
+            }
+        });
+
+
+        form.on('select(type_id)', function(data){
+            getExtend(data.value);
+        });
+
+        //多图片上传
+        upload.render({
+            elem: '.screenshot'
+            ,url: "{:url('upload/upload')}?flag=art_screenshot"
+            ,multiple: true
+            ,before: function(obj){
+                obj.preview(function(index, file, result){
+
+                });
+            }
+            ,done: function(res){
+                var val = res.data.file;
+                var input = $("#art_pic_screenshot")
+                var content = input.val();
+                if(content!=''){
+                    content += '\r\n';
+                }
+                content += val;
+                input.val(content);
+                $('.screenshot_list').append('<div data-src="'+val+'"><a href="javascript:;" class="del_screenshot">{:lang('del')}</a><img src="'+mac_url_img(val)+'" alt="" class="layui-upload-img screenshot-img"></div>');
+            }
+        });
+
+        //监听文本框
+        $('#art_pic_screenshot').keyup(function(e){
+            let html = ``;
+            var textArr = $(this).val().split(/[(\r\n)\r\n]+/);
+            textArr.forEach((item,index)=>{
+                if(!item){
+                    textArr.splice(index,1);
+                }else{
+                    if(item.indexOf('$')>-1){
+                        item = item.substring(item.indexOf('$')+1);
+                    }
+                    html += `<div data-src="${item}"><a href="javascript:;" class="del_screenshot">{:lang('del')}</a><img src="${mac_url_img(item)}"" alt="" class="layui-upload-img screenshot-img"></div>`;
+                }
+            });
+            $('.screenshot_list').html(html);
+        });
+
+        upload.render({
+            elem: '.layui-upload'
+            ,url: "{:url('upload/upload')}?flag=art"
+            ,method: 'post'
+            ,before: function(input) {
+                layer.msg("{:lang('upload_ing')}", {time:3000000});
+            },done: function(res, index, upload) {
+                var obj = this.item;
+                if (res.code == 0) {
+                    layer.msg(res.msg);
+                    return false;
+                }
+                layer.closeAll();
+                var input = $(obj).parent().parent().find('.upload-input');
+                if ($(obj).attr('lay-type') == 'image') {
+                    input.siblings('img').attr('src', res.data.file).show();
+                }
+                input.val(res.data.file);
+
+                if(res.data.thumb_class !=''){
+                    $('.'+ res.data.thumb_class).val(res.data.thumb[0].file);
+                }
+            }
+        });
+
+        $('.upload-input').hover(function (e){
+            var e = window.event || e;
+            var imgsrc = $(this).val();
+            if(imgsrc.trim()==""){ return; }
+            var left = e.clientX+document.body.scrollLeft+20;
+            var top = e.clientY+document.body.scrollTop+20;
+            $(".showpic").css({left:left,top:top,display:""});
+            if(imgsrc.indexOf('://')<0){ imgsrc = ROOT_PATH + '/' + imgsrc;	} else{ imgsrc = imgsrc.replace('mac:','http:'); }
+            $(".showpic_img").attr("src", imgsrc);
+        },function (e){
+            $(".showpic").css("display","none");
+        });
+
+
+        $("#btn_rnd").click(function(){
+            $("#art_hits").val( rndNum(5000,9999) );
+            $("#art_hits_month").val( rndNum(1000,4999) );
+            $("#art_hits_week").val( rndNum(300,999) );
+            $("#art_hits_day").val( rndNum(1,299) );
+            $("#art_up").val( rndNum(1,999) );
+            $("#art_down").val( rndNum(1,999) );
+            $("#art_score").val( rndNum(10) );
+            $("#art_score_all").val( rndNum(1000) );
+            $("#art_score_num").val( rndNum(100) );
+        });
+
+
+
+        $('.contents').on('click','.j-editor-clear',function(){
+            var datai = $(this).parent().parent().attr('data-i');
+            editor_setContent(ueArray[datai],'');
+        });
+        $('.contents').on('click','.j-editor-remove',function(){
+            var datai = $(this).parent().parent().attr('data-i');
+            $(this).parent().parent().remove();
+            delete ueArray[datai];
+        });
+        $('.contents').on('click','.j-editor-up',function(){
+            var current = $(this).parent().parent();
+            var current_index = current.index();
+            var current_i = current.attr('data-i');
+            var prev = current.prev();
+            var prev_i = prev.attr('data-i');
+            if(current_index>0){
+                var current_txt = editor_getContent(ueArray[current_i]);
+                var prev_txt = editor_getContent(ueArray[prev_i]);
+                editor_setContent(ueArray[current_i],prev_txt);
+                editor_setContent(ueArray[prev_i],current_txt);
+            }
+        });
+        $('.contents').on('click','.j-editor-down',function(){
+            var current = $(this).parent().parent();
+            var current_index = current.index();
+            var current_i = current.attr('data-i');
+            var next = current.next();
+            var next_i = next.attr('data-i');
+
+            if(next.length>0){
+                var current_txt = editor_getContent(ueArray[current_i]);
+                var prev_txt = editor_getContent(ueArray[next_i]);
+
+                editor_setContent(ueArray[current_i],prev_txt);
+                editor_setContent(ueArray[next_i],current_txt);
+            }
+        });
+
+        $('.j-editor-add').on('click',function(){
+            content_arr_len++;
+            var tpl='<div class="layui-form-item" data-i="'+content_arr_len+'"><label class="layui-form-label">{:lang('page_content')}'+(content_arr_len)+'：</label><div class="layui-input-inline w200"><input type="text" name="art_title[]" class="layui-input" placeholder="{:lang('page_title')}"></div><div class="layui-input-inline w200"><input type="text" name="art_note[]" class="layui-input" placeholder="{:lang('页备注')}"></div><div class="layui-input-inline w200 p10"><a href="javascript:void(0)" class="j-editor-clear">{:lang('clear')}</a>&nbsp;<a href="javascript:void(0)" class="j-editor-remove">{:lang('del')}</a>&nbsp;<a href="javascript:void(0)" class="j-editor-up">上移</a>&nbsp;<a href="javascript:void(0)" class="j-editor-down">下移</a>&nbsp;<br></div><div class="p10 m20"></div><div class="layui-input-block"><textarea id="art_content'+(content_arr_len)+'" name="art_content[]" type="text/plain" style="width:99%;height:250px"></textarea></div></div>';
+            $(".contents").append(tpl);
+            ueArray[content_arr_len] = editor_getEditor( 'art_content'+content_arr_len );
+
+        });
+
+        $(document).on('click', '.del_screenshot', function() {
+            var src = $(this).parent().attr('data-src');
+            var input = $("#art_pic_screenshot")
+            var content = input.val();
+            console.log(content);
+            var snsArr = content.split(/[(\r\n)\r\n]+/);
+            snsArr.forEach((item,index)=>{
+                if(!item || item == src){
+                    snsArr.splice(index,1);//删除
+                }
+            });
+            $(this).parent().remove();
+            input.val(snsArr.join('\r\n'));//重新赋值
+            $.get("{:url('annex/del')}", {ids:src}, function(res){});
+        });
+        if(content_arr_len==0){
+            $('.j-editor-add').click();
+        }
+    });
+
+    function getExtend(id){
+        $.post("{:url('type/extend')}", {id:id}, function(res) {
+
+            if (res.code == 1) {
+                $.each(res.data, function(key, value){
+                    $('.art_'+key+"_label").html('');
+                    if(value != ''){
+                        $.each(value, function(key2, value2){
+                            $(".art_"+key+"_label").append('<a class="layui-btn layui-btn-xs extend" href="javascript:;" data-id="art_'+key+'">'+value2+'</a>');
+                        });
+                    }
+                });
+            }
+        });
+    }
+
+    {if condition="$info.art_id gt 0"}
+    setTimeout(function () {
+        getExtend('{$info.type_id}')
+    },1000);
+    {/if}
+    
+</script>
+
+</body>
+</html>

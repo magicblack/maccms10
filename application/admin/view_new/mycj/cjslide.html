@@ -1,0 +1,119 @@
+{include file="../../../application/admin/view_new/public/head" /}
+<div class="page-container p10">
+    <div class="my-toolbar-box">
+        <div class="mb10">
+			<blockquote class="layui-elem-quote">
+				<p>海报图采集入库说明：</p>
+				<p>需要模板支持才能显示幻灯图，否则设置了前端也不会显示：</p>
+				<p>不同模板显示海报图的推荐值不同，但是大部分都是设置为“推荐9-幻灯片”</p>
+			</blockquote>
+			<div class="showpic" style="display:none;"><img class="showpic_img" width="400" height="200" referrerPolicy="no-referrer"></div>
+			{empty name="$info"}
+			<form class="layui-form layui-form-pane" method="get" action="">	
+				<blockquote class="layui-elem-quote">
+					<p style="color:red;">没有找到“{$param.name}”相关影片，请修改名称再试</p>
+				</blockquote>				
+				<div class="layui-form-item ">
+                    <label class="layui-form-label">名称：</label>
+                    <div class="layui-input-inline">
+                        <input type="text" class="layui-input" value="{$param.name}" placeholder="" name="name" id="name">
+						<input type="hidden" value="{$param.pic_url}"  name="pic_url" id="pic_url">
+                    </div>
+					<div class="layui-form-mid layui-word-aux">不支持模糊搜索</div>
+                </div>
+				<div class="layui-form-item">
+                    <div class="layui-input-block">
+                        <button type="submit" class="layui-btn" lay-submit="" lay-filter="Submit" data-child="">立即搜索</button>
+                    </div>
+                </div>
+			{else /}
+			<form class="layui-form layui-form-pane" method="post" action="">
+				<input type="hidden" name="vod_id" value="{$info.vod_id}">
+				<div class="layui-form-item ">
+					<label class="layui-form-label">分类：</label>
+                    <div class="layui-input-inline">
+                            <select name="type_id" lay-filter="type_id">
+                                <option value="">请选择分类</option>
+                                {volist name="type_tree" id="vo"}
+                                    {if condition="$vo.type_mid eq 1"}
+                                    <option value="{$vo.type_id}" {if condition="$info.type_id eq $vo.type_id"}selected{/if}>{$vo.type_name}</option>
+                                    {volist name="$vo.child" id="ch"}
+                                    <option value="{$ch.type_id}" {if condition="$info.type_id eq $ch.type_id"}selected{/if}>&nbsp;|&nbsp;&nbsp;&nbsp;|—{$ch.type_name}</option>
+                                    {/volist}
+                                    {/if}
+                                {/volist}
+                            </select>
+                    </div>
+					<div class="layui-input-inline">
+                            <select name="vod_level">
+                                <option value="0">选择推荐</option>
+                                <option value="9" {if condition="$info.vod_level eq 9"}selected{/if}>推荐9-幻灯片</option>
+                                <option value="1" {if condition="$info.vod_level eq 1"}selected{/if}>推荐1</option>
+                                <option value="2" {if condition="$info.vod_level eq 2"}selected{/if}>推荐2</option>
+                                <option value="3" {if condition="$info.vod_level eq 3"}selected{/if}>推荐3</option>
+                                <option value="4" {if condition="$info.vod_level eq 4"}selected{/if}>推荐4</option>
+                                <option value="5" {if condition="$info.vod_level eq 5"}selected{/if}>推荐5</option>
+                                <option value="6" {if condition="$info.vod_level eq 6"}selected{/if}>推荐6</option>
+                                <option value="7" {if condition="$info.vod_level eq 7"}selected{/if}>推荐7</option>
+                                <option value="8" {if condition="$info.vod_level eq 8"}selected{/if}>推荐8</option>
+                            </select>
+                    </div>
+				</div>	
+				<div class="layui-form-item ">
+                    <label class="layui-form-label">名称：</label>
+                    <div class="layui-input-inline w500">
+                        <input type="text" class="layui-input" value="{$info.vod_name}" placeholder="" name="vod_name" id="vod_name">
+                    </div>
+                    <label class="layui-form-label">副标题：</label>
+                    <div class="layui-input-inline ">
+                        <input type="text" class="layui-input" value="{$info.vod_sub}" placeholder="" name="vod_sub" id="vod_sub">
+                    </div>
+                </div>
+				<div class="layui-form-item">
+                        <label class="layui-form-label">海报图：</label>
+                        <div class="layui-input-inline w500 upload">
+                            <input type="text" class="layui-input upload-input" style="max-width:100%;" value="{$pic_url}" placeholder="" id="vod_pic_slide" name="vod_pic_slide">
+                        </div>
+						{if condition="$info.vod_pic_slide neq ''"}<div class="layui-form-mid layui-word-aux">海报图已设置过了</div>{/if}
+                    </div>
+				<div class="layui-form-item">
+                    <div class="layui-input-block">
+                        <button type="submit" class="layui-btn" lay-submit="" lay-filter="formSubmit" data-child="">保存</button>
+                    </div>
+                </div>
+
+
+
+				
+				{/empty}
+			
+			
+
+			</form>
+        </div>
+    </div>
+</div>
+
+{include file="../../../application/admin/view_new/public/foot" /}
+
+<script type="text/javascript">
+
+    layui.use(['layer','form'], function() {
+        var layer = layui.layer,
+            form = layui.form;
+    });
+        $('.upload-input').hover(function (e){
+            var e = window.event || e;
+            var imgsrc = $(this).val();
+            if(imgsrc.trim()==""){ return; }
+            var left = e.clientX+document.body.scrollLeft+20;
+            var top = e.clientY+document.body.scrollTop+20;
+            $(".showpic").css({left:left,top:top,display:""});
+            if(imgsrc.indexOf('://')<0){ imgsrc = ROOT_PATH  + '/' + imgsrc;	} else{ imgsrc = imgsrc.replace('mac:','http:'); }
+            $(".showpic_img").attr("src", imgsrc);
+        },function (e){
+            $(".showpic").css("display","none");
+        });
+</script>
+</body>
+</html>

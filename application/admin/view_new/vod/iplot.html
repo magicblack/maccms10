@@ -1,0 +1,174 @@
+{include file="../../../application/admin/view_new/public/head" /}
+<script type="text/javascript" src="__STATIC__/js/jquery.jscolor.js"></script>
+{include file="../../../application/admin/view_new/public/editor" flag="vod_editor"/}
+<div class="page-container p10">
+    <div class="showpic" style="display:none;"><img class="showpic_img" width="120" height="160" referrerPolicy="no-referrer"></div>
+    
+    <form class="layui-form layui-form-pane" method="post" action="">
+        <input type="hidden" name="vod_id" value="{$info.vod_id}">
+        <input type="hidden" name="vod_name" value="{$info.vod_name}">
+        <input type="hidden" name="vod_en" value="{$info.vod_en}">
+        <input type="hidden" name="type_id" value="{$info.type_id}">
+
+        <div class="layui-tab">
+            <ul class="layui-tab-title ">
+                <li class="layui-this">{:lang('admin/vod/episode_plot')}</a></li>
+            </ul>
+            <div class="layui-tab-content">
+
+                <script>
+                    var ueArray=[];
+                    var plot_arr_len = {$vod_plot_list|count};
+                </script>
+                <div class="layui-tab-item layui-show" id="movementTable">
+                    <div id="plot_list" class="contents">
+                        {volist name="$vod_plot_list" id="vo"}
+                        <div class="layui-form-item" data-i="{$key}">
+                            <label class="layui-form-label">{:lang('admin/vod/plot')}{$key}：</label>
+                            <div class="layui-input-inline w500"><input type="text" name="vod_plot_name[]" class="layui-input" value="{$vo.name}" placeholder="{:lang('admin/vod/plot_name')}"></div>
+                            <div class="layui-input-inline w400 p10"><a href="javascript:void(0)" class="j-editor-clear">{:lang('clear')}</a>&nbsp;<a href="javascript:void(0)" class="j-editor-remove">{:lang('del')}</a>&nbsp;<a href="javascript:void(0)" class="j-editor-up">{:lang('admin/vod/move_up')}</a>&nbsp;<a href="javascript:void(0)" class="j-editor-down">{:lang('admin/vod/move_down')}</a><br></div>
+                            <div class="p10 m20"> </div>
+                            <div class="layui-input-block "><textarea id="vod_plot_detail{$key}" name="vod_plot_detail[]" type="text/plain" style="width:100%;height:150px">{$vo.detail|mac_str_correct=###,'#',chr(13)}</textarea></div>
+                            <script>ueArray[{$key}] = editor_getEditor('vod_plot_detail{$key}');</script>
+                        </div>
+                        {/volist}
+                    </div>
+                    <div class="layui-form-item">
+                        <label class=""><button class="layui-btn radius j-plot-add" type="button">{:lang('add_group')}</button></label>
+                        <div class="layui-input-block">
+
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+                <div class="layui-form-item center">
+                    <div class="layui-input-block">
+                        <button type="submit" class="layui-btn" lay-submit="" lay-filter="formSubmit" data-child="">{:lang('btn_save')}</button>
+                        <button class="layui-btn layui-btn-primary" type="reset">{:lang('btn_reset')}</button>
+                    </div>
+                </div>
+    </form>
+
+</div>
+{include file="../../../application/admin/view_new/public/foot" /}
+
+<script type="text/javascript">
+
+    layui.use(['form','upload', 'layer'], function () {
+        // 操作对象
+        var form = layui.form
+                , layer = layui.layer
+                , $ = layui.jquery
+                ;
+
+        // 验证
+        form.verify({
+            vod_name: function (value) {
+                if (value == "") {
+                    return "{:lang('name_empty')}";
+                }
+            }
+        });
+
+
+        $('.contents').on('click','.j-editor-clear',function(){
+            $(this).parent().parent().find('textarea').val('');
+        });
+        $('.contents').on('click','.j-editor-remove',function(){
+            var datai = $(this).parent().parent().attr('data-i');
+            $(this).parent().parent().remove();
+        });
+        $('.contents').on('click','.j-editor-up',function(){
+            var current = $(this).parent().parent();
+            var current_index = current.index();
+            var current_i = current.attr('data-i');
+            var prev = current.prev();
+            var prev_i = prev.attr('data-i');
+            if(current_index>0){
+                current.insertBefore(prev);
+            }
+        });
+        $('.contents').on('click','.j-editor-down',function(){
+            var current = $(this).parent().parent();
+            var current_index = current.index();
+            var current_i = current.attr('data-i');
+            var next = current.next();
+            var next_i = next.attr('data-i');
+
+            if(next.length>0){
+                current.insertAfter(next);
+            }
+        });
+
+        $('.contents').on('click','.j-editor-xz',function(){
+            var arr1,s1,s2,urlarr,urlarrcount;
+            s1 = $(this).parent().parent().find('textarea').val(); s2="";
+            if (s1.length==0){return false;}
+            s1 = s1.replaceAll("\r","");
+            arr1 = s1.split("\n");
+            arr1len = arr1.length;
+            for(j=0;j<arr1len;j++){
+                if(arr1[j].length>0){
+                    urlarr = arr1[j].split('$'); urlarrcount = urlarr.length-1;
+                    if(urlarrcount==0){
+                        arr1[j]= getPatName(j,arr1len,arr1[j]) + '$' + arr1[j];
+                    }
+                    s2+=arr1[j]+"\r\n";
+                }
+            }
+            $(this).parent().parent().find('textarea').val(s2.trim()) ;
+        });
+        $('.contents').on('click','.j-editor-order',function(){
+            var arr1,s1,s2,urlarr,urlarrcount;
+            s1 = $(this).parent().parent().find('textarea').val(); s2="";
+            if (s1.length==0){return false;}
+            s1 = s1.replaceAll("\r","");
+            arr1=s1.split("\n");
+            for(j=arr1.length-1;j>=0;j--){
+                if(arr1[j].length>0){
+                    s2+=arr1[j]+"\r\n";
+                }
+            }
+            $(this).parent().parent().find('textarea').val(s2.trim()) ;
+        });
+        $('.contents').on('click','.j-editor-dn',function(){
+            var arr1,s1,s2,urlarr,urlarrcount;
+            s1 = $(this).parent().parent().find('textarea').val(); s2="";
+            if (s1.length==0){return false;}
+            s1 = s1.replaceAll("\r","");
+            arr1=s1.split("\n");
+            for(j=0;j<arr1.length;j++){
+                if(arr1[j].length>0){
+                    urlarr = arr1[j].split('$'); urlarrcount = urlarr.length-1;
+                    if(urlarrcount==0){
+                        arr1[j] = arr1[j];
+                    }
+                    else{
+                        arr1[j] = urlarr[1];
+                    }
+                    s2+=arr1[j]+"\r\n";
+                }
+            }
+            $(this).parent().parent().find('textarea').val(s2.trim()) ;
+        });
+
+
+        $('.j-plot-add').on('click',function(){
+            plot_arr_len++;
+            var tpl='<div class="layui-form-item" data-i="'+plot_arr_len+'"><label class="layui-form-label">{:lang('admin/vod/plot')}'+(plot_arr_len)+'：</label><div class="layui-input-inline w500"><input type="text" name="vod_plot_name[]" class="layui-input" placeholder="{:lang('admin/vod/plot_name')}"></div><div class="layui-input-inline w400 p10"><a href="javascript:void(0)" class="j-editor-clear">{:lang('clear')}</a>&nbsp;<a href="javascript:void(0)" class="j-editor-remove">{:lang('del')}</a>&nbsp;<a href="javascript:void(0)" class="j-editor-up">{:lang('admin/vod/move_up')}</a>&nbsp;<a href="javascript:void(0)" class="j-editor-down">{:lang('admin/vod/move_down')}</a>&nbsp;</div><div class="p10 m20"></div><div class="layui-input-block"><textarea id="vod_plot_detail'+(plot_arr_len)+'" name="vod_plot_detail[]" class="layui-textarea" style="width:99%;height:250px"></textarea></div></div>';
+            $("#plot_list").append(tpl);
+            ueArray[plot_arr_len] = editor_getEditor( 'vod_plot_detail'+plot_arr_len );
+        });
+
+        if(plot_arr_len==0 ) {
+            $('.j-plot-add').click();
+        }
+    });
+    
+</script>
+
+</body>
+</html>

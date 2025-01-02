@@ -1,0 +1,59 @@
+{include file="../../../application/admin/view_new/public/head" /}
+<div class="page-container p10">
+
+    <div class="my-toolbar-box" >
+        <ul class="layui-tab-title mb10">
+            <li ><a href="{:url('index')}">{:lang('admin/database/backup_db')}</a></li>
+            <li class="layui-this"><a href="{:url('index')}?group=import">{:lang('admin/database/import_db')}</a></li>
+        </ul>
+    </div>
+
+    <form id="pageListForm" class="layui-form">
+        <table class="layui-table mt10" lay-even="" >
+            <thead>
+            <tr>
+                <th>{:lang('admin/database/backup_name')}</th>
+                <th>{:lang('admin/database/backup_num')}</th>
+                <th>{:lang('admin/database/backup_zip')}</th>
+                <th>{:lang('admin/database/backup_size')}</th>
+                <th>{:lang('admin/database/backup_time')}</th>
+                <th width="180">{:lang('opt')}</th>
+            </tr>
+            </thead>
+            <tbody>
+            {volist name="list" id="vo"}
+            <tr>
+                <td>{:date('Ymd-His', $vo['time'])}</td>
+                <td>{$vo['part']}</td>
+                <td>{$vo['compress']}</td>
+                <td>{:round($vo['size']/1024, 2)} K</td>
+                <td>{:date('Y-m-d H:i:s', $vo['time'])}</td>
+                <td>
+                    <div class="layui-btn-group">
+                        <a data-href="{:url('import?id='.strtotime($key))}" class="layui-badge-rim layui-btn-small j-ajax" confirm="{:lang('admin/database/import_confirm')}">{:lang('admin/database/import')}</a>
+                        <a data-href="{:url('del?id='.strtotime($key))}" class="layui-badge-rim layui-btn-small j-tr-del">{:lang('del')}</a>
+                    </div>
+                </td>
+            </tr>
+            {/volist}
+            </tbody>
+        </table>
+    </form>
+
+</div>
+{include file="../../../application/admin/view_new/public/foot" /}
+
+
+<script type="text/javascript">
+    layui.use(['form', 'layer'], function () {
+        // 操作对象
+        var form = layui.form
+                , layer = layui.layer
+                , $ = layui.jquery;
+
+
+
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,16 @@
+<form class="layui-form m10" method="post" action="{$url}">
+    <input type="hidden" name="col" value="{$col}">
+    <input type="hidden" name="ids" value="{$ids}">
+
+    <div class="layui-input-inline w150">
+        <select name="val">
+            <option value="">{:lang('select_opt')}</option>
+            <option value="0" >{:lang('disable')}</option>
+            <option value="1" >{:lang('enable')}</option>
+        </select>
+    </div>
+    <div class="layui-input-inline">
+        <button type="submit" class="layui-btn" lay-submit="" refresh="{$refresh}" lay-filter="formSubmit">{:lang('btn_save')}</button>
+    </div>
+</form>
+

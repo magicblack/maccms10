@@ -1,0 +1,49 @@
+{include file="../../../application/admin/view_new/public/head" /}
+<div class="page-container p10">
+    <form class="layui-form layui-form-pane" action="">
+        <input type="hidden" name="id" value="{$param.id|mac_filter_xss}">
+        <fieldset class="layui-elem-field">
+            <legend>{:lang('admin/cj/label_data_rel')}</legend>
+        </fieldset>
+
+                    <table class="layui-table" lay-size="sm" style="width:600px;">
+                        <thead>
+                        <tr>
+                            <th width="100">{:lang('admin/cj/data_column')}</th>
+                            <th width="100">{:lang('admin/cj/label_column')}</th>
+                            <th width="100">{:lang('admin/cj/processing_function')}</th>
+                        </tr>
+                        </thead>
+
+                        {volist name="column_list" id="vo"}
+                        <tr>
+                            <td><input type="hidden" name="model_field[]" value="{$vo.Field}">{$vo.Field}</td>
+                            <td><select name="node_field[]">
+                                <option value="">{:lang('select_please')}</option>
+                                {volist name="node_field" id="vo2" key="key2"}
+                                <option value="{$key}" {if condition="$program_config['map'][$vo.Field] eq $key"}selected{/if}>{$vo2}</option>
+                                {/volist}
+                            </select>
+                            </td>
+                            <td><select name="funcs[]"><option value="" >{:lang('select_please')}</option><option value="trim" {if condition="$program_config['funcs'][$vo.Field] eq 'trim'"}selected{/if}>{:lang('admin/cj/trim_space')}</option></select></td>
+                        </tr>
+                        {/volist}
+                        </tbody>
+                    </table>
+
+        <div class="layui-form-item center">
+            <div class="layui-input-block">
+                <button type="submit" class="layui-btn" lay-submit="" lay-filter="formSubmit" data-child="true">{:lang('btn_save')}</button>
+                <button class="layui-btn layui-btn-primary" type="reset">{:lang('btn_reset')}</button>
+            </div>
+        </div>
+    </form>
+</div>
+
+{include file="../../../application/admin/view_new/public/foot" /}
+<script type="text/javascript">
+
+</script>
+
+</body>
+</html>

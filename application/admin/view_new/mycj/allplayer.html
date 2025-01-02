@@ -1,0 +1,34 @@
+<div class="page-container p10">
+	<blockquote class="layui-elem-quote"><p>程序顶部导航栏的 “视频”->“播放器” 里面也可管理</p><p style="color:red">这里修改的播放器，只适用于网页端调用，如果你程序接入了APP或者小程序，此处的修改将无效<br>如果你程序是二次开发过的，请勿使用此功能，避免造成未知的冲突</p><p>先勾选，然后选择批量操作的内容，即可批量修改多个播放器的调用内容</p></blockquote>
+    <div class="my-toolbar-box">
+        <div class="layui-btn-group">
+			<button class="layui-btn" id="allplayerBtn">批量操作<i class="layui-icon layui-icon-down layui-font-12"></i></button>
+			<a class="layui-btn layui-btn-danger layuiBtn" data-type="delplayer"><i class="layui-icon">&#xe620;</i>初始化播放器</a>
+        </div>
+    </div>
+    <form class="layui-form " method="post" id="pageListForm">
+        <table class="layui-table" lay-size="sm">
+            <thead>
+            <tr>
+                <th width="25"><input type="checkbox" lay-skin="primary" lay-filter="allChoose"></th>
+                <th width="40">播放器排序</th>
+                <th width="40">播放器编码</th>
+                <th width="130">播放器名称</th>
+                <th width="130">操作</th>
+            </tr>
+            </thead>
+            {volist name="list" id="vo"}
+            <tr>
+                <td><input type="checkbox" name="ids[]" value="{$vo.from}" class="layui-checkbox checkbox-ids" lay-skin="primary"></td>
+                <td>{$vo.sort}</td>
+                <td>{$vo.from}</td>
+                <td>{$vo.show}</td>
+                <td>
+                    <a class="layui-badge-rim j-iframe" data-href="{:url('vodplayer/info?id='.$vo['from'])}" href="javascript:;" title="编辑">编辑</a>
+                </td>
+            </tr>
+            {/volist}
+            </tbody>
+        </table>
+    </form>
+</div>

@@ -1,0 +1,156 @@
+{include file="../../../application/admin/view_new/public/head" /}
+<div class="page-container p10">
+    <form class="layui-form layui-form-pane" method="post" action="" id="movementTable">
+        <input id="collect_id" name="collect_id" type="hidden" value="{$info.collect_id}">
+        <input type="hidden" name="__token__" value="{$Request.token}" />
+        <div class="layui-form-item">
+            <label class="layui-form-label">{:lang('admin/collect/name')}：</label>
+            <div class="layui-input-block  ">
+                <input type="text" class="layui-input" value="{$info.collect_name}" placeholder="" id="collect_name" name="collect_name">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">{:lang('admin/collect/api_url')}：</label>
+            <div class="layui-input-block">
+                <input type="text" class="layui-input" value="{$info.collect_url}" placeholder="" id="collect_url" name="collect_url">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">{:lang('admin/collect/attach_param')}：</label>
+            <div class="layui-input-block">
+                <input type="text" class="layui-input" value="{$info.collect_param}" placeholder="" id="collect_param" name="collect_param">
+            </div>
+            <div class="layui-form-mid layui-word-aux" style="margin-left:110px; ">{:lang('admin/collect/attach_param_tip')}</div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">{:lang('admin/collect/api_type')}：</label>
+            <div class="layui-input-block">
+                <input name="collect_type" type="radio" value="1" title="xml" {if condition="$info['collect_type'] eq 1"}checked {/if}>
+                <input name="collect_type" type="radio" value="2" title="json" {if condition="$info['collect_type'] neq 1"}checked {/if}>
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">{:lang('admin/collect/data_type')}：</label>
+            <div class="layui-input-block">
+                <input name="collect_mid" lay-filter="collect_mid" type="radio" value="1" title="{:lang('vod')}" {if condition="$info['collect_mid'] eq 1"}checked {/if}>
+                <input name="collect_mid" lay-filter="collect_mid" type="radio" value="2" title="{:lang('art')}" {if condition="$info['collect_mid'] eq 2"}checked {/if}>
+                <input name="collect_mid" lay-filter="collect_mid" type="radio" value="8" title="{:lang('actor')}" {if condition="$info['collect_mid'] eq 8"}checked {/if}>
+                <input name="collect_mid" lay-filter="collect_mid" type="radio" value="9" title="{:lang('role')}" {if condition="$info['collect_mid'] eq 9"}checked {/if}>
+                <input name="collect_mid" lay-filter="collect_mid" type="radio" value="11" title="{:lang('website')}" {if condition="$info['collect_mid'] eq 11"}checked {/if}>
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">{:lang('admin/collect/data_opt')}：</label>
+            <div class="layui-input-block">
+                <input name="collect_opt" type="radio" value="0" title="{:lang('admin/collect/add_update')}" {if condition="$info['collect_opt'] eq 0"}checked {/if}>
+                <input name="collect_opt" type="radio" value="1" title="{:lang('admin/collect/add')}" {if condition="$info['collect_opt'] eq 1"}checked {/if}>
+                <input name="collect_opt" type="radio" value="2" title="{:lang('admin/collect/update')}" {if condition="$info['collect_opt'] eq 2"}checked {/if}>
+            </div>
+            <div class="layui-form-mid layui-word-aux" style="">{:lang('admin/collect/data_opt_tip')}</div>
+        </div>
+
+        <div class="layui-form-item row_filer" {if condition="$info['collect_mid'] neq '1'"} style="display:none;" {/if}>
+            <label class="layui-form-label">{:lang('admin/collect/url_filter')}：</label>
+            <div class="layui-input-block">
+                <input name="collect_filter" type="radio" value="0" title="{:lang('admin/collect/no_filter')}" {if condition="$info['collect_filter'] eq 0"}checked {/if}>
+                <input name="collect_filter" type="radio" value="1" title="{:lang('admin/collect/add_update')}" {if condition="$info['collect_filter'] eq 1"}checked {/if}>
+                <input name="collect_filter" type="radio" value="2" title="{:lang('admin/collect/add')}" {if condition="$info['collect_filter'] eq 2"}checked {/if}>
+                <input name="collect_filter" type="radio" value="3" title="{:lang('admin/collect/update')}" {if condition="$info['collect_filter'] eq 3"}checked {/if}>
+            </div>
+        </div>
+        <div class="layui-form-item row_filer" {if condition="$info['collect_mid'] neq '1'"} style="display:none;" {/if}>
+            <label class="layui-form-label">{:lang('admin/collect/filter_code')}：</label>
+            <div class="layui-input-block">
+                <input type="text" class="layui-input" value="{$info.collect_filter_from}" placeholder="{:lang('admin/collect/filter_code_tip')}" id="collect_filter_from" name="collect_filter_from">
+            </div>
+        </div>
+        <div class="layui-form-item row_filer" {if condition="$info['collect_mid'] neq '1'"} style="display:none;" {/if}>
+            <label class="layui-form-label">{:lang('admin/collect/filter_year')}：</label>
+            <div class="layui-input-block">
+                <input type="text" class="layui-input" value="{$info.collect_filter_year}" placeholder="{:lang('admin/collect/filter_year_tip')}" id="collect_filter_year" name="collect_filter_year">
+            </div>
+        </div>
+        <div class="layui-form-item row_filer">
+            <label class="layui-form-label">{:lang('pic_sync')}：</label>
+            <div class="layui-input-block">
+                <input name="collect_sync_pic_opt" type="radio" value="0" title="{:lang('follow_global')}" {if condition="$info['collect_sync_pic_opt'] eq 0"}checked {/if}>
+                <input name="collect_sync_pic_opt" type="radio" value="1" title="{:lang('open')}" {if condition="$info['collect_sync_pic_opt'] eq 1"}checked {/if}>
+                <input name="collect_sync_pic_opt" type="radio" value="2" title="{:lang('close')}" {if condition="$info['collect_sync_pic_opt'] eq 2"}checked {/if}>
+            </div>
+        </div>
+
+        <br>
+        <div class="layui-form-item center">
+            <div class="layui-input-block">
+                <button class="layui-btn layui-btn-normal" type="button" id="btnTest" >{:lang('test')}</button>
+                <button type="submit" class="layui-btn" lay-submit="" lay-filter="formSubmit" data-child="true">{:lang('btn_save')}</button>
+                <button class="layui-btn layui-btn-primary" type="reset">{:lang('btn_reset')}</button>
+            </div>
+        </div>
+    </form>
+
+</div>
+{include file="../../../application/admin/view_new/public/foot" /}
+
+<script type="text/javascript">
+    layui.use(['form', 'layer'], function () {
+        // 操作对象
+        var form = layui.form
+                , layer = layui.layer
+                , $ = layui.jquery;
+
+        // 验证
+        form.verify({
+            collect_name: function (value) {
+                if (value == "") {
+                    return "{:lang('name_empty')}";
+                }
+            },
+            collect_url: function (value) {
+                if (value == "") {
+                    return "{:lang('url_empty')}";
+                }
+            }
+        });
+
+
+        $('#btnTest').click(function() {
+            var that = $(this);
+            var data = 'cjurl='+ $('#collect_url').val() + '&cjflag='+ '&ac=list';
+
+            $.post("{:url('test')}",data,function(r){
+                if(r.code==1){
+                    layer.msg( "{:lang('admin/collect/test_ok')}" + '：'+ r.msg ,{time:1800});
+                    if(r.msg=='json'){
+                        $("input[name='collect_type'][value=2]").attr("checked",true);
+                    }
+                    else{
+                        $("input[name='collect_type'][value=1]").attr("checked",true);
+                    }
+                    form.render('radio');
+                }
+                else{
+                    layer.msg(r.msg,{time:1800});
+                }
+            });
+
+        });
+
+        form.on('radio(collect_mid)',function(data){
+            $('.row_filer').hide();
+            if(data.value=='1'){
+                $('.row_filer').show();
+            }
+        });
+
+    });
+
+
+
+
+</script>
+
+</body>
+</html>

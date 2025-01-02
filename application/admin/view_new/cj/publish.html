@@ -1,0 +1,79 @@
+{include file="../../../application/admin/view_new/public/head" /}
+<div class="page-container">
+    <form class="layui-form layui-form-pane" action="">
+        <div class="layui-tab">
+            <ul class="layui-tab-title">
+                <li {if condition="$param.status eq ''"}class="layui-this"{/if}><a href="{:url('cj/publish')}?id={$param.id}">{:lang('all')}</a></li>
+                <li {if condition="$param.status eq '1'"}class="layui-this"{/if}><a href="{:url('cj/publish')}?id={$param.id}&status=1">{:lang('admin/cj/collected_not')}</a></li>
+                <li {if condition="$param.status eq '2'"}class="layui-this"{/if}><a href="{:url('cj/publish')}?id={$param.id}&status=2">{:lang('admin/cj/collected')}</a></li>
+                <li {if condition="$param.status eq '3'"}class="layui-this"{/if}><a href="{:url('cj/publish')}?id={$param.id}&status=3">{:lang('admin/cj/published')}</a></li>
+            </ul>
+
+            <div class="layui-tab-content">
+                <div class="layui-tab-item layui-show">
+                    <div class="layui-btn-group">
+                        <a data-href="{:url('content_del')}" class="layui-btn layui-btn-primary j-page-btns confirm"><i class="layui-icon">&#xe640;</i>{:lang('del')}</a>
+                        <a data-href="{:url('content_del')}?ids=1&all=1" class="layui-btn layui-btn-primary j-ajax" confirm="{:lang('clear_confirm')}"><i class="layui-icon">&#xe640;</i>{:lang('clear')}</a>
+                        <a data-href="{:url('content_into')}?id={$param.id}" data-ajax="no" class="layui-btn layui-btn-primary j-page-btns confirm"><i class="layui-icon">&#xe654;</i>{:lang('import')}</a>
+                        <a data-href="{:url('content_into')}?id={$param.id}&all=1" data-ajax="no" data-checkbox="no" class="layui-btn layui-btn-primary j-page-btns confirm"><i class="layui-icon">&#xe654;</i>{:lang('import_all')}</a>
+                    </div>
+                    <table class="layui-table" lay-size="sm">
+                        <thead>
+                        <tr>
+                            <th width="25"><input type="checkbox" lay-skin="primary" lay-filter="allChoose"></th>
+                            <th width="50">{:lang('id')}</th>
+                            <th width="50">{:lang('status')}</th>
+                            <th width="250">{:lang('name')}</th>
+                            <th >{:lang('url')}</th>
+                            <th width="40">{:lang('opt')}</th>
+                        </tr>
+                        </thead>
+                        {volist name="list" id="vo"}
+                        <tr>
+                            <td><input type="checkbox" name="ids[]" value="{$vo.id}" class="layui-checkbox checkbox-ids" lay-skin="primary"></td>
+                            <td>{$vo.id}</td>
+                            <td>{if condition="$vo.status eq '1'"}{:lang('admin/cj/collected_not')}{elseif condition="$vo.status eq '2'"}{:lang('admin/cj/collected')}{else/}{:lang('admin/cj/published')}{/if}</td>
+                            <td>{$vo.title}</td>
+                            <td>{$vo.url}</td>
+                            <td>
+                                <a class="layui-badge-rim j-iframe " data-href="{:url('show?id='.$vo['id'])}" href="javascript:;" title="{:lang('view')}">{:lang('view')}</a>
+                            </td>
+                        </tr>
+                        {/volist}
+                        </tbody>
+                    </table>
+
+                    <div id="pages" class="center"></div>
+
+                </div>
+
+            </div>
+        </div>
+
+    </form>
+</div>
+
+{include file="../../../application/admin/view_new/public/foot" /}
+<script type="text/javascript">
+    var curUrl="{:url('cj/publish',$param)}";
+    layui.use(['laypage', 'layer'], function() {
+        var laypage = layui.laypage
+                , layer = layui.layer;
+
+        laypage.render({
+            elem: 'pages'
+            ,count: {$total}
+            ,limit: {$limit}
+            ,curr: {$page}
+            ,layout: ['count', 'prev', 'page', 'next', 'limit', 'skip']
+            ,jump: function(obj,first){
+                if(!first){
+                    location.href = curUrl.replace('%7Bpage%7D',obj.curr).replace('%7Blimit%7D',obj.limit);
+                }
+            }
+        });
+    });
+</script>
+
+</body>
+</html>

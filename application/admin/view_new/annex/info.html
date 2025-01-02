@@ -1,0 +1,172 @@
+{include file="../../../application/admin/view_new/public/head" /}
+<script type="text/javascript" src="__STATIC__/js/jquery.jscolor.js"></script>
+{include file="../../../application/admin/view_new/public/editor" flag="actor_editor"/}
+<div class="page-container p10">
+    <div class="showpic" style="display:none;"><img class="showpic_img" width="120" height="160" referrerPolicy="no-referrer"></div>
+    
+    <form class="layui-form layui-form-pane" method="post" action="">
+        <input type="hidden" name="actor_id" value="{$info.actor_id}">
+
+        <div class="layui-tab">
+            <ul class="layui-tab-title ">
+                <li class="layui-this">{:lang('base_info')}</a></li>
+
+            </ul>
+            <div class="layui-tab-content">
+
+                <div class="layui-tab-item layui-show">
+
+                <div class="layui-form-item">
+                    <label class="layui-form-label">{:lang('file_name')}：</label>
+                    <div class="layui-input-inline w500">
+                        <input type="text" class="layui-input" value="{$info.annex_file}" readonly="readonly">
+                    </div>
+                </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:lang('file_size')}：</label>
+                        <div class="layui-input-inline w500">
+                            <input type="text" class="layui-input" value="{$info.annex_size}" readonly="readonly">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:lang('type')}：</label>
+                        <div class="layui-input-inline w500">
+                            <input type="text" class="layui-input" value="{$info.annex_type}" readonly="readonly">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:lang('time')}：</label>
+                        <div class="layui-input-inline w500">
+                            <input type="text" class="layui-input" value="{$info.annex_time|mac_day}" readonly="readonly">
+                        </div>
+                    </div>
+                    
+        </div>
+
+            </div>
+        </div>
+
+
+    </form>
+
+</div>
+{include file="../../../application/admin/view_new/public/foot" /}
+
+<script type="text/javascript">
+
+    layui.use(['form','upload', 'layer'], function () {
+        // 操作对象
+        var form = layui.form
+                , layer = layui.layer
+                , $ = layui.jquery
+                , upload = layui.upload;;
+
+        // 验证
+        form.verify({
+            actor_name: function (value) {
+                if (value == "") {
+                    return "{:lang('name_empty')}";
+                }
+            }
+        });
+
+        $(document).on("click", ".extend", function(){
+            $id = $(this).attr('data-id');
+            if($id == 'actor_class'||$id == 'actor_keywords'){
+                $val = $("input[id='"+$id+"']").val();
+                if($val!=''){
+                    $val = $val+',';
+                }
+                if($val.indexOf($(this).text())>-1){
+                    return;
+                }
+                $("input[id='"+$id+"']").val($val+$(this).text());
+            }else{
+                $("input[id='"+$id+"']").val($(this).text());
+            }
+        });
+
+        form.on('select(type_id)', function(data){
+            getExtend(data.value);
+        });
+
+        upload.render({
+            elem: '.layui-upload'
+            ,url: "{:url('upload/upload')}?flag=actor"
+            ,method: 'post'
+            ,before: function(input) {
+                layer.msg("{:lang('upload_ing')}", {time:3000000});
+            },done: function(res, index, upload) {
+                var obj = this.item;
+                if (res.code == 0) {
+                    layer.msg(res.msg);
+                    return false;
+                }
+                layer.closeAll();
+                var input = $(obj).parent().parent().find('.upload-input');
+                if ($(obj).attr('lay-type') == 'image') {
+                    input.siblings('img').attr('src', res.data.file).show();
+                }
+                input.val(res.data.file);
+
+                if(res.data.thumb_class !=''){
+                    $('.'+ res.data.thumb_class).val(res.data.thumb[0].file);
+                }
+            }
+        });
+
+        $('.upload-input').hover(function (e){
+            var e = window.event || e;
+            var imgsrc = $(this).val();
+            if(imgsrc.trim()==""){ return; }
+            var left = e.clientX+document.body.scrollLeft+20;
+            var top = e.clientY+document.body.scrollTop+20;
+            $(".showpic").css({left:left,top:top,display:""});
+            if(imgsrc.indexOf('://')<0){ imgsrc = ROOT_PATH + '/' + imgsrc;	} else{ imgsrc = imgsrc.replace('mac:','http:'); }
+            $(".showpic_img").attr("src", imgsrc);
+        },function (e){
+            $(".showpic").css("display","none");
+        });
+
+        $("#btn_rnd").click(function(){
+            $("#actor_hits").val( rndNum(5000,9999) );
+            $("#actor_hits_month").val( rndNum(1000,4999) );
+            $("#actor_hits_week").val( rndNum(300,999) );
+            $("#actor_hits_day").val( rndNum(1,299) );
+            $("#actor_up").val( rndNum(1,999) );
+            $("#actor_down").val( rndNum(1,999) );
+            $("#actor_score").val( rndNum(10) );
+            $("#actor_score_all").val( rndNum(1000) );
+            $("#actor_score_num").val( rndNum(100) );
+        });
+
+        var ue = editor_getEditor('actor_content');
+    });
+
+    function getExtend(id){
+        $.post("{:url('type/extend')}", {id:id}, function(res) {
+
+            if (res.code == 1) {
+                $.each(res.data, function(key, value){
+                    $('.actor_'+key+"_label").html('');
+                    if(value != ''){
+                        $.each(value, function(key2, value2){
+                            $(".actor_"+key+"_label").append('<a class="layui-btn layui-btn-xs extend" href="javascript:;" data-id="actor_'+key+'">'+value2+'</a>');
+                        });
+                    }
+                });
+            }
+        });
+    }
+
+    {if condition="$info.actor_id gt 0"}
+    setTimeout(function () {
+        getExtend('{$info.type_id}')
+    },1000);
+    {/if}
+
+</script>
+
+</body>
+</html>
