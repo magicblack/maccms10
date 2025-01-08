@@ -276,7 +276,11 @@ class Index extends Base
             $tmp_disk_data = [];
             $tmp_disk_data[0] = $totalSpaceGB - $freeSpaceGB;
             $tmp_disk_data[1] = $totalSpaceGB;
-            $tmp_disk_data[2] = (100 - round(($freeSpaceGB / $totalSpaceGB) * 100, 2));
+            if ($totalSpaceGB != 0) {
+                $tmp_disk_data[2] = (100 - round(($freeSpaceGB / $totalSpaceGB) * 100, 2));
+            } else {
+                $tmp_disk_data[2] = 0;
+            }
             $os_data['disk_datas']['/'] = $tmp_disk_data;
             $mem_arr = $this->get_linux_server_memory_usage();
             $os_data['mem_usage'] = $mem_arr['usage'];
@@ -312,6 +316,9 @@ class Index extends Base
 
     private function byte_format($size, $dec = 2)
     {
+        if ($size == 0) {
+            return "0 B";
+        }
         $a = array("B", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB");
         $pos = 0;
         while ($size >= 1024) {
@@ -335,7 +342,11 @@ class Index extends Base
             $disk[$letter][0] = $this->byte_format(@disk_free_space($is_disk));
             $disk[$letter][1] = $this->byte_format(@disk_total_space($is_disk));
             // $disk[$letter][2] = (100-round(((@disk_free_space($is_disk)/(1024*1024*1024))/(@disk_total_space($is_disk)/(1024*1024*1024)))*100,2));
-            $disk[$letter][2] = (round(100 - round(((@disk_free_space($is_disk) / (1024 * 1024 * 1024)) / (@disk_total_space($is_disk) / (1024 * 1024 * 1024))) * 100, 2), 2));
+            if (@disk_total_space($is_disk) != 0) {
+                $disk[$letter][2] = (round(100 - round(((@disk_free_space($is_disk) / (1024 * 1024 * 1024)) / (@disk_total_space($is_disk) / (1024 * 1024 * 1024))) * 100, 2), 2));
+            } else {
+                $disk[$letter][2] = 0;
+            }
             $diskk += $this->byte_format(@disk_free_space($is_disk));
             $diskz += $this->byte_format(@disk_total_space($is_disk));
         }
@@ -422,7 +433,11 @@ class Index extends Base
         $path = $this->getMemoryUsageVbsPath();
         exec("cscript -nologo $path", $usage);
         $memory = json_decode($usage[0], true);
-        $memory['usage'] = Round((($memory['TotalVisibleMemorySize'] - $memory['FreePhysicalMemory']) / $memory['TotalVisibleMemorySize']) * 100);
+        if ($memory['TotalVisibleMemorySize'] != 0) {
+            $memory['usage'] = Round((($memory['TotalVisibleMemorySize'] - $memory['FreePhysicalMemory']) / $memory['TotalVisibleMemorySize']) * 100);
+        } else {
+            $memory['usage'] = 0;
+        }
         return $memory;
     }
 
@@ -434,7 +449,10 @@ class Index extends Base
         $mem = explode(" ", $free_arr[1]);
         $mem = array_filter($mem);
         $mem = array_merge($mem);
-        $memory_usage = $mem[2] / $mem[1] * 100;
+        $memory_usage = 0;
+        if ($mem[1] != 0) {
+            $memory_usage = $mem[2] / $mem[1] * 100;
+        } 
         $mem_array = [];
         $mem_array['total'] = round($mem[1] / 1024, 2);
         $mem_array['used'] = round($mem[2] / 1024, 2);
@@ -452,7 +470,7 @@ class Index extends Base
 
         preg_match('/\s([\d.]+)\s*us/', $cpu_load, $matches);
 
-        if (isset($matches[1])) {
+        if (isset($matches[1]) && is_numeric($matches[1])) {
             $cpu_usage = (float)$matches[1];
         } else {
             return ['error' => 'Failed to parse CPU usage.'];
@@ -526,7 +544,11 @@ class Index extends Base
         if (is_array($tmp_arr) && count($tmp_arr) > 1 && (strtotime(end($tmp_arr)['days']) == strtotime(date('Y-m-d')))) {
             $yesterday_visit_count = $tmp_arr[count($tmp_arr) - 2]['count'];
             $lastday_visit_count = end($tmp_arr)['count'];
-            $result['raise_visit_user_today'] = number_format((($lastday_visit_count - $yesterday_visit_count) / $yesterday_visit_count) * 100, 2, '.', ',');
+            if ($yesterday_visit_count != 0) {
+                $result['raise_visit_user_today'] = number_format((($lastday_visit_count - $yesterday_visit_count) / $yesterday_visit_count) * 100, 2, '.', ',');
+            } else {
+                $result['raise_visit_user_today'] = 0;
+            }
         }
 
         foreach ($tmp_arr as $data) {
@@ -559,7 +581,11 @@ class Index extends Base
         if (is_array($result['seven_day_reg_data']) && count($result['seven_day_reg_data']) > 1 && (strtotime(end($result['seven_day_reg_data'])['days']) == strtotime(date('Y-m-d')))) {
             $yesterday_reg_count = $result['seven_day_reg_data'][count($result['seven_day_reg_data']) - 2]['count'];
             $lastday_reg_count = end($result['seven_day_reg_data'])['count'];
-            $result['raise_reg_user_today'] = number_format((($lastday_reg_count - $yesterday_reg_count) / $yesterday_reg_count) * 100, 2, '.', ',');
+            if ($yesterday_reg_count != 0) {
+                $result['raise_reg_user_today'] = number_format((($lastday_reg_count - $yesterday_reg_count) / $yesterday_reg_count) * 100, 2, '.', ',');
+            } else {
+                $result['raise_reg_user_today'] = 0;
+            }
         }
 
         $result['seven_day_reg_total_count'] = number_format($result['seven_day_reg_total_count'], 0, '.', ',');

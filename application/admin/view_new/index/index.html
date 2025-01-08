@@ -173,6 +173,13 @@
             </ul>
             <div class="bottom-nav">
                 <ul class="layui-nav layui-layout-right layui-form flex gap-1 items-center h-[60px]" lay-filter="demo">
+                    <li class="layui-nav-item" >
+                        <a href="javascript:;">{:lang('admin/index/index/menu_opt')}</a>
+                        <dl class="layui-nav-child">
+                            <dd><a href="javascript:;" class="closePageAll">&nbsp;{:lang('admin/index/index/menu_close_all')}</a></dd>
+                            <dd><a href="javascript:;" class="closePageOther">&nbsp;{:lang('admin/index/index/menu_close_other')}</a></dd>
+                        </dl>
+                    </li>
                     <div class="layui-input-inline  w-[150px]">
                         <select id="languageSelect" name="app[lang]" lay-filter="lang">
                             <option value="">{:lang('install/select_lang')}</option>
