@@ -536,7 +536,7 @@ class Index extends Base
         $result['today_money_get'] = model('Order')->where('order_time', 'between', $today_start . ',' . $today_end)->where('order_status', 1)->sum('order_price');
         $result['today_money_get'] = number_format($result['today_money_get'], 2, '.', ',');
         //前七天 每日用户访问数
-        $tmp_arr = Db::query("select FROM_UNIXTIME(visit_time, '%Y-%c-%d' ) days,count(*) count from (SELECT * from mac_visit where visit_time >= (unix_timestamp(CURDATE())-604800)) as temp group by days");
+        $tmp_arr = Db::query("select FROM_UNIXTIME(visit_time, '%Y-%c-%d' ) days,count(*) count from (SELECT * from ".config('database.prefix')."visit where visit_time >= (unix_timestamp(CURDATE())-604800)) as temp group by days");
         $result['seven_day_visit_day'] = [];
         $result['seven_day_visit_count'] = [];
 
@@ -564,7 +564,7 @@ class Index extends Base
 
         $result['seven_day_visit_total_count'] = number_format($result['seven_day_visit_total_count'], 0, '.', ',');
         //前七天 每日用户注册数
-        $result['seven_day_reg_data'] = Db::query("select FROM_UNIXTIME(user_reg_time, '%Y-%c-%d' ) days,count(*) count from (SELECT * from mac_user where user_reg_time >= (unix_timestamp(CURDATE())-604800)) as tmp group by days");
+        $result['seven_day_reg_data'] = Db::query("select FROM_UNIXTIME(user_reg_time, '%Y-%c-%d' ) days,count(*) count from (SELECT * from ".config('database.prefix')."user where user_reg_time >= (unix_timestamp(CURDATE())-604800)) as tmp group by days");
 
         //近七日用户注册总量
         $result['seven_day_reg_total_count'] = 0;
@@ -595,7 +595,7 @@ class Index extends Base
     public function rangeDateDailyVisit()
     {
 
-        $range_daily_visit_data = Db::query("select FROM_UNIXTIME(visit_time, '%Y-%c-%d' ) days,count(*) count from (SELECT * from mac_visit where visit_time >= " . strtotime($_POST['startDate']) . "&&  visit_time <= " . strtotime($_POST['endDate']) . " ) as temp group by days");
+        $range_daily_visit_data = Db::query("select FROM_UNIXTIME(visit_time, '%Y-%c-%d' ) days,count(*) count from (SELECT * from ".config('database.prefix')."visit where visit_time >= " . strtotime($_POST['startDate']) . "&&  visit_time <= " . strtotime($_POST['endDate']) . " ) as temp group by days");
         $result = [];
         $range_visit_day = [];
         $range_visit_count = [];
