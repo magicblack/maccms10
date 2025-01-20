@@ -1810,6 +1810,7 @@ Note: Si les listes noires et blanches sont remplies, les stratégies s\'appliqu
   'install/result' => 'Résultat',
   'install/back_step' => 'Retour à l\'étape précédente',
   'install/next_step' => 'Passer à l\'étape suivante',
+  'install/next_step_tips'=>'Si al hacer clic en siguiente se agota el tiempo de espera, reinicie php-fpm e inténtelo de nuevo',
   'install/question' => 'Solutions aux problèmes courants',
   'install/database_config' => 'Configuration de la base de données',
   'install/server_address' => 'Adresse du serveur',

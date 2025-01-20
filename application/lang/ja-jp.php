@@ -1814,6 +1814,7 @@ https://www.baidu.com/123.jpg
   'install/result' => '結果',
   'install/back_step' => '前のステップに戻る',
   'install/next_step' => '次のステップに進む',
+  'install/next_step_tips'=>'次へをクリックしてタイムアウトになった場合は、php-fpmを再起動してからもう一度お試しください',
   'install/question' => 'よくある質問の解決策',
   'install/database_config' => 'データベース構成',
   'install/server_address' => 'サーバーアドレス',

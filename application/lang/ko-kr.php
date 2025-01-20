@@ -1813,6 +1813,7 @@ https://www.baidu.com/123.jpg
   'install/result' => '결과',
   'install/back_step' => '이전 단계로 돌아가기',
   'install/next_step' => '다음 단계로 이동',
+  'install/next_step_tips'=>'다음을 클릭했을 때 시간 초과가 발생하면 php-fpm을 다시 시작한 후 다시 시도하십시오',
   'install/question' => '자주 묻는 질문 해결 방법',
   'install/database_config' => '데이터베이스 구성',
   'install/server_address' => '서버 주소',

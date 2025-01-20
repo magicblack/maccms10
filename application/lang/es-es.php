@@ -1810,6 +1810,7 @@ Nota: Si se especifican listas negras y blancas, ambas se aplicarán simultánea
   'install/result' => 'Resultado',
   'install/back_step' => 'Regresar al Paso Anterior',
   'install/next_step' => 'Siguiente Paso',
+  'install/next_step_tips'=>'If clicking next times out, please restart php-fpm and try again',
   'install/question' => 'Solución de Problemas Comunes',
   'install/database_config' => 'Configuración de la Base de Datos',
   'install/server_address' => 'Dirección del Servidor',

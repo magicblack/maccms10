@@ -1810,6 +1810,7 @@ Note: If both black and white lists are filled, both policies will take effect.'
   'install/result' => 'Result',
   'install/back_step' => 'Back to Previous Step',
   'install/next_step' => 'Proceed to Next Step',
+  'install/next_step_tips'=>'Wenn ein Timeout auftritt, klicken Sie auf "Weiter" und starten Sie php-fpm neu, bevor Sie es erneut versuchen',
   'install/question' => 'Frequently Asked Questions and Solutions',
   'install/database_config' => 'Database Configuration',
   'install/server_address' => 'Server Address',

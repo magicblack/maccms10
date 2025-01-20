@@ -1814,6 +1814,7 @@ https://www.baidu.com/123.jpg
   'install/result' => 'Resultado',
   'install/back_step' => 'Voltar para a etapa anterior',
   'install/next_step' => 'Prosseguir para a próxima etapa',
+  'install/next_step_tips'=>'Se ao clicar em próximo ocorrer um tempo limite, reinicie o php-fpm e tente novamente',
   'install/question' => 'Soluções para problemas comuns',
   'install/database_config' => 'Configuração do banco de dados',
   'install/server_address' => 'Endereço do servidor',

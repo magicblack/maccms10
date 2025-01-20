@@ -1815,6 +1815,7 @@ https://www.baidu.com/123.jpg
   'install/result' => '結果',
   'install/back_step' => '返回上一步',
   'install/next_step' => '進行下一步',
+  'install/next_step_tips'=>'如點擊下一步超時請重啟php-fpm後再試',
   'install/question' => '常見問題解決辦法',
   'install/database_config' => '數據庫配置',
   'install/server_address' => '服務器地址',

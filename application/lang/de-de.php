@@ -1802,6 +1802,7 @@ Nota: Se tanto a lista negra quanto a lista branca forem preenchidas, a polític
   'install/result' => 'Resultado',
   'install/back_step' => 'Voltar ao Passo Anterior',
   'install/next_step' => 'Próximo Passo',
+    'install/next_step_tips'=>'Wenn ein Timeout auftritt, klicken Sie auf "Weiter" und starten Sie php-fpm neu, bevor Sie es erneut versuchen',
   'install/question' => 'Soluções para Problemas Comuns',
   'install/database_config' => 'Configuração do Banco de Dados',
   'install/server_address' => 'Endereço do Servidor',

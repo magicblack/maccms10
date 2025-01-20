@@ -1999,6 +1999,7 @@ https://www.baidu.com/123.jpg
     'install/result'=>'结果',
     'install/back_step'=>'返回上一步',
     'install/next_step'=>'进行下一步',
+    'install/next_step_tips'=>'如点击下一步超时请重启php-fpm后再试',
     'install/question'=>'常见问题解决办法',
     'install/database_config'=>'数据库配置',
 
