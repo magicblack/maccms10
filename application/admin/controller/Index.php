@@ -256,10 +256,12 @@ class Index extends Base
     public function get_system_status()
     {
         //判斷系統
-        $os_name = strtoupper(substr(PHP_OS, 0, 3));
+        $os_name = PHP_OS;
         $os_data = [];
-        $os_data['os_name'] = '';
-        if ($os_name == 'WIN') {
+        $os_data['os_name'] = $os_name;
+        
+        if (strtoupper(substr($os_name, 0, 3)) === 'WIN') {
+            // Windows系统
             $os_data['os_name'] = 'WINDOWS';
             $os_data['disk_datas'] = $this->get_spec_disk('all');
             $os_data['cpu_usage'] = $this->getCpuUsage();
@@ -267,48 +269,28 @@ class Index extends Base
             $os_data['mem_usage'] = $mem_arr['usage'];
             $os_data['mem_total'] = round($mem_arr['TotalVisibleMemorySize'] / 1024, 2);
             $os_data['mem_used'] = $os_data['mem_total'] - round($mem_arr['FreePhysicalMemory'] / 1024, 2);
-        } else if ($os_name == 'LIN') {
-            $os_data['os_name'] = 'LINUX';
-            $totalSpace = disk_total_space('/');    // 获取根目录的总容量
-            $freeSpace = disk_free_space('/');      // 获取根目录的可用容量
-            $totalSpaceGB = $totalSpace / (1024 * 1024 * 1024);   // 将总容量转换为GB
-            $freeSpaceGB = $freeSpace / (1024 * 1024 * 1024);     // 将可用容量转换为GB
+        } else {
+            // Linux和FreeBSD的处理逻辑
+            $os_data['os_name'] = strtoupper($os_name);
+            
+            // 获取磁盘信息
+            $totalSpace = disk_total_space('/');
+            $freeSpace = disk_free_space('/');
+            $totalSpaceGB = $totalSpace / (1024 * 1024 * 1024);
+            $freeSpaceGB = $freeSpace / (1024 * 1024 * 1024);
             $tmp_disk_data = [];
             $tmp_disk_data[0] = $totalSpaceGB - $freeSpaceGB;
             $tmp_disk_data[1] = $totalSpaceGB;
-            if ($totalSpaceGB != 0) {
-                $tmp_disk_data[2] = (100 - round(($freeSpaceGB / $totalSpaceGB) * 100, 2));
-            } else {
-                $tmp_disk_data[2] = 0;
-            }
+            $tmp_disk_data[2] = (100 - round(($freeSpaceGB / $totalSpaceGB) * 100, 2));
             $os_data['disk_datas']['/'] = $tmp_disk_data;
-            $mem_arr = $this->get_linux_server_memory_usage();
+            
+            // 获取内存和CPU信息
+            $mem_arr = $this->get_unix_server_memory_usage();
+            $os_data['cpu_usage'] = $this->get_unix_server_cpu_usage();
+            
             $os_data['mem_usage'] = $mem_arr['usage'];
             $os_data['mem_used'] = $mem_arr['used'];
             $os_data['mem_total'] = $mem_arr['total'];
-            $os_data['cpu_usage'] = $this->get_linux_server_cpu_usage()['usage'];
-            // if (is_readable("/proc/stat")) {
-            //     $statData1 = $this->_getServerLoadLinuxData();
-            //     sleep(0.5);
-            //     $statData2 = $this->_getServerLoadLinuxData();
-            //     if (
-            //         (!is_null($statData1)) &&
-            //         (!is_null($statData2))
-            //     ) {
-            //         $statData2[0] -= $statData1[0];
-            //         $statData2[1] -= $statData1[1];
-            //         $statData2[2] -= $statData1[2];
-            //         $statData2[3] -= $statData1[3];
-
-            //         $cpuTime = $statData2[0] + $statData2[1] + $statData2[2] + $statData2[3];
-
-            //         if ($cpuTime > 0) {
-            //             $os_data['cpu_usage'] = 100 - ($statData2[3] * 100 / $cpuTime);
-            //         } else {
-            //             $os_data['cpu_usage'] = 0;
-            //         }
-            //     }
-            // }
         }
 
         return $os_data;
@@ -441,44 +423,194 @@ class Index extends Base
         return $memory;
     }
 
-    private function get_linux_server_memory_usage()
+    private function get_unix_server_memory_usage()
     {
-        $free = shell_exec('free');
-        $free = (string)trim($free);
-        $free_arr = explode("\n", $free);
-        $mem = explode(" ", $free_arr[1]);
-        $mem = array_filter($mem);
-        $mem = array_merge($mem);
-        $memory_usage = 0;
-        if ($mem[1] != 0) {
-            $memory_usage = $mem[2] / $mem[1] * 100;
-        } 
-        $mem_array = [];
-        $mem_array['total'] = round($mem[1] / 1024, 2);
-        $mem_array['used'] = round($mem[2] / 1024, 2);
-        $mem_array['usage'] = round($memory_usage, 2);
-        return $mem_array;
+        // 首先尝试使用通用的 sysinfo 方法
+        if (function_exists('sysinfo')) {
+            $si = sysinfo();
+            if ($si) {
+                $total_mem = $si['totalram'] * $si['mem_unit'] / 1024 / 1024;
+                $free_mem = $si['freeram'] * $si['mem_unit'] / 1024 / 1024;
+                $used_mem = $total_mem - $free_mem;
+                $usage = ($used_mem / $total_mem) * 100;
+                
+                return [
+                    'total' => round($total_mem, 2),
+                    'used' => round($used_mem, 2),
+                    'usage' => round($usage, 2)
+                ];
+            }
+        }
+
+        // 尝试不同的内存信息获取方法
+        $methods = [
+            // Linux free 命令
+            'free' => function() {
+                $free = shell_exec('free');
+                if ($free) {
+                    $free = (string)trim($free);
+                    $free_arr = explode("\n", $free);
+                    $mem = explode(" ", $free_arr[1]);
+                    $mem = array_filter($mem);
+                    $mem = array_merge($mem);
+                    
+                    if (count($mem) >= 3 && !empty($mem[1])) {
+                        return [
+                            'total' => round($mem[1] / 1024, 2),
+                            'used' => round($mem[2] / 1024, 2),
+                            'usage' => round($mem[2] / $mem[1] * 100, 2)
+                        ];
+                    }
+                }
+                return null;
+            },
+            
+            // FreeBSD/Unix sysctl 命令
+            'sysctl' => function() {
+                $sysctl = shell_exec('/sbin/sysctl -n hw.physmem hw.pagesize vm.stats.vm.v_free_count 2>/dev/null');
+                if ($sysctl) {
+                    $lines = explode("\n", trim($sysctl));
+                    if (count($lines) >= 3 && !empty($lines[0])) {
+                        $total_mem = $lines[0] / 1024 / 1024;
+                        $page_size = $lines[1];
+                        $free_pages = $lines[2];
+                        $free_mem = ($free_pages * $page_size) / 1024 / 1024;
+                        $used_mem = $total_mem - $free_mem;
+                        $usage = $total_mem > 0 ? ($used_mem / $total_mem) * 100 : 0;
+                        
+                        return [
+                            'total' => round($total_mem, 2),
+                            'used' => round($used_mem, 2),
+                            'usage' => round($usage, 2)
+                        ];
+                    }
+                }
+                return null;
+            },
+            
+            // /proc/meminfo 文件读取
+            'proc' => function() {
+                if (is_readable('/proc/meminfo')) {
+                    $meminfo = file_get_contents('/proc/meminfo');
+                    if ($meminfo) {
+                        preg_match('/MemTotal:\s+(\d+)/i', $meminfo, $total);
+                        preg_match('/MemFree:\s+(\d+)/i', $meminfo, $free);
+                        preg_match('/Cached:\s+(\d+)/i', $meminfo, $cached);
+                        preg_match('/Buffers:\s+(\d+)/i', $meminfo, $buffers);
+                        
+                        if (isset($total[1]) && isset($free[1])) {
+                            $total_mem = $total[1] / 1024;
+                            $free_mem = ($free[1] + (isset($cached[1]) ? $cached[1] : 0) + (isset($buffers[1]) ? $buffers[1] : 0)) / 1024;
+                            $used_mem = $total_mem - $free_mem;
+                            $usage = ($used_mem / $total_mem) * 100;
+                            
+                            return [
+                                'total' => round($total_mem, 2),
+                                'used' => round($used_mem, 2),
+                                'usage' => round($usage, 2)
+                            ];
+                        }
+                    }
+                }
+                return null;
+            }
+        ];
+        
+        // 依次尝试各种方法
+        foreach ($methods as $method) {
+            $result = $method();
+            if ($result !== null) {
+                return $result;
+            }
+        }
+        
+        // 如果所有方法都失败，返回默认值
+        return [
+            'total' => 0,
+            'used' => 0,
+            'usage' => 0
+        ];
     }
 
-    private function get_linux_server_cpu_usage()
+    private function get_unix_server_cpu_usage()
     {
-        $cpu_load = shell_exec("top -bn1 | grep 'Cpu(s)'");
-
-        if (empty($cpu_load)) {
-            return ['error' => 'Failed to retrieve CPU usage.'];
-        }
-
-        preg_match('/\s([\d.]+)\s*us/', $cpu_load, $matches);
-
-        if (isset($matches[1]) && is_numeric($matches[1])) {
-            $cpu_usage = (float)$matches[1];
-        } else {
-            return ['error' => 'Failed to parse CPU usage.'];
-        }
-
-        return [
-            'usage' => round($cpu_usage, 2)
+        // 首先尝试使用通用的方法
+        $methods = [
+            // top 命令 (Linux)
+            'top_linux' => function() {
+                $cpu_load = shell_exec("top -bn1 | grep 'Cpu(s)' 2>/dev/null");
+                if (!empty($cpu_load)) {
+                    if (preg_match('/(\d+[.,]\d+).*?us/', $cpu_load, $matches)) {
+                        return round((float)str_replace(',', '.', $matches[1]), 2);
+                    }
+                }
+                return null;
+            },
+            
+            // top 命令 (FreeBSD)
+            'top_bsd' => function() {
+                $cpu_load = shell_exec("top -d2 -n1 | grep 'CPU:' 2>/dev/null");
+                if (!empty($cpu_load)) {
+                    if (preg_match('/(\d+\.\d+)%\s+user/', $cpu_load, $matches)) {
+                        return round((float)$matches[1], 2);
+                    }
+                }
+                return null;
+            },
+            
+            // sysctl (FreeBSD/Unix)
+            'sysctl' => function() {
+                $cpu_load = shell_exec('/sbin/sysctl -n kern.cp_time 2>/dev/null');
+                if (!empty($cpu_load)) {
+                    $times = explode(" ", trim($cpu_load));
+                    if (count($times) >= 5) {
+                        $total = array_sum($times);
+                        $idle = $times[4];
+                        return $total > 0 ? round(100 - ($idle * 100 / $total), 2) : 0;
+                    }
+                }
+                return null;
+            },
+            
+            // /proc/stat 文件读取
+            'proc' => function() {
+                if (is_readable('/proc/stat')) {
+                    $stats1 = file_get_contents('/proc/stat');
+                    usleep(100000); // 等待100ms
+                    $stats2 = file_get_contents('/proc/stat');
+                    
+                    if ($stats1 && $stats2) {
+                        $stats_arr1 = explode(' ', trim(explode("\n", $stats1)[0]));
+                        $stats_arr2 = explode(' ', trim(explode("\n", $stats2)[0]));
+                        
+                        if (count($stats_arr1) >= 5 && count($stats_arr2) >= 5) {
+                            $cpu1 = array_sum(array_slice($stats_arr1, 1));
+                            $cpu2 = array_sum(array_slice($stats_arr2, 1));
+                            $idle1 = $stats_arr1[4];
+                            $idle2 = $stats_arr2[4];
+                            
+                            $diff_cpu = $cpu2 - $cpu1;
+                            $diff_idle = $idle2 - $idle1;
+                            
+                            if ($diff_cpu > 0) {
+                                return round(100 * (1 - $diff_idle / $diff_cpu), 2);
+                            }
+                        }
+                    }
+                }
+                return null;
+            }
         ];
+        
+        // 依次尝试各种方法
+        foreach ($methods as $method) {
+            $result = $method();
+            if ($result !== null) {
+                return $result;
+            }
+        }
+        
+        return 0;
     }
 
     private function _getServerLoadLinuxData()
