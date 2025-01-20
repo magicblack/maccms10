@@ -118,7 +118,9 @@ class Controller
      */
     protected function fetch($template = '', $vars = [], $replace = [], $config = [])
     {
-        if($GLOBALS['config']['site']['new_version'] == 1){
+        // 如果是新版本
+        if($GLOBALS['config']['site']['new_version'] == 1 || !isset($GLOBALS['config']['site']['new_version']) || empty($GLOBALS['config']['site']['new_version'])){
+            // 如果模板路径以admin@开头
             if (strpos($template, 'admin@') === 0) {
                 $parts = explode('@', $template);
                 $result = $parts[1];

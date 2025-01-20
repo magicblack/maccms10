@@ -39,12 +39,13 @@ class View
         $base    = $request->root();
         $root    = strpos($base, '.') ? ltrim(dirname($base), DS) : $base;
         if ('' != $root) {
-            $root = '/' . ltrim($root, '/');
+            $root = '/' . ltrim($root, '/'); 
         }
-        if($GLOBALS['config']['site']['new_version'] == 1){
-            $static_path = '/static_new/';
+        // 如果 new_version 为 1 或者 new_version 不存在或者为null，则使用新版模板
+        if($GLOBALS['config']['site']['new_version'] == 1 || !isset($GLOBALS['config']['site']['new_version']) || empty($GLOBALS['config']['site']['new_version'])){
+            $root . $static_path = '/static_new/';
         }else{
-            $static_path = '/static/';
+            $root . $static_path = '/static/';
         }
         $baseReplace = [
             '__ROOT__'   => $root,
