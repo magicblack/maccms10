@@ -2056,7 +2056,7 @@ https://www.baidu.com/123.jpg
     'install/read_and_write'=>'读写',
     'install/not_writable'=>'不可写',
     'install/support'=>'支持',
-    'install/not_support'=>'支持',
+    'install/not_support'=>'不支持',
     'install/class'=>'类',
     'install/model'=>'模块',
     'install/function'=>'函数',

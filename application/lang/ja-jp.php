@@ -1868,7 +1868,7 @@ https://www.baidu.com/123.jpg
   'install/read_and_write' => '読み取り/書き込み',
   'install/not_writable' => '書き込み不可',
   'install/support' => 'サポート',
-  'install/not_support' => 'サポート',
+  'install/not_support' => 'サポートされていません',
   'install/class' => 'クラス',
   'install/model' => 'モジュール',
   'install/function' => '関数',

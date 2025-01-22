@@ -1856,7 +1856,7 @@ Nota: Se tanto a lista negra quanto a lista branca forem preenchidas, a polític
   'install/read_and_write' => 'Leitura e Escrita',
   'install/not_writable' => 'Não Gravável',
   'install/support' => 'Suporte',
-  'install/not_support' => 'Não Suportado',
+  'install/not_support' => 'Nicht unterstützt',
   'install/class' => 'Classe',
   'install/model' => 'Modelo',
   'install/function' => 'Função',

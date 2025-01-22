@@ -1864,7 +1864,7 @@ Note: Si les listes noires et blanches sont remplies, les stratégies s\'appliqu
   'install/read_and_write' => 'Lecture et écriture',
   'install/not_writable' => 'Non accessible en écriture',
   'install/support' => 'Supporté',
-  'install/not_support' => 'Non supporté',
+  'install/not_support' => 'Non pris en charge',
   'install/class' => 'Classe',
   'install/model' => 'Modèle',
   'install/function' => 'Fonction',

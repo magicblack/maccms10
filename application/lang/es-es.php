@@ -1864,7 +1864,7 @@ Nota: Si se especifican listas negras y blancas, ambas se aplicarán simultánea
   'install/read_and_write' => 'Lectura y Escritura',
   'install/not_writable' => 'No Escribible',
   'install/support' => 'Soportado',
-  'install/not_support' => 'No Soportado',
+  'install/not_support' => 'No compatible',
   'install/class' => 'Clase',
   'install/model' => 'Modelo',
   'install/function' => 'Función',

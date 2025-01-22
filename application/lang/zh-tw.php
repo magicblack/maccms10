@@ -1869,7 +1869,7 @@ https://www.baidu.com/123.jpg
   'install/read_and_write' => '讀寫',
   'install/not_writable' => '不可寫',
   'install/support' => '支持',
-  'install/not_support' => '支持',
+  'install/not_support' => '不支持',
   'install/class' => '類',
   'install/model' => '模塊',
   'install/function' => '函數',

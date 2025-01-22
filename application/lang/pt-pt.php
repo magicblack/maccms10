@@ -1868,7 +1868,7 @@ https://www.baidu.com/123.jpg
   'install/read_and_write' => 'Leitura e gravação',
   'install/not_writable' => 'Não gravável',
   'install/support' => 'Suporte',
-  'install/not_support' => 'Suporte',
+  'install/not_support' => 'Não suportado',
   'install/class' => 'Classe',
   'install/model' => 'Módulo',
   'install/function' => 'Função',
