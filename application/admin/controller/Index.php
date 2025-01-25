@@ -4,6 +4,8 @@ namespace app\admin\controller;
 
 use think\Hook;
 use think\Db;
+use COM;
+use Exception;
 
 
 class Index extends Base
@@ -355,72 +357,135 @@ class Index extends Base
         return $disk;
     }
 
-    private function getFilePath($fileName, $content)
+    private function isComAvailable() 
     {
-        $path = dirname(__FILE__) . "\\$fileName";
-        if (!file_exists($path)) {
-            file_put_contents($path, $content);
-        }
-        return $path;
+        return extension_loaded('com_dotnet');
     }
 
-    /**
-     * 获得cpu使用率vbs文件生成函数
-     * @return string 返回vbs文件路径
-     */
-    private function getCupUsageVbsPath()
-    {
-        return $this->getFilePath(
-            'cpu_usage.vbs',
-            "On Error Resume Next
-    Set objProc = GetObject(\"winmgmts:\\\\.\\root\cimv2:win32_processor='cpu0'\")
-    WScript.Echo(objProc.LoadPercentage)"
-        );
-    }
-
-    /**
-     * 获得总内存及可用物理内存JSON vbs文件生成函数
-     * @return string 返回vbs文件路径
-     */
-    private function getMemoryUsageVbsPath()
-    {
-        return $this->getFilePath(
-            'memory_usage.vbs',
-            "On Error Resume Next
-    Set objWMI = GetObject(\"winmgmts:\\\\.\\root\cimv2\")
-    Set colOS = objWMI.InstancesOf(\"Win32_OperatingSystem\")
-    For Each objOS in colOS
-     Wscript.Echo(\"{\"\"TotalVisibleMemorySize\"\":\" & objOS.TotalVisibleMemorySize & \",\"\"FreePhysicalMemory\"\":\" & objOS.FreePhysicalMemory & \"}\")
-    Next"
-        );
-    }
-
-    /**
-     * 获得CPU使用率
-     * @return Number
-     */
     private function getCpuUsage()
     {
-        $path = $this->getCupUsageVbsPath();
-        exec("cscript -nologo $path", $usage);
-        return $usage[0];
+        if (!$this->isComAvailable()) {
+            try {
+                $cmd = "wmic cpu get loadpercentage";
+                $output = shell_exec($cmd);
+                if ($output) {
+                    preg_match('/\d+/', $output, $matches);
+                    if (isset($matches[0])) {
+                        return (float)$matches[0];
+                    }
+                }
+            } catch (Exception $e) {
+                
+            }
+            return 0;
+        }
+        
+        try {
+            $wmi = new \COM('WinMgmts:\\\\.');
+            $cpus = $wmi->ExecQuery('SELECT LoadPercentage FROM Win32_Processor');
+            
+            $cpu_load = 0;
+            $cpu_count = 0;
+            
+            foreach ($cpus as $cpu) {
+                $cpu_load += $cpu->LoadPercentage;
+                $cpu_count++;
+            }
+            
+            return $cpu_count > 0 ? round($cpu_load / $cpu_count, 2) : 0;
+        } catch (Exception $e) {
+            try {
+                $cmd = "wmic cpu get loadpercentage";
+                $output = shell_exec($cmd);
+                if ($output) {
+                    preg_match('/\d+/', $output, $matches);
+                    if (isset($matches[0])) {
+                        return (float)$matches[0];
+                    }
+                }
+            } catch (Exception $e) {
+                
+            }
+            return 0;
+        }
     }
 
-    /**
-     * 获得内存使用率数组
-     * @return array
-     */
     private function getMemoryUsage()
     {
-        $path = $this->getMemoryUsageVbsPath();
-        exec("cscript -nologo $path", $usage);
-        $memory = json_decode($usage[0], true);
-        if ($memory['TotalVisibleMemorySize'] != 0) {
-            $memory['usage'] = Round((($memory['TotalVisibleMemorySize'] - $memory['FreePhysicalMemory']) / $memory['TotalVisibleMemorySize']) * 100);
-        } else {
-            $memory['usage'] = 0;
+        if (!$this->isComAvailable()) {
+            try {
+                $cmd = "wmic OS get FreePhysicalMemory,TotalVisibleMemorySize /Value";
+                $output = shell_exec($cmd);
+                if ($output) {
+                    preg_match('/TotalVisibleMemorySize=(\d+)/i', $output, $total);
+                    preg_match('/FreePhysicalMemory=(\d+)/i', $output, $free);
+                    
+                    if (isset($total[1]) && isset($free[1])) {
+                        $total_mem = (float)$total[1];
+                        $free_mem = (float)$free[1];
+                        $used_mem = $total_mem - $free_mem;
+                        
+                        return [
+                            'TotalVisibleMemorySize' => $total_mem,
+                            'FreePhysicalMemory' => $free_mem,
+                            'usage' => $total_mem > 0 ? round(($used_mem / $total_mem) * 100, 2) : 0
+                        ];
+                    }
+                }
+            } catch (Exception $e) {
+                
+            }
+            return [
+                'TotalVisibleMemorySize' => 0,
+                'FreePhysicalMemory' => 0,
+                'usage' => 0
+            ];
         }
-        return $memory;
+        
+        try {
+            $wmi = new \COM('WinMgmts:\\\\.');
+            $os = $wmi->ExecQuery('SELECT TotalVisibleMemorySize,FreePhysicalMemory FROM Win32_OperatingSystem');
+            
+            foreach ($os as $item) {
+                $total = $item->TotalVisibleMemorySize;
+                $free = $item->FreePhysicalMemory;
+                $used = $total - $free;
+                
+                return [
+                    'TotalVisibleMemorySize' => $total,
+                    'FreePhysicalMemory' => $free,
+                    'usage' => $total > 0 ? round(($used / $total) * 100, 2) : 0
+                ];
+            }
+        } catch (Exception $e) {
+            try {
+                $cmd = "wmic OS get FreePhysicalMemory,TotalVisibleMemorySize /Value";
+                $output = shell_exec($cmd);
+                if ($output) {
+                    preg_match('/TotalVisibleMemorySize=(\d+)/i', $output, $total);
+                    preg_match('/FreePhysicalMemory=(\d+)/i', $output, $free);
+                    
+                    if (isset($total[1]) && isset($free[1])) {
+                        $total_mem = (float)$total[1];
+                        $free_mem = (float)$free[1];
+                        $used_mem = $total_mem - $free_mem;
+                        
+                        return [
+                            'TotalVisibleMemorySize' => $total_mem,
+                            'FreePhysicalMemory' => $free_mem,
+                            'usage' => $total_mem > 0 ? round(($used_mem / $total_mem) * 100, 2) : 0
+                        ];
+                    }
+                }
+            } catch (Exception $e) {
+                
+            }
+            return [
+                'TotalVisibleMemorySize' => 0,
+                'FreePhysicalMemory' => 0,
+                'usage' => 0
+            ];
+        }
     }
 
     private function get_unix_server_memory_usage()
