@@ -42,7 +42,7 @@ class View
             $root = '/' . ltrim($root, '/'); 
         }
         // 如果 new_version 为 1 或者 new_version 不存在或者为null，则使用新版模板
-        if($GLOBALS['config']['site']['new_version'] == 1 || !isset($GLOBALS['config']['site']['new_version']) || empty($GLOBALS['config']['site']['new_version'])){
+        if($GLOBALS['config']['site']['new_version'] == 1 || !isset($GLOBALS['config']['site']['new_version']) || (empty($GLOBALS['config']['site']['new_version']) && $GLOBALS['config']['site']['new_version'] != 0)){
             $root . $static_path = '/static_new/';
         }else{
             $root . $static_path = '/static/';
