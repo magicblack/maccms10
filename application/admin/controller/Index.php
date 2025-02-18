@@ -276,15 +276,22 @@ class Index extends Base
             $os_data['os_name'] = strtoupper($os_name);
             
             // 获取磁盘信息
-            $totalSpace = disk_total_space('/');
-            $freeSpace = disk_free_space('/');
-            $totalSpaceGB = $totalSpace / (1024 * 1024 * 1024);
-            $freeSpaceGB = $freeSpace / (1024 * 1024 * 1024);
-            $tmp_disk_data = [];
-            $tmp_disk_data[0] = $totalSpaceGB - $freeSpaceGB;
-            $tmp_disk_data[1] = $totalSpaceGB;
-            $tmp_disk_data[2] = (100 - round(($freeSpaceGB / $totalSpaceGB) * 100, 2));
-            $os_data['disk_datas']['/'] = $tmp_disk_data;
+            $totalSpace = @\disk_total_space('/');
+            $freeSpace = @\disk_free_space('/');
+            
+            if ($totalSpace > 0) {
+                $totalSpaceGB = round($totalSpace / (1024 * 1024 * 1024), 2);
+                $freeSpaceGB = round($freeSpace / (1024 * 1024 * 1024), 2);
+                $usedSpaceGB = round($totalSpaceGB - $freeSpaceGB, 2);
+                
+                $tmp_disk_data = [];
+                $tmp_disk_data[0] = $usedSpaceGB;
+                $tmp_disk_data[1] = $totalSpaceGB;
+                $tmp_disk_data[2] = round(100 - ($freeSpaceGB / $totalSpaceGB * 100), 2);
+                $os_data['disk_datas']['/'] = $tmp_disk_data;
+            } else {
+                $os_data['disk_datas']['/'] = [0, 0, 0];
+            }
             
             // 获取内存和CPU信息
             $mem_arr = $this->get_unix_server_memory_usage();
@@ -321,18 +328,26 @@ class Index extends Base
         $diskz = 0; //磁盘总容量
         $diskk = 0; //磁盘剩余容量
         $is_disk = $letter . ':';
-        if (@disk_total_space($is_disk) != NULL) {
+        if (@\disk_total_space($is_disk) != NULL) {
             $diskct++;
-            $disk[$letter][0] = $this->byte_format(@disk_free_space($is_disk));
-            $disk[$letter][1] = $this->byte_format(@disk_total_space($is_disk));
-            // $disk[$letter][2] = (100-round(((@disk_free_space($is_disk)/(1024*1024*1024))/(@disk_total_space($is_disk)/(1024*1024*1024)))*100,2));
-            if (@disk_total_space($is_disk) != 0) {
-                $disk[$letter][2] = (round(100 - round(((@disk_free_space($is_disk) / (1024 * 1024 * 1024)) / (@disk_total_space($is_disk) / (1024 * 1024 * 1024))) * 100, 2), 2));
+            $total_space = @\disk_total_space($is_disk);
+            $free_space = @\disk_free_space($is_disk);
+            
+            // 转换为GB并保留两位小数
+            $total_space_gb = round($total_space / (1024 * 1024 * 1024), 2);
+            $free_space_gb = round($free_space / (1024 * 1024 * 1024), 2);
+            
+            $disk[$letter][0] = round($this->byte_format($free_space), 2);
+            $disk[$letter][1] = round($this->byte_format($total_space), 2);
+            
+            if ($total_space > 0) {
+                $disk[$letter][2] = round(100 - ($free_space_gb / $total_space_gb * 100), 2);
             } else {
                 $disk[$letter][2] = 0;
             }
-            $diskk += $this->byte_format(@disk_free_space($is_disk));
-            $diskz += $this->byte_format(@disk_total_space($is_disk));
+            
+            $diskk += round($this->byte_format($free_space), 2);
+            $diskz += round($this->byte_format($total_space), 2);
         }
         return $disk;
     }
