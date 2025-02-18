@@ -1893,6 +1893,7 @@ https://www.baidu.com/123.jpg
     'admin/update/step3_a'=>'在线升级进行中第三步【更新缓存】,请稍后......',
     'admin/update/update_cache'=>'更新数据缓存文件...',
     'admin/update/upgrade_complete'=>'恭喜您，系统升级完毕...',
+    'admin/update/not_delete'=>'数据库升级脚本未删除，请手动删除',
 
     'admin/upload/test_write_ok'=>'测试写入成功',
     'admin/upload/test_write_ok'=>'写入失败，请检查临时文件目录权限',

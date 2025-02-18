@@ -1717,6 +1717,7 @@ Nota: Se tanto a lista negra quanto a lista branca forem preenchidas, a polític
   'admin/update/step3_a' => 'A atualização online está em andamento na terceira etapa [Atualização de Cache], por favor, aguarde...',
   'admin/update/update_cache' => 'Atualizando arquivos de cache de dados...',
   'admin/update/upgrade_complete' => 'Parabéns, a atualização do sistema foi concluída...',
+  'admin/update/not_delete' => 'Datenbank-Upgrade-Skript wurde nicht gelöscht, bitte manuell löschen',
   'admin/upload/test_write_ok' => 'Falha ao escrever, verifique as permissões do diretório temporário de arquivos',
   'admin/upload/not_find_extend' => 'Biblioteca de upload de extensões de terceiros não encontrada',
   'admin/upload/no_input_file' => 'Arquivo de upload não encontrado (motivo: nome do formulário pode estar errado, nome padrão do formulário é "file" ou "imgdata")!',

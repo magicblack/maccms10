@@ -1723,6 +1723,7 @@ https://www.baidu.com/123.jpg
   'admin/update/step3_a' => 'Atualização online em andamento, terceiro passo [atualização de cache], aguarde...',
   'admin/update/update_cache' => 'Atualizando arquivos de cache de dados...',
   'admin/update/upgrade_complete' => 'Parabéns, a atualização do sistema foi concluída...',
+  'admin/update/not_delete' => 'Script de atualização do banco de dados não excluído, exclua manualmente',
   'admin/upload/test_write_ok' => 'Falha na gravação, verifique as permissões do diretório de arquivos temporários',
   'admin/upload/not_find_extend' => 'Biblioteca de classes de upload de extensão de terceiros não encontrada',
   'admin/upload/no_input_file' => 'Arquivo carregado não encontrado (motivo: o nome do formulário pode estar incorreto, o nome padrão do formulário é "file" ou "imgdata")!',

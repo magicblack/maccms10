@@ -1724,6 +1724,7 @@ https://www.baidu.com/123.jpg
   'admin/update/step3_a' => 'オンラインアップグレードの3番目のステップ【キャッシュの更新】が進行中です。しばらくお待ちください......',
   'admin/update/update_cache' => 'データキャッシュファイルを更新しています...',
   'admin/update/upgrade_complete' => 'おめでとうございます。システムのアップグレードが完了しました...',
+  'admin/update/not_delete' => 'データベースアップグレードスクリプトが削除されていません。手動で削除してください',
   'admin/upload/test_write_ok' => '書き込みに失敗しました。一時ファイルディレクトリの権限を確認してください',
   'admin/upload/not_find_extend' => 'サードパーティの拡張アップロードライブラリが見つかりませんでした',
   'admin/upload/no_input_file' => 'アップロードされたファイルが見つかりません（理由：フォーム名が間違っている可能性があります。デフォルトのフォーム名は「file」または「imgdata」です）！',

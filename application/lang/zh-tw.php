@@ -1724,6 +1724,7 @@ https://www.baidu.com/123.jpg
   'admin/update/step3_a' => '在線升級進行中第三步【更新緩存】,請稍後......',
   'admin/update/update_cache' => '更新數據緩存文件...',
   'admin/update/upgrade_complete' => '恭喜您，系統升級完畢...',
+  'admin/update/not_delete' => '資料庫升級腳本未刪除，請手動刪除',
   'admin/upload/test_write_ok' => '寫入失敗，請檢查臨時文件目錄權限',
   'admin/upload/not_find_extend' => '未找到第三方擴展上傳類庫',
   'admin/upload/no_input_file' => '未找到上傳的文件(原因：表單名可能錯誤，默認表單名"file"或"imgdata")！',

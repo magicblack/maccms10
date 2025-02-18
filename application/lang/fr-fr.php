@@ -1720,6 +1720,7 @@ Note: Si les listes noires et blanches sont remplies, les stratégies s\'appliqu
   'admin/update/step3_a' => 'Étape 3 en cours de mise à jour en ligne 【Mise à jour du cache】, veuillez patienter...',
   'admin/update/update_cache' => 'Mise à jour du fichier de cache des données en cours...',
   'admin/update/upgrade_complete' => 'Félicitations, la mise à jour du système est terminée...',
+  'admin/update/not_delete' => 'Le script de mise à niveau de la base de données n\'a pas été supprimé, veuillez le supprimer manuellement',
   'admin/upload/test_write_ok' => 'Échec de l\'écriture, veuillez vérifier les autorisations du répertoire temporaire',
   'admin/upload/not_find_extend' => 'Bibliothèque de téléchargement d\'extension tierce non trouvée',
   'admin/upload/no_input_file' => 'Aucun fichier téléchargé trouvé (raison : nom de formulaire incorrect, nom de formulaire par défaut "file" ou "imgdata") !',

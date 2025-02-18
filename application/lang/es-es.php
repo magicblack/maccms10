@@ -1721,6 +1721,7 @@ Nota: Si se especifican listas negras y blancas, ambas se aplicarán simultánea
   'admin/update/step3_a' => 'Paso 3 en curso de actualización en línea [Actualización de Caché], por favor espere...',
   'admin/update/update_cache' => 'Actualizando archivos de caché de datos...',
   'admin/update/upgrade_complete' => '¡Felicitaciones! La actualización del sistema ha finalizado...',
+  'admin/update/not_delete' => 'El script de actualización de la base de datos no se eliminó, elimínelo manualmente',
   'admin/upload/test_write_ok' => 'Error al escribir. Por favor verifique los permisos del directorio temporal',
   'admin/upload/not_find_extend' => 'No se encontró la biblioteca de carga de extensiones de terceros',
   'admin/upload/no_input_file' => 'No se encontró el archivo cargado (razón: nombre del formulario incorrecto, el nombre de formulario predeterminado es "file" o "imgdata")!',

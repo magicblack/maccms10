@@ -100,9 +100,6 @@ if(empty($col_list[$pre.'collect']['collect_filter_year'])){
 // 入库重复规则设置名称
 if (version_compare(config('version.code'), '2024.1000.4043', '>=')) {
     $file = APP_PATH . 'extra/maccms.php';
-    $backupFile = APP_PATH . 'extra/maccms_backup_' . date('Ymd_His') . '.php';
-
-    copy($file, $backupFile);
 
     @chmod($file, 0777);
     $config = config('maccms');

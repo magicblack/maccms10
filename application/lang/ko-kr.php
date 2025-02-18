@@ -1722,6 +1722,7 @@ https://www.baidu.com/123.jpg
   'admin/update/step3_a' => '온라인 업그레이드 중 세 번째 단계 [캐시 업데이트], 잠시 기다려 주십시오...',
   'admin/update/update_cache' => '데이터 캐시 파일을 업데이트하는 중...',
   'admin/update/upgrade_complete' => '축하합니다. 시스템 업그레이드가 완료되었습니다...',
+  'admin/update/not_delete' => '데이터베이스 업그레이드 스크립트가 삭제되지 않았습니다. 수동으로 삭제하십시오',
   'admin/upload/test_write_ok' => '쓰기 실패, 임시 파일 디렉토리 권한을 확인하십시오.',
   'admin/upload/not_find_extend' => '타사 확장 업로드 라이브러리를 찾을 수 없습니다.',
   'admin/upload/no_input_file' => '업로드된 파일을 찾을 수 없습니다(이유: 양식 이름이 잘못되었을 수 있습니다. 기본 양식 이름은 "file" 또는 "imgdata"입니다)!',

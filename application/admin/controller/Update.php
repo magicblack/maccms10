@@ -135,16 +135,20 @@ class Update extends Base
     public function step3()
     {
         echo $this->fetch('admin@public/head');
-        echo "<div class='update'><h1>".lang('admin/update/step3_a')."</h1><textarea rows=\"25\" class='layui-textarea' readonly>\n";
+        echo "<div class='update'><h1>".lang('admin/update/step3_a')."</h1><div rows=\"25\" class='layui-textarea' readonly>\n";
         ob_flush();flush();
         sleep(1);
 
         $this->_cache_clear();
 
-        echo lang('admin/update/update_cache')."\n";
-        echo lang('admin/update/upgrade_complete')."";
+        echo lang('admin/update/update_cache')."<br>";
+        echo lang('admin/update/upgrade_complete')."<br>";
+
+        if(is_file($this->_save_path . 'database.php')){
+            echo "<strong style='color: red;'>" . lang('admin/update/not_delete') . ":application/data/update/database.php</strong>";
+        }
         ob_flush();flush();
-        echo '</textarea></div>';
+        echo '</div></div>';
     }
 
     public function one()

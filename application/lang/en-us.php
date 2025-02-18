@@ -1720,6 +1720,7 @@ Note: If both black and white lists are filled, both policies will take effect.'
   'admin/update/step3_a' => 'Online upgrade in progress, Step 3 [Update Cache], please wait...',
   'admin/update/update_cache' => 'Updating data cache files...',
   'admin/update/upgrade_complete' => 'Congratulations, system upgrade completed...',
+  'admin/update/not_delete' => 'Database upgrade script not deleted, please delete manually',
   'admin/upload/test_write_ok' => 'Write failed, please check temporary file directory permissions',
   'admin/upload/not_find_extend' => 'Third-party extension upload library not found',
   'admin/upload/no_input_file' => 'No uploaded file found (Reason: Form name may be incorrect, default form names are "file" or "imgdata")!',
