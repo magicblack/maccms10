@@ -133,4 +133,5 @@ return [
     'invalid Request method'                                    => '无效的请求类型',
     'invalid token'                                             => '令牌数据无效',
     'not conform to the rules'                                  => '规则错误',
+    'Please copy file'                                          => '请复制',
 ];
