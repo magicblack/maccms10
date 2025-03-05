@@ -907,6 +907,7 @@ https://www.baidu.com/123.jpg',
   'admin/system/configapi/actor' => 'Actor API Settings',
   'admin/system/configapi/role' => 'Role API Settings',
   'admin/system/configapi/website' => 'Website API Settings',
+  'admin/system/configapi/publicapi' => 'Public API Settings',
   'admin/system/configapi/vod_tip' => 'Prompt:<br>
                         1. Video list URL /api.php/provide/vod/?ac=list<br>
                         2. Video detail URL /api.php/provide/vod/?ac=detail',
@@ -943,6 +944,17 @@ https://www.baidu.com/123.jpg',
   'admin/system/configapi/website_tip' => 'Prompt:<br>
                         1. Website list URL /api.php/provide/website/?ac=list<br>
                         2. Website detail URL /api.php/provide/website/?ac=detail',
+  'admin/system/configapi/publicapi_tip' => 'Prompt:<br>
+                        1,Actor list address /api.php/actor/get_list/<br>
+                        2,Article list address /api.php/art/get_list/<br>
+                        3,Comment list address /api.php/comment/get_list/<br>
+                        4,Guestbook list address /api.php/gbook/get_list/<br>
+                        5,Link list address /api.php/link/get_list/<br>
+                        6,Topic list address /api.php/topic/get_list/<br>
+                        7,Category list address /api.php/type/get_list/<br>
+                        8,User list address /api.php/user/get_list/<br>
+                        9,Video list address /api.php/vod/get_list/<br>
+                        10,Website list address /api.php/website/get_list/',
   'admin/system/configcollect/title' => 'Collection Parameter Configuration',
   'admin/system/configcollect/vod' => 'Video Collection Settings',
   'admin/system/configcollect/art' => 'Article Collection Settings',

@@ -10,9 +10,12 @@ use think\Validate;
 
 class Topic extends Base
 {
+    use PublicApi;
     public function __construct()
     {
         parent::__construct();
+        $this->check_config();
+
     }
 
     public function index()

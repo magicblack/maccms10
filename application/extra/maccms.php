@@ -385,7 +385,7 @@ return array (
       'cachetime' => '',
       'auth' => '',
     ),
-    'website' => 
+    'website' =>
     array (
       'status' => '0',
       'charge' => '0',
@@ -396,6 +396,17 @@ return array (
       'cachetime' => '',
       'auth' => '',
     ),
+  'publicapi' =>
+      array (
+          'status' => '0',
+          'charge' => '0',
+          'pagesize' => '20',
+          'imgurl' => '',
+          'typefilter' => '',
+          'datafilter' => '',
+          'cachetime' => '',
+          'auth' => '',
+      ),
   ),
   'connect' => 
   array (

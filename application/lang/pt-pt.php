@@ -908,6 +908,7 @@ https://www.baidu.com/123.jpg
   'admin/system/configapi/actor' => 'Configurações da API de ator',
   'admin/system/configapi/role' => 'Configurações da API de papel',
   'admin/system/configapi/website' => 'Configurações da API do site',
+  'admin/system/configapi/publicapi' => 'Configurações de API pública',
   'admin/system/configapi/vod_tip' => 'Informações de dica: <br>
                             1, endereço da lista de vídeos /api.php/provide/vod/?ac=list <br>
                             2, endereço de detalhes do vídeo /api.php/provide/vod/?ac=detail',
@@ -944,6 +945,17 @@ https://www.baidu.com/123.jpg
   'admin/system/configapi/website_tip' => 'Informações de dica: <br>
                             1, endereço da lista de sites /api.php/provide/website/?ac=list <br>
                             2, endereço de detalhes do site /api.php/provide/website/?ac=detail',
+    'admin/system/configapi/publicapi_tip' => 'Informações de dica: <br>
+                            1,Endereço da lista de atores /api.php/actor/get_list/<br>
+                            2,Endereço da lista de artigos /api.php/art/get_list/<br>
+                            3,Endereço da lista de comentários /api.php/comment/get_list/<br>
+                            4,Endereço da lista de mensagens /api.php/gbook/get_list/<br>
+                            5,Endereço da lista de links /api.php/link/get_list/<br>
+                            6,Endereço da lista de tópicos /api.php/topic/get_list/<br>
+                            7,Endereço da lista de categorias /api.php/type/get_list/<br>
+                            8,Endereço da lista de usuários /api.php/user/get_list/<br>
+                            9,Endereço da lista de vídeos /api.php/vod/get_list/<br>
+                            10,ndereço da lista de sites /api.php/website/get_list',
   'admin/system/configcollect/title' => 'Configuração de parâmetros de coleta',
   'admin/system/configcollect/vod' => 'Configurações de coleta de vídeo',
   'admin/system/configcollect/art' => 'Configurações de coleta de artigo',

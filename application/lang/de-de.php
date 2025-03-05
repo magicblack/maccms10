@@ -907,6 +907,7 @@ https://www.baidu.com/123.jpg',
   'admin/system/configapi/actor' => 'Actor API-Einstellungen',
   'admin/system/configapi/role' => 'Rollen-API-Einstellungen',
   'admin/system/configapi/website' => 'Website-API-Einstellungen',
+  'admin/system/configapi/publicapi' => 'Öffentliche API-Einstellungen',
   'admin/system/configapi/vod_tip' => 'Eingabeaufforderung:<br>
                             1. Videolistenadresse/api.php/provide/vod/?ac=list<br>
                             2. Videodetails address/api.php/provide/vod/?ac=detail',
@@ -943,6 +944,17 @@ https://www.baidu.com/123.jpg',
   'admin/system/configapi/website_tip' => 'Prompt-Informationen:<br>
                             1. URL-Listenadresse/api.php/provide/website/?ac=list<br>
                             2. Website-Details address/api.php/provide/website/?ac=detail',
+    'admin/system/configapi/publicapi_tip' => 'Prompt-Informationen:<br>
+                            1,Schauspielerliste Adresse /api.php/actor/get_list/<br>
+                            2,Artikel Liste Adresse /api.php/art/get_list/<br>
+                            3,Kommentarliste Adresse /api.php/comment/get_list/<br>
+                            4,Gästebuchliste Adresse /api.php/gbook/get_list/<br>
+                            5,Linkliste Adresse /api.php/link/get_list/<br>
+                            6,Themenliste Adresse /api.php/topic/get_list/<br>
+                            7,Kategorienliste Adresse /api.php/type/get_list/<br>
+                            8,Benutzerliste Adresse /api.php/user/get_list/<br>
+                            9,Videoliste Adresse /api.php/vod/get_list/<br>
+                            10,Websiteliste Adresse /api.php/website/get_list/',
   'admin/system/configcollect/title' => 'Sammlungsparameterkonfiguration',
   'admin/system/configcollect/vod' => 'Videosammlungseinstellungen',
   'admin/system/configcollect/art' => 'Artikelsammlungseinstellungen',

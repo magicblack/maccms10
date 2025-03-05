@@ -907,6 +907,7 @@ https://www.baidu.com/123.jpg',
   'admin/system/configapi/actor' => 'Réglages de l\'API d\'acteurs',
   'admin/system/configapi/role' => 'Réglages de l\'API de rôles',
   'admin/system/configapi/website' => 'Réglages de l\'API de sites web',
+  'admin/system/configapi/publicapi' => 'Paramètres de l\'API publique',
   'admin/system/configapi/vod_tip' => 'Informations importantes :<br>
                             1. URL de la liste des vidéos /api.php/provide/vod/?ac=list<br>
                             2. URL des détails de la vidéo /api.php/provide/vod/?ac=detail',
@@ -943,6 +944,17 @@ https://www.baidu.com/123.jpg',
   'admin/system/configapi/website_tip' => 'Informations importantes :<br>
                             1. URL de la liste des sites web /api.php/provide/website/?ac=list<br>
                             2. URL des détails du site web /api.php/provide/website/?ac=detail',
+    'admin/system/configapi/publicapi_tip' => 'Informations importantes :<br>
+                            1,Adresse de la liste des acteurs /api.php/actor/get_list/<br>
+                            2,Adresse de la liste des articles /api.php/art/get_list/<br>
+                            3,Adresse de la liste des commentaires /api.php/comment/get_list/<br>
+                            4,Adresse de la liste des messages /api.php/gbook/get_list/<br>
+                            5,Adresse de la liste des liens /api.php/link/get_list/<br>
+                            6,Adresse de la liste des sujets /api.php/topic/get_list/<br>
+                            7,Adresse de la liste des catégories /api.php/type/get_list/<br>
+                            8,Adresse de la liste des utilisateurs /api.php/user/get_list/<br>
+                            9,Adresse de la liste des vidéos /api.php/vod/get_list/<br>
+                            10,Adresse de la liste des site web /api.php/website/get_list',
   'admin/system/configcollect/title' => 'Configuration des paramètres de collecte',
   'admin/system/configcollect/vod' => 'Paramètres de collecte vidéo',
   'admin/system/configcollect/art' => 'Paramètres de collecte d\'articles',

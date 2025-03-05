@@ -908,6 +908,7 @@ https://www.baidu.com/123.jpg
   'admin/system/configapi/actor' => '演員API設置',
   'admin/system/configapi/role' => '角色API設置',
   'admin/system/configapi/website' => '網址API設置',
+  'admin/system/configapi/publicapi' => '公共API設置',
   'admin/system/configapi/vod_tip' => '提示信息：<br>
                             1,視頻列表地址/api.php/provide/vod/?ac=list<br>
                             2,視頻詳情地址/api.php/provide/vod/?ac=detail',
@@ -944,6 +945,17 @@ https://www.baidu.com/123.jpg
   'admin/system/configapi/website_tip' => '提示信息：<br>
                             1,網址列表地址/api.php/provide/website/?ac=list<br>
                             2,網址詳情地址/api.php/provide/website/?ac=detail',
+    'admin/system/configapi/publicapi_tip' => '提示信息：<br>
+                            1,演員列表地址/api.php/actor/get_list/<br>
+                            2,文章列表地址/api.php/art/get_list/<br>
+                            3,評論列表地址/api.php/comment/get_list/<br>
+                            4,留言列表地址/api.php/gbook/get_list/<br>
+                            5,連結列表地址/api.php/link/get_list/<br>
+                            6,主題列表地址/api.php/topic/get_list/<br>
+                            7,分類列表地址/api.php/type/get_list/<br>
+                            8,用戶列表地址/api.php/user/get_list/<br>
+                            9,視頻列表地址/api.php/vod/get_list/<br>
+                            10,網址列表地址/api.php/website/get_list/',
   'admin/system/configcollect/title' => '采集參數配置',
   'admin/system/configcollect/vod' => '視頻采集設置',
   'admin/system/configcollect/art' => '文章采集設置',

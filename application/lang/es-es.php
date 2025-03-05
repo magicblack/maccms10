@@ -908,6 +908,7 @@ https://www.baidu.com/123.jpg
   'admin/system/configapi/actor' => 'Configuración de API de Actores',
   'admin/system/configapi/role' => 'Configuración de API de Roles',
   'admin/system/configapi/website' => 'Configuración de API de Sitios Web',
+  'admin/system/configapi/publicapi' => 'Configuración de API pública',
   'admin/system/configapi/vod_tip' => 'Información de consejos:<br>
                             1. URL de la lista de vídeos /api.php/provide/vod/?ac=list<br>
                             2. URL de detalles del vídeo /api.php/provide/vod/?ac=detail',
@@ -944,6 +945,17 @@ https://www.baidu.com/123.jpg
   'admin/system/configapi/website_tip' => 'Información de consejos:<br>
                             1. URL de la lista de sitios web /api.php/provide/website/?ac=list<br>
                             2. URL de detalles del sitio web /api.php/provide/website/?ac=detail',
+    'admin/system/configapi/publicapi_tip' => 'Información de consejos:<br>
+                            1,Dirección de la lista de actores /api.php/actor/get_list/<br>
+                            2,Dirección de la lista de artículos /api.php/art/get_list/<br>
+                            3,Dirección de la lista de comentarios /api.php/comment/get_list/<br>
+                            4,Dirección de la lista de mensajes /api.php/gbook/get_list/<br>
+                            5,Dirección de la lista de enlaces /api.php/link/get_list/<br>
+                            6,Dirección de la lista de temas /api.php/topic/get_list/<br>
+                            7,Dirección de la lista de categorías /api.php/type/get_list/<br>
+                            8,Dirección de la lista de usuarios /api.php/user/get_list/<br>
+                            9,Dirección de la lista de videos /api.php/vod/get_list/<br>
+                            10,Dirección de la lista del sitio web /api.php/website/get_list/',
   'admin/system/configcollect/title' => 'Configuración de Parámetros de Recolección',
   'admin/system/configcollect/vod' => 'Configuración de Recolección de Vídeos',
   'admin/system/configcollect/art' => 'Configuración de Recolección de Artículos',

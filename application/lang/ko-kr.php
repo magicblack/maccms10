@@ -908,6 +908,7 @@ https://www.baidu.com/123.jpg
   'admin/system/configapi/actor' => '배우 API 설정',
   'admin/system/configapi/role' => '역할 API 설정',
   'admin/system/configapi/website' => '웹사이트 API 설정',
+  'admin/system/configapi/publicapi' => '공용 API 설정',
   'admin/system/configapi/vod_tip' => '팁 정보: <br>
                             1. 동영상 목록 주소 /api.php/provide/vod/?ac=list <br>
                             2. 동영상 세부 정보 주소 /api.php/provide/vod/?ac=detail',
@@ -944,6 +945,17 @@ https://www.baidu.com/123.jpg
   'admin/system/configapi/website_tip' => '팁 정보: <br>
                             1. 웹사이트 목록 주소 /api.php/provide/website/?ac=list <br>
                             2. 웹사이트 세부 정보 주소 /api.php/provide/website/?ac=detail',
+    'admin/system/configapi/publicapi_tip' => '팁 정보: <br>
+                            1,배우 목록 주소 /api.php/actor/get_list/<br>
+                            2,글 목록 주소 /api.php/art/get_list/<br>
+                            3,댓글 목록 주소 /api.php/comment/get_list/<br>
+                            4,방명록 목록 주소 /api.php/gbook/get_list/<br>
+                            5,링크 목록 주소 /api.php/link/get_list/<br>
+                            6,주제 목록 주소 /api.php/topic/get_list/<br>
+                            7,분류 목록 주소 /api.php/type/get_list/<br>
+                            8,사용자 목록 주소 /api.php/user/get_list/<br>
+                            9,비디오 목록 주소 /api.php/vod/get_list/<br>
+                            10,웹사이트 목록 주소 /api.php/website/get_list',
   'admin/system/configcollect/title' => '수집 매개변수 구성',
   'admin/system/configcollect/vod' => '동영상 수집 설정',
   'admin/system/configcollect/art' => '기사 수집 설정',

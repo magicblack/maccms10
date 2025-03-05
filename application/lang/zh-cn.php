@@ -978,6 +978,7 @@ https://www.baidu.com/123.jpg
     'admin/system/configapi/actor'=>'演员API设置',
     'admin/system/configapi/role'=>'角色API设置',
     'admin/system/configapi/website'=>'网址API设置',
+    'admin/system/configapi/publicapi'=>'公共API设置',
     'admin/system/configapi/vod_tip'=>'提示信息：<br>
                             1,视频列表地址/api.php/provide/vod/?ac=list<br>
                             2,视频详情地址/api.php/provide/vod/?ac=detail',
@@ -1015,6 +1016,17 @@ https://www.baidu.com/123.jpg
     'admin/system/configapi/website_tip'=>'提示信息：<br>
                             1,网址列表地址/api.php/provide/website/?ac=list<br>
                             2,网址详情地址/api.php/provide/website/?ac=detail',
+    'admin/system/configapi/publicapi_tip'=>'提示信息：<br>
+                            1,演员列表地址/api.php/actor/get_list/<br>
+                            2,文章列表地址/api.php/art/get_list/<br>
+                            3,评论列表地址/api.php/comment/get_list/<br>
+                            4,留言列表地址/api.php/gbook/get_list/<br>
+                            5,链接列表地址/api.php/link/get_list/<br>
+                            6,主题列表地址/api.php/topic/get_list/<br>
+                            7,分类列表地址/api.php/type/get_list/<br>
+                            8,用户列表地址/api.php/user/get_list/<br>
+                            9,视频列表地址/api.php/vod/get_list/<br>
+                            10,网址列表地址/api.php/website/get_list',
 
 
 

@@ -908,6 +908,7 @@ https://www.baidu.com/123.jpg
   'admin/system/configapi/actor' => '俳優API設定',
   'admin/system/configapi/role' => '役割API設定',
   'admin/system/configapi/website' => 'WebサイトAPI設定',
+  'admin/system/configapi/publicapi' => '公開API設定',
   'admin/system/configapi/vod_tip' => 'プロンプト情報：<br>
                             1、ビデオリストアドレス/api.php/provide/vod/?ac=list<br>
                             2、ビデオ詳細アドレス/api.php/provide/vod/?ac=detail',
@@ -944,6 +945,17 @@ https://www.baidu.com/123.jpg
   'admin/system/configapi/website_tip' => 'プロンプト情報：<br>
                             1、Webサイトリストアドレス/api.php/provide/website/?ac=list<br>
                             2、Webサイト詳細アドレス/api.php/provide/website/?ac=detail',
+    'admin/system/configapi/publicapi_tip' => 'プロンプト情報：<br>
+                            1,俳優リストのアドレス /api.php/actor/get_list/<br>
+                            2,記事リストのアドレス /api.php/art/get_list/<br>
+                            3,コメントリストのアドレス /api.php/comment/get_list/<br>
+                            4,ゲストブックリストのアドレス /api.php/gbook/get_list/<br>
+                            5,リンクリストのアドレス /api.php/link/get_list/<br>
+                            6,トピックリストのアドレス /api.php/topic/get_list/<br>
+                            7,カテゴリリストのアドレス /api.php/type/get_list/<br>
+                            8,ユーザーリストのアドレス /api.php/user/get_list/<br>
+                            9,ビデオリストのアドレス /api.php/vod/get_list/<br>
+                            10,ウェブサイトリストのアドレス /api.php/website/get_list',
   'admin/system/configcollect/title' => '収集パラメータ構成',
   'admin/system/configcollect/vod' => 'ビデオ収集設定',
   'admin/system/configcollect/art' => '記事収集設定',

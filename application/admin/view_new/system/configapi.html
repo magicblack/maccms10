@@ -10,6 +10,7 @@
                 <li lay-id="configapi_3">{:lang('admin/system/configapi/actor')}</li>
                 <li lay-id="configapi_4">{:lang('admin/system/configapi/role')}</li>
                 <li lay-id="configapi_5">{:lang('admin/system/configapi/website')}</li>
+                <li lay-id="configapi_5">{:lang('admin/system/configapi/publicapi')}</li>
             </ul>
             <div class="layui-tab-content">
                 <div class="layui-tab-item layui-show" id="movementTable">
@@ -436,7 +437,41 @@
                     </div>
 
                 </div>
+                <div class="layui-tab-item" id="movementTable">
 
+                    <blockquote class="layui-elem-quote layui-quote-nm">
+                        {:lang('admin/system/configapi/publicapi_tip')}
+                    </blockquote>
+
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:lang('admin/system/configapi/status')}：</label>
+                        <div class="layui-input-block">
+                            <input type="radio" name="api[publicapi][status]" value="0" title="{:lang('close')}" {if
+                                   condition="$config['api']['publicapi']['status'] neq 1" }checked {/if}>
+                            <input type="radio" name="api[publicapi][status]" value="1" title="{:lang('open')}" {if
+                                   condition="$config['api']['publicapi']['status'] eq 1" }checked {/if}>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:lang('admin/system/configapi/charge')}：</label>
+                        <div class="layui-input-block">
+                            <input type="radio" name="api[publicapi][charge]" value="0" title="{:lang('close')}" {if
+                                   condition="$config['api']['publicapi']['charge'] neq 1" }checked {/if}>
+                            <input type="radio" name="api[publicapi][charge]" value="1" title="{:lang('open')}" {if
+                                   condition="$config['api']['publicapi']['charge'] eq 1" }checked {/if}>
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:lang('admin/system/configapi/auth')}：</label>
+                        <div class="layui-input-block">
+                            <textarea name="api[publicapi][auth]"
+                                      class="layui-textarea">{$config['api']['publicapi']['auth']|mac_replace_text}</textarea>
+                        </div>
+                    </div>
+
+                </div>
             </div>
         </div>
         <div class="layui-form-item center">
