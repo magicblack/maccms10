@@ -380,6 +380,9 @@ class Index extends Base
     private function getCpuUsage()
     {
         if (!$this->isComAvailable()) {
+            if (!function_exists('shell_exec')) {
+                return 0;
+            }
             try {
                 $cmd = "wmic cpu get loadpercentage";
                 $output = shell_exec($cmd);
@@ -390,7 +393,7 @@ class Index extends Base
                     }
                 }
             } catch (Exception $e) {
-                
+                return 0;
             }
             return 0;
         }
@@ -409,6 +412,9 @@ class Index extends Base
             
             return $cpu_count > 0 ? round($cpu_load / $cpu_count, 2) : 0;
         } catch (Exception $e) {
+            if (!function_exists('shell_exec')) {
+                return 0;
+            }
             try {
                 $cmd = "wmic cpu get loadpercentage";
                 $output = shell_exec($cmd);
@@ -419,7 +425,7 @@ class Index extends Base
                     }
                 }
             } catch (Exception $e) {
-                
+                return 0;
             }
             return 0;
         }
@@ -428,6 +434,13 @@ class Index extends Base
     private function getMemoryUsage()
     {
         if (!$this->isComAvailable()) {
+            if (!function_exists('shell_exec')) {
+                return [
+                    'TotalVisibleMemorySize' => 0,
+                    'FreePhysicalMemory' => 0,
+                    'usage' => 0
+                ];
+            }
             try {
                 $cmd = "wmic OS get FreePhysicalMemory,TotalVisibleMemorySize /Value";
                 $output = shell_exec($cmd);
@@ -448,13 +461,12 @@ class Index extends Base
                     }
                 }
             } catch (Exception $e) {
-                
+                return [
+                    'TotalVisibleMemorySize' => 0,
+                    'FreePhysicalMemory' => 0,
+                    'usage' => 0
+                ];
             }
-            return [
-                'TotalVisibleMemorySize' => 0,
-                'FreePhysicalMemory' => 0,
-                'usage' => 0
-            ];
         }
         
         try {
@@ -473,6 +485,13 @@ class Index extends Base
                 ];
             }
         } catch (Exception $e) {
+            if (!function_exists('shell_exec')) {
+                return [
+                    'TotalVisibleMemorySize' => 0,
+                    'FreePhysicalMemory' => 0,
+                    'usage' => 0
+                ];
+            }
             try {
                 $cmd = "wmic OS get FreePhysicalMemory,TotalVisibleMemorySize /Value";
                 $output = shell_exec($cmd);
@@ -493,13 +512,12 @@ class Index extends Base
                     }
                 }
             } catch (Exception $e) {
-                
+                return [
+                    'TotalVisibleMemorySize' => 0,
+                    'FreePhysicalMemory' => 0,
+                    'usage' => 0
+                ];
             }
-            return [
-                'TotalVisibleMemorySize' => 0,
-                'FreePhysicalMemory' => 0,
-                'usage' => 0
-            ];
         }
     }
 
@@ -512,7 +530,7 @@ class Index extends Base
                 $total_mem = $si['totalram'] * $si['mem_unit'] / 1024 / 1024;
                 $free_mem = $si['freeram'] * $si['mem_unit'] / 1024 / 1024;
                 $used_mem = $total_mem - $free_mem;
-                $usage = ($used_mem / $total_mem) * 100;
+                $usage = ($total_mem > 0) ? ($used_mem / $total_mem) * 100 : 0;
                 
                 return [
                     'total' => round($total_mem, 2),
@@ -526,6 +544,9 @@ class Index extends Base
         $methods = [
             // Linux free 命令
             'free' => function() {
+                if (!function_exists('shell_exec')) {
+                    return null;
+                }
                 $free = shell_exec('free');
                 if ($free) {
                     $free = (string)trim($free);
@@ -547,6 +568,9 @@ class Index extends Base
             
             // FreeBSD/Unix sysctl 命令
             'sysctl' => function() {
+                if (!function_exists('shell_exec')) {
+                    return null;
+                }
                 $sysctl = shell_exec('/sbin/sysctl -n hw.physmem hw.pagesize vm.stats.vm.v_free_count 2>/dev/null');
                 if ($sysctl) {
                     $lines = explode("\n", trim($sysctl));
@@ -570,26 +594,27 @@ class Index extends Base
             
             // /proc/meminfo 文件读取
             'proc' => function() {
-                if (is_readable('/proc/meminfo')) {
-                    $meminfo = file_get_contents('/proc/meminfo');
-                    if ($meminfo) {
-                        preg_match('/MemTotal:\s+(\d+)/i', $meminfo, $total);
-                        preg_match('/MemFree:\s+(\d+)/i', $meminfo, $free);
-                        preg_match('/Cached:\s+(\d+)/i', $meminfo, $cached);
-                        preg_match('/Buffers:\s+(\d+)/i', $meminfo, $buffers);
+                if (!is_readable('/proc/meminfo')) {
+                    return null;
+                }
+                $meminfo = file_get_contents('/proc/meminfo');
+                if ($meminfo) {
+                    preg_match('/MemTotal:\s+(\d+)/i', $meminfo, $total);
+                    preg_match('/MemFree:\s+(\d+)/i', $meminfo, $free);
+                    preg_match('/Cached:\s+(\d+)/i', $meminfo, $cached);
+                    preg_match('/Buffers:\s+(\d+)/i', $meminfo, $buffers);
+                    
+                    if (isset($total[1]) && isset($free[1])) {
+                        $total_mem = $total[1] / 1024;
+                        $free_mem = ($free[1] + (isset($cached[1]) ? $cached[1] : 0) + (isset($buffers[1]) ? $buffers[1] : 0)) / 1024;
+                        $used_mem = $total_mem - $free_mem;
+                        $usage = ($total_mem > 0) ? ($used_mem / $total_mem) * 100 : 0;
                         
-                        if (isset($total[1]) && isset($free[1])) {
-                            $total_mem = $total[1] / 1024;
-                            $free_mem = ($free[1] + (isset($cached[1]) ? $cached[1] : 0) + (isset($buffers[1]) ? $buffers[1] : 0)) / 1024;
-                            $used_mem = $total_mem - $free_mem;
-                            $usage = ($used_mem / $total_mem) * 100;
-                            
-                            return [
-                                'total' => round($total_mem, 2),
-                                'used' => round($used_mem, 2),
-                                'usage' => round($usage, 2)
-                            ];
-                        }
+                        return [
+                            'total' => round($total_mem, 2),
+                            'used' => round($used_mem, 2),
+                            'usage' => round($usage, 2)
+                        ];
                     }
                 }
                 return null;
@@ -618,6 +643,9 @@ class Index extends Base
         $methods = [
             // top 命令 (Linux)
             'top_linux' => function() {
+                if (!function_exists('shell_exec')) {
+                    return null;
+                }
                 $cpu_load = shell_exec("top -bn1 | grep 'Cpu(s)' 2>/dev/null");
                 if (!empty($cpu_load)) {
                     if (preg_match('/(\d+[.,]\d+).*?us/', $cpu_load, $matches)) {
@@ -629,6 +657,9 @@ class Index extends Base
             
             // top 命令 (FreeBSD)
             'top_bsd' => function() {
+                if (!function_exists('shell_exec')) {
+                    return null;
+                }
                 $cpu_load = shell_exec("top -d2 -n1 | grep 'CPU:' 2>/dev/null");
                 if (!empty($cpu_load)) {
                     if (preg_match('/(\d+\.\d+)%\s+user/', $cpu_load, $matches)) {
@@ -640,6 +671,9 @@ class Index extends Base
             
             // sysctl (FreeBSD/Unix)
             'sysctl' => function() {
+                if (!function_exists('shell_exec')) {
+                    return null;
+                }
                 $cpu_load = shell_exec('/sbin/sysctl -n kern.cp_time 2>/dev/null');
                 if (!empty($cpu_load)) {
                     $times = explode(" ", trim($cpu_load));
