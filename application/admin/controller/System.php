@@ -513,6 +513,7 @@ class System extends Base
             $config_new['api']['vod']['auth'] = mac_replace_text($config_new['api']['vod']['auth'], 2);
             $config_new['api']['art']['auth'] = mac_replace_text($config_new['api']['art']['auth'], 2);
             $config_new['api']['actor']['auth'] = mac_replace_text($config_new['api']['actor']['auth'], 2);
+            $config_new['api']['publicapi']['auth'] = mac_replace_text($config_new['api']['publicapi']['auth'], 2);
 
             $config_old = config('maccms');
             $config_new = array_merge($config_old, $config_new);
@@ -523,8 +524,15 @@ class System extends Base
             }
             return $this->success(lang('save_ok'));
         }
-
-        $this->assign('config', config('maccms'));
+        $config = config('maccms');
+        if(!isset($config['api']['publicapi'])){
+            $config['api']['publicapi'] = [
+                'status' => '0',
+                'charge' => '0',
+                'auth' => '',
+            ];
+        }
+        $this->assign('config',$config );
         $this->assign('title', lang('admin/system/configapi/title'));
         return $this->fetch('admin@system/configapi');
     }
