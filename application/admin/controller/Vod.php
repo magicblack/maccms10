@@ -136,7 +136,8 @@ class Vod extends Base
         $param['page'] = '{page}';
         $param['limit'] = '{limit}';
         $this->assign('param',$param);
-
+        $queryString = '?' . http_build_query($param);
+        $this->assign('query_string',$queryString);
         //分类
         $type_tree = model('Type')->getCache('type_tree');
         $this->assign('type_tree',$type_tree);

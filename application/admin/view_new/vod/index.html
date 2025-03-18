@@ -252,7 +252,7 @@
 {include file="../../../application/admin/view_new/public/foot" /}
 
 <script type="text/javascript">
-    var curUrl="{:url('vod/data',$param)}";
+    var curUrl="{:url('vod/data')}{$query_string}";
     layui.use(['laypage', 'layer','form'], function() {
         var laypage = layui.laypage
                 , layer = layui.layer,
