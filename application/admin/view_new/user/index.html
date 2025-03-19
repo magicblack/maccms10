@@ -119,9 +119,9 @@
 
         laypage.render({
             elem: 'pages'
-            , count: { $total }
-            , limit: { $limit }
-            , curr: { $page }
+            , count: {$total}
+            , limit: {$limit}
+            , curr: {$page}
             , layout: ['count', 'prev', 'page', 'next', 'limit', 'skip']
             , jump: function (obj, first) {
                 if (!first) {
