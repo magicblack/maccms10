@@ -145,6 +145,7 @@ return array (
   'portrait' => 'Portrait',
   'tpl_dir' => 'Répertoire de modèle',
   'ads_dir' => 'Répertoire de publicité',
+  'map_dir' => 'Répertoire des Cartes',
   'reply' => 'Répondre',
   'reply_yes' => 'Répondu',
   'reply_not' => 'Non répondu',
@@ -1353,7 +1354,8 @@ Note: Si les listes noires et blanches sont remplies, les stratégies s\'appliqu
   'admin/domain/help_tip' => 'Conseils :<br>
                         1. Cette fonction prend en charge l\'affichage de modèles et de configurations de sites Web différents pour différents noms de domaine sous la même base de données en mode non statique.<br>
                         2. Aucune limite sur le nombre de sites Web de domaine.<br>
-                        3. Le format d\'importation de texte est : Nom de domaine$Nom du site Web$Mots-clés$Description$Modèle$Répertoire du modèle$Répertoire de la publicité. Chaque ligne représente un site Web. Effacez les données existantes.',
+                        3. Le format d\'importation de texte est : Nom de domaine$Nom du site Web$Mots-clés$Description$Modèle$Répertoire du modèle$Répertoire de la publicité$répertoire de carte. Chaque ligne représente un site Web. Effacez les données existantes.<br>
+                        Si un répertoire de carte est défini, l\'administrateur doit configurer lui-même la redirection nginx. L\'URL est : rss/$répertoire de carte/index.xml.',
   'admin/website/title' => 'Gestion des sites Web',
   'admin/website/referer' => 'Trafic total',
   'admin/website/referer_month' => 'Trafic mensuel',

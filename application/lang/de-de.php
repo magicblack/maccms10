@@ -145,6 +145,7 @@ return array (
   'portrait' => '头像',
   'tpl_dir' => 'Vorlagenverzeichnis',
   'ads_dir' => 'Werbeverzeichnis',
+  'map_dir' => 'Kartenverzeichnis',
   'reply' => '回复',
   'reply_yes' => 'antworten',
   'reply_not' => 'Keine Antwort',
@@ -1353,7 +1354,8 @@ Nota: Se tanto a lista negra quanto a lista branca forem preenchidas, a polític
   'admin/domain/help_tip' => 'Dicas:<br>
                         1. Esta função suporta a exibição de diferentes modelos e informações de configuração do site sob o mesmo banco de dados e diferentes domínios em modo não-estático.<br>
                         2. Não há limite para o número de sites de domínio.<br>
-                        3. Formato de importação de texto: domínio$nome do site$palavras-chave$descrição$modelo$diretório do modelo$diretório de anúncios. Cada linha representa um site. Limpe os dados existentes antes da importação.',
+                        3. Formato de importação de texto: domínio$nome do site$palavras-chave$descrição$modelo$diretório$Kartenverzeichnis do modelo$diretório de anúncios. Cada linha representa um site. Limpe os dados existentes antes da importação.<br>
+                        4. Wenn ein Kartenverzeichnis festgelegt wurde, muss der Administrator die Nginx-Weiterleitung selbst konfigurieren. Die URL lautet: rss/$Kartenverzeichnis/index.xml.<br>',
   'admin/website/title' => 'Gestão de Sites',
   'admin/website/referer' => 'Tráfego Total',
   'admin/website/referer_month' => 'Tráfego Mensal',

@@ -220,6 +220,17 @@ class Make extends Base
             }
             $link .='.xml';
             $this->buildHtml($link,'./','rss/'.$this->_param['ac2']);
+            $config = config('domain');
+            foreach ($config as $key => $val){
+                if ($val['map_dir'] != ''){
+                    $map_link = "rss/".$val['map_dir'].'/'.$this->_param['ac2'];
+                    if($par['page']>1){
+                        $map_link .= $GLOBALS['config']['path']['page_sp'] . $par['page'];
+                    }
+                    $map_link .='.xml';
+                    $this->buildHtml($map_link,'./','rss/'.$this->_param['ac2']);
+                }
+            }
             $this->echoLink($link,'/'.$link);
         }
         if(ENTRANCE=='admin') {

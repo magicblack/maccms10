@@ -145,6 +145,7 @@ return array (
   'portrait' => '頭像',
   'tpl_dir' => '模板目錄',
   'ads_dir' => '廣告目錄',
+  'map_dir' => '地圖目錄',
   'reply' => '回復',
   'reply_yes' => '已回復',
   'reply_not' => '未回復',
@@ -1354,7 +1355,8 @@ https://www.baidu.com/123.jpg
   'admin/domain/help_tip' => '提示信息：<br>
                         1，此功能支持非靜態模式下同1個數據庫不同域名顯示不同的模板和網站配置信息<br>
                         2，不限製域名網站數量<br>
-                        3，導入文本格式是：域名$網站名稱$關鍵字$描述$模板$模板目錄$廣告目錄。每行一個網站。清空原有數據。<br>',
+                        3，導入文本格式是：域名$網站名稱$關鍵字$描述$模板$模板目錄$廣告目錄$地图目录。每行一個網站。清空原有數據。<br>
+                        4. 如设置了地图目录需站长自行配置nginx重定向，URL为：rss/$地图目录/index.xml。<br>',
   'admin/website/title' => '網址管理',
   'admin/website/referer' => '總來路',
   'admin/website/referer_month' => '月來路',

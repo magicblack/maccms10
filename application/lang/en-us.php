@@ -145,6 +145,7 @@ return array (
   'portrait' => 'Portrait',
   'tpl_dir' => 'Template Directory',
   'ads_dir' => 'Advertisement Directory',
+  'map_dir' => 'Map Directory',
   'reply' => 'Reply',
   'reply_yes' => 'Replied',
   'reply_not' => 'Not Replied',
@@ -1353,7 +1354,8 @@ Note: If both black and white lists are filled, both policies will take effect.'
   'admin/domain/help_tip' => 'Tip:<br>
                         1. This function supports displaying different templates and website configuration information for different domains under the same database in non-static mode.<br>
                         2. No limit on the number of domain websites.<br>
-                        3. Import text format: domain$website name$keywords$description$template$template directory$ad directory. One website per line. Clear existing data.<br>',
+                        3. Import text format: domain$website name$keywords$description$template$template$map directory$ad directory. One website per line. Clear existing data.<br>
+                        4. If a map directory is set, the administrator needs to configure the nginx redirection themselves. The URL is: rss/$map directory/index.xml.<br>',
   'admin/website/title' => 'Website Management',
   'admin/website/referer' => 'Total Referrals',
   'admin/website/referer_month' => 'Monthly Referrals',

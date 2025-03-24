@@ -27,6 +27,7 @@ class Domain extends Base
                     'template_dir'=>$tmp['template_dir'][$k],
                     'html_dir'=>$tmp['html_dir'][$k],
                     'ads_dir'=>$tmp['ads_dir'][$k],
+                    'map_dir'=>$tmp['map_dir'][$k],
                 ];
 
             }
@@ -71,7 +72,7 @@ class Domain extends Base
         $list = config('domain');
         $html = '';
         foreach($list as $k=>$v){
-            $html .= $v['site_url'].'$'.$v['site_name'].'$'.$v['site_keywords'].'$'.$v['site_description'].'$'.$v['template_dir'].'$'.$v['html_dir'].'$'.$v['ads_dir']."\n";
+            $html .= $v['site_url'].'$'.$v['site_name'].'$'.$v['site_keywords'].'$'.$v['site_description'].'$'.$v['template_dir'].'$'.$v['html_dir'].'$'.$v['ads_dir'].'$'.$v['map_dir']."\n";
         }
 
         header("Content-type: application/octet-stream");
