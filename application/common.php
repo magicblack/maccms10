@@ -1733,12 +1733,12 @@ function mac_alphaID($in, $to_num=false, $pad_up=false, $passKey='')
             }
         }
         $out = "";
-        for ($t = floor(log10($in) / log10($base)); $t >= 0; $t--) {
-            $a = floor($in / bcpow($base, $t));
-            $out = $out . substr($key, $a, 1);
-            $in = $in - ($a * bcpow($base, $t));
+        // 修复部分：改用逐位计算代替浮点运算
+        while ($in > 0) {
+            $remainder = $in % $base;
+            $out = substr($key, $remainder, 1) . $out;
+            $in = ($in - $remainder) / $base;
         }
-        $out = strrev($out);
     }
     return $out;
 }
