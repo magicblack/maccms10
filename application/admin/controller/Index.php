@@ -276,8 +276,13 @@ class Index extends Base
             $os_data['os_name'] = strtoupper($os_name);
             
             // 获取磁盘信息
-            $totalSpace = @\disk_total_space('/');
-            $freeSpace = @\disk_free_space('/');
+            $totalSpace = 0;
+            $freeSpace = 0;
+            
+            if (function_exists('disk_total_space') && function_exists('disk_free_space')) {
+                $totalSpace = @disk_total_space('/');
+                $freeSpace = @disk_free_space('/');
+            }
             
             if ($totalSpace > 0) {
                 $totalSpaceGB = round($totalSpace / (1024 * 1024 * 1024), 2);
@@ -321,7 +326,12 @@ class Index extends Base
 
     private function get_disk_space($letter)
     {
-        //获取磁盘信息
+        // 添加函数存在性检查
+        if (!function_exists('disk_total_space') || !function_exists('disk_free_space')) {
+            return [];
+        }
+
+        // 获取磁盘信息
         $diskct = 0;
         $disk = array();
 
