@@ -370,6 +370,9 @@ foreach ($langs as $k => &$v) {
                     layer.msg("configedit error",{time:1800});
                 },
                 success: function (r) {
+                    if(r.code != 1){
+                        alert(r.msg)
+                    }
                     layer.msg(r.msg,{time:1800});
                 },
                 complete: function () {

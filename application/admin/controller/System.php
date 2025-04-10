@@ -766,6 +766,9 @@ class System extends Base
             $config['site'] = [];
         }
         $config['site']['new_version'] = $param['version'];
+        if (!is_writable(APP_PATH . 'extra/maccms.php')) {
+            return $this->error(APP_PATH . 'extra/maccms.php' . lang('install/write_read_err'));
+        }
         $res = mac_arr2file(APP_PATH . 'extra/maccms.php', $config);
         if ($res === false) {
             return $this->error(lang('save_err'));
