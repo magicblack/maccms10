@@ -246,6 +246,12 @@ class Database extends Base
             $sql = trim($param['sql']);
 
             if(!empty($sql)){
+                $forbidden_keywords = ['into dumpfile', 'into outfile', 'char(', 'load_file'];
+                foreach ($forbidden_keywords as $keyword) {
+                    if (stripos($sql, $keyword) !== false) {
+                        return $this->error(lang('format_err'));
+                    }
+                }
                 $sql = str_replace('{pre}',config('database.prefix'),$sql);
                 //查询语句返回结果集
                 if(
