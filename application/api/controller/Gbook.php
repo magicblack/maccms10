@@ -59,11 +59,11 @@ class Gbook extends Base
         }
 
         if (isset($param['name']) && strlen($param['name']) > 0) {
-            $where['gbook_name'] = ['like', '%' . format_sql_string($param['name']) . '%'];
+            $where['gbook_name'] = ['like', '%' . $this->format_sql_string($param['name']) . '%'];
         }
 
         if (isset($param['content']) && strlen($param['content']) > 0) {
-            $where['gbook_content'] = ['like', '%' . format_sql_string($param['content']) . '%'];
+            $where['gbook_content'] = ['like', '%' . $this->format_sql_string($param['content']) . '%'];
         }
 
         if (isset($param['time_end']) && isset($param['time_start'])) {

@@ -56,7 +56,7 @@ class Link extends Base
         }
 
         if (isset($param['name']) && strlen($param['name']) > 0) {
-            $where['link_name'] = ['like', '%' . format_sql_string($param['name']) . '%'];
+            $where['link_name'] = ['like', '%' . $this->format_sql_string($param['name']) . '%'];
         }
 
         if (isset($param['time_end']) && isset($param['time_start'])) {
@@ -78,6 +78,11 @@ class Link extends Base
                 $order = 'link_' . $param['orderby'] . " DESC";
             }
             $list = model('Link')->getListByCond($offset, $limit, $where, $order, $field, []);
+            foreach ($list as &$item) {
+                $item['link_name'] = htmlspecialchars($item['link_name'], ENT_QUOTES, 'UTF-8');
+                $item['link_logo'] = htmlspecialchars($item['link_logo'], ENT_QUOTES, 'UTF-8');
+                $item['link_url'] = htmlspecialchars($item['link_url'], ENT_QUOTES, 'UTF-8');
+            }
         }
         // 返回
         return json([

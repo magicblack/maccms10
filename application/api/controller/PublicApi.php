@@ -43,4 +43,12 @@ trait PublicApi
             exit;
         }
     }
+
+    protected function format_sql_string($str)
+    {
+        $str = preg_replace('/\b(SELECT|INSERT|UPDATE|DELETE|DROP|UNION|WHERE|FROM|JOIN|INTO|VALUES|SET|AND|OR|NOT|EXISTS|HAVING|GROUP BY|ORDER BY|LIMIT|OFFSET)\b/i', '', $str);
+        $str = preg_replace('/[^\w\s\-\.]/', '', $str);
+        $str = trim(preg_replace('/\s+/', ' ', $str));
+        return $str;
+    }
 }

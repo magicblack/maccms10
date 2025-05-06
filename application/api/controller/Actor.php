@@ -51,27 +51,27 @@ class Actor extends Base
         }
 
         if (isset($param['area']) && strlen($param['area']) > 0) {
-            $where['actor_area'] = ['like', '%' . format_sql_string($param['area']) . '%'];
+            $where['actor_area'] = ['like', '%' . $this->format_sql_string($param['area']) . '%'];
         }
 
         if (isset($param['letter']) && strlen($param['letter']) > 0) {
-            $where['actor_letter'] = ['like', '%' . format_sql_string($param['letter']) . '%'];
+            $where['actor_letter'] = ['like', '%' . $this->format_sql_string($param['letter']) . '%'];
         }
 
         if (isset($param['level']) && strlen($param['level']) > 0) {
-            $where['actor_level'] = ['like', '%' . format_sql_string($param['level']) . '%'];
+            $where['actor_level'] = ['like', '%' . $this->format_sql_string($param['level']) . '%'];
         }
 
         if (isset($param['name']) && strlen($param['name']) > 0) {
-            $where['actor_name'] = ['like', '%' . format_sql_string($param['name']) . '%'];
+            $where['actor_name'] = ['like', '%' . $this->format_sql_string($param['name']) . '%'];
         }
 
         if (isset($param['blood']) && strlen($param['blood']) > 0) {
-            $where['actor_blood'] = ['like', '%' . format_sql_string($param['blood']) . '%'];
+            $where['actor_blood'] = ['like', '%' . $this->format_sql_string($param['blood']) . '%'];
         }
 
         if (isset($param['starsign']) && strlen($param['starsign']) > 0) {
-            $where['actor_starsign'] = ['like', '%' . format_sql_string($param['starsign']) . '%'];
+            $where['actor_starsign'] = ['like', '%' . $this->format_sql_string($param['starsign']) . '%'];
         }
 
         if (isset($param['time_end']) && isset($param['time_start'])) {

@@ -61,23 +61,23 @@ class User extends Base
         }
 
         if (isset($param['phone']) && strlen($param['phone']) > 0) {
-            $where['user_phone'] = ['like', '%' . format_sql_string($param['phone']) . '%'];
+            $where['user_phone'] = ['like', '%' . $this->format_sql_string($param['phone']) . '%'];
         }
 
         if (isset($param['qq']) && strlen($param['qq']) > 0) {
-            $where['user_qq'] = ['like', '%' . format_sql_string($param['qq']) . '%'];
+            $where['user_qq'] = ['like', '%' . $this->format_sql_string($param['qq']) . '%'];
         }
 
         if (isset($param['email']) && strlen($param['email']) > 0) {
-            $where['user_email'] = ['like', '%' . format_sql_string($param['email']) . '%'];
+            $where['user_email'] = ['like', '%' . $this->format_sql_string($param['email']) . '%'];
         }
 
         if (isset($param['nickname']) && strlen($param['nickname']) > 0) {
-            $where['user_nickname'] = ['like', '%' . format_sql_string($param['nickname']) . '%'];
+            $where['user_nickname'] = ['like', '%' . $this->format_sql_string($param['nickname']) . '%'];
         }
 
         if (isset($param['name']) && strlen($param['name']) > 0) {
-            $where['user_name'] = ['like', '%' . format_sql_string($param['name']) . '%'];
+            $where['user_name'] = ['like', '%' . $this->format_sql_string($param['name']) . '%'];
         }
 
         // 数据获取

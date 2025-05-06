@@ -60,23 +60,23 @@ class Art extends Base
         }
 
         if (isset($param['name']) && strlen($param['name']) > 0) {
-            $where['art_name'] = ['like', '%' . format_sql_string($param['name']) . '%'];
+            $where['art_name'] = ['like', '%' . $this->format_sql_string($param['name']) . '%'];
         }
 
         if (isset($param['sub']) && strlen($param['sub']) > 0) {
-            $where['art_sub'] = ['like', '%' . format_sql_string($param['sub']) . '%'];
+            $where['art_sub'] = ['like', '%' . $this->format_sql_string($param['sub']) . '%'];
         }
 
         if (isset($param['blurb']) && strlen($param['blurb']) > 0) {
-            $where['art_blurb'] = ['like', '%' . format_sql_string($param['blurb']) . '%'];
+            $where['art_blurb'] = ['like', '%' . $this->format_sql_string($param['blurb']) . '%'];
         }
 
         if (isset($param['title']) && strlen($param['title']) > 0) {
-            $where['art_title'] = ['like', '%' . format_sql_string($param['title']) . '%'];
+            $where['art_title'] = ['like', '%' . $this->format_sql_string($param['title']) . '%'];
         }
 
         if (isset($param['content']) && strlen($param['content']) > 0) {
-            $where['art_content'] = ['like', '%' . format_sql_string($param['content']) . '%'];
+            $where['art_content'] = ['like', '%' . $this->format_sql_string($param['content']) . '%'];
         }
 
         // 数据获取

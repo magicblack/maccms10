@@ -55,15 +55,15 @@ class Website extends Base
         }
 
         if (isset($param['name']) && strlen($param['name']) > 0) {
-            $where['website_name'] = ['like', '%' . format_sql_string($param['name']) . '%'];
+            $where['website_name'] = ['like', '%' . $this->format_sql_string($param['name']) . '%'];
         }
 
         if (isset($param['sub']) && strlen($param['sub']) > 0) {
-            $where['website_sub'] = ['like', '%' . format_sql_string($param['sub']) . '%'];
+            $where['website_sub'] = ['like', '%' . $this->format_sql_string($param['sub']) . '%'];
         }
 
         if (isset($param['en']) && strlen($param['en']) > 0) {
-            $where['website_en'] = ['like', '%' . format_sql_string($param['en']) . '%'];
+            $where['website_en'] = ['like', '%' . $this->format_sql_string($param['en']) . '%'];
         }
 
         if (isset($param['letter']) && strlen($param['letter']) == 1) {
@@ -71,15 +71,15 @@ class Website extends Base
         }
 
         if (isset($param['area']) && strlen($param['area']) > 0) {
-            $where['website_area'] = ['like', '%' . format_sql_string($param['area']) . '%'];
+            $where['website_area'] = ['like', '%' . $this->format_sql_string($param['area']) . '%'];
         }
 
         if (isset($param['lang']) && strlen($param['lang']) > 0) {
-            $where['website_lang'] = ['like', '%' . format_sql_string($param['lang']) . '%'];
+            $where['website_lang'] = ['like', '%' . $this->format_sql_string($param['lang']) . '%'];
         }
 
         if (isset($param['tag']) && strlen($param['tag']) > 0) {
-            $where['website_tag'] = ['like', '%' . format_sql_string($param['tag']) . '%'];
+            $where['website_tag'] = ['like', '%' . $this->format_sql_string($param['tag']) . '%'];
         }
 
         if (isset($param['time_end']) && isset($param['time_start'])) {
