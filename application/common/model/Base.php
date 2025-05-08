@@ -39,12 +39,22 @@ class Base extends Model
 
     public function getListByCond($offset, $limit, $cond, $orderby = '', $fields = "*", $transform = false)
     {
-        $orderby = $orderby ?: ($this->primaryId . " DESC");
+        $offset = max(0, (int)$offset);
+        $limit = max(1, (int)$limit);
+
+        if (empty($orderby)) {
+            $orderby = $this->primaryId . " DESC";
+        } else {
+            if (strpos($orderby, $this->primaryId) === false) {
+                $orderby .= ", " . $this->primaryId . " DESC";
+            }
+        }
+
         $query_object = $this;
         if ($this->readFromMaster === true) {
             $query_object = $query_object->master();
         }
-        $list = $query_object->where($cond)->field($fields)->order($orderby)->limit($offset . ',' . $limit)->select();
+        $list = $query_object->where($cond)->field($fields)->order($orderby)->limit($offset, $limit)->select();
         if (!$list) {
             return [];
         }
