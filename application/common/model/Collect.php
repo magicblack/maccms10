@@ -248,7 +248,9 @@ class Collect extends Base {
             if(isset($video->dl->dd) && $count=count($video->dl->dd)){
                 for($i=0; $i<$count; $i++){
                     $array_from[$i] = (string)$video->dl->dd[$i]['flag'];
-                    $array_url[$i] = $this->vod_xml_replace((string)$video->dl->dd[$i]);
+                    $urls = explode('#', $this->vod_xml_replace((string)$video->dl->dd[$i]));
+                    $sorted_urls = $this->sortPlayUrls($urls);
+                    $array_url[$i] = implode('#', $sorted_urls);
                     $array_server[$i] = 'no';
                     $array_note[$i] = '';
 
@@ -358,7 +360,9 @@ class Collect extends Base {
                 //videolist|list播放列表不同
                 foreach ($v['dl'] as $k2 => $v2) {
                     $array_from[] = $k2;
-                    $array_url[] = $v2;
+                    $urls = explode('#', $v2);
+                    $sorted_urls = $this->sortPlayUrls($urls);
+                    $array_url[] = implode('#', $sorted_urls);
                     $array_server[] = 'no';
                     $array_note[] = '';
                 }
@@ -383,6 +387,20 @@ class Collect extends Base {
 
         $res = ['code'=>1, 'msg'=>'json', 'page'=>$array_page, 'type'=>$array_type, 'data'=>$array_data ];
         return $res;
+    }
+
+    private function sortPlayUrls($urls) {
+        $sorted = [];
+        foreach ($urls as $url) {
+            if (preg_match('/(?:第|EP|E)?(\d+)(?:集|话|回)?/', $url, $matches)) {
+                $episode = (int)$matches[1];
+                $sorted[$episode] = $url;
+            } else {
+                $sorted[] = $url;
+            }
+        }
+        ksort($sorted);
+        return array_values($sorted);
     }
 
     /**
