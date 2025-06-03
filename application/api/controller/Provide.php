@@ -93,7 +93,7 @@ class Provide extends Base
                 }
                 $where['vod_year'] = ['in', explode(',', $year)];
             }
-            if (empty($GLOBALS['config']['api']['vod']['from']) && !empty($this->_param['from']) && strlen($this->_param['from']) > 2) {
+            if (empty($GLOBALS['config']['api']['vod']['from']) && !empty($this->_param['from']) && strlen($this->_param['from']) >= 2) {
                 $GLOBALS['config']['api']['vod']['from'] = $this->_param['from'];
             }
             // 采集播放组支持多个播放器
