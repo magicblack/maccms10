@@ -1515,7 +1515,7 @@ https://www.baidu.com/123.jpg
   'admin/collect/url_filter' => 'Filtragem de endereço',
   'admin/collect/no_filter' => 'Sem filtro',
   'admin/collect/filter_code' => 'Código de filtro',
-  'admin/collect/filter_code_tip' => 'Depois que a lista de permissões for ativada para recursos com vários grupos de endereços, apenas os endereços do código especificado serão inseridos no banco de dados. Por exemplo, youku,iqiyi',
+  'admin/collect/filter_code_tip' => 'Defina os códigos do player a manter (ex.: qq,youku), o sistema irá coletar todos os vídeos, players não especificados serão filtrados.',
   'admin/collect/filter_year' => 'Filtragem de ano',
   'admin/collect/filter_year_tip' => 'Após o preenchimento, apenas os filmes do ano especificado serão inseridos no banco de dados. Vários anos são separados por vírgulas em inglês, por exemplo, 2022,2023',
   'admin/collect/test_ok' => 'Tipo de teste bem-sucedido, tipo de interface',

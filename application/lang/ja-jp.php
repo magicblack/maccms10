@@ -1517,7 +1517,7 @@ https://www.baidu.com/123.jpg
   'admin/collect/url_filter' => 'アドレスフィルタリング',
   'admin/collect/no_filter' => 'フィルタリングしない',
   'admin/collect/filter_code' => 'フィルターコード',
-  'admin/collect/filter_code_tip' => '複数のアドレスを持つリソースは、ホワイトリストを有効にすると、指定されたコードのアドレスのみがライブラリに追加されます。たとえば、youku、iqiyi',
+  'admin/collect/filter_code_tip' => '保持するプレーヤーコードを設定（例：qq,youku）、システムはすべての動画を収集し、指定されていないプレーヤーはフィルタリングされます。',
   'admin/collect/filter_year' => '年をフィルター',
   'admin/collect/filter_year_tip' => '入力後、指定された年の映画のみがライブラリに追加されます。 複数の年は半角カンマで区切ります。例：2022,2023',
   'admin/collect/test_ok' => 'テストタイプに成功しました。インターフェースタイプ',

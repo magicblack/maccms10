@@ -1516,7 +1516,7 @@ Note: Si les listes noires et blanches sont remplies, les stratégies s\'appliqu
   'admin/collect/url_filter' => 'Filtrage des URL',
   'admin/collect/no_filter' => 'Pas de filtrage',
   'admin/collect/filter_code' => 'Code de filtrage',
-  'admin/collect/filter_code_tip' => 'Pour les ressources avec plusieurs URL, l\'activation de la liste blanche n\'enregistrera que les URL avec le code spécifié. Par exemple : youku, iqiyi',
+  'admin/collect/filter_code_tip' => 'Définissez les codes de lecteur à conserver (ex: qq,youku), le système collectera toutes les vidéos, les lecteurs non spécifiés seront filtrés.',
   'admin/collect/filter_year' => 'Filtrer par année',
   'admin/collect/filter_year_tip' => 'Remplissez pour enregistrer uniquement les vidéos des années spécifiées. Séparez les années par une virgule anglaise, par exemple 2022, 2023',
   'admin/collect/test_ok' => 'Test de type réussi, type d\'API',

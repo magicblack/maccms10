@@ -1516,7 +1516,7 @@ Nota: Se tanto a lista negra quanto a lista branca forem preenchidas, a polític
   'admin/collect/url_filter' => 'Filtro de URL',
   'admin/collect/no_filter' => 'Sem Filtro',
   'admin/collect/filter_code' => 'Código de Filtro',
-  'admin/collect/filter_code_tip' => 'Para recursos com múltiplos URLs, ao ativar a lista branca, apenas os URLs com códigos específicos serão incluídos no banco de dados. Exemplo: youku, iqiyi',
+  'admin/collect/filter_code_tip' => 'Geben Sie die zu behaltenden Player-Codes ein (z.B.: qq,youku). Das System sammelt alle Videos, nicht spezifizierte Player werden gefiltert.',
   'admin/collect/filter_year' => 'Filtrar por Ano',
   'admin/collect/filter_year_tip' => 'Digite os anos específicos dos vídeos que deseja incluir. Separe múltiplos anos com vírgula, por exemplo, 2022, 2023',
   'admin/collect/test_ok' => 'Teste de Tipo Bem-sucedido, Tipo de API',

@@ -1515,7 +1515,7 @@ https://www.baidu.com/123.jpg
   'admin/collect/url_filter' => '주소 필터링',
   'admin/collect/no_filter' => '필터링 없음',
   'admin/collect/filter_code' => '필터 코드',
-  'admin/collect/filter_code_tip' => '여러 그룹의 주소가 있는 리소스에서 화이트리스트를 활성화하면 지정된 코드의 주소만 데이터베이스에 입력됩니다. 예: youku,iqiyi',
+  'admin/collect/filter_code_tip' => '유지할 플레이어 코드를 설정하세요(예: qq,youku), 시스템은 모든 비디오를 수집하며 지정되지 않은 플레이어는 필터링됩니다.',
   'admin/collect/filter_year' => '연도 필터링',
   'admin/collect/filter_year_tip' => '입력 후 지정된 연도의 영화만 데이터베이스에 입력됩니다. 여러 연도는 영어 반각 쉼표로 구분합니다. 예: 2022,2023',
   'admin/collect/test_ok' => '테스트 유형 성공, 인터페이스 유형',

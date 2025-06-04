@@ -1514,7 +1514,7 @@ Nota: Si se especifican listas negras y blancas, ambas se aplicarán simultánea
   'admin/collect/url_filter' => 'Filtro de URL',
   'admin/collect/no_filter' => 'Sin Filtrar',
   'admin/collect/filter_code' => 'Código de Filtrado',
-  'admin/collect/filter_code_tip' => 'Para múltiples recursos de direcciones, al habilitar una lista blanca solo se importará el código especificado de la dirección. Por ejemplo, youku, iqiyi',
+  'admin/collect/filter_code_tip' => 'Establezca los códigos de reproductor a mantener (ej.: qq,youku), el sistema recopilará todos los videos, los reproductores no especificados serán filtrados.',
   'admin/collect/filter_year' => 'Filtrar por Año',
   'admin/collect/filter_year_tip' => 'Ingrese solo los años específicos de los videos que desea importar. Use comas para separar múltiples años, por ejemplo, 2022, 2023',
   'admin/collect/test_ok' => 'Prueba de Tipo Exitosa, Tipo de API',

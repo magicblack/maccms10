@@ -1516,7 +1516,7 @@ Note: If both black and white lists are filled, both policies will take effect.'
   'admin/collect/url_filter' => 'URL Filter',
   'admin/collect/no_filter' => 'No Filter',
   'admin/collect/filter_code' => 'Filter Code',
-  'admin/collect/filter_code_tip' => 'For resources with multiple address groups, enabling whitelist will only store addresses with specified codes. For example, youku, iqiyi.',
+  'admin/collect/filter_code_tip' => 'Set the player codes to keep (e.g.: qq,youku), the system will collect all videos, unspecified players will be filtered.',
   'admin/collect/filter_year' => 'Filter Year',
   'admin/collect/filter_year_tip' => 'Enter only the specified year videos. Multiple years are separated by commas, e.g., 2022,2023',
   'admin/collect/test_ok' => 'Test type successful, API type',
