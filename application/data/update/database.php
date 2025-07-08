@@ -109,3 +109,6 @@ if (version_compare(config('version.code'), '2024.1000.4043', '>=')) {
         $res = mac_arr2file($file, $config);
     }
 }
+// 修改group_id字段为varchar(255)
+$sql = "ALTER TABLE `mac_user` MODIFY COLUMN `group_id` varchar(255) NOT NULL DEFAULT '0' COMMENT '会员组ID,多个用逗号分隔';";
+$sql .= "\r";

@@ -26,14 +26,12 @@
         </div>
 
 
-        <div class="layui-form-item ">
+        <div class="layui-form-item">
             <label class="layui-form-label">{:lang('group')}：</label>
-            <div class="layui-input-inline">
-                <select name="group_id" lay-filter="group_id">
-                    {volist name="group_list" id="vo"}
-                    <option value="{$vo.group_id}" {if condition="$info['group_id'] eq $vo['group_id']"}selected {/if}>{$vo.group_name}</option>
-                    {/volist}
-                </select>
+            <div class="layui-input-block">
+                {volist name="group_list" id="vo"}
+                <input type="checkbox" name="group_id[]" value="{$vo.group_id}" title="{$vo.group_name}" lay-filter="group_id" {if condition="in_array($vo.group_id,explode(',',$info.group_id))"}checked{/if}>
+                {/volist}
             </div>
         </div>
         {if condition="$info.user_id neq ''"}
@@ -55,8 +53,7 @@
             </div>
         </div>
 
-        <div class="layui-form-item rowTime" {if condition="$info.group_id elt 2"} style="display:none;" {/if}>
-
+        <div class="layui-form-item rowTime" {if condition="!$has_vip_group"} style="display:none;" {/if}>
             <label class="layui-form-label">{:lang('admin/user/time_end')}：</label>
             <div class="layui-input-inline">
                 <input type="text" class="layui-input" name="user_end_time" id="user_end_time" value="{$info.user_end_time|date='Y-m-d H:i:s',###}" placeholder="yyyy-MM-dd HH:mm:ss">
@@ -140,21 +137,31 @@
         //日期范围
         laydate.render({
             elem: '#user_end_time',
-            type: 'datetime'
+            type: 'datetime',
+            trigger: 'click'
         });
         laydate.render({
             elem: '#user_start_time',
-            type: 'datetime'
+            type: 'datetime',
+            trigger: 'click'
         });
 
-        form.on('select(group_id)', function(data) {
-            $('.rowTime').hide();
-            if(data.value >2 ){
+        form.on('checkbox(group_id)', function(data) {
+            var checkedBoxes = $('input[name="group_id[]"]:checked');
+            var hasHighLevelGroup = false;
+            checkedBoxes.each(function() {
+                var groupId = parseInt($(this).val());
+                if (groupId > 2) {
+                    hasHighLevelGroup = true;
+                    return false;
+                }
+            });
+            if (hasHighLevelGroup) {
                 $('.rowTime').show();
+            } else {
+                $('.rowTime').hide();
             }
         });
-
-
 
         upload.render({
             elem: '.layui-upload'

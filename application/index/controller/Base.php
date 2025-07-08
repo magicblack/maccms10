@@ -92,12 +92,21 @@ class Base extends All
     protected function check_user_popedom($type_id,$popedom,$param=[],$flag='',$info=[],$trysee=0)
     {
         $user = $GLOBALS['user'];
-        $group = $GLOBALS['user']['group'];
-
+        $group_ids = explode(',', $user['group_id']);
+        $group_list = model('Group')->getCache();
+        
         $res = false;
-        if(strpos(','.$group['group_type'],','.$type_id.',')!==false && !empty($group['group_popedom'][$type_id][$popedom])!==false){
-            $res = true;
+        foreach($group_ids as $group_id) {
+            if(!isset($group_list[$group_id])) {
+                continue;
+            }
+            $group = $group_list[$group_id];
+            if(strpos(','.$group['group_type'],','.$type_id.',')!==false && !empty($group['group_popedom'][$type_id][$popedom])!==false){
+                $res = true;
+                break;
+            }
         }
+        
         $pre = $flag;
         $col = 'detail';
         if($flag=='play' || $flag=='down'){
@@ -116,11 +125,25 @@ class Base extends All
 
         }
         elseif($popedom==2 && in_array($pre,['art','actor','website'])){
+            $has_permission = false;
+            $has_trysee = false;
+            foreach($group_ids as $group_id) {
+                if(!isset($group_list[$group_id])) {
+                    continue;
+                }
+                $group = $group_list[$group_id];
+                if(!empty($group['group_popedom'][$type_id][2])) {
+                    $has_permission = true;
+                }
+                if($trysee > 0) {
+                    $has_trysee = true;
+                }
+            }
 
-            if($res===false && (empty($group['group_popedom'][$type_id][2]) || $trysee==0)){
+            if($res===false && (!$has_permission || !$has_trysee)){
                 return ['code'=>3001,'msg'=>lang('controller/no_popedom'),'trysee'=>0];
             }
-            elseif($group['group_id']<3 && $points>0  ){
+            elseif(max($group_ids)<3 && $points>0){
                 $mid = mac_get_mid($pre);
                 $where=[];
                 $where['ulog_mid'] = $mid;
@@ -141,13 +164,25 @@ class Base extends All
             }
         }
         elseif($popedom==3){
-            if($res===false && (empty($group['group_popedom'][$type_id][5]) || $trysee==0)){
+            $has_permission = false;
+            $has_trysee = false;
+            foreach($group_ids as $group_id) {
+                if(!isset($group_list[$group_id])) {
+                    continue;
+                }
+                $group = $group_list[$group_id];
+                if(!empty($group['group_popedom'][$type_id][5])) {
+                    $has_permission = true;
+                }
+                if($trysee > 0) {
+                    $has_trysee = true;
+                }
+            }
+
+            if($res===false && (!$has_permission || !$has_trysee)){
                 return ['code'=>3001,'msg'=>lang('controller/no_popedom'),'trysee'=>0];
             }
-            elseif($group['group_id']<3 && empty($group['group_popedom'][$type_id][3]) && !empty($group['group_popedom'][$type_id][5]) && $trysee>0){
-                return ['code'=>3002,'msg'=>lang('controller/in_try_see'),'trysee'=>$trysee];
-            }
-            elseif($group['group_id']<3 && $points>0  ){
+            elseif(max($group_ids)<3 && $points>0){
                 $where=[];
                 $where['ulog_mid'] = 1;
                 $where['ulog_type'] = $flag=='play' ? 4 : 5;
@@ -172,10 +207,10 @@ class Base extends All
                 return ['code'=>1001,'msg'=>lang('controller/no_popedom')];
             }
             if($popedom == 4){
-                if( $group['group_id'] ==1 && $points>0){
+                if(max($group_ids)==1 && $points>0){
                     return ['code'=>4001,'msg'=>lang('controller/charge_data'),'trysee'=>0];
                 }
-                elseif($group['group_id'] ==2 && $points>0){
+                elseif(max($group_ids)==2 && $points>0){
                     $where=[];
                     $where['ulog_mid'] = 1;
                     $where['ulog_type'] = $flag=='play' ? 4 : 5;
@@ -196,7 +231,22 @@ class Base extends All
                 }
             }
             elseif($popedom==5){
-                if(empty($group['group_popedom'][$type_id][3]) && !empty($group['group_popedom'][$type_id][5])){
+                $has_permission = false;
+                $has_trysee = false;
+                foreach($group_ids as $group_id) {
+                    if(!isset($group_list[$group_id])) {
+                        continue;
+                    }
+                    $group = $group_list[$group_id];
+                    if(!empty($group['group_popedom'][$type_id][3])) {
+                        $has_permission = true;
+                    }
+                    if(!empty($group['group_popedom'][$type_id][5])) {
+                        $has_trysee = true;
+                    }
+                }
+
+                if(!$has_permission && $has_trysee){
                     $where=[];
                     $where['ulog_mid'] = 1;
                     $where['ulog_type'] = $flag=='play' ? 4 : 5;
@@ -217,10 +267,10 @@ class Base extends All
                     elseif($points>0 && $res['code'] == 1) {
 
                     }
-                    elseif( $group['group_id'] <=2 && $points <= intval($user['user_points']) ){
+                    elseif(max($group_ids)<=2 && $points <= intval($user['user_points'])){
                         return ['code'=>5001,'msg'=>lang('controller/try_see_end',[$points, $user['user_points']]),'trysee'=>$trysee];
                     }
-                    elseif( $group['group_id'] <3 && $points > intval($user['user_points']) ){
+                    elseif(max($group_ids)<3 && $points > intval($user['user_points'])){
                         return ['code'=>5002,'msg'=>lang('controller/not_enough_points',[$points,$user['user_points'] ]),'trysee'=>$trysee];
                     }
                 }

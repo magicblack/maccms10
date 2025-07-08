@@ -629,7 +629,7 @@ CREATE TABLE `mac_ulog` (
 DROP TABLE IF EXISTS `mac_user`;
 CREATE TABLE `mac_user` (
   `user_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `group_id` smallint(6) unsigned NOT NULL DEFAULT '0' ,
+  `group_id` varchar(255) NOT NULL DEFAULT '0' COMMENT '会员组ID,多个用逗号分隔',
   `user_name` varchar(30) NOT NULL DEFAULT '' ,
   `user_pwd` varchar(32) NOT NULL DEFAULT '' ,
   `user_nick_name` varchar(30) NOT NULL DEFAULT '' ,

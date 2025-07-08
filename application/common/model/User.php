@@ -51,7 +51,13 @@ class User extends Base
 
         //用户组
         $group_list = model('Group')->getCache('group_list');
-        $info['group'] = $group_list[$info['group_id']];
+        $group_ids = explode(',', $info['group_id']);
+        $info['group'] = [];
+        foreach($group_ids as $gid){
+            if(isset($group_list[$gid])){
+                $info['group'][] = $group_list[$gid];
+            }
+        }
 
 
         $info['user_pwd'] = '';
@@ -383,12 +389,18 @@ class User extends Base
 
         //用户组
         $group_list = model('Group')->getCache('group_list');
-        $group = $group_list[$row['group_id']];
+        $group_ids = explode(',', $row['group_id']);
+        $group = [];
+        foreach($group_ids as $gid){
+            if(isset($group_list[$gid])){
+                $group[] = $group_list[$gid];
+            }
+        }
 
         cookie('user_id', $row['user_id'],['expire'=>2592000] );
         cookie('user_name', $row['user_name'],['expire'=>2592000] );
-        cookie('group_id', $group['group_id'],['expire'=>2592000] );
-        cookie('group_name', $group['group_name'],['expire'=>2592000] );
+        cookie('group_id', $group[0]['group_id'],['expire'=>2592000] );
+        cookie('group_name', $group[0]['group_name'],['expire'=>2592000] );
         cookie('user_check', md5($random . '-' .$row['user_name'] . '-' . $row['user_id'] .'-' ),['expire'=>2592000] );
         cookie('user_portrait', mac_get_user_portrait($row['user_id']),['expire'=>2592000] );
 
@@ -398,11 +410,10 @@ class User extends Base
     public function expire()
     {
         $where=[];
-        $where['group_id'] = ['gt',2];
         $where['user_end_time'] = ['elt',time()];
 
         $update=[];
-        $update['group_id'] = 2;
+        $update['group_id'] = '2';
 
         $res = $this->where($where)->update($update);
         if ($res === false) {
@@ -452,7 +463,13 @@ class User extends Base
         }
 
         $group_list = model('Group')->getCache('group_list');
-        $info['group'] = $group_list[$info['group_id']];
+        $group_ids = explode(',', $info['group_id']);
+        $info['group'] = [];
+        foreach($group_ids as $gid){
+            if(isset($group_list[$gid])){
+                $info['group'][] = $group_list[$gid];
+            }
+        }
 
         //会员截止日期
         if ($info['group_id'] > 2 && $info['user_end_time'] < time()) {
@@ -528,13 +545,20 @@ class User extends Base
 
     }
 
-    public function popedom($type_id, $popedom, $group_id = 1)
+    public function popedom($type_id, $popedom, $group_ids = 1)
     {
         $group_list = model('Group')->getCache();
-        $group_info = $group_list[$group_id];
-
-        if (strpos(',' . $group_info['group_type'], ',' . $type_id . ',') !== false && !empty($group_info['group_popedom'][$type_id][$popedom]) !== false) {
-            return true;
+        $group_ids = explode(',', $group_ids);
+        
+        foreach($group_ids as $group_id) {
+            if(!isset($group_list[$group_id])) {
+                continue;
+            }
+            $group_info = $group_list[$group_id];
+            
+            if (strpos(',' . $group_info['group_type'], ',' . $type_id . ',') !== false && !empty($group_info['group_popedom'][$type_id][$popedom]) !== false) {
+                return true;
+            }
         }
         return false;
     }
@@ -576,11 +600,14 @@ class User extends Base
 
         $where = [];
         $where['user_id'] = $GLOBALS['user']['user_id'];
-
+        $old_group_ids = explode(',', $GLOBALS['user']['group_id']);
+        if(!in_array($group_id, $old_group_ids)){
+            $old_group_ids[] = $group_id;
+        }
         $data = [];
         $data['user_points'] = $GLOBALS['user']['user_points'] - $point;
         $data['user_end_time'] = $end_time;
-        $data['group_id'] = $group_id;
+        $data['group_id'] = implode(',', array_unique($old_group_ids));
 
         $res = $this->where($where)->update($data);
         if($res===false){

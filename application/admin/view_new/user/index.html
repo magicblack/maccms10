@@ -47,7 +47,7 @@
                     <th width="25"><input type="checkbox" lay-skin="primary" lay-filter="allChoose"></th>
                     <th width="100">{:lang('id')}</th>
                     <th>{:lang('name')}</th>
-                    <th width="100">{:lang('group')}</th>
+                    <th width="80">{:lang('group')}</th>
                     <th width="80">{:lang('status')}</th>
                     <th width="80">{:lang('points')}</th>
                     <th width="130">{:lang('last_login_time')}</th>
@@ -63,8 +63,12 @@
                 <td><input type="checkbox" name="ids[]" value="{$vo.user_id}" class="layui-checkbox checkbox-ids"
                         lay-skin="primary"></td>
                 <td>{$vo.user_id}</td>
-                <td>{$vo.user_name|htmlspecialchars}</td>
-                <td>{$vo.group_name|htmlspecialchars}</td>
+                <td>{$vo.user_name}</td>
+                <td>
+                    {volist name=":explode(',',$vo.group_id)" id="gid"}
+                    {$group_list[$gid]['group_name']}{if !$i.last},{/if}
+                    {/volist}
+                </td>
                 <td>
                     <input type="checkbox" name="status" {if condition="$vo['user_status'] eq 1" }checked{/if}
                         value="{$vo['user_status']}" lay-skin="switch" lay-filter="switchStatus"

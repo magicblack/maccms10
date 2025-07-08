@@ -36,7 +36,14 @@ class User extends Base
 
         $group_list = model('Group')->getCache('group_list');
         foreach($res['list'] as $k=>$v){
-            $res['list'][$k]['group_name'] = $group_list[$v['group_id']]['group_name'];
+            $group_ids = explode(',', $v['group_id']);
+            $names = [];
+            foreach($group_ids as $gid){
+                if(isset($group_list[$gid])){
+                    $names[] = $group_list[$gid]['group_name'];
+                }
+            }
+            $res['list'][$k]['group_name'] = implode(',', $names);
         }
 
         $this->assign('list',$res['list']);
@@ -139,6 +146,9 @@ class User extends Base
     {
         if (Request()->isPost()) {
             $param = input('post.');
+            if(isset($param['group_id']) && is_array($param['group_id'])) {
+                $param['group_id'] = implode(',', $param['group_id']);
+            }
             $res = model('User')->saveData($param);
             if($res['code']>1){
                 return $this->error($res['msg']);
@@ -146,19 +156,24 @@ class User extends Base
             return $this->success($res['msg']);
         }
 
-        $id = input('id');
+        $id = input('id/d');
         $where=[];
         $where['user_id'] = ['eq',$id];
         $res = model('User')->infoData($where);
+        $info = $res['info'];
 
-        $this->assign('info',$res['info']);
-
-        $order='group_id asc';
-        $where=[];
-        $res = model('Group')->listData($where,$order);
-        $this->assign('group_list',$res['list']);
-
-        $this->assign('title',lang('admin/user/title'));
+        $group_list = model('Group')->getCache('group_list');
+        $group_ids = isset($info['group_id']) ? explode(',', $info['group_id']) : [];
+        $has_vip_group = false;
+        foreach($group_ids as $gid){
+            if(intval($gid) > 2){
+                $has_vip_group = true;
+                break;
+            }
+        }
+        $this->assign('info', $info);
+        $this->assign('group_list', $group_list);
+        $this->assign('has_vip_group', $has_vip_group);
         return $this->fetch('admin@user/info');
     }
 
