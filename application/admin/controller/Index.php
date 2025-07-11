@@ -6,8 +6,7 @@ use think\Hook;
 use think\Db;
 use COM;
 use Exception;
-
-
+use ip_limit\IpLocationQuery;
 class Index extends Base
 {
     public function __construct()
@@ -98,6 +97,12 @@ class Index extends Base
         $this->assign('version', $version);
         $this->assign('menus', $menus);
         $this->assign('title', lang('admin/index/title'));
+        $ipQuery = new IpLocationQuery();
+        $country_code = $ipQuery->queryProvince(mac_get_client_ip());
+        if($country_code == ""){
+            $country_code = "其它";
+        }
+        $this->assign('ip_location', $country_code);
         return $this->fetch('admin@index/index');
     }
 

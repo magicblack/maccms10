@@ -197,6 +197,21 @@
                                 placeholder="">{$config['site']['site_close_tip']}</textarea>
                         </div>
                     </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:lang('admin/system/config/mainland_ip_limit')}：</label>
+                        <div class="layui-input-inline w350">
+                            <input type="radio" name="site[mainland_ip_limit]" value="0" title="{:lang('close')}" {if
+                                condition="$config['site']['mainland_ip_limit'] eq 0 or !isset($config['site']['mainland_ip_limit'])" }checked {/if}>
+                            <input type="radio" name="site[mainland_ip_limit]" value="1" title="{:lang('admin/system/config/mainland_ip_only_allow')}" {if
+                                condition="$config['site']['mainland_ip_limit'] eq 1" }checked {/if}>
+                            <input type="radio" name="site[mainland_ip_limit]" value="2" title="{:lang('admin/system/config/mainland_ip_not_allow')}" {if
+                                condition="$config['site']['mainland_ip_limit'] eq 2" }checked {/if}>
+                        </div>
+                        <div class="layui-form-mid layui-word-aux">{:lang('admin/system/config/mainland_ip_limit_tip')}</div>
+                    </div>
+
+                    
                 </div>
 
                 <div class="layui-tab-item" id="movementTable">
