@@ -1760,6 +1760,10 @@ function mac_url($model,$param=[],$info=[])
     ksort($param); 
 
     $config = $GLOBALS['config'];
+    
+    $is_static_mode = isset($GLOBALS['ismake']) && $GLOBALS['ismake'] == '1';
+    
+    // 静态生成模式标记（用于后续URL处理）
     $replace_from = ['{id}','{en}','{page}','{type_id}','{type_en}','{type_pid}','{type_pen}','{md5}','{year}','{month}','{day}','{sid}','{nid}'];
     $replace_to = [];
     $page_sp = $config['path']['page_sp'];
@@ -2438,6 +2442,20 @@ function mac_url($model,$param=[],$info=[])
         }
     }
 
+    // 在静态生成模式下，对生成的URL进行后处理，去掉admin/index前缀
+    if($is_static_mode && !empty($url)) {
+        if(strpos($url, '/index.php/') === 0) {
+            $url = preg_replace('/\/index\.php\/[^\/]+\.php\/admin\-/', '/index.php/', $url);
+            $url = str_replace('/admin-', '/', $url);
+        }
+        if(strpos($url, 'admin-') !== false) {
+            $url = str_replace('admin-', '', $url);
+        }
+        if(strpos($url, 'index-') !== false) {
+            $url = str_replace('index-', '', $url);
+        }
+    }
+
     return $url;
 }
 function mac_url_page($url,$num)
@@ -3012,5 +3030,4 @@ if (!function_exists('copydirs')) {
         }
     }
 }
-
 
