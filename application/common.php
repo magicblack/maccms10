@@ -1080,6 +1080,7 @@ function mac_get_mid_code($data)
         9  => 'role',
         10 => 'plot',
         11 => 'website',
+        12 => 'manga',
     ];
     return $arr[$data];
 }
@@ -1097,6 +1098,7 @@ function mac_get_mid_text($data)
         9  => lang('role'),
         10 => lang('plot'),
         11 => lang('website'),
+        12 => lang('manga'),
     ];
     return $arr[$data];
 }
@@ -1115,6 +1117,7 @@ function mac_get_mid($controller)
         'role'    => 9,
         'plot'    => 10,
         'website' => 11,
+        'manga'   => 12,
     ];
     return $arr[$controller];
 }
@@ -1131,6 +1134,7 @@ function mac_get_aid($controller,$action='')
     $arr=[
         'vod/type'=>11,'vod/show'=>12,'vod/search'=>13,'vod/detail'=>14,'vod/play'=>15,'vod/down'=>16,'vod/role'=>17,'vod/plot'=>18,
         'art/type'=>21,'art/show'=>22,'art/search'=>23,'art/detail'=>24,
+        'manga/type'=>121,'manga/show'=>122,'manga/search'=>123,'manga/detail'=>124,
         'topic/search'=>33,'topic/detail'=>34,
         'actor/type'=>81,'actor/show'=>82,'actor/search'=>83,'actor/detail'=>84,
         'role/show'=>92,'role/search'=>93,'role/detail'=>94,
@@ -1466,6 +1470,44 @@ function mac_play_list_one($url_one, $from_one, $server_one=''){
         $url_list[$key+1]['nid'] = $key+1;
     }
     return $url_list;
+}
+
+function mac_manga_list($manga_play_from,$manga_play_url,$manga_play_server,$manga_play_note)
+{
+    $manga_play_from_list = [];
+    $manga_play_url_list = [];
+    $manga_play_server_list = [];
+    $manga_play_note_list = [];
+
+    if(!empty($manga_play_from)) {
+        $manga_play_from_list = explode('$$$', $manga_play_from);
+    }
+    if(!empty($manga_play_url)) {
+        $manga_play_url_list = explode('$$$', $manga_play_url);
+    }
+    if(!empty($manga_play_server)) {
+        $manga_play_server_list = explode('$$$', $manga_play_server);
+    }
+    if(!empty($manga_play_note)) {
+        $manga_play_note_list = explode('$$$', $manga_play_note);
+    }
+
+    $res_list = [];
+    foreach($manga_play_from_list as $k=>$v){
+        $server = (string)$manga_play_server_list[$k];
+        $urls = mac_play_list_one($manga_play_url_list[$k],$v);
+
+        $res_list[$k + 1] = [
+            'sid' => $k + 1,
+            'from' => $v,
+            'url' => $manga_play_url_list[$k],
+            'server' => $server,
+            'note' => $manga_play_note_list[$k],
+            'url_count' => count($urls),
+            'urls' => $urls,
+        ];
+    }
+    return $res_list;
 }
 
 function mac_filter_words($p)
@@ -2596,6 +2638,10 @@ function mac_url_vod_index($param=[])
 function mac_url_vod_detail($info)
 {
     return mac_url('vod/detail',[],$info);
+}
+function mac_url_manga_detail($info)
+{
+    return mac_url('manga/detail',[],$info);
 }
 function mac_url_vod_search($param)
 {

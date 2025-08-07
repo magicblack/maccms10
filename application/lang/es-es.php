@@ -1917,4 +1917,5 @@ Nota: Si se especifican listas negras y blancas, ambas se aplicarán simultánea
   'validate/require_tpl' => 'Se requiere la plantilla',
   'validate/require_ip' => 'Se requiere la dirección IP',
   'validate/require_time' => 'Se requiere la hora',
+  'manga' => 'historietas',
 );

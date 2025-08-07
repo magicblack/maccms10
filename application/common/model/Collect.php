@@ -125,6 +125,26 @@ class Collect extends Base {
         return $this->website_json($param);
     }
 
+    public function manga($param)
+    {
+        if($param['type'] == '1'){
+            return $this->manga_xml($param);
+        }
+        elseif($param['type'] == '2'){
+            return $this->manga_json($param);
+        }
+        else{
+            $data = $this->manga_json($param);
+
+            if($data['code'] == 1){
+                return $data;
+            }
+            else{
+                return $this->manga_xml($param);
+            }
+        }
+    }
+
     public function vod_xml_replace($url)
     {
         $array_url = array();
@@ -253,7 +273,6 @@ class Collect extends Base {
                     $array_url[$i] = implode('#', $sorted_urls);
                     $array_server[$i] = 'no';
                     $array_note[$i] = '';
-
                 }
             }else{
                 $array_from[]=(string)$video->dt;
@@ -1076,6 +1095,81 @@ class Collect extends Base {
     }
 
     public function art_json($param)
+    {
+        $url_param = [];
+        $url_param['ac'] = $param['ac'];
+        $url_param['t'] = $param['t'];
+        $url_param['pg'] = is_numeric($param['page']) ? $param['page'] : '';
+        $url_param['h'] = $param['h'];
+        $url_param['ids'] = $param['ids'];
+        $url_param['wd'] = $param['wd'];
+
+        if($param['ac']!='list'){
+            $url_param['ac'] = 'detail';
+        }
+
+        $url = $param['cjurl'];
+        if(strpos($url,'?')===false){
+            $url .='?';
+        }
+        else{
+            $url .='&';
+        }
+
+        $url .= http_build_query($url_param). base64_decode($param['param']);
+        $result = $this->checkCjUrl($url);
+        if ($result['code'] > 1) {
+            return $result;
+        }
+        $html = mac_curl_get($url);
+        if(empty($html)){
+            return ['code'=>1001, 'msg'=>lang('model/collect/get_html_err') . ', url: ' . $url];
+        }
+        $html = mac_filter_tags($html);
+        $json = json_decode($html,true);
+        if(!$json){
+            return ['code'=>1002, 'msg'=>lang('model/collect/json_err') . ': ' . mb_substr($html, 0, 15)];
+        }
+
+        $array_page = [];
+        $array_page['page'] = $json['page'];
+        $array_page['pagecount'] = $json['pagecount'];
+        $array_page['pagesize'] = $json['limit'];
+        $array_page['recordcount'] = $json['total'];
+        $array_page['url'] = $url;
+
+        $type_list = model('Type')->getCache('type_list');
+        $bind_list = config('bind');
+
+        $key = 0;
+        $array_data = [];
+        foreach($json['list'] as $key=>$v){
+            $array_data[$key] = $v;
+            $bind_key = $param['cjflag'] .'_'.$v['type_id'];
+            if($bind_list[$bind_key] >0){
+                $array_data[$key]['type_id'] = $bind_list[$bind_key];
+            }
+            else{
+                $array_data[$key]['type_id'] = 0;
+            }
+        }
+
+        $array_type = [];
+        $key=0;
+        //分类列表
+        if($param['ac'] == 'list'){
+            foreach($json['class'] as $k=>$v){
+                $array_type[$key]['type_id'] = $v['type_id'];
+                $array_type[$key]['type_name'] = $v['type_name'];
+                $key++;
+            }
+        }
+
+        $res = ['code'=>1, 'msg'=>'ok', 'page'=>$array_page, 'type'=>$array_type, 'data'=>$array_data ];
+        return $res;
+    }
+
+    public function manga_json($param)
     {
         $url_param = [];
         $url_param['ac'] = $param['ac'];
@@ -2569,5 +2663,271 @@ class Collect extends Base {
             return ['code' => 1001, 'msg' => lang('model/collect/cjurl_err') . ': ' . $url];
         }
         return ['code' => 1];
+    }
+
+    public function manga_xml($param,$html='')
+    {
+        $url_param = [];
+        $url_param['ac'] = $param['ac'];
+        $url_param['t'] = $param['t'];
+        $url_param['pg'] = is_numeric($param['page']) ? $param['page'] : '';
+        $url_param['h'] = $param['h'];
+        $url_param['ids'] = $param['ids'];
+        $url_param['wd'] = $param['wd'];
+        if(empty($param['h']) && !empty($param['rday'])){
+            $url_param['h'] = $param['rday'];
+        }
+
+        if($param['ac']!='list'){
+            $url_param['ac'] = 'mangalist';
+        }
+
+        $url = $param['cjurl'];
+        if(strpos($url,'?')===false){
+            $url .='?';
+        }
+        else{
+            $url .='&';
+        }
+        $url .= http_build_query($url_param). base64_decode($param['param']);
+        $result = $this->checkCjUrl($url);
+        if ($result['code'] > 1) {
+            return $result;
+        }
+        $html = mac_curl_get($url);
+        if(empty($html)){
+            return ['code'=>1001, 'msg'=>lang('model/collect/get_html_err') . ', url: ' . $url];
+        }
+        $html = mac_filter_tags($html);
+        $xml = @simplexml_load_string($html);
+        if(empty($xml)){
+            $labelRule = '<pic>'."(.*?)".'</pic>';
+            $labelRule = mac_buildregx($labelRule,"is");
+            preg_match_all($labelRule,$html,$tmparr);
+            $ec=false;
+            foreach($tmparr[1] as $tt){
+                if(strpos($tt,'[CDATA')===false){
+                    $ec=true;
+                    $ne = '<pic>'.'<![CDATA['.$tt .']]>'.'</pic>';
+                    $html = str_replace('<pic>'.$tt.'</pic>',$ne,$html);
+                }
+            }
+            if($ec) {
+                $xml = @simplexml_load_string($html);
+            }
+            if(empty($xml)) {
+                return ['code' => 1002, 'msg'=>lang('model/collect/xml_err')];
+            }
+        }
+
+        $array_page = [];
+        $array_page['page'] = (string)$xml->list->attributes()->page;
+        $array_page['pagecount'] = (string)$xml->list->attributes()->pagecount;
+        $array_page['pagesize'] = (string)$xml->list->attributes()->pagesize;
+        $array_page['recordcount'] = (string)$xml->list->attributes()->recordcount;
+        $array_page['url'] = $url;
+
+        $type_list = model('Type')->getCache('type_list');
+        $bind_list = config('bind');
+
+        $key = 0;
+        $array_data = [];
+        foreach($xml->list->manga as $manga){
+            $bind_key = $param['cjflag'] .'_'.(string)$manga->tid;
+            if($bind_list[$bind_key] >0){
+                $array_data[$key]['type_id'] = $bind_list[$bind_key];
+            }
+            else{
+                $array_data[$key]['type_id'] = 0;
+            }
+            $array_data[$key]['manga_id'] = (string)$manga->id;
+            $array_data[$key]['manga_name'] = (string)$manga->name;
+            $array_data[$key]['manga_sub'] = (string)$manga->sub;
+            $array_data[$key]['manga_remarks'] = (string)$manga->remarks;
+            $array_data[$key]['type_name'] = (string)$manga->type;
+            $array_data[$key]['manga_pic'] = (string)$manga->pic;
+            $array_data[$key]['manga_lang'] = (string)$manga->lang;
+            $array_data[$key]['manga_area'] = (string)$manga->area;
+            $array_data[$key]['manga_year'] = (string)$manga->year;
+            $array_data[$key]['manga_serial'] = (string)$manga->serial;
+            $array_data[$key]['manga_author'] = (string)$manga->author;
+            $array_data[$key]['manga_artist'] = (string)$manga->artist;
+            $array_data[$key]['manga_content'] = (string)$manga->content;
+
+            $array_data[$key]['manga_status'] = 1;
+            $array_data[$key]['manga_time'] = (string)$manga->last;
+            $array_data[$key]['manga_total'] = 0;
+            $array_data[$key]['manga_isend'] = 1;
+            if($array_data[$key]['manga_serial']){
+                $array_data[$key]['manga_isend'] = 0;
+            }
+            
+            // 格式化章節
+            $array_from = [];
+            $array_url = [];
+            $array_server=[];
+            $array_note=[];
+
+            if(isset($manga->dl->dd) && count($manga->dl->dd)){
+                for($i=0; $i<count($manga->dl->dd); $i++){
+                    $array_from[$i] = (string)$manga->dl->dd[$i]['flag'];
+                    $urls = explode('#', $this->vod_xml_replace((string)$manga->dl->dd[$i]));
+                    $sorted_urls = $this->sortPlayUrls($urls);
+                    $array_url[$i] = implode('#', $sorted_urls);
+                    $array_server[$i] = 'no';
+                    $array_note[$i] = '';
+                }
+            }else{
+                $array_from[]=(string)$manga->dt;
+                $array_url[] ='';
+                $array_server[]='';
+                $array_note[]='';
+            }
+
+            $array_data[$key]['manga_play_from'] = implode('$$$', $array_from);
+            $array_data[$key]['manga_play_url'] = implode('$$$', $array_url);
+            $array_data[$key]['manga_play_server'] = implode('$$$', $array_server);
+            $array_data[$key]['manga_play_note'] = implode('$$$', $array_note);
+
+            $key++;
+        }
+
+        $array_type = [];
+        $key=0;
+        //分类列表
+        if($param['ac'] == 'list'){
+            foreach($xml->class->ty as $ty){
+                $array_type[$key]['type_id'] = (string)$ty->attributes()->id;
+                $array_type[$key]['type_name'] = (string)$ty;
+                $key++;
+            }
+        }
+
+        $res = ['code'=>1, 'msg'=>'xml', 'page'=>$array_page, 'type'=>$array_type, 'data'=>$array_data ];
+        return $res;
+    }
+
+    public function manga_data($param,$data,$show=1)
+    {
+        if($show==1) {
+            mac_echo('[' . __FUNCTION__ . '] ' . lang('model/collect/data_tip1', [$data['page']['page'],$data['page']['pagecount'],$data['page']['url']]));
+        }
+
+        $config = config('maccms.collect');
+        $config = $config['manga'];
+        $config_sync_pic = $param['sync_pic_opt'] > 0 ? $param['sync_pic_opt'] : $config['pic'];
+
+        $type_list = model('Type')->getCache('type_list');
+        $filter_arr = explode(',',$config['filter']);
+        $filter_arr = array_filter($filter_arr);
+        
+        foreach($data['data'] as $k=>$v){
+            $color='red';
+            $des='';
+            $msg='';
+            $tmp='';
+
+            if ($v['type_id'] ==0) {
+                $des = lang('model/collect/type_err');
+            } elseif (empty($v['manga_name'])) {
+                $des = lang('model/collect/name_err');
+            } elseif (mac_array_filter($filter_arr,$v['manga_name']) !==false) {
+                $des = lang('model/collect/name_in_filter_err');
+            } else {
+                unset($v['manga_id']);
+
+                foreach($v as $k2=>$v2){
+                    if(strpos($k2,'_content')===false) {
+                        $v[$k2] = strip_tags($v2);
+                    }
+                }
+
+                $v['type_id_1'] = intval($type_list[$v['type_id']]['type_pid']);
+                $v['manga_en'] = Pinyin::get($v['manga_name']);
+                $v['manga_letter'] = strtoupper(substr($v['manga_en'],0,1));
+                $v['manga_time_add'] = time();
+                $v['manga_time'] = time();
+                $v['manga_status'] = intval($config['status']);
+                
+                $where = [];
+                $where['manga_name'] = $v['manga_name'];
+                if (strpos($config['inrule'], 'b')!==false) {
+                    $where['type_id'] = $v['type_id'];
+                }
+
+                $info = model('Manga')->where($where)->find();
+                if (!$info) {
+                    $tmp = $this->syncImages($config_sync_pic, $v['manga_pic'],'manga');
+                    $v['manga_pic'] = (string)$tmp['pic'];
+                    $msg = $tmp['msg'];
+                    
+                    $v['manga_chapter_from'] = $v['manga_play_from'];
+                    $v['manga_chapter_url'] = $v['manga_play_url'];
+                    
+                    $res = model('Manga')->insert($v);
+                    if($res===false){
+
+                    }
+                    $color ='green';
+                    $des= lang('model/collect/add_ok');
+                }
+                else{
+                    $des = lang('model/collect/not_need_update');
+                }
+            }
+            if($show==1) {
+                mac_echo( ($k + 1) .'、'. $v['manga_name'] . " <font color='{$color}'>" .$des .'</font>'. $msg.'' );
+            }
+            else{
+                return ['code'=>($color=='red' ? 1001 : 1),'msg'=>$des ];
+            }
+        }
+
+        $key = $GLOBALS['config']['app']['cache_flag']. '_'.'collect_break_manga';
+        if(ENTRANCE=='api'){
+            Cache::rm($key);
+            if ($data['page']['page'] < $data['page']['pagecount']) {
+                $param['page'] = intval($data['page']['page']) + 1;
+                $res = $this->manga($param);
+                if($res['code']>1){
+                    return $this->error($res['msg']);
+                }
+                $this->manga_data($param,$res );
+            }
+            mac_echo(lang('model/collect/is_over'));
+            die;
+        }
+
+        if(empty($GLOBALS['config']['app']['collect_timespan'])){
+            $GLOBALS['config']['app']['collect_timespan'] = 3;
+        }
+        if($show==1) {
+            if ($param['ac'] == 'cjsel') {
+                Cache::rm($key);
+                mac_echo(lang('model/collect/is_over'));
+                unset($param['ids']);
+                $param['ac'] = 'list';
+                $url = url('api') . '?' . http_build_query($param);
+                $ref = $_SERVER["HTTP_REFERER"];
+                if(!empty($ref)){
+                   $url = $ref;
+                }
+
+                mac_jump($url, $GLOBALS['config']['app']['collect_timespan']);
+            } else {
+                if ($data['page']['page'] >= $data['page']['pagecount']) {
+                    Cache::rm($key);
+                    mac_echo(lang('model/collect/is_over'));
+                    unset($param['page'],$param['ids']);
+                    $param['ac'] = 'list';
+                    $url = url('api') . '?' . http_build_query($param);
+                    mac_jump($url, $GLOBALS['config']['app']['collect_timespan']);
+                } else {
+                    $param['page'] = intval($data['page']['page']) + 1;
+                    $url = url('api') . '?' . http_build_query($param);
+                    mac_jump($url, $GLOBALS['config']['app']['collect_timespan'] );
+                }
+            }
+        }
     }
 }

@@ -1921,4 +1921,5 @@ https://www.baidu.com/123.jpg
   'validate/require_tpl' => 'O modelo é obrigatório',
   'validate/require_ip' => 'O IP é obrigatório',
   'validate/require_time' => 'O tempo é obrigatório',
+  'manga' => 'quadrinhos',
 );

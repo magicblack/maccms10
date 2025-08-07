@@ -378,29 +378,99 @@ return array (
     array (
     ),
   ),
+    'manga-<page?>' =>
+    array (
+        0 => 'manga/index',
+        1 =>
+            array (
+            ),
+        2 =>
+            array (
+            ),
+    ),
+    'manga$' =>
+        array (
+            0 => 'manga/index',
+            1 =>
+                array (
+                ),
+            2 =>
+                array (
+                ),
+        ),
+  'mangatype/<id>-<page?>' => 
+  array (
+    0 => 'manga/type',
+    1 => 
+    array (
+    ),
+    2 => 
+    array (
+    ),
+  ),
+  'mangatype/<id>' => 
+  array (
+    0 => 'manga/type',
+    1 => 
+    array (
+    ),
+    2 => 
+    array (
+    ),
+  ),
+  'mangadetail-<id>' => 
+  array (
+    0 => 'manga/detail',
+    1 => 
+    array (
+    ),
+    2 => 
+    array (
+    ),
+  ),
+  'mangaplay/<id>-<sid>-<nid>' => 
+  array (
+    0 => 'manga/play',
+    1 => 
+    array (
+    ),
+    2 => 
+    array (
+    ),
+  ),
+  'mangadown/<id>-<sid>-<nid>' => 
+  array (
+    0 => 'manga/down',
+    1 => 
+    array (
+    ),
+    2 => 
+    array (
+    ),
+  ),
+  'mangashow/<id>-<area?>-<by?>-<class?>-<lang?>-<letter?>-<level?>-<order?>-<page?>-<state?>-<tag?>-<year?>' => 
+  array (
+    0 => 'manga/show',
+    1 => 
+    array (
+    ),
+    2 => 
+    array (
+    ),
+  ),
+  'mangasearch/<wd?>-<actor?>-<area?>-<by?>-<class?>-<director?>-<lang?>-<letter?>-<level?>-<order?>-<page?>-<state?>-<tag?>-<year?>' => 
+  array (
+    0 => 'manga/search',
+    1 => 
+    array (
+    ),
+    2 => 
+    array (
+    ),
+  ),
   'label-<file>' => 
   array (
     0 => 'label/index',
-    1 => 
-    array (
-    ),
-    2 => 
-    array (
-    ),
-  ),
-  'plotdetail/<id>-<page?>' => 
-  array (
-    0 => 'plot/plot',
-    1 => 
-    array (
-    ),
-    2 => 
-    array (
-    ),
-  ),
-  'plotdetail/<id>' => 
-  array (
-    0 => 'plot/detail',
     1 => 
     array (
     ),

@@ -1920,4 +1920,5 @@ https://www.baidu.com/123.jpg
   'validate/require_tpl' => '템플릿은 필수입니다.',
   'validate/require_ip' => 'IP는 필수입니다.',
   'validate/require_time' => '시간은 필수입니다.',
+  'manga' => '만화',
 );

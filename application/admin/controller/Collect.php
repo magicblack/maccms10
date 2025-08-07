@@ -40,6 +40,8 @@ class Collect extends Base
         $collect_break_role = Cache::get($key);
         $key = $GLOBALS['config']['app']['cache_flag']. '_'. 'collect_break_website';
         $collect_break_website = Cache::get($key);
+        $key = $GLOBALS['config']['app']['cache_flag']. '_'. 'collect_break_manga';
+        $collect_break_manga = Cache::get($key);
 
 
         $this->assign('collect_break_vod', $collect_break_vod);
@@ -47,6 +49,7 @@ class Collect extends Base
         $this->assign('collect_break_actor', $collect_break_actor);
         $this->assign('collect_break_role', $collect_break_role);
         $this->assign('collect_break_website', $collect_break_website);
+        $this->assign('collect_break_manga', $collect_break_manga);
 
         $this->assign('title',lang('admin/collect/title'));
         return $this->fetch('admin@collect/index');
@@ -113,12 +116,15 @@ class Collect extends Base
         $collect_break_role = Cache::get($key);
         $key = $GLOBALS['config']['app']['cache_flag']. '_'. 'collect_break_website';
         $collect_break_website = Cache::get($key);
+        $key = $GLOBALS['config']['app']['cache_flag']. '_'. 'collect_break_manga';
+        $collect_break_manga = Cache::get($key);
 
         $this->assign('collect_break_vod', $collect_break_vod);
         $this->assign('collect_break_art', $collect_break_art);
         $this->assign('collect_break_actor', $collect_break_actor);
         $this->assign('collect_break_role', $collect_break_role);
         $this->assign('collect_break_website', $collect_break_website);
+        $this->assign('collect_break_manga', $collect_break_manga);
 
         $this->assign('title', lang('admin/collect/title'));
         return $this->fetch('admin@collect/union');
@@ -166,6 +172,9 @@ class Collect extends Base
         }
         elseif ($param['mid'] == '11') {
             return $this->website($param);
+        }
+        elseif ($param['mid'] == '12') {
+            return $this->manga($param);
         }
     }
 
@@ -488,5 +497,64 @@ class Collect extends Base
 
         mac_echo('<style type="text/css">body{font-size:12px;color: #333333;line-height:21px;}span{font-weight:bold;color:#FF0000}</style>');
         model('Collect')->website_data($param,$res );
+    }
+
+    public function manga($param)
+    {
+        if($param['ac'] != 'list'){
+            $key = $GLOBALS['config']['app']['cache_flag']. '_'.'collect_break_manga';
+            Cache::set($key, url('collect/api').'?'. http_build_query($param) );
+        }
+        $res = model('Collect')->manga($param);
+        if($res['code']>1){
+            return $this->error($res['msg']);
+        }
+
+        if($param['ac'] == 'list'){
+
+            $bind_list = config('bind');
+            $type_list = model('Type')->getCache('type_list');
+            $manga_type_list = [];
+            foreach($type_list as $k=>$v){
+                if($v['type_mid'] == 12){
+                    $manga_type_list[$k] = $v;
+                }
+            }
+            $this->assign('type_list', $manga_type_list);
+
+            foreach($res['type'] as $k=>$v){
+                $key = $param['cjflag'] . '_' . $v['type_id'];
+                $res['type'][$k]['isbind'] = 0;
+                $local_id = intval($bind_list[$key]);
+                if( $local_id>0 ){
+                    $res['type'][$k]['isbind'] = 1;
+                    $res['type'][$k]['local_type_id'] = $local_id;
+                    $type_name = $manga_type_list[$local_id]['type_name'];
+                    if(empty($type_name)){
+                        $type_name = lang('unknown_type');
+                    }
+                    $res['type'][$k]['local_type_name'] = $type_name;
+                }
+            }
+
+            $this->assign('page',$res['page']);
+            $this->assign('type',$res['type']);
+            $this->assign('list',$res['data']);
+
+            $this->assign('total',$res['page']['recordcount']);
+            $this->assign('page',$res['page']['page']);
+            $this->assign('limit',$res['page']['pagesize']);
+
+            $param['page'] = '{page}';
+            $param['limit'] = '{limit}';
+            $this->assign('param',$param);
+
+            $this->assign('param_str',http_build_query($param)) ;
+
+            return $this->fetch('admin@collect/manga');
+        }
+
+        mac_echo('<style type="text/css">body{font-size:12px;color: #333333;line-height:21px;}span{font-weight:bold;color:#FF0000}</style>');
+        model('Collect')->manga_data($param,$res );
     }
 }

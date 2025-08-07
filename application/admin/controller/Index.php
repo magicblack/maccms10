@@ -233,14 +233,16 @@ class Index extends Base
         }
 
         $url = url($url);
-        $mid = 1;
-        if ($tab == 'art') {
-            $mid = 2;
-        } elseif ($tab == 'actor') {
-            $mid = 8;
-        } elseif ($tab == 'website') {
-            $mid = 11;
-        }
+    $mid = 1;
+    if ($tab == 'art') {
+        $mid = 2;
+    } elseif ($tab == 'actor') {
+        $mid = 8;
+    } elseif ($tab == 'website') {
+        $mid = 11;
+    } elseif ($tab == 'manga') {
+        $mid = 12;
+    }
         $this->assign('mid', $mid);
 
         if ($tpl == 'select_type') {

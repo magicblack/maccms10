@@ -1909,4 +1909,5 @@ Nota: Se tanto a lista negra quanto a lista branca forem preenchidas, a polític
   'validate/require_tpl' => 'Modelo é obrigatório',
   'validate/require_ip' => 'IP é obrigatório',
   'validate/require_time' => 'Tempo é obrigatório',
+  'manga' => 'Comics',
 );

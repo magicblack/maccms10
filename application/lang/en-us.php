@@ -1917,4 +1917,5 @@ Note: If both black and white lists are filled, both policies will take effect.'
   'validate/require_tpl' => 'Template is required',
   'validate/require_ip' => 'IP address is required',
   'validate/require_time' => 'Time is required',
+  'manga' => 'Manga',
 );

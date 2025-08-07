@@ -2111,4 +2111,5 @@ https://www.baidu.com/123.jpg
     'validate/require_tpl'=>'模板必须',
     'validate/require_ip'=>'ip必须',
     'validate/require_time'=>'时间必须',
+    'manga' => '漫画',
 ];

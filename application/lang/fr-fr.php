@@ -1917,4 +1917,5 @@ Note: Si les listes noires et blanches sont remplies, les stratégies s\'appliqu
   'validate/require_tpl' => 'Modèle requis',
   'validate/require_ip' => 'Adresse IP requise',
   'validate/require_time' => 'Temps requis',
+  'manga' => 'bandes dessinées',
 );

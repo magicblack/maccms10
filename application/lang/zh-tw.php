@@ -1922,4 +1922,5 @@ https://www.baidu.com/123.jpg
   'validate/require_tpl' => '模板必須',
   'validate/require_ip' => 'ip必須',
   'validate/require_time' => '時間必須',
+  'manga' => '漫畫',
 );
