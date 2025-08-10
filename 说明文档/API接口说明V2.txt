@@ -1,0 +1,215 @@
+API 接口说明 V2（基于当前实现）
+
+一、总览
+- 基础路径：/api.php
+- 请求方式：GET（除特别说明外）
+- 返回格式：默认 JSON；部分 Provide 聚合接口支持 XML（at=xml）
+- 通用返回：
+  - 成功：{"code":1,"msg":"获取成功","info":{...}}
+  - 列表 info 结构常见为：{"offset":number,"limit":number,"total":number,"rows":[...]}
+  - 详情 info 结构：对象或数组（视具体模块）
+
+二、Provide 聚合接口（采集/对接用，兼容老格式）
+1) 视频（Vod）
+- 路径：/api.php/provide/vod/
+- 主要参数：
+  - ac：list|detail|videolist（默认 list）
+  - at：json|xml（默认 json）
+  - t：分类ID
+  - ids：ID 列表，逗号分隔
+  - pg：页码，默认 1
+  - pagesize：每页条数，最大 100
+  - wd：搜索关键字
+  - h：最近 N 小时内（如 24）
+  - year：年份（如 2020 或 2018-2022）
+  - isend：完结筛选（1 完结，0 连载）
+  - from：播放器筛选（逗号分隔），影响返回的 vod_play_from/url 等字段
+  - sort_direction：desc|asc（默认 desc），影响按 time 排序方向
+- 备注：
+  - ac=list 时返回精简字段并附带分类 class；ac=videolist/detail 返回完整字段（含播放组等）。
+  - at=xml 时返回 V1 文档所示 XML 结构；json 返回字段见源码处理（vod_json/vod_xml）。
+
+2) 文章（Art）
+- 路径：/api.php/provide/art/
+- 参数：ac=list|detail，t、ids、pg、wd、h、pagesize 等，语义与 Vod 类似
+
+3) 演员（Actor）
+- 路径：/api.php/provide/actor/
+- 参数：ac=list|detail，t、ids、pg、wd、h、pagesize 等
+
+4) 角色（Role）
+- 路径：/api.php/provide/role/
+- 参数：ac=list|detail，t、ids、pg、wd、h、pagesize 等
+
+5) 网址（Website）
+- 路径：/api.php/provide/website/
+- 参数：ac=list|detail，t、ids、pg、wd、h、pagesize 等
+
+三、模块接口（REST 风格）
+说明：除特别说明外，列表接口统一支持 offset、limit、orderby 等；详情接口统一以 {xxx_id} 为必填参数。
+
+1) Vod（视频）
+- 列表：/api.php/vod/get_list/
+  - 参数：
+    - id：number(0..MAX)
+    - offset：number(0..MAX)
+    - limit：number(1..500)
+    - orderby：in[hits,up,pubdate,hits_week,hits_month,hits_day,score]
+    - type_id：number(0..MAX)
+    - vod_letter：string(<=1)
+    - vod_name：string(<=50)
+    - vod_tag：string(<=20)
+    - vod_blurb：string(<=20)
+    - vod_class：string(<=10)
+- 详情：/api.php/vod/get_detail/
+  - 参数：vod_id：number 必填(0..MAX)
+- 年份：/api.php/vod/get_year/
+  - 参数：type_id_1：number 必填(0..MAX)
+- 分类：/api.php/vod/get_class/
+  - 参数：type_id_1：number 必填(0..MAX)
+- 地区：/api.php/vod/get_area/
+  - 参数：type_id_1：number 必填(0..MAX)
+
+2) Art（文章）
+- 列表：/api.php/art/get_list/
+  - 参数：
+    - offset：number(0..MAX)
+    - limit：number(1..500)
+    - tag：string(<=100)
+    - orderby：in[id,time,time_add,score,hits,hits_day,hits_week,hits_month,up,down,level]
+    - letter：string(<=1)
+    - status：number(1..10)
+    - name：string(<=100)
+    - sub：string(<=100)
+    - blurb：string(<=100)
+    - title：string(<=50)
+    - content：string(<=100)
+    - time_start：number(1..MAX)
+    - time_end：number(1..MAX)
+- 详情：/api.php/art/get_detail/
+  - 参数：art_id：number 必填(0..MAX)
+
+3) Actor（演员）
+- 列表：/api.php/actor/get_list/
+  - 参数：
+    - offset：number(1..MAX)
+    - limit：number(1..MAX)
+    - id：number(1..MAX)
+    - type_id：number(1..100)
+    - sex：in[男,女]
+    - area：string(<=255)
+    - letter：string(<=1)
+    - level：string(<=1)
+    - name：string(<=20)
+    - blood：string(<=10)
+    - starsign：string(<=255)
+    - time_start：number(1..MAX)
+    - time_end：number(1..MAX)
+    - orderby：in[hits,hits_month,hits_week,hits_day,time]
+- 详情：/api.php/actor/get_detail/
+  - 参数：actor_id：number 必填(1..MAX)
+
+4) Comment（评论）
+- 列表：/api.php/comment/get_list/
+  - 参数：
+    - offset：number(1..MAX)
+    - limit：number(1..MAX)
+    - rid：number(1..MAX)
+    - orderby：in[time,up,down]
+
+5) Gbook（留言）
+- 列表：/api.php/gbook/get_list/
+  - 参数：
+    - offset：number(0..MAX)
+    - limit：number(1..500)
+    - id：number(1..MAX)
+    - rid：number(1..MAX)
+    - user_id：number(1..MAX)
+    - status：number(0..10)
+    - name：string(<=20)
+    - content：string(<=20)
+    - orderby：in[id,time,reply_time]
+    - time_start：number(0..MAX)
+    - time_end：number(0..MAX)
+
+6) Link（友情链接）
+- 列表：/api.php/link/get_list/
+  - 参数：
+    - offset：number(0..MAX)
+    - limit：number(1..500)
+    - id：number(1..MAX)
+    - type：number(1..MAX)
+    - name：string(<=100)
+    - sort：number(1..MAX)
+    - time_start：number(1..MAX)
+    - time_end：number(1..MAX)
+    - orderby：in[id,time,time_add]
+
+7) Topic（专题/话题）
+- 列表：/api.php/topic/get_list/
+  - 参数：
+    - offset：number(0..MAX)
+    - limit：number(1..500)
+    - time_start：number(0..MAX)
+    - time_end：number(0..MAX)
+    - orderby：in[id,time,time_add,score,hits,hits_day,hits_week,hits_month,up,down,level]
+- 详情：/api.php/topic/get_detail/
+  - 参数：topic_id：number 必填(0..MAX)
+
+8) Type（分类）
+- 分类树列表（顶级含 children）：/api.php/type/get_list/
+  - 参数：type_id：number(1..MAX) 可选（传入则筛选该顶级）
+- 分类顶栏（全部顶级）：/api.php/type/get_all_list/
+  - 参数：无
+
+9) User（用户）
+- 列表：/api.php/user/get_list/
+  - 参数：
+    - offset：number(0..MAX)
+    - limit：number(1..500)
+    - name：string(<=50)
+    - nickname：string(<=50)
+    - email：string(<=100)
+    - qq：string(<=20)
+    - phone：string(<=20)
+    - time_start：number(1..MAX)
+    - time_end：number(1..MAX)
+    - group_id：number
+    - orderby：in[login_time,reg_time,points]
+- 详情：/api.php/user/get_detail/
+  - 参数：id：number 必填(1..MAX)
+
+10) Website（网址）
+- 列表：/api.php/website/get_list/
+  - 参数：
+    - offset：number(0..MAX)
+    - limit：number(1..500)
+    - type_id：number(1..100)
+    - name：string(<=20)
+    - sub：string(<=20)
+    - en：string(<=20)
+    - status：number(1..9)
+    - letter：string(<=1)
+    - area：string(<=10)
+    - lang：string(<=10)
+    - level：number(1..9)
+    - start_time：number(1..MAX)
+    - end_time：number(1..MAX)
+    - tag：string(<=20)
+    - orderby：in[id,time,time_add,score,hits,up,down,level]
+- 详情：/api.php/website/get_detail/
+  - 参数：website_id：number 必填(1..MAX)
+
+11) Manga（漫画）
+- 列表：/api.php/manga/index/
+  - 参数：
+    - page：number(>=1) 默认 1
+    - limit：number(>=1) 默认 20
+    - t：分类ID（type_id）
+    - ids：ID 列表，逗号分隔
+    - wd：搜索关键字
+    - order：排序，默认 manga_time desc
+  - 返回：与模型 listData 一致：{"code":1,"msg":"数据列表","page":number,"pagecount":number,"limit":number,"total":number,"list":[...]}
+- 详情：/api.php/manga/detail/
+  - 参数：id：number（漫画ID）
+  - 返回：{"code":1,"msg":"获取成功","info":{...}}
