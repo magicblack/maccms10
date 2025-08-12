@@ -10,7 +10,8 @@
                 <li lay-id="configapi_3">{:lang('admin/system/configapi/actor')}</li>
                 <li lay-id="configapi_4">{:lang('admin/system/configapi/role')}</li>
                 <li lay-id="configapi_5">{:lang('admin/system/configapi/website')}</li>
-                <li lay-id="configapi_5">{:lang('admin/system/configapi/publicapi')}</li>
+                <li lay-id="configapi_6">{:lang('admin/system/configapi/manga')}</li>
+                <li lay-id="configapi_7">{:lang('admin/system/configapi/publicapi')}</li>
             </ul>
             <div class="layui-tab-content">
                 <div class="layui-tab-item layui-show" id="movementTable">
@@ -436,6 +437,67 @@
                         </div>
                     </div>
 
+                </div>
+
+                <div class="layui-tab-item">
+                    <blockquote class="layui-elem-quote layui-quote-nm">
+                        {:lang('admin/system/configapi/manga_tip')}
+                    </blockquote>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:lang('admin/system/configapi/status')}：</label>
+                        <div class="layui-input-block">
+                            <input type="radio" name="api[manga][status]" value="0" title="{:lang('close')}" {if condition="$config['api']['manga']['status'] neq 1"}checked {/if}>
+                            <input type="radio" name="api[manga][status]" value="1" title="{:lang('open')}" {if condition="$config['api']['manga']['status'] eq 1"}checked {/if}>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:lang('admin/system/configapi/charge')}：</label>
+                        <div class="layui-input-block">
+                            <input type="radio" name="api[manga][charge]" value="0" title="{:lang('close')}" {if condition="$config['api']['manga']['charge'] neq 1"}checked {/if}>
+                            <input type="radio" name="api[manga][charge]" value="1" title="{:lang('open')}" {if condition="$config['api']['manga']['charge'] eq 1"}checked {/if}>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">
+                            {:lang('admin/system/configapi/pagesize')}：</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="api[manga][pagesize]" placeholder="{:lang('admin/system/configapi/pagesize_tip')}" value="{$config['api']['manga']['pagesize']}" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">
+                            {:lang('admin/system/configapi/imgurl')}：</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="api[manga][imgurl]" placeholder="{:lang('admin/system/configapi/imgurl_tip')}" value="{$config['api']['manga']['imgurl']}" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">
+                            {:lang('admin/system/configapi/typefilter')}：</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="api[manga][typefilter]" placeholder="{:lang('admin/system/configapi/typefilter_tip')}" value="{$config['api']['manga']['typefilter']}" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">
+                            {:lang('admin/system/configapi/datafilter')}：</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="api[manga][datafilter]" placeholder="{:lang('admin/system/configapi/datafilter_tip_manga')}" value="{$config['api']['manga']['datafilter']}" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">
+                            {:lang('admin/system/configapi/cachetime')}：</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="api[manga][cachetime]" placeholder="{:lang('admin/system/configapi/cachetime_tip')}" value="{$config['api']['manga']['cachetime']}" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:lang('admin/system/configapi/auth')}：</label>
+                        <div class="layui-input-block">
+                            <textarea name="api[manga][auth]" class="layui-textarea">{$config['api']['manga']['auth']|mac_replace_text}</textarea>
+                        </div>
+                    </div>
                 </div>
                 <div class="layui-tab-item" id="movementTable">
 

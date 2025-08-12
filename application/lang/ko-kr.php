@@ -960,7 +960,8 @@ https://www.baidu.com/123.jpg
                             7,분류 목록 주소 /api.php/type/get_list/<br>
                             8,사용자 목록 주소 /api.php/user/get_list/<br>
                             9,비디오 목록 주소 /api.php/vod/get_list/<br>
-                            10,웹사이트 목록 주소 /api.php/website/get_list',
+                            10,웹사이트 목록 주소 /api.php/website/get_list/<br>
+                            11,만화 목록 주소 /api.php/manga/get_list/',
   'admin/system/configcollect/title' => '수집 매개변수 구성',
   'admin/system/configcollect/vod' => '동영상 수집 설정',
   'admin/system/configcollect/art' => '기사 수집 설정',
@@ -1921,4 +1922,7 @@ https://www.baidu.com/123.jpg
   'validate/require_ip' => 'IP는 필수입니다.',
   'validate/require_time' => '시간은 필수입니다.',
   'manga' => '만화',
+  'admin/system/configapi/manga'=>'만화 API 설정',
+  'admin/system/configapi/manga_tip'=>'팁 정보:<br>1,만화 목록 주소 /api.php/provide/manga/?ac=list<br>2,만화 상세 주소 /api.php/provide/manga/?ac=detail',
+  'admin/system/configapi/datafilter_tip_manga'=>'SQL 쿼리 조건 예: manga_status=1',
 );

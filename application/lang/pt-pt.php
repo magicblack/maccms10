@@ -960,7 +960,8 @@ https://www.baidu.com/123.jpg
                             7,Endereço da lista de categorias /api.php/type/get_list/<br>
                             8,Endereço da lista de usuários /api.php/user/get_list/<br>
                             9,Endereço da lista de vídeos /api.php/vod/get_list/<br>
-                            10,ndereço da lista de sites /api.php/website/get_list',
+                            10,ndereço da lista de sites /api.php/website/get_list/<br>
+                            11,Endereço da lista de manga /api.php/manga/get_list/',
   'admin/system/configcollect/title' => 'Configuração de parâmetros de coleta',
   'admin/system/configcollect/vod' => 'Configurações de coleta de vídeo',
   'admin/system/configcollect/art' => 'Configurações de coleta de artigo',
@@ -1922,4 +1923,7 @@ https://www.baidu.com/123.jpg
   'validate/require_ip' => 'O IP é obrigatório',
   'validate/require_time' => 'O tempo é obrigatório',
   'manga' => 'quadrinhos',
+  'admin/system/configapi/manga'=>'Configurações da API de Manga',
+  'admin/system/configapi/manga_tip'=>'Dicas:<br>1,URL da lista de manga /api.php/provide/manga/?ac=list<br>2,URL dos detalhes do manga /api.php/provide/manga/?ac=detail',
+  'admin/system/configapi/datafilter_tip_manga'=>'Condição de consulta SQL, por exemplo, manga_status=1',
 );

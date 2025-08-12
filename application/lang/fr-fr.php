@@ -959,7 +959,8 @@ https://www.baidu.com/123.jpg',
                             7,Adresse de la liste des catégories /api.php/type/get_list/<br>
                             8,Adresse de la liste des utilisateurs /api.php/user/get_list/<br>
                             9,Adresse de la liste des vidéos /api.php/vod/get_list/<br>
-                            10,Adresse de la liste des site web /api.php/website/get_list',
+                            10,Adresse de la liste des site web /api.php/website/get_list/<br>
+                            11,Adresse de la liste des manga /api.php/manga/get_list/',
   'admin/system/configcollect/title' => 'Configuration des paramètres de collecte',
   'admin/system/configcollect/vod' => 'Paramètres de collecte vidéo',
   'admin/system/configcollect/art' => 'Paramètres de collecte d\'articles',
@@ -1918,4 +1919,7 @@ Note: Si les listes noires et blanches sont remplies, les stratégies s\'appliqu
   'validate/require_ip' => 'Adresse IP requise',
   'validate/require_time' => 'Temps requis',
   'manga' => 'bandes dessinées',
+  'admin/system/configapi/manga'=>'Paramètres de l\'API Manga',
+  'admin/system/configapi/manga_tip'=>'Conseils:<br>1,URL de la liste des mangas /api.php/provide/manga/?ac=list<br>2,URL des détails du manga /api.php/provide/manga/?ac=detail',
+  'admin/system/configapi/datafilter_tip_manga'=>'Condition de requête SQL, par exemple manga_status=1',
 );

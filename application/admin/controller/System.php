@@ -513,6 +513,7 @@ class System extends Base
             $config_new['api']['vod']['auth'] = mac_replace_text($config_new['api']['vod']['auth'], 2);
             $config_new['api']['art']['auth'] = mac_replace_text($config_new['api']['art']['auth'], 2);
             $config_new['api']['actor']['auth'] = mac_replace_text($config_new['api']['actor']['auth'], 2);
+            $config_new['api']['manga']['auth'] = mac_replace_text($config_new['api']['manga']['auth'], 2);
             $config_new['api']['publicapi']['auth'] = mac_replace_text($config_new['api']['publicapi']['auth'], 2);
 
             $config_old = config('maccms');
@@ -529,6 +530,18 @@ class System extends Base
             $config['api']['publicapi'] = [
                 'status' => '0',
                 'charge' => '0',
+                'auth' => '',
+            ];
+        }
+        if(!isset($config['api']['manga'])){
+            $config['api']['manga'] = [
+                'status' => '0',
+                'charge' => '0',
+                'pagesize' => '20',
+                'imgurl' => '',
+                'typefilter' => '',
+                'datafilter' => 'manga_status=1',
+                'cachetime' => '',
                 'auth' => '',
             ];
         }

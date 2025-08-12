@@ -960,7 +960,8 @@ https://www.baidu.com/123.jpg
                             7,カテゴリリストのアドレス /api.php/type/get_list/<br>
                             8,ユーザーリストのアドレス /api.php/user/get_list/<br>
                             9,ビデオリストのアドレス /api.php/vod/get_list/<br>
-                            10,ウェブサイトリストのアドレス /api.php/website/get_list',
+                            10,ウェブサイトリストのアドレス /api.php/website/get_list/<br>
+                            11,漫画リストのアドレス /api.php/manga/get_list/',
   'admin/system/configcollect/title' => '収集パラメータ構成',
   'admin/system/configcollect/vod' => 'ビデオ収集設定',
   'admin/system/configcollect/art' => '記事収集設定',
@@ -1922,4 +1923,7 @@ https://www.baidu.com/123.jpg
   'validate/require_ip' => 'ipは必須',
   'validate/require_time' => '時間は必須',
   'manga' => '漫画',
+  'admin/system/configapi/manga'=>'漫画API設定',
+  'admin/system/configapi/manga_tip'=>'ヒント情報：<br>1,漫画リストアドレス/api.php/provide/manga/?ac=list<br>2,漫画詳細アドレス/api.php/provide/manga/?ac=detail',
+  'admin/system/configapi/datafilter_tip_manga'=>'SQLクエリ条件 例：manga_status=1',
 );

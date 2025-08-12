@@ -664,6 +664,187 @@ class Provide extends Base
         exit;
     }
 
+    public function manga()
+    {
+        if($GLOBALS['config']['api']['manga']['status'] != 1){
+            echo 'closed';
+            exit;
+        }
+
+        if($GLOBALS['config']['api']['manga']['charge'] == 1) {
+            $h = $_SERVER['REMOTE_ADDR'];
+            if (!$h) {
+                echo lang('api/auth_err');
+                exit;
+            }
+            else {
+                $auth = $GLOBALS['config']['api']['manga']['auth'];
+                $this->checkDomainAuth($auth);
+            }
+        }
+
+        $cache_time = intval($GLOBALS['config']['api']['manga']['cachetime']);
+        $cach_name = $GLOBALS['config']['app']['cache_flag']. '_'.'api_manga_'.md5(http_build_query($this->_param));
+        $html = Cache::get($cach_name);
+        if(empty($html) || $cache_time==0) {
+            $where = [];
+            if (!empty($this->_param['ids'])) {
+                $where['manga_id'] = ['in', $this->_param['ids']];
+            }
+            if (!empty($GLOBALS['config']['api']['manga']['typefilter'])) {
+                $where['type_id'] = ['in', $GLOBALS['config']['api']['manga']['typefilter']];
+            }
+
+            if (!empty($this->_param['t'])) {
+                if (empty($GLOBALS['config']['api']['manga']['typefilter']) || strpos($GLOBALS['config']['api']['manga']['typefilter'], $this->_param['t']) !== false) {
+                    $where['type_id'] = $this->_param['t'];
+                }
+            }
+            if (!empty($this->_param['h'])) {
+                $todaydate = date('Y-m-d', strtotime('+1 days'));
+                $tommdate = date('Y-m-d H:i:s', strtotime('-' . $this->_param['h'] . ' hours'));
+
+                $todayunix = strtotime($todaydate);
+                $tommunix = strtotime($tommdate);
+
+                $where['manga_time'] = [['gt', $tommunix], ['lt', $todayunix]];
+            }
+            if (!empty($this->_param['wd'])) {
+                $where['manga_name'] = ['like', '%' . $this->_param['wd'] . '%'];
+            }
+            if (!empty($GLOBALS['config']['api']['manga']['datafilter'])) {
+                $where['_string'] .= ' ' . $GLOBALS['config']['api']['manga']['datafilter'];
+            }
+            if (empty($this->_param['pg'])) {
+                $this->_param['pg'] = 1;
+            }
+            $pagesize = $GLOBALS['config']['api']['manga']['pagesize'];
+            if (!empty($this->_param['pagesize']) && $this->_param['pagesize'] > 0) {
+                $pagesize = min((int)$this->_param['pagesize'], 100);
+            }
+
+            $order = 'manga_time desc';
+            $field = 'manga_id,manga_name,type_id,"" as type_name,manga_en,manga_time,manga_remarks,manga_chapter_from,manga_time';
+
+            if ($this->_param['ac'] == 'detail') {
+                $field = '*';
+            }
+            $res = model('manga')->listData($where, $order, $this->_param['pg'], $pagesize, 0, $field, 0);
+
+
+            if ($this->_param['at'] == 'xml') {
+                $html = $this->manga_xml($res);
+            } else {
+                $html = json_encode($this->manga_json($res),JSON_UNESCAPED_UNICODE);
+            }
+            $html = mac_filter_tags($html);
+            if($cache_time>0) {
+                Cache::set($cach_name, $html, $cache_time);
+            }
+        }
+        echo $html;
+        exit;
+    }
+
+    public function manga_json($res)
+    {
+        $type_list = model('Type')->getCache('type_list');
+        foreach($res['list'] as $k=>&$v){
+            $type_info = $type_list[$v['type_id']];
+            $v['type_name'] = $type_info['type_name'];
+            $v['manga_time'] = date('Y-m-d H:i:s',$v['manga_time']);
+
+            if(substr($v["manga_pic"],0,4)=="mac:"){
+                $v["manga_pic"] = str_replace('mac:',$this->getImgUrlProtocol('manga'), $v["manga_pic"]);
+            }
+            elseif(!empty($v["manga_pic"]) && substr($v["manga_pic"],0,4)!="http" && substr($v["manga_pic"],0,2)!="//"){
+                $v["manga_pic"] = $GLOBALS['config']['api']['manga']['imgurl'] . $v["manga_pic"];
+            }
+        }
+
+        if($this->_param['ac']!='detail') {
+            $class = [];
+            $typefilter  = explode(',',$GLOBALS['config']['api']['manga']['typefilter']);
+
+            foreach ($type_list as $k=>&$v) {
+
+                if (!empty($GLOBALS['config']['api']['manga']['typefilter'])){
+                    if(in_array($v['type_id'],$typefilter)) {
+                        $class[] = ['type_id' => $v['type_id'], 'type_pid' => $v['type_pid'], 'type_name' => $v['type_name']];
+                    }
+                }
+                else {
+                    $class[] = ['type_id' => $v['type_id'], 'type_pid' => $v['type_pid'], 'type_name' => $v['type_name']];
+                }
+            }
+            $res['class'] = $class;
+        }
+        return $res;
+    }
+
+    public function manga_xml($res)
+    {
+        $xml = '<?xml version="1.0" encoding="utf-8"?>';
+        $xml .= '<rss version="5.1">';
+        $type_list = model('Type')->getCache('type_list');
+
+        $xml .= '<list page="'.$res['page'].'" pagecount="'.$res['pagecount'].'" pagesize="'.$res['limit'].'" recordcount="'.$res['total'].'">';
+        foreach($res['list'] as $k=>&$v){
+            $type_info = $type_list[$v['type_id']];
+            $xml .= '<video>';
+            $xml .= '<last>'.date('Y-m-d H:i:s',$v['manga_time']).'</last>';
+            $xml .= '<id>'.$v['manga_id'].'</id>';
+            $xml .= '<tid>'.$v['type_id'].'</tid>';
+            $xml .= '<name><![CDATA['.$v['manga_name'].']]></name>';
+            $xml .= '<type>'.$type_info['type_name'].'</type>';
+            if(substr($v["manga_pic"],0,4)=="mac:"){
+                $v["manga_pic"] = str_replace('mac:',$this->getImgUrlProtocol('manga'), $v["manga_pic"]);
+            }
+            elseif(!empty($v["manga_pic"]) && substr($v["manga_pic"],0,4)!="http"  && substr($v["manga_pic"],0,2)!="//"){
+                $v["manga_pic"] = $GLOBALS['config']['api']['manga']['imgurl'] . $v["manga_pic"];
+            }
+
+            if($this->_param['ac']=='detail'){
+                $xml .= '<pic>'.$v["manga_pic"].'</pic>';
+                $xml .= '<lang>'.$v['manga_lang'].'</lang>';
+                $xml .= '<area>'.$v['manga_area'].'</area>';
+                $xml .= '<year>'.$v['manga_year'].'</year>';
+                $xml .= '<state>'.$v['manga_serial'].'</state>';
+                $xml .= '<note><![CDATA['.$v['manga_remarks'].']]></note>';
+                $xml .= '<actor><![CDATA['.$v['manga_actor'].']]></actor>';
+                $xml .= '<director><![CDATA['.$v['manga_director'].']]></director>';
+                $xml .= '<des><![CDATA['.$v['manga_content'].']]></des>';
+            }
+            else {
+                $xml .= '<dt>' . str_replace('$$$', ',', $v['manga_chapter_from']) . '</dt>';
+                $xml .= '<note><![CDATA[' . $v['manga_remarks'] . ']]></note>';
+            }
+            $xml .= '</video>';
+        }
+        $xml .= '</list>';
+
+        if($this->_param['ac']!='detail') {
+            $xml .= "<class>";
+            $typefilter  = explode(',',$GLOBALS['config']['api']['manga']['typefilter']);
+            foreach ($type_list as $k=>&$v) {
+                if($v['type_mid']==12) {
+                    if (!empty($GLOBALS['config']['api']['manga']['typefilter'])){
+                        if(in_array($v['type_id'],$typefilter)) {
+                            $xml .= "<ty id=\"" . $v["type_id"] . "\">" . $v["type_name"] . "</ty>";
+                        }
+                    }
+                    else {
+                        $xml .= "<ty id=\"" . $v["type_id"] . "\">" . $v["type_name"] . "</ty>";
+                    }
+                }
+            }
+            unset($rs);
+            $xml .= "</class>";
+        }
+        $xml .= "</rss>";
+        return $xml;
+    }
+
     public function website()
     {
         if($GLOBALS['config']['api']['website']['status'] != 1){

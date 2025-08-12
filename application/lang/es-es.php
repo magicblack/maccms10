@@ -960,7 +960,8 @@ https://www.baidu.com/123.jpg
                             7,Dirección de la lista de categorías /api.php/type/get_list/<br>
                             8,Dirección de la lista de usuarios /api.php/user/get_list/<br>
                             9,Dirección de la lista de videos /api.php/vod/get_list/<br>
-                            10,Dirección de la lista del sitio web /api.php/website/get_list/',
+                            10,Dirección de la lista del sitio web /api.php/website/get_list/<br>
+                            11,Dirección de la lista de manga /api.php/manga/get_list/',
   'admin/system/configcollect/title' => 'Configuración de Parámetros de Recolección',
   'admin/system/configcollect/vod' => 'Configuración de Recolección de Vídeos',
   'admin/system/configcollect/art' => 'Configuración de Recolección de Artículos',
@@ -1918,4 +1919,7 @@ Nota: Si se especifican listas negras y blancas, ambas se aplicarán simultánea
   'validate/require_ip' => 'Se requiere la dirección IP',
   'validate/require_time' => 'Se requiere la hora',
   'manga' => 'historietas',
+  'admin/system/configapi/manga'=>'Configuración de la API de Manga',
+  'admin/system/configapi/manga_tip'=>'Consejos:<br>1,URL de la lista de manga /api.php/provide/manga/?ac=list<br>2,URL de detalles del manga /api.php/provide/manga/?ac=detail',
+  'admin/system/configapi/datafilter_tip_manga'=>'Condición de consulta SQL, por ejemplo, manga_status=1',
 );

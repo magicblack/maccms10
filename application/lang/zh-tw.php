@@ -960,7 +960,8 @@ https://www.baidu.com/123.jpg
                             7,分類列表地址/api.php/type/get_list/<br>
                             8,用戶列表地址/api.php/user/get_list/<br>
                             9,視頻列表地址/api.php/vod/get_list/<br>
-                            10,網址列表地址/api.php/website/get_list/',
+                            10,網址列表地址/api.php/website/get_list/<br>
+                            11,漫畫列表地址/api.php/manga/get_list/',
   'admin/system/configcollect/title' => '采集參數配置',
   'admin/system/configcollect/vod' => '視頻采集設置',
   'admin/system/configcollect/art' => '文章采集設置',
@@ -1923,4 +1924,7 @@ https://www.baidu.com/123.jpg
   'validate/require_ip' => 'ip必須',
   'validate/require_time' => '時間必須',
   'manga' => '漫畫',
+  'admin/system/configapi/manga'=>'漫畫API設置',
+  'admin/system/configapi/manga_tip'=>'提示信息：<br>1,漫畫列表地址/api.php/provide/manga/?ac=list<br>2,漫畫詳情地址/api.php/provide/manga/?ac=detail',
+  'admin/system/configapi/datafilter_tip_manga'=>'SQL查詢條件例如 manga_status=1',
 );

@@ -18,6 +18,7 @@
   │      └─topic    专题模块模板目录
   │      └─user     用户中心模块模板目录
   │      └─vod      视频模块模板目录
+  │      └─manga    漫画模块模板目录
   │      └─plot     分集剧情模块模板目录
   │      └─website  网址导航模块模板目录
   │─tempalte/2/  模板2
@@ -75,6 +76,20 @@ vod/search.html      视频搜索页面
 vod/type.html        视频分类页面
 vod/show.html        视频分类筛选页
 vod/plot.html        视频分集剧情列表
+│
+manga/confirm.html     确认支付积分页面
+manga/copyright.html      版权提示和跳转
+manga/detail.html      漫画内容页
+manga/detail_pwd.html      验证密码页
+manga/rss.html         漫画内容rss
+manga/play.html        漫画阅读页
+manga/player.html      试看页面阅读页
+manga/player_pwd.html      验证密码页
+manga/down.html        漫画下载页
+manga/downer_pwd.html      验证密码页
+manga/search.html      漫画搜索页面
+manga/type.html        漫画分类页面
+manga/show.html        漫画分类筛选页
 │
 user/ajax_info.html   用户弹出层登录详情
 user/ajax_login.html  用户弹出层登录界面
@@ -141,6 +156,7 @@ website/type.html       网址分类页
 {$maccms.search_hot}       热门搜索词
 {$maccms.art_extend_class}       全局文章扩展分类
 {$maccms.vod_extend_class}       全局视频扩展分类
+{$maccms.manga_extend_class}     全局漫画扩展分类
 {$maccms.vod_extend_state}       全局视频资源
 {$maccms.vod_extend_version}       全局视频版本
 {$maccms.vod_extend_area}       全局视频地区
@@ -199,11 +215,15 @@ $GLOBALS['config']['seo'] SEO参数配置
 {$maccms.seo.website.name}  网址导航首页SEO标题
 {$maccms.seo.website.key}  网址导航首页SEO关键字
 {$maccms.seo.website.des}  网址导航首页SEO描述
+
+{$maccms.seo.manga.name}  漫画首页SEO标题
+{$maccms.seo.manga.key}  漫画首页SEO关键字
+{$maccms.seo.manga.des}  漫画首页SEO描述
 ------------------下方高能------------------------------
 $GLOBALS['type_id']  当前分类页ID，在（分类页，筛选页，内容页，播放页，下载页都有值）
 $GLOBALS['type_pid']  当前分类页父ID，在（分类页，筛选页，内容页，播放页，下载页都有值）
 
-{$maccms.mid}模块id，1=>'视频',2=>'文章',3=>'专题',4=>'评论',5=>'留言',6=>'用户中心',7=>'自定义页面',8=>'演员',9=>'角色',10=>'剧情',11=>'网址'
+{$maccms.mid}模块id，1=>'视频',2=>'文章',3=>'专题',4=>'评论',5=>'留言',6=>'用户中心',7=>'自定义页面',8=>'演员',9=>'角色',10=>'剧情',11=>'网址',12=>'漫画'
 
 {$maccms.aid}当前系统页面id
 首页1
@@ -253,6 +273,14 @@ rss3
 网址导航筛选112
 网址导航搜索113
 网址导航详情114
+
+漫画首页120
+漫画分类121
+漫画分类筛选122
+漫画搜索123
+漫画详情124
+漫画阅读125
+漫画下载126
 
 ------------------------------------------------
 设计首页幻灯片的时候，建议统一调用推荐值为9的数据~
@@ -365,6 +393,96 @@ paging是否分页yes
 {$obj.topic_rel_art|explode=',',###|count} 专题包含文章数量
 {:mac_url_topic_detail($obj)} 专题详情页链接
 {:mac_url_topic_index()}  专题首页链接
+
+=======漫画列表标签=======
+order排列顺序desc倒序，asc正序
+by排序依据 id,time,time_add,score,hits,hits_day,hits_week,hits_month,up,down,level,rnd
+start从第几条开始
+num获取条数
+ids指定1,2,3一组ID；
+not不抱含id 多个逗号链接
+type指定获取分类数据 all所有；1,2,3指定；
+class指定某扩展分类 支持多个 动作,喜剧
+tag指定tag 支持多个  aaa,xxx
+level指定推荐值 支持多个  1,2
+area指定地区 支持多个  大陆,香港
+lang指定语言 支持多个  国语,粤语
+year指定年代 支持多个 2002,2003
+serial连载状态
+timeadd添加时间 一天前 -1 day，一周前-1 week，一月前-1 month，一小时前-1 hour
+timehits点击时间 一天前 -1 day，一周前-1 week，一月前-1 month，一小时前-1 hour
+time更新时间 一天前 -1 day，一周前-1 week，一月前-1 month，一小时前-1 hour
+hitsmonth月点击量 大于一千 gt 1000, 小于一千 lt 1000，区间一千二千之间 between 1000,2000
+hitsweek周点击量 大于一千 gt 1000, 小于一千 lt 1000，区间一千二千之间 between 1000,2000
+hitsday日点击量 大于一千 gt 1000, 小于一千 lt 1000，区间一千二千之间 between 1000,2000
+hits总点击量 大于一千 gt 1000, 小于一千 lt 1000，区间一千二千之间 between 1000,2000
+paging是否分页yes
+pageurl分页地址
+cachetime自定义缓存时间单位秒
+
+{maccms:manga num="10" paging="no" type="all" order="asc" by="sort"}
+   内部同下方，{$obj.改为{$vo.开头即可
+{/maccms:manga}
+=======漫画内容页独有标签=======
+{$obj.manga_id} 漫画id
+{$obj.type_id} 分类id
+{$obj.type_id_1} 一级分类id
+{$obj.group_id} 会员组id
+{$obj.manga_name} 漫画名称
+{$obj.manga_sub} 副标题
+{$obj.manga_en} 英文名
+{$obj.manga_status} 状态(0=锁定,1=正常)
+{$obj.manga_letter} 首字母
+{$obj.manga_color} 标题颜色
+{$obj.manga_from} 来源
+{$obj.manga_author} 作者
+{$obj.manga_tag} 标签
+{$obj.manga_class} 扩展分类
+{$obj.manga_pic} 封面图
+{$obj.manga_pic_thumb} 封面缩略图
+{$obj.manga_pic_slide} 封面幻灯图
+{$obj.manga_pic_screenshot} 内容截图
+{$obj.manga_blurb} 简介
+{$obj.manga_remarks} 备注(例如：更新至xx话)
+{$obj.manga_jumpurl} 跳转URL
+{$obj.manga_tpl} 独立模板
+{$obj.manga_level} 推荐级别
+{$obj.manga_lock} 锁定状态(0=未锁,1=已锁)
+{$obj.manga_points} 点播所需积分
+{$obj.manga_points_detail} 每章所需积分
+{$obj.manga_up} 顶数
+{$obj.manga_down} 踩数
+{$obj.manga_hits} 总点击数
+{$obj.manga_hits_day} 日点击数
+{$obj.manga_hits_week} 周点击数
+{$obj.manga_hits_month} 月点击数
+{$obj.manga_time} 更新时间
+{$obj.manga_time_add} 添加时间
+{$obj.manga_time_hits} 点击时间
+{$obj.manga_time_make} 生成时间
+{$obj.manga_score} 平均评分
+{$obj.manga_score_all} 总评分
+{$obj.manga_score_num} 评分次数
+{$obj.manga_rel_manga} 关联漫画
+{$obj.manga_rel_vod} 关联视频
+{$obj.manga_pwd} 访问密码
+{$obj.manga_pwd_url} 密码跳转URL
+{$obj.manga_content} 详细介绍
+{$obj.manga_serial} 连载状态(文字)
+{$obj.manga_total} 总章节数
+{$obj.manga_chapter_from} 章节来源
+{$obj.manga_chapter_url} 章节URL列表
+{$obj.manga_last_update_time} 最后更新时间戳
+{$obj.manga_age_rating} 年龄分级(0=全年龄,1=12+,2=18+)
+{$obj.manga_orientation} 阅读方向(1=左到右,2=右到左,3=垂直)
+{$obj.manga_is_vip} 是否VIP(0=否,1=是)
+{$obj.manga_copyright_info} 版权信息
+
+{:mac_url_manga_detail($obj)}  漫画详情页链接
+{:mac_url_manga_play($obj,['sid'=>1,'nid'=>1])}   漫画阅读页链接
+{:mac_url_manga_play($obj,'first')}   漫画阅读页第一条链接
+{:mac_url_manga_down($obj,['sid'=>1,'nid'=>1])}   漫画下载页链接
+{:mac_url_manga_down($obj,'first')}   漫画下载页第一条链接
 
 =======视频列表标签=======
 order排列顺序desc倒序，asc正序

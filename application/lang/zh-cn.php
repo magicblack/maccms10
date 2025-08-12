@@ -1031,7 +1031,8 @@ https://www.baidu.com/123.jpg
                             7,分类列表地址/api.php/type/get_list/<br>
                             8,用户列表地址/api.php/user/get_list/<br>
                             9,视频列表地址/api.php/vod/get_list/<br>
-                            10,网址列表地址/api.php/website/get_list',
+                            10,网址列表地址/api.php/website/get_list/<br>
+                            11,漫画列表地址/api.php/manga/get_list/',
 
 
 
@@ -2112,4 +2113,7 @@ https://www.baidu.com/123.jpg
     'validate/require_ip'=>'ip必须',
     'validate/require_time'=>'时间必须',
     'manga' => '漫画',
+    'admin/system/configapi/manga'=>'漫画API设置',
+    'admin/system/configapi/manga_tip'=>'提示信息：<br>1,漫画列表地址/api.php/provide/manga/?ac=list<br>2,漫画详情地址/api.php/provide/manga/?ac=detail',
+    'admin/system/configapi/datafilter_tip_manga'=>'SQL查询条件例如 manga_status=1',
 ];

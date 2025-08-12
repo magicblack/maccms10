@@ -959,7 +959,8 @@ https://www.baidu.com/123.jpg',
                         7,Category list address /api.php/type/get_list/<br>
                         8,User list address /api.php/user/get_list/<br>
                         9,Video list address /api.php/vod/get_list/<br>
-                        10,Website list address /api.php/website/get_list/',
+                        10,Website list address /api.php/website/get_list/<br>
+                        11,Manga list address /api.php/manga/get_list/',
   'admin/system/configcollect/title' => 'Collection Parameter Configuration',
   'admin/system/configcollect/vod' => 'Video Collection Settings',
   'admin/system/configcollect/art' => 'Article Collection Settings',
@@ -1918,4 +1919,7 @@ Note: If both black and white lists are filled, both policies will take effect.'
   'validate/require_ip' => 'IP address is required',
   'validate/require_time' => 'Time is required',
   'manga' => 'Manga',
+  'admin/system/configapi/manga'=>'Manga API Settings',
+  'admin/system/configapi/manga_tip'=>'Tips:<br>1,Manga list url /api.php/provide/manga/?ac=list<br>2,Manga detail url /api.php/provide/manga/?ac=detail',
+  'admin/system/configapi/datafilter_tip_manga'=>'SQL query condition e.g. manga_status=1',
 );

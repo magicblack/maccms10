@@ -959,7 +959,8 @@ https://www.baidu.com/123.jpg',
                             7,Kategorienliste Adresse /api.php/type/get_list/<br>
                             8,Benutzerliste Adresse /api.php/user/get_list/<br>
                             9,Videoliste Adresse /api.php/vod/get_list/<br>
-                            10,Websiteliste Adresse /api.php/website/get_list/',
+                            10,Websiteliste Adresse /api.php/website/get_list/<br>
+                            11,Manga-Listen-URL /api.php/manga/get_list/',
   'admin/system/configcollect/title' => 'Sammlungsparameterkonfiguration',
   'admin/system/configcollect/vod' => 'Videosammlungseinstellungen',
   'admin/system/configcollect/art' => 'Artikelsammlungseinstellungen',
@@ -1910,4 +1911,7 @@ Nota: Se tanto a lista negra quanto a lista branca forem preenchidas, a polític
   'validate/require_ip' => 'IP é obrigatório',
   'validate/require_time' => 'Tempo é obrigatório',
   'manga' => 'Comics',
+  'admin/system/configapi/manga'=>'Manga-API-Einstellungen',
+  'admin/system/configapi/manga_tip'=>'Tipps:<br>1,Manga-Listen-URL /api.php/provide/manga/?ac=list<br>2,Manga-Detail-URL /api.php/provide/manga/?ac=detail',
+  'admin/system/configapi/datafilter_tip_manga'=>'SQL-Abfragebedingung z.B. manga_status=1',
 );
