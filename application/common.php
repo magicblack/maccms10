@@ -2865,16 +2865,20 @@ function mac_data_count($tid=0,$range='all',$flag='vod')
     return intval($data[$key]);
 }
 
-function mac_get_popedom_filter($group_type,$type_list=[])
+function mac_get_popedom_filter($group_type_list, $type_list = [])
 {
-    if(empty($type_list)){
+    if (empty($type_list)) {
         $type_list = model('Type')->getCache('type_list');
     }
     $type_keys = array_keys($type_list);
-    $group_type = trim($group_type,',');
-    $group_keys = explode(',',$group_type);
+    $group_type_list = array_map('trim', explode(',', trim($group_type_list, ',')));
+    $group_keys = [];
+    foreach ($group_type_list as $group_type) {
+        $group_keys = array_merge($group_keys, explode(',', $group_type));
+    }
+    $group_keys = get_array_unique_id_list($group_keys);
     $cha_keys = array_diff($type_keys, $group_keys);
-    return implode(',',$cha_keys);
+    return implode(',', $cha_keys);
 }
 
 function reset_html_filename($htmlfile)

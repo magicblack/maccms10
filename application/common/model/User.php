@@ -52,7 +52,7 @@ class User extends Base
         //用户组
         $group_list = model('Group')->getCache('group_list');
         $group_ids = explode(',', $info['group_id']);
-        $info['group'] = [];
+        $info['group'] = $group_list[$group_ids[0]];
         foreach($group_ids as $gid){
             if(isset($group_list[$gid])){
                 $info['group'][] = $group_list[$gid];
@@ -464,11 +464,22 @@ class User extends Base
 
         $group_list = model('Group')->getCache('group_list');
         $group_ids = explode(',', $info['group_id']);
-        $info['group'] = [];
+        $user_groups = [];
+        $user_group_types = [];
         foreach($group_ids as $gid){
             if(isset($group_list[$gid])){
-                $info['group'][] = $group_list[$gid];
+                $user_groups[] = $group_list[$gid];
+                if (!empty($group_list[$gid]['group_type'])) {
+                    $user_group_types = array_merge($user_group_types, explode(',', $group_list[$gid]['group_type']));
+                }
             }
+        }
+
+        if (!empty($user_groups)) {
+            $info['group'] = $user_groups[0];
+            $info['group']['group_type'] = implode(',', array_unique(array_filter($user_group_types)));
+        } else {
+            $info['group'] = $group_list[1];
         }
 
         //会员截止日期
