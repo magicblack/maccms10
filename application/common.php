@@ -1754,24 +1754,25 @@ function mac_alphaID($in, $to_num=false, $pad_up=false, $passKey='')
     }
     $base = strlen($key);
     if ($to_num) {
-        $in = strrev($in);
         $out = 0;
-        $len = strlen($in) - 1;
-        for ($t = 0; $t <= $len; $t++) {
-            $bcpow = bcpow($base, $len - $t);
-            $out = $out + strpos($key, substr($in, $t, 1)) * $bcpow;
+        $len = strlen($in);
+        for ($t = 0; $t < $len; $t++) {
+            $char = substr($in, $t, 1);
+            $pos = strpos($key, $char);
+            if ($pos === false) {
+                $pos = 0;
+            }
+            $out = $out * $base + $pos;
         }
         if (is_numeric($pad_up)) {
-            $pad_up--;
-            if ($pad_up > 0) {
-                $out -= pow($base, $pad_up);
+            if ($pad_up > 1) {
+                $out -= pow($base, $pad_up - 1);
             }
         }
     } else {
         if (is_numeric($pad_up)) {
-            $pad_up--;
-            if ($pad_up > 0) {
-                $in += pow($base, $pad_up);
+            if ($pad_up > 1) {
+                $in += pow($base, $pad_up - 1);
             }
         }
         $out = "";
