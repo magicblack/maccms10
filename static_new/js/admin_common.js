@@ -240,6 +240,12 @@ layui.define(['element', 'form'], function (exports) {
         } else {
             _form = $(this).parents('form');
         }
+
+        var $form = _form;
+        var $button = $form.find('[lay-submit]');
+
+        $button.prop('disabled', true);
+
         // CKEditor专用
         if (typeof (CKEDITOR) != 'undefined') {
             for (instance in CKEDITOR.instances) {
@@ -249,8 +255,8 @@ layui.define(['element', 'form'], function (exports) {
         layer.msg('数据提交中...', { time: 500000 });
         $.ajax({
             type: "POST",
-            url: _form.attr('action'),
-            data: _form.serialize(),
+            url: $form.attr('action'),
+            data: $form.serialize(),
             success: function (res) {
                 var msg = '<span class="success_layer_icon"></span>' + res.msg;
                 if (res.code == 1) {
@@ -278,10 +284,13 @@ layui.define(['element', 'form'], function (exports) {
                             layer.closeAll();
                             onSubmitResult(res);
                         }
+                    } else {
+                        $button.prop('disabled', false);
                     }
                 });
             },
             error: function (xhr, status, error) {
+                $button.prop('disabled', false);
                 layer.msg('<span class="error_layer_icon"></span>' + '请求失败', { time: 800, skin: 'error_layer' });
             }
         });

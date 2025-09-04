@@ -354,6 +354,9 @@ body {
 .layui-layout-admin .layui-footer {
     height: 50px;
     line-height: 50px;
+	background-color: #ffffff;
+    box-sizing: border-box;
+    border-top: 1px solid #e6e7eb;
 }
 
 .layui-header,

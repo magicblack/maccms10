@@ -105,7 +105,7 @@
                         <input type="text" class="layui-input" value="{$info.topic_rel_vod}" placeholder="{:lang('vod')}id,{:lang('multi_separate_tip')}" name="topic_rel_vod">
                     </div>
                     <div class="layui-input-inline">
-                        <a class="layui-btn j-iframe" data-href="{:url('vod/data')}?select=1&input=topic_rel_vod" href="javascript:;" title="{:lang('search_data')}">{:lang('search_data')}</a>
+                        <a class="layui-btn j-iframe" data-href="{:url('vod/data')}?select=1&input=topic_rel_vod" href="javascript:;" title="{:lang('search_data')}" data-width="1500px" data-height="650px">{:lang('search_data')}</a>
                     </div>
                 </div>
                 <div class="layui-form-item">
@@ -114,7 +114,7 @@
                         <input type="text" class="layui-input" value="{$info.topic_rel_art}" placeholder="{:lang('art')}id,{:lang('multi_separate_tip')}" name="topic_rel_art">
                     </div>
                     <div class="layui-input-inline">
-                        <a class="layui-btn j-iframe" data-href="{:url('art/data')}?select=1&input=topic_rel_art" href="javascript:;" title="{:lang('search_data')}">{:lang('search_data')}</a>
+                        <a class="layui-btn j-iframe" data-href="{:url('art/data')}?select=1&input=topic_rel_art" href="javascript:;" title="{:lang('search_data')}" data-width="1500px" data-height="650px">{:lang('search_data')}</a>
                     </div>
                 </div>
 
@@ -156,7 +156,7 @@
                 <div class="layui-form-item">
                     <label class="layui-form-label">{:lang('content')}：</label>
                     <div class="layui-input-block">
-                        <textarea id="topic_content" name="topic_content" type="text/plain" style="width:99%;height:300px">{$info.topic_content|mac_url_content_img}</textarea>
+                        <textarea id="topic_content" name="topic_content" type="text/plain" style="width:100%;height:300px">{$info.topic_content|mac_url_content_img}</textarea>
                     </div>
                 </div>
             </div>

@@ -2,8 +2,8 @@
 <div class="page-container p10">
 
     <div class="my-toolbar-box" >
-        <div class=" mb10">
-            <form class="layui-form " method="post"  id="searchForm" action="{:url('index')}">
+        <div class="mb-2">
+            <form class="layui-form space-x-1 space-y-1" method="post"  id="searchForm" action="{:url('index')}">
                 <div class="layui-input-inline w150">
                     <select name="sale_status">
                         <option value="">{:lang('select_sale_status')}</option>
@@ -35,8 +35,8 @@
             </form>
         </div>
 
-        <div class="layui-btn-group">
-            <a data-href="{:url('info')}" class="layui-btn layui-btn-primary j-iframe" data-width="100%" data-height="100%"><i class="layui-icon">&#xe654;</i>{:lang('add')}</a>
+        <div class="flex gap-5 overflow-x-auto overflow-y-hidden">
+            <a data-href="{:url('info')}" class="layui-btn layui-btn-primary j-iframe" data-width="600px" data-height="400px"><i class="layui-icon">&#xe654;</i>{:lang('add')}</a>
             <a data-href="{:url('del')}" class="layui-btn layui-btn-primary j-page-btns confirm"><i class="layui-icon">&#xe640;</i>{:lang('del')}</a>
             <a data-href="{:url('del')}?ids=1&all=1" class="layui-btn layui-btn-primary j-ajax" confirm="{:lang('clear_confirm')}"><i class="layui-icon">&#xe640;</i>{:lang('clear')}</a>
 

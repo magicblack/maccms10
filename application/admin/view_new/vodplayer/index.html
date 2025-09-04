@@ -2,7 +2,7 @@
 <div class="page-container p10">
     <div class="my-toolbar-box">
 
-        <div class="layui-btn-group">
+        <div class="flex gap-5 overflow-x-auto overflow-y-hidden">
             <a data-href="{:url('info')}" class="layui-btn layui-btn-primary j-iframe"><i class="layui-icon">&#xe654;</i>{:lang('add')}</a>
             <a href="{:url('import')}" class="layui-btn layui-btn-primary" ><i class="layui-icon">&#xe654;</i>{:lang('import')}</a>
             <a data-href="{:url('index/select')}?tab=vod&col=status&tpl=select_state&url=vodplayer/field" data-width="470" data-height="100" data-checkbox="1" class="layui-btn layui-btn-primary j-select"><i class="layui-icon">&#xe620;</i>{:lang('status')}</a>
@@ -16,16 +16,16 @@
             <thead>
             <tr>
                 <th width="25"><input type="checkbox" lay-skin="primary" lay-filter="allChoose"></th>
-                <th width="40">{:lang('sort')}</th>
-                <th width="40">{:lang('code')}</th>
+                <th width="60">{:lang('sort')}</th>
+                <th width="60">{:lang('code')}</th>
                 <th width="130">{:lang('name')}</th>
-                <th width="50">{:lang('status')}</th>
-                <th width="50">{:lang('status_parse')}</th>
-                <th width="50">{:lang('target')}</th>
+                <th width="60">{:lang('status')}</th>
+                <th width="80">{:lang('status_parse')}</th>
+                <th width="80">{:lang('target')}</th>
                 <th width="130">{:lang('admin/vodplayer/alone_api_url')}</th>
                 <th width="130">{:lang('remarks')}</th>
                 <th >{:lang('tip')}</th>
-                <th width="130">{:lang('opt')}</th>
+                <th width="200">{:lang('opt')}</th>
             </tr>
             </thead>
 
@@ -42,7 +42,7 @@
                 <td>{$vo.des}</td>
                 <td>{$vo.tip}</td>
                 <td>
-                    <a class="layui-badge-rim" href="{:url('export?id='.$vo['from'])}" title="{:lang('export')}">{:lang('export')}</a>
+                    <a class="layui-badge-rim" href="{:url('export?id='.$vo['from'])}" title="{:lang('export')}" style="padding: 0 15px;">{:lang('export')}</a>
                     <a class="layui-badge-rim j-iframe" data-href="{:url('info?id='.$vo['from'])}" href="javascript:;" title="{:lang('edit')}">{:lang('edit')}</a>
                     <a class="layui-badge-rim j-tr-del" data-href="{:url('del?ids='.$vo['from'])}" href="javascript:;" title="{:lang('del')}">{:lang('del')}</a>
                 </td>

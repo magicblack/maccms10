@@ -2,7 +2,7 @@
 <div class="page-container p10">
     <div class="my-toolbar-box">
 
-        <div class="layui-btn-group">
+        <div class="flex gap-5 overflow-x-auto overflow-y-hidden">
             <a data-href="{:url('info')}" class="layui-btn layui-btn-primary j-iframe"><i class="layui-icon">&#xe654;</i>{:lang('add')}</a>
             <a data-href="{:url('index/select')}?tab=vod&col=status&tpl=select_state&url=voddowner/field" data-width="470" data-height="100" data-checkbox="1" class="layui-btn layui-btn-primary j-select"><i class="layui-icon">&#xe620;</i>{:lang('status')}</a>
             <a data-href="{:url('index/select')}?tab=vod&col=ps&tpl=select_state&url=voddowner/field" data-width="470" data-height="100" data-checkbox="1" class="layui-btn layui-btn-primary j-select"><i class="layui-icon">&#xe620;</i>{:lang('status_parse')}</a>
@@ -15,16 +15,16 @@
             <thead>
             <tr>
                 <th width="25"><input type="checkbox" lay-skin="primary" lay-filter="allChoose"></th>
-                <th width="40">{:lang('sort')}</th>
-                <th width="40">{:lang('code')}</th>
+                <th width="60">{:lang('sort')}</th>
+                <th width="60">{:lang('code')}</th>
                 <th width="130">{:lang('name')}</th>
-                <th width="100">{:lang('status')}</th>
-                <th width="100">{:lang('status_parse')}</th>
-                <th width="100">{:lang('target')}</th>
+                <th width="60">{:lang('status')}</th>
+                <th width="80">{:lang('status_parse')}</th>
+                <th width="80">{:lang('target')}</th>
                 <th width="130">{:lang('admin/vodplayer/alone_api_url')}</th>
                 <th width="130">{:lang('remarks')}</th>
                 <th>{:lang('tip')}</th>
-                <th width="140">{:lang('opt')}</th>
+                <th width="150">{:lang('opt')}</th>
             </tr>
             </thead>
 

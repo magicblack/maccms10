@@ -2,7 +2,7 @@
 <div class="page-container p10">
     <div class="my-toolbar-box">
 
-        <div class="layui-btn-group">
+        <div class="flex gap-5 overflow-x-auto overflow-y-hidden">
             <a data-href="{:url('info')}" class="layui-btn layui-btn-primary j-iframe"><i class="layui-icon">&#xe654;</i>{:lang('add')}</a>
             <a data-href="{:url('index/select')}?tab=vod&col=status&tpl=select_state&url=timming/field" data-width="470" data-height="100" data-checkbox="1" class="layui-btn layui-btn-primary j-select"><i class="layui-icon">&#xe620;</i>{:lang('status')}</a>
         </div>
@@ -34,7 +34,7 @@
                 </td>
                 <td>{$vo.runtime|mac_day}</td>
                 <td>
-                    <a class="layui-badge-rim" target="_blank" href="{php}echo $GLOBALS['config']['site']['install_dir'];{/php}api.php/timming/index.html?enforce=1&name={$vo['name']|rawurlencode}" title="{:lang('test')}">{:lang('test')}</a>
+                    <a class="layui-badge-rim" style="height: 32px;line-height: 32px;padding: 0 15px;" target="_blank" href="{php}echo $GLOBALS['config']['site']['install_dir'];{/php}api.php/timming/index.html?enforce=1&name={$vo['name']|rawurlencode}" title="{:lang('test')}">{:lang('test')}</a>
                     <a class="layui-badge-rim j-iframe" data-href="{:url('info')}?id={$vo['name']|rawurlencode}" href="javascript:;" title="{:lang('edit')}">{:lang('edit')}</a>
                     <a class="layui-badge-rim j-tr-del" data-href="{:url('del')}?ids={$vo['name']|rawurlencode}" href="javascript:;" title="{:lang('del')}">{:lang('del')}</a>
                 </td>

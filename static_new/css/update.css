@@ -51,3 +51,331 @@
 .skin_updae_from {
   border-radius: 8px;
 }
+
+/* 更新按钮样式 - 移动端（顶部导航栏） */
+.layout-right #update-notification {
+  position: relative;
+  margin-right: 8px;
+}
+
+.layout-right #update-notification a {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  padding: 6px 12px;
+  border-radius: 16px;
+  background: linear-gradient(135deg, #00d4aa 0%, #0099cc 100%);
+  color: white !important;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(0, 212, 170, 0.4);
+  border: none;
+  font-size: 12px;
+  font-weight: 500;
+  min-height: 32px;
+  white-space: nowrap;
+  position: relative;
+  overflow: hidden;
+  backdrop-filter: blur(10px);
+  text-align: center;
+}
+
+.layout-right #update-notification a::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%);
+  border-radius: 20px;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.layout-right #update-notification a:hover::before {
+  opacity: 1;
+}
+
+.layout-right #update-notification a:hover {
+  box-shadow: 0 8px 25px rgba(0, 212, 170, 0.5);
+  background: linear-gradient(135deg, #40cc92 0%, #0088b3 100%);
+}
+
+.layout-right #update-notification a:active {
+  transform: translateY(0);
+  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+}
+
+/* 移动端特殊优化 */
+@media (max-width: 768px) {
+  .layout-right #update-notification {
+    margin-right: 4px;
+  }
+
+  .layout-right #update-notification a {
+    padding: 6px 10px;
+    font-size: 12px;
+    min-height: 32px;
+    border-radius: 16px;
+    gap: 4px;
+    max-width: 80px;
+  }
+
+  .layout-right #update-notification a:hover {
+    transform: none;
+    box-shadow: 0 4px 15px rgba(0, 212, 170, 0.4);
+  }
+
+  .layout-right #update-notification i {
+    font-size: 13px;
+  }
+
+  .layout-right #update-notification span {
+    font-size: 12px;
+    font-weight: 500;
+  }
+}
+
+/* 超小屏幕优化 */
+@media (max-width: 480px) {
+  .layout-right #update-notification {
+    margin-right: 2px;
+  }
+
+  .layout-right #update-notification a {
+    padding: 0px 8px;
+    font-size: 11px;
+    right: -55px;
+    min-height: 28px;
+    border-radius: 14px;
+    gap: 3px;
+    min-width: 36px;
+    max-width: 70px;
+    top: -13px;
+    padding-top: 26px;
+  }
+
+  .layout-right #update-notification a:hover {
+    transform: none;
+    box-shadow: 0 4px 15px rgba(0, 212, 170, 0.4);
+  }
+
+  .layout-right #update-notification i {
+    font-size: 12px;
+  }
+
+  .layout-right #update-notification span {
+    font-size: 11px;
+  }
+
+  /* 超小屏幕隐藏小红点，避免过于拥挤 */
+  .layout-right #update-notification::after {
+    display: none;
+  }
+}
+
+/* 触摸设备优化 */
+@media (hover: none) and (pointer: coarse) {
+
+  .layout-right #update-notification a:hover {
+    /* 触摸设备禁用悬停效果 */
+    transform: none;
+    box-shadow: 0 4px 15px rgba(0, 212, 170, 0.4);
+  }
+
+  .layout-right #update-notification a:active {
+    transform: scale(0.95);
+    background: linear-gradient(135deg, #40cc92 0%, #0088b3 100%);
+  }
+}
+
+/* PC端更新按钮样式（bottom-nav） */
+.bottom-nav #update-notification {
+  position: relative;
+  margin-right: 8px;
+}
+
+.bottom-nav #update-notification a {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  border-radius: 25px;
+  background: linear-gradient(135deg, #00d4aa 0%, #0099cc 100%);
+  color: white !important;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  box-shadow: 0 6px 20px rgba(0, 212, 170, 0.4);
+  border: none;
+  font-size: 14px;
+  font-weight: 500;
+  min-height: 40px;
+  position: relative;
+  overflow: hidden;
+  backdrop-filter: blur(10px);
+}
+
+.bottom-nav #update-notification a::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0.05) 100%);
+  border-radius: 25px;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.bottom-nav .layui-layout-right {
+  top: -1px;
+
+}
+
+.bottom-nav #update-notification a:hover::before {
+  opacity: 1;
+}
+
+.bottom-nav #update-notification a:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 30px rgba(0, 212, 170, 0.5);
+  background: linear-gradient(135deg, #40cc92 0%, #0088b3 100%);
+}
+
+.bottom-nav #update-notification a:active {
+  transform: translateY(0);
+  box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+}
+
+/* 图标样式 */
+#update-notification i {
+  color: white !important;
+  font-size: 13px;
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.1));
+  transition: transform 0.3s ease;
+}
+
+.bottom-nav #update-notification i {
+  font-size: 16px;
+}
+
+/* 文字样式 */
+#update-notification span {
+  color: white !important;
+  font-weight: 500;
+  letter-spacing: 0.3px;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  line-height: 1;
+  display: inline-block;
+  vertical-align: middle;
+  text-align: center;
+}
+
+/* 悬停时图标旋转效果 */
+#update-notification a:hover i {
+  transform: rotate(180deg);
+}
+
+/* 更新按钮显示时的动画效果 */
+#update-notification.show {
+  animation: slideInRight 0.5s ease-out;
+}
+
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(30px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* 更新按钮上的小红点 - 通用 */
+#update-notification::after {
+  content: '';
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  background: #ff6b6b;
+  border-radius: 50%;
+  animation: blink 2s infinite;
+  box-shadow: 0 0 0 2px rgba(255, 107, 107, 0.3);
+  z-index: 1;
+}
+
+/* 移动端小红点位置 */
+.layout-right #update-notification::after {
+  top: 8px;
+  right: 8px;
+  width: 6px;
+  height: 6px;
+}
+
+/* 移动端小红点位置调整 */
+@media (max-width: 768px) {
+  .layout-right #update-notification::after {
+    top: 10px;
+    right: 10px;
+    width: 7px;
+    height: 7px;
+  }
+}
+
+/* PC端小红点位置 */
+.bottom-nav #update-notification::after {
+  top: 8px;
+  right: 10px;
+}
+
+@keyframes blink {
+
+  0%,
+  50% {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  51%,
+  100% {
+    opacity: 0.4;
+    transform: scale(0.8);
+  }
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(1.02);
+  }
+
+  100% {
+    transform: scale(1);
+  }
+}
+
+/* 更新按钮呼吸灯效果 */
+@keyframes breathe {
+
+  0%,
+  100% {
+    box-shadow: 0 4px 15px rgba(0, 212, 170, 0.4);
+  }
+
+  50% {
+    box-shadow: 0 4px 20px rgba(0, 212, 170, 0.6);
+  }
+}
+
+.layout-right #update-notification a,
+.bottom-nav #update-notification a {
+  animation: breathe 3s ease-in-out infinite;
+}
