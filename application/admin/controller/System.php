@@ -635,6 +635,12 @@ class System extends Base
             if (empty($config_new['collect']['comment']['uprule'])) {
                 $config_new['collect']['comment']['uprule'] = [];
             }
+            if (empty($config_new['collect']['manga']['inrule'])) {
+                $config_new['collect']['manga']['inrule'] = ['a'];
+            }
+            if (empty($config_new['collect']['manga']['uprule'])) {
+                $config_new['collect']['manga']['uprule'] = [];
+            }
 
             $config_new['collect']['vod']['inrule'] = ',' . join(',', $config_new['collect']['vod']['inrule']);
             $config_new['collect']['vod']['uprule'] = ',' . join(',', $config_new['collect']['vod']['uprule']);
@@ -648,6 +654,8 @@ class System extends Base
             $config_new['collect']['website']['uprule'] = ',' . join(',', $config_new['collect']['website']['uprule']);
             $config_new['collect']['comment']['inrule'] = ',' . join(',', $config_new['collect']['comment']['inrule']);
             $config_new['collect']['comment']['uprule'] = ',' . join(',', $config_new['collect']['comment']['uprule']);
+            $config_new['collect']['manga']['inrule'] = ',' . join(',', $config_new['collect']['manga']['inrule']);
+            $config_new['collect']['manga']['uprule'] = ',' . join(',', $config_new['collect']['manga']['uprule']);
 
             $config_new['collect']['vod']['namewords'] = mac_replace_text($config_new['collect']['vod']['namewords'], 2);
             $config_new['collect']['vod']['thesaurus'] = mac_replace_text($config_new['collect']['vod']['thesaurus'], 2);

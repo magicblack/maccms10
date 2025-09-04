@@ -3,7 +3,8 @@ namespace app\admin\controller;
 
 class Urlsend extends Base
 {
-    var $_lastid='';
+    public $_lastid='';
+    public $_param;
 
     public function __construct()
     {
@@ -166,6 +167,24 @@ class Urlsend extends Base
                 $order = 'website_id asc';
                 $fun = 'mac_url_website_detail';
                 $res = model('Website')->listData($where,$order,$this->_param['page'],$this->_param['limit']);
+                break;
+            case 12:
+                $where['manga_status'] = ['eq',1];
+
+                if($ac2=='today'){
+                    $where['manga_'.$col_time] = ['gt',$today];
+
+                }
+                if(!empty($ids)){
+                    $where['manga_id'] = ['in',$ids];
+                }
+                elseif(!empty($data)){
+                    $where['manga_id'] = ['gt', $data];
+                }
+                $col = 'manga';
+                $order = 'manga_id asc';
+                $fun = 'mac_url_manga_detail';
+                $res = model('Manga')->listData($where,$order,$this->_param['page'],$this->_param['limit']);
                 break;
         }
 

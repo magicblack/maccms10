@@ -127,6 +127,44 @@
                             </select>
                         </div>
                     </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:lang('admin/system/configurl/manga_type')}：</label>
+                        <div class="layui-input-inline w200">
+                            <select name="view[manga_type]">
+                                <option value="0" {if condition="$config['view']['manga_type'] eq 0" }selected{/if}>{:lang('admin/system/configurl/dynamic')}</option>
+                                <option value="2" {if condition="$config['view']['manga_type'] eq 2" }selected{/if}>{:lang('admin/system/configurl/static')}</option>
+                            </select>
+                        </div>
+                        <label class="layui-form-label">{:lang('admin/system/configurl/manga_show')}：</label>
+                        <div class="layui-input-inline w200">
+                            <select name="view[manga_show]">
+                                <option value="0" {if condition="$config['view']['manga_show'] eq 0" }selected{/if}>{:lang('admin/system/configurl/dynamic')}</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:lang('admin/system/configurl/manga_detail')}：</label>
+                        <div class="layui-input-inline w200">
+                            <select name="view[manga_detail]">
+                                <option value="0" {if condition="$config['view']['manga_detail'] eq 0" }selected{/if}>{:lang('admin/system/configurl/dynamic')}</option>
+                                <option value="2" {if condition="$config['view']['manga_detail'] eq 2" }selected{/if}>{:lang('admin/system/configurl/static')}</option>
+                            </select>
+                        </div>
+                        <label class="layui-form-label">{:lang('admin/system/configurl/manga_read')}：</label>
+                        <div class="layui-input-inline w200">
+                            <select name="view[manga_read]">
+                                <option value="0" {if condition="$config['view']['manga_read'] eq 0" }selected{/if}>{:lang('admin/system/configurl/dynamic')}</option>
+                                <option value="3" {if condition="$config['view']['manga_read'] eq 3" }selected{/if}>{:lang('admin/system/configurl/static_one')}</option>
+                            </select>
+                        </div>
+                        <label class="layui-form-label">{:lang('admin/system/configurl/manga_down')}：</label>
+                        <div class="layui-input-inline w200">
+                            <select name="view[manga_down]">
+                                <option value="0" {if condition="$config['view']['manga_down'] eq 0" }selected{/if}>{:lang('admin/system/configurl/dynamic')}</option>
+                                <option value="3" {if condition="$config['view']['manga_down'] eq 3" }selected{/if}>{:lang('admin/system/configurl/static_one')}</option>
+                            </select>
+                        </div>
+                    </div>
                 </div>
 
                 <div class="layui-tab-item" id="movementTable">
@@ -312,6 +350,101 @@
                     </div>
 
                     <div class="layui-form-item">
+                        <label class="layui-form-label">{:lang('admin/system/configurl/manga_type')}：</label>
+                        <div class="layui-input-inline w400">
+                            <input type="text" name="path[manga_type]" placeholder=""
+                                value="{$config['path']['manga_type']}" class="layui-input ">
+                        </div>
+                        <div class="layui-input-inline">
+                            <select lay-filter="select_path" onChange="sethtmldir('path[manga_type]',this.value);">
+                                <option>{:lang('admin/system/configurl/structure')}</option>
+                                <option value="mangatypehtml/{id}/index">1.mangatypehtml/id/</option>
+                                <option value="mangatypehtml/{md5}/index">2.mangatypehtml/md5值/</option>
+                                </option>
+                                <option value="mangatypehtml/{en}/index">3.mangatypehtml/en/</option>
+                                <option value="mangatypehtml/{id}">4.mangatypehtml/id.html</option>
+                                <option value="mangatypehtml/{md5}">5.mangatypehtml/md5.html</option>
+                                <option value="mangatypehtml/{en}">6.mangatypehtml/en.html</option>
+                            </select>
+                        </div>
+                        <div class="layui-input-inline w500">
+                            {:lang('admin/system/configurl/variable')}：{id} {en} {type_pid} {type_pen} {md5}
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:lang('admin/system/configurl/manga_detail')}：</label>
+                        <div class="layui-input-inline w400">
+                            <input type="text" name="path[manga_detail]" placeholder=""
+                                value="{$config['path']['manga_detail']}" class="layui-input ">
+                        </div>
+                        <div class="layui-input-inline">
+                            <select lay-filter="select_path" onChange="sethtmldir('path[manga_detail]',this.value);">
+                                <option>{:lang('admin/system/configurl/structure')}</option>
+                                <option value="mangahtml/{id}/index">1.mangahtml/id/</option>
+                                <option value="mangahtml/{md5}/index">2.mangahtml/md5值/</option>
+                                </option>
+                                <option value="mangahtml/{en}/index">3.mangahtml/en/</option>
+                                <option value="mangahtml/{id}">4.mangahtml/id.html</option>
+                                <option value="mangahtml/{md5}">5.mangahtml/md5.html</option>
+                                <option value="mangahtml/{en}">6.mangahtml/en.html</option>
+                            </select>
+                        </div>
+                        <div class="layui-input-inline w600">
+                            {:lang('admin/system/configurl/variable')}：{id} {en} {type_id} {type_en} {type_pid}
+                            {type_pen} {year} {month} {day} {md5}
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:lang('admin/system/configurl/manga_read')}：</label>
+                        <div class="layui-input-inline w400">
+                            <input type="text" name="path[manga_read]" placeholder=""
+                                value="{$config['path']['manga_read']}" class="layui-input ">
+                        </div>
+                        <div class="layui-input-inline">
+                            <select lay-filter="select_path" onChange="sethtmldir('path[manga_read]',this.value);">
+                                <option>{:lang('admin/system/configurl/structure')}</option>
+                                <option value="mangareadhtml/{id}/index">1.mangareadhtml/id/</option>
+                                <option value="mangareadhtml/{md5}/index">2.mangareadhtml/md5值/</option>
+                                </option>
+                                <option value="mangareadhtml/{en}/index">3.mangareadhtml/en/</option>
+                                <option value="mangareadhtml/{id}">4.mangareadhtml/id.html</option>
+                                <option value="mangareadhtml/{md5}">5.mangareadhtml/md5.html</option>
+                                <option value="mangareadhtml/{en}">6.mangareadhtml/en.html</option>
+                            </select>
+                        </div>
+                        <div class="layui-input-inline w600">
+                            {:lang('admin/system/configurl/variable')}：{id} {en} {type_id} {type_en} {type_pid}
+                            {type_pen} {year} {month} {day} {md5}
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:lang('admin/system/configurl/manga_down')}：</label>
+                        <div class="layui-input-inline w400">
+                            <input type="text" name="path[manga_down]" placeholder=""
+                                value="{$config['path']['manga_down']}" class="layui-input ">
+                        </div>
+                        <div class="layui-input-inline">
+                            <select lay-filter="select_path" onChange="sethtmldir('path[manga_down]',this.value);">
+                                <option>{:lang('admin/system/configurl/structure')}</option>
+                                <option value="mangadownhtml/{id}/index">1.mangadownhtml/id/</option>
+                                <option value="mangadownhtml/{md5}/index">2.mangadownhtml/md5值/</option>
+                                </option>
+                                <option value="mangadownhtml/{en}/index">3.mangadownhtml/en/</option>
+                                <option value="mangadownhtml/{id}">4.mangadownhtml/id.html</option>
+                                <option value="mangadownhtml/{md5}">5.mangadownhtml/md5.html</option>
+                                <option value="mangadownhtml/{en}">6.mangadownhtml/en.html</option>
+                            </select>
+                        </div>
+                        <div class="layui-input-inline w600">
+                            {:lang('admin/system/configurl/variable')}：{id} {en} {type_id} {type_en} {type_pid}
+                            {type_pen} {year} {month} {day} {md5}
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
                         <label class="layui-form-label">{:lang('admin/system/configurl/multipage_connector')}：</label>
                         <div class="layui-input-inline w400">
                             <input type="text" name="path[page_sp]" placeholder="" value="{$config['path']['page_sp']}"
@@ -454,6 +587,14 @@
                                 <option value="0" {if condition="$config['rewrite']['website_id'] eq 0" }selected{/if}>{:lang('num_id')}</option>
                                 <option value="1" {if condition="$config['rewrite']['website_id'] eq 1" }selected{/if}>{:lang('en')}</option>
                                 <option value="2" {if condition="$config['rewrite']['website_id'] eq 2" }selected{/if}>{:lang('encode_id')}</option>
+                            </select>
+                        </div>
+                        <label class="layui-form-label">{:lang('manga_id')}：</label>
+                        <div class="layui-input-inline w100">
+                            <select name="rewrite[manga_id]">
+                                <option value="0" {if condition="$config['rewrite']['manga_id'] eq 0" }selected{/if}>{:lang('num_id')}</option>
+                                <option value="1" {if condition="$config['rewrite']['manga_id'] eq 1" }selected{/if}>{:lang('en')}</option>
+                                <option value="2" {if condition="$config['rewrite']['manga_id'] eq 2" }selected{/if}>{:lang('encode_id')}</option>
                             </select>
                         </div>
 

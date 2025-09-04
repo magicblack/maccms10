@@ -59,4 +59,17 @@ artrss-<id>-<page>   => art/rss
 artshow/<id>-<by?>-<class?>-<level?>-<letter?>-<order?>-<page?>-<tag?>   => art/show
 artsearch/<wd?>-<by?>-<class?>-<level?>-<letter?>-<order?>-<page?>-<tag?>   => art/search
 
+manga-<page?> => manga/index
+manga$ => manga/index
+mangashow/<id>-<area?>-<by?>-<class?>-<lang?>-<letter?>-<level?>-<order?>-<page?>-<state?>-<tag?>-<year?> => manga/show
+mangasearch/<wd?>-<actor?>-<area?>-<by?>-<class?>-<director?>-<lang?>-<letter?>-<level?>-<order?>-<page?>-<state?>-<tag?>-<year?> => manga/search
+mangatype/<id>-<page?> => manga/type
+mangatype/<id> => manga/type
+mangadetail-<id> => manga/detail
+mangarss-<id>   => manga/rss
+mangaplay/<id>-<sid>-<nid> => manga/play
+mangadown/<id>-<sid>-<nid> => manga/down
+mangaplot/<id>-<page?>   => manga/plot
+mangaplot/<id>   => manga/plot
+
 label-<file> => label/index

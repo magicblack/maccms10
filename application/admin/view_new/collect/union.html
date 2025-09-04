@@ -17,7 +17,10 @@
             <a href="{:url('load')}?flag=role" class="layui-btn layui-btn-danger ">【进入角色断点采集】</a>
             {/if}
             {if condition="$collect_break_website neq ''"}
-            <a href="{:url('load')}?flag=website" class="layui-btn layui-btn-danger ">【进入网址断点采集】</a>
+            <a href="{:url('load')}?flag=website" class="lay-btn layui-btn-danger ">【进入网址断点采集】</a>
+            {/if}
+            {if condition="$collect_break_manga neq ''"}
+            <a href="{:url('load')}?flag=manga" class="layui-btn layui-btn-danger ">【进入漫画断点采集】</a>
             {/if}
         </div>
     </div>

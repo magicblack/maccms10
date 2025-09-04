@@ -2,21 +2,21 @@
 return array (
   1 => 
   array (
-    'name' => '首页',
+    'name' => lang('menu/index'),
     'icon' => 'xe625',
     'sub' => 
     array (
       11 => 
       array (
         'show' => 1,
-        'name' => '欢迎页面',
+        'name' => lang('menu/welcome'),
         'controller' => 'index',
         'action' => 'welcome',
       ),
       12 => 
       array (
         'show' => 1,
-        'name' => '自定义菜单配置',
+        'name' => lang('menu/quickmenu'),
         'controller' => 'index',
         'action' => 'quickmenu',
       ),
@@ -59,119 +59,119 @@ return array (
   ),
   2 => 
   array (
-    'name' => '系统',
+    'name' => lang('menu/system'),
     'icon' => 'xe62e',
     'sub' => 
     array (
       21 => 
       array (
         'show' => 1,
-        'name' => '网站参数配置',
+        'name' => lang('menu/config'),
         'controller' => 'system',
         'action' => 'config',
       ),
       210 => 
       array (
         'show' => 1,
-        'name' => 'SEO参数配置',
+        'name' => lang('menu/configseo'),
         'controller' => 'system',
         'action' => 'configseo',
       ),
       211 => 
       array (
         'show' => 1,
-        'name' => '会员参数配置',
+        'name' => lang('menu/configuser'),
         'controller' => 'system',
         'action' => 'configuser',
       ),
       212 => 
       array (
         'show' => 1,
-        'name' => '评论留言配置',
+        'name' => lang('menu/configcomment'),
         'controller' => 'system',
         'action' => 'configcomment',
       ),
       213 => 
       array (
         'show' => 1,
-        'name' => '附件参数配置',
+        'name' => lang('menu/configupload'),
         'controller' => 'system',
         'action' => 'configupload',
       ),
       22 => 
       array (
         'show' => 1,
-        'name' => 'URL地址配置',
+        'name' => lang('menu/configurl'),
         'controller' => 'system',
         'action' => 'configurl',
       ),
       23 => 
       array (
         'show' => 1,
-        'name' => '播放器参数配置',
+        'name' => lang('menu/configplay'),
         'controller' => 'system',
         'action' => 'configplay',
       ),
       24 => 
       array (
         'show' => 1,
-        'name' => '采集参数配置',
+        'name' => lang('menu/configcollect'),
         'controller' => 'system',
         'action' => 'configcollect',
       ),
       25 => 
       array (
         'show' => 1,
-        'name' => '站外入库配置',
+        'name' => lang('menu/configinterface'),
         'controller' => 'system',
         'action' => 'configinterface',
       ),
       26 => 
       array (
         'show' => 1,
-        'name' => '开放API配置',
+        'name' => lang('menu/configapi'),
         'controller' => 'system',
         'action' => 'configapi',
       ),
       27 => 
       array (
         'show' => 1,
-        'name' => '整合登录配置',
+        'name' => lang('menu/configconnect'),
         'controller' => 'system',
         'action' => 'configconnect',
       ),
       28 => 
       array (
         'show' => 1,
-        'name' => '在线支付配置',
+        'name' => lang('menu/configpay'),
         'controller' => 'system',
         'action' => 'configpay',
       ),
       29 => 
       array (
         'show' => 1,
-        'name' => '微信对接配置',
+        'name' => lang('menu/configweixin'),
         'controller' => 'system',
         'action' => 'configweixin',
       ),
       291 => 
       array (
         'show' => 1,
-        'name' => '邮件发送配置',
+        'name' => lang('menu/configemail'),
         'controller' => 'system',
         'action' => 'configemail',
       ),
       292 => 
       array (
         'show' => 1,
-        'name' => '短信发送配置',
+        'name' => lang('menu/configsms'),
         'controller' => 'system',
         'action' => 'configsms',
       ),
       2910 => 
       array (
         'show' => 1,
-        'name' => '定时任务配置',
+        'name' => lang('menu/timming'),
         'controller' => 'timming',
         'action' => 'index',
       ),
@@ -199,7 +199,7 @@ return array (
       2920 => 
       array (
         'show' => 1,
-        'name' => '站群管理配置',
+        'name' => lang('menu/domain'),
         'controller' => 'domain',
         'action' => 'index',
       ),
@@ -228,14 +228,14 @@ return array (
   ),
   3 => 
   array (
-    'name' => '基础',
+    'name' => lang('menu/base'),
     'icon' => 'xe64b',
     'sub' => 
     array (
       31 => 
       array (
         'show' => 1,
-        'name' => '分类管理',
+        'name' => lang('menu/type'),
         'controller' => 'type',
         'action' => 'index',
       ),
@@ -277,7 +277,7 @@ return array (
       32 => 
       array (
         'show' => 1,
-        'name' => '专题管理',
+        'name' => lang('menu/topic'),
         'controller' => 'topic',
         'action' => 'data',
       ),
@@ -312,7 +312,7 @@ return array (
       33 => 
       array (
         'show' => 1,
-        'name' => '友链管理',
+        'name' => lang('menu/link'),
         'controller' => 'link',
         'action' => 'index',
       ),
@@ -347,7 +347,7 @@ return array (
       34 => 
       array (
         'show' => 1,
-        'name' => '留言管理',
+        'name' => lang('menu/gbook'),
         'controller' => 'gbook',
         'action' => 'data',
       ),
@@ -375,7 +375,7 @@ return array (
       35 => 
       array (
         'show' => 1,
-        'name' => '评论管理',
+        'name' => lang('menu/comment'),
         'controller' => 'comment',
         'action' => 'data',
       ),
@@ -403,7 +403,7 @@ return array (
       36 => 
       array (
         'show' => 1,
-        'name' => '附件管理',
+        'name' => lang('menu/images'),
         'controller' => 'annex',
         'action' => 'data',
       ),
@@ -453,14 +453,14 @@ return array (
   ),
   5 => 
   array (
-    'name' => '文章',
+    'name' => lang('menu/art'),
     'icon' => 'xe616',
     'sub' => 
     array (
       51 => 
       array (
         'show' => 1,
-        'name' => '文章数据',
+        'name' => lang('menu/art_data'),
         'controller' => 'art',
         'action' => 'data',
       ),
@@ -488,14 +488,14 @@ return array (
       52 => 
       array (
         'show' => 1,
-        'name' => '添加文章',
+        'name' => lang('menu/art_add'),
         'controller' => 'art',
         'action' => 'info',
       ),
       53 => 
       array (
         'show' => 1,
-        'name' => '已锁定文章',
+        'name' => lang('menu/art_data_lock'),
         'controller' => 'art',
         'action' => 'data',
         'param' => 'lock=1',
@@ -503,7 +503,7 @@ return array (
       54 => 
       array (
         'show' => 1,
-        'name' => '未审核文章',
+        'name' => lang('menu/art_data_audit'),
         'controller' => 'art',
         'action' => 'data',
         'param' => 'status=0',
@@ -511,14 +511,14 @@ return array (
       59 => 
       array (
         'show' => 1,
-        'name' => '批量操作文章',
+        'name' => lang('menu/art_batch'),
         'controller' => 'art',
         'action' => 'batch',
       ),
       591 => 
       array (
         'show' => 1,
-        'name' => '重名文章数据',
+        'name' => lang('menu/art_repeat'),
         'controller' => 'art',
         'action' => 'data',
         'param' => 'repeat=1',
@@ -527,14 +527,14 @@ return array (
   ),
   13 => 
   array (
-    'name' => '漫画',
+    'name' => lang('manga'),
     'icon' => 'xe616',
     'sub' => 
     array (
       131 => 
       array (
         'show' => 1,
-        'name' => '漫画数据',
+        'name' => lang('admin/manga/title'),
         'controller' => 'manga',
         'action' => 'data',
       ),
@@ -562,14 +562,14 @@ return array (
       132 => 
       array (
         'show' => 1,
-        'name' => '添加漫画',
+        'name' => lang('add'),
         'controller' => 'manga',
         'action' => 'info',
       ),
       133 => 
       array (
         'show' => 1,
-        'name' => '已锁定漫画',
+        'name' => lang('lock'),
         'controller' => 'manga',
         'action' => 'data',
         'param' => 'lock=1',
@@ -577,7 +577,7 @@ return array (
       134 => 
       array (
         'show' => 1,
-        'name' => '未审核漫画',
+        'name' => lang('reviewed_not'),
         'controller' => 'manga',
         'action' => 'data',
         'param' => 'status=0',
@@ -585,30 +585,46 @@ return array (
       139 => 
       array (
         'show' => 1,
-        'name' => '批量操作漫画',
+        'name' => lang('multi_set'),
         'controller' => 'manga',
         'action' => 'batch',
       ),
       1391 => 
       array (
         'show' => 1,
-        'name' => '重名漫画数据',
+        'name' => lang('duplicate_data'),
         'controller' => 'manga',
         'action' => 'data',
         'param' => 'repeat=1',
+      ),
+      1392 => 
+      array (
+        'show' => 1,
+        'name' => lang('menu/manga_data_url_empty'),
+        'controller' => 'manga',
+        'action' => 'data',
+        'param' => 'url=1',
+      ),
+      1393 => 
+      array (
+        'show' => 1,
+        'name' => lang('menu/manga_data_points'),
+        'controller' => 'manga',
+        'action' => 'data',
+        'param' => 'points=1',
       ),
     ),
   ),
   4 => 
   array (
-    'name' => '视频',
+    'name' => lang('menu/vod'),
     'icon' => 'xe639',
     'sub' => 
     array (
       41 => 
       array (
         'show' => 1,
-        'name' => '服务器组',
+        'name' => lang('menu/server'),
         'controller' => 'vodserver',
         'action' => 'index',
       ),
@@ -636,7 +652,7 @@ return array (
       42 => 
       array (
         'show' => 1,
-        'name' => '播放器',
+        'name' => lang('menu/player'),
         'controller' => 'vodplayer',
         'action' => 'index',
       ),
@@ -664,7 +680,7 @@ return array (
       43 => 
       array (
         'show' => 1,
-        'name' => '下载器',
+        'name' => lang('menu/downer'),
         'controller' => 'voddowner',
         'action' => 'index',
       ),
@@ -692,7 +708,7 @@ return array (
       44 => 
       array (
         'show' => 1,
-        'name' => '视频数据',
+        'name' => lang('menu/vod_data'),
         'controller' => 'vod',
         'action' => 'data',
       ),
@@ -720,14 +736,14 @@ return array (
       45 => 
       array (
         'show' => 1,
-        'name' => '添加视频',
+        'name' => lang('menu/vod_add'),
         'controller' => 'vod',
         'action' => 'info',
       ),
       46 => 
       array (
         'show' => 1,
-        'name' => '无地址视频',
+        'name' => lang('menu/vod_data_url_empty'),
         'controller' => 'vod',
         'action' => 'data',
         'param' => 'url=1',
@@ -735,7 +751,7 @@ return array (
       47 => 
       array (
         'show' => 1,
-        'name' => '已锁定视频',
+        'name' => lang('menu/vod_data_lock'),
         'controller' => 'vod',
         'action' => 'data',
         'param' => 'lock=1',
@@ -743,7 +759,7 @@ return array (
       48 => 
       array (
         'show' => 1,
-        'name' => '未审核视频',
+        'name' => lang('menu/vod_data_audit'),
         'controller' => 'vod',
         'action' => 'data',
         'param' => 'status=0',
@@ -751,7 +767,7 @@ return array (
       481 => 
       array (
         'show' => 1,
-        'name' => '需积分视频',
+        'name' => lang('menu/vod_data_points'),
         'controller' => 'vod',
         'action' => 'data',
         'param' => 'points=1',
@@ -759,7 +775,7 @@ return array (
       482 => 
       array (
         'show' => 1,
-        'name' => '有分集剧情',
+        'name' => lang('menu/vod_data_plot'),
         'controller' => 'vod',
         'action' => 'data',
         'param' => 'plot=1',
@@ -767,14 +783,14 @@ return array (
       49 => 
       array (
         'show' => 1,
-        'name' => '批量操作视频',
+        'name' => lang('menu/vod_batch'),
         'controller' => 'vod',
         'action' => 'batch',
       ),
       491 => 
       array (
         'show' => 1,
-        'name' => '重名视频数据',
+        'name' => lang('menu/vod_repeat'),
         'controller' => 'vod',
         'action' => 'data',
         'param' => 'repeat=1',
@@ -782,7 +798,7 @@ return array (
       495 => 
       array (
         'show' => 1,
-        'name' => '演员库',
+        'name' => lang('menu/actor'),
         'controller' => 'actor',
         'action' => 'data',
         'param' => '',
@@ -818,7 +834,7 @@ return array (
       496 => 
       array (
         'show' => 1,
-        'name' => '角色库',
+        'name' => lang('menu/role'),
         'controller' => 'role',
         'action' => 'data',
         'param' => '',
@@ -855,14 +871,14 @@ return array (
   ),
   12 => 
   array (
-    'name' => '网址',
+    'name' => lang('menu/website'),
     'icon' => 'xe616',
     'sub' => 
     array (
       121 => 
       array (
         'show' => 1,
-        'name' => '网址数据',
+        'name' => lang('menu/website_data'),
         'controller' => 'website',
         'action' => 'data',
       ),
@@ -890,14 +906,14 @@ return array (
       122 => 
       array (
         'show' => 1,
-        'name' => '添加网址',
+        'name' => lang('menu/website_add'),
         'controller' => 'website',
         'action' => 'info',
       ),
       123 => 
       array (
         'show' => 1,
-        'name' => '已锁定网址',
+        'name' => lang('menu/website_data_lock'),
         'controller' => 'website',
         'action' => 'data',
         'param' => 'lock=1',
@@ -905,7 +921,7 @@ return array (
       124 => 
       array (
         'show' => 1,
-        'name' => '未审核网址',
+        'name' => lang('menu/website_data_audit'),
         'controller' => 'website',
         'action' => 'data',
         'param' => 'status=0',
@@ -913,14 +929,14 @@ return array (
       129 => 
       array (
         'show' => 1,
-        'name' => '批量操作网址',
+        'name' => lang('menu/website_batch'),
         'controller' => 'website',
         'action' => 'batch',
       ),
       1291 => 
       array (
         'show' => 1,
-        'name' => '重名网址数据',
+        'name' => lang('menu/website_repeat'),
         'controller' => 'website',
         'action' => 'data',
         'param' => 'repeat=1',
@@ -929,14 +945,14 @@ return array (
   ),
   6 => 
   array (
-    'name' => '用户',
+    'name' => lang('menu/users'),
     'icon' => 'xe62c',
     'sub' => 
     array (
       61 => 
       array (
         'show' => 1,
-        'name' => '管理员',
+        'name' => lang('menu/admin'),
         'controller' => 'admin',
         'action' => 'index',
       ),
@@ -964,7 +980,7 @@ return array (
       62 => 
       array (
         'show' => 1,
-        'name' => '会员组',
+        'name' => lang('menu/group'),
         'controller' => 'group',
         'action' => 'index',
       ),
@@ -992,7 +1008,7 @@ return array (
       63 => 
       array (
         'show' => 1,
-        'name' => '会员',
+        'name' => lang('menu/user'),
         'controller' => 'user',
         'action' => 'data',
       ),
@@ -1020,7 +1036,7 @@ return array (
       64 => 
       array (
         'show' => 1,
-        'name' => '充值卡',
+        'name' => lang('menu/card'),
         'controller' => 'card',
         'action' => 'index',
       ),
@@ -1041,7 +1057,7 @@ return array (
       65 => 
       array (
         'show' => 1,
-        'name' => '会员订单',
+        'name' => lang('menu/order'),
         'controller' => 'order',
         'action' => 'index',
       ),
@@ -1055,7 +1071,7 @@ return array (
       66 => 
       array (
         'show' => 1,
-        'name' => '访问日志',
+        'name' => lang('menu/ulog'),
         'controller' => 'ulog',
         'action' => 'index',
       ),
@@ -1069,7 +1085,7 @@ return array (
       67 => 
       array (
         'show' => 1,
-        'name' => '积分日志',
+        'name' => lang('menu/plog'),
         'controller' => 'plog',
         'action' => 'index',
       ),
@@ -1083,7 +1099,7 @@ return array (
       68 => 
       array (
         'show' => 1,
-        'name' => '提现记录',
+        'name' => lang('menu/cash'),
         'controller' => 'cash',
         'action' => 'index',
       ),
@@ -1105,14 +1121,14 @@ return array (
   ),
   7 => 
   array (
-    'name' => '模版',
+    'name' => lang('menu/templates'),
     'icon' => 'xe72d',
     'sub' => 
     array (
       71 => 
       array (
         'show' => 1,
-        'name' => '模板管理',
+        'name' => lang('menu/template'),
         'controller' => 'template',
         'action' => 'index',
       ),
@@ -1133,7 +1149,7 @@ return array (
       72 => 
       array (
         'show' => 1,
-        'name' => '广告位管理',
+        'name' => lang('menu/ads'),
         'controller' => 'template',
         'action' => 'ads',
         'param' => '',
@@ -1141,7 +1157,7 @@ return array (
       73 => 
       array (
         'show' => 1,
-        'name' => '标签向导',
+        'name' => lang('menu/wizard'),
         'controller' => 'template',
         'action' => 'wizard',
       ),
@@ -1149,35 +1165,35 @@ return array (
   ),
   8 => 
   array (
-    'name' => '生成',
+    'name' => lang('menu/make'),
     'icon' => 'xe63e',
     'sub' => 
     array (
       81 => 
       array (
         'show' => 1,
-        'name' => '生成选项',
+        'name' => lang('menu/make_opt'),
         'controller' => 'make',
         'action' => 'opt',
       ),
       82 => 
       array (
         'show' => 1,
-        'name' => '生成首页',
+        'name' => lang('menu/make_index'),
         'controller' => 'make',
         'action' => 'index',
       ),
       821 => 
       array (
         'show' => 1,
-        'name' => '生成WAP首页',
+        'name' => lang('menu/make_index_wap'),
         'controller' => 'make',
         'action' => 'index?ac2=wap',
       ),
       83 => 
       array (
         'show' => 1,
-        'name' => '生成地图',
+        'name' => lang('menu/make_map'),
         'controller' => 'make',
         'action' => 'map',
       ),
@@ -1234,14 +1250,14 @@ return array (
   ),
   9 => 
   array (
-    'name' => '采集',
+    'name' => lang('menu/cjs'),
     'icon' => 'xe727',
     'sub' => 
     array (
       91 => 
       array (
         'show' => 0,
-        'name' => '推荐资源',
+        'name' => lang('menu/union'),
         'controller' => 'collect',
         'action' => 'union',
       ),
@@ -1283,14 +1299,14 @@ return array (
       92 => 
       array (
         'show' => 0,
-        'name' => '定时挂机',
+        'name' => lang('menu/collect_timming'),
         'controller' => 'collect',
         'action' => 'timing',
       ),
       93 => 
       array (
         'show' => 1,
-        'name' => '自定义接口',
+        'name' => lang('menu/collect'),
         'controller' => 'collect',
         'action' => 'index',
       ),
@@ -1311,7 +1327,7 @@ return array (
       94 => 
       array (
         'show' => 1,
-        'name' => '自定义规则',
+        'name' => lang('menu/cj'),
         'controller' => 'cj',
         'action' => 'index',
       ),
@@ -1375,14 +1391,14 @@ return array (
   ),
   10 => 
   array (
-    'name' => '数据库',
+    'name' => lang('menu/db'),
     'icon' => 'xe621',
     'sub' => 
     array (
       101 => 
       array (
         'show' => 1,
-        'name' => '数据库管理',
+        'name' => lang('menu/database'),
         'controller' => 'database',
         'action' => 'index',
       ),
@@ -1431,14 +1447,14 @@ return array (
       102 => 
       array (
         'show' => 1,
-        'name' => '执行SQL语句',
+        'name' => lang('menu/database_sql'),
         'controller' => 'database',
         'action' => 'sql',
       ),
       103 => 
       array (
         'show' => 1,
-        'name' => '数据批量替换',
+        'name' => lang('menu/database_rep'),
         'controller' => 'database',
         'action' => 'rep',
       ),
@@ -1446,14 +1462,14 @@ return array (
   ),
   11 => 
   array (
-    'name' => '应用',
+    'name' => lang('menu/apps'),
     'icon' => 'xe621',
     'sub' => 
     array (
       111 => 
       array (
         'show' => 1,
-        'name' => '应用市场',
+        'name' => lang('menu/addon'),
         'controller' => 'addon',
         'action' => 'index',
         'param' => '',
@@ -1461,7 +1477,7 @@ return array (
       112 => 
       array (
         'show' => 1,
-        'name' => 'URL推送',
+        'name' => lang('menu/urlsend'),
         'controller' => 'urlsend',
         'action' => 'index',
         'param' => '',
@@ -1469,7 +1485,7 @@ return array (
       113 => 
       array (
         'show' => 1,
-        'name' => '文件安全检测',
+        'name' => lang('menu/safety_file'),
         'controller' => 'safety',
         'action' => 'file',
         'param' => '',
@@ -1477,7 +1493,7 @@ return array (
       114 => 
       array (
         'show' => 1,
-        'name' => '数据挂马检测',
+        'name' => lang('menu/safety_data'),
         'controller' => 'safety',
         'action' => 'data',
         'param' => '',

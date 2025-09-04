@@ -98,6 +98,11 @@
                 <input type="button" value="{:lang('all')}{:lang('website')}" class="layui-btn layui-btn-primary"
                     onclick="post('ac2=all&mid=11');">
                 <hr class="layui-bg-gray">
+                <input type="button" value="{:lang('that_day')}{:lang('manga')}" class="layui-btn layui-btn-primary"
+                    onclick="post('ac2=today&mid=12');">
+                <input type="button" value="{:lang('all')}{:lang('manga')}" class="layui-btn layui-btn-primary"
+                    onclick="post('ac2=all&mid=12');">
+                <hr class="layui-bg-gray">
                 {if condition="$urlsend_break_baidu_push neq ''"}
                 <a href="{$urlsend_break_baidu_push}"
                     class="layui-btn layui-btn-danger ">【{:lang('admin/urlsend/in_break_point_exec')}】</a>

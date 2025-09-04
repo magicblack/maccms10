@@ -13,6 +13,27 @@ class Collect extends Base
 
     public function index()
     {
+        $config = config('maccms');
+        if (empty($config['collect']['manga'])) {
+            $config['collect']['manga'] = [
+                'status' => '0',
+                'hits_start' => '',
+                'hits_end' => '',
+                'updown_start' => '',
+                'updown_end' => '',
+                'score' => '0',
+                'pic' => '0',
+                'psernd' => '0',
+                'psesyn' => '0',
+                'filter' => '',
+                'thesaurus' => '',
+                'words' => '',
+                'inrule' => ',a',
+                'uprule' => ',a',
+            ];
+            mac_arr2file(APP_PATH . 'extra/maccms.php', $config);
+        }
+
         $param = input();
         $param['page'] = intval($param['page']) < 1 ? 1 : $param['page'];
         $param['limit'] = intval($param['limit']) < 1 ? 100 : $param['limit'];

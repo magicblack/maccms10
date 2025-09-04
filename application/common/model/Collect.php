@@ -2872,7 +2872,53 @@ class Collect extends Base {
                     $des= lang('model/collect/add_ok');
                 }
                 else{
-                    $des = lang('model/collect/not_need_update');
+                    if(empty($config['uprule'])){
+                        $des = lang('model/collect/uprule_empty');
+                    }
+                    elseif ($info['manga_lock'] == 1) {
+                        $des = lang('model/collect/data_lock');
+                    }
+                    else {
+                        $update = [];
+                        $ec=false;
+
+                        if (strpos(',' . $config['uprule'], 'a')!==false && !empty($v['manga_play_from'])) {
+                            $old_play_from = $info['manga_chapter_from'];
+                            $old_play_url = $info['manga_chapter_url'];
+                            
+                            $cj_play_from_arr = explode('$$$',$v['manga_play_from'] );
+                            $cj_play_url_arr = explode('$$$',$v['manga_play_url']);
+
+                            foreach ($cj_play_from_arr as $k2 => $v2) {
+                                $cj_play_from = $v2;
+                                $cj_play_url = $cj_play_url_arr[$k2];
+                                if (strpos('$$$'.$info['manga_chapter_from'].'$$$', '$$$'.$cj_play_from.'$$$') === false) {
+                                    if(!empty($old_play_from)){
+                                        $old_play_url .="$$$";
+                                        $old_play_from .= "$$$" ;
+                                    }
+                                    $old_play_url .= "" . $cj_play_url;
+                                    $old_play_from .= "" . $cj_play_from;
+                                    $ec=true;
+                                }
+                            }
+                            if($ec) {
+                                $update['manga_chapter_from'] = $old_play_from;
+                                $update['manga_chapter_url'] = $old_play_url;
+                            }
+                        }
+
+                        if(count($update)>0){
+                            $update['manga_time'] = time();
+                            $where = [];
+                            $where['manga_id'] = $info['manga_id'];
+                            $res = model('Manga')->where($where)->update($update);
+                            $color = 'green';
+                        }
+                        else{
+                            $des = lang('model/collect/not_need_update');
+                        }
+                    }
                 }
             }
             if($show==1) {

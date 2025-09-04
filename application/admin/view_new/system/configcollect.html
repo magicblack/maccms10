@@ -19,6 +19,7 @@
                 <li lay-id="configcollect_4">{:lang('admin/system/configcollect/role')}</li>
                 <li lay-id="configcollect_5">{:lang('admin/system/configcollect/website')}</li>
                 <li lay-id="configcollect_6">{:lang('admin/system/configcollect/comment')}</li>
+                <li lay-id="configcollect_manga">{:lang('admin/system/configcollect/manga')}</li>
                 <li lay-id="configcollect_7">{:lang('admin/system/configcollect/words')}</li>
             </ul>
 
@@ -854,6 +855,42 @@
                         </div>
                     </div>
 
+                </div>
+
+                <div class="layui-tab-item">
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:lang('admin/system/configcollect/status')}：</label>
+                        <div class="layui-input-block">
+                            <input type="radio" name="collect[manga][status]" value="0" title="{:lang('reviewed_not')}" {if condition="$config['collect']['manga']['status'] neq 1" }checked {/if}>
+                            <input type="radio" name="collect[manga][status]" value="1" title="{:lang('reviewed')}" {if condition="$config['collect']['manga']['status'] eq 1" }checked {/if}>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:lang('admin/system/configcollect/sync_pic')}：</label>
+                        <div class="layui-input-inline">
+                            <input type="radio" name="collect[manga][pic]" value="0" title="{:lang('close')}" {if condition="$config['collect']['manga']['pic'] neq 1" }checked {/if}>
+                            <input type="radio" name="collect[manga][pic]" value="1" title="{:lang('open')}" {if condition="$config['collect']['manga']['pic'] eq 1" }checked {/if}>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:lang('admin/system/configcollect/inrule')}：</label>
+                        <div class="layui-input-block">
+                            <input type="checkbox" lay-skin="primary" name="collect[manga][inrule][]" value="a" title="{:lang('name')}" {if condition="strpos($config['collect']['manga']['inrule'],'a') !==false" }checked {/if}>
+                            <input type="checkbox" lay-skin="primary" name="collect[manga][inrule][]" value="b" title="{:lang('type')}" {if condition="strpos($config['collect']['manga']['inrule'],'b') !==false" }checked {/if}>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:lang('admin/system/configcollect/uprule')}：</label>
+                        <div class="layui-input-block">
+                            <input type="checkbox" lay-skin="primary" name="collect[manga][uprule][]" value="a" title="{:lang('playurl')}" {if condition="strpos($config['collect']['manga']['uprule'],'a') !==false" }checked {/if}>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:lang('admin/system/configcollect/filter')}：</label>
+                        <div class="layui-input-block">
+                            <textarea name="collect[manga][filter]" class="layui-textarea" placeholder="{:lang('multi_separate_tip')}">{$config['collect']['manga']['filter']}</textarea>
+                        </div>
+                    </div>
                 </div>
 
                 <div class="layui-tab-item" id="movementTable">

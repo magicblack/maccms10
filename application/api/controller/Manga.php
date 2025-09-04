@@ -16,6 +16,13 @@ class Manga extends Base
     public function get_list(Request $request)
     {
         $param = $request->param();
+        $validate = validate($request->controller());
+        if (!$validate->scene($request->action())->check($param)) {
+            return json([
+                'code' => 1001,
+                'msg'  => '参数错误: ' . $validate->getError(),
+            ]);
+        }
         $param['page'] = intval($param['page']) < 1 ? 1 : intval($param['page']);
         $param['limit'] = intval($param['limit']) < 1 ? 20 : intval($param['limit']);
 
@@ -45,6 +52,13 @@ class Manga extends Base
     public function get_detail(Request $request)
     {
         $param = $request->param();
+        $validate = validate($request->controller());
+        if (!$validate->scene($request->action())->check($param)) {
+            return json([
+                'code' => 1001,
+                'msg'  => '参数错误: ' . $validate->getError(),
+            ]);
+        }
         $where = [];
         $where['manga_status'] = ['eq', 1];
 

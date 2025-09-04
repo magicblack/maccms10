@@ -353,6 +353,7 @@ return array (
   'encode_id' => '암호화 ID',
   'vod_id' => '동영상 ID',
   'art_id' => '기사 ID',
+  'manga_id' => '만화 ID',
   'topic_id' => '특집 ID',
   'actor_id' => '배우 ID',
   'role_id' => '역할 ID',
@@ -520,6 +521,8 @@ https://www.baidu.com/123.jpg
   'menu/website_data_audit' => '심사되지 않은 웹사이트',
   'menu/website_batch' => '웹사이트 일괄 작업',
   'menu/website_repeat' => '중복된 웹사이트 데이터',
+  'menu/manga_data_url_empty' => '주소 없는 만화',
+  'menu/manga_data_points' => '포인트가 필요한 만화',
   'menu/users' => '사용자',
   'menu/admin' => '관리자',
   'menu/group' => '회원 그룹',
@@ -968,6 +971,7 @@ https://www.baidu.com/123.jpg
   'admin/system/configcollect/actor' => '배우 수집 설정',
   'admin/system/configcollect/role' => '역할 수집 설정',
   'admin/system/configcollect/website' => '웹사이트 수집 설정',
+  'admin/system/configcollect/manga' => '만화 수집 설정',
   'admin/system/configcollect/comment' => '댓글 수집 설정',
   'admin/system/configcollect/status' => '데이터 상태',
   'admin/system/configcollect/words' => '수집 어휘 설정',
@@ -1206,6 +1210,11 @@ https://www.baidu.com/123.jpg
   'admin/system/configurl/vod_play' => '동영상 재생',
   'admin/system/configurl/vod_down' => '동영상 다운로드',
   'admin/system/configurl/art_detail' => '기사 자세히 보기',
+  'admin/system/configurl/manga_type' => '만화 카테고리',
+  'admin/system/configurl/manga_show' => '만화 카테고리 필터링',
+  'admin/system/configurl/manga_detail' => '만화 자세히 보기',
+  'admin/system/configurl/manga_read' => '만화 읽기',
+  'admin/system/configurl/manga_down' => '만화 다운로드',
   'admin/system/configurl/variable' => '변수',
   'admin/system/configurl/structure' => '일반적인 구조',
   'admin/system/configurl/multipage_connector' => '다중 페이지 연결 기호',
@@ -1817,9 +1826,9 @@ https://www.baidu.com/123.jpg
                 어떠한 경우에도 저자는 이 소프트웨어의 사용 또는 사용 불가로 인해 발생하는 손해에 대해 책임을 지지 않습니다. 저자는 이 소프트웨어에 포함된 자료, 텍스트, 그래픽, 링크 또는 기타 사항의 정확성이나 완전성을 보증하지 않습니다. 저자는 언제든지 이 소프트웨어를 변경할 수 있으며 별도의 통지 없이 변경할 수 있습니다. <br />
                 사용자가 직접 제작, 다운로드, 사용하는 타사 정보 데이터 및 플러그인으로 인해 발생하는 모든 저작권 문제 또는 분쟁에 대해 이 소프트웨어는 책임을 지지 않습니다.<br /><br />
                 3. 계약에 따른 제약 및 제한: <br />
-                (Apple CMS) 소스 코드에서 저작권 정보를 제거하는 것은 금지되어 있으며 상업용 라이선스 버전에서는 백엔드 인터페이스 및 프런트엔드 인터페이스의 관련 저작권 정보를 제거할 수 있습니다.</br>
-                (Apple CMS) 전체 또는 일부를 기반으로 파생 버전, 수정 버전 또는 타사 버전을 개발하여 재배포하는 것은 금지되어 있습니다.</br></br>
-                <strong>저작권 (c) 2020, Apple CMS, 모든 권리 보유</strong>.',
+                (Apple CMS) 소스 코드에서 저작권 정보를 제거하는 것은 금지되어 있으며 상업용 라이선스 버전에서는 백엔드 인터페이스 및 프런트엔드 인터페이스의 관련 저작권 정보를 제거할 수 있습니다。</br>
+                (Apple CMS) 전체 또는 일부를 기반으로 파생 버전, 수정 버전 또는 타사 버전을 개발하여 재배포하는 것은 금지되어 있습니다。</br></br>
+                <strong>저작권 (c) 2020, Apple CMS, 모든 권리 보유</strong>。',
   'install/user_agreement_agree' => '계약에 동의하고 시스템 설치',
   'install/environment_title' => '운영 환경 검사',
   'install/environment_name' => '환경 이름',
@@ -1922,6 +1931,8 @@ https://www.baidu.com/123.jpg
   'validate/require_ip' => 'IP는 필수입니다.',
   'validate/require_time' => '시간은 필수입니다.',
   'manga' => '만화',
+  'admin/manga/title' => '만화 관리',
+  'admin/manga/new_version_notice' => '만화 모듈의 새 버전을 사용할 수 있습니다. 전체 기능을 경험하려면 새 버전의 백엔드로 전환하십시오.',
   'admin/system/configapi/manga'=>'만화 API 설정',
   'admin/system/configapi/manga_tip'=>'팁 정보:<br>1,만화 목록 주소 /api.php/provide/manga/?ac=list<br>2,만화 상세 주소 /api.php/provide/manga/?ac=detail',
   'admin/system/configapi/datafilter_tip_manga'=>'SQL 쿼리 조건 예: manga_status=1',

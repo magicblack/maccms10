@@ -831,7 +831,7 @@ class User extends Base
 
         $this->assign('param',$param);
         $this->assign('list', $res['list']);
-        $pages = mac_page_param($res['total'], $param['limit'], $param['page'], url('user/plog', ['page' => 'PAGELINK']));
+        $pages = mac_page_param($res['total'], $param['limit'], $param['page'], url('user/reward', ['level'=>$param['level'], 'page' => 'PAGELINK']));
         $this->assign('__PAGING__', $pages);
         return $this->fetch('user/reward');
     }

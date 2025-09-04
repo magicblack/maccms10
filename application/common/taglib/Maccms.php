@@ -21,6 +21,7 @@ class Maccms extends Taglib {
         'actor'=>['attr' =>'order,by,start,num,paging,pageurl,id,ids,not,area,sex,name,level,letter,type,typenot,starsign,blood,half,timeadd,timehits,time,cachetime'],
         'topic' => ['attr' =>'order,by,start,num,id,ids,not,paging,pageurl,class,tag,half,timeadd,timehits,time,cachetime'],
         'art' => ['attr' =>'order,by,start,num,id,ids,not,paging,pageurl,type,typenot,class,tag,level,letter,half,rel,timeadd,timehits,time,hitsmonth,hitsweek,hitsday,hits,cachetime'],
+        'manga' => ['attr' =>'order,by,start,num,id,ids,not,paging,pageurl,type,typenot,class,tag,area,lang,year,level,letter,half,rel,version,state,tv,weekday,timeadd,timehits,time,hitsmonth,hitsweek,hitsday,hits,isend,cachetime'],
         'vod' => ['attr' =>'order,by,start,num,id,ids,not,paging,pageurl,type,typenot,class,tag,area,lang,year,level,letter,half,rel,version,state,tv,weekday,timeadd,timehits,time,hitsmonth,hitsweek,hitsday,hits,isend,cachetime'],
         'website'=>['attr' =>'order,by,start,num,paging,pageurl,id,ids,not,area,lang,name,level,letter,type,typenot,half,timeadd,timehits,time,cachetime'],
         'foreach' => ['attr'=>'name,id,key'],
@@ -573,6 +574,42 @@ class Maccms extends Taglib {
         $parse = '<?php ';
         $parse .= '$__TAG__ = \'' . json_encode($tag) . '\';';
         $parse .= '$__LIST__ = model("Art")->listCacheData($__TAG__);';
+        if($tag['paging']=='yes'){
+            $parse .= '$__PAGING__ = mac_page_param($__LIST__[\'total\'],$__LIST__[\'limit\'],$__LIST__[\'page\'],$__LIST__[\'pageurl\'],$__LIST__[\'half\']);';
+        }
+        $parse .= ' ?>';
+        $parse .= '{volist name="__LIST__[\'list\']" id="'.$tag['id'].'" key="'.$tag['key'].'"';
+        if(!empty($tag['offset'])){
+            $parse .= ' offset="'.$tag['offset'].'"';
+        }
+        if(!empty($tag['length'])){
+            $parse .= ' length="'.$tag['length'].'"';
+        }
+        if(!empty($tag['mod'])){
+            $parse .= ' mod="'.$tag['mod'].'"';
+        }
+        if(!empty($tag['empty'])){
+            $parse .= ' empty="'.$tag['empty'].'"';
+        }
+        $parse .= '}';
+        $parse .= $content;
+        $parse .= '{/volist}';
+
+        return $parse;
+    }
+
+    public function tagManga($tag,$content)
+    {
+        if(empty($tag['id'])){
+            $tag['id'] = 'vo';
+        }
+        if(empty($tag['key'])){
+            $tag['key'] = 'key';
+        }
+
+        $parse = '<?php ';
+        $parse .= '$__TAG__ = \'' . json_encode($tag) . '\';';
+        $parse .= '$__LIST__ = model("Manga")->listCacheData($__TAG__);';
         if($tag['paging']=='yes'){
             $parse .= '$__PAGING__ = mac_page_param($__LIST__[\'total\'],$__LIST__[\'limit\'],$__LIST__[\'page\'],$__LIST__[\'pageurl\'],$__LIST__[\'half\']);';
         }

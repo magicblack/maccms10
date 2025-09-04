@@ -46,6 +46,17 @@ class Manga extends Base
             $where['manga_name'] = ['like','%'.$param['wd'].'%'];
         }
 
+        if(!empty($param['url'])){
+            if($param['url'] == '1'){
+                $where['manga_chapter_url'] = ['eq',''];
+            }
+        }
+        if(!empty($param['points'])){
+            if($param['points'] == '1'){
+                $where['manga_points'] = ['gt',0];
+            }
+        }
+
         if(!empty($param['repeat'])){
             if($param['page'] ==1){
                 Db::execute('DROP TABLE IF EXISTS '.config('database.prefix').'tmpmanga');
