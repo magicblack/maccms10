@@ -182,10 +182,14 @@ class Base extends All
                 }
             }
 
-            if($res===false && (!$has_permission || !$has_trysee)){
+            if($res===false){
+                if($has_permission){
+                    return ['code'=>1,'msg'=>lang('controller/in_try_see')];
+                }
                 return ['code'=>3001,'msg'=>lang('controller/no_popedom'),'trysee'=>0];
             }
-            elseif(max($group_ids)<3 && $points>0){
+            
+            if(max($group_ids)<3 && $points>0){
                 $mid = mac_get_mid($pre);
                 $where=[];
                 $where['ulog_mid'] = $mid;
@@ -207,7 +211,6 @@ class Base extends All
         }
         elseif($popedom==3){
             $has_permission = false;
-            $has_trysee = false;
             foreach($group_ids as $group_id) {
                 if(!isset($group_list[$group_id])) {
                     continue;
@@ -215,16 +218,19 @@ class Base extends All
                 $group = $group_list[$group_id];
                 if(!empty($group['group_popedom'][$type_id][5])) {
                     $has_permission = true;
-                }
-                if($trysee > 0) {
-                    $has_trysee = true;
+                    break;
                 }
             }
 
-            if($res===false && (!$has_permission || !$has_trysee)){
-                return ['code'=>3001,'msg'=>lang('controller/no_popedom'),'trysee'=>0];
+            if ($res === false) {
+                if ($has_permission) {
+                    return ['code'=>1,'msg'=>lang('controller/in_try_see')];
+                }
+                else {
+                    return ['code'=>3001,'msg'=>lang('controller/no_popedom'),'trysee'=>0];
+                }
             }
-            elseif(max($group_ids)<3 && $points>0){
+            if(max($group_ids)<3 && $points>0){
                 $where=[];
                 $where['ulog_mid'] = 1;
                 $where['ulog_type'] = $flag=='play' ? 4 : 5;
@@ -237,9 +243,9 @@ class Base extends All
                     $where['ulog_sid'] = 0;
                     $where['ulog_nid'] = 0;
                 }
-                $res = model('Ulog')->infoData($where);
+                $res_ulog = model('Ulog')->infoData($where);
 
-                if($res['code'] > 1) {
+                if($res_ulog['code'] > 1) {
                     return ['code'=>3003,'msg'=>lang('controller/pay_play_points',[$points]),'points'=>$points,'confirm'=>1,'trysee'=>0];
                 }
             }
