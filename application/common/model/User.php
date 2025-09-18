@@ -53,9 +53,10 @@ class User extends Base
         $group_list = model('Group')->getCache('group_list');
         $group_ids = explode(',', $info['group_id']);
         $info['group'] = $group_list[$group_ids[0]];
+        $info['groups'] = [];
         foreach($group_ids as $gid){
             if(isset($group_list[$gid])){
-                $info['group'][] = $group_list[$gid];
+                $info['groups'][] = $group_list[$gid];
             }
         }
 
@@ -369,7 +370,8 @@ class User extends Base
             return ['code' => 1003, 'msg' => lang('model/user/not_found')];
         }
 
-        if($row['group_id'] > 2 &&  $row['user_end_time'] < time()) {
+        $login_group_ids = explode(',', $row['group_id']);
+        if(max($login_group_ids) > 2 &&  $row['user_end_time'] < time()) {
             $row['group_id'] = 2;
             $update['group_id'] = 2;
         }
@@ -478,12 +480,20 @@ class User extends Base
         if (!empty($user_groups)) {
             $info['group'] = $user_groups[0];
             $info['group']['group_type'] = implode(',', array_unique(array_filter($user_group_types)));
+            $info['groups'] = $user_groups;
+
+            $all_names = [];
+            foreach($user_groups as $g){
+                $all_names[] = $g['group_name'];
+            }
+            $info['group']['group_name'] = implode(',', $all_names);
+
         } else {
             $info['group'] = $group_list[1];
         }
 
         //会员截止日期
-        if ($info['group_id'] > 2 && $info['user_end_time'] < time()) {
+        if (max($group_ids) > 2 && $info['user_end_time'] < time()) {
             //用户组
             $info['group'] = $group_list[2];
 
@@ -495,6 +505,8 @@ class User extends Base
                 return ['code' => 1004, 'msg' => lang('model/user/update_expire_err')];
             }
 
+            $info['group_id'] = 2;
+            $info['groups'] = [$group_list[2]];
             cookie('group_id', $info['group']['group_id'], ['expire'=>2592000] );
             cookie('group_name', $info['group']['group_name'],['expire'=>2592000] );
         }
