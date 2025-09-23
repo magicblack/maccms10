@@ -623,14 +623,11 @@ class User extends Base
 
         $where = [];
         $where['user_id'] = $GLOBALS['user']['user_id'];
-        $old_group_ids = explode(',', $GLOBALS['user']['group_id']);
-        if(!in_array($group_id, $old_group_ids)){
-            $old_group_ids[] = $group_id;
-        }
+        
         $data = [];
         $data['user_points'] = $GLOBALS['user']['user_points'] - $point;
         $data['user_end_time'] = $end_time;
-        $data['group_id'] = implode(',', array_unique($old_group_ids));
+        $data['group_id'] = $group_id;
 
         $res = $this->where($where)->update($data);
         if($res===false){
