@@ -183,8 +183,8 @@ class Base extends All
             }
 
             if($res===false){
-                if($has_permission){
-                    return ['code'=>1,'msg'=>lang('controller/in_try_see')];
+                if($has_trysee){
+                    return ['code'=>1,'msg'=>lang('controller/in_try_see'),'trysee'=>$trysee];
                 }
                 return ['code'=>3001,'msg'=>lang('controller/no_popedom'),'trysee'=>0];
             }
@@ -224,7 +224,7 @@ class Base extends All
 
             if ($res === false) {
                 if ($has_permission) {
-                    return ['code'=>1,'msg'=>lang('controller/in_try_see')];
+                    return ['code'=>3002,'msg'=>lang('controller/in_try_see'),'trysee'=>$trysee];
                 }
                 else {
                     return ['code'=>3001,'msg'=>lang('controller/no_popedom'),'trysee'=>0];
@@ -309,17 +309,25 @@ class Base extends All
                     }
                     $res = model('Ulog')->infoData($where);
 
-                    if(2 == 1) {
+                    if($points>0 && $res['code'] == 1) {
+                        return ['code'=>5001,'msg'=>lang('controller/popedom_ok')];
+                    }
 
+                    if ($user['user_id'] > 0) {
+                        if ($points > intval($user['user_points'])) {
+                            return ['code'=>5002,'msg'=>lang('controller/not_enough_points',[$points,$user['user_points'] ]),'trysee'=>$trysee];
+                        }
+                        else {
+                            return ['code'=>5001,'msg'=>lang('controller/try_see_end',[$points, $user['user_points']]),'trysee'=>$trysee];
+                        }
                     }
-                    elseif($points>0 && $res['code'] == 1) {
-
-                    }
-                    elseif(max($group_ids)<=2 && $points <= intval($user['user_points'])){
-                        return ['code'=>5001,'msg'=>lang('controller/try_see_end',[$points, $user['user_points']]),'trysee'=>$trysee];
-                    }
-                    elseif(max($group_ids)<3 && $points > intval($user['user_points'])){
-                        return ['code'=>5002,'msg'=>lang('controller/not_enough_points',[$points,$user['user_points'] ]),'trysee'=>$trysee];
+                    else {
+                        if ($points > 0) {
+                            return ['code'=>5002,'msg'=>lang('controller/not_enough_points',[$points,$user['user_points'] ]),'trysee'=>$trysee];
+                        }
+                        else {
+                            return ['code'=>5001,'msg'=>lang('controller/try_see_end',[$points, $user['user_points']]),'trysee'=>$trysee];
+                        }
                     }
                 }
             }
