@@ -39,6 +39,9 @@ class Cj extends Base {
         else{
             $data['urlpage'] = isset($data['urlpage']) ? (string)$data['urlpage'] : '';
             $data['page_base'] = isset($data['page_base']) ? (string)$data['page_base'] : '';
+            $data['sourcecharset'] = isset($data['sourcecharset']) ? (string)$data['sourcecharset'] : 'utf-8';
+            $data['customize_config'] = isset($data['customize_config']) ? (string)$data['customize_config'] : '';
+            $data['program_config'] = isset($data['program_config']) ? (string)$data['program_config'] : '';
             $res = Db::name('cj_node')->insert($data);
         }
         if(false === $res){
