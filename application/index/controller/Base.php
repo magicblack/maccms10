@@ -223,7 +223,7 @@ class Base extends All
             }
 
             if ($res === false) {
-                if ($has_permission) {
+                if ($has_permission && max($group_ids) < 3) {
                     return ['code'=>3002,'msg'=>lang('controller/in_try_see'),'trysee'=>$trysee];
                 }
                 else {
@@ -294,7 +294,7 @@ class Base extends All
                     }
                 }
 
-                if(!$has_permission && $has_trysee){
+                if(!$has_permission && $has_trysee && max($group_ids) < 3){
                     $where=[];
                     $where['ulog_mid'] = 1;
                     $where['ulog_type'] = $flag=='play' ? 4 : 5;
