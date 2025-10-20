@@ -4,7 +4,6 @@ namespace app\admin\controller;
 
 use think\Hook;
 use think\Db;
-use COM;
 use Exception;
 use ip_limit\IpLocationQuery;
 class Index extends Base
@@ -416,8 +415,12 @@ class Index extends Base
         }
         
         try {
-            $wmi = new \COM('WinMgmts:\\\\.');
-            $cpus = $wmi->ExecQuery('SELECT LoadPercentage FROM Win32_Processor');
+            if(class_exists('COM')){
+                $wmi = new \COM('WinMgmts:\\\\.');
+                $cpus = $wmi->ExecQuery('SELECT LoadPercentage FROM Win32_Processor');
+            } else {
+                return 0;
+            }
             
             $cpu_load = 0;
             $cpu_count = 0;
@@ -487,8 +490,16 @@ class Index extends Base
         }
         
         try {
-            $wmi = new \COM('WinMgmts:\\\\.');
-            $os = $wmi->ExecQuery('SELECT TotalVisibleMemorySize,FreePhysicalMemory FROM Win32_OperatingSystem');
+            if(class_exists('COM')){
+                $wmi = new \COM('WinMgmts:\\\\.');
+                $os = $wmi->ExecQuery('SELECT TotalVisibleMemorySize,FreePhysicalMemory FROM Win32_OperatingSystem');
+            } else {
+                return [
+                    'TotalVisibleMemorySize' => 0,
+                    'FreePhysicalMemory' => 0,
+                    'usage' => 0
+                ];
+            }
             
             foreach ($os as $item) {
                 $total = $item->TotalVisibleMemorySize;
