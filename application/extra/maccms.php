@@ -49,6 +49,7 @@ return array (
     'cache_port' => '6379',
     'cache_username' => '',
     'cache_password' => '',
+    'cache_db' => '0',
     'cache_flag' => 'a6bcf9aa58',
     'cache_core' => '0',
     'cache_time' => '3600',

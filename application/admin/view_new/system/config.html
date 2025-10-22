@@ -305,6 +305,12 @@
                                 placeholder="{:lang('admin/system/config/cache_password_tip')}"
                                 value="{$config['app']['cache_password']}" class="layui-input">
                         </div>
+                        <label class="layui-form-label">DB：</label>
+                        <div class="layui-input-inline w150">
+                            <input type="text" name="app[cache_db]"
+                                placeholder="Redis数据库索引(默认0)"
+                                value="{$config['app']['cache_db']|default='0'}" class="layui-input">
+                        </div>
                         <button type="button" class="layui-btn layui-btn-normal"
                             onclick="test_cache()">{:lang('admin/system/config/cache_test')}</button>
                     </div>
@@ -838,12 +844,13 @@
         var port = $("input[name='app[cache_port]']").val();
         var user_name = $("input[name='app[cache_username]']").val();
         var password = $("input[name='app[cache_password]']").val();
+        var db = $("input[name='app[cache_db]']").val();
         layer.msg("{:lang('wait_submit')}", { time: 500000 });
         $.ajax({
             url: "{:url('system/test_cache')}",
             type: "post",
             dataType: "json",
-            data: { type: type, host: host, port: port, username: user_name, password: password },
+            data: { type: type, host: host, port: port, username: user_name, password: password, db: db },
             beforeSend: function () {
             },
             error: function (r) {
