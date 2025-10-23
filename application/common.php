@@ -923,7 +923,17 @@ function mac_rep_pse_rnd($psearr,$txt,$id=0)
 
 function mac_txt_explain($txt, $decode = false)
 {
-    $txtarr = explode('#',$txt);
+    // 先将HTML实体中的#临时替换为特殊占位符
+    $placeholder = '___HTML_ENTITY_HASH___';
+    $txt = preg_replace('/&#(\d+);/', $placeholder . '$1;', $txt);
+    $txt = preg_replace('/&#x([0-9a-fA-F]+);/', $placeholder . 'x$1;', $txt);
+    // 安全地按#分割
+    $txtarr = explode('#', $txt);
+    // 还原HTML实体中的#
+    foreach($txtarr as &$item) {
+        $item = str_replace($placeholder, '&#', $item);
+    }
+    unset($item);
     $data=[];
     foreach($txtarr as $v){
         if (stripos($v, '=') === false) {
