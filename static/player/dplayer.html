@@ -8,6 +8,7 @@
 	<style type="text/css">
 	html,body{width:100%;height:100%; padding:0; margin:0;}
 	#playerCnt{width:100%;height:100%;}
+	.dplayer-loading{display: none !important;}
 	</style>
 	<link rel="stylesheet" href="/static/player/dplayer/DPlayer.min.css">
 	<script type="text/javascript" src="/static/player/dplayer/flv.min.js"></script>
@@ -54,6 +55,32 @@
             top.location.href = parent.MacPlayer.PlayLinkNext;
         }
 　　});
+
+    dp.on('waiting', function() {
+        showCustomBuffering();
+    });
+    dp.on('seeking', function() {
+        showCustomBuffering();
+    });
+    dp.on('canplay', function() {
+        hideCustomBuffering();
+    });
+    dp.on('seeked', function() {
+        hideCustomBuffering();
+    });
+    function showCustomBuffering() {
+    if(document.getElementById('customBuffer')) return;
+        var iframe = document.createElement('iframe');
+        iframe.src = parent.MacPlayer.Buffer || '/static/player/loading.html';
+        iframe.style.cssText =
+        'position:absolute;top:0;left:0;width:100%;height:100%;zindex:999;border:none;';
+        iframe.id = 'customBuffer';
+        document.body.appendChild(iframe);
+    }
+    function hideCustomBuffering() {
+        var bufferFrame = document.getElementById('customBuffer');
+        if(bufferFrame) bufferFrame.remove();
+    }
     
 	try{
 		//document.getElementById('playerCnt').style.height = parent.MacPlayer.Height + 'px';
