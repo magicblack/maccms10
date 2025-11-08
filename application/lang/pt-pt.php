@@ -1428,6 +1428,8 @@ https://www.baidu.com/123.jpg
   'admin/vod/stint_play' => 'Pontos necessários para assistir a cada episódio sob demanda',
   'admin/vod/stint_down' => 'Pontos necessários para baixar cada episódio',
   'admin/vod/select_plot' => 'Selecionar enredo do episódio',
+  'admin/vod/select_role' => 'Selecionar Papel',
+  'admin/vod/role' => 'Papel',
   'admin/vod/copyright' => 'Direitos autorais',
   'admin/vod/serialize' => 'Serializar',
   'admin/vod/add_group_play' => 'Adicionar um grupo de reprodução',

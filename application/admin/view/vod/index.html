@@ -149,6 +149,13 @@
                     </select>
                 </div>
                 <div class="layui-input-inline w150">
+                    <select name="role">
+                        <option value="">{:lang('admin/vod/select_role')}</option>
+                        <option value="0" {if condition="$param['role'] eq '0'"}selected {/if}>{:lang('admin/vod/no')}</option>
+                        <option value="1" {if condition="$param['role'] eq '1'"}selected {/if}>{:lang('admin/vod/have')}</option>
+                    </select>
+                </div>
+                <div class="layui-input-inline w150">
                     <select name="order">
                         <option value="">{:lang('select_sort')}</option>
                         <option value="vod_time" {if condition="$param['order'] eq 'vod_time'"}selected{/if}>{:lang('update_time')}</option>
@@ -223,6 +230,7 @@
                     {if condition="$vo.vod_isend eq 0 && $vo.vod_serial neq ''"} <span class="layui-badge layui-bg-blue">{:lang('admin/vod/serialize')}{$vo.vod_serial}</span>{/if}
                     {if condition="$vo.vod_remarks neq ''"} <span class="layui-badge layui-bg-orange">{$vo.vod_remarks}</span>{/if}
                     {if condition="$vo.vod_plot eq 1"} <span class="layui-badge layui-bg-cyan">{:lang('plot')}</span>{/if}
+                    {if condition="$vo.vod_role eq 1"} <span class="layui-badge layui-bg-purple">{:lang('admin/vod/role')}</span>{/if}
                     {if condition="$vo.vod_copyright eq 1"} <span class="layui-badge layui-bg-black">{:lang('admin/vod/copyright')}</span>{/if}
                 </td>
                 <td>{$vo.vod_hits}</td>

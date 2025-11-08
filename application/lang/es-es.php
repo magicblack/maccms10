@@ -1427,6 +1427,8 @@ Nota: Si se especifican listas negras y blancas, ambas se aplicarán simultánea
   'admin/vod/stint_play' => 'Puntos Necesarios para Reproducción por Episodio',
   'admin/vod/stint_down' => 'Puntos Necesarios para Descarga por Episodio',
   'admin/vod/select_plot' => 'Seleccionar Trama de Episodios',
+  'admin/vod/select_role' => 'Seleccionar Rol',
+  'admin/vod/role' => 'Rol',
   'admin/vod/copyright' => 'Derechos de Autor',
   'admin/vod/serialize' => 'Serie',
   'admin/vod/add_group_play' => 'Agregar Grupo de Reproducción',

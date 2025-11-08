@@ -1425,6 +1425,8 @@ Nota: Se tanto a lista negra quanto a lista branca forem preenchidas, a polític
   'admin/vod/stint_play' => 'Pontos necessários por episódio para reprodução',
   'admin/vod/stint_down' => 'Pontos necessários por episódio para download',
   'admin/vod/select_plot' => 'Selecione o Enredo do Episódio',
+  'admin/vod/select_role' => 'Rolle Auswählen',
+  'admin/vod/role' => 'Rolle',
   'admin/vod/copyright' => 'Direitos',
   'admin/vod/serialize' => 'Série',
   'admin/vod/add_group_play' => 'Adicionar Grupo de Reprodução',

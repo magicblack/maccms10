@@ -1560,6 +1560,8 @@ https://www.baidu.com/123.jpg
     'admin/vod/stint_play'=>'点播每集所需积分',
     'admin/vod/stint_down'=>'下载每集所需积分',
     'admin/vod/select_plot'=>'选择分集剧情',
+    'admin/vod/select_role'=>'选择角色',
+    'admin/vod/role'=>'角色',
     'admin/vod/copyright'=>'版权',
     'admin/vod/serialize'=>'连载',
     'admin/vod/add_group_play'=>'添加一组播放',

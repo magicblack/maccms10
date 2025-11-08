@@ -1430,6 +1430,8 @@ https://www.baidu.com/123.jpg
   'admin/vod/stint_play' => 'エピソードごとのオンデマンドに必要なポイント',
   'admin/vod/stint_down' => 'エピソードごとのダウンロードに必要なポイント',
   'admin/vod/select_plot' => 'エピソードプロットを選択',
+  'admin/vod/select_role' => '役を選択',
+  'admin/vod/role' => '役',
   'admin/vod/copyright' => '著作権',
   'admin/vod/serialize' => 'シリアル',
   'admin/vod/add_group_play' => '再生グループを追加',

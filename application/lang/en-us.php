@@ -1429,6 +1429,8 @@ Note: If both black and white lists are filled, both policies will take effect.'
   'admin/vod/stint_play' => 'Points Required per Episode for Playback',
   'admin/vod/stint_down' => 'Points Required per Episode for Download',
   'admin/vod/select_plot' => 'Select Episode Plot',
+  'admin/vod/select_role' => 'Select Role',
+  'admin/vod/role' => 'Role',
   'admin/vod/copyright' => 'Copyright',
   'admin/vod/serialize' => 'Serial',
   'admin/vod/add_group_play' => 'Add a Play Group',

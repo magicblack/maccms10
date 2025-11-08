@@ -1428,6 +1428,8 @@ https://www.baidu.com/123.jpg
   'admin/vod/stint_play' => '에피소드당 필요한 포인트',
   'admin/vod/stint_down' => '에피소드당 다운로드에 필요한 포인트',
   'admin/vod/select_plot' => '에피소드 줄거리 선택',
+  'admin/vod/select_role' => '역할 선택',
+  'admin/vod/role' => '역할',
   'admin/vod/copyright' => '저작권',
   'admin/vod/serialize' => '연재',
   'admin/vod/add_group_play' => '재생 그룹 추가',

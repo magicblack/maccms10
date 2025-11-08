@@ -1429,6 +1429,8 @@ Note: Si les listes noires et blanches sont remplies, les stratégies s\'appliqu
   'admin/vod/stint_play' => 'Points nécessaires par épisode pour la lecture à la demande',
   'admin/vod/stint_down' => 'Points nécessaires par épisode pour le téléchargement',
   'admin/vod/select_plot' => 'Sélectionner l\'intrigue par épisode',
+  'admin/vod/select_role' => 'Sélectionner le Rôle',
+  'admin/vod/role' => 'Rôle',
   'admin/vod/copyright' => 'Droits d\'auteur',
   'admin/vod/serialize' => 'Série',
   'admin/vod/add_group_play' => 'Ajouter un groupe de lecture',

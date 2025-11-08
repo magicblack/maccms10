@@ -48,6 +48,25 @@ class Vod extends Base
             $where['vod_plot'] = ['eq',$param['plot']];
         }
 
+        // 处理角色筛选 - 通过查询角色表判断是否有角色数据
+        if(in_array($param['role'],['0','1'])){
+            $roleVodIds = Db::name('role')->where('role_rid', '>', 0)->group('role_rid')->column('role_rid');
+            if($param['role'] == '1'){
+                // 有角色数据
+                if(!empty($roleVodIds)){
+                    $where['vod_id'] = ['in', $roleVodIds];
+                } else {
+                    // 如果没有任何角色数据，设置一个不可能匹配的条件
+                    $where['vod_id'] = ['eq', 0];
+                }
+            } else {
+                // 无角色数据
+                if(!empty($roleVodIds)){
+                    $where['vod_id'] = ['not in', $roleVodIds];
+                }
+            }
+        }
+
         if(!empty($param['url'])){
             if($param['url']==1){
                 $where['vod_play_url'] = '';
@@ -121,11 +140,25 @@ class Vod extends Base
         }
 
 
+        // 批量查询哪些视频有角色数据
+        $vodIds = array_column($res['list'], 'vod_id');
+        $vodIdsWithRole = [];
+        if (!empty($vodIds)) {
+            $roleData = Db::name('role')
+                ->where('role_rid', 'in', $vodIds)
+                ->where('role_rid', '>', 0)
+                ->group('role_rid')
+                ->column('role_rid');
+            $vodIdsWithRole = array_flip($roleData); // 转为键值对，方便快速查找
+        }
+
         foreach($res['list'] as $k=>&$v){
             $v['ismake'] = 1;
             if($GLOBALS['config']['view']['vod_detail'] >0 && $v['vod_time_make'] < $v['vod_time']){
                 $v['ismake'] = 0;
             }
+            // 标记是否有角色数据
+            $v['vod_role'] = isset($vodIdsWithRole[$v['vod_id']]) ? 1 : 0;
         }
 
         $this->assign('list',$res['list']);
@@ -198,6 +231,28 @@ class Vod extends Base
             }
             if(!empty($param['lang'])){
                 $where['vod_lang'] = ['eq',$param['lang']];
+            }
+            if(in_array($param['plot'],['0','1'])){
+                $where['vod_plot'] = ['eq',$param['plot']];
+            }
+
+            // 处理角色筛选 - 通过查询角色表判断是否有角色数据
+            if(in_array($param['role'],['0','1'])){
+                $roleVodIds = Db::name('role')->where('role_rid', '>', 0)->group('role_rid')->column('role_rid');
+                if($param['role'] == '1'){
+                    // 有角色数据
+                    if(!empty($roleVodIds)){
+                        $where['vod_id'] = ['in', $roleVodIds];
+                    } else {
+                        // 如果没有任何角色数据，设置一个不可能匹配的条件
+                        $where['vod_id'] = ['eq', 0];
+                    }
+                } else {
+                    // 无角色数据
+                    if(!empty($roleVodIds)){
+                        $where['vod_id'] = ['not in', $roleVodIds];
+                    }
+                }
             }
 
             if(!empty($param['url'])){
