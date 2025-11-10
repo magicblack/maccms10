@@ -637,9 +637,6 @@ class Collect extends Base {
                 if (strpos($config['inrule'], 'h')!==false) {
                     $where['vod_douban_id'] = intval($v['vod_douban_id']);
                 }
-                if ($config['tag'] == 1) {
-                    $v['vod_tag'] = mac_filter_xss(mac_get_tag($v['vod_name'], $v['vod_content']));
-                }
 
                 if(!empty($where['vod_actor']) && !empty($where['vod_director'])){
                     $blend = true;
@@ -755,6 +752,10 @@ class Collect extends Base {
                             }
                         })
                         ->find();
+                }
+                // 优化自动生成TAG https://github.com/magicblack/maccms10/issues/1178
+                if ($config['tag'] == 1 && empty($v['vod_tag']) && empty($info['vod_tag'])) {
+                    $v['vod_tag'] = mac_filter_xss(mac_get_tag($v['vod_name'], $v['vod_content']));
                 }
 
                 if (!$info) {
