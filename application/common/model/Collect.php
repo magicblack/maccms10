@@ -1339,6 +1339,10 @@ class Collect extends Base {
                     $v['art_blurb'] = mac_substring( strip_tags( str_replace('$$$','',$v['art_content']) ) ,100);
                 }
 
+                if ($config['tag'] == 1) {
+                    $v['art_tag'] = mac_filter_xss(mac_get_tag($v['art_name'], $v['art_content']));
+                }
+
                 $where = [];
                 $where['art_name'] = $v['art_name'];
                 if (strpos($config['inrule'], 'b')!==false) {
