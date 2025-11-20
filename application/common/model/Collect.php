@@ -507,8 +507,12 @@ class Collect extends Base {
                 }
 
                 $v['type_id_1'] = intval($type_list[$v['type_id']]['type_pid']);
-                $v['vod_en'] = Pinyin::get($v['vod_name']);
-                $v['vod_letter'] = strtoupper(substr($v['vod_en'],0,1));
+                if(empty($v['vod_en'])){
+                    $v['vod_en'] = Pinyin::get($v['vod_name']);
+                }
+                if(empty($v['vod_letter'])){
+                    $v['vod_letter'] = strtoupper(substr($v['vod_en'],0,1));
+                }
                 // 使用资源站的添加时间，更新时间保持当前
                 // https://github.com/magicblack/maccms10/issues/780
                 if (empty($v['vod_time_add']) || strlen($v['vod_time_add']) != 10) {
