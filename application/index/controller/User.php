@@ -259,7 +259,14 @@ class User extends Base
                 if ($res2['code'] > 1) {
                     $data = [];
                     $data['user_name'] = substr($openid, 0, 10);
-                    $data['user_nick_name'] = htmlspecialchars(urldecode(trim($res['info']['name'])));
+                    $data['user_nick_name'] = 
+                        
+                        
+                        
+                        
+                        
+                        
+                        specialchars(urldecode(trim($res['info']['name'])));
                     $pwd = time();
                     $data['user_pwd'] = $pwd;
                     $data['user_pwd2'] = $pwd;
@@ -337,8 +344,8 @@ class User extends Base
     public function regcheck()
     {
         $param = input();
-        $t = htmlspecialchars(urldecode(trim($param['t'])));
-        $str = htmlspecialchars(urldecode(trim($param['str'])));
+        $t = mac_filter_xss(urldecode(trim($param['t'])));
+        $str = mac_filter_xss(urldecode(trim($param['str'])));
         $res = model('User')->regcheck($t, $str);
         if ($res['code'] > 1) {
             return $str;
@@ -435,8 +442,8 @@ class User extends Base
         if (Request()->isPost()) {
             $flag = input('param.flag');
             if ($flag == 'card') {
-                $card_no = htmlspecialchars(urldecode(trim($param['card_no'])));
-                $card_pwd = htmlspecialchars(urldecode(trim($param['card_pwd'])));
+                $card_no = mac_filter_xss(urldecode(trim($param['card_no'])));
+                $card_pwd = mac_filter_xss(urldecode(trim($param['card_pwd'])));
 
                 $res = model('Card')->useData($card_no, $card_pwd, $GLOBALS['user']);
                 return json($res);
@@ -469,7 +476,7 @@ class User extends Base
     public function pay()
     {
         $param = input();
-        $order_code = htmlspecialchars(urldecode(trim($param['order_code'])));
+        $order_code = mac_filter_xss(urldecode(trim($param['order_code'])));
         $where = [];
         $where['order_code'] = $order_code;
         $where['user_id'] = $GLOBALS['user']['user_id'];
@@ -492,9 +499,9 @@ class User extends Base
     {
         $param = input();
 
-        $order_code = htmlspecialchars(urldecode(trim($param['order_code'])));
+        $order_code = mac_filter_xss(urldecode(trim($param['order_code'])));
         $order_id = intval((trim($param['order_id'])));
-        $payment = strtolower(htmlspecialchars(urldecode(trim($param['payment']))));
+        $payment = strtolower(mac_filter_xss(urldecode(trim($param['payment']))));
 
         if (empty($order_code) && empty($order_id) && empty($payment)) {
             return $this->error(lang('param_err'));
@@ -683,7 +690,7 @@ class User extends Base
     public function ulog_del()
     {
         $param = input();
-        $ids = htmlspecialchars(urldecode(trim($param['ids'])));
+        $ids = mac_filter_xss(urldecode(trim($param['ids'])));
         $type = $param['type'];
         $all = $param['all'];
 
@@ -733,7 +740,7 @@ class User extends Base
     public function plog_del()
     {
         $param = input();
-        $ids = htmlspecialchars(urldecode(trim($param['ids'])));
+        $ids = mac_filter_xss(urldecode(trim($param['ids'])));
         $type = $param['type'];
         $all = $param['all'];
 
@@ -784,7 +791,7 @@ class User extends Base
     public function cash_del()
     {
         $param = input();
-        $ids = htmlspecialchars(urldecode(trim($param['ids'])));
+        $ids = mac_filter_xss(urldecode(trim($param['ids'])));
         $type = $param['type'];
         $all = $param['all'];
 
