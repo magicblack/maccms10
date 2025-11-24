@@ -434,11 +434,13 @@ class Collect extends Base {
     {
         $img_url_downloaded = $pic_url;
         if ($pic_status == 1) {
+            // 清理失败标记，获取真实URL
+            $clean_url = str_replace('#err', '', $pic_url);
             $config = (array)config('maccms.upload');
-            $img_url_downloaded = model('Image')->down_load($pic_url, $config, $flag);
-            if ($img_url_downloaded == $pic_url) {
+            $img_url_downloaded = model('Image')->down_load($clean_url, $config, $flag);
+            if ($img_url_downloaded == $clean_url || strpos($img_url_downloaded, '#err') !== false) {
                 // 下载失败，显示老图信息
-                $des = '<a href="' . $pic_url . '" target="_blank">' . $pic_url . '</a><font color=red>'.lang('download_err').'!</font>';
+                $des = '<a href="' . $clean_url . '" target="_blank">' . $clean_url . '</a><font color=red>'.lang('download_err').'!</font>';
             } else {
                 // 下载成功，显示新图信息
                 if (str_starts_with($img_url_downloaded, 'upload/')) {
@@ -975,7 +977,7 @@ class Collect extends Base {
                         if (strpos(',' . $config['uprule'], 'i')!==false && !empty($v['vod_lang']) && $v['vod_lang']!=$info['vod_lang']) {
                             $update['vod_lang'] = $v['vod_lang'];
                         }
-                        if (strpos(',' . $config['uprule'], 'j')!==false && (substr($info["vod_pic"], 0, 4) == "http" || empty($info['vod_pic']) ) && $v['vod_pic']!=$info['vod_pic'] ) {
+                        if (strpos(',' . $config['uprule'], 'j')!==false && (substr($info["vod_pic"], 0, 4) == "http" || empty($info['vod_pic']) ) && ($v['vod_pic']!=$info['vod_pic'] || strpos($info['vod_pic'], '#err') !== false) ) {
                             $tmp = $this->syncImages($config_sync_pic, $v['vod_pic'],'vod');
                             $update['vod_pic'] = (string)$tmp['pic'];
                             $msg =$tmp['msg'];
@@ -1419,7 +1421,7 @@ class Collect extends Base {
                                 $update['art_from'] = $v['art_from'];
                             }
 
-                            if(strpos(','.$config['uprule'],'d')!==false && (substr($info["art_pic"], 0, 4) == "http" || empty($info['art_pic']))  && $v['art_pic']!=$info['art_pic'] ){
+                            if(strpos(','.$config['uprule'],'d')!==false && (substr($info["art_pic"], 0, 4) == "http" || empty($info['art_pic']))  && ($v['art_pic']!=$info['art_pic'] || strpos($info['art_pic'], '#err') !== false) ){
                                 $tmp = $this->syncImages($config_sync_pic, $v['art_pic'],'art');
                                 $update['art_pic'] = (string)$tmp['pic'];
                                 $msg =$tmp['msg'];
@@ -1718,7 +1720,7 @@ class Collect extends Base {
                             if(strpos(','.$config['uprule'],'d')!==false && !empty($v['actor_works']) && $v['actor_works']!=$info['actor_works']){
                                 $update['actor_works'] = $v['actor_works'];
                             }
-                            if(strpos(','.$config['uprule'],'e')!==false && (substr($info["actor_pic"], 0, 4) == "http" ||empty($info['actor_pic']) ) && $v['actor_pic']!=$info['actor_pic'] ){
+                            if(strpos(','.$config['uprule'],'e')!==false && (substr($info["actor_pic"], 0, 4) == "http" ||empty($info['actor_pic']) ) && ($v['actor_pic']!=$info['actor_pic'] || strpos($info['actor_pic'], '#err') !== false) ){
                                 $tmp = $this->syncImages($config_sync_pic, $v['actor_pic'],'actor');
                                 $update['actor_pic'] =$tmp['pic'];
                                 $msg =$tmp['msg'];
@@ -2015,7 +2017,7 @@ class Collect extends Base {
                                 if (strpos(',' . $config['uprule'], 'b') !== false && !empty($v['role_remarks']) && $v['role_remarks'] != $info['role_remarks']) {
                                     $update['role_remarks'] = $v['role_remarks'];
                                 }
-                                if (strpos(',' . $config['uprule'], 'c') !== false && (substr($info["role_pic"], 0, 4) == "http" || empty($info['role_pic'])) && $v['role_pic'] != $info['role_pic']) {
+                                if (strpos(',' . $config['uprule'], 'c') !== false && (substr($info["role_pic"], 0, 4) == "http" || empty($info['role_pic'])) && ($v['role_pic'] != $info['role_pic'] || strpos($info['role_pic'], '#err') !== false)) {
                                     $tmp = $this->syncImages($config_sync_pic,  $v['role_pic'], 'role');
                                     $update['role_pic'] = $tmp['pic'];
                                     $msg = $tmp['msg'];
@@ -2312,7 +2314,7 @@ class Collect extends Base {
                             if(strpos(','.$config['uprule'],'d')!==false && !empty($v['website_jumpurl']) && $v['website_jumpurl']!=$info['website_jumpurl']){
                                 $update['website_jumpurl'] = $v['website_jumpurl'];
                             }
-                            if(strpos(','.$config['uprule'],'e')!==false && (substr($info["website_pic"], 0, 4) == "http" ||empty($info['website_pic']) ) && $v['website_pic']!=$info['website_pic'] ){
+                            if(strpos(','.$config['uprule'],'e')!==false && (substr($info["website_pic"], 0, 4) == "http" ||empty($info['website_pic']) ) && ($v['website_pic']!=$info['website_pic'] || strpos($info['website_pic'], '#err') !== false) ){
                                 $tmp = $this->syncImages($config_sync_pic, $v['website_pic'],'website');
                                 $update['website_pic'] =$tmp['pic'];
                                 $msg =$tmp['msg'];

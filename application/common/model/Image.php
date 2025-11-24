@@ -22,7 +22,7 @@ class Image extends Base {
         }
         $img = mac_curl_get($url);
         if (empty($img) || strlen($img) < 10) {
-            return $url;
+            return $url . '#err';
         }
         $file_name = md5(uniqid()) .'.' . $ext;
         // 上传附件路径
@@ -74,7 +74,7 @@ class Image extends Base {
             '18' => 'webp',
         ];
         if (!isset($image_info[2]) || !isset($extension_hash[$image_info[2]])) {
-            return $url;
+            return $url . '#err';
         }
         $file_size = filesize($_upload_path.$file_name);
         // 水印
