@@ -162,7 +162,7 @@ class Vod extends Base {
         if(empty($num)){
             $num = 20;
         }
-        if($start>1){
+        if($start>0){
             $start--;
         }
 
