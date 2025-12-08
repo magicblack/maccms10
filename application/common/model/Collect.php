@@ -504,7 +504,7 @@ class Collect extends Base {
 
                 foreach($v as $k2=>$v2){
                     if(strpos($k2,'_content')===false && $k2!=='vod_plot_detail') {
-                        $v[$k2] = strip_tags($v2);
+                        $v[$k2] = mac_strip_tags($v2);
                     }
                 }
 
@@ -1287,7 +1287,7 @@ class Collect extends Base {
 
                 foreach($v as $k2=>$v2){
                     if(strpos($k2,'_content')===false) {
-                        $v[$k2] = strip_tags($v2);
+                        $v[$k2] = mac_strip_tags($v2);
                     }
                 }
                 $v['art_name'] = trim($v['art_name']);
@@ -1618,7 +1618,7 @@ class Collect extends Base {
 
                 foreach($v as $k2=>$v2){
                     if(strpos($k2,'_content')===false) {
-                        $v[$k2] = strip_tags($v2);
+                        $v[$k2] = mac_strip_tags($v2);
                     }
                 }
                 $v['actor_name'] = trim($v['actor_name']);
@@ -1886,7 +1886,7 @@ class Collect extends Base {
 
                 foreach($v as $k2=>$v2){
                     if(strpos($k2,'_content')===false) {
-                        $v[$k2] = strip_tags($v2);
+                        $v[$k2] = mac_strip_tags($v2);
                     }
                 }
 
@@ -2209,7 +2209,7 @@ class Collect extends Base {
 
                 foreach($v as $k2=>$v2){
                     if(strpos($k2,'_content')===false) {
-                        $v[$k2] = strip_tags($v2);
+                        $v[$k2] = mac_strip_tags($v2);
                     }
                 }
                 $v['website_name'] = trim($v['website_name']);
@@ -2480,7 +2480,7 @@ class Collect extends Base {
 
                 foreach($v as $k2=>$v2){
                     if(strpos($k2,'_content')===false) {
-                        $v[$k2] = strip_tags($v2);
+                        $v[$k2] = mac_strip_tags($v2);
                     }
                 }
 
@@ -2849,7 +2849,7 @@ class Collect extends Base {
 
                 foreach($v as $k2=>$v2){
                     if(strpos($k2,'_content')===false) {
-                        $v[$k2] = strip_tags($v2);
+                        $v[$k2] = mac_strip_tags($v2);
                     }
                 }
 

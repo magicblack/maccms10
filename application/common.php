@@ -3120,3 +3120,26 @@ if (!function_exists('copydirs')) {
     }
 }
 
+function mac_strip_tags($string) {
+    $pattern = '/&([a-zA-Z0-9#]+);/';
+    
+    $string = preg_replace_callback($pattern, function($matches) {
+        if ($matches[0] === '&lt;') {
+            return '<';
+        }
+        if ($matches[0] === '&gt;') {
+            return '>';
+        }
+        if ($matches[0] === '&nbsp;') {
+            return ' ';
+        }
+        if ($matches[0] === '&amp;') {
+            return '&';
+        }
+        return $matches[0];
+    }, $string);
+    
+    return strip_tags($string);
+}
+
+
