@@ -423,6 +423,110 @@ class Collect extends Base {
     }
 
     /**
+     * 统计播放组集数
+     */
+    private function getPlayGroupEpisodeCount($v, $play_group_episode_count = [])
+    {
+        // 如果播放地址更新没有统计集数，则在这里统计
+        if (empty($play_group_episode_count) && !empty($v['vod_play_from'])) {
+            $tmp_play_from_arr = explode('$$$', $v['vod_play_from']);
+            $tmp_play_url_arr = explode('$$$', $v['vod_play_url']);
+            foreach ($tmp_play_from_arr as $tmp_k => $tmp_play_from) {
+                if (!empty($tmp_play_from) && isset($tmp_play_url_arr[$tmp_k])) {
+                    $tmp_episode_count = empty($tmp_play_url_arr[$tmp_k]) ? 0 : count(explode('#', $tmp_play_url_arr[$tmp_k]));
+                    $play_group_episode_count[$tmp_play_from] = $tmp_episode_count;
+                }
+            }
+        }
+
+        return $play_group_episode_count;
+    }
+
+    /**
+     * 找出集数最多的播放组
+     */
+    private function findMaxEpisodePlayGroup($play_group_episode_count)
+    {
+        if (empty($play_group_episode_count)) {
+            return '';
+        }
+        // 找出集数最多的播放组
+        $max_episode_count = 0;
+        $max_episode_play_from = '';
+        foreach ($play_group_episode_count as $play_from => $episode_count) {
+            if ($episode_count > $max_episode_count) {
+                $max_episode_count = $episode_count;
+                $max_episode_play_from = $play_from;
+            }
+        }
+
+        return $max_episode_play_from;
+    }
+
+    /**
+     * 根据播放组获取备注
+     */
+    private function getRemarksByPlayGroup($v, $update, $max_episode_play_from)
+    {
+        if (empty($max_episode_play_from)) {
+            return null;
+        }
+
+        // 使用更新后的 vod_play_note，如果已经在前面更新过
+        $current_play_note = isset($update['vod_play_note']) ? $update['vod_play_note'] : $v['vod_play_note'];
+        $play_from_arr = explode('$$$', $v['vod_play_from']);
+        $play_note_arr = explode('$$$', $current_play_note);
+        $max_play_key = array_search($max_episode_play_from, $play_from_arr);
+
+        if ($max_play_key !== false && isset($play_note_arr[$max_play_key]) && !empty($play_note_arr[$max_play_key])) {
+            return $play_note_arr[$max_play_key];
+        }
+
+        // 如果找不到对应的备注，但有API传递的备注，则使用API备注
+        if (!empty($v['vod_remarks'])) {
+            return $v['vod_remarks'];
+        }
+
+        return null;
+    }
+
+    /**
+     * 处理视频备注更新逻辑
+     * 根据集数最多的播放组来更新备注
+     */
+    private function handleVodRemarksUpdate($v, $info, $update, $play_group_episode_count)
+    {
+        // 优先使用 API 明确传递的备注（如果不为空且与当前不同）
+        $should_use_api_remarks = !empty($v['vod_remarks']) && $v['vod_remarks'] != $info['vod_remarks'];
+
+        // 如果 API 明确传递了不同的备注，直接使用
+        if ($should_use_api_remarks) {
+            return $v['vod_remarks'];
+        }
+
+        // 根据播放组来更新备注
+        $play_group_episode_count = $this->getPlayGroupEpisodeCount($v, $play_group_episode_count);
+
+        if (!empty($play_group_episode_count)) {
+            // 找出集数最多的播放组
+            $max_episode_play_from = $this->findMaxEpisodePlayGroup($play_group_episode_count);
+
+            // 获取对应播放组的备注
+            $remarks = $this->getRemarksByPlayGroup($v, $update, $max_episode_play_from);
+            if ($remarks !== null) {
+                return $remarks;
+            }
+        }
+
+        // 如果以上都没有找到合适的备注，但有API传递的备注且与当前不同，则使用API备注
+        if (!empty($v['vod_remarks']) && $v['vod_remarks'] != $info['vod_remarks']) {
+            return $v['vod_remarks'];
+        }
+
+        return null;
+    }
+
+    /**
      * 同步图片
      *
      * @param $pic_status int 是否同步。为1时，同步图片
@@ -809,6 +913,8 @@ class Collect extends Base {
 
                         $update = [];
                         $ec=false;
+                        // 记录每个播放组的集数，用于后续选择集数最多的播放组
+                        $play_group_episode_count = [];
 
                         if($param['filter'] ==1 || $param['filter']==3){
                             $cj_play_from_arr = $collect_filter['play'][$param['filter']]['cj_play_from_arr'];
@@ -831,6 +937,9 @@ class Collect extends Base {
                                 $cj_play_url = $cj_play_url_arr[$k2];
                                 $cj_play_server = $cj_play_server_arr[$k2];
                                 $cj_play_note = $cj_play_note_arr[$k2];
+                                // 统计该播放组的集数
+                                $episode_count = empty($cj_play_url) ? 0 : count(explode('#', $cj_play_url));
+                                $play_group_episode_count[$cj_play_from] = $episode_count;
                                 if ($cj_play_url == $info['vod_play_url']) {
                                     $des .= lang('model/collect/playurl_same');
                                 } elseif (empty($cj_play_from)) {
@@ -854,6 +963,7 @@ class Collect extends Base {
                                     // 同类型播放组
                                     $arr1 = explode("$$$", $old_play_url);
                                     $arr2 = explode("$$$", $old_play_from);
+                                    $arr_note = explode("$$$", $old_play_note);
                                     $play_key = array_search($cj_play_from, $arr2);
                                     if ($arr1[$play_key] == $cj_play_url) {
                                         $des .= lang('model/collect/playgroup_same',[$cj_play_from]);;
@@ -870,9 +980,11 @@ class Collect extends Base {
                                             unset($tmp1,$tmp2);
                                         }
                                         $arr1[$play_key] = $cj_play_url;
+                                        $arr_note[$play_key] = $cj_play_note;
                                         $ec=true;
                                     }
                                     $old_play_url = join('$$$', (array)$arr1);
+                                    $old_play_note = join('$$$', (array)$arr_note);
                                 }
                             }
                             if($ec) {
@@ -959,8 +1071,11 @@ class Collect extends Base {
                                 $update['vod_serial'] = max($v['vod_serial'], $info['vod_serial']);
                             }
                         }
-                        if (strpos(',' . $config['uprule'], 'd')!==false && !empty($v['vod_remarks']) && $v['vod_remarks']!=$info['vod_remarks']) {
-                            $update['vod_remarks'] = $v['vod_remarks'];
+                        if (strpos(',' . $config['uprule'], 'd')!==false) {
+                            $new_remarks = $this->handleVodRemarksUpdate($v, $info, $update, $play_group_episode_count);
+                            if ($new_remarks !== null) {
+                                $update['vod_remarks'] = $new_remarks;
+                            }
                         }
                         if (strpos(',' . $config['uprule'], 'e')!==false && !empty($v['vod_director']) && $v['vod_director']!=$info['vod_director']) {
                             $update['vod_director'] = $v['vod_director'];
