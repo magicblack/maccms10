@@ -315,14 +315,17 @@
         });
 
         $(document).on("click", ".extend", function(){
-            $id = $(this).attr('data-id');
-            if($id == 'manga_class'||$id == 'manga_keywords'){
-                $val = $("input[id='"+$id+"']").val();
-                if($val!=''){$val = $val+',';}
-                if($val && $val.indexOf($(this).text())>-1){return;}
-                $("input[id='"+$id+"']").val($val+$(this).text());
-            }else{
-                $("input[id='"+$id+"']").val($(this).text());
+            var id = $(this).attr('data-id');
+            if(id === 'manga_class' || id === 'manga_keywords'){
+                var current_val = $("input[id='"+id+"']").val();
+                var text_to_add = $(this).text();
+                if(current_val && current_val.indexOf(text_to_add) > -1){
+                    return;
+                }
+                var new_val = current_val ? current_val + ',' + text_to_add : text_to_add;
+                $("input[id='"+id+"']").val(new_val);
+            } else {
+                $("input[id='"+id+"']").val($(this).text());
             }
         });
 
