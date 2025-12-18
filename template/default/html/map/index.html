@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{$maccms.site_name} - 网站地图</title>
+    <style>
+        body { font-family: Arial, sans-serif; line-height: 1.6; margin: 0; padding: 20px; background-color: #f4f4f4; color: #333; }
+        .container { max-width: 960px; margin: auto; background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+        h1, h2 { color: #0056b3; }
+        h1 { text-align: center; border-bottom: 2px solid #eee; padding-bottom: 10px; }
+        h2 { border-bottom: 1px solid #eee; padding-bottom: 5px; margin-top: 30px; }
+        ul { list-style: none; padding: 0; }
+        li { margin-bottom: 10px; }
+        a { text-decoration: none; color: #007bff; }
+        a:hover { text-decoration: underline; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 10px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>{$maccms.site_name} - 网站地图</h1>
+
+        <h2><a href="{$maccms.path}">首页</a></h2>
+
+        {maccms:type ids="parent" order="asc" by="sort" id="vo"}
+        <h2><a href="{:mac_url_type($vo)}">{$vo.type_name}</a></h2>
+        {if condition="!$vo.childids eq '' "}
+        <ul class="grid">
+            {maccms:type parent="'.$vo['type_id'].'" order="asc" by="sort" id="vo2"}
+            <li><a href="{:mac_url_type($vo2)}">{$vo2.type_name}</a></li>
+            {/maccms:type}
+        </ul>
+        {/if}
+        {/maccms:type}
+
+        <h2>最新内容</h2>
+        <ul class="grid">
+            {maccms:vod num="100" order="desc" by="time"}
+            <li><a href="{:mac_url_vod_detail($vo)}">{$vo.vod_name}</a></li>
+            {/maccms:vod}
+        </ul>
+    </div>
+</body>
+</html>
