@@ -753,6 +753,32 @@ https://www.baidu.com/123.jpg
   'admin/index/welcome/filed_license' => 'ライセンスの種類',
   'admin/index/welcome/tip_update_db' => 'データベース更新プロンプト',
   'admin/index/welcome/tip_update_db_txt' => 'ヒント：ローカルにデータベースアップグレードスクリプトが見つかりましたか？アップグレード操作を実行しますか！実行が完了すると、スクリプトは自動的に削除されます！',
+  'admin/index/welcome/system_info_guide' => '
+        <div class="text-sm">
+            <p class="font-bold">ダッシュボードシステムステータス表示ガイド</p>
+            <p class="mt-2">ダッシュボードの「システム情報」（CPU、メモリ、ディスク）が0と表示される場合、通常はPHP環境の設定が原因です。サーバーのセキュリティポリシーに従って、次の方法を参照して<code>php.ini</code>設定を調整してください。</p>
+            <br>
+            <p class="font-bold mt-4">方法1：標準設定（最も簡単）</p>
+            <p>この方法では、すべての情報が正常に表示されます。<code>disable_functions</code>設定で次の関数が無効になっていないことを確認してください。</p>
+            <ul class="list-disc list-inside pl-4">
+                <li><code>shell_exec</code></li>
+                <li><code>disk_total_space</code></li>
+                <li><code>disk_free_space</code></li>
+            </ul>
+            <br>
+            <p class="font-bold mt-4">方法2：高セキュリティ設定</p>
+            <p>セキュリティ上の理由で<code>shell_exec</code>を無効にする必要があり、<code>open_basedir</code>も有効にしている場合は、CPUとメモリの情報を表示するために次のように設定してください。</p>
+            <ol class="list-decimal list-inside pl-4">
+                <li><strong><code>shell_exec</code>を無効にする</strong>：<code>disable_functions</code>に<code>shell_exec</code>を追加します。</li>
+                <li><strong><code>/proc</code>ディレクトリを許可する</strong>：<code>open_basedir</code>のパスに<code>/proc/</code>を追加します。これにより、プログラムがコマンドを実行できない場合にカーネル情報ファイルを読むことができます。</li>
+            </ol>
+            <p class="mt-2"><strong>例</strong>（<code>/var/www/html/maccms</code>を実際のウェブサイトのパスに置き換えてください）：</p>
+            <pre class="bg-gray-100 p-2 rounded text-xs"><code>open_basedir = /var/www/html/maccms/:/tmp/:/proc/</code></pre>
+            <div class="mt-4 p-2 bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700">
+                <p><strong class="font-bold">重要事項</strong>：<code>php.ini</code>を変更した後は、設定を有効にするために<strong>PHP-FPM</strong>サービス（またはApache）を再起動する必要があります。</p>
+            </div>
+        </div>
+    ',
   'admin/index/welcome/tip_update_go' => '【データベースアップグレードスクリプトに移動するには、ここをクリックしてください】',
   'admin/index/welcome/filed_login_num' => 'ログイン回数',
   'admin/index/welcome/filed_last_login_ip' => '前回のログインIP',

@@ -752,6 +752,32 @@ https://www.baidu.com/123.jpg
   'admin/index/welcome/filed_ver' => '프로그램 버전',
   'admin/index/welcome/filed_license' => '라이선스 유형',
   'admin/index/welcome/tip_update_db' => '데이터베이스 업데이트 팁',
+  'admin/index/welcome/system_info_guide' => '
+        <div class="text-sm">
+            <p class="font-bold">대시보드 시스템 상태 표시 가이드</p>
+            <p class="mt-2">대시보드의 "시스템 정보"(CPU, 메모리, 디스크)가 0으로 표시되는 경우 일반적으로 PHP 환경 구성 때문입니다. 다음 방법을 참조하여 서버의 보안 정책에 따라 <code>php.ini</code> 설정을 조정하십시오.</p>
+            <br>
+            <p class="font-bold mt-4">방법 1: 표준 설정(가장 쉬움)</p>
+            <p>이 방법을 사용하면 모든 정보가 정상적으로 표시됩니다. <code>disable_functions</code> 설정에서 다음 함수가 비활성화되어 있지 <strong>않은지</strong> 확인하십시오.</p>
+            <ul class="list-disc list-inside pl-4">
+                <li><code>shell_exec</code></li>
+                <li><code>disk_total_space</code></li>
+                <li><code>disk_free_space</code></li>
+            </ul>
+            <br>
+            <p class="font-bold mt-4">방법 2: 높은 보안 설정</p>
+            <p>보안상의 이유로 <code>shell_exec</code>를 비활성화해야 하고 <code>open_basedir</code>도 활성화한 경우 CPU 및 메모리 정보를 표시하려면 다음을 구성하십시오.</p>
+            <ol class="list-decimal list-inside pl-4">
+                <li><strong><code>shell_exec</code> 비활성화</strong>: <code>disable_functions</code>에 <code>shell_exec</code>를 추가합니다.</li>
+                <li><strong><code>/proc</code> 디렉토리 허용</strong>: <code>open_basedir</code>의 경로에 <code>/proc/</code>를 추가합니다. 이렇게 하면 프로그램이 명령을 실행할 수 없을 때 커널 정보 파일을 대체 수단으로 읽을 수 있습니다.</li>
+            </ol>
+            <p class="mt-2"><strong>예시</strong> (<code>/var/www/html/maccms</code>를 실제 웹사이트 경로로 바꾸십시오):</p>
+            <pre class="bg-gray-100 p-2 rounded text-xs"><code>open_basedir = /var/www/html/maccms/:/tmp/:/proc/</code></pre>
+            <div class="mt-4 p-2 bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700">
+                <p><strong class="font-bold">중요 참고 사항</strong>: <code>php.ini</code>를 수정한 후에는 설정을 적용하려면 <strong>PHP-FPM</strong> 서비스(또는 Apache)를 다시 시작해야 합니다.</p>
+            </div>
+        </div>
+    ',
   'admin/index/welcome/tip_update_db_txt' => '팁: 로컬에 데이터베이스 업그레이드 스크립트가 있는 것으로 감지되었습니다. 업그레이드 작업을 실행하시겠습니까? 실행이 완료되면 스크립트가 자동으로 삭제됩니다!',
   'admin/index/welcome/tip_update_go' => '【데이터베이스 업그레이드 스크립트 업그레이드로 이동하려면 클릭】',
   'admin/index/welcome/filed_login_num' => '로그인 횟수',

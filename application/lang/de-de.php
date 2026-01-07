@@ -753,6 +753,30 @@ https://www.baidu.com/123.jpg',
   'admin/index/welcome/filed_license' => 'Autorisierungstyp',
   'admin/index/welcome/tip_update_db' => 'Datenbankaktualisierungstipp',
   'admin/index/welcome/tip_update_db_txt' => 'Prompt, ein lokales Datenbank-Upgrade-Skript gefunden? Ob der Upgrade-Vorgang durchgeführt werden soll! Das Skript wird nach der Ausführung automatisch gelöscht! ',
+  'admin/index/welcome/system_info_guide' => '
+        <div class="text-sm">
+            <p class="font-bold">Anleitung zur Anzeige des Systemstatus im Dashboard</p>
+            <p class="mt-2">Wenn Sie feststellen, dass die "Systeminformationen" (CPU, Speicher, Festplatte) im Dashboard 0 anzeigen, liegt dies normalerweise an der Konfiguration der PHP-Umgebung. Bitte passen Sie die <code>php.ini</code>-Einstellungen gemäß der Sicherheitsrichtlinie Ihres Servers an, indem Sie sich auf die folgenden Methoden beziehen.</p>
+            <p class="font-bold mt-4">Methode 1: Standardeinstellungen (am einfachsten)</p>
+            <p>Diese Methode ermöglicht die normale Anzeige aller Informationen. Bitte stellen Sie sicher, dass die folgenden Funktionen in der <code>disable_functions</code>-Einstellung <strong>nicht</strong> deaktiviert sind:</p>
+            <ul class="list-disc list-inside pl-4">
+                <li><code>shell_exec</code></li>
+                <li><code>disk_total_space</code></li>
+                <li><code>disk_free_space</code></li>
+            </ul>
+            <p class="font-bold mt-4">Methode 2: Hochsicherheitseinstellungen</p>
+            <p>Wenn Sie <code>shell_exec</code> aus Sicherheitsgründen deaktivieren müssen und auch <code>open_basedir</code> aktiviert haben, konfigurieren Sie bitte Folgendes, um CPU- und Speicherinformationen anzuzeigen:</p>
+            <ol class="list-decimal list-inside pl-4">
+                <li><strong>Deaktivieren Sie <code>shell_exec</code></strong>: Fügen Sie <code>shell_exec</code> zu <code>disable_functions</code> hinzu.</li>
+                <li><strong>Erlauben Sie das <code>/proc</code>-Verzeichnis</strong>: Fügen Sie <code>/proc/</code> zum Pfad in <code>open_basedir</code> hinzu. Dies ermöglicht dem Programm, Kernel-Informationsdateien als Fallback zu lesen, wenn es keine Befehle ausführen kann.</li>
+            </ol>
+            <p class="mt-2"><strong>Beispiel</strong> (Bitte ersetzen Sie <code>/var/www/html/maccms</code> durch Ihren tatsächlichen Website-Pfad):</p>
+            <pre class="bg-gray-100 p-2 rounded text-xs"><code>open_basedir = /var/www/html/maccms/:/tmp/:/proc/</code></pre>
+            <div class="mt-4 p-2 bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700">
+                <p><strong class="font-bold">Wichtiger Hinweis</strong>: Nach dem Ändern von <code>php.ini</code> müssen Sie den <strong>PHP-FPM</strong>-Dienst (oder Apache) neu starten, damit die Einstellungen wirksam werden.</p>
+            </div>
+        </div>
+    ',
   'admin/index/welcome/tip_update_go' => '[Klicken Sie hier, um das Upgrade-Datenbankskript aufzurufen]',
   'admin/index/welcome/filed_login_num' => 'Anzahl der Anmeldungen',
   'admin/index/welcome/filed_last_login_ip' => 'Letzte Login-IP',

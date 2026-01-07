@@ -752,6 +752,32 @@ https://www.baidu.com/123.jpg
   'admin/index/welcome/filed_ver' => '程序版本',
   'admin/index/welcome/filed_license' => '授權類型',
   'admin/index/welcome/tip_update_db' => '數據庫更新提示',
+  'admin/index/welcome/system_info_guide' => '
+        <div class="text-sm">
+            <p class="font-bold">儀表板系統狀態顯示指南</p>
+            <p class="mt-2">若您發現儀表板上的「系統資訊」(CPU、記憶體、硬碟) 顯示為 0，通常是 PHP 環境配置所致。請依據您的伺服器安全策略，參考以下方法調整 <code>php.ini</code> 設定。</p>
+            <br>
+            <p class="font-bold mt-4">方法一：標準設定 (最簡單)</p>
+            <p>此方法可讓所有資訊正常顯示。請確保 <code>disable_functions</code> 設定中 <strong>沒有</strong> 禁用以下函式：</p>
+            <ul class="list-disc list-inside pl-4">
+                <li><code>shell_exec</code></li>
+                <li><code>disk_total_space</code></li>
+                <li><code>disk_free_space</code></li>
+            </ul>
+            <br>
+            <p class="font-bold mt-4">方法二：高安全性設定</p>
+            <p>如果您因安全考量必須禁用 <code>shell_exec</code>，並且同時啟用了 <code>open_basedir</code>，請進行以下設定以顯示 CPU 與記憶體資訊：</p>
+            <ol class="list-decimal list-inside pl-4">
+                <li><strong>禁用 <code>shell_exec</code></strong>：在 <code>disable_functions</code> 中加入 <code>shell_exec</code>。</li>
+                <li><strong>放行 <code>/proc</code> 目錄</strong>：在 <code>open_basedir</code> 的路徑中，額外加入 <code>/proc/</code>。這允許程式在無法執行指令時，轉而讀取核心資訊檔案。</li>
+            </ol>
+            <p class="mt-2"><strong>範例</strong> (請將 <code>/var/www/html/maccms</code> 替換為您的實際網站路徑)：</p>
+            <pre class="bg-gray-100 p-2 rounded text-xs"><code>open_basedir = /var/www/html/maccms/:/tmp/:/proc/</code></pre>
+            <div class="mt-4 p-2 bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700">
+                <p><strong class="font-bold">重要提示</strong>：修改 <code>php.ini</code> 後，請務必 <strong>重啟 PHP-FPM</strong> (或 Apache) 服務，設定才會生效。</p>
+            </div>
+        </div>
+    ',
   'admin/index/welcome/tip_update_db_txt' => '提示，發現本地有數據庫升級腳本？是否執行升級操作！執行完畢後將自動刪除腳本！',
   'admin/index/welcome/tip_update_go' => '【點擊進升級數據庫腳本】',
   'admin/index/welcome/filed_login_num' => '登錄次數',

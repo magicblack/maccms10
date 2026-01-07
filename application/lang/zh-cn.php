@@ -813,6 +813,32 @@ https://www.baidu.com/123.jpg
     'admin/index/welcome/filed_license' =>'授权类型',
     'admin/index/welcome/tip_update_db' =>'数据库更新提示',
     'admin/index/welcome/tip_update_db_txt' =>'提示，发现本地有数据库升级脚本？是否执行升级操作！执行完毕后将自动删除脚本！',
+    'admin/index/welcome/system_info_guide' => '
+        <div class="text-sm">
+            <p class="font-bold">仪表盘系统状态显示指南</p>
+            <p class="mt-2">若您发现仪表盘上的“系统资讯”(CPU、内存、硬盘) 显示为 0，通常是 PHP 环境配置所致。请依据您的服务器安全策略，参考以下方法调整 <code>php.ini</code> 设定。</p>
+            <br>
+            <p class="font-bold mt-4">方法一：标准设定 (最简单)</p>
+            <p>此方法可让所有资讯正常显示。请确保 <code>disable_functions</code> 设定中 <strong>没有</strong> 禁用以下函式：</p>
+            <ul class="list-disc list-inside pl-4">
+                <li><code>shell_exec</code></li>
+                <li><code>disk_total_space</code></li>
+                <li><code>disk_free_space</code></li>
+            </ul>
+            <br>
+            <p class="font-bold mt-4">方法二：高安全性设定</p>
+            <p>如果您因安全考量必须禁用 <code>shell_exec</code>，并且同时启用了 <code>open_basedir</code>，请进行以下设定以显示 CPU 与内存资讯：</p>
+            <ol class="list-decimal list-inside pl-4">
+                <li><strong>禁用 <code>shell_exec</code></strong>：在 <code>disable_functions</code> 中加入 <code>shell_exec</code>。</li>
+                <li><strong>放行 <code>/proc</code> 目录</strong>：在 <code>open_basedir</code> 的路径中，额外加入 <code>/proc/</code>。这允许程式在无法执行指令时，转而读取核心资讯档案。</li>
+            </ol>
+            <p class="mt-2"><strong>范例</strong> (请将 <code>/var/www/html/maccms</code> 替换为您的实际网站路径)：</p>
+            <pre class="bg-gray-100 p-2 rounded text-xs"><code>open_basedir = /var/www/html/maccms/:/tmp/:/proc/</code></pre>
+            <div class="mt-4 p-2 bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700">
+                <p><strong class="font-bold">重要提示</strong>：修改 <code>php.ini</code> 后，请务必 <strong>重启 PHP-FPM</strong> (或 Apache) 服务，设定才会生效。</p>
+            </div>
+        </div>
+    ',
     'admin/index/welcome/tip_update_go'=>'【点击进升级数据库脚本】',
     'admin/index/welcome/filed_login_num' =>'登录次数',
     'admin/index/welcome/filed_last_login_ip' =>'上次登录IP',

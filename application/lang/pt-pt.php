@@ -753,6 +753,32 @@ https://www.baidu.com/123.jpg
   'admin/index/welcome/filed_license' => 'Tipo de licença',
   'admin/index/welcome/tip_update_db' => 'Dicas de atualização do banco de dados',
   'admin/index/welcome/tip_update_db_txt' => 'Dica, um script de atualização do banco de dados foi encontrado localmente? Executar a operação de atualização? O script será excluído automaticamente após a conclusão!',
+  'admin/index/welcome/system_info_guide' => '
+        <div class="text-sm">
+            <p class="font-bold">Guia de Exibição do Status do Sistema no Painel</p>
+            <p class="mt-2">Se você descobrir que as "Informações do Sistema" (CPU, Memória, Disco) no painel mostram 0, geralmente é devido à configuração do ambiente PHP. Por favor, ajuste as configurações do <code>php.ini</code> de acordo com a política de segurança do seu servidor, consultando os seguintes métodos.</p>
+            <br>
+            <p class="font-bold mt-4">Método 1: Configurações Padrão (Mais Fácil)</p>
+            <p>Este método permite que todas as informações sejam exibidas normalmente. Certifique-se de que as seguintes funções <strong>não</strong> estão desativadas na configuração <code>disable_functions</code>:</p>
+            <ul class="list-disc list-inside pl-4">
+                <li><code>shell_exec</code></li>
+                <li><code>disk_total_space</code></li>
+                <li><code>disk_free_space</code></li>
+            </ul>
+            <br>
+            <p class="font-bold mt-4">Método 2: Configurações de Alta Segurança</p>
+            <p>Se você precisar desativar <code>shell_exec</code> por motivos de segurança e também tiver ativado <code>open_basedir</code>, configure o seguinte para exibir as informações da CPU e da memória:</p>
+            <ol class="list-decimal list-inside pl-4">
+                <li><strong>Desativar <code>shell_exec</code></strong>: Adicione <code>shell_exec</code> a <code>disable_functions</code>.</li>
+                <li><strong>Permitir o diretório <code>/proc</code></strong>: Adicione <code>/proc/</code> ao caminho em <code>open_basedir</code>. Isso permite que o programa leia os arquivos de informações do kernel como um fallback quando não pode executar comandos.</li>
+            </ol>
+            <p class="mt-2"><strong>Exemplo</strong> (Por favor, substitua <code>/var/www/html/maccms</code> pelo caminho real do seu site):</p>
+            <pre class="bg-gray-100 p-2 rounded text-xs"><code>open_basedir = /var/www/html/maccms/:/tmp/:/proc/</code></pre>
+            <div class="mt-4 p-2 bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700">
+                <p><strong class="font-bold">Nota Importante</strong>: Depois de modificar o <code>php.ini</code>, você deve <strong>reiniciar o serviço PHP-FPM</strong> (ou Apache) para que as configurações entrem em vigor.</p>
+            </div>
+        </div>
+    ',
   'admin/index/welcome/tip_update_go' => '【Clique para entrar no script de atualização do banco de dados】',
   'admin/index/welcome/filed_login_num' => 'Número de logins',
   'admin/index/welcome/filed_last_login_ip' => 'Último IP de login',

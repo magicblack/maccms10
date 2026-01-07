@@ -752,6 +752,32 @@ https://www.baidu.com/123.jpg',
   'admin/index/welcome/filed_license' => 'Authorization Type',
   'admin/index/welcome/tip_update_db' => 'Database Update Prompt',
   'admin/index/welcome/tip_update_db_txt' => 'Prompt, found local database upgrade script? Would you like to execute the upgrade operation! After completion, the script will be automatically deleted!',
+  'admin/index/welcome/system_info_guide' => '
+        <div class="text-sm">
+            <p class="font-bold">Dashboard System Status Display Guide</p>
+            <p class="mt-2">If you find that the "System Information" (CPU, Memory, Disk) on the dashboard shows 0, it is usually due to the PHP environment configuration. Please adjust the <code>php.ini</code> settings according to your server\'s security policy by referring to the following methods.</p>
+            <br>
+            <p class="font-bold mt-4">Method 1: Standard Settings (Easiest)</p>
+            <p>This method allows all information to be displayed normally. Please ensure that the following functions are <strong>not</strong> disabled in the <code>disable_functions</code> setting:</p>
+            <ul class="list-disc list-inside pl-4">
+                <li><code>shell_exec</code></li>
+                <li><code>disk_total_space</code></li>
+                <li><code>disk_free_space</code></li>
+            </ul>
+            <br>
+            <p class="font-bold mt-4">Method 2: High-Security Settings</p>
+            <p>If you must disable <code>shell_exec</code> for security reasons and have also enabled <code>open_basedir</code>, please configure the following to display CPU and memory information:</p>
+            <ol class="list-decimal list-inside pl-4">
+                <li><strong>Disable <code>shell_exec</code></strong>: Add <code>shell_exec</code> to <code>disable_functions</code>.</li>
+                <li><strong>Allow <code>/proc</code> directory</strong>: Add <code>/proc/</code> to the path in <code>open_basedir</code>. This allows the program to read kernel information files as a fallback when it cannot execute commands.</li>
+            </ol>
+            <p class="mt-2"><strong>Example</strong> (Please replace <code>/var/www/html/maccms</code> with your actual website path):</p>
+            <pre class="bg-gray-100 p-2 rounded text-xs"><code>open_basedir = /var/www/html/maccms/:/tmp/:/proc/</code></pre>
+            <div class="mt-4 p-2 bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700">
+                <p><strong class="font-bold">Important Note</strong>: After modifying <code>php.ini</code>, you must <strong>restart the PHP-FPM</strong> (or Apache) service for the settings to take effect.</p>
+            </div>
+        </div>
+    ',
   'admin/index/welcome/tip_update_go' => '[Click to upgrade database script]',
   'admin/index/welcome/filed_login_num' => 'Login Times',
   'admin/index/welcome/filed_last_login_ip' => 'Last Login IP',

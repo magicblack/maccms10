@@ -752,6 +752,32 @@ https://www.baidu.com/123.jpg',
   'admin/index/welcome/filed_license' => 'Type de licence',
   'admin/index/welcome/tip_update_db' => 'Conseil de mise à jour de la base de données',
   'admin/index/welcome/tip_update_db_txt' => 'Conseil : Des scripts de mise à jour de base de données locaux ont été trouvés ? Souhaitez-vous exécuter l\'opération de mise à niveau ! Une fois l\'opération terminée, le script sera automatiquement supprimé !',
+  'admin/index/welcome/system_info_guide' => '
+        <div class="text-sm">
+            <p class="font-bold">Guide d\'affichage de l\'état du système du tableau de bord</p>
+            <p class="mt-2">Si vous constatez que les "Informations système" (CPU, Mémoire, Disque) sur le tableau de bord affichent 0, cela est généralement dû à la configuration de l\'environnement PHP. Veuillez ajuster les paramètres de <code>php.ini</code> en fonction de la politique de sécurité de votre serveur en vous référant aux méthodes suivantes.</p>
+            <br>
+            <p class="font-bold mt-4">Méthode 1 : Paramètres standard (le plus simple)</p>
+            <p>Cette méthode permet d\'afficher normalement toutes les informations. Veuillez vous assurer que les fonctions suivantes ne sont <strong>pas</strong> désactivées dans le paramètre <code>disable_functions</code> :</p>
+            <ul class="list-disc list-inside pl-4">
+                <li><code>shell_exec</code></li>
+                <li><code>disk_total_space</code></li>
+                <li><code>disk_free_space</code></li>
+            </ul>
+            <br>
+            <p class="font-bold mt-4">Méthode 2 : Paramètres de haute sécurité</p>
+            <p>Si vous devez désactiver <code>shell_exec</code> pour des raisons de sécurité et que vous avez également activé <code>open_basedir</code>, veuillez configurer ce qui suit pour afficher les informations sur le processeur et la mémoire :</p>
+            <ol class="list-decimal list-inside pl-4">
+                <li><strong>Désactiver <code>shell_exec</code></strong> : Ajoutez <code>shell_exec</code> à <code>disable_functions</code>.</li>
+                <li><strong>Autoriser le répertoire <code>/proc</code></strong> : Ajoutez <code>/proc/</code> au chemin dans <code>open_basedir</code>. Cela permet au programme de lire les fichiers d\'informations du noyau en guise de solution de repli lorsqu\'il ne peut pas exécuter de commandes.</li>
+            </ol>
+            <p class="mt-2"><strong>Exemple</strong> (Veuillez remplacer <code>/var/www/html/maccms</code> par le chemin réel de votre site Web) :</p>
+            <pre class="bg-gray-100 p-2 rounded text-xs"><code>open_basedir = /var/www/html/maccms/:/tmp/:/proc/</code></pre>
+            <div class="mt-4 p-2 bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700">
+                <p><strong class="font-bold">Remarque importante</strong> : Après avoir modifié <code>php.ini</code>, vous devez <strong>redémarrer le service PHP-FPM</strong> (ou Apache) pour que les paramètres prennent effet.</p>
+            </div>
+        </div>
+    ',
   'admin/index/welcome/tip_update_go' => 'Cliquez ici pour exécuter le script de mise à niveau de la base de données',
   'admin/index/welcome/filed_login_num' => 'Nombre de connexions',
   'admin/index/welcome/filed_last_login_ip' => 'Dernière adresse IP de connexion',
