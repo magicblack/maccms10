@@ -286,8 +286,8 @@ class Index extends Base
             $freeSpace = 0;
             
             if (function_exists('disk_total_space') && function_exists('disk_free_space')) {
-                $totalSpace = @disk_total_space('/');
-                $freeSpace = @disk_free_space('/');
+                $totalSpace = @disk_total_space(ROOT_PATH);
+                $freeSpace = @disk_free_space(ROOT_PATH);
             }
             
             if ($totalSpace > 0) {
