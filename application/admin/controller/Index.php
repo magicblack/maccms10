@@ -111,7 +111,24 @@ class Index extends Base
         $update_sql = file_exists('./application/data/update/database.php');
 
         $this->assign('spider_data', $this->botlist());
-        $this->assign('os_data', $this->get_system_status());
+        $os_data = $this->get_system_status();
+        $show_os_guide = false;
+        if (empty($os_data['cpu_usage']) || empty($os_data['mem_total'])) {
+            $show_os_guide = true;
+        }
+        if (empty($os_data['disk_datas'])) {
+            $show_os_guide = true;
+        } else {
+            $disk_total = 0;
+            foreach($os_data['disk_datas'] as $disk) {
+                $disk_total += $disk[1];
+            }
+            if ($disk_total == 0) {
+                $show_os_guide = true;
+            }
+        }
+        $this->assign('show_os_guide', $show_os_guide);
+        $this->assign('os_data', $os_data);
         $this->assign('version', $version);
         $this->assign('update_sql', $update_sql);
         $this->assign('mac_lang', config('default_lang'));
