@@ -23,6 +23,11 @@ class All extends Controller
 
     protected function load_page_cache($tpl,$type='html')
     {
+        // 开启防红防封时，首页不使用缓存，确保每次都进行浏览器检查
+        if($tpl == 'index/index' && !empty($GLOBALS['config']['app']['browser_junmp']) && $GLOBALS['config']['app']['browser_junmp'] == 1) {
+            return;
+        }
+
         if(defined('ENTRANCE') && ENTRANCE == 'index' && $GLOBALS['config']['app']['cache_page'] ==1  && $GLOBALS['config']['app']['cache_time_page'] ) {
             $cach_name = $_SERVER['HTTP_HOST']. '_'. MAC_MOB . '_'. $GLOBALS['config']['app']['cache_flag']. '_' .$tpl .'_'. http_build_query(mac_param_url());
             $res = Cache::get($cach_name);
