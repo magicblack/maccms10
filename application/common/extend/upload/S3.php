@@ -20,11 +20,16 @@ class S3
         $accessKey = $GLOBALS['config']['upload']['api']['s3']['accesskey'];
         $secretKey = $GLOBALS['config']['upload']['api']['s3']['secretkey'];
         $region = $GLOBALS['config']['upload']['api']['s3']['region'];
+        $endpoint = $GLOBALS['config']['upload']['api']['s3']['endpoint'];
+        $basepath = $GLOBALS['config']['upload']['api']['s3']['basepath'];
+        $domain = $GLOBALS['config']['upload']['api']['s3']['domain'];
 
         require_once ROOT_PATH . 'extend/aws/autoload.php';
         $s3 = new S3Client([
             'region'  => $region,
             'version' => '2006-03-01',
+            'endpoint' => $endpoint,
+            'use_path_style_endpoint' => true,
             'credentials' => [
                 'key'    => $accessKey,
                 'secret' => $secretKey
@@ -34,7 +39,7 @@ class S3
             $filePath = ROOT_PATH . $file_path;
             $result = $s3->putObject([
                 'Bucket' => $bucket,
-                'Key'    => $file_path,
+                'Key'    => $basepath . $file_path,
                 'Body'   => fopen($filePath, 'r'),
                 'ACL'    => 'public-read'
             ]);
@@ -43,6 +48,8 @@ class S3
         }
 
         empty($this->config['keep_local']) && @unlink($filePath);
-        return $result['ObjectURL'];
+        // return $result['ObjectURL'];
+        // echo $result;
+        return $domain . $bucket . "/" . $basepath . $file_path;
     }
 }
