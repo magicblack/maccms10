@@ -410,14 +410,39 @@ class Collect extends Base {
 
     private function sortPlayUrls($urls) {
         $sorted = [];
+        $datePartMap = []; // 用于存储同一日期的上下期
+
         foreach ($urls as $url) {
+            // 匹配纯数字集数：第1集、EP1、E1等
             if (preg_match('/(?:第|EP|E)?(\d+)(?:集|话|回)?/', $url, $matches)) {
                 $episode = (int)$matches[1];
                 $sorted[$episode] = $url;
-            } else {
+            }
+            // 匹配日期+上下期格式：20250120上、20250120下、20250120中
+            elseif (preg_match('/(\d{8})([上中下])/', $url, $matches)) {
+                $datePart = $matches[1]; // 20250120
+                $part = $matches[2];     // 上/中/下
+
+                // 优先级：下 > 中 > 上
+                if (!isset($datePartMap[$datePart])) {
+                    $datePartMap[$datePart] = ['part' => $part, 'url' => $url];
+                } else {
+                    $priority = ['上' => 1, '中' => 2, '下' => 3];
+                    if ($priority[$part] > $priority[$datePartMap[$datePart]['part']]) {
+                        $datePartMap[$datePart] = ['part' => $part, 'url' => $url];
+                    }
+                }
+            }
+            else {
                 $sorted[] = $url;
             }
         }
+
+        // 将过滤后的日期上下期加入排序结果
+        foreach ($datePartMap as $item) {
+            $sorted[] = $item['url'];
+        }
+
         ksort($sorted);
         return array_values($sorted);
     }
