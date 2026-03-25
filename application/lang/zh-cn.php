@@ -1946,6 +1946,8 @@ https://www.baidu.com/123.jpg
     'admin/update/step1_b'=>'正在下载升级文件包...',
     'admin/update/download_err'=>'下载升级包失败，请重试...',
     'admin/update/download_ok'=>'下载升级包完毕...',
+    'admin/update/sha1_ok'=>'文件校验通过...',
+    'admin/update/sha1_err'=>'文件校验失败，升级包可能被篡改，已终止更新',
     'admin/update/upgrade_package_processed'=>'正在处理升级包的文件...',
     'admin/update/upgrade_err'=>'升级失败，请检查系统目录及文件权限！...',
     'admin/update/step2_a'=>'在线升级进行中第二步【数据升级】,请稍后......',

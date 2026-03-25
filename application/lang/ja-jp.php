@@ -1777,6 +1777,8 @@ https://www.baidu.com/123.jpg
   'admin/update/step1_b' => 'アップグレードファイルパッケージをダウンロードしています...',
   'admin/update/download_err' => 'アップグレードパッケージのダウンロードに失敗しました。もう一度やり直してください...',
   'admin/update/download_ok' => 'アップグレードパッケージのダウンロードが完了しました...',
+  'admin/update/sha1_ok' => 'ファイル整合性チェックに合格しました...',
+  'admin/update/sha1_err' => 'ファイル整合性チェックに失敗しました。パッケージが改ざんされている可能性があります。更新を中止しました',
   'admin/update/upgrade_package_processed' => 'アップグレードパッケージのファイルを処理しています...',
   'admin/update/upgrade_err' => 'アップグレードに失敗しました。システムディレクトリとファイルの権限を確認してください！...',
   'admin/update/step2_a' => 'オンラインアップグレードの2番目のステップ【データアップグレード】が進行中です。しばらくお待ちください......',

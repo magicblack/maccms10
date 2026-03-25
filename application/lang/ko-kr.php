@@ -1775,6 +1775,8 @@ https://www.baidu.com/123.jpg
   'admin/update/step1_b' => '업그레이드 파일 패키지를 다운로드하는 중...',
   'admin/update/download_err' => '업그레이드 패키지 다운로드 실패, 다시 시도하십시오...',
   'admin/update/download_ok' => '업그레이드 패키지 다운로드 완료...',
+  'admin/update/sha1_ok' => '파일 무결성 검사 통과...',
+  'admin/update/sha1_err' => '파일 무결성 검사 실패, 패키지가 변조되었을 수 있습니다. 업데이트가 중단되었습니다',
   'admin/update/upgrade_package_processed' => '업그레이드 패키지 파일을 처리하는 중...',
   'admin/update/upgrade_err' => '업그레이드 실패, 시스템 디렉토리 및 파일 권한을 확인하십시오!...',
   'admin/update/step2_a' => '온라인 업그레이드 중 두 번째 단계 [데이터 업그레이드], 잠시 기다려 주십시오...',
