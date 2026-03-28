@@ -19,7 +19,7 @@ class Base extends All
         $update_file = APP_PATH . 'admin/controller/Update.php';
         $expected_hash = config('version.update_hash');
         if (!empty($expected_hash) && is_file($update_file) && md5_file($update_file) !== $expected_hash) {
-            exit('系统核心功能异常，请恢复文件');
+            exit(lang('admin/update/core_file_error'));
         }
 
         //判断用户登录状态

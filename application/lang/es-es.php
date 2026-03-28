@@ -1776,6 +1776,7 @@ Nota: Si se especifican listas negras y blancas, ambas se aplicarán simultánea
   'admin/update/download_ok' => 'Descarga del paquete de actualización completa...',
   'admin/update/sha1_ok' => 'Verificación de integridad del archivo aprobada...',
   'admin/update/sha1_err' => 'Verificación de integridad fallida, el paquete puede haber sido alterado, actualización cancelada',
+  'admin/update/core_file_error' => 'Error en la función principal del sistema, por favor restaure el archivo',
   'admin/update/upgrade_package_processed' => 'Procesando archivos del paquete de actualización...',
   'admin/update/upgrade_err' => 'Error en la actualización. Por favor verifique los permisos de directorio y archivos del sistema...',
   'admin/update/step2_a' => 'Paso 2 en curso de actualización en línea [Actualización de Datos], por favor espere...',

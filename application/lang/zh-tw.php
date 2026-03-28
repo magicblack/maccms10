@@ -1779,6 +1779,7 @@ https://www.baidu.com/123.jpg
   'admin/update/download_ok' => '下載升級包完畢...',
   'admin/update/sha1_ok' => '檔案校驗通過...',
   'admin/update/sha1_err' => '檔案校驗失敗，升級包可能被竄改，已終止更新',
+  'admin/update/core_file_error' => '系統核心功能異常，請恢復檔案',
   'admin/update/upgrade_package_processed' => '正在處理升級包的文件...',
   'admin/update/upgrade_err' => '升級失敗，請檢查系統目錄及文件權限！...',
   'admin/update/step2_a' => '在線升級進行中第二步【數據升級】,請稍後......',

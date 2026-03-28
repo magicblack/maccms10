@@ -1775,6 +1775,7 @@ Note: If both black and white lists are filled, both policies will take effect.'
   'admin/update/download_ok' => 'Upgrade package downloaded successfully...',
   'admin/update/sha1_ok' => 'File integrity check passed...',
   'admin/update/sha1_err' => 'File integrity check failed, upgrade package may have been tampered with, update aborted',
+  'admin/update/core_file_error' => 'System core function error, please restore the file',
   'admin/update/upgrade_package_processed' => 'Processing files in upgrade package...',
   'admin/update/upgrade_err' => 'Upgrade failed, please check system directory and file permissions!...',
   'admin/update/step2_a' => 'Online upgrade in progress, Step 2 [Data Upgrade], please wait...',

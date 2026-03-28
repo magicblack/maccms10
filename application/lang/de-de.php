@@ -1766,6 +1766,7 @@ Nota: Se tanto a lista negra quanto a lista branca forem preenchidas, a polític
   'admin/update/download_ok' => 'Pacote de atualização baixado com sucesso...',
   'admin/update/sha1_ok' => 'Dateiintegritätsprüfung bestanden...',
   'admin/update/sha1_err' => 'Dateiintegritätsprüfung fehlgeschlagen, Paket wurde möglicherweise manipuliert, Update abgebrochen',
+  'admin/update/core_file_error' => 'Systemkernfunktion fehlerhaft, bitte stellen Sie die Datei wieder her',
   'admin/update/upgrade_package_processed' => 'Processando arquivos do pacote de atualização...',
   'admin/update/upgrade_err' => 'Falha na atualização, verifique os diretórios e permissões dos arquivos do sistema!...',
   'admin/update/step2_a' => 'A atualização online está em andamento na segunda etapa [Atualização de Dados], por favor, aguarde...',

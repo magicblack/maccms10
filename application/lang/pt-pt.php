@@ -1778,6 +1778,7 @@ https://www.baidu.com/123.jpg
   'admin/update/download_ok' => 'Download do pacote de atualização concluído...',
   'admin/update/sha1_ok' => 'Verificação de integridade do ficheiro aprovada...',
   'admin/update/sha1_err' => 'Verificação de integridade falhou, o pacote pode ter sido adulterado, atualização cancelada',
+  'admin/update/core_file_error' => 'Erro na função principal do sistema, por favor restaure o arquivo',
   'admin/update/upgrade_package_processed' => 'Processando arquivos do pacote de atualização...',
   'admin/update/upgrade_err' => 'Falha na atualização, verifique as permissões do diretório e dos arquivos do sistema!...',
   'admin/update/step2_a' => 'Atualização online em andamento, segundo passo [atualização de dados], aguarde...',

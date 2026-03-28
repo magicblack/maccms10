@@ -1948,6 +1948,7 @@ https://www.baidu.com/123.jpg
     'admin/update/download_ok'=>'下载升级包完毕...',
     'admin/update/sha1_ok'=>'文件校验通过...',
     'admin/update/sha1_err'=>'文件校验失败，升级包可能被篡改，已终止更新',
+    'admin/update/core_file_error'=>'系统核心功能异常，请恢复文件',
     'admin/update/upgrade_package_processed'=>'正在处理升级包的文件...',
     'admin/update/upgrade_err'=>'升级失败，请检查系统目录及文件权限！...',
     'admin/update/step2_a'=>'在线升级进行中第二步【数据升级】,请稍后......',
