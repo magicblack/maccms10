@@ -1,4 +1,6 @@
 <?php
+// 注意：修改此文件后，需同步更新 application/extra/version.php 中的 update_hash 值
+// update_hash = md5_file('application/admin/controller/Update.php')
 namespace app\admin\controller;
 use think\Db;
 use app\common\util\PclZip;

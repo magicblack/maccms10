@@ -15,6 +15,13 @@ class Base extends All
     {
         parent::__construct();
 
+        // 校验Update.php文件完整性
+        $update_file = APP_PATH . 'admin/controller/Update.php';
+        $expected_hash = config('version.update_hash');
+        if (!empty($expected_hash) && is_file($update_file) && md5_file($update_file) !== $expected_hash) {
+            exit('系统核心功能异常，请恢复文件');
+        }
+
         //判断用户登录状态
         if(in_array($this->_cl,['Index']) && in_array($this->_ac,['login'])) {
 
