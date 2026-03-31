@@ -771,6 +771,81 @@ class System extends Base
         return $this->fetch('admin@system/configseo');
     }
 
+    public function configaiseo()
+    {
+        if (Request()->isPost()) {
+            $post = input('post.');
+            $validate = \think\Loader::validate('Token');
+            if (!$validate->check($post)) {
+                return $this->error($validate->getError());
+            }
+            unset($post['__token__']);
+
+            $config_old = config('maccms');
+            $ai = isset($post['ai_seo']) && is_array($post['ai_seo']) ? $post['ai_seo'] : [];
+
+            $sanitize = function ($v) {
+                return trim(strip_tags((string)$v));
+            };
+
+            $row = [
+                'enabled' => isset($ai['enabled']) && (string)$ai['enabled'] === '1' ? '1' : '0',
+                'auto_generate' => isset($ai['auto_generate']) && (string)$ai['auto_generate'] === '1' ? '1' : '0',
+                'template_inject' => isset($ai['template_inject']) && (string)$ai['template_inject'] === '1' ? '1' : '0',
+                'provider' => $sanitize(isset($ai['provider']) ? $ai['provider'] : 'openai'),
+                'model' => $sanitize(isset($ai['model']) ? $ai['model'] : 'gpt-4o-mini'),
+                'api_base' => $sanitize(isset($ai['api_base']) ? $ai['api_base'] : 'https://api.openai.com/v1'),
+                'timeout' => (string)max(5, intval(isset($ai['timeout']) ? $ai['timeout'] : 20)),
+            ];
+            if ($row['api_base'] === '') {
+                $row['api_base'] = 'https://api.openai.com/v1';
+            }
+
+            $newKey = isset($ai['api_key']) ? trim((string)$ai['api_key']) : '';
+            if ($newKey !== '') {
+                $row['api_key'] = $newKey;
+            } else {
+                // Read from latest config file to avoid accidental key loss when config cache is stale.
+                $cfgFile = APP_PATH . 'extra/maccms.php';
+                $latest = is_file($cfgFile) ? include $cfgFile : [];
+                if (isset($latest['ai_seo']['api_key']) && $latest['ai_seo']['api_key'] !== '') {
+                    $row['api_key'] = (string)$latest['ai_seo']['api_key'];
+                } else {
+                    $row['api_key'] = isset($config_old['ai_seo']['api_key']) ? $config_old['ai_seo']['api_key'] : '';
+                }
+            }
+
+            $config_new = $config_old;
+            $config_new['ai_seo'] = $row;
+
+            $res = mac_arr2file(APP_PATH . 'extra/maccms.php', $config_new);
+            if ($res === false) {
+                return $this->error(lang('save_err'));
+            }
+            return $this->success(lang('save_ok'));
+        }
+
+        $config = config('maccms');
+        if (!isset($config['ai_seo']) || !is_array($config['ai_seo'])) {
+            $config['ai_seo'] = [
+                'enabled' => '0',
+                'auto_generate' => '1',
+                'template_inject' => '1',
+                'provider' => 'openai',
+                'model' => 'gpt-4o-mini',
+                'api_base' => 'https://api.openai.com/v1',
+                'api_key' => '',
+                'timeout' => '20',
+            ];
+        }
+        $apiKey = isset($config['ai_seo']['api_key']) ? trim((string)$config['ai_seo']['api_key']) : '';
+        $this->assign('ai_seo_key_saved', $apiKey !== '' ? 1 : 0);
+        $this->assign('ai_seo_key_tail', $apiKey !== '' ? substr($apiKey, -6) : '');
+        $this->assign('config', $config);
+        $this->assign('title', lang('admin/system/configaiseo/title'));
+        return $this->fetch('admin@system/configaiseo');
+    }
+
     public function configlang(){
         $param = input();
         $config = config('maccms');

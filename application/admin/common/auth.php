@@ -77,6 +77,13 @@ return array (
         'controller' => 'system',
         'action' => 'configseo',
       ),
+      2105 =>
+      array (
+        'show' => 1,
+        'name' => lang('menu/configaiseo'),
+        'controller' => 'system',
+        'action' => 'configaiseo',
+      ),
       211 => 
       array (
         'show' => 1,

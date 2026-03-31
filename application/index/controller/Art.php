@@ -54,11 +54,16 @@ class Art extends Base
 
     public function detail()
     {
-        $info = $this->label_art_detail();
+        $info = $this->label_art_detail([],2);
         if(!empty($info['art_pwd']) && session('2-1-'.$info['art_id'])!='1'){
             return $this->label_fetch('art/detail_pwd');
         }
-        return $this->label_fetch( mac_tpl_fetch('art',$info['art_tpl'],'detail') );
+        $tpl = mac_tpl_fetch('art',$info['art_tpl'],'detail');
+        $tplFile = isset($GLOBALS['MAC_ROOT_TEMPLATE']) ? $GLOBALS['MAC_ROOT_TEMPLATE'] . $tpl . '.html' : '';
+        if (empty($tplFile) || !is_file($tplFile)) {
+            $tpl = 'art/detail';
+        }
+        return $this->label_fetch($tpl);
     }
 
     public function ajax_detail()

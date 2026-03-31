@@ -507,6 +507,7 @@ https://www.baidu.com/123.jpg
     'menu/system'=>'系统',
     'menu/config'=>'网站参数配置',
     'menu/configseo'=>'SEO参数配置',
+    'menu/configaiseo'=>'AI SEO配置',
     'menu/configuser'=>'会员参数配置',
     'menu/configcomment'=>'评论留言配置',
     'menu/configupload'=>'附件参数配置',
@@ -1439,6 +1440,22 @@ https://www.baidu.com/123.jpg
     'admin/system/configseo/key'=>'关键字',
     'admin/system/configseo/des'=>'描述',
     'admin/system/configseo/tip_des'=>'提示信息',
+    'admin/system/configseo/title'=>'SEO参数配置',
+
+    'admin/system/configaiseo/title'=>'AI SEO 配置',
+    'admin/system/configaiseo/tip'=>'开启后可在视频/文章详情保存时自动生成 SEO（需配置 API Key）。命令行批量：php think seo:generate --mid 1 --limit 100',
+    'admin/system/configaiseo/enabled'=>'启用 AI 生成',
+    'admin/system/configaiseo/auto_generate'=>'保存时自动生成',
+    'admin/system/configaiseo/template_inject'=>'注入模板变量',
+    'admin/system/configaiseo/template_inject_tip'=>'开启后向模板注入 maccms.page_detail_title / page_detail_keywords / page_detail_description（视频/文章详情页）',
+    'admin/system/configaiseo/provider'=>'服务商',
+    'admin/system/configaiseo/model'=>'模型',
+    'admin/system/configaiseo/api_base'=>'API 地址',
+    'admin/system/configaiseo/api_key'=>'API Key',
+    'admin/system/configaiseo/api_key_tip'=>'留空则不修改已保存的 Key',
+    'admin/system/configaiseo/api_key_saved_tip'=>'当前 Key 已保存；如需替换，请输入新的 Key。',
+    'admin/system/configaiseo/timeout'=>'超时(秒)',
+    'admin/system/configaiseo/timeout_tip'=>'单次请求超时，最小 5 秒',
 
 
 

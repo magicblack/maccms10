@@ -172,6 +172,53 @@ polyfill;
         $this->assign('comment',$comment);
     }
 
+    /**
+     * 详情页：将 AI SEO 或默认字段合并到 maccms，供模板使用 page_detail_* 变量
+     */
+    protected function mergeDetailSeoIntoMaccms($mid, array $info, $seoAi)
+    {
+        $cfg = isset($GLOBALS['config']['ai_seo']) ? $GLOBALS['config']['ai_seo'] : [];
+        if (empty($cfg['template_inject']) || (string)$cfg['template_inject'] !== '1') {
+            return;
+        }
+        if (!isset($this->view->maccms)) {
+            return;
+        }
+        $mac = $this->view->maccms;
+        if (!is_array($mac)) {
+            return;
+        }
+        $row = [];
+        if ($seoAi) {
+            if (is_object($seoAi) && method_exists($seoAi, 'toArray')) {
+                $row = $seoAi->toArray();
+            } elseif (is_array($seoAi)) {
+                $row = $seoAi;
+            }
+        }
+        $siteName = isset($GLOBALS['config']['site']['site_name']) ? (string)$GLOBALS['config']['site']['site_name'] : '';
+        if ((int)$mid === 1) {
+            $defaultTitle = (string)$info['vod_name'] . ($siteName !== '' ? ' - ' . $siteName : '');
+            $defaultKw = mac_format_text(trim((string)$info['vod_tag'] . ',' . (string)$info['vod_class']), true);
+            $defaultDesc = trim(strip_tags((string)$info['vod_blurb']));
+            if ($defaultDesc === '') {
+                $defaultDesc = mac_substring(strip_tags((string)$info['vod_content']), 160);
+            }
+        } else {
+            $defaultTitle = (string)$info['art_name'] . ($siteName !== '' ? ' - ' . $siteName : '');
+            $defaultKw = mac_format_text(trim((string)$info['art_tag'] . ',' . (string)$info['art_class']), true);
+            $defaultDesc = trim(strip_tags((string)$info['art_blurb']));
+            if ($defaultDesc === '') {
+                $plain = str_replace('$$$', '', strip_tags((string)$info['art_content']));
+                $defaultDesc = mac_substring($plain, 160);
+            }
+        }
+        $mac['page_detail_title'] = mac_filter_xss(!empty($row['seo_title']) ? (string)$row['seo_title'] : $defaultTitle);
+        $mac['page_detail_keywords'] = mac_filter_xss(!empty($row['seo_keywords']) ? (string)$row['seo_keywords'] : $defaultKw);
+        $mac['page_detail_description'] = mac_filter_xss(!empty($row['seo_description']) ? (string)$row['seo_description'] : $defaultDesc);
+        $this->assign('maccms', $mac);
+    }
+
     protected function label_search($param)
     {
         $param = mac_filter_words($param);
@@ -391,6 +438,9 @@ polyfill;
         }
 
         $this->assign('obj',$info);
+        $seo_ai = model('SeoAiResult')->getByObject(2, intval($info['art_id']));
+        $this->assign('seo_ai', $seo_ai);
+        $this->mergeDetailSeoIntoMaccms(2, $info, $seo_ai);
 
         $url = mac_url_art_detail($info,['page'=>'PAGELINK']);
 
@@ -433,6 +483,9 @@ polyfill;
             }
         }
         $this->assign('obj',$info);
+        $seo_ai = model('SeoAiResult')->getByObject(1, intval($info['vod_id']));
+        $this->assign('seo_ai', $seo_ai);
+        $this->mergeDetailSeoIntoMaccms(1, $info, $seo_ai);
         $this->label_comment();
 
         return $info;
@@ -563,6 +616,9 @@ polyfill;
         $player_info['nid'] = $param['nid'];
         $info['player_info'] = $player_info;
         $this->assign('obj',$info);
+        $seo_ai = model('SeoAiResult')->getByObject(1, intval($info['vod_id']));
+        $this->assign('seo_ai', $seo_ai);
+        $this->mergeDetailSeoIntoMaccms(1, $info, $seo_ai);
 
         $pwd_key = '1-'.($flag=='play' ?'4':'5').'-'.$info['vod_id'];
 
