@@ -1,0 +1,72 @@
+{extend name="admin@public/base" /}
+
+{block name="title"}{:lang('Task Result')} #{$task.id}{/block}
+
+{block name="content"}
+<div class="row">
+    <div class="col-xs-12 col-md-8 col-md-offset-2">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">
+                    <i class="fa fa-eye"></i> {:lang('Task Result')}
+                    <a href="{:addon_url('aicontent/admin/index')}" class="btn btn-default btn-sm pull-right">
+                        <i class="fa fa-arrow-left"></i> {:lang('Back')}
+                    </a>
+                </h3>
+            </div>
+            <div class="panel-body">
+
+                <table class="table table-condensed">
+                    <tr><th width="150">{:lang('Task ID')}</th><td>{$task.id}</td></tr>
+                    <tr><th>{:lang('Content')}</th><td>{$task.content_name|htmlspecialchars} (ID: {$task.content_id})</td></tr>
+                    <tr><th>{:lang('Type')}</th><td>{$task.content_type|htmlspecialchars}</td></tr>
+                    <tr><th>{:lang('Provider')}</th><td>{$task.provider|htmlspecialchars} / {$task.model|htmlspecialchars}</td></tr>
+                    <tr><th>{:lang('Status')}</th>
+                        <td>
+                            {if $task.status == 1}
+                                <span class="label label-success">{:lang('Done')}</span>
+                            {elseif $task.status == 2}
+                                <span class="label label-danger">{:lang('Error')}</span>
+                            {else}
+                                <span class="label label-warning">{:lang('Pending')}</span>
+                            {/if}
+                        </td>
+                    </tr>
+                    <tr><th>{:lang('Created')}</th><td>{$task.created_at}</td></tr>
+                    {if $task.error_msg}
+                    <tr><th>{:lang('Error')}</th><td class="text-danger">{$task.error_msg|htmlspecialchars}</td></tr>
+                    {/if}
+                </table>
+
+                {if $result}
+                <hr>
+                <h4>{:lang('Generated Content')}</h4>
+
+                <div class="form-group">
+                    <label>{:lang('SEO Title')}</label>
+                    <input type="text" class="form-control" value="{$result.seo_title|htmlspecialchars}" readonly>
+                </div>
+
+                <div class="form-group">
+                    <label>{:lang('Description')}</label>
+                    <textarea class="form-control" rows="6" readonly>{$result.description|htmlspecialchars}</textarea>
+                </div>
+
+                <div class="form-group">
+                    <label>{:lang('Tags')}</label>
+                    <input type="text" class="form-control"
+                           value="{if is_array($result.tags)}{:htmlspecialchars(implode(', ', $result['tags']))}{else}{$result.tags|htmlspecialchars}{/if}"
+                           readonly>
+                </div>
+
+                <div class="form-group">
+                    <label>{:lang('Raw AI Response')}</label>
+                    <textarea class="form-control" rows="4" style="font-size:12px;font-family:monospace" readonly>{$result.raw|htmlspecialchars}</textarea>
+                </div>
+                {/if}
+
+            </div>
+        </div>
+    </div>
+</div>
+{/block}

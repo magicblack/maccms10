@@ -1,0 +1,215 @@
+<!-- Custom config template for AI Content Assistant -->
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3 class="panel-title"><i class="fa fa-magic"></i> {:lang('AI Content Assistant — Configuration')}</h3>
+    </div>
+    <div class="panel-body">
+
+        <form id="addon-config-form" class="form-horizontal" method="post">
+
+            <h4 class="text-primary"><i class="fa fa-cogs"></i> {:lang('Default Settings')}</h4>
+            <hr>
+
+            <!-- Provider + Model (linked) -->
+            <div class="form-group">
+                <label class="col-sm-3 control-label">{:lang('AI Provider')}</label>
+                <div class="col-sm-3">
+                    <select name="default_provider" id="cfg_provider" class="form-control">
+                        <option value="claude"   {if $config.default_provider == 'claude'}selected{/if}>{:lang('Claude (Anthropic)')}</option>
+                        <option value="openai"   {if $config.default_provider == 'openai'}selected{/if}>{:lang('OpenAI (GPT)')}</option>
+                        <option value="gemini"   {if $config.default_provider == 'gemini'}selected{/if}>{:lang('Google Gemini')}</option>
+                        <option value="deepseek" {if $config.default_provider == 'deepseek'}selected{/if}>{:lang('DeepSeek')}</option>
+                        <option value="qwen"     {if $config.default_provider == 'qwen'}selected{/if}>{:lang('Alibaba Qwen')}</option>
+                        <option value="glm"      {if $config.default_provider == 'glm'}selected{/if}>{:lang('Zhipu GLM')}</option>
+                    </select>
+                </div>
+                <div class="col-sm-4">
+                    <select name="default_model" id="cfg_model" class="form-control"></select>
+                </div>
+                <p class="col-sm-offset-3 col-sm-9 help-block">{:lang('Select provider, then choose a model from the right dropdown.')}</p>
+            </div>
+
+            <!-- Output Language -->
+            <div class="form-group">
+                <label class="col-sm-3 control-label">{:lang('Output Language')}</label>
+                <div class="col-sm-3">
+                    <select name="language" class="form-control">
+                        <option value="zh-cn" {if $config.language == 'zh-cn'}selected{/if}>{:lang('Chinese Simplified (简体中文)')}</option>
+                        <option value="zh-tw" {if $config.language == 'zh-tw'}selected{/if}>{:lang('Chinese Traditional (繁體中文)')}</option>
+                        <option value="en-us" {if $config.language == 'en-us'}selected{/if}>{:lang('English')}</option>
+                        <option value="ko-kr" {if $config.language == 'ko-kr'}selected{/if}>{:lang('Korean (한국어)')}</option>
+                        <option value="ja-jp" {if $config.language == 'ja-jp'}selected{/if}>{:lang('Japanese (日本語)')}</option>
+                        <option value="de-de" {if $config.language == 'de-de'}selected{/if}>{:lang('German (Deutsch)')}</option>
+                        <option value="fr-fr" {if $config.language == 'fr-fr'}selected{/if}>{:lang('French (Français)')}</option>
+                        <option value="es-es" {if $config.language == 'es-es'}selected{/if}>{:lang('Spanish (Español)')}</option>
+                        <option value="pt-pt" {if $config.language == 'pt-pt'}selected{/if}>{:lang('Portuguese (Português)')}</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Max Tokens / Batch / Timeout -->
+            <div class="form-group">
+                <label class="col-sm-3 control-label">{:lang('Max Tokens')}</label>
+                <div class="col-sm-2">
+                    <input type="number" name="max_tokens" class="form-control"
+                           value="{$config.max_tokens|default='1500'}" min="100" max="8000">
+                </div>
+                <p class="col-sm-offset-3 col-sm-9 help-block">{:lang('Recommended: 800–2000.')}</p>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">{:lang('Batch Size')}</label>
+                <div class="col-sm-2">
+                    <input type="number" name="batch_size" class="form-control"
+                           value="{$config.batch_size|default='10'}" min="1" max="100">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">{:lang('Timeout (s)')}</label>
+                <div class="col-sm-2">
+                    <input type="number" name="request_timeout" class="form-control"
+                           value="{$config.request_timeout|default='30'}" min="5" max="120">
+                </div>
+            </div>
+
+            <!-- API Key (shows only the key for the selected provider) -->
+            <h4 class="text-primary" style="margin-top:30px"><i class="fa fa-key"></i> {:lang('API Key')}</h4>
+            <hr>
+            <p class="text-muted">{:lang('Only the key for your selected provider is required. Other fields are hidden.')}</p>
+
+            <div id="key-claude"   class="key-block form-group" style="display:none">
+                <label class="col-sm-3 control-label">{:lang('Claude Key')}</label>
+                <div class="col-sm-7">
+                    <input type="text" name="claude_key" class="form-control" value="{$config.claude_key|default=''}" autocomplete="off" placeholder="sk-ant-...">
+                </div>
+                <div class="col-sm-2"><button type="button" class="btn btn-default btn-sm btn-test-key" data-provider="claude" style="margin-top:5px">{:lang('Test')}</button></div>
+            </div>
+            <div id="key-openai"   class="key-block form-group" style="display:none">
+                <label class="col-sm-3 control-label">{:lang('OpenAI Key')}</label>
+                <div class="col-sm-7">
+                    <input type="text" name="openai_key" class="form-control" value="{$config.openai_key|default=''}" autocomplete="off" placeholder="sk-...">
+                </div>
+                <div class="col-sm-2"><button type="button" class="btn btn-default btn-sm btn-test-key" data-provider="openai" style="margin-top:5px">{:lang('Test')}</button></div>
+            </div>
+            <div id="key-gemini"   class="key-block form-group" style="display:none">
+                <label class="col-sm-3 control-label">{:lang('Gemini Key')}</label>
+                <div class="col-sm-7">
+                    <input type="text" name="gemini_key" class="form-control" value="{$config.gemini_key|default=''}" autocomplete="off" placeholder="AIza...">
+                </div>
+                <div class="col-sm-2"><button type="button" class="btn btn-default btn-sm btn-test-key" data-provider="gemini" style="margin-top:5px">{:lang('Test')}</button></div>
+            </div>
+            <div id="key-deepseek" class="key-block form-group" style="display:none">
+                <label class="col-sm-3 control-label">{:lang('DeepSeek Key')}</label>
+                <div class="col-sm-7">
+                    <input type="text" name="deepseek_key" class="form-control" value="{$config.deepseek_key|default=''}" autocomplete="off" placeholder="sk-...">
+                </div>
+                <div class="col-sm-2"><button type="button" class="btn btn-default btn-sm btn-test-key" data-provider="deepseek" style="margin-top:5px">{:lang('Test')}</button></div>
+            </div>
+            <div id="key-qwen"     class="key-block form-group" style="display:none">
+                <label class="col-sm-3 control-label">{:lang('Qwen Key')}</label>
+                <div class="col-sm-7">
+                    <input type="text" name="qwen_key" class="form-control" value="{$config.qwen_key|default=''}" autocomplete="off" placeholder="sk-...">
+                </div>
+                <div class="col-sm-2"><button type="button" class="btn btn-default btn-sm btn-test-key" data-provider="qwen" style="margin-top:5px">{:lang('Test')}</button></div>
+            </div>
+            <div id="key-glm"      class="key-block form-group" style="display:none">
+                <label class="col-sm-3 control-label">{:lang('GLM Key')}</label>
+                <div class="col-sm-7">
+                    <input type="text" name="glm_key" class="form-control" value="{$config.glm_key|default=''}" autocomplete="off" placeholder="...">
+                </div>
+                <div class="col-sm-2"><button type="button" class="btn btn-default btn-sm btn-test-key" data-provider="glm" style="margin-top:5px">{:lang('Test')}</button></div>
+            </div>
+
+            <hr>
+            <div class="form-group">
+                <div class="col-sm-offset-3 col-sm-9">
+                    <button type="submit" class="btn btn-primary btn-lg">
+                        <i class="fa fa-save"></i> {:lang('Save Configuration')}
+                    </button>
+                    <a href="{:addon_url('aicontent/admin/index')}" class="btn btn-default btn-lg" style="margin-left:10px">
+                        <i class="fa fa-magic"></i> {:lang('Open Plugin')}
+                    </a>
+                </div>
+            </div>
+
+        </form>
+    </div>
+</div>
+
+<script>
+(function () {
+    var L = window.AI_LANG || {};
+    var MODELS = {
+        claude:   ['claude-opus-4-6', 'claude-sonnet-4-6', 'claude-haiku-4-5-20251001'],
+        openai:   ['gpt-4o', 'gpt-4o-mini', 'gpt-4-turbo', 'gpt-3.5-turbo'],
+        gemini:   ['gemini-2.0-flash', 'gemini-1.5-pro', 'gemini-1.5-flash'],
+        deepseek: ['deepseek-chat', 'deepseek-reasoner'],
+        qwen:     ['qwen-turbo', 'qwen-plus', 'qwen-max', 'qwen-long'],
+        glm:      ['glm-4', 'glm-4-flash', 'glm-3-turbo']
+    };
+
+    var savedModel    = '{$config.default_model|default=""}';
+    var providerSel   = document.getElementById('cfg_provider');
+    var modelSel      = document.getElementById('cfg_model');
+
+    function updateModels(provider) {
+        var models = MODELS[provider] || [];
+        modelSel.innerHTML = '';
+        models.forEach(function (m) {
+            var opt = document.createElement('option');
+            opt.value = m;
+            opt.textContent = m;
+            if (m === savedModel) opt.selected = true;
+            modelSel.appendChild(opt);
+        });
+        if (savedModel && models.indexOf(savedModel) === -1) {
+            var opt = document.createElement('option');
+            opt.value = savedModel;
+            opt.textContent = savedModel + ' (custom)';
+            opt.selected = true;
+            modelSel.insertBefore(opt, modelSel.firstChild);
+        }
+    }
+
+    function updateKeyBlock(provider) {
+        document.querySelectorAll('.key-block').forEach(function (el) {
+            el.style.display = 'none';
+        });
+        var block = document.getElementById('key-' + provider);
+        if (block) block.style.display = '';
+    }
+
+    providerSel.addEventListener('change', function () {
+        savedModel = '';
+        updateModels(this.value);
+        updateKeyBlock(this.value);
+    });
+
+    var initialProvider = providerSel.value;
+    updateModels(initialProvider);
+    updateKeyBlock(initialProvider);
+
+    document.querySelectorAll('.btn-test-key').forEach(function (btn) {
+        var testLabel = btn.textContent;
+        btn.addEventListener('click', function () {
+            var provider = this.getAttribute('data-provider');
+            var keyInput = document.querySelector('input[name="' + provider + '_key"]');
+            var key = keyInput ? keyInput.value.trim() : '';
+            if (!key) { alert(L.please_enter_key || 'Please enter the API key first.'); return; }
+            btn.disabled = true;
+            btn.textContent = L.testing || '...';
+            fetch('{:addon_url("aicontent/api/testkey")}', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+                body: 'provider=' + encodeURIComponent(provider) + '&key=' + encodeURIComponent(key)
+            })
+            .then(function (r) { return r.json(); })
+            .then(function (data) {
+                btn.disabled = false;
+                btn.textContent = data.code === 1 ? (L.ok || 'OK') : (L.fail || 'Fail');
+                setTimeout(function () { btn.textContent = testLabel; }, 2000);
+            })
+            .catch(function () { btn.disabled = false; btn.textContent = testLabel; });
+        });
+    });
+})();
+</script>

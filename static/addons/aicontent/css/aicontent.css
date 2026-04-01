@@ -1,0 +1,89 @@
+/* AI Content Assistant — Plugin Styles */
+
+/* Result panel animation */
+#result-panel {
+    animation: fadeInUp 0.4s ease;
+}
+
+@keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Stats cards */
+.ai-stat-card {
+    border-radius: 6px;
+    padding: 16px;
+    text-align: center;
+    margin-bottom: 16px;
+}
+
+.ai-stat-card h2 {
+    font-size: 2.4rem;
+    font-weight: 700;
+    margin: 0 0 4px;
+}
+
+.ai-stat-card p {
+    margin: 0;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+/* Generate button pulse */
+#btn-generate:not([disabled]) {
+    transition: box-shadow 0.2s ease;
+}
+
+#btn-generate:not([disabled]):hover {
+    box-shadow: 0 0 12px rgba(66, 139, 202, 0.55);
+}
+
+/* Tag badge display in results */
+.ai-tag-badge {
+    display: inline-block;
+    background: #e9f0fa;
+    color: #3a6fc4;
+    border-radius: 3px;
+    padding: 2px 8px;
+    margin: 2px 3px;
+    font-size: 0.82rem;
+}
+
+/* Provider select row */
+.provider-model-row {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+/* Config page key fields */
+.form-group .btn-test-key {
+    min-width: 56px;
+}
+
+/* Spinner override */
+.fa-spinner {
+    animation: fa-spin 0.8s infinite linear;
+}
+
+/* Alert box tighter */
+.ai-alert-inline {
+    padding: 8px 12px;
+    border-radius: 4px;
+    margin-bottom: 12px;
+    font-size: 0.9rem;
+}
+
+/* Task history table */
+.table .label {
+    font-size: 0.8em;
+}
+
+/* Responsive tweaks */
+@media (max-width: 768px) {
+    .panel-body .row > div {
+        margin-bottom: 12px;
+    }
+}

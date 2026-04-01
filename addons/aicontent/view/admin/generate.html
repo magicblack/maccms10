@@ -1,0 +1,166 @@
+{extend name="admin@public/base" /}
+
+{block name="title"}{:lang('AI Content Assistant - Generate Content')}{/block}
+
+{block name="content"}
+<div class="row">
+    <div class="col-xs-12 col-md-8 col-md-offset-2">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">
+                    <i class="fa fa-magic"></i> {:lang('Generate Content with AI')}
+                    <a href="{:addon_url('aicontent/admin/index')}" class="btn btn-default btn-sm pull-right">
+                        <i class="fa fa-arrow-left"></i> {:lang('Back')}
+                    </a>
+                </h3>
+            </div>
+            <div class="panel-body">
+
+                <!-- Alert placeholder -->
+                <div id="ai-alert" style="display:none"></div>
+
+                <form id="ai-generate-form">
+
+                    <!-- Content Type -->
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">{:lang('Content Type')}</label>
+                        <div class="col-sm-9">
+                            <select name="content_type" id="content_type" class="form-control">
+                                <option value="video">{:lang('Video')}</option>
+                                <option value="article">{:lang('Article')}</option>
+                                <option value="topic">{:lang('Topic')}</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Title (required) -->
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">{:lang('Title')} <span class="text-danger">*</span></label>
+                        <div class="col-sm-9">
+                            <input type="text" name="data[title]" id="data_title" class="form-control"
+                                   placeholder="{:lang('Video or article title')}" required>
+                        </div>
+                    </div>
+
+                    <!-- Video-only fields -->
+                    <div id="video-fields">
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">{:lang('Genre / Type')}</label>
+                            <div class="col-sm-9">
+                                <input type="text" name="data[type]" class="form-control"
+                                       placeholder="{:lang('e.g. Action, Romance, Documentary')}">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">{:lang('Year')}</label>
+                            <div class="col-sm-4">
+                                <input type="text" name="data[year]" class="form-control" placeholder="{:lang('e.g. 2024')}">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">{:lang('Area / Country')}</label>
+                            <div class="col-sm-6">
+                                <input type="text" name="data[area]" class="form-control"
+                                       placeholder="{:lang('e.g. China, USA, Japan')}">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">{:lang('Actors')}</label>
+                            <div class="col-sm-9">
+                                <input type="text" name="data[actor]" class="form-control"
+                                       placeholder="{:lang('Main cast, comma-separated')}">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">{:lang('Director')}</label>
+                            <div class="col-sm-9">
+                                <input type="text" name="data[director]" class="form-control"
+                                       placeholder="{:lang('Director name')}">
+                            </div>
+                        </div>
+                    </div>
+
+                    <hr>
+
+                    <!-- AI Provider -->
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">{:lang('AI Provider')}</label>
+                        <div class="col-sm-5">
+                            <select name="provider" id="ai_provider" class="form-control">
+                                {volist name="providers" id="label" key="slug"}
+                                <option value="{$slug}" {if $config.default_provider == $slug}selected{/if}>
+                                    {$label}
+                                </option>
+                                {/volist}
+                            </select>
+                        </div>
+                        <div class="col-sm-4">
+                            <button type="button" id="btn-test-key" class="btn btn-default btn-sm" style="margin-top:5px">
+                                <i class="fa fa-plug"></i> {:lang('Test Key')}
+                            </button>
+                            <span id="test-key-result" class="text-muted" style="margin-left:5px"></span>
+                        </div>
+                    </div>
+
+                    <!-- Model -->
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">{:lang('Model')}</label>
+                        <div class="col-sm-9">
+                            <select name="model" id="ai_model" class="form-control"></select>
+                        </div>
+                    </div>
+
+                    <hr>
+
+                    <!-- Submit -->
+                    <div class="form-group">
+                        <div class="col-sm-offset-3 col-sm-9">
+                            <button type="submit" id="btn-generate" class="btn btn-primary btn-lg">
+                                <i class="fa fa-magic"></i> {:lang('Generate Content')}
+                            </button>
+                        </div>
+                    </div>
+                </form>
+
+                <!-- Result Panel -->
+                <div id="result-panel" style="display:none; margin-top:20px">
+                    <hr>
+                    <h4><i class="fa fa-check-circle text-success"></i> {:lang('Generated Content')}</h4>
+
+                    <div class="form-group">
+                        <label>{:lang('SEO Title')}</label>
+                        <input type="text" id="result-seo-title" class="form-control" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label>{:lang('Description')}</label>
+                        <textarea id="result-description" class="form-control" rows="6" readonly></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>{:lang('Tags')}</label>
+                        <input type="text" id="result-tags" class="form-control" readonly>
+                    </div>
+
+                    <button type="button" id="btn-copy-all" class="btn btn-success">
+                        <i class="fa fa-copy"></i> {:lang('Copy All')}
+                    </button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Pass models map and translations from PHP to JS -->
+<script>var AI_MODELS_MAP = {$modelsMap|raw};</script>
+<script>window.AI_LANG = {$jsLang|raw};</script>
+<script src="/static/addons/aicontent/js/aicontent.js"></script>
+<script>
+AiContent.initGeneratePage({
+    generateUrl : '{:addon_url("aicontent/api/generate")}',
+    testKeyUrl  : '{:addon_url("aicontent/api/testkey")}',
+    modelsUrl   : '{:addon_url("aicontent/api/models")}',
+    defaultProvider : '{$config.default_provider}',
+    defaultModel    : '{$config.default_model}',
+});
+</script>
+{/block}
