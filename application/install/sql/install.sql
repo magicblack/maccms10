@@ -981,3 +981,29 @@ CREATE TABLE `mac_vod_search` (
   KEY `search_hit_count` (`search_hit_count`),
   KEY `search_last_hit_time` (`search_last_hit_time`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='vod搜索缓存表';
+
+
+-- ----------------------------
+-- Table structure for mac_seo_ai_result
+-- ----------------------------
+DROP TABLE IF EXISTS `mac_seo_ai_result`;
+CREATE TABLE `mac_seo_ai_result` (
+  `seo_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `seo_mid` tinyint(3) unsigned NOT NULL DEFAULT '0',
+  `seo_obj_id` int(10) unsigned NOT NULL DEFAULT '0',
+  `seo_obj_uuid` char(36) NOT NULL DEFAULT '',
+  `seo_title` varchar(255) NOT NULL DEFAULT '',
+  `seo_keywords` varchar(500) NOT NULL DEFAULT '',
+  `seo_description` varchar(500) NOT NULL DEFAULT '',
+  `seo_provider` varchar(32) NOT NULL DEFAULT '',
+  `seo_model` varchar(64) NOT NULL DEFAULT '',
+  `seo_source_hash` char(40) NOT NULL DEFAULT '',
+  `seo_error` varchar(255) NOT NULL DEFAULT '',
+  `seo_status` tinyint(3) unsigned NOT NULL DEFAULT '1',
+  `seo_time_add` int(10) unsigned NOT NULL DEFAULT '0',
+  `seo_time_update` int(10) unsigned NOT NULL DEFAULT '0',
+  PRIMARY KEY (`seo_id`),
+  UNIQUE KEY `seo_obj` (`seo_mid`,`seo_obj_id`),
+  UNIQUE KEY `seo_obj_uuid` (`seo_mid`,`seo_obj_uuid`),
+  KEY `seo_time_update` (`seo_time_update`)
+) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;

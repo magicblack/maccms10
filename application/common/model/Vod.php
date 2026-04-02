@@ -741,6 +741,7 @@ class Vod extends Base {
         unset($data['uptag']);
 
         $data = VodValidate::formatDataBeforeDb($data);
+        $seoObjId = 0;
         if(!empty($data['vod_id'])){
 
             $where=[];
@@ -754,6 +755,7 @@ class Vod extends Base {
             }else{
                 $this->cacheRepeatWithName($data['vod_name']);
             }
+            $seoObjId = intval($data['vod_id']);
         }
         else{
             $data['vod_plot'] = 0;
@@ -762,8 +764,9 @@ class Vod extends Base {
             $data['vod_time_add'] = time();
             $data['vod_time'] = time();
             $res = $this->allowField(true)->insert($data, false, true);
+            $seoObjId = intval($this->getLastInsID());
             if ($res > 0 && model('VodSearch')->isFrontendEnabled()) {
-                model('VodSearch')->checkAndUpdateTopResults(['vod_id' => $res] + $data);
+                model('VodSearch')->checkAndUpdateTopResults(['vod_id' => $seoObjId] + $data);
             }
             //新增 针对当前name 判断是否重复
             $this->cacheRepeatWithName($data['vod_name']);

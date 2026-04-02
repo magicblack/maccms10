@@ -536,19 +536,25 @@ class Art extends Base {
             $data[$filter_field] = mac_filter_xss($data[$filter_field]);
         }
 
+        $seoObjId = 0;
         if(!empty($data['art_id'])){
             $where=[];
             $where['art_id'] = ['eq',$data['art_id']];
             $res = $this->allowField(true)->where($where)->update($data);
+            $seoObjId = intval($data['art_id']);
         }
         else{
             $data['art_time_add'] = time();
             $data['art_time'] = time();
             $res = $this->allowField(true)->insert($data);
+            if ($res) {
+                $seoObjId = intval($this->getLastInsID());
+            }
         }
         if(false === $res){
             return ['code'=>1002,'msg'=>lang('save_err').'：'.$this->getError() ];
         }
+
         return ['code'=>1,'msg'=>lang('save_ok')];
     }
 

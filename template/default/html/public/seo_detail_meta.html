@@ -1,0 +1,7 @@
+{* 在视频/文章详情模板 <head> 内加入：{include file="public/seo_detail_meta" /}
+   后台「系统 → AI SEO」中需开启「注入模板变量」 *}
+{notempty name="maccms.page_detail_title"}
+<title>{$maccms.page_detail_title}</title>
+<meta name="keywords" content="{$maccms.page_detail_keywords}" />
+<meta name="description" content="{$maccms.page_detail_description}" />
+{/notempty}

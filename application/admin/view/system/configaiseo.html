@@ -1,0 +1,86 @@
+{include file="../../../application/admin/view/public/head" /}
+
+<div class="page-container">
+    <form class="layui-form layui-form-pane" action="">
+        <input type="hidden" name="__token__" value="{$Request.token}" />
+
+        <blockquote class="layui-elem-quote layui-quote-nm">
+            {:lang('admin/system/configaiseo/tip')}
+        </blockquote>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">{:lang('admin/system/configaiseo/enabled')}：</label>
+            <div class="layui-input-block">
+                <input type="radio" name="ai_seo[enabled]" value="1" title="{:lang('open')}" {if condition="$config['ai_seo']['enabled'] eq '1'"}checked{/if}>
+                <input type="radio" name="ai_seo[enabled]" value="0" title="{:lang('close')}" {if condition="$config['ai_seo']['enabled'] neq '1'"}checked{/if}>
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">{:lang('admin/system/configaiseo/auto_generate')}：</label>
+            <div class="layui-input-block">
+                <input type="radio" name="ai_seo[auto_generate]" value="1" title="{:lang('open')}" {if condition="$config['ai_seo']['auto_generate'] eq '1'"}checked{/if}>
+                <input type="radio" name="ai_seo[auto_generate]" value="0" title="{:lang('close')}" {if condition="$config['ai_seo']['auto_generate'] neq '1'"}checked{/if}>
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">{:lang('admin/system/configaiseo/template_inject')}：</label>
+            <div class="layui-input-block">
+                <input type="radio" name="ai_seo[template_inject]" value="1" title="{:lang('open')}" {if condition="$config['ai_seo']['template_inject'] eq '1'"}checked{/if}>
+                <input type="radio" name="ai_seo[template_inject]" value="0" title="{:lang('close')}" {if condition="$config['ai_seo']['template_inject'] neq '1'"}checked{/if}>
+                <div class="layui-form-mid layui-word-aux">{:lang('admin/system/configaiseo/template_inject_tip')}</div>
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">{:lang('admin/system/configaiseo/provider')}：</label>
+            <div class="layui-input-block">
+                <input type="text" name="ai_seo[provider]" value="{$config['ai_seo']['provider']|default='openai'}" class="layui-input" placeholder="openai">
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">{:lang('admin/system/configaiseo/model')}：</label>
+            <div class="layui-input-block">
+                <input type="text" name="ai_seo[model]" value="{$config['ai_seo']['model']|default='gpt-4o-mini'}" class="layui-input">
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">{:lang('admin/system/configaiseo/api_base')}：</label>
+            <div class="layui-input-block">
+                <input type="text" name="ai_seo[api_base]" value="{$config['ai_seo']['api_base']|default=''}" class="layui-input" placeholder="https://api.openai.com/v1">
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">{:lang('admin/system/configaiseo/api_key')}：</label>
+            <div class="layui-input-block">
+                <input type="password" name="ai_seo[api_key]" value="" autocomplete="new-password" class="layui-input" placeholder="{:lang('admin/system/configaiseo/api_key_tip')}">
+                {if condition="$ai_seo_key_saved eq 1"}
+                <div class="layui-form-mid layui-word-aux">{:lang('admin/system/configaiseo/api_key_saved_tip')} (****{$ai_seo_key_tail})</div>
+                {/if}
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">{:lang('admin/system/configaiseo/timeout')}：</label>
+            <div class="layui-input-inline w150">
+                <input type="number" name="ai_seo[timeout]" value="{$config['ai_seo']['timeout']|default='20'}" class="layui-input" min="5">
+            </div>
+            <div class="layui-form-mid layui-word-aux">{:lang('admin/system/configaiseo/timeout_tip')}</div>
+        </div>
+
+        <div class="layui-form-item center">
+            <div class="layui-input-block">
+                <button type="submit" class="layui-btn" lay-submit="" lay-filter="formSubmit">{:lang('btn_save')}</button>
+                <button class="layui-btn layui-btn-warm" type="reset">{:lang('btn_reset')}</button>
+            </div>
+        </div>
+    </form>
+</div>
+
+{include file="../../../application/admin/view/public/foot" /}
+</body>
+</html>

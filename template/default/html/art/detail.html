@@ -1,0 +1,34 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    {notempty name="maccms.page_detail_title"}
+    <title>{$maccms.page_detail_title}</title>
+    <meta name="keywords" content="{$maccms.page_detail_keywords}" />
+    <meta name="description" content="{$maccms.page_detail_description}" />
+    {else/}
+    <title>{$obj.art_name|default='Article Detail'}</title>
+    {/notempty}
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        body{max-width:920px;margin:24px auto;padding:0 14px;font-family:Arial,Helvetica,sans-serif;line-height:1.8;color:#222}
+        h1{line-height:1.4;margin:0 0 8px}
+        .meta{color:#777;font-size:13px;margin-bottom:14px}
+        .content{word-break:break-word}
+        img{max-width:100%;height:auto}
+    </style>
+</head>
+<body>
+<article>
+    <h1>{$obj.art_name}</h1>
+    <div class="meta">
+        <span>分类：{$obj.type.type_name|default='-'}</span>
+        <span style="margin-left:12px;">时间：{$obj.art_time|mac_day}</span>
+        <span style="margin-left:12px;">浏览：{$obj.art_hits|default='0'}</span>
+    </div>
+    <div class="content">
+        {$obj.art_content}
+    </div>
+</article>
+</body>
+</html>

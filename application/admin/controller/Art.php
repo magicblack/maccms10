@@ -60,11 +60,26 @@ class Art extends Base
             $res = model('Art')->listData($where,$order,$param['page'],$param['limit']);
         }
 
+        $artIds = array_column($res['list'], 'art_id');
+        $artSeoStatusMap = [];
+        if (!empty($artIds)) {
+            $seoRows = Db::name('seo_ai_result')
+                ->field('seo_obj_id,seo_status')
+                ->where('seo_mid', 2)
+                ->where('seo_obj_id', 'in', $artIds)
+                ->where('seo_status', 'in', [1, 2])
+                ->select();
+            foreach ((array)$seoRows as $seoRow) {
+                $artSeoStatusMap[intval($seoRow['seo_obj_id'])] = intval($seoRow['seo_status']);
+            }
+        }
+
         foreach($res['list'] as $k=>&$v){
             $v['ismake'] = 1;
             if($GLOBALS['config']['view']['art_detail'] >0 && $v['art_time_make'] < $v['art_time']){
                 $v['ismake'] = 0;
             }
+            $v['seo_ai_status'] = isset($artSeoStatusMap[$v['art_id']]) ? intval($artSeoStatusMap[$v['art_id']]) : 0;
         }
 
         $this->assign('list', $res['list']);
@@ -211,12 +226,41 @@ class Art extends Base
         $info = $res['info'];
         $this->assign('info',$info);
         $this->assign('art_page_list',(array)$info['art_page_list']);
+        $seoAiStatus = 0;
+        if (!empty($info['art_id'])) {
+            $seoAi = model('SeoAiResult')->getByObject(2, intval($info['art_id']));
+            if (!empty($seoAi)) {
+                $seoAiStatus = intval($seoAi['seo_status']);
+            }
+        }
+        $this->assign('seo_ai_status', $seoAiStatus);
 
         $type_tree = model('Type')->getCache('type_tree');
         $this->assign('type_tree',$type_tree);
 
         $this->assign('title',lang('admin/art/title'));
         return $this->fetch('admin@art/info');
+    }
+
+    public function aiSeoGenerate()
+    {
+        if (!Request()->isPost()) {
+            return json(['code' => 0, 'msg' => lang('illegal_request'), 'data' => []]);
+        }
+        $id = intval(input('post.id'));
+        if ($id <= 0) {
+            return json(['code' => 0, 'msg' => lang('param_err'), 'data' => []]);
+        }
+        try {
+            $res = \app\common\util\SeoAi::generateByMidObj(2, $id);
+        } catch (\Exception $e) {
+            \think\Log::error('AI SEO generate failed (art_id=' . $id . '): ' . $e->getMessage());
+            return json(['code' => 0, 'msg' => $e->getMessage(), 'data' => []]);
+        }
+        if (empty($res['code']) || intval($res['code']) !== 1) {
+            return json(['code' => 0, 'msg' => isset($res['msg']) ? $res['msg'] : lang('save_err'), 'data' => []]);
+        }
+        return json(['code' => 1, 'msg' => lang('save_ok'), 'data' => isset($res['data']) ? $res['data'] : []]);
     }
 
     public function del()

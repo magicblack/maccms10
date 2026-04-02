@@ -98,6 +98,13 @@ return array (
         'controller' => 'system',
         'action' => 'configupload',
       ),
+      214 =>
+      array (
+        'show' => 1,
+        'name' => lang('menu/configaiseo'),
+        'controller' => 'system',
+        'action' => 'configaiseo',
+      ),
       22 => 
       array (
         'show' => 1,

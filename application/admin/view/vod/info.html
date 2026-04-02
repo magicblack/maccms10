@@ -509,6 +509,8 @@
                 <div class="layui-form-item center">
                     <div class="layui-input-block">
                         <button type="submit" class="layui-btn" lay-submit="" lay-filter="formSubmit" data-child="">{:lang('btn_save')}</button>
+                        <button type="button" class="layui-btn layui-btn-normal" id="btn_ai_seo_generate">{:lang('admin/ai_seo/btn_generate')}</button>
+                        <span id="seo_ai_status_badge" class="layui-badge layui-bg-gray">{:lang('admin/ai_seo/badge_none')}</span>
                         <button class="layui-btn layui-btn-warm" type="reset">{:lang('btn_reset')}</button>
                     </div>
                 </div>
@@ -517,6 +519,7 @@
 </div>
 {include file="../../../application/admin/view/public/foot" /}
 
+<script type="text/javascript" src="__STATIC__/js/ai_seo.js"></script>
 <script type="text/javascript">
     ue = editor_getEditor('vod_content');
     var player_select='{volist name="player_list" id="vo"}{if condition="$vo.status eq '1'"}<option value="{$vo.from}">{$vo.show}</option>{/if}{/volist}';
@@ -539,6 +542,37 @@
                 }
             }
         });
+        
+        var AI_SEO_LANG = {
+            badge_none: "{:lang('admin/ai_seo/badge_none')}",
+            badge_optimized: "{:lang('admin/ai_seo/badge_optimized')}",
+            badge_fallback: "{:lang('admin/ai_seo/badge_fallback')}",
+            msg_generating: "{:lang('admin/ai_seo/msg_generating')}",
+            msg_save_first: "{:lang('admin/ai_seo/msg_save_first')}",
+            msg_no_fillable: "{:lang('admin/ai_seo/msg_no_fillable')}",
+            msg_done: "{:lang('admin/ai_seo/msg_done')}",
+            msg_generate_fail: "{:lang('admin/ai_seo/msg_generate_fail')}",
+            msg_request_fail: "{:lang('admin/ai_seo/msg_request_fail')}",
+            btn_generate: "{:lang('admin/ai_seo/btn_generate')}"
+        };
+        function bootAiSeo(){
+            initAiSeoButton({
+                url: "{:url('vod/aiSeoGenerate')}",
+                mid: "vod",
+                idFieldName: "vod_id",
+                initialStatus: {$seo_ai_status|default=0},
+                lang: AI_SEO_LANG,
+                fallbackFields: { nameField: "vod_name", tagField: "vod_tag", blurbField: "vod_blurb" }
+            });
+        }
+        if (typeof window.initAiSeoButton === 'function') {
+            bootAiSeo();
+        } else {
+            var s = document.createElement('script');
+            s.src = "__STATIC__/js/ai_seo.js?{$MAC_VERSION}";
+            s.onload = bootAiSeo;
+            document.head.appendChild(s);
+        }
 
         $(document).on("click", ".extend", function(){
             $id = $(this).attr('data-id');

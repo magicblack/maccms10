@@ -104,6 +104,7 @@
                 <th width="25"><input type="checkbox" lay-skin="primary" lay-filter="allChoose"></th>
                 <th width="40">{:lang('id')}</th>
                 <th >{:lang('name')}</th>
+                <th width="90">{:lang('admin/ai_seo/status_col')}</th>
                 <th width="50">{:lang('hits')}</th>
                 <th width="30">{:lang('score')}</th>
                 <th width="30">{:lang('level')}</th>
@@ -119,6 +120,15 @@
                 <td><input type="checkbox" name="ids[]" value="{$vo.art_id}" class="layui-checkbox checkbox-ids" lay-skin="primary"></td>
                 <td>{$vo.art_id}</td>
                 <td>[{$vo.type.type_name|mac_filter_xss|mac_restore_htmlfilter}] <a target="_blank" class="layui-badge-rim " href="{:mac_url_art_detail($vo)}">{$vo.art_name|mac_filter_xss|mac_restore_htmlfilter}</a> {if condition="$vo.art_status eq 0"} <span class="layui-badge">{:lang('reviewed_not')}</span>{/if} {if condition="$vo.art_lock eq 1"} <span class="layui-badge">{:lang('lock')}</span>{/if}</td>
+                <td>
+                    {if condition="$vo.seo_ai_status eq 1"}
+                    <span class="layui-badge layui-bg-green">{:lang('admin/ai_seo/status_optimized')}</span>
+                    {elseif condition="$vo.seo_ai_status eq 2"/}
+                    <span class="layui-badge layui-bg-orange">{:lang('admin/ai_seo/status_fallback')}</span>
+                    {else/}
+                    <span class="layui-badge layui-bg-gray">{:lang('admin/ai_seo/status_none')}</span>
+                    {/if}
+                </td>
                 <td>{$vo.art_hits}</td>
                 <td>{$vo.art_score}</td>
                 <td><a data-href="{:url('index/select')}?tab=art&col=art_level&tpl=select_level&url=art/field&ids={$vo.art_id}" data-width="270" data-height="100" class=" j-select"><span class="layui-badge layui-bg-orange">{$vo.art_level}</span></a></td>

@@ -208,6 +208,7 @@
                 <th width="30"><input type="checkbox" lay-skin="primary" lay-filter="allChoose"></th>
                 <th width="60">{:lang('id')}</th>
                 <th id="table_th_vod_name">{:lang('name')}</th>
+                <th width="90">{:lang('admin/ai_seo/status_col')}</th>
                 <th width="50">{:lang('hits')}</th>
                 <th width="100">{:lang('hits_week')}</th>
                 <th width="60">{:lang('score')}</th>
@@ -232,6 +233,15 @@
                     {if condition="$vo.vod_plot eq 1"} <span class="layui-badge layui-bg-cyan">{:lang('plot')}</span>{/if}
                     {if condition="$vo.vod_role eq 1"} <span class="layui-badge layui-bg-purple">{:lang('admin/vod/role')}</span>{/if}
                     {if condition="$vo.vod_copyright eq 1"} <span class="layui-badge layui-bg-black">{:lang('admin/vod/copyright')}</span>{/if}
+                </td>
+                <td>
+                    {if condition="$vo.seo_ai_status eq 1"}
+                    <span class="layui-badge layui-bg-green">{:lang('admin/ai_seo/status_optimized')}</span>
+                    {elseif condition="$vo.seo_ai_status eq 2"/}
+                    <span class="layui-badge layui-bg-orange">{:lang('admin/ai_seo/status_fallback')}</span>
+                    {else/}
+                    <span class="layui-badge layui-bg-gray">{:lang('admin/ai_seo/status_none')}</span>
+                    {/if}
                 </td>
                 <td>{$vo.vod_hits}</td>
                 <td>{$vo.vod_hits_week}</td>

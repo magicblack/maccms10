@@ -143,6 +143,7 @@ class Vod extends Base
         // 批量查询哪些视频有角色数据
         $vodIds = array_column($res['list'], 'vod_id');
         $vodIdsWithRole = [];
+        $vodSeoStatusMap = [];
         if (!empty($vodIds)) {
             $roleData = Db::name('role')
                 ->where('role_rid', 'in', $vodIds)
@@ -150,6 +151,16 @@ class Vod extends Base
                 ->group('role_rid')
                 ->column('role_rid');
             $vodIdsWithRole = array_flip($roleData); // 转为键值对，方便快速查找
+
+            $seoRows = Db::name('seo_ai_result')
+                ->field('seo_obj_id,seo_status')
+                ->where('seo_mid', 1)
+                ->where('seo_obj_id', 'in', $vodIds)
+                ->where('seo_status', 'in', [1, 2])
+                ->select();
+            foreach ((array)$seoRows as $seoRow) {
+                $vodSeoStatusMap[intval($seoRow['seo_obj_id'])] = intval($seoRow['seo_status']);
+            }
         }
 
         foreach($res['list'] as $k=>&$v){
@@ -159,6 +170,7 @@ class Vod extends Base
             }
             // 标记是否有角色数据
             $v['vod_role'] = isset($vodIdsWithRole[$v['vod_id']]) ? 1 : 0;
+            $v['seo_ai_status'] = isset($vodSeoStatusMap[$v['vod_id']]) ? intval($vodSeoStatusMap[$v['vod_id']]) : 0;
         }
 
         $this->assign('list',$res['list']);
@@ -447,6 +459,14 @@ class Vod extends Base
 
         $info = $res['info'];
         $this->assign('info',$info);
+        $seoAiStatus = 0;
+        if (!empty($info['vod_id'])) {
+            $seoAi = model('SeoAiResult')->getByObject(1, intval($info['vod_id']));
+            if (!empty($seoAi)) {
+                $seoAiStatus = intval($seoAi['seo_status']);
+            }
+        }
+        $this->assign('seo_ai_status', $seoAiStatus);
 
         //分类
         $type_tree = model('Type')->getCache('type_tree');
@@ -474,6 +494,27 @@ class Vod extends Base
 
         $this->assign('title',lang('admin/vod/title'));
         return $this->fetch('admin@vod/info');
+    }
+
+    public function aiSeoGenerate()
+    {
+        if (!Request()->isPost()) {
+            return json(['code' => 0, 'msg' => lang('illegal_request'), 'data' => []]);
+        }
+        $id = intval(input('post.id'));
+        if ($id <= 0) {
+            return json(['code' => 0, 'msg' => lang('param_err'), 'data' => []]);
+        }
+        try {
+            $res = \app\common\util\SeoAi::generateByMidObj(1, $id);
+        } catch (\Exception $e) {
+            \think\Log::error('AI SEO generate failed (vod_id=' . $id . '): ' . $e->getMessage());
+            return json(['code' => 0, 'msg' => $e->getMessage(), 'data' => []]);
+        }
+        if (empty($res['code']) || intval($res['code']) !== 1) {
+            return json(['code' => 0, 'msg' => isset($res['msg']) ? $res['msg'] : lang('save_err'), 'data' => []]);
+        }
+        return json(['code' => 1, 'msg' => lang('save_ok'), 'data' => isset($res['data']) ? $res['data'] : []]);
     }
 
     public function iplot()
