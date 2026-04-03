@@ -214,6 +214,52 @@
                 </div>
             </div>
 
+            <!-- 新增：批量修改分类 -->
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label class="layui-form-label"><input type="checkbox" lay-ignore value="1" name="ck_type">{:lang('type')}</label>
+                    <div class="layui-input-inline" style="width: 150px;">
+                        <select name="val_type">
+                            <option value="">{:lang('select_type')}</option>
+                            {volist name="type_tree" id="vo"}
+                            {if condition="$vo.type_mid eq 1"}
+                            <option value="{$vo.type_id}">{$vo.type_name}</option>
+                            {volist name="vo.child" id="ch"}
+                            <option value="{$ch.type_id}">&nbsp;&nbsp;&nbsp;&nbsp;├&nbsp;{$ch.type_name}</option>
+                            {/volist}
+                            {/if}
+                            {/volist}
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 新增：批量修改标签 -->
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label class="layui-form-label"><input type="checkbox" lay-ignore value="1" name="ck_tag">{:lang('tag')}</label>
+                    <div class="layui-input-inline" style="width: 200px;">
+                        <input type="text" name="val_tag" placeholder="{:lang('admin/vod/tag_placeholder')}" autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+            </div>
+
+            <!-- 新增：批量修改播放源 -->
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label class="layui-form-label"><input type="checkbox" lay-ignore value="1" name="ck_play">{:lang('play_group')}</label>
+                    <div class="layui-input-inline" style="width: 150px;">
+                        <select name="val_play">
+                            <option value="">{:lang('admin/vod/select_player')}</option>
+                            <option value="no">{:lang('admin/vod/player_empty')}</option>
+                            {volist name="player_list" id="vo"}
+                            <option value="{$vo.from}">{$vo.show}</option>
+                            {/volist}
+                        </select>
+                    </div>
+                </div>
+            </div>
+
             <div class="layui-form-item">
                 <div class="layui-inline">
                     <label class="layui-form-label"><input type="checkbox" lay-ignore value="1" name="ck_hits">{:lang('hits')}</label>

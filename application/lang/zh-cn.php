@@ -209,6 +209,7 @@ return [
     'height'=>'身高',
     'weight'=>'体重',
     'type'=>'分类',
+    'tag'=>'标签',
     'wd'=>'关键字',
     'slide'=>'幻灯片',
     'param'=>'参数',
@@ -1631,6 +1632,7 @@ https://www.baidu.com/123.jpg
     'admin/vod/serialize'=>'连载',
     'admin/vod/add_group_play'=>'添加一组播放',
     'admin/vod/add_group_down'=>'添加一组下载',
+    'admin/vod/tag_placeholder'=>'请输入标签，多个用逗号分隔',
     'admin/batch_tip'=>'共%s条数据需要处理，每页%s条，共%s页，正在处理第%s页',
 
 
