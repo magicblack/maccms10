@@ -201,7 +201,7 @@ class Vod extends Base
             mac_echo('<style type="text/css">body{font-size:12px;color: #333333;line-height:21px;}span{font-weight:bold;color:#FF0000}</style>');
 
             if(empty($param['ck_del']) && empty($param['ck_level']) && empty($param['ck_status']) && empty($param['ck_lock']) && empty($param['ck_hits'])
-                && empty($param['ck_points']) && empty($param['ck_copyright'])
+                && empty($param['ck_points']) && empty($param['ck_copyright']) && empty($param['ck_type']) && empty($param['ck_tag']) && empty($param['ck_play'])
             ){
                 return $this->error(lang('param_err'));
             }
@@ -373,6 +373,29 @@ class Vod extends Base
                 if(!empty($param['ck_points']) && $param['val_points_down']!='' ){
                     $update['vod_points_down'] = $param['val_points_down'];
                     $des .= '&nbsp;'.lang('points_down').'：'.$param['val_points_down'].'；';
+                }
+
+                // 新增：批量修改分类
+                if(!empty($param['ck_type']) && !empty($param['val_type'])){
+                    $update['type_id'] = intval($param['val_type']);
+                    $type_list = model('Type')->getCache();
+                    if(isset($type_list[$update['type_id']])){
+                        $id1 = intval($type_list[$update['type_id']]['type_pid']);
+                        $update['type_id_1'] = $id1;
+                    }
+                    $des .= '&nbsp;'.lang('type').'：'.$update['type_id'].'；';
+                }
+
+                // 新增：批量修改标签
+                if(!empty($param['ck_tag']) && !empty($param['val_tag'])){
+                    $update['vod_tag'] = mac_filter_xss($param['val_tag']);
+                    $des .= '&nbsp;'.lang('tag').'：'.$update['vod_tag'].'；';
+                }
+
+                // 新增：批量修改播放源
+                if(!empty($param['ck_play']) && !empty($param['val_play'])){
+                    $update['vod_play_from'] = $param['val_play'];
+                    $des .= '&nbsp;'.lang('play_group').'：'.$param['val_play'].'；';
                 }
 
                 if($param['ck_del'] == 2 || $param['ck_del'] ==3){
