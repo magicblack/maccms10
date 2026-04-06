@@ -1474,6 +1474,19 @@ https://www.baidu.com/123.jpg
     'admin/ai_seo/msg_done'=>'AI SEO生成完成',
     'admin/ai_seo/msg_generate_fail'=>'生成失败',
     'admin/ai_seo/msg_request_fail'=>'请求失败',
+    'admin/ai_seo/list_batch_btn'=>'批量 AI SEO',
+    'admin/ai_seo/list_row_btn'=>'AI SEO',
+    'admin/ai_seo/list_skip_existing'=>'跳过已处理（仅批量）',
+    'admin/ai_seo/list_skip_label'=>'跳过已处理（仅批量）',
+    'admin/ai_seo/list_skip_hint'=>'已优化/降级：批量时不重跑；单行「AI SEO」仍可用。',
+    'admin/ai_seo/list_no_selection'=>'请先勾选本页要处理的数据',
+    'admin/ai_seo/list_progress_title'=>'批量 AI SEO',
+    'admin/ai_seo/list_progress_line'=>'进度 {current} / {total}（{pct}%）',
+    'admin/ai_seo/list_progress_sub'=>'成功 {ok} · 失败 {fail} · 跳过 {skip}',
+    'admin/ai_seo/list_summary'=>'已处理 {total} 条：成功 {ok}，失败 {fail}，跳过 {skip}',
+    'admin/ai_seo/list_batch_cancel'=>'取消',
+    'admin/ai_seo/list_summary_cancelled'=>'已取消批量处理。已完成 {completed} / {total} 条：成功 {ok}，失败 {fail}，跳过 {skip}',
+    'admin/ai_seo/list_row_ok'=>'AI SEO 已生成',
 
 
 
