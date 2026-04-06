@@ -198,6 +198,17 @@
             {/if}
         </div>
 
+        <blockquote class="layui-elem-quote layui-quote-nm" style="margin:10px 0 0 0;padding:12px 15px;font-size:13px;">
+            <div class="layui-form" style="margin:0;">
+                <div style="display:flex;flex-wrap:wrap;align-items:center;gap:12px;margin-bottom:8px;">
+                    <input type="checkbox" id="ai_seo_skip_existing" name="ai_seo_skip_existing" lay-skin="primary" lay-filter="ai_seo_skip_existing">
+                    <label for="ai_seo_skip_existing" style="cursor:pointer;font-weight:700;margin:0;">{:lang('admin/ai_seo/list_skip_label')}</label>
+                    <button type="button" class="layui-btn layui-btn-warm layui-btn-sm" id="btn_ai_seo_batch">{:lang('admin/ai_seo/list_batch_btn')}</button>
+                </div>
+                <div style="color:#666;font-size:12px;line-height:1.55;">{:lang('admin/ai_seo/list_skip_hint')}</div>
+            </div>
+        </blockquote>
+
     </div>
 
 
@@ -216,12 +227,12 @@
                 <th width="30">{:lang('browse')}</th>
                 <th width="80">{:lang('player')}</th>
                 <th width="120">{:lang('update_time')}</th>
-                <th width="190">{:lang('opt')}</th>
+                <th width="300">{:lang('opt')}</th>
             </tr>
             </thead>
 
             {volist name="list" id="vo"}
-            <tr>
+            <tr data-seo-status="{$vo.seo_ai_status|default=0}">
                 <td><input type="checkbox" name="ids[]" value="{$vo.vod_id}" class="layui-checkbox checkbox-ids" lay-skin="primary"></td>
                 <td>{$vo.vod_id}</td>
                 <td>
@@ -250,11 +261,14 @@
                 <td>{if condition="$vo.ismake eq 1"}<a target="_blank" class="layui-badge layui-bg-green " href="{:mac_url_vod_detail($vo)}">Y</a>{else/}<a class="layui-badge" href="{:url('make/make?ac=info&tab=vod')}?ids={$vo.vod_id}&ref=1">N</a>{/if}</td>
                 <td><span title="{$vo['vod_play_from']|str_replace='$$$',',',###}-{$vo['vod_down_from']|str_replace='$$$',',',###}">{$vo['vod_play_from']|str_replace='$$$',',',###}-{$vo['vod_down_from']|str_replace='$$$',',',###}</span></td>
                 <td>{$vo.vod_time|mac_day='color'}</td>
-                <td>
-                    <a class="layui-badge-rim j-iframe" data-full="1" data-href="{:url('info?id='.$vo['vod_id'])}" href="javascript:;" title="{:lang('edit')}">{:lang('edit')}</a>
-                    <a class="layui-badge-rim j-tr-del" data-href="{:url('del?ids='.$vo['vod_id'])}" href="javascript:;" title="{:lang('del')}">{:lang('del')}</a>
-                    <a class="layui-badge-rim j-iframe" data-full="1"  data-href="{:url('role/data?select=1&tab=vod&rid='.$vo['vod_id'])}" href="javascript:;" title="{:lang('role')}">{:lang('role')}</a>
-                    <a class="layui-badge-rim j-iframe" data-full="1"  data-href="{:url('iplot?id='.$vo['vod_id'])}" href="javascript:;" title="{:lang('plot')}">{:lang('plot')}</a>
+                <td class="mac-table-opt-cell">
+                    <div class="mac-table-opt-btns">
+                    <a href="javascript:;" class="layui-btn layui-btn-warm j-ai-seo-row" data-id="{$vo.vod_id}" title="{:lang('admin/ai_seo/list_row_btn')}">{:lang('admin/ai_seo/list_row_btn')}</a>
+                    <a class="layui-btn layui-btn-primary j-iframe" data-full="1" data-href="{:url('info?id='.$vo['vod_id'])}" href="javascript:;" title="{:lang('edit')}">{:lang('edit')}</a>
+                    <a class="layui-btn layui-btn-danger j-tr-del" data-href="{:url('del?ids='.$vo['vod_id'])}" href="javascript:;" title="{:lang('del')}">{:lang('del')}</a>
+                    <a class="layui-btn layui-btn-primary j-iframe" data-full="1" data-href="{:url('role/data?select=1&tab=vod&rid='.$vo['vod_id'])}" href="javascript:;" title="{:lang('role')}">{:lang('role')}</a>
+                    <a class="layui-btn layui-btn-primary j-iframe" data-full="1" data-href="{:url('iplot?id='.$vo['vod_id'])}" href="javascript:;" title="{:lang('plot')}">{:lang('plot')}</a>
+                    </div>
                 </td>
             </tr>
             {/volist}
@@ -269,6 +283,7 @@
 
 {include file="../../../application/admin/view/public/foot" /}
 
+<script type="text/javascript" src="__STATIC__/js/ai_seo_list.js?{$MAC_VERSION}"></script>
 <script type="text/javascript">
     var curUrl="{:url('vod/data',$param)}";
     layui.use(['laypage', 'layer','form'], function() {
@@ -293,6 +308,27 @@
         // 小屏幕下名称问题
         if ($('body').width() <= 600) {
             $('#table_th_vod_name').attr('width', '300');
+        }
+
+        if (typeof initAiSeoListPage === 'function') {
+            initAiSeoListPage({
+                $: $,
+                layer: layer,
+                form: form,
+                postUrl: "{:url('vod/aiSeoGenerate')}",
+                lang: {
+                    no_selection: "{:lang('admin/ai_seo/list_no_selection')}",
+                    progress_title: "{:lang('admin/ai_seo/list_progress_title')}",
+                    progress_line: "{:lang('admin/ai_seo/list_progress_line')}",
+                    progress_sub: "{:lang('admin/ai_seo/list_progress_sub')}",
+                    summary: "{:lang('admin/ai_seo/list_summary')}",
+                    list_batch_cancel: "{:lang('admin/ai_seo/list_batch_cancel')}",
+                    list_summary_cancelled: "{:lang('admin/ai_seo/list_summary_cancelled')}",
+                    row_ok: "{:lang('admin/ai_seo/list_row_ok')}",
+                    row_fail: "{:lang('admin/ai_seo/msg_generate_fail')}",
+                    msg_request_fail: "{:lang('admin/ai_seo/msg_request_fail')}"
+                }
+            });
         }
 
     });

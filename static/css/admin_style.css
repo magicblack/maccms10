@@ -347,3 +347,29 @@ body{background-color:#fff; font-family:"微软雅黑"; }
     height: 92px;
     margin: 0 10px 10px 0;
 }
+
+/* VOD/ART list: ops column layout */
+.layui-table td.mac-table-opt-cell {
+    vertical-align: middle;
+    white-space: nowrap;
+}
+.layui-table .mac-table-opt-btns {
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: center;
+    gap: 6px;
+    line-height: normal;
+}
+.layui-table .mac-table-opt-btns .layui-btn + .layui-btn {
+    margin-left: 0 !important;
+}
+
+/* VOD/ART list row: compact, uniform action buttons */
+.layui-table .mac-table-opt-btns .layui-btn {
+    height: 22px !important;
+    min-height: 22px !important;
+    line-height: 22px !important;
+    padding: 0 6px !important;
+    font-size: 12px !important;
+    box-sizing: border-box !important;
+}

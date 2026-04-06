@@ -1351,8 +1351,35 @@ body {
 .layui-table .j-iframe,
 .layui-table .j-tr-del,
 .layui-table .j-ajax,
-.layui-table  .j-clipboard {
+.layui-table  .j-clipboard,
+.layui-table .j-ai-seo-row {
     height: 32px;
     line-height: 32px;
     padding: 0 15px;
+}
+
+/* VOD/ART list: ops column — one row, no LayUI margin + flex gap double spacing */
+.layui-table td.mac-table-opt-cell {
+    vertical-align: middle;
+    white-space: nowrap;
+}
+.layui-table .mac-table-opt-btns {
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: center;
+    gap: 6px;
+    line-height: normal;
+}
+.layui-table .mac-table-opt-btns .layui-btn + .layui-btn {
+    margin-left: 0 !important;
+}
+
+/* VOD/ART list row: compact, identical ops (same box as layui-btn-xs, without class-order bugs) */
+.layui-table .mac-table-opt-btns .layui-btn {
+    height: 22px !important;
+    min-height: 22px !important;
+    line-height: 22px !important;
+    padding: 0 6px !important;
+    font-size: 12px !important;
+    box-sizing: border-box !important;
 }
