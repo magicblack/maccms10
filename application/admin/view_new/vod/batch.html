@@ -284,6 +284,32 @@
                 </div>
             </div>
 
+            <!-- 批量替换功能 -->
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label class="layui-form-label"><input type="checkbox" lay-ignore value="1" name="ck_replace">{:lang('admin/batch/replace')}</label>
+                    <div class="layui-input-inline" style="width: 150px;">
+                        <select name="replace_field">
+                            <option value="">{:lang('admin/batch/select_field')}</option>
+                            <option value="vod_name">{:lang('admin/batch/field_name')}</option>
+                            <option value="vod_sub">{:lang('admin/batch/field_sub')}</option>
+                            <option value="vod_en">{:lang('admin/batch/field_en')}</option>
+                            <option value="vod_actor">{:lang('admin/batch/field_actor')}</option>
+                            <option value="vod_director">{:lang('admin/batch/field_director')}</option>
+                            <option value="vod_blurb">{:lang('admin/batch/field_blurb')}</option>
+                            <option value="vod_remarks">{:lang('admin/batch/field_remarks')}</option>
+                            <option value="vod_content">{:lang('admin/batch/field_content')}</option>
+                        </select>
+                    </div>
+                    <div class="layui-input-inline" style="width: 200px;">
+                        <input type="text" name="replace_search" placeholder="{:lang('admin/batch/search_text')}" autocomplete="off" class="layui-input">
+                    </div>
+                    <div class="layui-input-inline" style="width: 200px;">
+                        <input type="text" name="replace_with" placeholder="{:lang('admin/batch/replace_with')}" autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+            </div>
+
             <div class="layui-form-item">
                 <div class="layui-inline">
                     <label class="layui-form-label">{:lang('page_limit')}</label>

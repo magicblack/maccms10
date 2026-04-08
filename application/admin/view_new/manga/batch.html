@@ -184,7 +184,34 @@
                         </div>
                     </div>
                 </div>
-
+                <!-- 批量替换功能 -->
+                <div class="layui-form-item">
+                    <div class="layui-inline">
+                        <div class="layui-form-label">
+                            <input type="checkbox" lay-skin="primary" value="1" name="ck_replace"
+                                title="{:lang('admin/batch/replace')}" />
+                        </div>
+                        <div class="layui-input-inline" style="width: 150px;">
+                            <select name="replace_field">
+                                <option value="">{:lang('admin/batch/select_field')}</option>
+                                <option value="manga_name">{:lang('admin/batch/field_name')}</option>
+                                <option value="manga_sub">{:lang('admin/batch/field_sub')}</option>
+                                <option value="manga_en">{:lang('admin/batch/field_en')}</option>
+                                <option value="manga_author">{:lang('admin/batch/field_author')}</option>
+                                <option value="manga_from">{:lang('admin/batch/field_from')}</option>
+                                <option value="manga_blurb">{:lang('admin/batch/field_blurb')}</option>
+                                <option value="manga_remarks">{:lang('admin/batch/field_remarks')}</option>
+                                <option value="manga_content">{:lang('admin/batch/field_content')}</option>
+                            </select>
+                        </div>
+                        <div class="layui-input-inline" style="width: 200px;">
+                            <input type="text" name="replace_search" placeholder="{:lang('admin/batch/search_text')}" autocomplete="off" class="layui-input">
+                        </div>
+                        <div class="layui-input-inline" style="width: 200px;">
+                            <input type="text" name="replace_with" placeholder="{:lang('admin/batch/replace_with')}" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                </div>
                 <div class="layui-form-item">
                     <div class="layui-inline">
                         <label class="layui-form-label">{:lang('page_limit')}</label>

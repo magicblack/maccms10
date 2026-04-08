@@ -58,7 +58,7 @@ class All extends Controller
             $cach_name = $_SERVER['HTTP_HOST']. '_'. MAC_MOB . '_'. $GLOBALS['config']['app']['cache_flag']. '_' . $tpl .'_'. http_build_query(mac_param_url());
             $res = Cache::set($cach_name,$html,$GLOBALS['config']['app']['cache_time_page']);
         }
-        if (strtolower(request()->controller()) != 'rss' && isset($GLOBALS['config']['site']['site_polyfill']) && $GLOBALS['config']['site']['site_polyfill'] == 1){
+        if (strtolower(request()->controller()) != 'rss' && (!isset($GLOBALS['config']['site']['site_polyfill']) || $GLOBALS['config']['site']['site_polyfill'] == 1)){
             $polyfill =  <<<polyfill
 <script>
         // 兼容低版本浏览器插件

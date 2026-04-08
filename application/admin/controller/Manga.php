@@ -101,7 +101,7 @@ class Manga extends Base
 
             mac_echo('<style type="text/css">body{font-size:12px;color: #333333;line-height:21px;}span{font-weight:bold;color:#FF0000}</style>');
 
-            if(empty($param['ck_del']) && empty($param['ck_level']) && empty($param['ck_status']) && empty($param['ck_lock']) && empty($param['ck_hits']) ){
+            if(empty($param['ck_del']) && empty($param['ck_level']) && empty($param['ck_status']) && empty($param['ck_lock']) && empty($param['ck_hits']) && empty($param['ck_replace']) ){
                 return $this->error(lang('param_err'));
             }
             $where = [];
@@ -185,6 +185,14 @@ class Manga extends Base
                 if(!empty($param['ck_hits']) && !empty($param['val_hits_min']) && !empty($param['val_hits_max']) ){
                     $update['manga_hits'] = rand($param['val_hits_min'],$param['val_hits_max']);
                     $des .= '&nbsp;'.lang('hits').'：'.$update['manga_hits'].'；';
+                }
+                // 新增：批量替换功能
+                if(!empty($param['ck_replace']) && !empty($param['replace_field']) && isset($param['replace_search'])){
+                    $field = $param['replace_field'];
+                    $replaceres = $this->batch_replace($field,$v,$param['replace_search'],$param['replace_with'],'manga');
+                    if(isset($replaceres[$field])) $update[$field] = $replaceres[$field];
+
+                    if(!empty($replaceres['des'])) $des .= $replaceres['des'];
                 }
                 mac_echo($des);
                 $res2 = model('Manga')->where($where2)->update($update);

@@ -202,6 +202,7 @@ class Vod extends Base
 
             if(empty($param['ck_del']) && empty($param['ck_level']) && empty($param['ck_status']) && empty($param['ck_lock']) && empty($param['ck_hits'])
                 && empty($param['ck_points']) && empty($param['ck_copyright']) && empty($param['ck_type']) && empty($param['ck_tag']) && empty($param['ck_play'])
+                && empty($param['ck_replace'])
             ){
                 return $this->error(lang('param_err'));
             }
@@ -396,6 +397,15 @@ class Vod extends Base
                 if(!empty($param['ck_play']) && !empty($param['val_play'])){
                     $update['vod_play_from'] = $param['val_play'];
                     $des .= '&nbsp;'.lang('play_group').'：'.$param['val_play'].'；';
+                }
+
+                // 新增：批量替换功能
+                if(!empty($param['ck_replace']) && !empty($param['replace_field']) && isset($param['replace_search'])){
+                    $field = $param['replace_field'];
+                    $replaceres = $this->batch_replace($field,$v,$param['replace_search'],$param['replace_with'],'vod');
+                    if(isset($replaceres[$field])) $update[$field] = $replaceres[$field];
+
+                    if(!empty($replaceres['des'])) $des .= $replaceres['des'];
                 }
 
                 if($param['ck_del'] == 2 || $param['ck_del'] ==3){

@@ -119,4 +119,23 @@ class Base extends All
         return true;
     }
 
+    public function batch_replace($field,$model,$search,$replace,$type='vod')
+    {
+        $replaceres = [];
+        if(isset($model[$field]) && $search !== ''){
+            if(empty($replace)) $replace = '';
+            
+            $original_value = $model[$field];
+            $new_value = mac_filter_xss(str_replace($search, $replace, $original_value));
+
+            if($original_value !== $new_value){
+                $replaceres[$field] = $new_value;
+                $replaceres['des'] = '&nbsp;'.lang('admin/batch/replace').'['.lang('admin/batch/field_'.str_replace($type.'_','',$field)).']：'.mac_filter_xss($search).'→'.mac_filter_xss($replace).'；';
+            }
+            else{
+                $replaceres['des'] = '&nbsp;'.lang('admin/batch/no_match').'；';
+            }
+        }
+        return $replaceres;
+    }
 }
