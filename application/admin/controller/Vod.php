@@ -113,6 +113,9 @@ class Vod extends Base
         if(!empty($param['server'])){
             $where['vod_play_server|vod_down_server'] = ['like','%'.$param['server'].'%'];
         }
+        if (!empty($param['recycle'])) {
+            $where['vod_recycle_time'] = ['>', 0];
+        }
         $order='vod_time desc';
         if(in_array($param['order'],['vod_id','vod_hits','vod_hits_month','vod_hits_week','vod_hits_day'])){
             $order = $param['order'] .' desc';
@@ -214,103 +217,14 @@ class Vod extends Base
             if($param['ck_del']==3 && empty($param['downer'])){
                 return $this->error(lang('admin/vod/del_down_must_select_down'));
             }
-
-            $where = [];
-            if(!empty($param['type'])){
-                $where['type_id'] = ['eq',$param['type']];
-            }
-            if(!empty($param['level'])){
-                $where['vod_level'] = ['eq',$param['level']];
-            }
-            if(in_array($param['status'],['0','1'])){
-                $where['vod_status'] = ['eq',$param['status']];
-            }
-            if(in_array($param['copyright'],['0','1'])){
-                $where['vod_copyright'] = ['eq',$param['copyright']];
-            }
-            if(in_array($param['isend'],['0','1'])){
-                $where['vod_isend'] = ['eq',$param['isend']];
-            }
-
-            if(!empty($param['lock'])){
-                $where['vod_lock'] = ['eq',$param['lock']];
-            }
-            if(!empty($param['state'])){
-                $where['vod_state'] = ['eq',$param['state']];
-            }
-
-            if(!empty($param['area'])){
-                $where['vod_area'] = ['eq',$param['area']];
-            }
-            if(!empty($param['lang'])){
-                $where['vod_lang'] = ['eq',$param['lang']];
-            }
-            if(in_array($param['plot'],['0','1'])){
-                $where['vod_plot'] = ['eq',$param['plot']];
-            }
-
-            // 处理角色筛选 - 通过查询角色表判断是否有角色数据
-            if(in_array($param['role'],['0','1'])){
-                $roleVodIds = Db::name('role')->where('role_rid', '>', 0)->group('role_rid')->column('role_rid');
-                if($param['role'] == '1'){
-                    // 有角色数据
-                    if(!empty($roleVodIds)){
-                        $where['vod_id'] = ['in', $roleVodIds];
-                    } else {
-                        // 如果没有任何角色数据，设置一个不可能匹配的条件
-                        $where['vod_id'] = ['eq', 0];
-                    }
-                } else {
-                    // 无角色数据
-                    if(!empty($roleVodIds)){
-                        $where['vod_id'] = ['not in', $roleVodIds];
-                    }
-                }
-            }
-
-            if(!empty($param['url'])){
-                if($param['url']==1){
-                    $where['vod_play_url'] = '';
-                }
-            }
-            if(!empty($param['pic'])){
-                if($param['pic'] == '1'){
-                    $where['vod_pic'] = ['eq',''];
-                }
-                elseif($param['pic'] == '2'){
-                    $where['vod_pic'] = ['like','http%'];
-                }
-                elseif($param['pic'] == '3'){
-                    $where['vod_pic'] = ['like','%#err%'];
-                }
-            }
-            if(!empty($param['wd'])){
-                $param['wd'] = htmlspecialchars(urldecode($param['wd']));
-                $where['vod_name'] = ['like','%'.$param['wd'].'%'];
-            }
-
-            if(!empty($param['weekday'])){
-                $where['vod_weekday'] = ['like','%'.$param['weekday'].'%'];
-            }
-
-            if(!empty($param['player'])){
-                if($param['player']=='no'){
-                    $where['vod_play_from'] = [['eq', ''], ['eq', 'no'], 'or'];
-                }
-                else {
-                    $where['vod_play_from'] = ['like', '%' . $param['player'] . '%'];
-                }
-            }
-            if(!empty($param['downer'])){
-                if($param['downer']=='no'){
-                    $where['vod_down_from'] = [['eq', ''], ['eq', 'no'], 'or'];
-                }
-                else {
-                    $where['vod_down_from'] = ['like', '%' . $param['downer'] . '%'];
-                }
-            }
-
+            $where = $this->vodBatchFilterWhere($param);
             if($param['ck_del'] == 1){
+                $res = model('Vod')->recycleData($where);
+                mac_echo($res['code'] == 1 ? lang('recycle_ok') : $res['msg']);
+                mac_jump( url('vod/batch') ,3);
+                exit;
+            }
+            if($param['ck_del'] == 4){
                 $res = model('Vod')->delData($where);
                 mac_echo(lang('multi_del_ok'));
                 mac_jump( url('vod/batch') ,3);
@@ -473,6 +387,115 @@ class Vod extends Base
         return $this->fetch('admin@vod/batch');
     }
 
+    /**
+     * 与批量操作页筛选条件一致（用于导出）
+     */
+    private function vodBatchFilterWhere(&$param)
+    {
+        $where = [];
+        if (!empty($param['type'])) {
+            $where['type_id'] = ['eq', $param['type']];
+        }
+        if (!empty($param['level'])) {
+            $where['vod_level'] = ['eq', $param['level']];
+        }
+        if (in_array($param['status'] ?? '', ['0', '1'])) {
+            $where['vod_status'] = ['eq', $param['status']];
+        }
+        if (in_array($param['copyright'] ?? '', ['0', '1'])) {
+            $where['vod_copyright'] = ['eq', $param['copyright']];
+        }
+        if (in_array($param['isend'] ?? '', ['0', '1'])) {
+            $where['vod_isend'] = ['eq', $param['isend']];
+        }
+        if (!empty($param['lock'])) {
+            $where['vod_lock'] = ['eq', $param['lock']];
+        }
+        if (!empty($param['state'])) {
+            $where['vod_state'] = ['eq', $param['state']];
+        }
+        if (!empty($param['area'])) {
+            $where['vod_area'] = ['eq', $param['area']];
+        }
+        if (!empty($param['lang'])) {
+            $where['vod_lang'] = ['eq', $param['lang']];
+        }
+        if (in_array($param['plot'] ?? '', ['0', '1'])) {
+            $where['vod_plot'] = ['eq', $param['plot']];
+        }
+        if (in_array($param['role'] ?? '', ['0', '1'])) {
+            $roleVodIds = Db::name('role')->where('role_rid', '>', 0)->group('role_rid')->column('role_rid');
+            if ($param['role'] == '1') {
+                if (!empty($roleVodIds)) {
+                    $where['vod_id'] = ['in', $roleVodIds];
+                } else {
+                    $where['vod_id'] = ['eq', 0];
+                }
+            } else {
+                if (!empty($roleVodIds)) {
+                    $where['vod_id'] = ['not in', $roleVodIds];
+                }
+            }
+        }
+        if (!empty($param['url'])) {
+            if ($param['url'] == 1) {
+                $where['vod_play_url'] = '';
+            }
+        }
+        if (!empty($param['points'])) {
+            $where['vod_points_play|vod_points_down'] = ['gt', 0];
+        }
+        if (!empty($param['pic'])) {
+            if ($param['pic'] == '1') {
+                $where['vod_pic'] = ['eq', ''];
+            } elseif ($param['pic'] == '2') {
+                $where['vod_pic'] = ['like', 'http%'];
+            } elseif ($param['pic'] == '3') {
+                $where['vod_pic'] = ['like', '%#err%'];
+            }
+        }
+        if (!empty($param['wd'])) {
+            $param['wd'] = htmlspecialchars(urldecode($param['wd']));
+            $where['vod_name'] = ['like', '%' . $param['wd'] . '%'];
+        }
+        if (!empty($param['weekday'])) {
+            $where['vod_weekday'] = ['like', '%' . $param['weekday'] . '%'];
+        }
+        if (!empty($param['player'])) {
+            if ($param['player'] == 'no') {
+                $where['vod_play_from'] = [['eq', ''], ['eq', 'no'], 'or'];
+            } else {
+                $where['vod_play_from'] = ['like', '%' . $param['player'] . '%'];
+            }
+        }
+        if (!empty($param['downer'])) {
+            if ($param['downer'] == 'no') {
+                $where['vod_down_from'] = [['eq', ''], ['eq', 'no'], 'or'];
+            } else {
+                $where['vod_down_from'] = ['like', '%' . $param['downer'] . '%'];
+            }
+        }
+        if (!empty($param['server'])) {
+            $where['vod_play_server|vod_down_server'] = ['like', '%' . $param['server'] . '%'];
+        }
+        if (!empty($param['recycle'])) {
+            $where['vod_recycle_time'] = ['>', 0];
+        }
+        return $where;
+    }
+
+    public function exportData()
+    {
+        $param = input();
+        $where = $this->vodBatchFilterWhere($param);
+        $this->base_export($param,'vod',$where);
+    }
+
+    public function importData()
+    {
+        $this->base_import('vod');
+    }
+
     public function info()
     {
         if (Request()->isPost()) {
@@ -487,6 +510,7 @@ class Vod extends Base
         $id = input('id');
         $where=[];
         $where['vod_id'] = $id;
+        $where['_recycle'] = 'all';
         $res = model('Vod')->infoData($where);
 
 
@@ -564,6 +588,7 @@ class Vod extends Base
         $id = input('id');
         $where=[];
         $where['vod_id'] = $id;
+        $where['_recycle'] = 'all';
         $res = model('Vod')->infoData($where);
 
 
@@ -576,15 +601,36 @@ class Vod extends Base
         return $this->fetch('admin@vod/iplot');
     }
 
+    public function restore()
+    {
+        $param = input();
+        $ids = $param['ids'];
+        if (empty($ids)) {
+            return $this->error(lang('param_err'));
+        }
+        $where = ['vod_id' => ['in', $ids]];
+        $res = model('Vod')->restoreData($where);
+        if ($res['code'] > 1) {
+            return $this->error($res['msg']);
+        }
+        Cache::rm('vod_repeat_table_created_time');
+        return $this->success($res['msg']);
+    }
+
     public function del()
     {
         $param = input();
         $ids = $param['ids'];
+        $purge = !empty($param['purge']);
 
         if(!empty($ids)){
             $where=[];
             $where['vod_id'] = ['in',$ids];
-            $res = model('Vod')->delData($where);
+            if ($purge) {
+                $res = model('Vod')->delData($where);
+            } else {
+                $res = model('Vod')->recycleData($where);
+            }
             if($res['code']>1){
                 return $this->error($res['msg']);
             }

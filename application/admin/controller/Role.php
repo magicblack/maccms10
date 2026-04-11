@@ -85,6 +85,7 @@ class Role extends Base
 
         $where=[];
         $where['vod_id'] = ['eq', $info['role_rid'] ];
+        $where['_recycle'] = 'all';
         $res = model('Vod')->infoData($where);
         $data = $res['info'];
         $this->assign('data',$data);

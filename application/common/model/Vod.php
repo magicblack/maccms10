@@ -6,8 +6,15 @@ use app\common\util\Pinyin;
 use app\common\validate\Vod as VodValidate;
 
 class Vod extends Base {
+    use RecycleBinTrait;
+
     // 设置数据表（不含前缀）
     protected $name = 'vod';
+
+    protected function getRecycleTimeField(): string
+    {
+        return 'vod_recycle_time';
+    }
 
     // 定义时间戳字段名
     protected $createTime = '';
@@ -20,6 +27,11 @@ class Vod extends Base {
 
     public function countData($where)
     {
+        $this->ensureRecycleColumnExists();
+        if(!is_array($where)){
+            $where = json_decode($where,true);
+        }
+        $where = $this->mergeRecycleWhere($where);
         $where2='';
         if(!empty($where['_string'])){
             $where2 = $where['_string'];
@@ -31,12 +43,14 @@ class Vod extends Base {
 
     public function listData($where,$order,$page=1,$limit=20,$start=0,$field='*',$addition=1,$totalshow=1)
     {
+        $this->ensureRecycleColumnExists();
         $page = $page > 0 ? (int)$page : 1;
         $limit = $limit ? (int)$limit : 20;
         $start = $start ? (int)$start : 0;
         if(!is_array($where)){
             $where = json_decode($where,true);
         }
+        $where = $this->mergeRecycleWhere($where);
         $where2='';
         if(!empty($where['_string'])){
             $where2 = $where['_string'];
@@ -71,12 +85,14 @@ class Vod extends Base {
 
     public function listRepeatData($where,$order,$page=1,$limit=20,$start=0,$field='*',$addition=1)
     {
+        $this->ensureRecycleColumnExists();
         $page = $page > 0 ? (int)$page : 1;
         $limit = $limit ? (int)$limit : 20;
         $start = $start ? (int)$start : 0;
         if(!is_array($where)){
             $where = json_decode($where,true);
         }
+        $where = $this->mergeRecycleWhere($where);
         $limit_str = ($limit * ($page-1) + $start) .",".$limit;
 
         $total = $this
@@ -602,6 +618,8 @@ class Vod extends Base {
         if(empty($where) || !is_array($where)){
             return ['code'=>1001,'msg'=>lang('param_err')];
         }
+        $this->ensureRecycleColumnExists();
+        $where = $this->mergeRecycleWhere($where);
         $data_cache = false;
         $key = $GLOBALS['config']['app']['cache_flag']. '_'.'vod_detail_'.$where['vod_id'][1].'_'.$where['vod_en'][1];
         if($where['vod_id'][0]=='eq' || $where['vod_en'][0]=='eq'){
@@ -817,10 +835,18 @@ class Vod extends Base {
 
     public function delData($where)
     {
+        if(!is_array($where)){
+            $where = json_decode($where,true);
+        }
+        if(!is_array($where)){
+            return ['code'=>1001,'msg'=>lang('param_err')];
+        }
+        $where['_recycle'] = 'all';
         $list = $this->listData($where,'',1,9999);
         if($list['code'] !==1){
             return ['code'=>1001,'msg'=>lang('del_err').'：'.$this->getError() ];
         }
+        $where = $this->mergeRecycleWhere($where);
         $path = './';
         foreach($list['list'] as $k=>$v){
             $pic = $path.$v['vod_pic'];
@@ -895,14 +921,14 @@ class Vod extends Base {
     {
         try{
             Db::execute('delete from `' . config('database.prefix') . 'vod_repeat` where name1 =?', [$name]);
-            Db::execute('INSERT INTO `' . config('database.prefix') . 'vod_repeat` (SELECT min(vod_id)as id1,vod_name as name1 FROM ' . config('database.prefix') . 'vod WHERE vod_name = ? GROUP BY name1 HAVING COUNT(name1)>1)', [$name]);
+            Db::execute('INSERT INTO `' . config('database.prefix') . 'vod_repeat` (SELECT min(vod_id)as id1,vod_name as name1 FROM ' . config('database.prefix') . 'vod WHERE vod_name = ? AND vod_recycle_time = 0 GROUP BY name1 HAVING COUNT(name1)>1)', [$name]);
         }catch (\Exception $e){
             Db::execute('DROP TABLE IF EXISTS ' . config('database.prefix') . 'vod_repeat');
             Db::execute('CREATE TABLE `' . config('database.prefix') . 'vod_repeat` (`id1` int unsigned DEFAULT NULL, `name1` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT \'\') ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci');
             Db::execute('ALTER TABLE `' . config('database.prefix') . 'vod_repeat` ADD INDEX `name1` (`name1`(100))');
         }
         Db::execute('INSERT INTO `' . config('database.prefix') . 'vod_repeat` (SELECT min(vod_id)as id1,vod_name as name1 FROM ' .
-            config('database.prefix') . 'vod GROUP BY name1 HAVING COUNT(name1)>1)');
+            config('database.prefix') . 'vod WHERE vod_recycle_time = 0 GROUP BY name1 HAVING COUNT(name1)>1)');
         Cache::set('vod_repeat_table_created_time',time());
     }
     public function  createRepeatCache()
@@ -918,7 +944,7 @@ class Vod extends Base {
             Db::execute('ALTER TABLE `' . config('database.prefix') . 'vod_repeat` ADD INDEX `name1` (`name1`(100))');
         }
         Db::execute('INSERT INTO `' . config('database.prefix') . 'vod_repeat` (SELECT min(vod_id)as id1,vod_name as name1 FROM ' .
-            config('database.prefix') . 'vod GROUP BY name1 HAVING COUNT(name1)>1)');
+            config('database.prefix') . 'vod WHERE vod_recycle_time = 0 GROUP BY name1 HAVING COUNT(name1)>1)');
         Cache::set('vod_repeat_table_created_time',time());
     }
 

@@ -45,12 +45,15 @@ class Art extends Base
             $param['wd'] = mac_filter_xss($param['wd']);
             $where['art_name'] = ['like','%'.$param['wd'].'%'];
         }
+        if (!empty($param['recycle'])) {
+            $where['art_recycle_time'] = ['>', 0];
+        }
 
         if(!empty($param['repeat'])){
             if($param['page'] ==1){
                 Db::execute('DROP TABLE IF EXISTS '.config('database.prefix').'tmpart');
                 Db::execute('CREATE TABLE `'.config('database.prefix').'tmpart` (`id1` int unsigned DEFAULT NULL, `name1` varchar(1024) NOT NULL DEFAULT \'\') ENGINE=MyISAM');
-                Db::execute('INSERT INTO `'.config('database.prefix').'tmpart` (SELECT min(art_id)as id1,art_name as name1 FROM '.config('database.prefix').'art GROUP BY name1 HAVING COUNT(name1)>1)');
+                Db::execute('INSERT INTO `'.config('database.prefix').'tmpart` (SELECT min(art_id)as id1,art_name as name1 FROM '.config('database.prefix').'art WHERE art_recycle_time = 0 GROUP BY name1 HAVING COUNT(name1)>1)');
             }
             $order='art_name asc';
             $res = model('Art')->listRepeatData($where,$order,$param['page'],$param['limit']);
@@ -108,37 +111,14 @@ class Art extends Base
             if(empty($param['ck_del']) && empty($param['ck_level']) && empty($param['ck_status']) && empty($param['ck_lock']) && empty($param['ck_hits']) && empty($param['ck_replace']) ){
                 return $this->error(lang('param_err'));
             }
-            $where = [];
-            if(!empty($param['type'])){
-                $where['type_id'] = ['eq',$param['type']];
-            }
-            if(!empty($param['level'])){
-                $where['art_level'] = ['eq',$param['level']];
-            }
-            if(in_array($param['status'],['0','1'])){
-                $where['art_status'] = ['eq',$param['status']];
-            }
-            if(!empty($param['lock'])){
-                $where['art_lock'] = ['eq',$param['lock']];
-            }
-            if(!empty($param['pic'])){
-                if($param['pic'] == '1'){
-                    $where['art_pic'] = ['eq',''];
-                }
-                elseif($param['pic'] == '2'){
-                    $where['art_pic'] = ['like','http%'];
-                }
-                elseif($param['pic'] == '3'){
-                    $where['art_pic'] = ['like','%#err%'];
-                }
-            }
-            if(!empty($param['wd'])){
-                $param['wd'] = htmlspecialchars(urldecode($param['wd']));
-                $where['art_name'] = ['like','%'.$param['wd'].'%'];
-            }
-
-
+            $where = $this->artBatchFilterWhere($param);
             if($param['ck_del'] == 1){
+                $res = model('Art')->recycleData($where);
+                mac_echo($res['code'] == 1 ? lang('recycle_ok') : $res['msg']);
+                mac_jump( url('art/batch') ,3);
+                exit;
+            }
+            if($param['ck_del'] == 4){
                 $res = model('Art')->delData($where);
                 mac_echo(lang('multi_del_ok'));
                 mac_jump( url('art/batch') ,3);
@@ -217,6 +197,52 @@ class Art extends Base
         return $this->fetch('admin@art/batch');
     }
 
+    private function artBatchFilterWhere(&$param)
+    {
+        $where = [];
+        if (!empty($param['type'])) {
+            $where['type_id'] = ['eq', $param['type']];
+        }
+        if (!empty($param['level'])) {
+            $where['art_level'] = ['eq', $param['level']];
+        }
+        if (in_array($param['status'] ?? '', ['0', '1'])) {
+            $where['art_status'] = ['eq', $param['status']];
+        }
+        if (!empty($param['lock'])) {
+            $where['art_lock'] = ['eq', $param['lock']];
+        }
+        if (!empty($param['pic'])) {
+            if ($param['pic'] == '1') {
+                $where['art_pic'] = ['eq', ''];
+            } elseif ($param['pic'] == '2') {
+                $where['art_pic'] = ['like', 'http%'];
+            } elseif ($param['pic'] == '3') {
+                $where['art_pic'] = ['like', '%#err%'];
+            }
+        }
+        if (!empty($param['wd'])) {
+            $param['wd'] = htmlspecialchars(urldecode($param['wd']));
+            $where['art_name'] = ['like', '%' . $param['wd'] . '%'];
+        }
+        if (!empty($param['recycle'])) {
+            $where['art_recycle_time'] = ['>', 0];
+        }
+        return $where;
+    }
+
+    public function exportData()
+    {
+        $param = input();
+        $where = $this->artBatchFilterWhere($param);
+        $this->base_export($param,'art',$where);
+    }
+
+    public function importData()
+    {
+        $this->base_import('art');
+    }
+
     public function info()
     {
         if (Request()->isPost()) {
@@ -231,6 +257,7 @@ class Art extends Base
         $id = input('id');
         $where=[];
         $where['art_id'] = ['eq',$id];
+        $where['_recycle'] = 'all';
         $res = model('Art')->infoData($where);
 
         $info = $res['info'];
@@ -273,15 +300,35 @@ class Art extends Base
         return json(['code' => 1, 'msg' => lang('save_ok'), 'data' => isset($res['data']) ? $res['data'] : []]);
     }
 
+    public function restore()
+    {
+        $param = input();
+        $ids = $param['ids'];
+        if (empty($ids)) {
+            return $this->error(lang('param_err'));
+        }
+        $where = ['art_id' => ['in', $ids]];
+        $res = model('Art')->restoreData($where);
+        if ($res['code'] > 1) {
+            return $this->error($res['msg']);
+        }
+        return $this->success($res['msg']);
+    }
+
     public function del()
     {
         $param = input();
         $ids = $param['ids'];
+        $purge = !empty($param['purge']);
 
         if(!empty($ids)){
             $where=[];
             $where['art_id'] = ['in',$ids];
-            $res = model('Art')->delData($where);
+            if ($purge) {
+                $res = model('Art')->delData($where);
+            } else {
+                $res = model('Art')->recycleData($where);
+            }
             if($res['code']>1){
                 return $this->error($res['msg']);
             }

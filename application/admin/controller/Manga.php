@@ -45,6 +45,9 @@ class Manga extends Base
             $param['wd'] = mac_filter_xss($param['wd']);
             $where['manga_name'] = ['like','%'.$param['wd'].'%'];
         }
+        if (!empty($param['recycle'])) {
+            $where['manga_recycle_time'] = ['>', 0];
+        }
 
         if(!empty($param['url'])){
             if($param['url'] == '1'){
@@ -61,7 +64,7 @@ class Manga extends Base
             if($param['page'] ==1){
                 Db::execute('DROP TABLE IF EXISTS '.config('database.prefix').'tmpmanga');
                 Db::execute('CREATE TABLE `'.config('database.prefix').'tmpmanga` (`id1` int unsigned DEFAULT NULL, `name1` varchar(1024) NOT NULL DEFAULT \'\') ENGINE=MyISAM');
-                Db::execute('INSERT INTO `'.config('database.prefix').'tmpmanga` (SELECT min(manga_id)as id1,manga_name as name1 FROM '.config('database.prefix').'manga GROUP BY name1 HAVING COUNT(name1)>1)');
+                Db::execute('INSERT INTO `'.config('database.prefix').'tmpmanga` (SELECT min(manga_id)as id1,manga_name as name1 FROM '.config('database.prefix').'manga WHERE manga_recycle_time = 0 GROUP BY name1 HAVING COUNT(name1)>1)');
             }
             $order='manga_name asc';
             $res = model('Manga')->listRepeatData($where,$order,$param['page'],$param['limit']);
@@ -104,37 +107,14 @@ class Manga extends Base
             if(empty($param['ck_del']) && empty($param['ck_level']) && empty($param['ck_status']) && empty($param['ck_lock']) && empty($param['ck_hits']) && empty($param['ck_replace']) ){
                 return $this->error(lang('param_err'));
             }
-            $where = [];
-            if(!empty($param['type'])){
-                $where['type_id'] = ['eq',$param['type']];
-            }
-            if(!empty($param['level'])){
-                $where['manga_level'] = ['eq',$param['level']];
-            }
-            if(in_array($param['status'],['0','1'])){
-                $where['manga_status'] = ['eq',$param['status']];
-            }
-            if(!empty($param['lock'])){
-                $where['manga_lock'] = ['eq',$param['lock']];
-            }
-            if(!empty($param['pic'])){
-                if($param['pic'] == '1'){
-                    $where['manga_pic'] = ['eq',''];
-                }
-                elseif($param['pic'] == '2'){
-                    $where['manga_pic'] = ['like','http%'];
-                }
-                elseif($param['pic'] == '3'){
-                    $where['manga_pic'] = ['like','%#err%'];
-                }
-            }
-            if(!empty($param['wd'])){
-                $param['wd'] = htmlspecialchars(urldecode($param['wd']));
-                $where['manga_name'] = ['like','%'.$param['wd'].'%'];
-            }
-
-
+            $where = $this->mangaBatchFilterWhere($param);
             if($param['ck_del'] == 1){
+                $res = model('Manga')->recycleData($where);
+                mac_echo($res['code'] == 1 ? lang('recycle_ok') : $res['msg']);
+                mac_jump( url('manga/batch') ,3);
+                exit;
+            }
+            if($param['ck_del'] == 4){
                 $res = model('Manga')->delData($where);
                 mac_echo(lang('multi_del_ok'));
                 mac_jump( url('manga/batch') ,3);
@@ -211,6 +191,52 @@ class Manga extends Base
         return $this->fetch('admin@manga/batch');
     }
 
+    private function mangaBatchFilterWhere(&$param)
+    {
+        $where = [];
+        if (!empty($param['type'])) {
+            $where['type_id'] = ['eq', $param['type']];
+        }
+        if (!empty($param['level'])) {
+            $where['manga_level'] = ['eq', $param['level']];
+        }
+        if (in_array($param['status'] ?? '', ['0', '1'])) {
+            $where['manga_status'] = ['eq', $param['status']];
+        }
+        if (!empty($param['lock'])) {
+            $where['manga_lock'] = ['eq', $param['lock']];
+        }
+        if (!empty($param['pic'])) {
+            if ($param['pic'] == '1') {
+                $where['manga_pic'] = ['eq', ''];
+            } elseif ($param['pic'] == '2') {
+                $where['manga_pic'] = ['like', 'http%'];
+            } elseif ($param['pic'] == '3') {
+                $where['manga_pic'] = ['like', '%#err%'];
+            }
+        }
+        if (!empty($param['wd'])) {
+            $param['wd'] = htmlspecialchars(urldecode($param['wd']));
+            $where['manga_name'] = ['like', '%' . $param['wd'] . '%'];
+        }
+        if (!empty($param['recycle'])) {
+            $where['manga_recycle_time'] = ['>', 0];
+        }
+        return $where;
+    }
+
+    public function exportData()
+    {
+        $param = input();
+        $where = $this->mangaBatchFilterWhere($param);
+        $this->base_export($param,'manga',$where);
+    }
+
+    public function importData()
+    {
+        $this->base_import('manga');
+    }
+
     public function info()
     {
         if (Request()->isPost()) {
@@ -225,6 +251,7 @@ class Manga extends Base
         $id = input('id');
         $where=[];
         $where['manga_id'] = ['eq',$id];
+        $where['_recycle'] = 'all';
         $res = model('Manga')->infoData($where);
 
         $info = $res['info'];
@@ -241,15 +268,35 @@ class Manga extends Base
         return $this->fetch('admin@manga/info');
     }
 
+    public function restore()
+    {
+        $param = input();
+        $ids = $param['ids'];
+        if (empty($ids)) {
+            return $this->error(lang('param_err'));
+        }
+        $where = ['manga_id' => ['in', $ids]];
+        $res = model('Manga')->restoreData($where);
+        if ($res['code'] > 1) {
+            return $this->error($res['msg']);
+        }
+        return $this->success($res['msg']);
+    }
+
     public function del()
     {
         $param = input();
         $ids = $param['ids'];
+        $purge = !empty($param['purge']);
 
         if(!empty($ids)){
             $where=[];
             $where['manga_id'] = ['in',$ids];
-            $res = model('Manga')->delData($where);
+            if ($purge) {
+                $res = model('Manga')->delData($where);
+            } else {
+                $res = model('Manga')->recycleData($where);
+            }
             if($res['code']>1){
                 return $this->error($res['msg']);
             }

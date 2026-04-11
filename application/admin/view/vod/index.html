@@ -19,6 +19,7 @@
             <form class="layui-form " method="post" action="{:url('data')}">
                 <input type="hidden" value="{$param.select|mac_filter_xss}" name="select">
                 <input type="hidden" value="{$param.input|mac_filter_xss}" name="input">
+                <input type="hidden" name="recycle" value="{$param.recycle|mac_filter_xss}">
                 <div class="layui-input-inline w150">
                     <select name="type">
                         <option value="">{:lang('select_type')}</option>
@@ -177,6 +178,12 @@
         </div>
 
         <div class="layui-btn-group">
+            {if condition="$param.recycle eq 1"}
+            <a href="{:url('data')}" class="layui-btn layui-btn-primary">{:lang('admin/recycle/back_list')}</a>
+            <a data-href="{:url('restore')}" class="layui-btn layui-btn-normal j-page-btns confirm">{:lang('recycle_restore')}</a>
+            <a data-href="{:url('del')}?purge=1" class="layui-btn layui-btn-danger j-page-btns confirm">{:lang('recycle_purge')}</a>
+            {else/}
+            <a href="{:url('data',['recycle'=>1])}" class="layui-btn layui-btn-primary">{:lang('admin/recycle/bin')}</a>
             <a data-href="{:url('info')}" data-full="1" class="layui-btn layui-btn-primary j-iframe"><i class="layui-icon">&#xe654;</i>{:lang('add')}</a>
             <a data-href="{:url('del')}" class="layui-btn layui-btn-primary j-page-btns confirm"><i class="layui-icon">&#xe640;</i>{:lang('del')}</a>
             <a data-href="{:url('index/select')}?tab=vod&col=type_id&tpl=select_type&url=vod/field" data-width="270" data-height="100" data-checkbox="1" class="layui-btn layui-btn-primary j-select"><i class="layui-icon">&#xe620;</i>{:lang('type')}</a>
@@ -195,6 +202,7 @@
             <a data-href="{:url('del')}?repeat=1&retain=min" data-checkbox="no" class="layui-btn layui-btn-primary j-page-btns confirm"><i class="layui-icon">&#xe640;</i>{:lang('del_auto_keep_min')}</a>
             <a data-href="{:url('del')}?repeat=1&retain=max" data-checkbox="no" class="layui-btn layui-btn-primary j-page-btns confirm"><i class="layui-icon">&#xe640;</i>{:lang('del_auto_keep_max')}</a>
             <a data-href="{:url('data')}?repeat=1&cache=1" data-checkbox="no" class="layui-btn layui-btn-primary j-page-btns"><i class="layui-icon">&#xe640;</i>{:lang('update_repeat_cache')}</a>
+            {/if}
             {/if}
         </div>
 
@@ -263,11 +271,16 @@
                 <td>{$vo.vod_time|mac_day='color'}</td>
                 <td class="mac-table-opt-cell">
                     <div class="mac-table-opt-btns">
+                    {if condition="$param.recycle eq 1"}
+                    <a class="layui-btn layui-btn-normal j-tr-del" data-href="{:url('restore?ids='.$vo['vod_id'])}" href="javascript:;" title="{:lang('recycle_restore')}">{:lang('recycle_restore')}</a>
+                    <a class="layui-btn layui-btn-danger j-tr-del" data-href="{:url('del?ids='.$vo['vod_id'].'&purge=1')}" href="javascript:;" title="{:lang('recycle_purge')}">{:lang('recycle_purge')}</a>
+                    {else/}
                     <a href="javascript:;" class="layui-btn layui-btn-warm j-ai-seo-row" data-id="{$vo.vod_id}" title="{:lang('admin/ai_seo/list_row_btn')}">{:lang('admin/ai_seo/list_row_btn')}</a>
                     <a class="layui-btn layui-btn-primary j-iframe" data-full="1" data-href="{:url('info?id='.$vo['vod_id'])}" href="javascript:;" title="{:lang('edit')}">{:lang('edit')}</a>
                     <a class="layui-btn layui-btn-danger j-tr-del" data-href="{:url('del?ids='.$vo['vod_id'])}" href="javascript:;" title="{:lang('del')}">{:lang('del')}</a>
                     <a class="layui-btn layui-btn-primary j-iframe" data-full="1" data-href="{:url('role/data?select=1&tab=vod&rid='.$vo['vod_id'])}" href="javascript:;" title="{:lang('role')}">{:lang('role')}</a>
                     <a class="layui-btn layui-btn-primary j-iframe" data-full="1" data-href="{:url('iplot?id='.$vo['vod_id'])}" href="javascript:;" title="{:lang('plot')}">{:lang('plot')}</a>
+                    {/if}
                     </div>
                 </td>
             </tr>

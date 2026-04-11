@@ -5,8 +5,15 @@ use think\Cache;
 use app\common\util\Pinyin;
 
 class Manga extends Base {
+    use RecycleBinTrait;
+
     // 设置数据表（不含前缀）
     protected $name = 'manga';
+
+    protected function getRecycleTimeField(): string
+    {
+        return 'manga_recycle_time';
+    }
 
     // 定义时间戳字段名
     protected $createTime = '';
@@ -31,18 +38,25 @@ class Manga extends Base {
 
     public function countData($where)
     {
+        $this->ensureRecycleColumnExists();
+        if(!is_array($where)){
+            $where = json_decode($where,true);
+        }
+        $where = $this->mergeRecycleWhere($where);
         $total = $this->where($where)->count();
         return $total;
     }
 
     public function listData($where,$order,$page=1,$limit=20,$start=0,$field='*',$addition=1,$totalshow=1)
     {
+        $this->ensureRecycleColumnExists();
         $page = $page > 0 ? (int)$page : 1;
         $limit = $limit ? (int)$limit : 20;
         $start = $start ? (int)$start : 0;
         if(!is_array($where)){
             $where = json_decode($where,true);
         }
+        $where = $this->mergeRecycleWhere($where);
         $where2='';
         if(!empty($where['_string'])){
             $where2 = $where['_string'];
@@ -77,12 +91,14 @@ class Manga extends Base {
 
     public function listRepeatData($where,$order,$page=1,$limit=20,$start=0,$field='*',$addition=1)
     {
+        $this->ensureRecycleColumnExists();
         $page = $page > 0 ? (int)$page : 1;
         $limit = $limit ? (int)$limit : 20;
         $start = $start ? (int)$start : 0;
         if(!is_array($where)){
             $where = json_decode($where,true);
         }
+        $where = $this->mergeRecycleWhere($where);
         $limit_str = ($limit * ($page-1) + $start) .",". $limit;
 
         $total = $this
@@ -406,6 +422,8 @@ class Manga extends Base {
         if(empty($where) || !is_array($where)){
             return ['code'=>1001,'msg'=>lang('param_err')];
         }
+        $this->ensureRecycleColumnExists();
+        $where = $this->mergeRecycleWhere($where);
         $data_cache = false;
         $key = $GLOBALS['config']['app']['cache_flag']. '_'.'manga_detail_'.$where['manga_id'][1].'_'.$where['manga_en'][1];
         if($where['manga_id'][0]=='eq' || $where['manga_en'][0]=='eq'){
@@ -560,10 +578,18 @@ class Manga extends Base {
 
     public function delData($where)
     {
+        if(!is_array($where)){
+            $where = json_decode($where,true);
+        }
+        if(!is_array($where)){
+            return ['code'=>1001,'msg'=>lang('param_err')];
+        }
+        $where['_recycle'] = 'all';
         $list = $this->listData($where,'',1,9999);
         if($list['code'] !==1){
             return ['code'=>1001,'msg'=>lang('del_err').'：'.$this->getError() ];
         }
+        $where = $this->mergeRecycleWhere($where);
         $path = './';
         foreach($list['list'] as $k=>$v){
             $pic = $path.$v['manga_pic'];

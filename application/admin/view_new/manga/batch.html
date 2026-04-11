@@ -10,7 +10,7 @@
 </style>
 <div class="page-container p10">
 
-    <form class="layui-form" method="post" action="">
+    <form id="batch-filter-form" class="layui-form" method="post" action="">
 
         <div class="my-toolbar-box">
 
@@ -97,14 +97,12 @@
             <div class="layui-field-box">
                 <div class="layui-form-item">
                     <div class="layui-inline">
-                        <div class="layui-form-label">
-                            <input type="checkbox" lay-skin="primary" value="1" name="ck_del"
-                                title="{:lang('del_data')}" />
-                        </di>
+                        <label class="layui-form-label"><input type="radio" lay-ignore value="1" name="ck_del">{:lang('admin/batch/del_recycle')}</label>
+                        <label class="layui-form-label"><input type="radio" lay-ignore value="4" name="ck_del">{:lang('admin/batch/del_purge')}</label>
                     </div>
                 </div>
                 <div class="layui-form-item">
-                    <button type="button" class="layui-btn btn_submit">{:lang('del_multi')}</button>
+                    <button type="button" class="layui-btn btn_del_multi">{:lang('del_multi')}</button>
                 </div>
             </div>
         </fieldset>
@@ -161,7 +159,7 @@
                         <div class="layui-input-inline" style="width: 100px;">
                             <select name="val_status">
                                 <option value="">{:lang('select_status')}</option>
-                                <option value="0">{:lang('reviewed')}</option>
+                                <option value="0">{:lang('reviewed_not')}</option>
                                 <option value="1">{:lang('reviewed')}</option>
                             </select>
                         </div>
@@ -228,6 +226,32 @@
             </div>
         </fieldset>
     </form>
+
+    <fieldset class="layui-elem-field">
+        <legend>{:lang('admin/batch/io_title')}</legend>
+        <div class="layui-field-box space-y-2">
+            <p class="text-gray-600 text-sm">{:lang('admin/batch/io_hint_manga')}</p>
+            <div class="layui-input-inline w120">
+                <input type="number" id="io-max" value="5000" min="1" max="10000" class="layui-input" title="{:lang('admin/batch/io_export_max')}">
+            </div>
+            <span class="text-sm text-gray-500">{:lang('admin/batch/io_export_max')}</span>
+            <div class="mt10">
+                <button type="button" class="layui-btn layui-btn-primary" id="btn-io-export-csv">{:lang('admin/batch/io_export_csv')}</button>
+                <button type="button" class="layui-btn layui-btn-primary" id="btn-io-export-xlsx">{:lang('admin/batch/io_export_xlsx')}</button>
+            </div>
+        </div>
+    </fieldset>
+
+    <form class="layui-form mt10" method="post" action="{:url('manga/importData')}" enctype="multipart/form-data">
+        <input type="hidden" name="__token__" value="{$Request.token}" />
+        <fieldset class="layui-elem-field">
+            <legend>{:lang('admin/batch/io_import')}</legend>
+            <div class="layui-field-box">
+                <input type="file" name="file" required accept=".csv,.txt,.xlsx" class="layui-input mb10" style="max-width:360px">
+                <button type="submit" class="layui-btn">{:lang('admin/batch/io_import_btn')}</button>
+            </div>
+        </fieldset>
+    </form>
 </div>
 
 <script type="text/javascript">
@@ -235,9 +259,19 @@
 
     });
 
-    $('.btn_submit').click(function () {
-        $('form').submit();
-    })
+    $('.btn_submit, .btn_del_multi').click(function () {
+        $('#batch-filter-form').submit();
+    });
+    $('#btn-io-export-csv').click(function(){
+        var q = $('#batch-filter-form').serialize();
+        var mx = $('#io-max').val() || 5000;
+        location.href = "{:url('manga/exportData')}?" + q + "&format=csv&max=" + encodeURIComponent(mx);
+    });
+    $('#btn-io-export-xlsx').click(function(){
+        var q = $('#batch-filter-form').serialize();
+        var mx = $('#io-max').val() || 5000;
+        location.href = "{:url('manga/exportData')}?" + q + "&format=xlsx&max=" + encodeURIComponent(mx);
+    });
 </script>
 </body>
 
