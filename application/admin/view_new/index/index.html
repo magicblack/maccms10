@@ -38,6 +38,89 @@
         color: rgba(96, 101, 118, 1);
         font-size: 12px;
     }
+
+    .bottom-nav-toolbar {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        height: 60px;
+    }
+
+    .bottom-nav-lang-item {
+        display: flex;
+        flex-shrink: 0;
+        align-items: center;
+        align-self: center;
+    }
+
+    .language-select-wrap.language-select-wrap--plain.layui-input-inline {
+        width: 88px;
+        margin-right: 0 !important;
+    }
+
+    .language-select-wrap .layui-form-select {
+        margin-top: 0;
+        margin-bottom: 0;
+    }
+
+    .language-select-wrap--plain {
+        position: relative;
+    }
+
+    .language-select-wrap--plain .language-select-icon {
+        position: absolute;
+        left: 0;
+        top: 50%;
+        z-index: 2;
+        width: 20px;
+        height: 20px;
+        margin-top: -10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #40CC92;
+        pointer-events: none;
+    }
+
+    .language-select-wrap--plain .language-select-icon img {
+        width: 20px;
+        height: 20px;
+        display: block;
+        object-fit: contain;
+    }
+
+    .language-select-wrap--plain .layui-form-select .layui-input {
+        box-sizing: border-box;
+        width: 100%;
+        height: 32px;
+        line-height: 32px;
+        padding-left: 24px;
+        padding-right: 0;
+        font-size: 13px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        border: none !important;
+        background: transparent !important;
+        box-shadow: none !important;
+        border-radius: 0;
+        color: #606576;
+        cursor: pointer;
+    }
+
+    .language-select-wrap--plain .layui-form-select:hover .layui-input,
+    .language-select-wrap--plain .layui-form-selected .layui-input {
+        color: #40CC92;
+    }
+
+    .language-select-wrap--plain .layui-form-select .layui-edge {
+        display: none;
+    }
+
+    .language-select-wrap--plain .layui-form-select dl {
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+    }
 </style>
 <div class="layui-layout layui-layout-admin w-full">
     <div class="layui-header maccmsTop max-sm:!hidden">
@@ -176,7 +259,7 @@
                 <li lay-id="111" class="layui-this">{:lang('admin/index/index/menu_welcome')}</li>
             </ul>
             <div class="bottom-nav">
-                <ul class="layui-nav layui-layout-right layui-form flex gap-1 items-center h-[60px]" lay-filter="demo">
+                <ul class="layui-nav layui-layout-right layui-form bottom-nav-toolbar" lay-filter="demo">
                     <li class="nav-item" id="update-notification"  style="display: none;">
                         <a href="javascript:;" onclick="showUpdateDialog()" title="有新版本可用">
                             <i class="layui-icon layui-icon-refresh-2"></i>
@@ -190,14 +273,22 @@
                             <dd><a href="javascript:;" class="closePageOther">&nbsp;{:lang('admin/index/index/menu_close_other')}</a></dd>
                         </dl>
                     </li>
-                    <div class="layui-input-inline  w-[150px]">
-                        <select id="languageSelect" name="app[lang]" lay-filter="lang">
-                            <option value="">{:lang('install/select_lang')}</option>
-                            {volist name="langs" id="vo"}
-                            <option value="{$vo}" {if condition="$config['app']['lang'] eq $vo" } selected {/if}>{$vo}</option>
-                            {/volist}
-                        </select>
-                    </div>
+                    <li class="nav-item bottom-nav-lang-item">
+                        <div class="layui-input-inline language-select-wrap language-select-wrap--plain">
+                            <span class="language-select-icon" title="{:lang('install/select_lang')}"
+                                aria-hidden="true">
+                                <img src="__STATIC__/images/nav/nav_ic_language@2x.png" width="20" height="20" alt=""
+                                    decoding="async" />
+                            </span>
+                            <label for="languageSelect" class="layui-hide">{:lang('install/select_lang')}</label>
+                            <select id="languageSelect" name="app[lang]" lay-filter="lang">
+                                <option value="">{:lang('install/select_lang')}</option>
+                                {volist name="langs" id="vo"}
+                                <option value="{$vo}" {if condition="$config['app']['lang'] eq $vo" } selected {/if}>{$vo}</option>
+                                {/volist}
+                            </select>
+                        </div>
+                    </li>
                     <li class="layui-nav-item flex-shrink-0">
                         <a href="javascript:void(0);" class="hover:!text-[#40CC92] cursor-pointer !px-[10px]"
                             title="{:lang('opt')}">
@@ -320,6 +411,36 @@
     var MAC_VERSION='{$version.code}',PHP_VERSION='{php}echo PHP_VERSION{/php}',THINK_VERSION='{php}echo THINK_VERSION{/php}';MAC_LANG='{$mac_lang}';
 </script>
 <script type="text/javascript">
+    (function () {
+            var ADMIN_LANG_LABEL_MAP = {
+                'zh-cn': '简体中文',
+                'zh-tw': '繁體中文',
+                'en-us': 'English',
+                'ja-jp': '日本語',
+                'ko-kr': '한국어',
+                'fr-fr': 'Français',
+                'de-de': 'Deutsch',
+                'es-es': 'Español',
+                'pt-pt': 'Português'
+            };
+            function adminLangLabel(code) {
+                if (!code) {
+                    return '';
+                }
+                if (ADMIN_LANG_LABEL_MAP[code]) {
+                    return ADMIN_LANG_LABEL_MAP[code];
+                }
+                return code.split('-').map(function (p) {
+                    return p.toUpperCase();
+                }).join(' · ');
+            }
+            $('#languageSelect option').each(function () {
+                var $opt = $(this), v = $opt.attr('value');
+                if (v !== '') {
+                    $opt.text(adminLangLabel(v));
+                }
+            });
+        })();
     var layer;
     layui.use(['element', 'layer', 'form'], function () {
         var $ = layui.jquery, element = layui.element, form = layui.form;
