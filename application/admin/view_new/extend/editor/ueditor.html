@@ -1,8 +1,175 @@
-<script type="text/javascript" src="__STATIC__/ueditor/ueditor.config.js"></script>
-<script type="text/javascript" src="__STATIC__/ueditor/ueditor.all.min.js"></script>
+{php}
+$ue_ai_csrf = \app\common\util\UeditorAiCsrf::token();
+{/php}
 <script type="text/javascript">
-    window.UEDITOR_CONFIG.serverUrl = "{:url('upload/upload')}?from=ueditor&flag={$cl|strtolower}_editor&input=upfile";
+    /* 统一去掉 __STATIC__ 末尾 / 再拼路径，避免有无尾斜杠时出现 // 或缺 / */
+    window.UEDITOR_HOME_URL = {:json_encode(rtrim('__STATIC__', '/').'/ueditor/')};
+</script>
+<script type="text/javascript" src="{:rtrim('__STATIC__', '/').'/ueditor/ueditor.config.js'}"></script>
+<script type="text/javascript" src="{:rtrim('__STATIC__', '/').'/ueditor/ueditor.all.min.js'}"></script>
+<script type="text/javascript" src="{:rtrim('__STATIC__', '/').'/ueditor/dialogs/ai/maccms-ue-ai-fetch.js'}?v=20260414"></script>
+<script type="text/javascript">
+    (function (w) {
+        w.UEDITOR_CONFIG = w.UEDITOR_CONFIG || {};
+        w.UEDITOR_CONFIG.ai = w.UEDITOR_CONFIG.ai || {};
+        w.UEDITOR_CONFIG.ai.driver = 'ProxyOnly';
+        w.UEDITOR_CONFIG.ai.driverConfig = { url: '', key: '', model: '' };
+        w.UE_AI_CSRF = {:json_encode($ue_ai_csrf, JSON_UNESCAPED_UNICODE | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT)};
+        /* 部分环境下 PHP setcookie 在 headers_sent 后无效；用 JS 写入与 session 一致的 CSRF，供同源 fetch 携带 */
+        try {
+            var _ueTok = w.UE_AI_CSRF || '';
+            if (_ueTok) {
+                document.cookie =
+                    'ueditor_ai_csrf=' +
+                    encodeURIComponent(_ueTok) +
+                    '; path=/; max-age=7200; SameSite=Lax';
+            }
+        } catch (eCookie) {}
+        var ueAiProxyUrl = {:json_encode(url('upload/ueditorAi'), JSON_UNESCAPED_UNICODE | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT)};
+        w.UE_AI_PROXY_URL = ueAiProxyUrl;
+        w.UE_AI_DIALOG_BRIDGE = {
+            proxyUrl: ueAiProxyUrl,
+            csrf: w.UE_AI_CSRF || ''
+        };
+        /* 顶层键：对话框常挂在 top，读不到内容 iframe 的 window，但可通过 editor 引用读实例 options */
+        w.UEDITOR_CONFIG.aiProxyUrl = ueAiProxyUrl;
+        w.UEDITOR_CONFIG.aiCsrfToken = w.UE_AI_CSRF || '';
+        /* 固定引用：loadServerConfig 合并配置时可能替换 UEDITOR_CONFIG.ai 对象，不能依赖其上的匿名函数 */
+        var ueAiDriverRequest = function (param) {
+            w.__MACCMS_UE_AI_DO_FETCH__(ueAiProxyUrl, w.UE_AI_CSRF || '', param);
+        };
+        w.UEDITOR_CONFIG.ai.driverRequest = ueAiDriverRequest;
+        w.__MACCMS_UE_AI_DRIVER_REQUEST__ = ueAiDriverRequest;
+        /* UEDITOR_CONFIG.ai 可能被合并/替换；UE 命名空间对象稳定，供对话框父窗口 internal.js 同源链发现 */
+        if (typeof UE !== 'undefined' && UE) {
+            UE.__MACCMS_UE_AI_DRIVER_REQUEST__ = ueAiDriverRequest;
+        }
+        /* Layui 等内容页在子 iframe 内，UEditor 对话框常挂在 top：把桥接同步到各层同源 window，供 dialogs/ai 发现 */
+        (function mirrorAiBridgeToAncestors() {
+            var dr = ueAiDriverRequest;
+            function copyTo(target) {
+                if (!target || target === w) {
+                    return;
+                }
+                target.UE_AI_CSRF = w.UE_AI_CSRF;
+                target.UE_AI_PROXY_URL = w.UE_AI_PROXY_URL;
+                target.UE_AI_DIALOG_BRIDGE = w.UE_AI_DIALOG_BRIDGE;
+                target.__MACCMS_UE_AI_DO_FETCH__ = w.__MACCMS_UE_AI_DO_FETCH__;
+                target.__MACCMS_UE_AI_RESOLVE_FETCH__ = w.__MACCMS_UE_AI_RESOLVE_FETCH__;
+                target.UEDITOR_CONFIG = target.UEDITOR_CONFIG || {};
+                target.UEDITOR_CONFIG.ai = target.UEDITOR_CONFIG.ai || {};
+                if (typeof dr === 'function') {
+                    target.UEDITOR_CONFIG.ai.driverRequest = dr;
+                    target.__MACCMS_UE_AI_DRIVER_REQUEST__ = dr;
+                    try {
+                        if (target.UE) {
+                            target.UE.__MACCMS_UE_AI_DRIVER_REQUEST__ = dr;
+                        }
+                    } catch (eUe) {}
+                }
+            }
+            var cur = w;
+            var seen = new WeakSet();
+            for (var d = 0; d < 16 && cur; d++) {
+                try {
+                    if (seen.has(cur)) {
+                        break;
+                    }
+                    seen.add(cur);
+                    copyTo(cur);
+                    if (cur === w.top) {
+                        break;
+                    }
+                    cur = cur.parent;
+                } catch (e) {
+                    break;
+                }
+            }
+            try {
+                var t = w.top;
+                if (t && !seen.has(t)) {
+                    seen.add(t);
+                    copyTo(t);
+                }
+            } catch (e2) {}
+            /* 再写一次 top：避免与内容 iframe 的 parent 链异常时漏挂 */
+            try {
+                var t2 = w.top;
+                if (t2 && t2 !== w) {
+                    copyTo(t2);
+                }
+            } catch (e3) {}
+        })();
+    })(window);
+    window.UEDITOR_CONFIG.serverUrl = "{:url('upload/upload')}?from=ueditor&flag={$cl|strtolower}_editor&input=upfile&ueditor_theme=new";
     var EDITOR = UE;
+    /* 把代理请求挂到每个编辑器实例上，保证 dialogs/ai 里 editor.getOpt('ai') 能拿到 driverRequest */
+    (function () {
+        try {
+            if (typeof UE === 'undefined' || typeof UE.getEditor !== 'function') {
+                return;
+            }
+            var dr =
+                typeof window.__MACCMS_UE_AI_DRIVER_REQUEST__ === 'function'
+                    ? window.__MACCMS_UE_AI_DRIVER_REQUEST__
+                    : typeof UE !== 'undefined' &&
+                      UE &&
+                      typeof UE.__MACCMS_UE_AI_DRIVER_REQUEST__ === 'function'
+                        ? UE.__MACCMS_UE_AI_DRIVER_REQUEST__
+                    : window.UEDITOR_CONFIG &&
+                      window.UEDITOR_CONFIG.ai &&
+                      typeof window.UEDITOR_CONFIG.ai.driverRequest === 'function'
+                        ? window.UEDITOR_CONFIG.ai.driverRequest
+                        : null;
+            function patchEditor(ed) {
+                if (!ed || !ed.options) {
+                    return;
+                }
+                var pu = typeof window.UE_AI_PROXY_URL === 'string' ? window.UE_AI_PROXY_URL : '';
+                var cs = window.UE_AI_CSRF || '';
+                /* 须与代理 URL 解耦：H8 仅用 serverUrl 时也要能带上 CSRF；否则 body/cookie 皆空会触发 invalid_token */
+                ed.options.aiCsrfToken = cs;
+                ed._macAiUeProxy = ed._macAiUeProxy || {};
+                ed._macAiUeProxy.csrf = cs;
+                if (pu) {
+                    ed._macAiUeProxy.url = pu;
+                    ed.options.aiProxyUrl = pu;
+                }
+                if (dr) {
+                    ed.options.ai = ed.options.ai || {};
+                    ed.options.ai.driver = 'ProxyOnly';
+                    ed.options.ai.driverRequest = dr;
+                }
+            }
+            var origGet = UE.getEditor;
+            UE.getEditor = function (id, opt) {
+                var ed = origGet.apply(this, arguments);
+                if (ed) {
+                    try {
+                        ed.addListener('ready', function () {
+                            patchEditor(ed);
+                        });
+                    } catch (e1) {}
+                    try {
+                        ed.addListener('serverConfigLoaded', function () {
+                            patchEditor(ed);
+                        });
+                    } catch (e1b) {}
+                    try {
+                        patchEditor(ed);
+                    } catch (e2) {}
+                }
+                return ed;
+            };
+            if (UE.instants) {
+                for (var k in UE.instants) {
+                    try {
+                        patchEditor(UE.instants[k]);
+                    } catch (e3) {}
+                }
+            }
+        } catch (e0) {}
+    })();
 </script>
 <script>
     var editor = "{$editor}";

@@ -1445,6 +1445,7 @@ https://www.baidu.com/123.jpg
 
     'admin/system/configaiseo/title'=>'AI SEO 配置',
     'admin/system/configaiseo/tip'=>'开启后可在视频/文章详情保存时自动生成 SEO（需配置 API Key）。命令行批量：php think seo:generate --mid 1 --limit 100',
+    'admin/system/configaiseo/ueditor_note'=>'以下「服务商 / 模型 / API 地址 / API Key」同步用于后台 UEditorPlus 富文本编辑器的 AI 工具栏。',
     'admin/system/configaiseo/enabled'=>'启用 AI 生成',
     'admin/system/configaiseo/auto_generate'=>'保存时自动生成',
     'admin/system/configaiseo/template_inject'=>'注入模板变量',
@@ -2032,6 +2033,13 @@ https://www.baidu.com/123.jpg
     'admin/upload/upload_faild'=>'文件上传失败！',
     'admin/upload/make_thumb_faild'=>'文件上传失败！',
     'admin/upload/upload_safe'=>'文件包含危险内容！',
+
+    'admin/ueditor_ai/rate_limit'=>'请求过于频繁，请稍后再试',
+    'admin/ueditor_ai/invalid_token'=>'请求令牌无效，请刷新页面后重试',
+    'admin/ueditor_ai/disabled'=>'AI SEO 未开启，请在系统配置中启用',
+    'admin/ueditor_ai/no_key'=>'未配置 API 密钥',
+    'admin/ueditor_ai/bad_method'=>'仅支持 POST 请求',
+    'admin/ueditor_ai/upstream_fail'=>'上游服务异常，请稍后重试',
 
     'admin/urlsend/title'=>'URL推送管理',
     'admin/urlsend/no_data'=>'没有获取到数据',

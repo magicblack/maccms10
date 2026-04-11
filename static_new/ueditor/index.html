@@ -1,0 +1,169 @@
+<!doctype html>
+<html>
+<head>
+    <title>UEditorPlus 完整演示</title>
+    <meta name="viewport" content="width=device-width, minimum-scale=0.5, maximum-scale=5, user-scalable=no">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+    <script src="./example.js"></script>
+    <script type="text/javascript" charset="utf-8" src="ueditor.config.js"></script>
+    <script type="text/javascript" charset="utf-8" src="ueditor.all.js"></script>
+    <script type="text/javascript" charset="utf-8" src="lang/zh-cn/zh-cn.js?94bf6581"></script>
+    <script src="./plugins/demo/demo.js"></script>
+    <script>
+        // window.UEDITOR_CONFIG.toolbars[0].push('undo');
+    </script>
+    <script>var _hmt = _hmt || [];
+    (function () {
+        var hm = document.createElement("script");
+        hm.src = "https://hm.baidu.com/hm.js?f84f35a44b5cc5c0b10c3fabdf0f322b";
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+    })();</script>
+    <style>
+        :root {
+            /*--ueditor-top-offset: 20px;*/
+        }
+    </style>
+    <link rel="stylesheet" href="./style.css"/>
+</head>
+<body class="demo-editor-page">
+<div>
+    <h1>完整示例</h1>
+    <div>
+        <script id="editor" type="text/plain" style="height:300px;">
+<h1>
+    你好 UEditorPlus
+</h1>
+<p>
+    UEditorPlus 是基于 UEditor 二次开发的富文本编辑器，让 UEditor <span style="color: #E36C09;">焕<span style="color: #0070C0;">然</span><span style="color: #31859B;"><span style="color: #00B050;">一</span><span style="color: #FF0000;">新</span></span></span>
+</p>
+
+<table data-sort="sortDisabled">
+    <tbody>
+        <tr class="firstRow">
+            <td valign="top" style="word-break: break-all;" rowspan="1" colspan="3">
+                我是表格
+            </td>
+        </tr>
+        <tr>
+            <td width="273" valign="top" style="word-break: break-all;">
+                如果
+            </td>
+            <td width="273" valign="top" style="word-break: break-all;">
+                有一天
+            </td>
+            <td width="273" valign="top" style="word-break: break-all;">
+                我离开了
+            </td>
+        </tr>
+        <tr>
+            <td valign="top" colspan="1" rowspan="1" style="word-break: break-all;">
+                怎么才能
+            </td>
+            <td valign="top" colspan="1" rowspan="1" style="word-break: break-all;">
+                证明我
+            </td>
+            <td valign="top" colspan="1" rowspan="1" style="word-break: break-all;">
+                曾经来过
+            </td>
+        </tr>
+    </tbody>
+</table>
+<pre class="brush:html;toolbar:false">&lt;div&gt;
+  &lt;span&gt;这里是HTML标签&lt;/span&gt;
+&lt;/div&gt;</pre>
+<h2>
+公式支持
+</h2>
+<p>
+    <img src="https://r.latexeasy.com/image.svg?%5Cint%20%5Cfrac%7B1%7D%7Bx%7D%20dx%20%3D%20%5Cln%20%5Cleft%7C%20x%20%5Cright%7C%20%2B%20C"
+      data-formula-image="%5Cint%20%5Cfrac%7B1%7D%7Bx%7D%20dx%20%3D%20%5Cln%20%5Cleft%7C%20x%20%5Cright%7C%20%2B%20C"/>
+</p>
+<p>
+    <br/>
+</p>
+
+        </script>
+    </div>
+    <div id="btns" style="margin-top:20px;height:2000px;">
+        <div>
+
+            <button onclick="alert(UE.getEditor('editor').getAllHtml())">获得整个html的内容</button>
+            <button onclick="alert(UE.getEditor('editor').getContent())">获得内容</button>
+            <button onclick="UE.getEditor('editor').setContent('<p>欢迎使用 UEditorPlus</p>', false)">写入内容</button>
+            <button onclick="UE.getEditor('editor').setContent('<p>欢迎使用 UEditorPlus</p>', true)">追加内容</button>
+            <button onclick="alert(UE.getEditor('editor').getContentTxt())">获得纯文本</button>
+            <button onclick="alert(UE.getEditor('editor').getPlainTxt())">获得带格式的纯文本</button>
+            <button onclick="alert(UE.getEditor('editor').hasContents())">判断是否有内容</button>
+            <button onclick="UE.getEditor('editor').focus()">使编辑器获得焦点</button>
+            <button onmousedown="isFocus()">编辑器是否获得焦点</button>
+            <button onmousedown="setBlur()">编辑器失去焦点</button>
+            <button onclick="getSelectText()">获得当前选中的文本</button>
+            <button onclick="UE.getEditor('editor').execCommand('insertHtml', '插入的内容')">插入内容</button>
+            <button onclick="UE.getEditor('editor').setEnabled()">设定可编辑</button>
+            <button onclick="UE.getEditor('editor').setDisabled('fullscreen')">设定不可编辑</button>
+            <button onclick="UE.getEditor('editor').setHide()">隐藏编辑器</button>
+            <button onclick="UE.getEditor('editor').setShow()">显示编辑器</button>
+            <button onclick="UE.getEditor('editor').setHeight(300)">设置固定高度</button>
+            <button onclick="UE.getEditor('editor')">创建编辑器</button>
+            <button onclick="UE.getEditor('editor').destroy()">销毁编辑器</button>
+            <button onclick="alert( UE.getEditor('editor').execCommand('get_auto_save_content') )">草稿箱-获取</button>
+            <button onclick="UE.getEditor('editor').execCommand('clear_auto_save_content'); alert('已清空草稿箱')">草稿箱-清空
+            </button>
+            <button onclick="UE.getEditor('editor').execCommand('set_auto_save_content'); alert('已保存')">草稿箱-立即保存
+            </button>
+            <button onclick="UE.getEditor('editor').execCommand('auto_save_restore')">草稿箱-恢复到编辑器</button>
+        </div>
+    </div>
+
+    <script type="text/javascript">
+        var ue = UE.getEditor('editor',{
+            // autoHeightEnabled: false,
+            // retainOnlyLabelPasted: true,
+            ai:{
+                // 自定义接入
+                driverRequest: function (option) {
+                    console.log('模拟 AI 请求，参数如下：', option);
+                    var texts = []
+                    var i = 0;
+                    var mock = function () {
+                        var text = '测试' + (i++)
+                        texts.push(text)
+                        if (texts.length >= 10) {
+                            // 调用 onFinish 方法表示结束
+                            option.onFinish({code: 0, msg: 'ok', data: {text: texts.join("")}})
+                            return
+                        }
+                        // 调用 onStream 方法模拟流式返回
+                        option.onStream({code: 0, msg: 'ok', data: {text: text}})
+                        setTimeout(mock, 50);
+                    };
+                    mock();
+                },
+            }
+        });
+        ue.on('contentchange', function () {
+            // console.log('contentchange', ue.getContent());
+        });
+
+        function isFocus(e) {
+            alert(UE.getEditor('editor').isFocus());
+            UE.dom.domUtils.preventDefault(e)
+        }
+
+        function setBlur(e) {
+            UE.getEditor('editor').blur();
+            UE.dom.domUtils.preventDefault(e)
+        }
+
+        function getSelectText() {
+            var range = UE.getEditor('editor').selection.getRange();
+            range.select();
+            var txt = UE.getEditor('editor').selection.getText();
+            alert(txt)
+        }
+    </script>
+</div>
+</body>
+</html>

@@ -1,0 +1,254 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+
+<head>
+    <title></title>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+    <link rel="stylesheet" href="./../../themes/default/dialog.css?27b2cc62">
+    <script type="text/javascript" src="../internal.js?0c13553b"></script>
+    <script type="text/javascript" src="./maccms-ue-ai-fetch.js?v=20260414"></script>
+    <style type="text/css">
+        [v-cloak] {
+            display: none;
+        }
+
+        .wrapper {
+            width: 620px;
+            padding: 10px;
+            height: 399px;
+            box-sizing: border-box;
+            overflow: hidden;
+            position: relative;
+            font-size: 13px;
+        }
+
+        .wrapper .input::placeholder {
+            color: #999;
+        }
+
+        .ai-operate {
+            display: block;
+            min-width: 9em;
+            text-align: center;
+            text-decoration: none;
+            line-height: 30px;
+            background: var(--edui-color-border);
+            color: #111;
+            border-radius: 15px;
+            padding: 0 10px;
+            margin: 5px 5px 0 0;
+        }
+
+        .ai-operate:hover {
+            box-shadow: 0 0 5px rgba(0, 0, 0, .1);
+        }
+
+        .btn.primary:hover {
+            box-shadow: 0 0 10px rgba(0, 0, 0, .2);
+        }
+
+        .close:hover {
+            color: red !important;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="wrapper" id="app" v-cloak>
+
+        <div>
+            <div v-if="selectText"
+                style="line-height:30px;padding:0 10px;border-radius:5px;margin-bottom:10px;display:inline-flex;align-items:center;">
+                <div style="margin-right:5px;">
+                    <i class="edui-iconfont edui-icon-outline" style="font-size:18px;"></i>
+                </div>
+                <div style="text-overflow:ellipsis;white-space:nowrap;overflow:hidden;max-width:550px;">
+                    {{ selectText }}
+                </div>
+            </div>
+            <div class="flex" style="padding: 5px; border-radius: 30px; box-shadow: 0 0 10px #CCC;">
+                <div class="flex-grow">
+                    <input type="text" v-model="inputText" class="input"
+                        style="width:540px;border-color:transparent;font-size:14px;"
+                        placeholder="告诉 AI 下一步应该如何？比如：帮我翻译成英语" />
+                </div>
+                <div class="flex-shrink-0" style="width:32px;padding-right:5px;">
+                    <a href="javascript:;" class="btn primary" @click="doSubmitDirect"
+                        style="width:30px;text-align:center;padding:0;border-radius:50%;">
+                        <i v-if="loading" class="edui-iconfont edui-icon-refresh"
+                            style="display:inline-block;animation:spin 2s linear infinite;"></i>
+                        <i v-else class="edui-iconfont edui-icon-right-direction"></i>
+                    </a>
+                </div>
+            </div>
+            <div v-if="resultHtml || resultError"
+                style="border-top:1px solid #F2F2F2;margin-top:10px;padding-top:10px;">
+                <div v-if="resultError"
+                    style="color:red;background:rgba(255,0,0,0.1);margin-bottom:10px;padding:10px;border-radius:10px;">
+                    {{ resultError }}
+                </div>
+                <div class="flex flex-items-center" style="height:30px;">
+                    <div class="flex-grow">
+                        <i class="edui-iconfont edui-icon-robot" style="font-size:16px;"></i>
+                        以下为生成的结果
+                    </div>
+                    <div>
+                        <a v-if="!loading&&showInsert" @click="doInsert" href="javascript:;" class="btn sm">
+                            <i class="edui-iconfont edui-icon-page-break"></i>
+                            插入
+                        </a>
+                        <a v-if="!loading&&showReplace&&selectText" @click="doReplace" href="javascript:;"
+                            class="btn sm">
+                            <i class="edui-iconfont edui-icon-eraser"></i>
+                            替换
+                        </a>
+                        <a v-if="!loading&&showReplaceAll" @click="doReplaceAll" href="javascript:;" class="btn sm">
+                            <i class="edui-iconfont edui-icon-eraser"></i>
+                            替换内容
+                        </a>
+                    </div>
+                </div>
+                <div style="margin-top:10px;background:rgba(0,0,0,0.03);padding:10px;border-radius:10px;overflow:auto;"
+                    :style="{height:resultHeight}">
+                    <div class="ub-html" v-html="resultHtml"></div>
+                </div>
+            </div>
+            <div v-else style="border-top:1px solid #F2F2F2;margin-top:10px;padding-top:10px;">
+                <div v-if="functions.length" style="color:#999;">
+                    <i class="edui-iconfont edui-icon-bell" style="font-size:16px;"></i>
+                    提示：您可以在上面输入文字生成内容 或 选择下方的操作
+                </div>
+                <div v-else style="color:#999;">
+                    <i class="edui-iconfont edui-icon-bell" style="font-size:16px;"></i>
+                    提示：您可以在上面输入文字生成内容
+                </div>
+                <div style="padding-top:10px;display:flex;flex-wrap:wrap;">
+                    <a href="javascript:;" v-for="f in functions" @click="doSubmitFunction(f)" class="ai-operate">
+                        <span v-html="f.text"></span>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <script src="../../third-party/vue.js?25ca1f60"></script>
+    <script src="../../third-party/showdown.js?68064a78"></script>
+    <script src="../../third-party/jquery-1.10.2.js?feef8a20"></script>
+    <script type="text/javascript" src="../../third-party/clipboard/clipboard.js?507f0f63"></script>
+    <!-- 仅在此处绑一次：internal.js 已就绪，且早于 ai.js 内 getRequest 执行 -->
+    <script type="text/javascript">
+        (function () {
+            try {
+                if (typeof editor === 'undefined' || !editor || !editor.options) {
+                    return;
+                }
+                editor.options.ai = editor.options.ai || {};
+                if (typeof editor.options.ai.driverRequest === 'function') {
+                    return;
+                }
+                function pickHostFrom(startWin) {
+                    if (!startWin) {
+                        return null;
+                    }
+                    var seen = new WeakSet();
+                    var cur = startWin;
+                    for (var d = 0; d < 20 && cur; d++) {
+                        try {
+                            if (seen.has(cur)) {
+                                break;
+                            }
+                            seen.add(cur);
+                            if (typeof cur.__MACCMS_UE_AI_DRIVER_REQUEST__ === 'function') {
+                                return { kind: 'mac', host: cur };
+                            }
+                            if (cur.UE && typeof cur.UE.__MACCMS_UE_AI_DRIVER_REQUEST__ === 'function') {
+                                return { kind: 'ue', ue: cur.UE };
+                            }
+                            if (cur.UEDITOR_CONFIG && cur.UEDITOR_CONFIG.ai && typeof cur.UEDITOR_CONFIG.ai.driverRequest === 'function') {
+                                return { kind: 'dr', host: cur };
+                            }
+                            if (cur.UE_AI_DIALOG_BRIDGE && cur.UE_AI_DIALOG_BRIDGE.proxyUrl) {
+                                return { kind: 'bridge', host: cur, bridge: cur.UE_AI_DIALOG_BRIDGE };
+                            }
+                            if (cur.UE_AI_PROXY_URL && String(cur.UE_AI_PROXY_URL).trim() !== '') {
+                                return { kind: 'proxy', host: cur };
+                            }
+                            if (cur === cur.top) {
+                                break;
+                            }
+                            cur = cur.parent;
+                        } catch (e) {
+                            break;
+                        }
+                    }
+                    try {
+                        var t = window.top;
+                        if (t && !seen.has(t)) {
+                            seen.add(t);
+                            if (typeof t.__MACCMS_UE_AI_DRIVER_REQUEST__ === 'function') {
+                                return { kind: 'mac', host: t };
+                            }
+                            if (t.UE && typeof t.UE.__MACCMS_UE_AI_DRIVER_REQUEST__ === 'function') {
+                                return { kind: 'ue', ue: t.UE };
+                            }
+                            if (t.UEDITOR_CONFIG && t.UEDITOR_CONFIG.ai && typeof t.UEDITOR_CONFIG.ai.driverRequest === 'function') {
+                                return { kind: 'dr', host: t };
+                            }
+                            if (t.UE_AI_DIALOG_BRIDGE && t.UE_AI_DIALOG_BRIDGE.proxyUrl) {
+                                return { kind: 'bridge', host: t, bridge: t.UE_AI_DIALOG_BRIDGE };
+                            }
+                            if (t.UE_AI_PROXY_URL && String(t.UE_AI_PROXY_URL).trim() !== '') {
+                                return { kind: 'proxy', host: t };
+                            }
+                        }
+                    } catch (e2) {}
+                    return null;
+                }
+                function pickHost() {
+                    var hit = null;
+                    try {
+                        hit = pickHostFrom(window.top);
+                    } catch (eT) {}
+                    if (!hit && editor && editor.window) {
+                        try {
+                            hit = pickHostFrom(editor.window);
+                        } catch (eE) {}
+                    }
+                    if (!hit) {
+                        try {
+                            hit = pickHostFrom(window.parent);
+                        } catch (eP) {}
+                    }
+                    return hit;
+                }
+                var hit = pickHost();
+                if (!hit) {
+                    return;
+                }
+                if (hit.kind === 'dr') {
+                    editor.options.ai.driverRequest = hit.host.UEDITOR_CONFIG.ai.driverRequest;
+                    return;
+                }
+                if (hit.kind === 'mac') {
+                    editor.options.ai.driverRequest = hit.host.__MACCMS_UE_AI_DRIVER_REQUEST__;
+                    return;
+                }
+                if (hit.kind === 'ue') {
+                    editor.options.ai.driverRequest = hit.ue.__MACCMS_UE_AI_DRIVER_REQUEST__;
+                    return;
+                }
+                var proxyUrl = hit.kind === 'bridge' ? hit.bridge.proxyUrl : hit.host.UE_AI_PROXY_URL;
+                var csrf = (hit.kind === 'bridge' ? hit.bridge.csrf : hit.host.UE_AI_CSRF) || '';
+                if (!proxyUrl || String(proxyUrl).trim() === '') {
+                    return;
+                }
+                editor.options.ai.driverRequest = function (param) {
+                    window.__MACCMS_UE_AI_RESOLVE_FETCH__()(proxyUrl, csrf || '', param);
+                };
+            } catch (e0) {}
+        })();
+    </script>
+    <script type="text/javascript" src="./ai.js?v=20260415"></script>
+</body>
+
+</html>

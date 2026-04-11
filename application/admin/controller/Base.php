@@ -51,6 +51,11 @@ class Base extends All
         $c = strtolower($c);
         $a = strtolower($a);
 
+        // UEditor AI proxy: logged-in admin only; API key never sent to browser.
+        if ($c === 'upload' && ($a === 'ueditor_ai' || $a === 'ueditorai')) {
+            return true;
+        }
+
         $auths = $this->_admin['admin_auth'] . ',index/index,index/welcome,index/logout,';
         $cur = ','.$c.'/'.$a.',';
         if($this->_admin['admin_id'] =='1'){

@@ -194,8 +194,7 @@
                         <select id="languageSelect" name="app[lang]" lay-filter="lang">
                             <option value="">{:lang('install/select_lang')}</option>
                             {volist name="langs" id="vo"}
-                            <option value="{$vo}" {if condition="$config['app']['lang'] eq $vo" } selected {/if}>{$vo}
-                            </option>
+                            <option value="{$vo}" {if condition="$config['app']['lang'] eq $vo" } selected {/if}>{$vo}</option>
                             {/volist}
                         </select>
                     </div>
@@ -363,10 +362,7 @@
         }
         // layer.msg('提示信息', { time: 180000 });
         element.init('nav', 'demo');
-        // 重新渲染select，将下拉弹层插入到body
-        form.render('select', {
-            render: true
-        });
+        form.render('select', { render: true });
         form.on('select(lang)', function (data) {
             if (data.value != '') {
                 // location.href = "{:url('index')}?lang=" + (data.value);
