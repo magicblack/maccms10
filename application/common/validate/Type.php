@@ -5,6 +5,7 @@ use think\Validate;
 class Type extends Validate
 {
     protected $rule =   [
+        'type_id'      => 'number|between:1,' . PHP_INT_MAX,
         'type_name'  => 'require',
 
     ];
@@ -14,6 +15,9 @@ class Type extends Validate
     ];
 
     protected $scene = [
+        'get_list' => [
+            'type_id',
+        ],
         'add'=> ['type_name'],
         'edit'=> ['type_name'],
     ];

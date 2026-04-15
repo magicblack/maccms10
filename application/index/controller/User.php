@@ -97,7 +97,27 @@ class User extends Base
         }
         return json($res);
     }
-
+public function ajax_ulog_list()
+    {
+        $param = input();
+        $where = [];
+        $where['user_id'] = $GLOBALS['user']['user_id'];
+        $param['offset'] = intval($param['offset']) < 1 ? 0 : intval($param['offset']);
+        $param['limit'] = intval($param['limit']) < 1 ? 10 : intval($param['limit']);
+        if(intval($param['mid'])>0){
+            $where['ulog_mid'] = ['eq',intval($param['mid'])];
+        }
+        if(intval($param['id'])>0){
+            $where['ulog_rid'] = ['eq',intval($param['id'])];
+        }
+        if(intval($param['type'])>0){
+            $where['ulog_type'] = ['eq',intval($param['type'])];
+        }
+        $order = 'ulog_time desc';
+        $res = model('Ulog')->listData_new($where, $order, $param['offset'], $param['limit']);
+        
+        return json($res);
+    }
     public function ajax_buy_popedom()
     {
         $param = input();

@@ -965,6 +965,7 @@ CREATE TABLE `mac_website` (
 ) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 ;
 
 
+
 -- ----------------------------
 -- Table structure for mac_vod_search
 -- ----------------------------

@@ -1,7 +1,7 @@
 <?php
 namespace app\index\controller;
-
-
+use think\Db;
+use think\Request;
 class Ajax extends Base
 {
     var $_param;

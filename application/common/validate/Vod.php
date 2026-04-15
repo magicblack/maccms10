@@ -7,6 +7,17 @@ class Vod extends Validate
     protected $rule =   [
         'vod_name'  => 'require',
         'type_id'  => 'require',
+        'type_id'      => 'number|between:1,' . PHP_INT_MAX,
+        'vod_id'     => 'require|number|between:0,' . PHP_INT_MAX,
+        'id'     => 'number|between:0,' . PHP_INT_MAX,
+        'offset'     => 'number|between:0,' . PHP_INT_MAX,
+        'limit'      => 'number|between:1,500',
+        'orderby'    => 'in:hits,up,pubdate,hits_week,hits_month,hits_day,score',
+        'vod_letter' => 'max:1',
+        'vod_name'   => 'max:50',
+        'vod_tag'    => 'max:20',
+        'vod_blurb'  => 'max:20',
+        'vod_class'  => 'max:10',
     ];
 
     protected $message  =   [
@@ -17,6 +28,21 @@ class Vod extends Validate
     protected $scene = [
         'add'  =>  ['vod_name','type_id'],
         'edit'  =>  ['vod_name','type_id'],
+         'get_vod_list' => [
+            'id',
+            'offset',
+            'limit',
+            'orderby',
+            'type_id',
+            'vod_letter',
+            'vod_name',
+            'vod_tag',
+            'vod_blurb',
+            'vod_class',
+        ],
+        'get_vod_detail' => [
+            'vod_id',
+        ],
     ];
 
 

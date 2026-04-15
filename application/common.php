@@ -43,7 +43,12 @@ function slog($logs)
 {
     $ymd = date('Y-m-d-H');
     $now = date('Y-m-d H:i:s');
-    $toppath = "./log/$ymd.txt";
+    $log_dir = "./log/";
+    // 自动创建日志目录
+    if (!is_dir($log_dir)) {
+        @mkdir($log_dir, 0755, true);
+    }
+    $toppath = $log_dir . $ymd . ".txt";
     $ts = @fopen($toppath,"a+");
     @fputs($ts, $now .' '. $logs ."\r\n");
     @fclose($ts);

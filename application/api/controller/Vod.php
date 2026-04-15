@@ -121,7 +121,6 @@ class Vod extends Base
         }
 
         $res = Db::table('mac_vod')->where(['vod_id' => $param['vod_id']])->select();
-
         // 返回
         return json([
             'code' => 1,

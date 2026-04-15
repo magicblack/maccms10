@@ -116,6 +116,114 @@ class Ulog extends Base {
         return ['code'=>1,'msg'=>lang('data_list'),'page'=>$page,'pagecount'=>ceil($total/$limit),'limit'=>$limit,'total'=>$total,'list'=>$list];
     }
 
+    public function listData_new($where,$order,$offset=0,$limit=20)
+    {
+        $offset = $offset > 0 ? (int)$offset : 0;
+        $limit = $limit ? (int)$limit : 20;
+       
+        if(!is_array($where)){
+            $where = json_decode($where,true);
+        }
+        $limit_str = $offset .",".$limit;
+        $total = $this->where($where)->count();
+        $list = Db::name('Ulog')->where($where)->order($order)->limit($limit_str)->select();
+
+        $user_ids=[];
+        foreach($list as $k=>&$v){
+            if($v['user_id'] >0){
+                $user_ids[$v['user_id']] = $v['user_id'];
+            }
+
+            if($v['ulog_mid']==1){
+                $vod_info = model('Vod')->infoData(['vod_id'=>['eq',$v['ulog_rid']]],'*',1);
+
+                if($v['ulog_sid']>0 && $v['ulog_nid']>0){
+                    if($v['ulog_type']==5){
+                        $vod_info['info']['link'] = mac_url_vod_down($vod_info['info'],['sid'=>$v['ulog_sid'],'nid'=>$v['ulog_nid']]);
+                    }
+                    else{
+                        $vod_info['info']['link'] = mac_url_vod_play($vod_info['info'],['sid'=>$v['ulog_sid'],'nid'=>$v['ulog_nid']]);
+                    }
+                }
+                else{
+                    $vod_info['info']['link'] = mac_url_vod_detail($vod_info['info']);
+                }
+                $v['data'] = [
+                    'id'=>$vod_info['info']['vod_id'],
+                    'name'=>$vod_info['info']['vod_name'],
+                    'pic'=>mac_url_img($vod_info['info']['vod_pic']),
+                    'link'=>$vod_info['info']['link'],
+                    'type'=>[
+                        'type_id'=>$vod_info['info']['type']['type_id'],
+                        'type_name'=>$vod_info['info']['type']['type_name'],
+                        'link'=>mac_url_type($vod_info['info']['type']),
+                    ],
+
+                ];
+            }
+            elseif($v['ulog_mid']==2){
+                $art_info = model('Art')->infoData(['art_id'=>['eq',$v['ulog_rid']]],'*',1);
+                $art_info['info']['link'] = mac_url_art_detail($art_info['info']);
+                $v['data'] = [
+                    'id'=>$art_info['info']['art_id'],
+                    'name'=>$art_info['info']['art_name'],
+                    'pic'=>mac_url_img($art_info['info']['art_pic']),
+                    'link'=>$art_info['info']['link'],
+                    'type'=>[
+                        'type_id'=>$art_info['info']['type']['type_id'],
+                        'type_name'=>$art_info['info']['type']['type_name'],
+                        'link'=>mac_url_type($art_info['info']['type']),
+                    ],
+
+                ];
+            }
+            elseif($v['ulog_mid']==3){
+                $topic_info = model('Topic')->infoData(['topic_id'=>['eq',$v['ulog_rid']]],'*',1);
+                $topic_info['info']['link'] = mac_url_topic_detail($topic_info['info']);
+                $v['data'] = [
+                    'id'=>$topic_info['info']['topic_id'],
+                    'name'=>$topic_info['info']['topic_name'],
+                    'pic'=>mac_url_img($topic_info['info']['topic_pic']),
+                    'link'=>$topic_info['info']['link'],
+                    'type'=>[],
+                ];
+            }
+            elseif($v['ulog_mid']==8){
+                $actor_info = model('Actor')->infoData(['actor_id'=>['eq',$v['ulog_rid']]],'*',1);
+                $actor_info['info']['link'] = mac_url_actor_detail($actor_info['info']);
+                $v['data'] = [
+                    'id'=>$actor_info['info']['actor_id'],
+                    'name'=>$actor_info['info']['actor_name'],
+                    'pic'=>mac_url_img($actor_info['info']['actor_pic']),
+                    'link'=>$actor_info['info']['link'],
+                    'type'=>[],
+                ];
+            }
+        }
+
+        if(!empty($user_ids)){
+            $where2=[];
+            $where['user_id'] = ['in', $user_ids];
+            $order='user_id desc';
+            $user_list = model('User')->listData($where2,$order,1,999);
+            $user_list = mac_array_rekey($user_list['list'],'user_id');
+
+            foreach($list as $k=>&$v){
+                $list[$k]['user_name'] = $user_list[$v['user_id']]['user_name'];
+            }
+        }
+       return  [
+            'code' => 1,
+            'msg'  => '获取成功',
+            'info' => [
+                'offset' => $offset,
+                'limit'  => $limit,
+                'total'  => $total,
+                'rows'   => $list,
+            ],
+        ] ;   
+        //return ['code'=>1,'msg'=>lang('data_list'),'page'=>$page,'pagecount'=>ceil($total/$limit),'limit'=>$limit,'total'=>$total,'list'=>$list];
+    }
     public function infoData($where,$field='*')
     {
         if(empty($where) || !is_array($where)){
