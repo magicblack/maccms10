@@ -1010,3 +1010,202 @@ CREATE TABLE `mac_seo_ai_result` (
   UNIQUE KEY `seo_obj_uuid` (`seo_mid`,`seo_obj_uuid`),
   KEY `seo_time_update` (`seo_time_update`)
 ) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+
+-- -----------------------------------------------------------------------------
+-- Table structure for mac_analytics_day_overview
+-- -----------------------------------------------------------------------------
+DROP TABLE IF EXISTS `mac_analytics_day_overview`;
+CREATE TABLE `mac_analytics_day_overview` (
+  `stat_date` date NOT NULL COMMENT '统计日（站点时区日历日）',
+  `pv` bigint(20) unsigned NOT NULL DEFAULT '0' COMMENT '页面浏览量',
+  `uv` bigint(20) unsigned NOT NULL DEFAULT '0' COMMENT '独立访客（按 visitor_id/cookie 去重，由任务写入）',
+  `session_cnt` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '会话数',
+  `new_reg` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '新注册用户数',
+  `user_login_dau` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '登录日活（当日有登录行为的用户数）',
+  `user_active_mau` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '月活（自然月内去重活跃，可月末回填或滚动窗口）',
+  `order_paid_cnt` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '已支付订单笔数',
+  `order_paid_amount` decimal(14,2) unsigned NOT NULL DEFAULT '0.00' COMMENT '已支付订单金额',
+  `recharge_amount` decimal(14,2) unsigned NOT NULL DEFAULT '0.00' COMMENT '充值类金额（可与订单拆分或等于 order 中充值类型汇总）',
+  `ad_impression` bigint(20) unsigned NOT NULL DEFAULT '0' COMMENT '广告曝光',
+  `ad_click` bigint(20) unsigned NOT NULL DEFAULT '0' COMMENT '广告点击',
+  `avg_session_duration_sec` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '平均会话时长（秒）',
+  `bounce_rate` decimal(6,2) NOT NULL DEFAULT '0.00' COMMENT '跳出率 0-100（单页会话/总会话）',
+  `retention_d1` decimal(6,2) NOT NULL DEFAULT '0.00' COMMENT '次日留存率 0-100（按 cohort 任务写入）',
+  `retention_d7` decimal(6,2) NOT NULL DEFAULT '0.00' COMMENT '7日留存率',
+  `retention_d30` decimal(6,2) NOT NULL DEFAULT '0.00' COMMENT '30日留存率',
+  `pv_web` bigint(20) unsigned NOT NULL DEFAULT '0' COMMENT 'Web 端 PV',
+  `pv_h5` bigint(20) unsigned NOT NULL DEFAULT '0' COMMENT 'H5 端 PV',
+  `pv_android` bigint(20) unsigned NOT NULL DEFAULT '0' COMMENT 'Android PV',
+  `pv_ios` bigint(20) unsigned NOT NULL DEFAULT '0' COMMENT 'iOS PV',
+  `pv_other` bigint(20) unsigned NOT NULL DEFAULT '0' COMMENT '未知/其它端 PV',
+  `updated_at` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '本条汇总更新时间 UNIX',
+  PRIMARY KEY (`stat_date`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='运营统计-全站按日汇总';
+
+
+-- -----------------------------------------------------------------------------
+-- Table structure for mac_analytics_day_dim
+-- -----------------------------------------------------------------------------
+DROP TABLE IF EXISTS `mac_analytics_day_dim`;
+CREATE TABLE `mac_analytics_day_dim` (
+  `analytics_day_id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `stat_date` date NOT NULL,
+  `dim_type` varchar(32) NOT NULL COMMENT '维度类型',
+  `dim_key` varchar(128) NOT NULL COMMENT '维度取值',
+  `pv` bigint(20) unsigned NOT NULL DEFAULT '0',
+  `uv` bigint(20) unsigned NOT NULL DEFAULT '0',
+  `session_cnt` int(10) unsigned NOT NULL DEFAULT '0',
+  `new_reg` int(10) unsigned NOT NULL DEFAULT '0',
+  `dau` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '该切片下日活（定义与任务一致即可）',
+  `order_paid_cnt` int(10) unsigned NOT NULL DEFAULT '0',
+  `order_paid_amount` decimal(14,2) unsigned NOT NULL DEFAULT '0.00',
+  `ad_click` bigint(20) unsigned NOT NULL DEFAULT '0',
+  `updated_at` int(10) unsigned NOT NULL DEFAULT '0',
+  PRIMARY KEY (`analytics_day_id`),
+  UNIQUE KEY `uk_date_dim` (`stat_date`,`dim_type`,`dim_key`),
+  KEY `idx_dim_type_date` (`dim_type`,`stat_date`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='运营统计-按日多维切片';
+
+
+-- -----------------------------------------------------------------------------
+-- Table structure for mac_analytics_hour_dim
+-- -----------------------------------------------------------------------------
+DROP TABLE IF EXISTS `mac_analytics_hour_dim`;
+CREATE TABLE `mac_analytics_hour_dim` (
+  `analytics_hour_id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `stat_hour` datetime NOT NULL COMMENT '整点时间，如 2026-04-15 08:00:00',
+  `dim_type` varchar(32) NOT NULL DEFAULT 'all' COMMENT '同 day_dim，all 表示全站',
+  `dim_key` varchar(128) NOT NULL DEFAULT '',
+  `pv` bigint(20) unsigned NOT NULL DEFAULT '0',
+  `uv` bigint(20) unsigned NOT NULL DEFAULT '0',
+  `session_cnt` int(10) unsigned NOT NULL DEFAULT '0',
+  `updated_at` int(10) unsigned NOT NULL DEFAULT '0',
+  PRIMARY KEY (`analytics_hour_id`),
+  UNIQUE KEY `uk_hour_dim` (`stat_hour`,`dim_type`,`dim_key`),
+  KEY `idx_hour` (`stat_hour`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='运营统计-按小时多维';
+
+
+-- -----------------------------------------------------------------------------
+-- Table structure for mac_analytics_session
+-- -----------------------------------------------------------------------------
+DROP TABLE IF EXISTS `mac_analytics_session`;
+CREATE TABLE `mac_analytics_session` (
+  `session_id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `session_key` varchar(64) NOT NULL COMMENT '服务端生成或客户端上报的会话ID',
+  `visitor_id` varchar(64) NOT NULL DEFAULT '' COMMENT '匿名访客标识（cookie/device）',
+  `user_id` int(10) unsigned NOT NULL DEFAULT '0',
+  `device_type` varchar(16) NOT NULL DEFAULT '' COMMENT 'web/h5/android/ios',
+  `os` varchar(32) NOT NULL DEFAULT '',
+  `browser` varchar(32) NOT NULL DEFAULT '',
+  `app_version` varchar(32) NOT NULL DEFAULT '',
+  `region_code` varchar(16) NOT NULL DEFAULT '' COMMENT '省/国家等简码',
+  `channel` varchar(64) NOT NULL DEFAULT '' COMMENT '渠道：utm、应用市场等',
+  `entry_path` varchar(512) NOT NULL DEFAULT '' COMMENT '落地路径',
+  `exit_path` varchar(512) NOT NULL DEFAULT '' COMMENT '离开前最后路径',
+  `page_count` smallint(5) unsigned NOT NULL DEFAULT '0',
+  `duration_sec` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '会话时长',
+  `is_bounce` tinyint(1) unsigned NOT NULL DEFAULT '0' COMMENT '是否跳出会话(仅1次浏览即离开)',
+  `started_at` int(10) unsigned NOT NULL DEFAULT '0',
+  `ended_at` int(10) unsigned NOT NULL DEFAULT '0',
+  PRIMARY KEY (`session_id`),
+  UNIQUE KEY `uk_session_key` (`session_key`),
+  KEY `idx_started` (`started_at`),
+  KEY `idx_user` (`user_id`),
+  KEY `idx_visitor` (`visitor_id`),
+  KEY `idx_device_date` (`device_type`,`started_at`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='运营统计-会话';
+
+
+-- -----------------------------------------------------------------------------
+-- Table structure for mac_analytics_pageview
+-- -----------------------------------------------------------------------------
+DROP TABLE IF EXISTS `mac_analytics_pageview`;
+CREATE TABLE `mac_analytics_pageview` (
+  `analytics_pageview_id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `session_id` bigint(20) unsigned NOT NULL DEFAULT '0',
+  `visitor_id` varchar(64) NOT NULL DEFAULT '',
+  `user_id` int(10) unsigned NOT NULL DEFAULT '0',
+  `path` varchar(512) NOT NULL DEFAULT '' COMMENT '路径或路由',
+  `mid` tinyint(3) unsigned NOT NULL DEFAULT '0' COMMENT '模块 1视频2文章8漫画等，0非内容页',
+  `rid` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '内容ID',
+  `type_id` smallint(6) unsigned NOT NULL DEFAULT '0' COMMENT '分类ID，便于关联多维',
+  `stay_ms` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '停留毫秒（离开页或心跳上报）',
+  `prev_path` varchar(512) NOT NULL DEFAULT '' COMMENT '上一页路径，构路径漏斗',
+  `referer_host` varchar(255) NOT NULL DEFAULT '',
+  `ts` int(10) unsigned NOT NULL DEFAULT '0',
+  `stat_date` date NOT NULL,
+  PRIMARY KEY (`analytics_pageview_id`),
+  KEY `idx_session_ts` (`session_id`,`ts`),
+  KEY `idx_ts` (`ts`),
+  KEY `idx_stat_date` (`stat_date`),
+  KEY `idx_content` (`mid`,`rid`,`ts`),
+  KEY `idx_type_ts` (`type_id`,`ts`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='运营统计-页面浏览明细';
+
+
+-- -----------------------------------------------------------------------------
+-- Table structure for mac_analytics_event
+-- -----------------------------------------------------------------------------
+DROP TABLE IF EXISTS `mac_analytics_event`;
+CREATE TABLE `mac_analytics_event` (
+  `analytics_event_id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `event_code` varchar(48) NOT NULL COMMENT '事件编码 ad_click / pay_intent / ...',
+  `session_id` bigint(20) unsigned NOT NULL DEFAULT '0',
+  `visitor_id` varchar(64) NOT NULL DEFAULT '',
+  `user_id` int(10) unsigned NOT NULL DEFAULT '0',
+  `device_type` varchar(16) NOT NULL DEFAULT '',
+  `region_code` varchar(16) NOT NULL DEFAULT '',
+  `mid` tinyint(3) unsigned NOT NULL DEFAULT '0',
+  `rid` int(10) unsigned NOT NULL DEFAULT '0',
+  `props` varchar(2048) NOT NULL DEFAULT '' COMMENT 'JSON 扩展字段,5.7+ 环境可改为 JSON 类型更优',
+  `ts` int(10) unsigned NOT NULL DEFAULT '0',
+  `stat_date` date NOT NULL,
+  PRIMARY KEY (`analytics_event_id`),
+  KEY `idx_event_ts` (`event_code`,`ts`),
+  KEY `idx_ts` (`ts`),
+  KEY `idx_stat_date` (`stat_date`),
+  KEY `idx_session_id` (`session_id`),
+  KEY `idx_user_ts` (`user_id`,`ts`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='运营统计-通用事件';
+
+
+-- -----------------------------------------------------------------------------
+-- Table structure for mac_analytics_content_day
+-- -----------------------------------------------------------------------------
+DROP TABLE IF EXISTS `mac_analytics_content_day`;
+CREATE TABLE `mac_analytics_content_day` (
+  `stat_date` date NOT NULL,
+  `mid` tinyint(3) unsigned NOT NULL COMMENT '1视频2文章8漫画',
+  `content_id` int(10) unsigned NOT NULL,
+  `type_id` smallint(6) unsigned NOT NULL DEFAULT '0' COMMENT '分类，冗余便于按类分析',
+  `view_pv` bigint(20) unsigned NOT NULL DEFAULT '0',
+  `view_uv` bigint(20) unsigned NOT NULL DEFAULT '0',
+  `play_or_read_cnt` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '播放/阅读次数（按业务定义）',
+  `avg_stay_ms` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '平均停留',
+  `bounce_cnt` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '仅访问该内容即离开的会话数（任务算）',
+  `collect_add` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '收藏新增',
+  `want_add` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '想看新增',
+  `order_cnt` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '关联订单数（付费转化）',
+  `order_amount` decimal(14,2) unsigned NOT NULL DEFAULT '0.00',
+  `updated_at` int(10) unsigned NOT NULL DEFAULT '0',
+  PRIMARY KEY (`stat_date`,`mid`,`content_id`),
+  KEY `idx_date_type` (`stat_date`,`type_id`),
+  KEY `idx_hot` (`stat_date`,`view_pv`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='运营统计-内容按日效果';
+
+
+-- -----------------------------------------------------------------------------
+-- Table structure for mac_analytics_retention_cohort
+-- -----------------------------------------------------------------------------
+DROP TABLE IF EXISTS `mac_analytics_retention_cohort`;
+CREATE TABLE `mac_analytics_retention_cohort` (
+  `cohort_date` date NOT NULL COMMENT 'cohort 基准日（常用：注册日）',
+  `cohort_type` varchar(16) NOT NULL DEFAULT 'register',
+  `return_day` smallint(5) unsigned NOT NULL COMMENT '回访间隔天 0=当日 1=次日',
+  `user_cnt` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '该日仍活跃用户数',
+  `updated_at` int(10) unsigned NOT NULL DEFAULT '0',
+  PRIMARY KEY (`cohort_date`,`cohort_type`,`return_day`),
+  KEY `idx_cohort` (`cohort_date`,`cohort_type`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='运营统计-留存 cohort';
+
