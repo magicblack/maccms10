@@ -9,16 +9,16 @@ namespace addons\aicontent\service\models;
 abstract class BaseModel
 {
     /** @var string API key for this provider */
-    protected string $apiKey;
+    protected $apiKey;
 
     /** @var string Model identifier (e.g. claude-sonnet-4-6) */
-    protected string $model;
+    protected $model;
 
     /** @var int Maximum tokens to generate */
-    protected int $maxTokens;
+    protected $maxTokens;
 
     /** @var int HTTP request timeout in seconds */
-    protected int $timeout;
+    protected $timeout;
 
     public function __construct(string $apiKey, string $model, int $maxTokens = 1500, int $timeout = 30)
     {

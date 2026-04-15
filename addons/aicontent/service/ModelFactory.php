@@ -18,7 +18,7 @@ class ModelFactory
     /**
      * Provider slug → class map.
      */
-    private static array $providerMap = [
+    private static $providerMap = [
         'claude'   => ClaudeModel::class,
         'openai'   => OpenAiModel::class,
         'gemini'   => GeminiModel::class,
@@ -30,7 +30,7 @@ class ModelFactory
     /**
      * The API key config keys per provider.
      */
-    private static array $keyMap = [
+    private static $keyMap = [
         'claude'   => 'claude_key',
         'openai'   => 'openai_key',
         'gemini'   => 'gemini_key',
@@ -48,7 +48,7 @@ class ModelFactory
      * @throws \InvalidArgumentException for unknown providers
      * @throws \RuntimeException         if API key is not configured
      */
-    public static function create(?string $provider = null, ?string $model = null): BaseModel
+    public static function create($provider = null, $model = null): BaseModel
     {
         $config   = get_addon_config('aicontent');
         $provider = $provider ?: ($config['default_provider'] ?? 'claude');

@@ -71,7 +71,7 @@ class Aicontent extends Addons
      * so that JS, CSS, and images are web-accessible.
      * Only copies files that are missing or older than the source.
      */
-    private function deployAssets(): void
+    private function deployAssets()
     {
         $srcBase = $this->addon_path . 'assets' . DS;
         $dstBase = ROOT_PATH . 'static' . DS . 'addons' . DS . 'aicontent' . DS;
@@ -87,7 +87,7 @@ class Aicontent extends Addons
      * Recursively copies $src directory into $dst.
      * Only copies files that are missing or older than the source.
      */
-    private function copyDir(string $src, string $dst): void
+    private function copyDir(string $src, string $dst)
     {
         if (!is_dir($dst)) {
             mkdir($dst, 0755, true);
@@ -111,7 +111,7 @@ class Aicontent extends Addons
     /**
      * Recursively removes a directory and all its contents.
      */
-    private function removeDir(string $dir): void
+    private function removeDir(string $dir)
     {
         if (!is_dir($dir)) {
             return;
@@ -190,7 +190,7 @@ class Aicontent extends Addons
      * Registers the plugin's service namespace so ThinkPHP's autoloader
      * can find classes under addons\aicontent\service\*.
      */
-    public function appInit(): void
+    public function appInit()
     {
         // Only deploy assets when the target directory is missing (first boot or
         // manual deletion). install() and enable() handle the normal deploy path;
@@ -237,7 +237,7 @@ class Aicontent extends Addons
      * Sets a flag when we are on a content edit page.
      * The actual injection is done in viewFilter() below.
      */
-    public function actionBegin(&$params): void
+    public function actionBegin(&$params)
     {
         $request    = \think\Request::instance();
         $controller = strtolower($request->controller());
@@ -265,7 +265,7 @@ class Aicontent extends Addons
      * Per the MaCMS plugin docs, view_filter receives the rendered HTML
      * by reference and this method modifies it directly.
      */
-    public function viewFilter(string &$content): void
+    public function viewFilter(&$content)
     {
         // ── CSRF token ────────────────────────────────────────────────────────
         // Inject only on pages that actually interact with this plugin's API:
@@ -465,7 +465,7 @@ JS;
      * maccms generic addon config page.
      * Called by viewFilter() when the current page is admin/addon/config?name=aicontent.
      */
-    private function injectConfigPageJs(string &$content): void
+    private function injectConfigPageJs(&$content)
     {
         $jsLang = self::jsLangJson();
         $script = "<script>window.AI_LANG = {$jsLang};</script>\n" . <<<'JS'

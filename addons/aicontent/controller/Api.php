@@ -211,7 +211,9 @@ class Api extends Controller
             }
         }
 
-        $successCount = count(array_filter($results, fn($r) => $r['success']));
+        $successCount = count(array_filter($results, function ($r) {
+            return !empty($r['success']);
+        }));
         $msg = sprintf(lang('Processed %d items, %d succeeded.'), count($results), $successCount);
         return $this->json(true, $msg, $results);
     }

@@ -10,8 +10,10 @@ namespace addons\aicontent\service;
  */
 class ContentGenerator
 {
-    private \addons\aicontent\service\models\BaseModel $model;
-    private array $config;
+    /** @var \addons\aicontent\service\models\BaseModel */
+    private $model;
+    /** @var array */
+    private $config;
 
     public function __construct(string $provider = null, string $modelName = null)
     {

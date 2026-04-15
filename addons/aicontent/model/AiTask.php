@@ -46,7 +46,7 @@ class AiTask extends Model
     /**
      * Mark task as successfully completed with the AI result JSON.
      */
-    public function markDone(string $resultJson): void
+    public function markDone(string $resultJson)
     {
         $this->status     = self::STATUS_DONE;
         $this->result     = $resultJson;
@@ -58,7 +58,7 @@ class AiTask extends Model
     /**
      * Mark task as failed with an error message.
      */
-    public function markError(string $errorMsg): void
+    public function markError(string $errorMsg)
     {
         $this->status     = self::STATUS_ERROR;
         $this->error_msg  = mb_substr($errorMsg, 0, 499);
