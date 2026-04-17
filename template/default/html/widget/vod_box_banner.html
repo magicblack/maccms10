@@ -1,0 +1,65 @@
+<li class="balist_item swiper-slide">
+    <div class="balist_thumb swiper-lazy" title="{$vo.vod_name}" data-background="{:mac_url_img($vo.vod_pic)}">
+        <a class="banstem_full_link" {if condition="$mac_vod_playlink eq 1"}href="{:mac_url_vod_play($vo,['sid'=>$vo.sid,'nid'=>1])}"{else/}href="{:mac_url_vod_detail($vo)}"{/if} aria-label="{$vo.vod_name}"></a>
+        <div class="banstem_info">
+            <div class="banstem_scoreline">
+                <span class="banstem_star">★</span>
+                <span class="banstem_score_num">{if condition="$vo.vod_score gt 0"}{$vo.vod_score}{else/}7.0{/if}</span>
+                <span class="banstem_score_meta">
+                    {if condition="$vo.vod_year neq ''"}{$vo.vod_year}{else/}未知{/if}
+                    {if condition="$vo.vod_area neq ''"} / {$vo.vod_area}{/if}
+                    {if condition="$vo.vod_class neq ''"} / {$vo.vod_class}{/if}
+                </span>
+            </div>
+            <h2 class="banstem_title">{$vo.vod_name}</h2>
+            <p class="banstem_desc">
+                {if condition="$vo.vod_blurb neq ''"}
+                {$vo.vod_blurb}
+                {elseif condition="$vo.vod_sub neq ''"/}
+                {$vo.vod_sub}
+                {elseif condition="$vo.vod_remarks neq ''"/}
+                {$vo.vod_remarks}
+                {else/}
+                <span data-lang='string_no_have'>暂无简介</span>
+                {/if}
+            </p>
+            <div class="banstem_actions">
+                <a class="banstem_btn banstem_btn_play" {if condition="$mac_vod_playlink eq 1"}href="{:mac_url_vod_play($vo,['sid'=>$vo.sid,'nid'=>1])}"{else/}href="{:mac_url_vod_detail($vo)}"{/if}>
+                    <i class="iconfont banstem_btn_icon" aria-hidden="true">&#xe659;</i>
+                    <span>播放</span>
+                </a>
+                {php}
+                $ulog_id = '';
+                if (!empty($GLOBALS['user']['user_id'])) {
+                    $user_id = $GLOBALS['user']['user_id'];
+                    $res = model('ulog')->where(['user_id' => $user_id, 'ulog_type' => 2])->column('ulog_rid', 'ulog_id');
+                    if (in_array($vo['vod_id'], $res)) {
+                        $ids = array_keys($res, $vo['vod_id']);
+                        $ulog_id = $ids ? $ids[0] : '';
+                {/php}
+                <div class="banstem_btn banstem_btn_fav mac_ulog is_fav" data-type="2" data-mid="{$vo.mid|default='1'}" data-id="{$vo.vod_id}" data-uid="{$ulog_id}" role="button" tabindex="0">
+                    <i class="mac_fav_star banstem_btn_icon" aria-hidden="true">★</i>
+                    <span data-lang="string_isfav">已收藏</span>
+                </div>
+                {php}
+                    } else {
+                {/php}
+                <div class="banstem_btn banstem_btn_fav mac_ulog" data-type="2" data-mid="{$vo.mid|default='1'}" data-id="{$vo.vod_id}" data-uid="" role="button" tabindex="0">
+                    <i class="mac_fav_star banstem_btn_icon" aria-hidden="true">☆</i>
+                    <span data-lang="string_fav">收藏</span>
+                </div>
+                {php}
+                    }
+                } else {
+                {/php}
+                <div class="banstem_btn banstem_btn_fav mac_ulog" data-type="2" data-mid="{$vo.mid|default='1'}" data-id="{$vo.vod_id}" role="button" tabindex="0">
+                    <i class="mac_fav_star banstem_btn_icon" aria-hidden="true">☆</i>
+                    <span data-lang="string_fav">收藏</span>
+                </div>
+                {php}
+                }
+                {/php}
+            </div>
+        </div>
+    </div>
+</li>

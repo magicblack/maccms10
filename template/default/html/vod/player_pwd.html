@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=EmulateIE10" />
+	<meta name="renderer" content="webkit|ie-comp|ie-stand">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <title>系统提示.........</title>
+    <link rel="stylesheet" href="{$maccms.path}static/css/home.css">
+    <link rel="stylesheet" href="{$maccms.path}template/default/asset/css/theme-tokens.css">
+    
+    <script src="{$maccms.path}static/js/jquery.js"></script>
+    {include file="public/jsvar"}
+    <script src="{$maccms.path}static/js/home.js"></script>
+	<link rel="stylesheet" type="text/css" href="{$maccms.path_tpl}/asset/css/vod-player_pwd.css" />
+</head>
+<body>
+
+<div class="weui_msg_jump">
+    <div class="weui_text">
+        <p class="weui_xtts" data-lang="dear_password">亲爱的访问此数据需要密码哦</p>
+     <div class="text">
+        <form id="form1" name="form1" action="" style="text-align: center;" method="post">
+            <div class="item">
+                <input type="password" name="pwd" data-placeholder="password_here" placeholder="请在此输入访问密码"/>
+            </div>
+            <div class="item">
+                <a class="submit_btn" href="javascript:;" onclick="MAC.Pwd.Check(this)" data-mid="1" data-id="{$obj.vod_id}" data-type="4" data-lang="string_submit">确认</a>
+            </div>
+            <div class="mm_btn">
+                {if condition="$obj.vod_pwd_play_url neq ''"}
+                <a href="{$obj.vod_pwd_play_url}" target="_blank" data-lang="click_to_get_password">点击获取密码</a>
+                {else/}
+                <span><span data-lang="string_password">密码</span>：{$obj.vod_pwd_play}</span>
+                {/if}
+            </div>
+        </form>
+    </div>
+    </div>
+</div>
+<script type="text/javascript">
+
+</script>
+</body>
+</html>
+
+
+

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset>
+	{maccms:vod num="100" order="desc" by="time"}
+	<url>
+		<loc>{$maccms.http_type}{$maccms.site_url}{:mac_url_vod_detail($vo)}</loc>
+		<lastmod>{$vo.vod_time|date='Y-m-d H:i:s',###}</lastmod>
+		<changefreq>always</changefreq>
+		<priority>1.0</priority>
+	</url>
+	{/maccms:vod}{maccms:art num="100" order="desc" by="time"}
+	<url>
+		<loc>{$maccms.http_type}{$maccms.site_url}{:mac_url_art_detail($vo)}</loc>
+		<lastmod>{$vo.art_time|date='Y-m-d H:i:s',###}</lastmod>
+		<changefreq>always</changefreq>
+		<priority>1.0</priority>
+	</url>
+	{/maccms:art}
+</urlset>

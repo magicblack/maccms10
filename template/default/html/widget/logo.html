@@ -1,0 +1,17 @@
+<div class="mac-logo {$logo_wrap_class|default=''}{if condition="isset($logo_vari) && $logo_vari eq 'foot'"} mac-logo--foot mac-logo--foot-pending{else /} mac-logo--head-pending{/if}">
+	{if condition="isset($logo_vari) && $logo_vari eq 'foot'"}
+		<a title="{$maccms.site_name}" class="logo logo_b white_logo" href="{$maccms.path}">
+			<img src="{:mac_url_img(isset($tplconfig['theme']['logo']['foot_bpic']) && $tplconfig['theme']['logo']['foot_bpic'] ? $tplconfig['theme']['logo']['foot_bpic'] : 'template/default/images/la/logo_black.png')}" alt="{$maccms.site_name}">
+		</a>
+		<a title="{$maccms.site_name}" class="logo logo_b black_logo" style="display:none;" href="{$maccms.path}">
+			<img src="{:mac_url_img(isset($tplconfig['theme']['logo']['foot_wpic']) && $tplconfig['theme']['logo']['foot_wpic'] ? $tplconfig['theme']['logo']['foot_wpic'] : 'template/default/images/la/logo_white.png')}" alt="{$maccms.site_name}">
+		</a>
+	{else /}
+		<a title="{$maccms.site_name}" class="logo logo_b white_logo" href="{$maccms.path}">
+			<img src="{:mac_url_img(isset($tplconfig['theme']['logo']['wpic']) && $tplconfig['theme']['logo']['wpic'] ? $tplconfig['theme']['logo']['wpic'] : 'template/default/images/la/logo-mobile-white.png')}" alt="{$maccms.site_name}">
+		</a>
+		<a title="{$maccms.site_name}" class="logo logo_b black_logo" style="display:none;" href="{$maccms.path}">
+			<img src="{:mac_url_img(isset($tplconfig['theme']['logo']['bpic']) && $tplconfig['theme']['logo']['bpic'] ? $tplconfig['theme']['logo']['bpic'] : 'template/default/images/la/logo-mobile-black.png')}" alt="{$maccms.site_name}">
+		</a>
+	{/if}
+</div>

@@ -1,0 +1,155 @@
+<div class="head_box show-pc">
+    <div class="header">
+        <div class="head_a">
+            <div class="head_logo">{include file="widget/logo" /}</div>
+            <div class="head_menu_a hidden_xs hidden_mi">
+                <div class="top_nav_wrap">
+                    <ul class="top_nav clearfix">
+                        <li data-sid="0"  {if condition="$maccms.aid eq 1" }class="active" {/if}>
+                            <a href="{$maccms.path}" title="首页"><span data-lang="string_home">首页</span></a>
+                        </li>
+                        {maccms:type ids="'.($tplconfig['theme']['nav']['id'] ?? '').'" num="7" order="asc" by="sort" id="vo" key="key"}
+                        <li data-sid="{$vo.type_id}" {if condition="($vo.type_id eq $GLOBALS['type_id'] || $vo.type_id eq $GLOBALS['type_pid'])" }class="active" {/if}>
+                            {if condition="$vo.type_mid eq 12"}
+                            <a href="{:mac_url('manga/index')}">{$vo.type_name}</a>
+                            {else/}
+                            <a href="{:mac_url_type($vo)}">{$vo.type_name}</a>
+                            {/if}
+                        </li>
+                        {/maccms:type}
+                        <li data-sid="6" {if condition="$maccms.aid eq 30" }class="active" {/if}>
+                            <a href="{:mac_url('topic/index')}" title="专题" data-lang="string_topic">专题</a>
+                        </li>
+                        <li data-sid="7" {if condition="$maccms.aid eq 10" }class="active" {/if}>
+                            <a href="{:mac_url('vod/last_vod')}" title="最近更新" data-lang="string_foot_gx1" data-title="string_foot_gx1">最近更新</a>
+                        </li>
+                        {if condition="isset($tplconfig['theme']['nav']['zdybtn']) && $tplconfig['theme']['nav']['zdybtn'] eq 1"}
+                        {if condition="!empty($tplconfig['theme']['nav']['zdybtn1']) && $tplconfig['theme']['nav']['zdybtn1'] eq 1"}
+                        <li><a href="{$tplconfig.theme.nav.zdylink1|default='#'}" title="{$tplconfig.theme.nav.zdyname1|default=''}" target="_blank">{$tplconfig.theme.nav.zdyname1|default=''}</a></li>
+                        {/if}
+                        {if condition="!empty($tplconfig['theme']['nav']['zdybtn2']) && $tplconfig['theme']['nav']['zdybtn2'] eq 1"}
+                        <li><a href="{$tplconfig.theme.nav.zdylink2|default='#'}" title="{$tplconfig.theme.nav.zdyname2|default=''}" target="_blank">{$tplconfig.theme.nav.zdyname2|default=''}</a></li>
+                        {/if}
+                        {if condition="!empty($tplconfig['theme']['nav']['zdybtn3']) && $tplconfig['theme']['nav']['zdybtn3'] eq 1"}
+                        <li><a href="{$tplconfig.theme.nav.zdylink3|default='#'}" title="{$tplconfig.theme.nav.zdyname3|default=''}" target="_blank">{$tplconfig.theme.nav.zdyname3|default=''}</a></li>
+                        {/if}
+                        {if condition="!empty($tplconfig['theme']['nav']['zdybtn4']) && $tplconfig['theme']['nav']['zdybtn4'] eq 1"}
+                        <li><a href="{$tplconfig.theme.nav.zdylink4|default='#'}" title="{$tplconfig.theme.nav.zdyname4|default=''}" target="_blank">{$tplconfig.theme.nav.zdyname4|default=''}</a></li>
+                        {/if}
+                        {/if}
+                    </ul>
+                    <a href="javascript:;" class="top_nav_more_btn" id="topNavMoreBtn" data-title="string_more" title="更多" aria-label="更多">
+                        <i class="iconfont">&#xe640;</i>
+                    </a>
+                    <div class="top_nav_overlay" id="topNavOverlay">
+                        <div class="top_nav_overlay_inner">
+                            <a href="{$maccms.path}" class="top_nav_overlay_item" title="首页"><span data-lang="string_home">首页</span></a>
+                            {maccms:type ids="'.($tplconfig['theme']['nav']['id'] ?? '').'" num="7" order="asc" by="sort" id="vo2" key="key"}
+                            {if condition="$vo2.type_mid eq 12"}
+                            <a href="{:mac_url('manga/index')}" class="top_nav_overlay_item" title="{$vo2.type_name}">{$vo2.type_name}</a>
+                            {else/}
+                            <a href="{:mac_url_type($vo2)}" class="top_nav_overlay_item" title="{$vo2.type_name}">{$vo2.type_name}</a>
+                            {/if}
+                            {/maccms:type}
+                            <a href="{:mac_url('topic/index')}" class="top_nav_overlay_item" title="专题"><span data-lang="string_topic">专题</span></a>
+                            <a href="{:mac_url('vod/last_vod')}" class="top_nav_overlay_item" title="最近更新"><span data-lang="string_foot_gx1">最近更新</span></a>
+                            {if condition="isset($tplconfig['theme']['nav']['zdybtn']) && $tplconfig['theme']['nav']['zdybtn'] eq 1"}
+                            {if condition="!empty($tplconfig['theme']['nav']['zdybtn1']) && $tplconfig['theme']['nav']['zdybtn1'] eq 1"}
+                            <a href="{$tplconfig.theme.nav.zdylink1|default='#'}" class="top_nav_overlay_item" title="{$tplconfig.theme.nav.zdyname1|default=''}" target="_blank">{$tplconfig.theme.nav.zdyname1|default=''}</a>
+                            {/if}
+                            {if condition="!empty($tplconfig['theme']['nav']['zdybtn2']) && $tplconfig['theme']['nav']['zdybtn2'] eq 1"}
+                            <a href="{$tplconfig.theme.nav.zdylink2|default='#'}" class="top_nav_overlay_item" title="{$tplconfig.theme.nav.zdyname2|default=''}" target="_blank">{$tplconfig.theme.nav.zdyname2|default=''}</a>
+                            {/if}
+                            {if condition="!empty($tplconfig['theme']['nav']['zdybtn3']) && $tplconfig['theme']['nav']['zdybtn3'] eq 1"}
+                            <a href="{$tplconfig.theme.nav.zdylink3|default='#'}" class="top_nav_overlay_item" title="{$tplconfig.theme.nav.zdyname3|default=''}" target="_blank">{$tplconfig.theme.nav.zdyname3|default=''}</a>
+                            {/if}
+                            {if condition="!empty($tplconfig['theme']['nav']['zdybtn4']) && $tplconfig['theme']['nav']['zdybtn4'] eq 1"}
+                            <a href="{$tplconfig.theme.nav.zdylink4|default='#'}" class="top_nav_overlay_item" title="{$tplconfig.theme.nav.zdyname4|default=''}" target="_blank">{$tplconfig.theme.nav.zdyname4|default=''}</a>
+                            {/if}
+                            {/if}
+                            <a href="{:mac_url('vod/last_vod')}" class="top_nav_overlay_btn_all"><span data-lang="string_all_films">全部影片</span></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="head_search head_search_capsule_host">
+                <div class="head_search_inner">
+                    {include file="widget/head_search_capsule_pc" /}
+                    <div class="mac_results mac_results_hot" style="display:none;">
+                        <div class="hot mac_item">
+                            <p class="mac_title" data-lang="hot_search">热门搜索</p>
+                            <ul class="hot_keys"></ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="head_user">
+                <ul>
+                    <li class="top_ico change-lang">
+                        <a title="语言切换" data-title="string_lang_change" class="top_link ">
+                            <i class="iconfont no-lang">&#xe611;</i>
+                            <img src="" class="has-lang" alt="">
+                            <div class="lang-wrap">
+                                <div class="lang" data-lang="cn">
+                                    <img class="lang-img" src="{$maccms.path}template/default/images/la/lang-zh.png">
+                                    <span class="lang-txt" data-lang="string_lang_zh">简体中文</span>
+                                </div>
+                                <div class="lang" data-lang="en">
+                                    <img class="lang-img" src="{$maccms.path}template/default/images/la/lang-en.png">
+                                    <span class="lang-txt" data-lang="string_lang_en">English</span>
+                                </div>
+                            </div>
+                        </a>
+                    </li>
+                    <li class="top_ico">
+                        <a class="top_link" href="{:mac_url('label/rank')}" data-title="string_rank" title="{$tplconfig.theme.rank.title|default='排行榜'}">
+                            <span class="head-nav-icon-theme head-nav-icon-theme--lightbg" aria-hidden="true">
+                                <img class="head-nav-icon" src="{$maccms.path_tpl}images/head-nav/排行榜.png" width="52" height="52" alt="" decoding="async">
+                            </span>
+                            <span class="head-nav-icon-theme head-nav-icon-theme--darkbg" aria-hidden="true">
+                                <img class="head-nav-icon" src="{$maccms.path_tpl}images/head-nav/排行榜-黑色使用.png" width="52" height="52" alt="" decoding="async">
+                            </span>
+                        </a>
+                    </li>
+                    <li class="top_ico">
+                        <a class="top_link js-save-site-url" href="javascript:;" data-title="string_save_site" title="">
+                            <span class="head-nav-icon-theme head-nav-icon-theme--lightbg" aria-hidden="true">
+                                <span class="head-latest-url-flip">
+                                    <img class="head-latest-url-flip__img head-latest-url-flip__img--a" src="{$maccms.path_tpl}images/head-nav/最新网址.png" width="52" height="52" alt="" decoding="async">
+                                    <img class="head-latest-url-flip__img head-latest-url-flip__img--b" src="{$maccms.path_tpl}images/head-nav/最新网址2.png" width="52" height="52" alt="" decoding="async">
+                                </span>
+                            </span>
+                            <span class="head-nav-icon-theme head-nav-icon-theme--darkbg" aria-hidden="true">
+                                <span class="head-latest-url-flip">
+                                    <img class="head-latest-url-flip__img head-latest-url-flip__img--a" src="{$maccms.path_tpl}images/head-nav/最新网址1-黑色使用.png" width="52" height="52" alt="" decoding="async">
+                                    <img class="head-latest-url-flip__img head-latest-url-flip__img--b" src="{$maccms.path_tpl}images/head-nav/最新网址2-黑色使用.png" width="52" height="52" alt="" decoding="async">
+                                </span>
+                            </span>
+                        </a>
+                    </li>
+                    <li class="top_ico">
+                        <a class="user_login top_link mac_head_plays" href=" javascript:; " data-title="user_view_record" title="播放记录">
+                            <span class="head-nav-icon-theme head-nav-icon-theme--lightbg" aria-hidden="true">
+                                <img class="head-nav-icon" src="{$maccms.path_tpl}images/head-nav/观看历史.png" width="52" height="52" alt="" decoding="async">
+                            </span>
+                            <span class="head-nav-icon-theme head-nav-icon-theme--darkbg" aria-hidden="true">
+                                <img class="head-nav-icon" src="{$maccms.path_tpl}images/head-nav/观看历史-黑色使用.png" width="52" height="52" alt="" decoding="async">
+                            </span>
+                        </a>
+                    </li>
+                    {if condition="$GLOBALS['config']['user']['status'] eq 1"}
+                    <li class="top_ico">
+                        <a class="mac_user top_link"
+                            href=" javascript:;"
+                            data-title="string_hy"
+                            title="会员">
+                            <img class="head-nav-icon" src="{$maccms.path_tpl}images/head-nav/用户默认.png" width="52" height="52" alt="" decoding="async">
+                        </a>
+                    </li>
+                    {/if}
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>

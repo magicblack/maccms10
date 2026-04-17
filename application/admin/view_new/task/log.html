@@ -1,0 +1,81 @@
+{include file="../../../application/admin/view_new/public/head" /}
+<div class="page-container p10">
+    <div class="my-toolbar-box">
+        <div class="mb10">
+            <form class="layui-form" method="post" action="{:url('log')}">
+                <div class="layui-input-inline w100">
+                    <select name="status">
+                        <option value="">{:lang('select_status')}</option>
+                        <option value="0" {if condition="$param['status'] == '0'"}selected{/if}>{:lang('task/status_doing')}</option>
+                        <option value="1" {if condition="$param['status'] == '1'"}selected{/if}>{:lang('task/status_done')}</option>
+                        <option value="2" {if condition="$param['status'] == '2'"}selected{/if}>{:lang('task/status_claimed')}</option>
+                    </select>
+                </div>
+                <div class="layui-input-inline w100">
+                    <input type="text" autocomplete="off" placeholder="{:lang('task/user_id')}" class="layui-input" name="uid" value="{$param['uid']|default=''}">
+                </div>
+                <div class="layui-input-inline w100">
+                    <input type="text" autocomplete="off" placeholder="{:lang('task/task_id_label')}" class="layui-input" name="task_id" value="{$param['task_id']|default=''}">
+                </div>
+                <button class="layui-btn mgl-20 j-search">{:lang('btn_search')}</button>
+            </form>
+        </div>
+        <div class="flex gap-5">
+            <a data-href="{:url('log_del')}" class="layui-btn layui-btn-primary j-page-btns confirm"><i class="layui-icon">&#xe640;</i>{:lang('del')}</a>
+            <a data-href="{:url('log_del')}?all=1" class="layui-btn layui-btn-primary j-ajax" confirm="{:lang('task/clear_log_confirm')}"><i class="layui-icon">&#xe640;</i>{:lang('clear')}</a>
+        </div>
+    </div>
+    <form class="layui-form" method="post" id="pageListForm">
+        <table class="layui-table" lay-size="sm">
+            <thead>
+            <tr>
+                <th width="25"><input type="checkbox" lay-skin="primary" lay-filter="allChoose"></th>
+                <th width="50">{:lang('id')}</th>
+                <th width="80">{:lang('task/user_id')}</th>
+                <th width="80">{:lang('task/task_id_label')}</th>
+                <th>{:lang('task/task_action')}</th>
+                <th width="80">{:lang('task/progress')}</th>
+                <th width="80">{:lang('task/task_points')}</th>
+                <th width="100">{:lang('task/log_date')}</th>
+                <th width="80">{:lang('status')}</th>
+            </tr>
+            </thead>
+            <tbody>
+            {volist name="list" id="vo"}
+            <tr>
+                <td><input type="checkbox" name="ids[]" value="{$vo.log_id}" class="layui-checkbox checkbox-ids" lay-skin="primary"></td>
+                <td>{$vo.log_id}</td>
+                <td>{$vo.user_id}</td>
+                <td>{$vo.task_id}</td>
+                <td>{$vo.task_action}</td>
+                <td>{$vo.log_progress}</td>
+                <td>{$vo.log_points}</td>
+                <td>{$vo.log_date}</td>
+                <td>
+                    {if condition="$vo.log_status eq 0"}<span class="layui-badge layui-bg-gray">{:lang('task/status_doing')}</span>
+                    {elseif condition="$vo.log_status eq 1"}<span class="layui-badge layui-bg-orange">{:lang('task/status_done')}</span>
+                    {else}<span class="layui-badge layui-bg-green">{:lang('task/status_claimed')}</span>{/if}
+                </td>
+            </tr>
+            {/volist}
+            </tbody>
+        </table>
+        <div id="pages" class="center"></div>
+    </form>
+</div>
+{include file="../../../application/admin/view_new/public/foot" /}
+<script type="text/javascript">
+var curUrl="{:url('task/log',$param)}";
+layui.use(['laypage','layer','form'], function(){
+    var laypage=layui.laypage;
+    laypage.render({
+        elem:'pages', count:{$total}, limit:{$limit}, curr:{$page},
+        layout:['count','prev','page','next','limit','skip'],
+        jump:function(obj,first){
+            if(!first){ location.href=curUrl.replace('%7Bpage%7D',obj.curr).replace('%7Blimit%7D',obj.limit); }
+        }
+    });
+});
+</script>
+</body>
+</html>

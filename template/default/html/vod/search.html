@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html>
+<head>
+       
+	{include file="public/include"}
+	<link rel="stylesheet" type="text/css" href="{$maccms.path_tpl}/asset/css/vod-search.css" />
+</head>
+
+<body>     	
+	{include file="public/th" /}
+    {include file="public/head"}
+	<div class="member-wrap">
+    <div class="container ">
+        {include file="ads/ads_all"}
+        <div class="left_row fl">        	
+        	<div class="pannel search_box clearfix">  
+				<div class="pannel_head clearfix">	
+					<h3 class="title">
+						<span data-lang="string_search_ssd">搜索到与"“</span>
+						<em>{$param.wd}{$param.actor}{$param.director}{$param.area}{$param.lang}{$param.year}{$param.class}</em>
+						<span data-lang="string_search_xgd">”"相关的</span>
+						<em class="mac_total"></em> <span data-lang="string_search_jg">条结果</span>
+					</h3>
+				</div>
+
+				<div class="wrapper_fl wrapper_tm" >
+					<ul class="screen_list sx_tz vod-search-sort clearfix">
+						<li {if condition="$param.by eq '' || $param.by eq 'time'" } class="hl_fl" {/if}>
+						<a data-lang="string_search_zx" href="{:mac_url_vod_search(array_merge($param, ['by' => 'time']))}">
+							<span data-lang="string_search_zx">按最新</span>
+						</a>
+						</li>
+						<li {if condition="$param.by eq 'hits'" } class="hl_fl" {/if}>
+						<a data-lang="string_search_zr" href="{:mac_url_vod_search(array_merge($param, ['by' => 'hits']))}">
+							<span data-lang="string_search_zr">按最热</span>
+						</a>
+						</li>
+						<li {if condition="$param.by eq 'score'" } class="hl_fl" {/if}>
+						<a data-lang="string_search_pf" href="{:mac_url_vod_search(array_merge($param, ['by' => 'score']))}">
+							<span data-lang="string_search_pf">按评分</span>
+						</a>
+						</li>
+					</ul>
+				</div>
+
+					
+				<ul class="vodlist clearfix">
+			        {php}$count=1;{/php}
+			        {maccms:vod num="36" paging="yes" half="3" pageurl="vod/search" order="desc" by="time"}
+                    {php}$count++;{/php}																
+					{include file="widget/search_box"}					
+					{/maccms:vod}
+				</ul>		
+					
+				<script>
+					let uls=$('.vodlist').children().length;
+					if(uls>0){
+						$('.wrapper_fl').show();
+					}else{
+						$('.wrapper_fl').hide();
+					}
+				</script>
+				
+				{include file="widget/page"}
+				
+				{empty name="$__PAGING__.record_total"}
+	            <div class="search_tips">
+					<span>
+						<span data-lang="string_search_bq">很抱歉，暂无相关视频！如需提醒管理员添加该视频请点击</span>
+						&nbsp;&nbsp;<a href="javascript:void(0)" class="report_click" onclick="MAC.Gbook.Noinfo('请管理员添加《{$param.wd}》，谢谢！')"><i class="iconfont">&#xe632;</i>&nbsp; <span data-lang="string_search_ly"> 留言</span></a>&nbsp; <span data-lang="string_search_xx"> ，谢谢！</span></span>
+					<span data-lang="string_search_ts">提示（如果搜索词错误也将无法搜到，可尝试简化搜索词）</span>
+				</div>
+	            {/empty}
+			</div>
+			{include file="ads/ads_vodw"} 
+			{empty name="$__PAGING__.record_total"}
+			<div class="pannel clearfix">
+				<div class="pannel_head clearfix">
+				    <a class="text_muted pull_right" href="{:mac_url('map/index')}">
+						<span data-lang="string_type_more2">更多</span>
+						<i class="iconfont more_i">&#xe623;</i>
+					</a>
+					<h3 class="title">
+						<span data-lang="string_zuixin">最新</span>
+					</h3>						
+				</div>
+				<ul class="vodlist clearfix">
+					{maccms:vod num="6" type="all" order="desc" by="time"}
+					{include file="widget/search_box"}		
+					{/maccms:vod}
+				</ul>
+			</div>
+            {/empty}	      
+        </div>
+        <div class="right_row fr pa_left hidden_xs hidden_mi">
+            {include file="ads/ads_vodr"}
+            
+			<div class="pannel clearfix">
+				<div class="pannel_head clearfix">
+					<h3 class="title" data-lang="string_art_hot">
+						热播影视
+					</h3>						
+				</div>
+				<ul class="ranklist_r clearfix">
+					{maccms:vod num="10" type="all" order="desc" by="hits_week"}
+					{include file="widget/rank_box_text"}		
+					{/maccms:vod}
+				</ul>
+			</div>
+			
+        </div>
+    </div>
+</div>
+    <script type="text/javascript">
+        $('.mac_total').html('{$__PAGING__.record_total}');
+
+		var lang=localStorage.getItem('lang');
+		function changeLang(){
+			if(lang==1){
+				let s="MAC.Gbook.Noinfo('Please add by administrator《{$param.wd}》，thank you！')";
+				$('.report_click').attr('onclick',s);
+			}else{
+				let s1="MAC.Gbook.Noinfo('请管理员添加《{$param.wd}》，谢谢！')";
+				$('.report_click').attr('onclick',s1);
+			}
+		}
+		changeLang();
+		$(document).click(function(e){
+			lang=localStorage.getItem('lang');
+			changeLang();
+		});
+    </script>
+	{include file="public/foot"}
+</body>
+</html>

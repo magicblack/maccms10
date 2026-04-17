@@ -1,0 +1,27 @@
+<div class="pannel clearfix">
+    <div class="pannel_head clearfix">
+        <a class="text_muted pull_right" href="{:mac_url('label/rank')}">
+            <span data-lang="string_type_more2">更多</span>
+            <i class="iconfont more_i">&#xe623;</i>
+        </a>
+        <h3 class="title">
+            {$obj.type.type_name|mac_default=''}<span data-lang="home_top_tab">排行榜</span>
+        </h3>
+    </div>
+    <ul class="vodlist clearfix">
+        {maccms:vod num="1" type="current" order="desc" by="hits"}
+            {include file="widget/rank_box_all"}
+        {/maccms:vod}
+        {maccms:vod num="9" type="current" start="2" order="desc" by="hits"}
+        <li class="part_eone">
+            <a href="{:mac_url_vod_detail($vo)}">
+                <span class="part_nums part_num{$key+1}">{$key+1}</span>
+                <span class="text_muted pull_right renqi">
+                    <i class="iconfont">&#xe631;</i>&nbsp;{$vo.vod_hits}
+                </span>
+                {$vo.vod_name}
+            </a>
+        </li>
+        {/maccms:vod}
+    </ul>
+</div>

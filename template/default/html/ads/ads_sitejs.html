@@ -1,0 +1,16 @@
+{php}
+$siteJsRows = [];
+if (!empty($tplconfig['theme']['ad_slots']['sitejs']['ad_data']) && is_array($tplconfig['theme']['ad_slots']['sitejs']['ad_data'])) {
+    foreach ($tplconfig['theme']['ad_slots']['sitejs']['ad_data'] as $row) {
+        if (!is_array($row)) { continue; }
+        if (strtolower(trim((string)($row['active'] ?? 'off'))) !== 'on') { continue; }
+        if (empty($row['code'])) { continue; }
+        $siteJsRows[] = $row;
+    }
+}
+{/php}
+{if condition="($tplconfig['theme']['ads']['btn'] eq 1 || ($tplconfig['theme']['ads']['btn'] eq 2 && isset($user['group_id']) && $user['group_id'] lt 3))"}
+{volist name="siteJsRows" id="vo"}
+{$vo.code}
+{/volist}
+{/if}

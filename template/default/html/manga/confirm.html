@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=EmulateIE10" />
+	<meta name="renderer" content="webkit|ie-comp|ie-stand">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+	<title data-lang="string_jfgmqx">使用金币购买权限</title>
+	{include file="public/include"}
+	<link rel="stylesheet" type="text/css" href="{$maccms.path_tpl}/asset/css/manga-confirm.css" />
+	
+</head>
+<body>
+{include file="widget/themes" /}
+
+<div class="confirm-card">
+	{if condition="$user.group.group_id eq 1"}
+	<div class="confirm-icon user">
+		<svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+	</div>
+	<h2 class="confirm-title" data-lang="play_xdl">需要登录</h2>
+	<p class="confirm-msg">{$popedom.msg}</p>
+	<p class="confirm-tip" data-lang="string_sm_ycff">一次支付永久观看，不重复扣费</p>
+	<div class="confirm-actions">
+		<a href="javascript:;" class="btn-confirm btn-primary mac_user" data-lang="play_msdl">马上登录</a>
+		<a href="javascript:history.back()" class="btn-confirm btn-ghost" data-lang="string_fhsyy">返回上一页</a>
+	</div>
+	{else/}
+	<div class="confirm-icon lock">
+		<svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/><circle cx="12" cy="16" r="1"/></svg>
+	</div>
+	<h2 class="confirm-title" data-lang="string_jfgmqx">金币购买阅读权限</h2>
+	<p class="confirm-msg">{$popedom.msg}</p>
+	<div class="points-badge">
+		<svg viewBox="0 0 24 24"><path d="M12 2L15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2z"/></svg>
+		{$popedom.points} 金币
+	</div>
+	<p class="confirm-tip" data-lang="string_sm_ycff">一次支付永久观看，不重复扣费</p>
+	<div class="confirm-actions">
+		<a href="javascript:;" class="btn-confirm btn-primary" data-lang="play_qrgm" onclick="MAC.User.BuyPopedom(this)" data-id="{$obj.manga_id}" data-sid="{$param.page}" data-nid="0" data-mid="12" data-type="1">确认购买</a>
+		<a href="{:url('user/buy')}" id="confirmRechargeLink" class="btn-confirm btn-outline" data-lang="play_mscz">马上充值</a>
+		<div class="divider">or</div>
+		<a href="javascript:history.back()" class="btn-confirm btn-ghost" data-lang="string_fhsyy">返回上一页</a>
+	</div>
+	{/if}
+</div>
+
+{include file="widget/recharge_modal" /}
+<script>
+(function(){
+	var isMobile = /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent);
+	if(isMobile){
+		$('#confirmRechargeLink').on('click', function(e){
+			if(typeof window.openRechargeModal === 'function'){
+				e.preventDefault();
+				window.openRechargeModal();
+			}
+		});
+	}
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,18 @@
+<div class="link_row">
+	<div class="pannel clearfix">
+		<div class="pannel_head clearfix">
+			<h3 class="title"><span data-lang="string_link">友情链接 LINK</span></h3>
+		</div>
+		<ul class="link_text list_scroll clearfix">
+			{maccms:link num="50" type="all" order="asc" by="sort"}
+			{if condition="$vo['link_type'] eq 0"}
+			<li><a class="text_muted" href="{$vo.link_url}" title="{$vo.link_name}" target="_blank">{$vo.link_name}</a>
+					</li>
+			{elseif condition="$vo['link_type'] eq 1"}
+			<li><a class="text_muted" href="{$vo.link_url}" title="{$vo.link_name}" target="_blank"><img src="{$vo.link_logo}" class="link_logo"></a>
+			</li>
+			{/if}
+			{/maccms:link}
+		</ul>
+	</div>
+</div>

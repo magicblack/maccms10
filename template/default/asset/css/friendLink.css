@@ -1,0 +1,1 @@
+#link{position:relative;z-index:99}#link,#link #title{border:none;width:100%}#link #title{border-top:1px solid #ddd;color:#343434;font-size:var(--tpl-font-heading);height:40px;line-height:42px}#link ul{width:100%}#link ul li{float:left}#link ul li a:link{display:block;float:left;font-size:var(--tpl-font-body);height:35px;line-height:35px;padding-right:20px;text-align:left}

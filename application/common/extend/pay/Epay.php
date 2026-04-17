@@ -6,7 +6,7 @@ class Epay {
     public $name = '易支付';
     public $ver = '1.0';
 
-    public function submit($user,$order,$param)
+    public function submit($user,$order,$param,$return_only=false)
     {
         $pay_type = 0;
         $pay_type_map = [1 => 'alipay', 2 => 'qqpay', 3 => 'wxpay',];
@@ -46,6 +46,9 @@ class Epay {
 
         $query = $urls . '&sign='.md5($sign.trim( $epay_config['appkey'] )); //创建订单所需的参数
         $url = $epay_config['api_url'] . "submit.php?{$query}"; //支付页面
+        if ($return_only) {
+            return '<script>location.href="' . $url . '";</script>';
+        }
         mac_redirect($url);
     }
 

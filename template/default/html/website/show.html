@@ -1,0 +1,109 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>{$obj.type_name}网址收录 - {$maccms.site_name}</title>
+    <meta name="keywords" content="{$obj.type_key}" />
+    <meta name="description" content="{$obj.type_des}" />
+    {include file="public/include"}
+	<link rel="stylesheet" type="text/css" href="{$maccms.path_tpl}/asset/css/website-show.css" />
+</head>
+
+{php}$info = ['type_mid' => 11,'type_id' => ''];{/php}
+<body>
+<div class="show-pc">
+    {include file="public/head"}
+</div>
+<div class="show-mobile">
+    <div id="ui-nav" class="m-nav">
+        <a href="javascript:MAC.GoBack()" class="btn-left"><i class="iconfont ico-right">&#xe625;</i></a>
+        <span class="mb-title" data-lang="website_gjsl">网址收录 </span>
+    </div>
+</div>
+
+<div class="member-wrap js-website-show-ajax"
+     data-type-id="{$obj.type_id|default='0'}"
+     data-letter="{$param.letter|default=''}"
+     data-by="{$param.by|default='time'}"
+     data-page="{$param.page|default='1'}"
+     data-page-size="36">
+<div class=" filter-focus">
+    <div class="ui-title"><h3>{$obj.type_name}<span data-lang="website_gjsl">高级搜索</span> </h3></div>
+    <div class="ui-cnt">
+
+        <div id="hl06">
+            <div class="scroller">
+                <ul class="screen_list clearfix">
+                    <li class="text hidden_xs"><span class="text_muted" data-lang="string_show_zm">字母 </span>
+                    </li>
+                    <li></li>
+                    <li {if condition="$param['letter'] eq ''" } class="hl filter-letter" {/if}><a href="{:mac_url_type($info,['letter'=>''],'show')}" data-lang="string_show_all">全部 </a>
+                    </li>
+                    {maccms:foreach name=":explode(',','A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,R,S,T,U,V,W,X,Y,Z')" id="vo2" key="key2"}
+                    <li {if condition="$param['letter'] eq $vo2" } class="hl filter-letter" {/if}>
+                    <a href="{:mac_url_type($info,['letter'=>$vo2],'show')}">{$vo2}</a>
+                    </li>
+                    {/maccms:foreach}
+                </ul>
+            </div>
+        </div>
+        <div id="hl07">
+            <div class="scroller">
+                <ul class="screen_list clearfix">
+                    <li class="text hidden_xs"><span class="text_muted" data-lang="string_show_website_number">数字 </span>
+                    </li>
+                    <li></li>
+                    <li {if condition="$param['letter'] eq ''" } class="hl filter-number" {/if}>
+                    <a href="{:mac_url_type($info,['letter'=>''],'show')}" data-lang="string_show_all">全部</a>
+                    </li>
+                    {maccms:foreach name=":explode(',','0,1,2,3,4,5,6,7,8,9')" id="vo3" key="key3"}
+                    <li {if condition="$param['letter'] eq $vo3" } class="hl filter-number" {/if}>
+                    <a href="{:mac_url_type($info,['letter'=>$vo3],'show')}">{$vo3}</a>
+                    </li>
+                    {/maccms:foreach}
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="ui-bar fn-clear">
+    <div class="view-filter">
+        <a href="{:mac_url_type($info,['letter'=>$param['letter'],'by'=>'time'],'show')}" class="order {if condition="$param.by eq '' || $param.by eq 'time'"}current{/if}" data-lang="website_asj">按时间</a>
+        <a href="{:mac_url_type($info,['letter'=>$param['letter'],'by'=>'hits'],'show')}" class="order {if condition="$param.by eq 'hits'"}current{/if}" data-lang="website_arq">按人气</a>
+        <a href="{:mac_url_type($info,['letter'=>$param['letter'],'by'=>'score'],'show')}" class="order {if condition="$param.by eq 'score'"}current{/if}" data-lang="website_apf">按评分</a>
+    </div>
+</div>
+
+<div class="ui-box ui-qire fn-clear show-pc" id="qire-lasted">
+    <div class="ui-title fn-clear">
+        <div class="table-head lasted-time" data-lang="string_zuijingx">最近更新</div>
+        <div class="table-head" data-lang="string_show_leixing">类型</div>
+        <div class="table-head lasted-tags" data-lang="website_bq">标签</div>
+        <div class="table-head lasted-type" data-lang="website_gxsj">更新时间</div>
+    </div>
+    <div class="ui-cnt">
+        <ul class="lasted-list fn-clear website-list js-website-pc-list"></ul>
+        <div class="js-ajax-pager"></div>
+    </div>
+</div>
+
+<div class="show-mobile" id="qire-lasted">
+    <div class="">
+        <ul class="website-list js-website-mb-list"></ul>
+        <div class="js-ajax-pager"></div>
+    </div>
+</div>
+
+<div class="no_list js-ajax-empty" style="display:none;">
+    {include file="public/notempty"}
+</div>
+<div style="width:30rem;margin: 2.5rem auto;" class="show-pc">
+	{include file="public/friendLink" }
+</div>
+</div>
+
+{include file="public/foot"}
+<script type="text/javascript" src="{$maccms.path_tpl}/asset/js/show-list-ajax.js"></script>
+</body>
+</html>

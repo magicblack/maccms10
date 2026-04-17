@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+<head>
+	{include file="public/include"}
+	<link rel="stylesheet" type="text/css" href="{$maccms.path_tpl}/asset/css/topic-detail.css" />
+</head>
+
+<body id="topicDetailPage" class="topic-detail-body topic_wrap" data-detail-id="{$param.id|default='0'}" data-mid="{$maccms.mid}">
+    {include file="public/th" /}
+<div
+  id="topic_page"
+  class="topic-detail-root"
+  data-topic-list-url="{:mac_url('topic/index')}"
+  data-home-url="{:mac_url('index/index')}"
+>
+    {include file="public/head"}
+    <div class="topic-detail-hero">
+        <img
+          class="topic-detail-hero-img js-topic-hero-img lazyload"
+          src="{:mac_url_img(!empty($tplconfig['theme']['lazy']) ? $maccms['path'].$tplconfig['theme']['lazy'] : $maccms['path_tpl'].'/asset/img/load.gif')}"
+          data-original=""
+          alt=""
+          width="1200"
+          height="360"
+          decoding="async"
+        />
+        <div class="topic-detail-hero-scrim" aria-hidden="true"></div>
+        <header class="topic-detail-appbar" role="banner">
+            <button type="button" class="topic-detail-appbar-back" id="topicDetailAppbarBack" data-title="string_fh" title="返回" aria-label="返回">
+                <i class="iconfont" aria-hidden="true">&#xe625;</i>
+            </button>
+            <p class="topic-detail-appbar-title" id="topicDetailAppbarTitle"></p>
+            <span class="topic-detail-appbar-spacer" aria-hidden="true"></span>
+        </header>
+        <span class="topic-detail-hero-badge" data-lang="string_topic_feed_badge">合集</span>
+    </div>
+
+    <main class="topic-detail-main" id="topicDetailMain">
+        <div class="topic-detail-inner">
+            <h1 class="topic-detail-title js-topic-title"></h1>
+            <p class="topic-detail-meta">
+                <span data-lang="string_topic_feed_badge">合集</span><span class="topic-detail-meta-sep">：</span><span class="js-topic-vod-count">0</span><span data-lang="string_yingpian">个影片</span>
+            </p>
+            <div class="topic-detail-desc topic-detail-desc--plain js-topic-desc"></div>
+
+            <div class="topic-detail-stats" aria-label="专题数据">
+                <div class="topic-detail-stat">
+                    <span class="topic-detail-stat-ico topic-detail-stat-ico--eye" aria-hidden="true">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="22" height="22" focusable="false"><path fill="currentColor" d="M12 5C7 5 2.73 8.11 1 12c1.73 3.89 6 7 11 7s9.27-3.11 11-7c-1.73-3.89-6-7-11-7zm0 12a5 5 0 1 1 0-10 5 5 0 0 1 0 10zm0-8a3 3 0 1 0 0 6 3 3 0 0 0 0-6z"/></svg>
+                    </span>
+                    <span class="topic-detail-stat-val js-topic-hits">0</span>
+                </div>
+                <a class="topic-detail-stat topic-detail-stat--up js-topic-stat-up" href="javascript:;" role="button" aria-label="点赞专题" data-id="" data-mid="" data-type="up">
+                    <span class="topic-detail-stat-ico topic-detail-stat-ico--dashed topic-detail-stat-ico--like" aria-hidden="true">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16" focusable="false"><path fill="currentColor" d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+                    </span>
+                    <span class="topic-detail-stat-val js-topic-up digg_num">0</span>
+                </a>
+                <a class="topic-detail-stat topic-detail-stat--fav js-topic-stat-fav" href="javascript:;" role="button" aria-label="收藏专题" data-id="" data-mid="" data-type="2" data-uid="">
+                    <span class="topic-detail-stat-ico topic-detail-stat-ico--dashed topic-detail-stat-ico--fav" aria-hidden="true">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16" focusable="false"><path fill="currentColor" d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+                    </span>
+                    <span class="topic-detail-stat-val js-topic-fav-count">0</span>
+                </a>
+            </div>
+
+            <hr class="topic-detail-divider" />
+
+            <section class="topic-detail-vod-section" aria-labelledby="topicDetailVodHeading">
+                <h2 class="topic-detail-vod-heading" id="topicDetailVodHeading"><span data-lang="string_topic_include">该专题包含的影片</span></h2>
+                {include file="ads/ads_all"}
+                <ul class="vodlist vodlist_wi topic-detail-vod-grid js-topic-vod-list"></ul>
+                <div class="topic-detail-empty js-topic-empty hide" role="status">
+                    <p class="topic-detail-empty-icon" aria-hidden="true"></p>
+                    <p class="topic-detail-empty-txt" data-lang="string_no_have">暂无</p>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <div class="topic-detail-friend-wrap">
+        {include file="public/friendLink" }
+    </div>
+</div>
+{include file="public/foot"}
+<script type="text/javascript" src="{$maccms.path_tpl}/asset/js/mac-catalog-media.js"></script>
+<script type="text/javascript" src="{$maccms.path_tpl}/asset/js/topic-detail.js"></script>
+<script type="text/javascript" src="{$maccms.path_tpl}/asset/js/topic-detail-ajax-render.js"></script>
+</body>
+</html>

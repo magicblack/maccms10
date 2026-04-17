@@ -1,0 +1,58 @@
+<script type="text/javascript">
+(function ($) {
+    var defaultColorMode = '{$tplconfig.theme.color.ms|default="white"}';
+
+    function macThemeIsDark(cookie_style) {
+        if (cookie_style === 'black') {
+            return true;
+        }
+        if (cookie_style === 'white') {
+            return false;
+        }
+        return defaultColorMode === 'black';
+    }
+
+    window.macSyncThemeUi = function () {
+        if (typeof jQuery === 'undefined') {
+            return;
+        }
+        var cookie_style = $.cookie('mystyle');
+        var dark = macThemeIsDark(cookie_style);
+
+        $('body').toggleClass('bstem', dark);
+
+        var $dark = $('#macThemeDarkSheet');
+        if ($dark.length) {
+            $dark.prop('disabled', !dark);
+        }
+
+        var $b = $('#black.mycolor'), $w = $('#white.mycolor');
+        if (!$b.length && !$w.length) {
+            return;
+        }
+        if (cookie_style == null) {
+            if (defaultColorMode === 'black') {
+                $b.addClass('hide');
+                $w.removeClass('hide');
+            } else {
+                $w.addClass('hide');
+                $b.removeClass('hide');
+            }
+        } else if (cookie_style === 'black') {
+            $b.addClass('hide');
+            $w.removeClass('hide');
+        } else if (cookie_style === 'white') {
+            $w.addClass('hide');
+            $b.removeClass('hide');
+        } else {
+            $("[id='" + cookie_style + "'].mycolor").addClass('hide');
+            $("[id!='" + cookie_style + "'].mycolor").removeClass('hide');
+        }
+    };
+
+    window.macSyncThemeUi();
+    $(function () {
+        window.macSyncThemeUi();
+    });
+})(jQuery);
+</script>

@@ -1,0 +1,113 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>邀请推广 - 会员中心 - {$maccms.site_name}</title>
+<meta name="keywords" content="">
+<meta name="description" content="">
+{include file="user/include" /}
+<link rel="stylesheet" href="{$maccms.path_tpl}/asset/css/user-invite.css">
+</head>
+<body class="mac-invite-wrap">
+	{include file="public/th" /}
+{include file="public/head" /}
+<div class="member-wrap member-wrap-bg">
+<div id="member" class="fn-clear">
+	<div id="left">
+        <div class="m-nav">
+			<a href="javascript:MAC.GoBack()" class="btn-left"><i class="iconfont ico-right">&#xe625;</i></a>
+			<a href="{$maccms.path}" class="btn-right"><i class="iconfont ico-right">&#xe634;</i></a>
+			<span class="mb-title" data-lang='string_user_center'>个人中心</span>
+	    </div>
+        {include file="user/left_nav" /}
+	</div>
+    <div id="right">
+    	<div class="m-nav mac-invite-mnav">
+			<a href="javascript:MAC.GoBack()" class="btn-left"><i class="iconfont ico-right">&#xe625;</i></a>
+			<span class="mb-title">邀请推广</span>
+	    </div>
+	    <div class="co-right co-right-bg invite-page"
+			data-mac-user-invite
+			data-api-base="{:rtrim($maccms.path,'/').'/api.php'}"
+			data-url-login="{:url('user/login')}"
+			data-reg-path="{:mac_url('index/index')}"
+			data-limit="20"
+			data-text-no-code="暂未生成（请重新登录）">
+		<h2 class="mac-invite-page-title">邀请推广</h2>
+
+		<div class="invite-header-card">
+			<p class="invite-card-kicker">我的推广信息</p>
+			<div class="invite-hero">
+				<div class="invite-hero-main">
+					<p class="invite-code-line"><span class="invite-code-label">邀请码：</span><span class="invite-code-value mac-invite-code"></span></p>
+					<p class="invite-code-hint">邀请好友领VIP</p>
+				</div>
+				<div class="invite-hero-art" aria-hidden="true">
+					<img src="{$maccms.path_tpl}/images/invite/invite-vip.png" width="120" height="120" alt="" decoding="async" />
+				</div>
+			</div>
+			<div class="invite-link-stack">
+				<div class="invite-link-block">
+					<div class="invite-link-bar">推广链接（UID）</div>
+					<div class="invite-link-body-wrap">
+						<a class="invite-link-body mac-invite-link-uid" href="#" target="_blank" rel="noopener"></a>
+						<button type="button" class="invite-link-copy" data-invite-copy="uid" aria-label="复制推广链接" title="复制链接">
+							<svg class="invite-link-copy-ico" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+						</button>
+					</div>
+				</div>
+				<div class="invite-link-block mac-invite-row-code" style="display:none">
+					<div class="invite-link-bar">推广链接（邀请码）</div>
+					<div class="invite-link-body-wrap">
+						<a class="invite-link-body mac-invite-link-code" href="#" target="_blank" rel="noopener"></a>
+						<button type="button" class="invite-link-copy" data-invite-copy="code" aria-label="复制推广链接" title="复制链接">
+							<svg class="invite-link-copy-ico" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+						</button>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="invite-stats-card">
+			<div class="invite-stats-head">
+				<span class="invite-stats-title">累计邀请人数</span>
+				<strong class="invite-stats-num mac-invite-total">0</strong>
+			</div>
+			<div class="invite-stats-divider"></div>
+			<p class="mac-invite-loading muted" data-lang="string_loading">加载中~</p>
+			<ul class="order__list clearfix mac-invite-empty invite-empty-list" style="display:none">
+				<li class="invite-empty-li">
+					<div class="invite-empty-visual">
+						<img src="{$maccms.path_tpl}/images/la/no-data.png" width="160" height="160" alt="" decoding="async" />
+					</div>
+					<p class="invite-empty-txt">暂时还没有邀请人，快发起邀请吧～</p>
+				</li>
+			</ul>
+			<div class="invite-table-wrap" style="display:none">
+				<table width="100%" border="0" cellspacing="1" cellpadding="0" class="table">
+					<thead>
+					<tr>
+						<td width="15%" align="center" valign="middle">UID</td>
+						<td width="25%" align="center" valign="middle">账号</td>
+						<td width="20%" align="center" valign="middle">邀请人数</td>
+						<td width="20%" align="center" valign="middle">二级下线</td>
+						<td width="20%" align="center" valign="middle">注册时间</td>
+					</tr>
+					</thead>
+					<tbody class="mac-invite-tbody"></tbody>
+				</table>
+			</div>
+			<div class="invite-mobile-list" style="display:none"></div>
+			<div class="member-page"></div>
+		</div>
+    </div>
+    </div>
+</div>
+<div style="width:30rem;margin: 2rem auto;">
+	{include file="public/friendLink" }
+</div>
+</div>
+<script src="{$maccms.path_tpl}/asset/js/mac-member-list-utils.js"></script>
+<script src="{$maccms.path_tpl}/asset/js/user-invite-page.js"></script>
+{include file="public/foot" /}
+</body>
+</html>

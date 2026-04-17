@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    {include file="public/include"}
+	<link rel="stylesheet" type="text/css" href="{$maccms.path_tpl}/asset/css/manga-type.css" />
+    <script src="{$maccms.path}template/default/asset/js/jquery-adaptive.js?v=202604161"></script>
+</head>
+
+<body>
+    {include file="public/th" /}
+<div class="member-wrap">
+
+{include file="module/typeqt_manga"}
+
+<div class="show-pc" style="max-width:30rem;margin:0 auto;">
+	{include file="public/friendLink" }
+</div>
+{include file="public/foot"}
+</div>
+</body>
+<script>
+    (function(){
+        if($('.hot_list').children().length>0){
+        }
+        if($('.classify_list').find('.classify_item').length<=0){
+            $('.classify_list').hide()
+        }
+    })()
+</script>
+</html>

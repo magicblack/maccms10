@@ -40,8 +40,8 @@ class Link extends Base {
         $order = $lp['order'];
         $by = $lp['by'];
         $type = $lp['type'];
-        $start = intval(abs($lp['start']));
-        $num = intval(abs($lp['num']));
+        $start = abs(intval($lp['start']));
+        $num = abs(intval($lp['num']));
         $cachetime = $lp['cachetime'];
         $not = $lp['not'];
         $page = 1;

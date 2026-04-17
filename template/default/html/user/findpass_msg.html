@@ -1,0 +1,171 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+	<title>找回密码 - {$maccms.site_name} </title>
+	<meta name="keywords" content="{$maccms.site_keywords}"/>
+	<meta name="description" content="{$maccms.site_description}"/>
+	{include file="user/include" /}
+</head>
+<body id="reg">
+	<div class="show-mobile">
+        <div id="ui-nav" class="m-nav">
+            <a href="javascript:MAC.GoBack()" class="btn-left"><i class="iconfont ico-right">&#xe625;</i></a>
+            <span class="mb-title" >{$param['ac_text']}<span data-lang="user_zhaohuimima">找回密码</span></span>
+        </div>
+    </div>
+	<div class="reg-w">
+		<div class="step-wrap">
+			<div class="step-item active" data-step="1" onclick="setStep('1')">
+				<p class="p1">1</p>
+				<p class="p2" data-lang="user_txyanz">找回密码</p>
+			</div>
+			<div class="step-line"></div>
+			<div class="step-item" data-step="2" onclick="setStep('2')">
+				<p  class="p1">2</p>
+				<p  class="p2" data-lang="user_chongzhimm">找回密码</p>
+			</div>
+		</div>
+
+		<form method="post" id="fm" action="" >
+			<input type="hidden" name="ac" value="{$param['ac']}">
+			<div class="reg-group">
+				<img class="l-icon" src="{$maccms.path}template/default/images/member/login-user.png" >
+				<input type="text" data-placeholder="user_place_bangdyx" id="to" name="to" class="reg-control" placeholder="请输入您绑定的{$param['ac_text']}">
+			</div>
+
+			<div class="reg-group">
+				<img class="l-icon" src="{$maccms.path}template/default/images/member/login-i.png" >
+				<input type="text" data-placeholder="user_place_yanzm" class="reg-control w150" id="verify" name="verify" placeholder="请输入您的验证码">
+				<img class="fr m-hi" src="{:url('verify/index')}" onClick="this.src=this.src+'?'" data-title="string_click_refresh" alt="" />
+			</div>
+			<input type="button" data-value="btn_fsyzm" id="btn_send" class="btn-brand btn-sub" value="找回密码">
+		</form>
+
+		<form method="post" id="fm2" action="" class="no-show">
+			<input type="hidden" name="ac" value="email">
+			<div class="reg-group">
+				<img class="l-icon" src="{$maccms.path}template/default/images/member/login-user.png" >
+				<input type="text" data-placeholder="user_place_yanzm" id="code" name="code" class="reg-control" placeholder="请输入{$param['ac_text']}收到的验证码">
+			</div>
+			<div class="reg-group">
+				<img class="l-icon" src="{$maccms.path}template/default/images/member/login-pwd.png" >
+				<input type="password" data-placeholder="user_place_xmm" class="reg-control " id="user_pwd" name="user_pwd" placeholder="请输入新密码">
+			</div> 
+			<div class="reg-group">
+				<img class="l-icon" src="{$maccms.path}template/default/images/member/login-pwd.png" >
+				<input type="password" data-placeholder="user_place_querenmm" class="reg-control " id="user_pwd2" name="user_pwd2" placeholder="请输入您的确认密码">
+			</div>
+			<input type="button" data-value="btn_czmm" id="btn_submit" class="btn-brand btn-sub" value="重置密码">
+		</form>
+        <div class="reg-ts">
+		<a href="{:url('user/login')}" data-lang="user_zjdengl">直接登录</a>
+		<a href="{:url('user/findpass')}" data-lang="user_ybbzh">用密保找回</a>{if$_GET['ac']=='phone'}
+		<a href="{:url('user/findpass_msg')}?ac=email" data-lang="user_yyxzh">用邮箱找回</a>{elseif$_GET['ac']=='email'}
+		<a href="{:url('user/findpass_msg')}?ac=phone" data-lang="user_ysjzh">用手机找回</a>{/if}
+        </div>
+
+		<div class="show-toast"></div>
+	</div>
+
+
+<script type="text/javascript">
+	$(function(){
+		var lang=localStorage.getItem('lang');
+		$("body").bind('keyup',function(event) {
+			if(event.keyCode==13){ $('#btnLogin').click(); }
+		});
+		$('#btn_send').click(function() {
+			
+			if ($('#to').val()  == '') { 
+				$(".show-toast").html(lang==1?'Please enter {$param["ac_text"]}!': '请输入{$param["ac_text"]}！');
+				$(".show-toast").css("display",'block');
+				setTimeout(()=>{
+					$(".show-toast").css("display",'none');
+				}, 2000);
+				$("#to").focus(); return false; 
+			}
+
+			$.ajax({
+				url: "{:url('user/findpass_msg')}",
+				type: "post",
+				dataType: "json",
+				data: $('#fm').serialize(),
+				beforeSend: function () {
+					$("#btn_send").css("background","#40CC92").val("loading...");
+				},
+				success: function (r) {
+					if(r.code==1){
+						let step='2';
+						$('.step-item').each((index,item)=>{
+							if(step==item.getAttribute('data-step')){
+								item.classList.add('active');
+							}else{
+								item.classList.remove('active');
+							}
+						});
+						$("#fm").addClass('no-show');
+						$("#fm2").removeClass('no-show');
+					}
+					$(".show-toast").html(r.msg);
+					$(".show-toast").css("display",'block');
+					setTimeout(()=>{
+						$(".show-toast").css("display",'none');
+					}, 2000);
+					
+				},
+				complete: function () {
+					$('#verify').click();
+					$("#btn_send").css("background","#40CC92").val(MAC.GetLang('string_find_fsyj'));
+				}
+			});
+			
+			
+		});
+
+		$('#btn_submit').click(function() {
+			if ($('#to').val()  == '') { MAC.alert( lang==1?'Please enter {$param["ac_text"]}': '请输入{$param["ac_text"]}'); $("#to").focus(); return false; }
+			if ($('#code').val()  == '') { 
+				MAC.alert(MAC.GetLang('string_login_sryzm')); 
+				$("#code").focus(); 
+				return false; 
+			}
+			if ($('#user_pwd').val()  == '') { 
+				MAC.alert(MAC.GetLang('string_find_srxmm'));
+				 $("#user_pwd").focus(); 
+				 return false; 
+			}
+			if ($('#user_pwd2').val()  == '') { 
+				MAC.alert(MAC.GetLang('string_login_qrmm1'));
+				$("#user_pwd2").focus(); 
+				return false; 
+			}
+			if ($('#user_pwd').val()  != $('#user_pwd2').val() ) { 
+				MAC.alert(MAC.GetLang('string_login_mmbyz'));
+				$("#user_pwd2").focus(); 
+				return false; 
+			}
+
+			var data= {ac:'{$param["ac"]}',to:$('#to').val(),code:$('#code').val(),user_pwd:$('#user_pwd').val(),user_pwd2:$('#user_pwd2').val()};
+			$.ajax({
+				url: "{:url('user/findpass_reset')}",
+				type: "post",
+				dataType: "json",
+				data: data,
+				beforeSend: function () {
+					$("#btn_submit").css("background","#40CC92").val("loading...");
+				},
+				success: function (r) {
+					MAC.alert(r.msg);
+				},
+				complete: function () {
+					$("#btn_submit").css("background","#40CC92").val(MAC.GetLang('btn_czmm'));
+				}
+			});
+		});
+	});
+
+</script>
+
+</body>
+</html>

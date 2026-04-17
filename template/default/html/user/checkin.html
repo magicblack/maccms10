@@ -1,0 +1,98 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>每日签到 - 会员中心 - {$maccms.site_name}</title>
+<meta name="keywords" content="{$maccms.site_keywords}"/>
+<meta name="description" content="{$maccms.site_description}"/>
+{include file="user/include" /}
+<link rel="stylesheet" type="text/css" href="{$maccms.path_tpl}/asset/css/user-checkin.css">
+</head>
+<body class="mac-checkin-wrap user-checkin-page">
+{include file="public/th" /}
+{include file="public/head" /}
+
+<div class="member-wrap member-wrap-bg" id="mac-user-checkin-root"
+	data-url-get-sign-info="{:rtrim($maccms.path,'/').'/api.php/Task/get_sign_info'}"
+	data-url-get-task-list="{:rtrim($maccms.path,'/').'/api.php/Task/get_task_list'}"
+	data-url-daily-sign="{:rtrim($maccms.path,'/').'/api.php/Task/daily_sign'}"
+	data-url-claim-milestone="{:rtrim($maccms.path,'/').'/api.php/Task/claim_sign_milestone'}"
+	data-url-login="{:url('user/login')}"
+	data-coin-img="{$maccms.path_tpl}/images/recharge/recharge-coin.png"
+	data-check-ico="{$maccms.path_tpl}/asset/img/checkin/milestone-check.png">
+<div id="member" class="fn-clear">
+	<div id="left">
+        <div class="m-nav">
+			<a href="javascript:MAC.GoBack()" class="btn-left"><i class="iconfont ico-right">&#xe625;</i></a>
+			<a href="{$maccms.path}" class="btn-right"><i class="iconfont ico-right">&#xe634;</i></a>
+			<span class="mb-title" data-lang="string_user_center">个人中心</span>
+	    </div>
+        {include file="user/left_nav" /}
+	</div>
+
+    <div id="right">
+		<div class="m-nav uc-checkin-mnav">
+			<a href="javascript:MAC.GoBack()" class="btn-left" aria-label="返回"><i class="iconfont ico-right">&#xe625;</i></a>
+			<span class="mb-title" data-lang="user_checkin_page_title">每日签到</span>
+		</div>
+
+	    <div class="co-right co-right-bg co-hi user-checkin checkin-page">
+			<div class="uc-checkin-sheet">
+				<div class="uc-checkin-hero-card">
+					<div class="uc-hero__user" id="mac-user-checkin-hero" data-default-avatar="{$maccms.path_tpl}/images/member/touxiang.png">
+						<span class="uc-hero__avatar-wrap">
+							<span class="mac-avatar mac-avatar--md mac-avatar--checkin">
+								<img class="mac-avatar__img uc-hero__avatar" src="{$maccms.path_tpl}/images/member/touxiang.png" width="56" height="56" decoding="async" alt="" />
+							</span>
+						</span>
+						<div class="uc-hero__stats">
+							<p class="uc-hero__label" data-lang="user_checkin_total_label">累计领取金币</p>
+							<p class="uc-hero__value">
+								<img class="uc-hero__coin-ico" src="{$maccms.path_tpl}/images/recharge/recharge-coin.png" width="22" height="22" alt="" decoding="async" />
+								<span class="uc-hero__num">0</span>
+							</p>
+						</div>
+					</div>
+				</div>
+
+				<div class="uc-checkin-card uc-checkin-card--main">
+					<section class="uc-streak" aria-labelledby="uc-streak-label">
+						<h2 class="visually-hidden" id="uc-streak-label" data-lang="user_checkin_streak_section">连续签到进度</h2>
+						<p class="uc-streak__line">
+							<span class="uc-streak__ico" aria-hidden="true">
+								<svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" focusable="false"><path d="M7.5 3v2M16.5 3v2M4 9.5h16M6 5h12a2 2 0 012 2v12a2 2 0 01-2 2H6a2 2 0 01-2-2V7a2 2 0 012-2z" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round"/></svg>
+							</span>
+							<span class="uc-streak__line-text">
+								<span data-lang="user_checkin_streak_before">已连续签到</span>
+								<strong class="uc-streak__num" id="mac-checkin-serial">0</strong>
+								<span data-lang="user_checkin_streak_after">天</span>
+							</span>
+						</p>
+						<p class="uc-streak__hint" id="mac-checkin-next-hint"></p>
+					</section>
+
+					<section class="uc-milestones" aria-labelledby="uc-milestones-h">
+						<h2 class="visually-hidden" id="uc-milestones-h" data-lang="user_checkin_milestones_section">签到里程碑奖励</h2>
+						<p class="uc-milestones__guest-msg" id="mac-checkin-milestones-guest" data-lang="user_checkin_milestones_login" hidden>登录后查看签到里程碑</p>
+						<div class="uc-milestones__grid" id="mac-checkin-milestones-root" hidden></div>
+					</section>
+
+					<div class="uc-cta-wrap" id="mac-checkin-cta-wrap"></div>
+				</div>
+
+				<section class="uc-rules" aria-labelledby="uc-rules-h">
+					<h2 class="uc-rules__title" id="uc-rules-h" data-lang="user_checkin_rules_title">签到规则</h2>
+					<ol class="uc-rules__list" id="mac-checkin-rules-list"></ol>
+				</section>
+			</div>
+	    </div>
+    </div>
+</div>
+<div style="width:30rem;margin: 2rem auto;">
+	{include file="public/friendLink" }
+</div>
+</div>
+
+{include file="public/foot" /}
+<script type="text/javascript" src="{$maccms.path_tpl}/asset/js/user-checkin.js"></script>
+</body>
+</html>

@@ -49,11 +49,11 @@ class Gbook extends Base {
         $order = $lp['order'];
         $by = $lp['by'];
         $paging = $lp['paging'];
-        $start = intval(abs($lp['start']));
-        $num = intval(abs($lp['num']));
-        $rid = intval(abs($lp['rid']));
-        $uid = intval(abs($lp['uid']));
-        $half = intval(abs($lp['half']));
+        $start = abs(intval($lp['start']));
+        $num = abs(intval($lp['num']));
+        $rid = abs(intval($lp['rid']));
+        $uid = abs(intval($lp['uid']));
+        $half = abs(intval($lp['half']));
         $pageurl = $lp['pageurl'];
         $page = 1;
         $where = [];

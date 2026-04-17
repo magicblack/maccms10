@@ -1,0 +1,171 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>{$tplconfig.theme.user.title|default='会员'}中心 - {$maccms.site_name}</title>
+    <meta name="keywords" content="会员中心">
+    <meta name="description" content="会员中心">
+    {include file="user/include" /}
+    <link rel="stylesheet" href="{$maccms.path_tpl}/asset/css/user-index.css">
+    <link rel="stylesheet" href="{$maccms.path_tpl}/asset/css/user-info.css">
+</head>
+
+<body id="uindex" data-current-theme-color="white">
+    {include file="public/th" /}
+		{include file="public/head" /}
+
+<div class="member-wrap member-wrap-bg" id="mac-user-info-root" data-url-unbind="{:url('user/unbind')}" data-url-info="{:url('user/info')}">
+<div id="member" class="fn-clear">
+	<div id="left" class="dl-bl">
+	    <div id="ui-nav" class="m-nav mobile-nav">
+			<a href="javascript:MAC.GoBack()" class="btn-left"><i class="iconfont ico-right">&#xe625;</i></a>
+			<span class="mb-title" data-lang="user_grzx">个人中心</span>
+	    </div>
+	{include file="user/left_nav" /}
+	</div>
+	<div id="right" class="dr-no">
+		{if condition="isset($obj) and !empty($obj['user_id'])"}
+		<div class="m-nav">
+			<a href="javascript:MAC.GoBack()" class="btn-left"><i class="iconfont ico-right">&#xe625;</i></a>
+			<a href="{:url('user/info')}" class="btn-right" data-lang="user_change">修改</a>
+			<span class="mb-title" data-lang="user_base_info">基本资料</span>
+	    </div>
+	    <div class="co-right co-right-bg">
+		<div id="tab">
+			<div id="listCon">
+				{include file="user/info_profile_cur" /}
+			</div>
+		</div>
+		<section id="cooperation" class="business-coop-section">
+			<h3 class="coop-title">{include file="widget/coop_icon_handshake" /}<span data-lang="user_business_coop">商务合作</span></h3>
+			<p class="coop-desc" data-lang="user_business_coop_desc">诚邀各类商务合作，包括但不限于：广告投放、内容合作、品牌推广等。欢迎与我们联系。</p>
+			<div class="coop-contacts">
+				{if condition="!empty($maccms.site_email)"}
+				<a class="coop-item" href="mailto:{$maccms.site_email}" title="{$maccms.site_email}">
+					{include file="widget/coop_icon_mail" /}
+					<span class="coop-label" data-lang="user_email">邮箱</span>
+					<span class="coop-val">{$maccms.site_email}</span>
+				</a>
+				{/if}
+				{if condition="!empty($maccms.site_qq)"}
+				<a class="coop-item" href="javascript:void(0)" data-qq="{$maccms.site_qq}" title="QQ: {$maccms.site_qq}">
+					{include file="widget/coop_icon_message" /}
+					<span class="coop-label">telegram</span>
+					<span class="coop-val">{$maccms.site_qq}</span>
+				</a>
+				{/if}
+				{if condition="$GLOBALS['config']['gbook']['status'] eq 1"}
+				<a class="coop-item coop-cta" href="{:mac_url('gbook/index')}">
+					{include file="widget/coop_icon_chat" /}
+					<span data-lang="user_contact_us">联系我们</span>
+				</a>
+				{/if}
+			</div>
+		</section>
+	 </div>
+		{else/}
+		<div class="m-nav">
+			<a href="javascript:MAC.GoBack()" class="btn-left"><i class="iconfont ico-right">&#xe625;</i></a>
+			<span class="mb-title" data-lang="user_grzx">个人中心</span>
+	    </div>
+	    <div class="co-right co-right-bg">
+		<section class="guest-vip-section">
+			<h3 class="guest-vip-title" data-lang="user_index_guest_vip_title">会员专享权益</h3>
+			<div class="guest-vip-benefits">
+				<div class="guest-vip-benefit" data-lang="user_index_guest_benefit_1">免广告打扰</div>
+				<div class="guest-vip-benefit" data-lang="user_index_guest_benefit_2">热门内容优先看</div>
+				<div class="guest-vip-benefit" data-lang="user_index_guest_benefit_3">更高清更流畅</div>
+				<div class="guest-vip-benefit" data-lang="user_index_guest_benefit_4">专属会员标识</div>
+			</div>
+			<div class="guest-vip-pricing">
+				<div class="guest-vip-plan">
+					<div class="name" data-lang="user_index_guest_plan_daily_name">日卡体验</div>
+					<div class="price" data-lang="user_index_guest_plan_daily_tag">低门槛</div>
+				</div>
+				<div class="guest-vip-plan hot">
+					<div class="name" data-lang="user_index_guest_plan_month_name">月卡推荐</div>
+					<div class="price" data-lang="user_index_guest_plan_month_tag">高性价比</div>
+				</div>
+				<div class="guest-vip-plan">
+					<div class="name" data-lang="user_index_guest_plan_year_name">年卡省心</div>
+					<div class="price" data-lang="user_index_guest_plan_year_tag">长期省钱</div>
+				</div>
+			</div>
+			<button type="button" class="guest-vip-cta" id="guestOpenRecharge" data-lang="user_index_guest_cta">查看套餐并开通会员</button>
+		</section>
+		<section id="cooperation" class="business-coop-section">
+			<h3 class="coop-title">{include file="widget/coop_icon_handshake" /}<span data-lang="user_business_coop">商务合作</span></h3>
+			<p class="coop-desc" data-lang="user_business_coop_desc">诚邀各类商务合作，包括但不限于：广告投放、内容合作、品牌推广等。欢迎与我们联系。</p>
+			<div class="coop-contacts">
+				{if condition="!empty($maccms.site_email)"}
+				<a class="coop-item" href="mailto:{$maccms.site_email}" title="{$maccms.site_email}">
+					{include file="widget/coop_icon_mail" /}
+					<span class="coop-label" data-lang="user_email">邮箱</span>
+					<span class="coop-val">{$maccms.site_email}</span>
+				</a>
+				{/if}
+				{if condition="!empty($maccms.site_qq)"}
+				<a class="coop-item" href="javascript:void(0)" data-qq="{$maccms.site_qq}" title="QQ: {$maccms.site_qq}">
+					{include file="widget/coop_icon_message" /}
+					<span class="coop-label">telegram</span>
+					<span class="coop-val">{$maccms.site_qq}</span>
+				</a>
+				{/if}
+				{if condition="$GLOBALS['config']['gbook']['status'] eq 1"}
+				<a class="coop-item coop-cta" href="{:mac_url('gbook/index')}">
+					{include file="widget/coop_icon_chat" /}
+					<span data-lang="user_contact_us">联系我们</span>
+				</a>
+				{/if}
+			</div>
+		</section>
+	 </div>
+		{/if}
+	 </div>
+</div>
+<div class="show-pc user-index-friendlink-wrap">
+	{include file="public/friendLink" }
+</div>
+</div>
+{include file="widget/recharge_modal" /}
+{include file="public/foot" /}
+<script type="text/javascript">
+	var lang=localStorage.getItem('lang');
+	$("#text").click(function(e){ e.preventDefault(); copyText("url"); });
+	$("#text2").click(function(e){ e.preventDefault(); copyText("url2"); });
+	function copyText(url) {
+		var input = document.getElementById(url);
+		if (input) { input.select(); document.execCommand("copy"); }
+		MAC.alert(typeof MAC !== 'undefined' && MAC.GetLang ? MAC.GetLang('copy_success') : (lang==1?'Copy succeeded':"复制成功"));
+	}
+	$(document).on('click', '.coop-item[data-qq]', function(e) {
+		e.preventDefault();
+		var qq = $(this).data('qq');
+		if (qq && navigator.clipboard && navigator.clipboard.writeText) {
+			navigator.clipboard.writeText(String(qq)).then(function() {
+				MAC.alert(typeof MAC !== 'undefined' && MAC.GetLang ? MAC.GetLang('copy_success') : (lang==1?'Copy succeeded':"复制成功"));
+			});
+		} else if (qq) {
+			var ta = document.createElement('textarea'); ta.value = qq; ta.style.position='fixed'; ta.style.opacity='0'; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta);
+			MAC.alert(typeof MAC !== 'undefined' && MAC.GetLang ? MAC.GetLang('copy_success') : (lang==1?'Copy succeeded':"复制成功"));
+		}
+	});
+	$(document).on('click', '#guestOpenRecharge', function(){
+		var isMobile = window.matchMedia ? window.matchMedia('(max-width: 820px)').matches : ($(window).width() <= 820);
+		if (!isMobile) {
+			var upgradeUrl = "{:url('user/upgrade')}";
+			var loginUrl = "{:url('user/login')}";
+			location.href = loginUrl + '?url=' + encodeURIComponent(upgradeUrl);
+			return;
+		}
+		if (typeof window.openRechargeModal === 'function') {
+			window.openRechargeModal({mode:'recharge'});
+		} else {
+			location.href = "{:url('user/buy')}";
+		}
+	});
+</script>
+{if condition="isset($obj) and !empty($obj['user_id'])"}
+<script src="{$maccms.path_tpl}/asset/js/user-info-profile.js"></script>
+{/if}
+</body>
+</html>

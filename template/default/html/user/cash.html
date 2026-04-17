@@ -1,0 +1,95 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>提现申请 - {$maccms.site_name}</title>
+<meta name="keywords" content="">
+<meta name="description" content="">
+{include file="user/include" /}
+</head>
+<body>
+{include file="public/head" /}
+
+<div id="mac-user-cash-root"
+	class="member-wrap member-wrap-bg"
+	data-api-base="{:rtrim($maccms.path,'/').'/api.php'}"
+	data-url-login="{:url('user/login')}">
+<div id="member" class="fn-clear">
+	<div id="left">
+        <div class="m-nav">
+			<a href="javascript:MAC.GoBack()" class="btn-left"><i class="iconfont ico-right">&#xe625;</i></a>
+			<a href="{$maccms.path}" class="btn-right"><i class="iconfont ico-right">&#xe634;</i></a>
+			<span class="mb-title" data-lang="user_grzx">个人中心</span>
+	    </div>
+        {include file="user/left_nav" /}
+	</div>
+    <div id="right">
+		<div style="padding: 0.45rem;">
+			<div class="lable-wrap">
+				<div class="label-item active" data-step="1" role="button" tabindex="0">
+					<p class="p1" data-lang="user_wytx">我要提现</p>
+				</div>
+				<div class="label-item" data-step="2" role="button" tabindex="0">
+					<p class="p1" data-lang="user_txjl">提现记录</p>
+				</div>
+			</div>
+		</div>
+		<div class="m-nav">
+			<a href="javascript:MAC.GoBack()" class="btn-left"><i class="iconfont ico-right">&#xe625;</i></a>
+			<span class="mb-title" data-lang="user_txsq">提现申请</span>
+	    </div>
+	    <div class="co-right co-hi label-one">
+			<div id="listCon">
+				<div class="cur" style="border-color: red;border-radius: 3px;">
+					<form id="fm" name="fm" method="post" action="" >
+						<p>
+							<span class="xiang" data-lang="user_yhmc">银行名称</span>
+							<input type="text" data-placeholder="user_place_yhmc" name="cash_bank_name" class="member-input" placeholder="开户行名称或支付宝微信" value="">
+						</p>
+						<p>
+							<span class="xiang" data-lang="user_yhzh">银行账号</span>
+							<input type="text" data-placeholder="user_place_yhzh" name="cash_bank_no" class="member-input" placeholder="银行卡号或支付宝微信号"  value="">
+						</p>
+						<p>
+							<span class="xiang" data-lang="user_skxm">收款姓名</span>
+							<input type="text" data-placeholder="user_place_skxm" name="cash_payee_name" class="member-input" placeholder="收款人姓名与上方账户对应"  value="">
+						</p>
+						<p>
+							<span class="xiang" data-lang="user_txje">提现金额</span>
+							<input type="text" data-placeholder="user_place_txje" name="cash_money" class="member-input" placeholder="提现金额"  value="">
+						</p>
+						<p class="hui">
+							<span data-lang="user_sm1">说明：1元等于</span>
+							{$GLOBALS['config']['user']['cash_ratio']}
+							<span data-lang="user_sm2">金币，最低提现金额：</span>
+							{$GLOBALS['config']['user']['cash_min']}
+							<span data-lang="user_sm3">元，剩余</span>
+							{$GLOBALS['user']['user_points']}
+							<span data-lang="user_sm4">金币，相当于</span>
+							{$GLOBALS['user']['user_points']/$GLOBALS['config']['user']['cash_ratio']}
+							<span data-lang="user_sm5">元；冻结</span>
+							{$GLOBALS['user']['user_points_froze']}
+							<span data-lang="user_sm4">金币，相当于</span>
+							{$GLOBALS['user']['user_points_froze']/$GLOBALS['config']['user']['cash_ratio']}
+							<span data-lang="user_sm6">元；</span>
+						</p>
+						<p style="text-align: center;"><input type="button" data-value="user_tjsq" id="btn_submit" class="search-button" value="提交申请"></p>
+					</form>
+				</div>
+			</div>
+		</div>
+		<div class="co-right co-hi co-bottom co-bottom-bg label-two noshow-content">
+			<p class="mac-cash-loading muted" style="display:none;" data-lang="string_loading">加载中~</p>
+			<ul class="order__list clearfix" data-mac-cash-list></ul>
+			<div class="member-page" data-mac-cash-page></div>
+       </div>
+    </div>
+</div>
+<div style="width:30rem;margin: 2rem auto;">
+	{include file="public/friendLink" }
+</div>
+</div>
+<script src="{$maccms.path_tpl}/asset/js/mac-member-list-utils.js"></script>
+<script src="{$maccms.path_tpl}/asset/js/user-cash.js"></script>
+{include file="public/foot" /}
+</body>
+</html>

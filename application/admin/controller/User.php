@@ -142,6 +142,72 @@ class User extends Base
     }
 
 
+    public function invite()
+    {
+        $param = input();
+        $param['page'] = intval($param['page']) <1 ? 1 : $param['page'];
+        $param['limit'] = intval($param['limit']) <1 ? $this->_pagesize : $param['limit'];
+
+        $where = [];
+        
+        $where['user_invite_count'] = ['gt', 0];
+        
+        if(!empty($param['wd'])){
+            $wd = htmlspecialchars(urldecode($param['wd']));
+            $wd = str_replace(['%', '_'], ['\\%', '\\_'], $wd);
+            $where['user_name'] = ['like','%'.$wd.'%'];
+        }
+
+        $order='user_invite_count desc, user_id desc';
+        $res = model('User')->listData($where,$order,$param['page'],$param['limit']);
+        
+        $group_list = model('Group')->getCache('group_list');
+        
+        $user_ids = array_column($res['list'], 'user_id');
+        $invited_users_map = [];
+        if (!empty($user_ids)) {
+            $invited_list = Db::name('User')
+                ->field('user_id,user_name,user_reg_time,user_invite_code,user_pid')
+                ->where('user_pid', 'in', $user_ids)
+                ->select();
+            foreach ($invited_list as $invited) {
+                $invited_users_map[$invited['user_pid']][] = $invited;
+            }
+        }
+        
+        foreach($res['list'] as $k=>$v){
+            $group_ids = explode(',', $v['group_id']);
+            $names = [];
+            foreach($group_ids as $gid){
+                if(isset($group_list[$gid])){
+                    $names[] = $group_list[$gid]['group_name'];
+                }
+            }
+            $res['list'][$k]['group_name'] = implode(',', $names);
+            $res['list'][$k]['invited_users'] = isset($invited_users_map[$v['user_id']]) 
+                ? array_slice($invited_users_map[$v['user_id']], 0, 5) 
+                : [];
+        }
+
+        $total_invite_count = Db::name('User')->sum('user_invite_count');
+        $total_invite_users = Db::name('User')->where('user_invite_count', 'gt', 0)->count();
+
+        $this->assign('total_invite_count', intval($total_invite_count));
+        $this->assign('total_invite_users', intval($total_invite_users));
+        $this->assign('list',$res['list']);
+        $this->assign('total',$res['total']);
+        $this->assign('page',$res['page']);
+        $this->assign('limit',$res['limit']);
+
+        $param['page'] = '{page}';
+        $param['limit'] = '{limit}';
+        $this->assign('param',$param);
+
+        $this->assign('title','邀请统计');
+        return $this->fetch('admin@user/invite');
+    }
+
+
     public function info()
     {
         if (Request()->isPost()) {
@@ -214,7 +280,25 @@ class User extends Base
         return $this->error(lang('param_err'));
     }
 
-
+    public function generateInviteCode()
+    {
+        $count = 0;
+        $model = model('User');
+        
+        \think\Db::name('User')
+            ->where('user_invite_code', '=', '')
+            ->chunk(500, function ($users) use ($model, &$count) {
+                foreach ($users as $user) {
+                    $invite_code = $model->generateUniqueInviteCode($user['user_id']);
+                    \think\Db::name('User')
+                        ->where('user_id', $user['user_id'])
+                        ->update(['user_invite_code' => $invite_code]);
+                    $count++;
+                }
+            });
+        
+        return $this->success('共为 ' . $count . ' 个会员生成了邀请码');
+    }
 
 
 }

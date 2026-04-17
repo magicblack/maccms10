@@ -1,6 +1,7 @@
 <?php
 namespace app\index\controller;
 use think\Controller;
+use think\Db;
 use think\Request;
 use login\ThinkOauth;
 use app\index\event\LoginEvent;
@@ -16,20 +17,17 @@ class User extends Base
 
         //判断用户登录状态
         $ac = request()->action();
-        if (in_array($ac, ['login', 'logout', 'ajax_login', 'reg', 'findpass', 'findpass_msg', 'findpass_reset', 'reg_msg', 'oauth', 'logincallback','visit'])) {
-
+        $guestAllowedActions = ['login', 'logout', 'ajax_login', 'reg', 'findpass', 'findpass_msg', 'findpass_reset', 'reg_msg', 'oauth', 'logincallback', 'visit', 'index', 'ajax_upgrade'];
+        $guestAllowedGetActions = ['buy', 'plays', 'upgrade', 'checkin'];
+        if (in_array($ac, $guestAllowedActions) || (in_array($ac, $guestAllowedGetActions) && !Request()->isPost())) {
+            // 游客可访问的页面也注入 obj，避免模板判断分支缺少变量
+            $this->assign('obj', $GLOBALS['user']);
         } else {
             if ($GLOBALS['user']['user_id'] < 1) {
                 model('User')->logout();
-                return $this->error(lang('index/no_login').'', url('user/login'));
+                redirect(url('user/login'))->send();
+                exit;
             }
-            /*
-            $res = model('User')->checkLogin();
-            if($res['code']>1){
-                model('User')->logout();
-                return $this->error($res['msg'], url('user/login'));
-            }
-            */
             $this->assign('obj', $GLOBALS['user']);
         }
     }
@@ -107,27 +105,41 @@ class User extends Base
         $data['ulog_sid'] = intval($param['sid']);
         $data['ulog_nid'] = intval($param['nid']);
 
-        if (!in_array($param['mid'], ['1','2']) || !in_array($param['type'], ['1','4','5']) || empty($data['ulog_rid']) ) {
+        if (!in_array($param['mid'], ['1','2','12']) || !in_array($param['type'], ['1','4','5']) || empty($data['ulog_rid']) ) {
             return json(['code' => 2001, 'msg' => lang('param_err')]);
         }
         $data['ulog_type'] = $param['type'];
         $data['user_id'] = $GLOBALS['user']['user_id'];
 
         $where = [];
-        if($param['type']=='1'){
+        if($param['mid']=='12'){
+            // 漫画购买（扣费额与 check_user_popedom 一致）
+            $where['manga_id'] = $data['ulog_rid'];
+            $res = model('Manga')->infoData($where);
+            if ($res['code'] > 1) {
+                return json([$res]);
+            }
+            $data['ulog_points'] = mac_content_read_points_amount('manga', $res['info']);
+            if($GLOBALS['config']['user']['manga_points_type']=='1'){
+                $data['ulog_sid']=0;
+                $data['ulog_nid']=0;
+            }
+        }
+        elseif($param['type']=='1'){
+            // 文章购买
             $where['art_id'] = $data['ulog_rid'];
             $res = model('Art')->infoData($where);
             if ($res['code'] > 1) {
                 return json([$res]);
             }
-            $col = 'art_points_detail';
+            $data['ulog_points'] = mac_content_read_points_amount('art', $res['info']);
             if($GLOBALS['config']['user']['art_points_type']=='1'){
-                $col='art_points';
                 $data['ulog_sid']=0;
                 $data['ulog_nid']=0;
             }
         }
         else{
+            // 视频播放/下载购买
             $where['vod_id'] = $data['ulog_rid'];
             $res = model('Vod')->infoData($where);
             if ($res['code'] > 1) {
@@ -139,8 +151,8 @@ class User extends Base
                 $data['ulog_sid']=0;
                 $data['ulog_nid']=0;
             }
+            $data['ulog_points'] = intval($res['info'][$col]);
         }
-        $data['ulog_points'] = intval($res['info'][$col]);
 
         $res = model('Ulog')->infoData($data);
         if ($res['code'] == 1) {
@@ -149,12 +161,20 @@ class User extends Base
 
         if ($data['ulog_points'] > $GLOBALS['user']['user_points']) {
             return json(['code' => 2002, 'msg' => lang('index/buy_popedom3',[$data['ulog_points'],$GLOBALS['user']['user_points']])]);
-        } else {
-            $where = [];
-            $where['user_id'] = $GLOBALS['user']['user_id'];
-            $res = model('User')->where($where)->setDec('user_points',$data['ulog_points']);
-            if ($res === false) {
-                return json(['code' => 2003, 'msg' => lang('index/buy_popedom2')]);
+        }
+
+        // 使用事务 + 条件更新防止并发刷积分
+        Db::startTrans();
+        try {
+            // 带条件的原子扣除：只有积分足够时才扣除
+            $affected = Db::name('user')
+                ->where('user_id', $GLOBALS['user']['user_id'])
+                ->where('user_points', '>=', $data['ulog_points'])
+                ->setDec('user_points', $data['ulog_points']);
+
+            if ($affected === 0 || $affected === false) {
+                Db::rollback();
+                return json(['code' => 2002, 'msg' => lang('index/buy_popedom3',[$data['ulog_points'],$GLOBALS['user']['user_points']])]);
             }
 
             //积分日志
@@ -168,7 +188,12 @@ class User extends Base
             model('User')->reward($data['ulog_points']);
 
             $res = model('Ulog')->saveData($data);
+
+            Db::commit();
             return json($res);
+        } catch (\Exception $e) {
+            Db::rollback();
+            return json(['code' => 2003, 'msg' => lang('index/buy_popedom2')]);
         }
     }
 
@@ -302,8 +327,12 @@ class User extends Base
         if (empty($param['ac'])) {
             $param['ac'] = 'email';
         }
-        $this->assign('ac', $param['ac']);
-        $this->assign('param',$param);
+        $ac = $param['ac'] === 'phone' ? 'phone' : 'email';
+        $bind_readonly = ($ac === 'email' && !empty($GLOBALS['user']['user_email']))
+            || ($ac === 'phone' && !empty($GLOBALS['user']['user_phone']));
+        $this->assign('ac', $ac);
+        $this->assign('bind_readonly', $bind_readonly ? 1 : 0);
+        $this->assign('param', $param);
         return $this->fetch('user/bind');
     }
 
@@ -457,12 +486,20 @@ class User extends Base
                 $data['order_time'] = time();
                 $data['order_points'] = intval($GLOBALS['config']['pay']['scale'] * $price);
                 $res = model('Order')->saveData($data);
+                if ($res['code'] == 1) {
+                    $orderInfo = model('Order')->infoData(['order_code' => $data['order_code'], 'user_id' => $data['user_id']]);
+                    if ($orderInfo['code'] == 1) {
+                        $data['order_id'] = $orderInfo['info']['order_id'];
+                    }
+                }
                 $res['data'] = $data;
                 return json($res);
             }
         }
         $this->assign('param',$param);
         $this->assign('config', $GLOBALS['config']['pay']);
+        $extends = mac_extends_list('pay');
+        $this->assign('ext_list', $extends['ext_list']);
         return $this->fetch('user/buy');
     }
 
@@ -556,8 +593,38 @@ class User extends Base
 
         $group_list = model('Group')->getCache();
         $this->assign('group_list', $group_list);
+        $this->assign('pay_config', $GLOBALS['config']['pay']);
         $this->assign('param',$param);
         return $this->fetch('user/upgrade');
+    }
+
+    /**
+     * 会员权益说明页（需登录）
+     */
+    public function benefits()
+    {
+        return $this->fetch('user/benefits');
+    }
+
+    /**
+     * 每日签到（当前为前端展示页，业务逻辑待接入）
+     */
+    public function checkin()
+    {
+        return $this->fetch('user/checkin');
+    }
+
+    /**
+     * 弹窗用：返回升级会员表单 HTML（需登录）
+     */
+    public function ajax_upgrade()
+    {
+        $group_list = model('Group')->getCache();
+        $this->assign('group_list', $group_list);
+        $this->assign('pay_config', $GLOBALS['config']['pay']);
+        $this->assign('param', input());
+        $html = $this->fetch('user/ajax_upgrade');
+        return json($html);
     }
 
     public function popedom()
@@ -569,20 +636,18 @@ class User extends Base
         $ids = [1 => lang('index/page_type'), 2 => lang('index/page_detail'), 3 => lang('index/page_play'), 4 => lang('index/page_down'), '5' => lang('index/try_see')];
         foreach ($type_tree as $k1 => $v1) {
             unset($type_tree[$k1]['type_extend']);
+            $max_a = ($v1['type_mid'] == 1) ? 5 : (in_array($v1['type_mid'], [2, 12]) ? 3 : 2);
             foreach ($ids as $a => $b) {
+                if ($a > $max_a) break;
                 $n++;
-                if ($v1['type_mid'] != 1 && $a > 2) {
-                    break;
-                }
                 $type_tree[$k1]['popedom'][$b] = model('User')->popedom($v1['type_id'], $a, $GLOBALS['user']['group_id']);
             }
             foreach ($v1['child'] as $k2 => $v2) {
                 unset($type_tree[$k1]['child'][$k2]['type_extend']);
+                $max_a = ($v2['type_mid'] == 1) ? 5 : (in_array($v2['type_mid'], [2, 12]) ? 3 : 2);
                 foreach ($ids as $a => $b) {
+                    if ($a > $max_a) break;
                     $n++;
-                    if ($v2['type_mid'] != 1 && $a > 2) {
-                        break;
-                    }
                     $type_tree[$k1]['child'][$k2]['popedom'][$b] = model('User')->popedom($v2['type_id'], $a, $GLOBALS['user']['group_id']);
                 }
             }
@@ -598,17 +663,21 @@ class User extends Base
         $param = input();
         $param['page'] = intval($param['page']) < 1 ? 1 : intval($param['page']);
         $param['limit'] = intval($param['limit']) < 20 ? 20 : intval($param['limit']);
+        $param['mid'] = intval($param['mid']);
 
         $where = [];
         $where['user_id'] = $GLOBALS['user']['user_id'];
-        $where['ulog_mid'] = 1;
         $where['ulog_type'] = 4;
+        if (in_array($param['mid'], [1, 2, 3, 8, 12])) {
+            $where['ulog_mid'] = $param['mid'];
+        }
         $order = 'ulog_time desc';
         $res = model('Ulog')->listData($where, $order, $param['page'], $param['limit']);
 
         $this->assign('param',$param);
         $this->assign('list', $res['list']);
-        $pages = mac_page_param($res['total'], $param['limit'], $param['page'], url('user/plays', ['page' => 'PAGELINK']));
+        $page_url = url('user/plays', ['mid' => $param['mid'], 'page' => 'PAGELINK']);
+        $pages = mac_page_param($res['total'], $param['limit'], $param['page'], $page_url);
         $this->assign('__PAGING__', $pages);
         return $this->fetch('user/plays');
     }
@@ -638,10 +707,11 @@ class User extends Base
         $param = input();
         $param['page'] = intval($param['page']) < 1 ? 1 : intval($param['page']);
         $param['limit'] = intval($param['limit']) < 20 ? 20 : intval($param['limit']);
+        $param['mid'] = intval($param['mid']);
 
         $where = [];
         $where['user_id'] = $GLOBALS['user']['user_id'];
-        if(in_array($param['mid'],['1','2','3','8'])){
+        if (in_array($param['mid'], [1, 2, 3, 8, 12])) {
             $where['ulog_mid'] = $param['mid'];
         }
         $where['ulog_type'] = 2;
@@ -650,7 +720,8 @@ class User extends Base
 
         $this->assign('param',$param);
         $this->assign('list', $res['list']);
-        $pages = mac_page_param($res['total'], $param['limit'], $param['page'], url('user/favs', ['page' => 'PAGELINK']));
+        $page_url = url('user/favs', ['mid' => $param['mid'], 'page' => 'PAGELINK']);
+        $pages = mac_page_param($res['total'], $param['limit'], $param['page'], $page_url);
         $this->assign('__PAGING__', $pages);
         return $this->fetch('user/favs');
     }
@@ -698,7 +769,7 @@ class User extends Base
         $arr = [];
         $ids = explode(',', $ids);
         foreach ($ids as $k => $v) {
-            $v = intval(abs($v));
+            $v = abs(intval($v));
             $arr[$v] = $v;
         }
 
@@ -717,15 +788,23 @@ class User extends Base
         $param = input();
         $param['page'] = intval($param['page']) < 1 ? 1 : intval($param['page']);
         $param['limit'] = intval($param['limit']) < 20 ? 20 : intval($param['limit']);
+        $param['filter'] = trim($param['filter']);
 
         $where = [];
         $where['user_id'] = $GLOBALS['user']['user_id'];
+        // 筛选：income=收入(1-6 与任务/里程碑奖励 10-11), expense=支出(7-9)
+        if ($param['filter'] == 'income') {
+            $where['plog_type'] = ['in', [1, 2, 3, 4, 5, 6, 10, 11]];
+        } elseif ($param['filter'] == 'expense') {
+            $where['plog_type'] = ['in', [7, 8, 9]];
+        }
         $order = 'plog_id desc';
         $res = model('Plog')->listData($where, $order, $param['page'], $param['limit']);
 
         $this->assign('param',$param);
         $this->assign('list', $res['list']);
-        $pages = mac_page_param($res['total'], $param['limit'], $param['page'], url('user/plog', ['page' => 'PAGELINK']));
+        $page_url = url('user/plog', ['filter' => $param['filter'], 'page' => 'PAGELINK']);
+        $pages = mac_page_param($res['total'], $param['limit'], $param['page'], $page_url);
         $this->assign('__PAGING__', $pages);
         return $this->fetch('user/plog');
     }
@@ -744,7 +823,7 @@ class User extends Base
         $arr = [];
         $ids = explode(',', $ids);
         foreach ($ids as $k => $v) {
-            $v = intval(abs($v));
+            $v = abs(intval($v));
             $arr[$v] = $v;
         }
 
@@ -795,7 +874,7 @@ class User extends Base
         $arr = [];
         $ids = explode(',', $ids);
         foreach ($ids as $k => $v) {
-            $v = intval(abs($v));
+            $v = abs(intval($v));
             $arr[$v] = $v;
         }
 
@@ -901,6 +980,75 @@ class User extends Base
         $param = input();
         $this->assign('param',$param);
         return $this->fetch('user/gbook');
+    }
+
+    /**
+     * 邀请推广页面：展示邀请码、邀请链接及下线列表
+     */
+    public function invite()
+    {
+        $param = input();
+        $param['page']  = intval($param['page'])  < 1 ? 1  : intval($param['page']);
+        $param['limit'] = intval($param['limit']) < 1 ? 20 : intval($param['limit']);
+
+        $user_id     = $GLOBALS['user']['user_id'];
+        $invite_code = $GLOBALS['user']['user_invite_code'];
+
+        $base_url         = $GLOBALS['http_type'] . $_SERVER['HTTP_HOST'];
+        $reg_path         = mac_url('user/reg');
+        $invite_link_uid  = $base_url . $reg_path . '?uid=' . $user_id;
+        $invite_link_code = !empty($invite_code)
+            ? $base_url . $reg_path . '?invite_code=' . $invite_code
+            : '';
+
+        $total = model('User')->where('user_pid', $user_id)->count();
+
+        $invitees_raw = model('User')
+            ->field('user_id,user_name,user_nick_name,user_invite_code,user_invite_count,user_reg_time')
+            ->where('user_pid', $user_id)
+            ->order('user_id desc')
+            ->page($param['page'])
+            ->limit($param['limit'])
+            ->select();
+
+        $invitees = is_array($invitees_raw)
+            ? $invitees_raw
+            : (is_object($invitees_raw) ? $invitees_raw->toArray() : []);
+
+        if (!empty($invitees)) {
+            $level1_ids = array_column($invitees, 'user_id');
+
+            $sub_raw  = model('User')
+                ->field('user_id,user_name,user_nick_name,user_invite_count,user_reg_time,user_pid')
+                ->where('user_pid', 'in', $level1_ids)
+                ->order('user_id desc')
+                ->select();
+            $sub_list = is_array($sub_raw)
+                ? $sub_raw
+                : (is_object($sub_raw) ? $sub_raw->toArray() : []);
+
+            $sub_map = [];
+            foreach ($sub_list as $sub) {
+                $sub_map[$sub['user_pid']][] = $sub;
+            }
+            foreach ($invitees as &$invitee) {
+                $invitee['sub_invitees'] = isset($sub_map[$invitee['user_id']]) ? $sub_map[$invitee['user_id']] : [];
+                $invitee['sub_count']    = count($invitee['sub_invitees']);
+            }
+            unset($invitee);
+        }
+
+        $this->assign('invite_code',      $invite_code);
+        $this->assign('invite_link_uid',  $invite_link_uid);
+        $this->assign('invite_link_code', $invite_link_code);
+        $this->assign('total',            intval($total));
+        $this->assign('list',             $invitees);
+        $this->assign('param',            $param);
+
+        $pages = mac_page_param($total, $param['limit'], $param['page'], url('user/invite', ['page' => 'PAGELINK']));
+        $this->assign('__PAGING__', $pages);
+
+        return $this->fetch('user/invite');
     }
 
     public function visit()

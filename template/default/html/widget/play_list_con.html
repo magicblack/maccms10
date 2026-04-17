@@ -1,0 +1,17 @@
+{if condition="isset($tplconfig['theme']['ads']['btn']) && $tplconfig['theme']['ads']['btn'] neq 0 && isset($tplconfig['theme']['ads']['play']['btn']) && $tplconfig['theme']['ads']['play']['btn'] eq 1"}
+{include file="ads/ads_playlist"}
+{/if}
+{maccms:vod num="6" type="current" paging="false" order="desc" by="rnd"}
+<div class="play_vlist cblock">
+     <a href="{:mac_url_vod_detail($vo)}" title="{$vo.vod_name}">
+		<div class="play_vlist_thumb lazyload" data-original="{:mac_url_img($vo.vod_pic)}"></div>
+		<div class="play_vlist_text">
+		    <div class="play_vlist_title">
+			<p>{$vo.vod_name}</p>
+			<p class="play_vlist_tag"><span data-lang="string_vod_type">类型：</span>{$vo.vod_class}&nbsp;/&nbsp;<span data-lang="string_vod_age">年份：</span>{$vo.vod_year}</p>
+			</div>
+			<p class="play_vlist_now">{if condition="$vo.vod_remarks neq ''"}{$vo.vod_remarks}{elseif condition="$vo.vod_serial gt 0"}<span data-lang="string_is">第</span>{$vo.vod_serial}<span data-lang="string_vod_js">集</span>{else /}<span data-lang="string_vod_close">已完结</span>{/if}</p>
+		</div>
+	 </a>
+</div>
+{/maccms:vod}

@@ -265,6 +265,21 @@ class System extends Base
             unset($config['__token__']);
 
             $config_new['user'] = $config['user'];
+            
+            if(isset($config['user']['invite_reward']) && is_array($config['user']['invite_reward'])) {
+                $invite_reward = [];
+                foreach($config['user']['invite_reward'] as $k => $v) {
+                    if(!empty($v['count'])) {
+                        $invite_reward[$v['count']] = [
+                            'group_id' => intval($v['group_id']),
+                            'long' => $v['long'],
+                            'points' => intval($v['points'])
+                        ];
+                    }
+                }
+                $config_new['user']['invite_reward'] = $invite_reward;
+            }
+            
             $config_old = config('maccms');
             $config_new = array_merge($config_old, $config_new);
 
@@ -275,7 +290,29 @@ class System extends Base
             return $this->success(lang('save_ok'));
         }
 
-        $this->assign('config', config('maccms'));
+        $config = config('maccms');
+        
+        $invite_reward_form = [];
+        if(isset($config['user']['invite_reward']) && is_array($config['user']['invite_reward'])) {
+            foreach($config['user']['invite_reward'] as $count => $reward) {
+                $invite_reward_form[] = [
+                    'count' => $count,
+                    'group_id' => $reward['group_id'],
+                    'long' => $reward['long'],
+                    'points' => $reward['points']
+                ];
+            }
+        }
+        
+        while(count($invite_reward_form) < 3) {
+            $invite_reward_form[] = ['count' => '', 'group_id' => '3', 'long' => 'month', 'points' => 0];
+        }
+        $this->assign('invite_reward_form', $invite_reward_form);
+        
+        $group_list = \think\Db::name('group')->select();
+        $this->assign('group_list', $group_list);
+        
+        $this->assign('config', $config);
         $this->assign('title', lang('admin/system/configuser/title'));
         return $this->fetch('admin@system/configuser');
     }

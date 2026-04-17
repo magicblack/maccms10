@@ -1,0 +1,83 @@
+<div id="rating" class="fn-left rating-svg-root" data-mid="{$maccms.mid}" data-id="{$rating_svg_id}" data-score="{$rating_svg_score/2|ceil}">
+	<div class="rating-svg__meta">
+		{if condition="$rating_svg_show_label eq 1"}
+		<span class="rating-svg__label" data-lang="string_vod_rating_label">评分</span>
+		{/if}
+		{if condition="$rating_svg_score gt 0"}
+		<span class="star_tips rating-svg__score">{$rating_svg_score}</span>
+		{/if}
+		{if condition="$rating_svg_show_people eq 1"}
+		<span class="star_num rating-svg__people">
+			<span>{$rating_svg_people|default=0}</span>
+			<span data-lang="string_vod_score_people">人评分</span>
+		</span>
+		{/if}
+	</div>
+	<ul class="rating-s rating-s--svg" role="group" aria-label="评分">
+		<li class="one {if condition="$rating_svg_score gt 0"}current active-b{/if}{if condition="$rating_svg_score gt 1"} active{/if}" val="1" role="presentation">
+			<button type="button" class="play-star-btn" data-val="1" aria-label="很差，1 星">
+				<span class="play-star-stack" aria-hidden="true">
+					<span class="play-star-ghost"></span>
+					<span class="play-star-fill-clip">
+						<span class="play-star-fill"></span>
+					</span>
+				</span>
+			</button>
+		</li>
+		<li class="two {if condition="$rating_svg_score gt 2"}current active-b{/if}{if condition="$rating_svg_score gt 3"} active{/if}" val="2" role="presentation">
+			<button type="button" class="play-star-btn" data-val="2" aria-label="较差，2 星">
+				<span class="play-star-stack" aria-hidden="true">
+					<span class="play-star-ghost"></span>
+					<span class="play-star-fill-clip">
+						<span class="play-star-fill"></span>
+					</span>
+				</span>
+			</button>
+		</li>
+		<li class="three {if condition="$rating_svg_score gt 4"}current active-b{/if}{if condition="$rating_svg_score gt 5"} active{/if}" val="3" role="presentation">
+			<button type="button" class="play-star-btn" data-val="3" aria-label="还行，3 星">
+				<span class="play-star-stack" aria-hidden="true">
+					<span class="play-star-ghost"></span>
+					<span class="play-star-fill-clip">
+						<span class="play-star-fill"></span>
+					</span>
+				</span>
+			</button>
+		</li>
+		<li class="four {if condition="$rating_svg_score gt 6"}active-b{/if}{if condition="$rating_svg_score gt 7"} active{/if}" val="4" role="presentation">
+			<button type="button" class="play-star-btn" data-val="4" aria-label="推荐，4 星">
+				<span class="play-star-stack" aria-hidden="true">
+					<span class="play-star-ghost"></span>
+					<span class="play-star-fill-clip">
+						<span class="play-star-fill"></span>
+					</span>
+				</span>
+			</button>
+		</li>
+		<li class="five {if condition="$rating_svg_score gt 8"}active-b{/if}{if condition="$rating_svg_score gt 9"} active{/if}" val="5" role="presentation">
+			<button type="button" class="play-star-btn" data-val="5" aria-label="力荐，5 星">
+				<span class="play-star-stack" aria-hidden="true">
+					<span class="play-star-ghost"></span>
+					<span class="play-star-fill-clip">
+						<span class="play-star-fill"></span>
+					</span>
+				</span>
+			</button>
+		</li>
+	</ul>
+	{if condition="$rating_svg_score eq 0"}
+	<span class="list_tips rating-svg__hint" data-lang="string_vod_zwpf">暂无评分</span>
+	{/if}
+	{if condition="$rating_svg_show_word_hint eq 1"}
+	{if condition="$rating_svg_score gt 0"}
+	<span class="list_tips rating-svg__word-hint">
+		{if condition="$rating_svg_score gt 8"}力荐
+		{elseif condition="$rating_svg_score gt 6"/}推荐
+		{elseif condition="$rating_svg_score gt 4"/}还行
+		{elseif condition="$rating_svg_score gt 2"/}较差
+		{elseif condition="$rating_svg_score gt 0"/}很差
+		{/if}
+	</span>
+	{/if}
+	{/if}
+</div>

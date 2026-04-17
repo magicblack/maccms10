@@ -1,0 +1,51 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>在线充值记录 - 会员中心 - {$maccms.site_name}</title>
+<meta name="keywords" content="{$maccms.site_keywords}"/>
+<meta name="description" content="{$maccms.site_description}"/>
+{include file="user/include" /}
+<link rel="stylesheet" href="{$maccms.path_tpl}/asset/css/user-plog.css">
+<link rel="stylesheet" href="{$maccms.path_tpl}/asset/css/user-orders.css">
+</head>
+
+<body class="mac-plog-wrap mac-orders-wrap">
+{include file="public/th" /}
+{include file="public/head" /}
+
+<div class="member-wrap member-wrap-bg">
+<div id="member" class="fn-clear">
+	<div id="left">
+        <div class="m-nav">
+			<a href="javascript:MAC.GoBack()" class="btn-left"><i class="iconfont ico-right">&#xe625;</i></a>
+			<a href="{$maccms.path}" class="btn-right"><i class="iconfont ico-right">&#xe634;</i></a>
+			<span class="mb-title" data-lang="user_grzx">个人中心</span>
+	    </div>
+        {include file="user/left_nav" /}
+	</div>
+    <div id="right">
+		<div class="m-nav mac-plog-mnav">
+			<a href="javascript:MAC.GoBack()" class="btn-left"><i class="iconfont ico-right">&#xe625;</i></a>
+			<span class="mb-title" data-lang="user_zxczjl">在线充值记录</span>
+	    </div>
+	    <div class="co-right co-right-bg"
+			data-mac-user-orders
+			data-api-base="{:rtrim($maccms.path,'/').'/api.php'}"
+			data-pay-base="{:url('user/pay')}"
+			data-url-login="{:url('user/login')}">
+		<h2 class="mac-plog-page-title" data-lang="user_zxczjl">在线充值记录</h2>
+		<ul class="order__list data__list mac-plog-list mac-orders-list clearfix"></ul>
+		<p class="mac-ulog-loading muted" data-lang="string_loading">加载中~</p>
+		<div class="member-page"></div>
+    </div>
+    </div>
+</div>
+<div style="width:30rem;margin: 2rem auto;">
+	{include file="public/friendLink" }
+</div>
+</div>
+<script src="{$maccms.path_tpl}/asset/js/mac-member-list-utils.js"></script>
+<script src="{$maccms.path_tpl}/asset/js/user-orders-list.js"></script>
+{include file="public/foot" /}
+</body>
+</html>

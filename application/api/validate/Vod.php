@@ -13,11 +13,18 @@ class Vod extends Validate
         'limit'      => 'number|between:1,500',
         'orderby'    => 'in:hits,up,pubdate,hits_week,hits_month,hits_day,score',
         'type_id'    => 'number|between:0,' . PHP_INT_MAX,
-        'vod_letter' => 'max:1',
+        'vod_letter' => 'max:10',
         'vod_name'   => 'max:50',
         'vod_tag'    => 'max:20',
         'vod_blurb'  => 'max:20',
         'vod_class'  => 'max:10',
+        'vod_area'   => 'max:20',
+        'vod_year'   => 'max:10',
+        'vod_lang'   => 'max:20',
+        'vod_level'  => 'max:50',
+        'vod_state'  => 'max:20',
+        'vod_isend'  => 'number|in:0,1',
+        'vod_actor'  => 'max:128',
         // year,area,class
         'type_id_1'    => 'require|number|between:0,' . PHP_INT_MAX,
     ];
@@ -43,6 +50,13 @@ class Vod extends Validate
             'vod_tag',
             'vod_blurb',
             'vod_class',
+            'vod_area',
+            'vod_year',
+            'vod_lang',
+            'vod_level',
+            'vod_state',
+            'vod_isend',
+            'vod_actor',
         ],
         'get_detail' => [
             'vod_id',
@@ -56,5 +70,9 @@ class Vod extends Validate
         'get_area' => [
             'type_id_1',
         ],
+        'get_banner' => [],
+        'get_hot' => [],
+        'get_latest_by_type' => ['type_id'],
+        'get_rank' => [],
     ];
 }

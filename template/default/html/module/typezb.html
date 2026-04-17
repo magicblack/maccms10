@@ -1,0 +1,58 @@
+<body>
+{include file="public/head"}
+    <div class="container ">
+        
+        <div class="pannel clearfix">
+            <div class="type_list_menu">
+                <ul class="clearfix">
+                    <li class="type_all"><a href="{:mac_url_type($obj,[],'show')}">全部{$obj.type_name}</a>
+                    </li>
+                    {maccms:type ids="current" order="asc" by="sort"}
+                    <li {if condition="($vo.type_id eq $GLOBALS['type_id'] || $vo.type_id eq $GLOBALS['type_pid'])" }class="active" {/if}><a href="{:mac_url_type($vo,[],'show')}">{$vo.type_name}</a>
+                    </li>
+                    {/maccms:type}
+                </ul>
+            </div>
+        </div>
+        
+        {include file="ads/ads_all"}
+        {if$obj.parent}
+        <div class="pannel clearfix">
+            <div class="pannel_head clearfix">
+                <a class="text_muted pull_right" href="{:mac_url_type($obj,[],'show')}">筛选<i class="iconfont more_i">&#xe623;</i></a>
+                <span class="pull_right">
+                        共有<em class="mac_total"></em>个频道<span class="split_line"></span>
+                </span>
+                <h2 class="title">{$obj.type_name}</h2>
+            </div>
+            {php}$type_poster_class = (mac_tpl_vod_type_cover(isset($obj['type_id']) ? (int) $obj['type_id'] : 0) === 'h') ? 'mac-poster--h' : 'mac-poster--v';{/php}
+            <ul class="vodlist vodlist_wi {$type_poster_class}">
+                {maccms:vod num="36" paging="yes" half="3" type="current" order="desc" by="sort"} {include file="widget/zbvod_box"} {/maccms:vod}
+            </ul>
+            
+            {include file="widget/page"}
+            
+        </div>
+        {else}
+        <div class="vod_row">
+            {maccms:type parent="current" order="asc" by="sort"}
+            {php}$type_poster_class = (mac_tpl_vod_type_cover(isset($vo['type_id']) ? (int) $vo['type_id'] : 0) === 'h') ? 'mac-poster--h' : 'mac-poster--v';{/php}
+            <div class="pannel clearfix">
+                <div class="pannel_head clearfix">
+                    <a class="text_muted pull_right" href="{:mac_url_type($vo,[],'show')}">更多<i class="iconfont more_i">&#xe623;</i></a>
+                    <h2 class="title">{$vo.type_name}</h2>
+                </div>
+                
+                <ul class="vodlist vodlist_wi zbvodlist_wi list_v12 {$type_poster_class}">
+                    {maccms:vod num="12" type="'.$vo['type_id'].'" order="desc" by="time"} {include file="widget/zbvod_box"} {/maccms:vod}
+                </ul>
+                
+            </div>
+            {/maccms:type}
+        </div>
+        {/if}
+        
+    </div>
+    <script type="text/javascript">
+        $('.mac_total').html('{$__PAGING__.record_total}');
+    </script>

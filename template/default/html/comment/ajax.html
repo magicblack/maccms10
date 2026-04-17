@@ -1,0 +1,129 @@
+
+<div class="part_rows_fa">
+<form class="comment_form cmt_form clearfix"  >
+   <input type="hidden" name="comment_pid" value="0">
+   
+   <div class="input_wrap clearfix">
+       <textarea class="comment_content" name="comment_content" data-placeholder="string_pinglun_wenm" placeholder="文明发言，共建和谐社会"></textarea>
+       <div class="smt fr clearfix">
+            <div class="comm_tips fl"> <span data-lang="string_pinglun_shuru">还可以输入</span> <span class="comment_remaining">200</span> <span data-lang="string_pinglun_zi">字</span> </div>
+            {if condition="$comment.verify eq 1"}
+            <input class="comment_submit cmt_post fr" data-value="string_pinglun_fabu" type="button" value="发布">
+            <img class="comm-code fr" data-title="string_pinglun_kan" src="{:mac_url('verify/index')}" data-role="{:mac_url('verify/index')}" title="看不清楚? 换一张！" onClick="this.src=this.src+'?v={:time()}'"/>
+            <input type="text" name="verify" data-placeholder="user_yanzhengma" placeholder="验证码" class="verify fr">
+            {/if}  
+       </div>
+    </div>
+</form>
+</div>
+    {maccms:comment num="5" paging="yes" order="desc" by="id"}
+    {/maccms:comment}
+<ul class="part_rows">
+	{maccms:foreach name="__LIST__" id="vo"}
+	<li class="comm_each line_top margin cmt-thread">
+		<div class="cmt-row">
+		{php}$avatar_src = mac_get_user_portrait(isset($vo['user_id']) ? $vo['user_id'] : 0); $avatar_alt = isset($vo['comment_name']) ? (string)$vo['comment_name'] : ''; $avatar_user_id = isset($vo['user_id']) ? (int)$vo['user_id'] : 0;{/php}
+		<div class="cmt-avatar-wrap">
+		{include file="widget/user_avatar" avatar_user_id="$avatar_user_id" avatar_size="xs" avatar_variant="list" avatar_class="comm_avat part_roun" /}
+		</div>
+		<div class="cmt-body">
+			<div class="cmt-meta">
+				<strong class="cmt-name text_line">{$vo.comment_name}</strong>
+			</div>
+			<div class="cmt-text comm_content">{$vo.comment_content|mac_em_replace}</div>
+			<div class="cmt-footer">
+				<time class="cmt-time part_tips" datetime="{php}echo date('c', isset($vo['comment_time']) ? (int)$vo['comment_time'] : time());{/php}" data-ts="{$vo.comment_time}" title="{$vo.comment_time|date='Y-m-d H:i:s',###}">{$vo.comment_time|date='Y-m-d H:i:s',###}</time>
+				<div class="gw_action cmt-actions">
+				<a class="digg_link" data-id="{$vo.comment_id}" data-mid="4" data-type="up" href="javascript:;" aria-label="赞"><i class="iconfont" aria-hidden="true">&#xe64e;</i><em class="digg_num icon-num">{$vo.comment_up}</em></a>
+				<a class="digg_link" data-id="{$vo.comment_id}" data-mid="4" data-type="down" href="javascript:;" aria-label="踩"><i class="iconfont" aria-hidden="true">&#xe64f;</i><em class="digg_num icon-num">{$vo.comment_down}</em></a>
+				<a class="comment_reply" data-id="{$vo.comment_id}" href="javascript:;" data-lang="string_pinglun_huifu">回复</a>
+				</div>
+			</div>
+		</div>
+		</div>
+		<div class="comm_cont cmt-replies">
+			{maccms:foreach name="$vo.sub" id="child"}
+			<div class="comm_reply comm_reply_child comm_tops cmt-reply-item">
+				<div class="cmt-row cmt-row--reply">
+				{php}$avatar_src = mac_get_user_portrait(isset($child['user_id']) ? $child['user_id'] : 0); $avatar_alt = isset($child['comment_name']) ? (string)$child['comment_name'] : ''; $avatar_user_id = isset($child['user_id']) ? (int)$child['user_id'] : 0;{/php}
+				<div class="cmt-avatar-wrap">
+				{include file="widget/user_avatar" avatar_user_id="$avatar_user_id" avatar_size="xs" avatar_variant="list" avatar_class="comm_avat part_roun" /}
+				</div>
+				<div class="cmt-body">
+					<div class="cmt-meta">
+						<strong class="cmt-name text_line">{$child.comment_name}</strong>
+					</div>
+					<div class="cmt-text comm_content">{$child.comment_content|mac_em_replace}</div>
+					<div class="cmt-footer">
+						<time class="cmt-time part_tips" datetime="{php}echo date('c', isset($child['comment_time']) ? (int)$child['comment_time'] : time());{/php}" data-ts="{$child.comment_time}" title="{$child.comment_time|date='Y-m-d H:i:s',###}">{$child.comment_time|date='H:i',###}</time>
+						<div class="gw_action cmt-actions">
+						<a class="digg_link" data-id="{$child.comment_id}" data-mid="4" data-type="up" href="javascript:;" aria-label="赞"><i class="iconfont" aria-hidden="true">&#xe64e;</i><em class="digg_num icon-num">{$child.comment_up}</em></a>
+						<a class="digg_link" data-id="{$child.comment_id}" data-mid="4" data-type="down" href="javascript:;" aria-label="踩"><i class="iconfont" aria-hidden="true">&#xe64f;</i><em class="digg_num icon-num">{$child.comment_down}</em></a>
+						</div>
+					</div>
+				</div>
+				</div>
+			</div>
+			{/maccms:foreach}
+		</div>
+	</li>
+	{/maccms:foreach}
+</ul>
+
+{if$__PAGING__.page_total>1}
+<ul class="page text_center cleafix">
+	<li><a href="javascript:void(0);" onclick="MAC.Comment.Show(1)" data-title="string_home" data-lang="string_home" title="首页"{if$__PAGING__['page_current']==1} class="btns_disad"{/if} >首页</a></li>
+	<li>
+		<a href="javascript:void(0);" 
+		data-lang="string_syy"
+		data-title="string_syy"
+		onclick="MAC.Comment.Show('{$__PAGING__.page_prev}')" title="上一页"{if$__PAGING__['page_current']==1} class="btns_disad"{/if}>上一页</a>
+	</li>
+	{maccms:foreach name="$__PAGING__.page_num" id="num"}
+	<li class="hidden_xs {if condition="$__PAGING__['page_current'] eq $num"}active{/if}">
+	    {if condition="$__PAGING__['page_current'] eq $num"}
+            <a class="page_link page_current" href="javascript:;" title="{$num}">{$num}</a>
+            {else}
+            <a class="page_link" href="javascript:void(0)" onclick="MAC.Comment.Show('{$num}')" title="{$num}" >{$num}</a>
+         {/if}
+    </li>
+	{/maccms:foreach}
+	<li class="hidden_xs active">
+		<span class="num btns_disad">{$__PAGING__.page_current}/{$__PAGING__.page_total}</span>
+	</li>
+	<li>
+		<a href="javascript:void(0)" onclick="MAC.Comment.Show('{$__PAGING__.page_next}')" title="下一页"{if$__PAGING__['page_current']==$__PAGING__.page_total} class="btns_disad"{/if} data-title="string_xyy" data-lang="string_xyy" >下一页</a>
+	</li>
+	<li>
+		<a href="javascript:void(0)" onclick="MAC.Comment.Show('{$__PAGING__.page_total}')" title="尾页"{if$__PAGING__['page_current']==$__PAGING__.page_total} class="btns_disad"{/if} data-lang="string_last_page" data-title="string_last_page" >尾页</a></li>		
+</ul>
+<div class="page_tips hidden_mb"> 
+	<span data-lang="string_vod_zg">共</span>
+	 <span>{$__PAGING__.record_total}</span> 
+	 <span data-lang="string_pinglun_shuj">条数据</span> &nbsp;/&nbsp; 
+	 <span data-lang="string_pinglun_dangq">当前</span> {$__PAGING__.page_current}/{$__PAGING__.page_total} <span data-lang="string_page">页</span> 
+	</div> 
+
+{elseif$__PAGING__.page_total<=0}
+<div class="no-message">
+	<div class="message-img"></div>
+	<p data-lang="string_pinglun_zanwu">暂无留言</p>
+</div>
+{/if}
+<script type="text/javascript">
+	var lang=localStorage.getItem('lang');
+	language_pack.loadProperties(lang);
+	$(".part_rows_fa .comment_content").click(function(){
+		$(".part_rows_fa .smt").addClass("smt_hidn");	
+	});
+</script>
+<script type="text/javascript">
+    $('.mac_total').html('{$__PAGING__.record_total}');
+    if (typeof tplconfig !== 'undefined' && tplconfig.commentUi) {
+        if (tplconfig.commentUi.applyRepliesFold) tplconfig.commentUi.applyRepliesFold($('.mac_comment'));
+        if (tplconfig.commentUi.refreshRelativeTimes) tplconfig.commentUi.refreshRelativeTimes($('.mac_comment'));
+    }
+    if (typeof tplconfig !== 'undefined' && tplconfig.macAvatarVip && tplconfig.macAvatarVip.refresh) {
+        tplconfig.macAvatarVip.refresh($('.mac_comment'));
+    }
+</script>

@@ -82,9 +82,9 @@ class Actor extends Base {
         $sex = $lp['sex'];
         $starsign = $lp['starsign'];
         $blood = $lp['blood'];
-        $start = intval(abs($lp['start']));
-        $num = intval(abs($lp['num']));
-        $half = intval(abs($lp['half']));
+        $start = abs(intval($lp['start']));
+        $num = abs(intval($lp['num']));
+        $half = abs(intval($lp['half']));
         $timeadd = $lp['timeadd'];
         $timehits = $lp['timehits'];
         $time = $lp['time'];

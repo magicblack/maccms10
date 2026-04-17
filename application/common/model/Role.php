@@ -87,9 +87,9 @@ class Role extends Base {
         $name = $lp['name'];
         $rid = $lp['rid'];
         $letter = $lp['letter'];
-        $start = intval(abs($lp['start']));
-        $num = intval(abs($lp['num']));
-        $half = intval(abs($lp['half']));
+        $start = abs(intval($lp['start']));
+        $num = abs(intval($lp['num']));
+        $half = abs(intval($lp['half']));
         $timeadd = $lp['timeadd'];
         $timehits = $lp['timehits'];
         $time = $lp['time'];

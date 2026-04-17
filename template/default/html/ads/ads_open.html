@@ -1,0 +1,18 @@
+{if condition="($tplconfig['theme']['ads']['btn'] eq 1 || ($tplconfig['theme']['ads']['btn'] eq 2 && isset($user['group_id']) && $user['group_id'] lt 3))"}
+{if condition="$tplconfig['theme']['ads']['open']['btn'] eq 1"}
+<script type="text/javascript">
+	var CookieADS=$.cookie("myads");
+	var millisecond = new Date().getTime();
+	var expirestime = new Date(millisecond + 60 * 1000 * {$tplconfig['theme']['ads']['open']['time']});
+	var isPoped = false; 
+	var url=new Array({$tplconfig['theme']['ads']['open']['content']});
+	var ints=parseInt(Math.random()*(url.length));
+	if(CookieADS==null){
+		document.onclick = function(){  
+			if (!isPoped){  
+				window.open(url[ints]);isPoped = true;$.cookie('myads','open',{expires:expirestime, path: '/'});
+			};
+		}
+	}
+</script>
+{/if}{/if}

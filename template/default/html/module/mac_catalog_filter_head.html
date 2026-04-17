@@ -1,0 +1,154 @@
+<link rel="stylesheet" type="text/css" href="{$maccms.path}template/default/asset/css/head.css">
+{php}
+$mac_catalog_head_mid = isset($obj['type_mid']) ? (int)$obj['type_mid'] : 1;
+if ($mac_catalog_head_mid === 1) {
+    $mac_catalog_latest_href = mac_url('vod/last_vod');
+} elseif ($mac_catalog_head_mid === 2) {
+    $mac_catalog_latest_href = mac_url('art/index');
+} elseif ($mac_catalog_head_mid === 8) {
+    $mac_catalog_latest_href = mac_url('actor/index');
+} else {
+    $mac_catalog_latest_href = mac_url('manga/index');
+}
+{/php}
+<div id="topnav" class="site-head-wrap mac-catalog-filter-head__topnav" data-mac-url-plays="{:mac_url('user/plays')}">
+{include file="widget/head_block_pc" /}
+</div>
+{include file="public/site_card_modal" /}
+{include file="public/include_site_card_assets" /}
+<script type="text/javascript" src="{$maccms.path}template/default/asset/js/module-head.js?v=202604161"></script>
+
+<div class="mac-catalog-filter-head__mobile head_box show-mobile mobile-head">
+    <div class="mac-catalog-filter-head__row mac-catalog-filter-head__row--brand header">
+        <div class="head_a ">
+            <div class="head_logo">{include file="widget/logo" /}</div>
+            <div class="head_user">
+                <ul>
+                    <li class="top_ico">
+                        <a class="top_link" href="{:mac_url('label/rank')}" data-title="string_rank" title="{$tplconfig.theme.rank.title|default='排行榜'}">
+                            <span class="head-nav-icon-theme head-nav-icon-theme--lightbg" aria-hidden="true">
+                                <img class="head-nav-icon" src="{$maccms.path_tpl}images/head-nav/排行榜.png" width="52" height="52" alt="" decoding="async">
+                            </span>
+                            <span class="head-nav-icon-theme head-nav-icon-theme--darkbg" aria-hidden="true">
+                                <img class="head-nav-icon" src="{$maccms.path_tpl}images/head-nav/排行榜-黑色使用.png" width="52" height="52" alt="" decoding="async">
+                            </span>
+                        </a>
+                    </li>
+                    <li class="top_ico">
+                        <a class="top_link js-save-site-url" href="javascript:;" data-title="string_save_site" title="">
+                            <span class="head-nav-icon-theme head-nav-icon-theme--lightbg" aria-hidden="true">
+                                <span class="head-latest-url-flip">
+                                    <img class="head-latest-url-flip__img head-latest-url-flip__img--a" src="{$maccms.path_tpl}images/head-nav/最新网址.png" width="52" height="52" alt="" decoding="async">
+                                    <img class="head-latest-url-flip__img head-latest-url-flip__img--b" src="{$maccms.path_tpl}images/head-nav/最新网址2.png" width="52" height="52" alt="" decoding="async">
+                                </span>
+                            </span>
+                            <span class="head-nav-icon-theme head-nav-icon-theme--darkbg" aria-hidden="true">
+                                <span class="head-latest-url-flip">
+                                    <img class="head-latest-url-flip__img head-latest-url-flip__img--a" src="{$maccms.path_tpl}images/head-nav/最新网址1-黑色使用.png" width="52" height="52" alt="" decoding="async">
+                                    <img class="head-latest-url-flip__img head-latest-url-flip__img--b" src="{$maccms.path_tpl}images/head-nav/最新网址2-黑色使用.png" width="52" height="52" alt="" decoding="async">
+                                </span>
+                            </span>
+                        </a>
+                    </li>
+                    <li class="top_ico">
+                        <a class="user_login top_link mac_head_plays" href=" javascript:; " data-title="user_view_record" title="播放记录">
+                            <span class="head-nav-icon-theme head-nav-icon-theme--lightbg" aria-hidden="true">
+                                <img class="head-nav-icon" src="{$maccms.path_tpl}images/head-nav/观看历史.png" width="52" height="52" alt="" decoding="async">
+                            </span>
+                            <span class="head-nav-icon-theme head-nav-icon-theme--darkbg" aria-hidden="true">
+                                <img class="head-nav-icon" src="{$maccms.path_tpl}images/head-nav/观看历史-黑色使用.png" width="52" height="52" alt="" decoding="async">
+                            </span>
+                        </a>
+                    </li>
+                    {if condition="$GLOBALS['config']['user']['status'] eq 1"}
+                    <li class="top_ico">
+                        <a class="mac_user top_link"
+                            href=" javascript:;"
+                            data-title="string_hy"
+                            title="会员">
+                            <img class="head-nav-icon" src="{$maccms.path_tpl}images/head-nav/用户默认.png" width="52" height="52" alt="" decoding="async">
+                        </a>
+                    </li>
+                    {/if}
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="mac-catalog-filter-head__row mac-catalog-filter-head__row--query header box">
+        <div class="head_b ">
+            {include file="widget/share"}
+            <div class="head_search head_search_mobile head_search_mobile_capsule head_search_capsule_host mac-catalog-filter-head__search-slot">
+                <div class="head_menu_b mac-catalog-filter-head__menu-col">
+                    <a class="menu" href="javascript:void(0)" title="全部分类" aria-label="全部分类">
+                        <i class="iconfont menu_ico">&#xe640;</i>
+                        <span class="hidden_xs">&nbsp;<span data-lang="all_types">全部分类</span></span>
+                    </a>
+                    {include file="widget/all_menu"}
+                </div>
+                <div class="head_search_inner">
+                    {include file="widget/head_search_capsule_mobile" /}
+                </div>
+            </div>
+            <button type="button" class="mac-catalog-filter-head__reset-inline mac-catalog-show__filter-reset" data-mac-filter-reset="1">
+                <img class="mac-catalog-show__filter-reset-ico" src="{$maccms.path_tpl}/images/svg/refash.svg" alt="" width="14" height="14" aria-hidden="true" decoding="async" />
+                <span data-lang="string_filter_reset">重新筛选</span>
+            </button>
+            <button type="button" class="mac-catalog-filter-head__toggle-inline mac-catalog-show__filter-toggle" data-mac-filter-toggle="1" aria-expanded="false">
+                <img class="mac-catalog-show__filter-toggle-funnel" src="{$maccms.path_tpl}/images/filter-toggle-funnel.png" alt="" width="18" height="18" aria-hidden="true" decoding="async" />
+                <img class="mac-catalog-show__filter-toggle-collapse" src="{$maccms.path_tpl}/images/filter-toggle-collapse.png" alt="" width="18" height="18" aria-hidden="true" decoding="async" />
+                <span class="mac-catalog-show__filter-toggle-label mac-catalog-show__filter-toggle-label--collapse mac-hide" data-lang="string_filter_collapse">收起</span>
+                <span class="mac-catalog-show__filter-toggle-label mac-catalog-show__filter-toggle-label--expand" data-lang="str_shaixuan">筛选</span>
+            </button>
+        </div>
+    </div>
+
+    <div class="mac-catalog-filter-head__sort mac-catalog-show__filter-sort">
+        <div class="mac-catalog-filter-head__sort-inner wrapper_fl wrapper_tm">
+            <ul class="screen_list sx_tz clearfix">
+                {if condition="$mac_catalog_head_mid eq 8"}
+                <li {if condition="$param.by eq '' || $param.by eq 'time'"} class="hl_fl"{/if}>
+                    <button type="button" class="mac-cat-filter-item mac-cat-filter-item--sort" data-mac-f="sort" data-by="time" data-lang="string_search_zx"></button>
+                </li>
+                <li {if condition="$param.by eq 'hits'"} class="hl_fl"{/if}>
+                    <button type="button" class="mac-cat-filter-item mac-cat-filter-item--sort" data-mac-f="sort" data-by="hits" data-lang="string_search_zr"></button>
+                </li>
+                {else/}
+                <li {if condition="$param.by eq '' || $param.by eq 'time'"} class="hl_fl"{/if}>
+                    <button type="button" class="mac-cat-filter-item mac-cat-filter-item--sort" data-mac-f="sort" data-by="time" data-lang="string_search_zx"></button>
+                </li>
+                <li {if condition="$param.by eq 'hits'"} class="hl_fl"{/if}>
+                    <button type="button" class="mac-cat-filter-item mac-cat-filter-item--sort" data-mac-f="sort" data-by="hits" data-lang="string_search_zr"></button>
+                </li>
+                <li {if condition="$param.by eq 'score'"} class="hl_fl"{/if}>
+                    <button type="button" class="mac-cat-filter-item mac-cat-filter-item--sort" data-mac-f="sort" data-by="score" data-lang="string_search_pf"></button>
+                </li>
+                {/if}
+            </ul>
+            <span class="sx_total">
+                {if condition="$mac_catalog_head_mid eq 8"}
+                <span data-lang="string_zg"></span>
+                <em class="mac_total">0</em>
+                <span data-lang="string_mx"> </span>
+                {elseif condition="$mac_catalog_head_mid eq 2"}
+                <span data-lang="string_zg">共有</span>
+                <em class="mac_total">0</em>
+                <span>篇</span>
+                {elseif condition="$mac_catalog_head_mid eq 6"}
+                <span data-lang="string_zg">共有</span>
+                <em class="mac_total">0</em>
+                <span data-lang="string_manga_unit">部漫画</span>
+                {elseif condition="$mac_catalog_head_mid eq 12"}
+                <span data-lang="string_zg">共有</span>
+                <em class="mac_total">0</em>
+                <span data-lang="string_manga_unit">部漫画</span>
+                {else/}
+                <span data-lang="string_zg">共有</span>
+                <em class="mac_total">0</em>
+                <span data-lang="string_yingpian">个影片</span>
+                {/if}
+            </span>
+        </div>
+    </div>
+
+    <div class="mac-catalog-filter-head__drawer mac-catalog-show__filter-drawer">

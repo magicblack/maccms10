@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    {include file="public/include"}
+    <link rel="stylesheet" type="text/css" href="{$maccms.path_tpl}/asset/css/type-show.css" />
+</head>
+
+<body>
+    {include file="public/th" /}
+    {php}$type_poster_class = (mac_tpl_manga_cover() === 'h') ? 'mac-poster--h' : 'mac-poster--v';
+    $mac_show_reset_tid = (isset($obj['type_pid']) && (int)$obj['type_pid'] > 0) ? (int)$obj['type_pid'] : (int)($obj['type_id'] ?? 0);{/php}
+    <div id="show_page" class="mac-catalog-show mac-catalog-show--filter-collapsed" data-list-mode="ajax" data-mid="6" data-type-id="{$obj.type_id}" data-page-size="24" data-mac-reset-type-id="{$mac_show_reset_tid}">
+        <div class="member-wrap ">
+            <div class="container ">
+                {include file="ads/ads_all"}
+                <div class="row">
+
+                    {include file="module/mac_catalog_filter_wrap_before"}
+                    {include file="module/filter"}
+                    {include file="module/mac_catalog_filter_wrap_after"}
+                    <div class="pannel mac-catalog-show__panel clearfix">
+                        <div class="mac-catalog-show__loading" data-lang="string_loading">加载中…</div>
+                        <div class="mac-catalog-show__error mac-hide" data-lang="string_load_err">加载失败，请稍后重试</div>
+                        <div class="mac-catalog-show__empty mac-hide">{include file="public/notempty"}</div>
+                        <ul class="vodlist mac-catalog-show__grid art-show-film-grid {$type_poster_class} mac-hide"></ul>
+                        <div class="mac-catalog-show__pager"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script type="text/javascript" src="{$maccms.path_tpl}/asset/js/mac-catalog-media.js"></script>
+        <script type="text/javascript" src="{$maccms.path}template/default/asset/js/mac-home-card-render.js?v=202604161"></script>
+        <script type="text/javascript" src="{$maccms.path_tpl}/asset/js/type-show.js"></script>
+        {include file="public/foot"}
+    </div>
+</body>
+
+</html>

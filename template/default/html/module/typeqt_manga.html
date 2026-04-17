@@ -1,0 +1,54 @@
+	<link rel="stylesheet" type="text/css" href="{$maccms.path_tpl}/asset/css/module-typeqt_manga.css" />
+
+<body>
+    {include file="public/head"}
+    <div class="container ">
+        {include file="ads/ads_all"}
+        <div class="vod_row tit_up">
+            <div class="pannel clearfix">
+                <div class="pannel_head clearfix">
+                    <span class="pull_right">
+                        <span data-lang='string_zg'>共有</span>
+                        <em class="mac_total"></em><span data-lang="string_manga_unit">部漫画</span>
+                    </span>
+                    <h2 class="title">{$obj.type_name}</h2>
+                    <a class="shaixuan_btn pull_left" href="{:mac_url_type($obj,[],'show')}" aria-label="筛选" title="筛选">
+                        <svg class="filter_svg" viewBox="0 0 1024 1024" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M608 864C588.8 864 576 851.2 576 832L576 448c0-6.4 6.4-19.2 12.8-25.6L787.2 256c6.4-6.4 6.4-19.2 0-19.2 0-6.4-6.4-12.8-19.2-12.8L256 224c-12.8 0-19.2 6.4-19.2 12.8 0 6.4-6.4 12.8 6.4 19.2l198.4 166.4C441.6 428.8 448 441.6 448 448l0 256c0 19.2-12.8 32-32 32S384 723.2 384 704L384 460.8 198.4 307.2c-25.6-25.6-32-64-19.2-96C185.6 179.2 217.6 160 256 160L768 160c32 0 64 19.2 76.8 51.2 12.8 32 6.4 70.4-19.2 89.6l-192 160L633.6 832C640 851.2 627.2 864 608 864z"/></svg>
+                        <span data-lang="str_shaixuan">筛选</span>
+                    </a>
+                    <span class="hidden_xs pull_left">
+                        {maccms:manga num="3" type="current" order="desc" by="hits" id="vo"}
+                        <span class="split_line"></span>
+                        <a href="{:mac_url_manga_detail($vo)}" title="{$vo.manga_name}" class="text_muted">
+                            {$vo.manga_name|mac_substring=16}
+                        </a>
+                        {/maccms:manga}
+                    </span>
+                </div>
+                {php}$type_poster_class = (mac_tpl_manga_cover() === 'h') ? 'mac-poster--h' : 'mac-poster--v';{/php}
+                <ul class="vodlist vodlist_wi {$type_poster_class}" style="width: auto;">
+                    {maccms:manga num="36" paging="yes" half="3" pageurl="manga/type" type="current" order="desc" by="sort" id="vo"}
+                    <li class="vodlist_item num_{$key}">
+                        <a class="vodlist_thumb lazyload" href="{:mac_url_manga_detail($vo)}" title="{$vo.manga_name}" data-original="{:mac_url_img($vo.manga_pic)}">
+                            {assign name="mac_points_value" value="$vo.manga_points" /}
+                            {include file="widget/mac_badge_top_right" /}
+                            {include file="widget/mac_badge_bottom_right" /}
+                        </a>
+                        <div class="vodlist_titbox">
+                            <p class="vodlist_title">
+                                <a href="{:mac_url_manga_detail($vo)}" title="{$vo.manga_name}">{$vo.manga_name}</a>
+                            </p>
+                            <p class="vodlist_sub">{if condition="$vo.manga_remarks eq ''"}<span data-lang="string_lianzai">连载中</span>{else/}{$vo.manga_remarks}{/if}</p>
+                        </div>
+                    </li>
+                    {/maccms:manga}
+                </ul>
+                
+                {include file="widget/page"}
+                
+            </div>
+        </div>
+    </div>
+    <script type="text/javascript">
+        $('.mac_total').html('{$__PAGING__.record_total}');
+    </script>

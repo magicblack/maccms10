@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+	{include file="public/include"}
+	<link rel="stylesheet" type="text/css" href="{$maccms.path_tpl}/asset/css/actor-index.css" />
+	<link rel="stylesheet" href="{$maccms.path}template/default/asset/css/hlactor.css" type="text/css" />
+</head>
+
+<div class="member-wrap">
+	<div class="show-pc">
+		{include file="public/head"}
+	</div>
+		
+<div class="bg_light">
+	<div id="left" class="show-mobile" >
+		<div class="m-nav mobile-nav">
+			<a href="javascript:MAC.GoBack()" class="btn-left"><i class="iconfont ico-right">&#xe625;</i></a>
+			<span class="mb-title">荧屏巨星</span>
+		</div>
+	</div>
+   <div class="container top-con">     
+		<div class="row">
+			<div class="pannel layout-box">
+				<div class="pannel_head clearfix">
+                    <span class="text_muted pull_right">
+						<a href="{:mac_url_type($obj,[],'show')}">更多<i class="iconfont more_i">&#xe623;</i></a>
+                    </span>
+                    <h2 class="title">荧屏巨星</h2>	
+                </div>
+				
+				<div class="clearfix" id="myTab">
+					<ul class="box-star-list">
+						{maccms:actor num="8" level="1" order="desc" by="time"}
+						<li class="col-md-1 col-sm-2 col-xs-4 "  {if condition="$key == 1"}class="active"{/if}>
+							<a class="star-pic loading img-circle" style="padding-top: 100%; background: url({$vo.actor_pic|mac_url_img}) no-repeat;background-size:cover;"
+							    href="javascript:;">
+								<span>{$vo.actor_name}</span>
+							</a>
+						</li>{/maccms:actor}
+					</ul>
+				</div>
+				<div class="clearfix star-video-list">
+					{maccms:actor num="8" level="1" order="desc" by="time" id="vo1" key="key1"}
+					<ul class="box-star-list fade" id="hot_star_{$key1}">
+						{maccms:vod num="6" type="'.$vo['type_id'].'" actor="'.$vo1['actor_name'].'" order="desc" by="time" id="vo2" key="key2"}
+						<li class="vodlist_item" {if condition="$key1 == 1"}style="display:block"{/if} id="con_hot_star__{$key1}">
+							<a class="vodlist_thumb lazyload" href="{:mac_url_vod_detail($vo2)}" title="{$vo2.vod_name}" style="background: url({$vo2.vod_pic|mac_url_img}) no-repeat;background-size:cover;">						
+								<span class="play hidden_xs"></span>
+								{if condition="($maccms.aid eq 2) OR ($maccms.aid eq 13)"}
+								<span class="vodlist_top">{$vo2.type.type_name}</span>
+						        {/if}
+						        {if condition="$vo2['type_id_1']==1"}
+						        {if condition="$vo2.vod_score eq 0"}
+						        <span class="pic_text text_right">{if condition="$vo2.vod_remarks neq ''"}{$vo2.vod_remarks}{elseif condition="$vo2.vod_serial gt 0"}<span data-lang="string_is">第</span>{$vo2.vod_serial}<span data-lang="string_vod_js">集</span>{else /}<span data-lang="string_vod_close">已完结</span>{/if}</span>
+						        {else/}
+						        <span class="pic_text text_right text_dy">{$vo2.vod_score}</span>
+						        {/if}
+						        {else/}
+								<span class="pic_text text_right">{if condition="$vo2.vod_remarks neq ''"}{$vo2.vod_remarks}{elseif condition="$vo2.vod_serial gt 0"}<span data-lang="string_is">第</span>{$vo2.vod_serial}<span data-lang="string_vod_js">集</span>{else /}<span data-lang="string_vod_close">已完结</span>{/if}</span>
+								{/if}
+							</a>
+							<div class="vodlist_titbox">									
+								<p class="vodlist_title"><a href="{:mac_url_vod_detail($vo2)}" title="{$vo2.vod_name}">{$vo2.vod_name}</a></p>
+								<p class="vodlist_sub">{if $vo2.vod_sub}{$vo2['vod_sub']}{else}<span data-lang='string_no_have'>暂无</span>{/if}</p>
+							</div>
+						</li>{/maccms:vod}
+					</ul>{/maccms:actor}
+				</div>
+			</div>
+			
+		</div>
+     </div>
+</div>
+    <div class="container bot-con">
+		{foreach name="types" key="key" item="vo"}
+		{php} $vo = $vo->toArray(); $type_extend = json_decode($vo['type_extend']); $area = $type_extend->area; {/php}
+		<div class="vod_row">
+			<div class="pannel">
+				<div class="pannel_head">
+					<span class="text_muted pull_right">
+						<a href="{:mac_url_type($vo,[],'type')}">更多<i class="iconfont more_i">&#xe623;</i></a>
+					</span>
+					<h2 class="title">{$vo.type_name}</h2>
+				</div>
+				<ul class="vodlist vodlist_wi">
+					{maccms:actor type="'.$vo['type_id'].'" num="5" area="'.$area.'" paging="no" order="desc" by="sort"}
+					{include file="actor/vod_actor"}
+					{/maccms:actor}
+				</ul>
+			</div>
+		</div>
+		{/foreach}
+   </div>
+   <div style="width:30rem;margin: 2rem auto;">
+	{include file="public/friendLink" }
+</div>
+</div>
+    {include file="public/foot"}
+</body>
+</html>

@@ -1,0 +1,14 @@
+<li class="ranklist_item">
+    <a title="{$vo.vod_name}" href="{:mac_url_plot_detail($vo,['sid'=>$vo.sid,'nid'=>1])}">
+	<div class="plotlist_img">
+		 <div class="ranklist_thumb {if condition="$vo['type_id_1']==$tplconfig['theme']['type']['zb']"}zbpic{/if} lazyload" data-original="{$vo.vod_pic|mac_url_img}">						
+			{assign name="mac_points_value" value="$vo.vod_points_play" /}
+			{include file="widget/mac_badge_top_right" /}
+			{include file="widget/mac_badge_bottom_right" /}
+			<span class="play hidden_xs"></span>
+            <span class="part_nums part_num{$key}">{$key}</span>
+	     </div>
+	</div>	
+    <div class="plotlist_txt">
+	     <div class="pannel_head clearfix">
+              <span class="text_muted pull_right"><i class="iconfont">&#xe631;</i>

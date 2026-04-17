@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+	{include file="public/include"}
+	<link rel="stylesheet" type="text/css" href="{$maccms.path_tpl}/asset/css/topic-index.css" />
+</head>
+
+<body id="topicIndexPage" class="topic-index-body">
+    {include file="public/th" /}
+    {include file="public/head"}
+    <div
+      class="topic-index-app"
+      id="topicIndexApp"
+      data-api-url="{$maccms.path}api.php/topic/get_list"
+      data-home-url="{:mac_url('index/index')}"
+      data-page-size="20"
+      data-orderby="time"
+    >
+      <header class="topic-index-appbar" role="banner">
+        <button type="button" class="topic-index-appbar-back" id="topicIndexAppbarBack" data-title="string_fh" title="返回" aria-label="返回">
+          <i class="iconfont" aria-hidden="true">&#xe625;</i>
+        </button>
+        <div class="topic-index-appbar-title topic-index-appbar-title--mb" aria-hidden="true"><span data-lang="string_topic">专题</span></div>
+        <span class="topic-index-appbar-spacer" aria-hidden="true"></span>
+      </header>
+
+      <main class="topic-index-main" id="topicIndexMain">
+        {include file="ads/ads_all"}
+        <div class="topic-index-inner">
+          <h1 class="topic-index-page-h1"><span data-lang="string_topic">专题</span></h1>
+          <div class="topic-index-status topic-index-status--loading" id="topicFeedLoading" role="status" aria-live="polite">
+            <span data-lang="string_topic_feed_loading">加载中…</span>
+          </div>
+          <div class="topic-index-status topic-index-status--error topic-index-is-hidden" id="topicFeedError" role="alert">
+            <p class="topic-index-error-text"><span data-lang="string_topic_feed_error">加载失败，请稍后重试</span></p>
+            <button type="button" class="topic-index-retry-btn" id="topicFeedRetry" data-lang="string_topic_feed_retry">重试</button>
+          </div>
+          <div class="topic-index-status topic-index-is-hidden" id="topicFeedEmpty" role="status">
+            <span data-lang="string_topic_feed_empty">暂无专题</span>
+          </div>
+          <ul class="topic-feed-list" id="topicFeedList" aria-label="专题列表"></ul>
+          <div class="topic-index-more-wrap topic-index-is-hidden" id="topicFeedMoreWrap">
+            <button type="button" class="topic-index-more-btn" id="topicFeedMore" data-lang="string_topic_feed_load_more">加载更多</button>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <div class="topic-index-friend-wrap">
+      {include file="public/friendLink" }
+    </div>
+
+{include file="public/foot"}
+<script type="text/javascript" src="{$maccms.path_tpl}/asset/js/topic-index.js"></script>
+</body>
+</html>

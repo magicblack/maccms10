@@ -1,0 +1,390 @@
+
+<div id="mac-ajax-auth-root" class="auth-ui auth-ui-popup">
+   <div class="user-bg auth-shell">
+
+		<div class="reg-w mac_login auth-popup-form">
+			<form class="mac_login_form auth-panel auth-panel-login" method="post" id="fm-login" action="">
+				<div class="auth-field-label" data-lang="user_zhanghao">账号</div>
+				<div class="reg-group">
+					<input data-placeholder="user_unified_account_hint" type="text" name="user_name" id="ajax_user_name" class="mac_u_name reg-control" placeholder="">
+				</div>
+				<div class="auth-field-label" data-lang="user_mima">密码</div>
+				<div class="reg-group auth-pwd-group">
+					<input data-placeholder="user_place_mm" type="password" name="user_pwd" id="ajax_user_pwd" class="mac_u_pwd reg-control" placeholder="">
+					<span class="auth-pwd-eye" data-target="#ajax_user_pwd" role="button" tabindex="0" aria-label="显示或隐藏密码"></span>
+				</div>
+				<div class="auth-invite-collapsible">
+					<div class="auth-invite-toggle-row">
+						<button type="button" class="auth-invite-toggle js-auth-invite-toggle" aria-expanded="false">
+							<span class="auth-invite-toggle__rule" aria-hidden="true"></span>
+							<span class="auth-invite-toggle__mid">
+								<span class="auth-invite-toggle__text" data-lang-collapsed="string_auth_invite_expand" data-lang-expanded="string_auth_invite_collapse" data-lang="string_auth_invite_expand"></span>
+								<span class="auth-invite-toggle__chev" aria-hidden="true"><img class="auth-invite-toggle__chev-img" src="{$maccms.path_tpl}/images/filter-toggle-collapse.png" alt="" width="18" height="18" decoding="async" /></span>
+							</span>
+							<span class="auth-invite-toggle__rule" aria-hidden="true"></span>
+						</button>
+					</div>
+					<div class="auth-invite-panel no-show">
+						<div class="auth-field-label" data-lang="user_invite_code_optional">邀请码（可选）</div>
+						<div class="reg-group">
+							<input type="text" class="reg-control" id="invite_code" name="invite_code" data-placeholder="user_place_invite_code_optional" placeholder="">
+						</div>
+					</div>
+				</div>
+				<div class="auth-forgot-row">
+					<a class="auth-forgot-link rega-fl" data-lang="user_wjmm2" href="javascript:;">忘记密码?</a>
+				</div>
+				<input type="button" data-value="btn_login_or_register" class="login_form_submit btn-brand btn-sub auth-page-btn is-active" value="">
+			</form>
+			<div class="reg-ts">
+				<div class="reg-dl">
+				{if condition="$GLOBALS['config']['connect']['qq']['status'] eq 1"}
+				<h5 data-lang="user_bdfsdl">您还可以用以下方式登录</h5>
+				{elseif condition="$GLOBALS['config']['connect']['weixin']['status'] eq 1"}
+				<h5 data-lang="user_bdfsdl">您还可以用以下方式登录</h5>
+				{/if}
+					<ul>
+						{if condition="$GLOBALS['config']['connect']['weixin']['status'] eq 1"}
+						<li><a class="reg-wx" href="{:url('user/oauth')}?type=weixin"><i class="iconfont lishi">&#xe639;</i></a></li>
+						{/if}
+						{if condition="$GLOBALS['config']['connect']['qq']['status'] eq 1"}
+						<li><a class="reg-qq" href="{:url('user/oauth')}?type=qq"><i class="iconfont yonghu">&#xe637;</i></a></li>
+						{/if}
+					</ul>
+				</div>
+			</div>
+		</div>
+
+		<div class="reg-w mac_find no-show">
+			<form method="post" id="fm-find" action="">
+				<div class="reg-group">
+					<img class="l-icon" src="{$maccms.path_tpl}/images/member/login-user.png" >
+					<input type="text" data-placeholder="user_place_dlzh" id="user_name" name="user_name" class="reg-control" placeholder="输入您的登录账号">
+				</div>
+				<div class="reg-group">
+					<img class="l-icon" src="{$maccms.path_tpl}/images/member/login-p.png" >
+					<input type="text" data-placeholder="user_place_mbwentyi" id="user_question" name="user_question" class="reg-control" placeholder="请输入您的密保问题">
+				</div>
+				<div class="reg-group">
+					<img class="l-icon" src="{$maccms.path_tpl}/images/member/login-d.png" >
+					<input type="text" data-placeholder="user_place_mbdaan" id="user_answer" name="user_answer" class="reg-control" placeholder="请输入您的密保答案">
+				</div>
+				<div class="reg-group auth-pwd-group">
+					<img class="l-icon" src="{$maccms.path_tpl}/images/member/login-pwd.png" >
+					<input type="password" data-placeholder="user_place_mm" id="user_pwd" name="user_pwd" class="reg-control" placeholder="输入您的登录密码">
+					<span class="auth-pwd-eye" data-target="#user_pwd" role="button" tabindex="0" aria-label="显示或隐藏密码"></span>
+				</div>
+				<div class="reg-group auth-pwd-group">
+					<img class="l-icon" src="{$maccms.path_tpl}/images/member/login-pwd.png" >
+					<input type="password" data-placeholder="user_place_querenmm" id="user_pwd2" name="user_pwd2" class="reg-control" placeholder="请输入您的确认密码">
+					<span class="auth-pwd-eye" data-target="#user_pwd2" role="button" tabindex="0" aria-label="显示或隐藏密码"></span>
+				</div>
+				<div class="reg-group">
+					<img class="l-icon" src="{$maccms.path_tpl}/images/member/login-i.png" >
+					<input type="text" data-placeholder="user_place_yanzm" class="reg-control w150" id="verify" name="verify" placeholder="请输入您的验证码">
+					<img class="fr m-hi" src="{:url('verify/index')}" onClick="this.src=this.src+'?'"  />
+				</div>
+				<input type="button" data-value="btn_ljzh" id="btn_submit_find" class="btn-brand btn-sub" value="立即找回">
+			</form>
+			<div class="find-bt">
+				<span class="pass-1" data-lang="user_zjdengl">直接登录</span>
+				<span class="pass-2" data-lang="user_youxzh">邮箱找回</span>
+				<span class="pass-3" data-lang="user_shoujizh">用手机找回</span>
+		 	</div>
+		</div>
+
+		<div class="reg-w mac_find_msg no-show">
+			<div class="find-email">
+				<form method="post" id="fm_msg" action="">
+					<input id="find-ac" type="hidden" name="ac" value="email">
+					<div class="reg-group">
+						<img class="l-icon" src="{$maccms.path_tpl}/images/member/login-user.png" >
+						<input type="text" data-placeholder="user_place_email" id="to_msg" name="to" class="reg-control" placeholder="请输入邮箱">
+					</div>
+					<div class="reg-group">
+						<img class="l-icon" src="{$maccms.path_tpl}/images/member/login-i.png" >
+						<input type="text" data-placeholder="user_place_yanzm" class="reg-control w150" id="verify_msg" name="verify" placeholder="请输入您的验证码">
+						<img class="fr m-hi" src="{:url('verify/index')}" onClick="this.src=this.src+'?'" />
+					</div>
+					<input type="button" data-value="btn_fsyzm" id="btn_send_find_msg" class="btn-brand btn-sub" value="发送验证码">
+				</form>
+			</div>
+			<form method="post" id="fm2-msg" action="">
+				<input id="find-ac-path" type="hidden" name="ac" value="email">
+				<h4 data-lang="user_yanzxinxi">验证信息</h4>
+				<div class="reg-group">
+					<img class="l-icon" src="{$maccms.path_tpl}/images/member/login-i.png" >
+					<input type="text" data-placeholder="user_place_yanzm"  id="code_msg" name="code" class="reg-control" placeholder="请输入{$param['ac_text']}收到的验证码">
+				</div>
+				<div class="reg-group auth-pwd-group">
+					<img class="l-icon" src="{$maccms.path_tpl}/images/member/login-pwd.png" >
+					<input type="password" data-placeholder="user_place_mm" class="reg-control w150" id="user_pwd_msg" name="user_pwd" placeholder="输入您的登录密码">
+					<span class="auth-pwd-eye" data-target="#user_pwd_msg" role="button" tabindex="0" aria-label="显示或隐藏密码"></span>
+				</div>
+				<div class="reg-group auth-pwd-group">
+					<img class="l-icon" src="{$maccms.path_tpl}/images/member/login-pwd.png" >
+					<input type="password" data-placeholder="user_place_querenmm" class="reg-control w150" id="user_pwd2_msg" name="user_pwd2" placeholder="请输入您的确认密码">
+					<span class="auth-pwd-eye" data-target="#user_pwd2_msg" role="button" tabindex="0" aria-label="显示或隐藏密码"></span>
+				</div>
+				<input type="button" data-value="btn_czmm" id="btn_submit_findmsg" class="btn-brand btn-sub" value="重置密码">
+			</form>
+			<div class="find-bt">
+				<span class="pass-1" data-lang="user_zjdengl">直接登录</span>
+				<span class="pass-2" data-lang="user_youxzh">邮箱找回</span>
+				<span class="pass-3" data-lang="user_shoujizh">用手机找回</span>
+		 	</div>
+		</div>
+{php}
+$__app_dl_android = trim((string)($tplconfig['theme']['site_card']['apk_android_url'] ?? ''));
+$__app_dl_ios = trim((string)($tplconfig['theme']['site_card']['apk_ios_url'] ?? ''));
+$__app_dl_legacy = trim((string)($tplconfig['theme']['site_card']['apk_url'] ?? ''));
+if ($__app_dl_android === '' && $__app_dl_legacy !== '') { $__app_dl_android = $__app_dl_legacy; }
+if ($__app_dl_ios === '' && $__app_dl_legacy !== '') { $__app_dl_ios = $__app_dl_legacy; }
+if ($__app_dl_android === '' && $__app_dl_ios === '') {
+    $__old = trim((string)($tplconfig['theme']['app_dl']['url'] ?? ''));
+    $__app_dl_android = $__old;
+    $__app_dl_ios = $__old;
+}
+$__app_dl_logo_def = 'template/default/images/la/logo@2x.png';
+$__app_dl_logo_legacy = trim((string)($tplconfig['theme']['app_dl']['applogo'] ?? ''));
+$__app_dl_logo_light = trim((string)($tplconfig['theme']['app_dl']['applogo_light'] ?? ''));
+$__app_dl_logo_dark = trim((string)($tplconfig['theme']['app_dl']['applogo_dark'] ?? ''));
+if ($__app_dl_logo_light === '') {
+    $__app_dl_logo_light = $__app_dl_logo_legacy !== '' ? $__app_dl_logo_legacy : $__app_dl_logo_def;
+}
+if ($__app_dl_logo_dark === '') {
+    $__app_dl_logo_dark = $__app_dl_logo_legacy !== '' ? $__app_dl_logo_legacy : $__app_dl_logo_light;
+}
+$__app_dl_logo_light_src = mac_url_img($__app_dl_logo_light);
+$__app_dl_logo_dark_src = mac_url_img($__app_dl_logo_dark);
+{/php}
+{include file="widget/mac_app_dl_auth_popup" /}
+	</div>
+</div>
+
+<script>
+	var lang=localStorage.getItem('lang');
+	language_pack.loadProperties(lang);
+	(function(){
+		function bindPopupPwdToggle(){
+			function toggleEye($eye){
+				var targetSelector = $eye.attr('data-target');
+				var $input = targetSelector ? $(targetSelector) : $eye.siblings('input[type="password"],input[type="text"]').first();
+				if(!$input.length){
+					return;
+				}
+				var isPassword = $input.attr('type') === 'password';
+				$input.attr('type', isPassword ? 'text' : 'password');
+				$eye.toggleClass('is-open', isPassword);
+			}
+			$('#mac-ajax-auth-root .auth-pwd-eye').off('.pwdtoggle').on('click.pwdtoggle', function(){
+				toggleEye($(this));
+			});
+			$('#mac-ajax-auth-root .auth-pwd-eye').on('keydown.pwdtoggle', function(e){
+				if(e.key === 'Enter' || e.key === ' ' || e.keyCode === 13 || e.keyCode === 32){
+					e.preventDefault();
+					toggleEye($(this));
+				}
+			});
+		}
+		bindPopupPwdToggle();
+	})();
+	(function syncInviteFromUrl(){
+		try {
+			var sp = new URLSearchParams(window.location.search);
+			var code = sp.get('invite_code');
+			if (code) {
+				try {
+					code = decodeURIComponent(code.replace(/\+/g, ' '));
+				} catch (e0) {}
+				var $ic = $('#invite_code');
+				if ($ic.length && !$.trim($ic.val())) {
+					$ic.val(code);
+				}
+			}
+			if (typeof window.macAuthInviteRevealIfHasValue === 'function') {
+				window.macAuthInviteRevealIfHasValue(document.getElementById('mac-ajax-auth-root'));
+			}
+		} catch (e1) {}
+	})();
+	var findAc = $('#find-ac').val() || 'email';
+	function setPopTitle(langKey, fallbackText) {
+		var $title = $('.pop_top h2');
+		if (!$title.length) {
+			return;
+		}
+		if (langKey) {
+			$title.attr('data-lang', langKey);
+		}
+		$title.text(fallbackText || '');
+	}
+	$('.rega-fl').click(function(){
+		$('.mac_login').addClass('no-show');
+		$('.mac_find').removeClass('no-show');
+		language_pack.loadProperties(lang);
+	});
+	$('.pass-1').click(function(){
+		$('.mac_login').removeClass('no-show');
+		$('.mac_find').addClass('no-show');
+		$('.mac_find_msg').addClass('no-show');
+		language_pack.loadProperties(lang);
+	});
+	$('.pass-2').click(function(){
+		$('.mac_find').addClass('no-show');
+		$('.mac_find_msg').removeClass('no-show');
+
+		$('#to_msg').attr('data-placeholder','user_place_email');
+		$('#to_msg').attr('placeholder',MAC.GetLang('string_login_yx'));
+
+		$('#find-ac').attr('value','email');
+		$('#find-ac-path').attr('value','email');
+		findAc="email";
+		language_pack.loadProperties(lang);
+	});
+	$('.pass-3').click(function(){
+		$('.mac_find').addClass('no-show');
+		$('.mac_find_msg').removeClass('no-show');
+		$('#to_msg').attr('data-placeholder','user_place_shouji');
+		$('#to_msg').attr('placeholder',MAC.GetLang('string_login_sjh'));
+
+		$('#find-ac').attr('value','phone');
+		$('#find-ac-path').attr('value','phone');
+		findAc="phone";
+		language_pack.loadProperties(lang);
+	});
+	$("body").bind('keyup',function(event) {
+		if(event.keyCode==13){ $('#btnLogin').click(); }
+	});
+	$("#btn_submit_find").click(function(msg) {
+		var data = $("#fm-find").serialize();
+		var input = $("#fm-find").serializeArray();
+		var pass1 = $("#pass1").val();
+		var pass2 = $("#pass2").val();
+		var inputName = new Array();
+		inputName['user_name'] =  MAC.GetLang('string_login_dlzh');
+		inputName['user_question'] = MAC.GetLang('string_login_zhwt');
+		inputName['user_answer'] =  MAC.GetLang('string_login_zhda');
+		inputName['user_pwd'] =  MAC.GetLang('string_login_mima');
+		inputName['user_pwd2'] = MAC.GetLang('string_login_qrmm');
+		inputName['verify'] =  MAC.GetLang('string_login_yzm1');
+		var is = false;
+		var err = '';
+		$.each(input,function(name,field) {
+			if (field.value == '') {
+				is = true;
+				err = inputName[field.name] + MAC.GetLang('string_login_bnwk');
+				return false;
+			}
+		});
+		if (is) {
+			MAC.alert(err);
+			return false;
+		}
+		if (pass1 != pass2) {
+			MAC.alert(MAC.GetLang('string_login_mmbyz'));
+			return false;
+		}
+		$.ajax({
+			url: "{:url('user/findpass')}",
+			type: "post",
+			dataType: "json",
+			data: data,
+			beforeSend: function () {
+				$("#btn_submit").css("background","#40CC92").val("loading...");
+			},
+			success: function (r) {
+				MAC.alert(r.msg);
+				if(r.code==1){
+					location.href="{:url('user/login')}";
+				}
+			},
+			complete: function () {
+				$("#btn_submit").css("background","#40CC92").val(MAC.GetLang('string_tj'));
+			}
+		});
+	});
+	$('#btn_send_find_msg').click(function() {
+		var currentAc = $('#find-ac').val() || findAc || 'email';
+		findAc = currentAc;
+		if ($('#to_msg').val()  == '') {
+			if(lang==1){
+				MAC.alert(`Please enter${currentAc=='email'?'Email':'Phone'}！`);
+			}else{
+				MAC.alert(`请输入${currentAc=='email'?'邮箱':'手机号'}！`);
+			}
+			$("#to_msg").focus(); return false;
+		}
+		$.ajax({
+			url: "{:url('user/findpass_msg')}",
+			type: "post",
+			dataType: "json",
+			data: $('#fm_msg').serialize(),
+			beforeSend: function () {
+				$("#btn_send_find_msg").css("background","#40CC92").val("loading...");
+			},
+			success: function (r) {
+				MAC.alert(r.msg);
+			},
+			complete: function () {
+				MAC.GetLang('');
+				if(lang==1){
+					$("#btn_send_find_msg").css("background","#40CC92").val(`send ${currentAc=='email'?'email':'code'}`);
+				}else{
+					$("#btn_send_find_msg").css("background","#40CC92").val(`发送${currentAc=='email'?'邮件':'验证码'}`);
+				}
+
+			}
+		});
+	});
+	$('#btn_submit_findmsg').click(function() {
+			var currentAc = $('#find-ac-path').val() || $('#find-ac').val() || findAc || 'email';
+			findAc = currentAc;
+			if ($('#to_msg').val()  == '') {
+				if(lang==1){
+					MAC.alert(`Please enter${currentAc=='email'?'Email':'Phone'}！`);
+				}else{
+					MAC.alert(`请输入${currentAc=='email'?'邮箱':'手机号'}！`);
+				}
+				$("#to_msg").focus(); return false;
+			}
+
+			if ($('#code_msg').val()  == '') {
+				MAC.alert(lang==1?'':'Please enter the verification code!');
+				$("#code_msg").focus();
+				return false;
+			}
+			if ($('#user_pwd_msg').val()  == '') {
+				MAC.alert(lang==1?'':'Please enter a new password!');
+				$("#user_pwd_msg").focus();
+				return false;
+			}
+			if ($('#user_pwd2_msg').val()  == '') {
+				MAC.alert(MAC.GetLang('string_login_qrmm1'));
+				$("#user_pwd2_msg").focus();
+				return false;
+			}
+			if ($('#user_pwd_msg').val()  != $('#user_pwd2_msg').val() ) {
+				MAC.alert(MAC.GetLang('string_login_mmbyz'));
+				$("#user_pwd2_msg").focus();
+				return false;
+			}
+
+			var data= {ac:currentAc,to:$('#to_msg').val(),code:$('#code_msg').val(),user_pwd:$('#user_pwd_msg').val(),user_pwd2:$('#user_pwd2_msg').val()};
+			$.ajax({
+				url: "{:url('user/findpass_reset')}",
+				type: "post",
+				dataType: "json",
+				data: data,
+				beforeSend: function () {
+					$("#btn_submit_findmsg").css("background","#40CC92").val("loading...");
+				},
+				success: function (r) {
+					MAC.alert(r.msg);
+				},
+				complete: function () {
+
+					$("#btn_submit_findmsg").css("background","#40CC92").val(MAC.GetLang('btn_czmm'));
+				}
+			});
+		});
+</script>

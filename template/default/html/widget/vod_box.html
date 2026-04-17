@@ -1,0 +1,69 @@
+<li class="vodlist_item num_{$key}">
+	<a class="vodlist_thumb lazyload" {if condition="$mac_vod_playlink eq 1"}href="{:mac_url_vod_play($vo,['sid'=>$vo.sid,'nid'=>1])}"{else/}href="{:mac_url_vod_detail($vo)}"{/if} title="{$vo.vod_name}" data-original="{:mac_url_img($vo.vod_pic)}">
+		{assign name="mac_points_value" value="$vo.vod_points_play" /}
+		{include file="widget/mac_badge_top_right" /}
+		{include file="widget/mac_badge_bottom_right" /}
+	</a>
+	<div class="vodlist_titbox">	
+		<p class="vodlist_title">
+		<a {if condition="$mac_vod_playlink eq 1"}href="{:mac_url_vod_play($vo,['sid'=>$vo.sid,'nid'=>1])}"{else/}href="{:mac_url_vod_detail($vo)}"{/if} title="{$vo.vod_name}">{$vo.vod_name}</a>
+		</p>
+		<p class="vodlist_sub">
+			{php} if($vo['vod_sub']){
+			echo mac_filter_html(mac_url_create($vo['vod_sub'],'actor'));
+			}else{ {/php}
+			<span data-lang='string_no_have'>暂无</span>
+			{php} } {/php}
+		</p>
+	</div>
+	<a class="vod_info vod_info_wrap show-pc" data-num="num_{$key}" {if condition="$mac_vod_playlink eq 1"}href="{:mac_url_vod_play($vo,['sid'=>$vo.sid,'nid'=>1])}"{else/}href="{:mac_url_vod_detail($vo)}"{/if}>
+		<img class="play_img" src="{$maccms.path}template/default/images/la/paly.png" >
+		<div class="detail">
+			<p class="name">{$vo.vod_name}</p>
+			<div class="item">
+				<p class="tag">{$vo.vod_class}</p>
+				<p class="tag">{$vo.vod_area}</p>
+				<p class="tag">{$vo.vod_year}</p>
+			</div>
+			<div class="item">
+				<p class="i-left"><span data-lang="string_vod_zy">主演：</span></p>
+				<p class="actor">{$vo.vod_actor}</p>
+			</div>
+			<div class="item">
+				<p class="i-left"><span data-lang="string_vod_jj">简介：</span></p>
+				<p class="t-right">{$vo.vod_blurb}</p>
+			</div>
+		</div>
+		{php}
+        if($GLOBALS['user']['user_id']){
+            $user_id = $GLOBALS['user']['user_id'];
+			$res = model('ulog')->where(['user_id' => $user_id,'ulog_type' => 2])->column('ulog_rid','ulog_id');
+			if(in_array($vo['vod_id'],$res)){
+				$ulog_id = array_keys($res,$vo['vod_id']);
+				$ulog_id = $ulog_id?$ulog_id[0]:'';
+            {/php}
+                <div class="mac_ulog is_fav vod_fav" data-type="2" data-mid="{$vo.mid|default='1'}" data-id="{$vo.vod_id}" data-uid='{$ulog_id}'>
+                    <i class="mac_fav_star" aria-hidden="true">★</i>
+                    <span data-lang="string_isfav">已收藏</span>
+                </div>
+            {php}
+                }else{
+            {/php}
+                <div class="mac_ulog vod_fav" data-type="2" data-mid="{$vo.mid|default='1'}" data-id="{$vo.vod_id}" data-uid='{$ulog_id}'>
+                    <i class="mac_fav_star" aria-hidden="true">☆</i>
+                    <span data-lang="string_fav">收藏</span>
+                </div>
+            {php}
+            }
+        }else{
+        {/php}
+            <div class="mac_ulog vod_fav" data-type="2" data-mid="{$vo.mid|default='1'}" data-id="{$vo.vod_id}" >
+                <i class="mac_fav_star" aria-hidden="true">☆</i>
+                <span data-lang="string_fav">收藏</span>
+            </div>
+        {php}
+        }
+        {/php}
+	</a>
+
+</li>

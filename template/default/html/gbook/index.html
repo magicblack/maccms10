@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+<head>
+       
+	{include file="public/include"}
+	<link rel="stylesheet" type="text/css" href="{$maccms.path_tpl}/asset/css/gbook-index.css" />
+ 
+	<script>
+        $(function(){
+            MAC.Gbook.Login = {$gbook.login};
+            MAC.Gbook.Verify = {$gbook.verify};
+            MAC.Gbook.Init();
+        });
+    </script>
+</head>
+
+<body id="graypage">
+    {include file="public/th" /}
+    <div class="show-pc">
+        {include file="public/head"}
+    </div>
+ <div id="left" class="show-mobile">
+        <div class="m-nav">
+			<a href="javascript:MAC.GoBack()" class="btn-left"><i class="iconfont ico-right">&#xe625;</i></a>
+			<span class="mb-title">{if condition="!empty($tplconfig['theme']['gbook']['title'])"}{$tplconfig.theme.gbook.title}{else/}<span data-lang="string_gbook_wyly">我要留言</span>{/if}</span>
+	    </div>
+	</div>
+ <div class="member-wrap">
+
+ <div class="container white_pal">
+     {include file="ads/ads_all"}
+      <div class="input_row">
+       <div class="pannel clearfix">
+        
+        <div class="mac_msg_r">
+              <form class="gbook_form gbook_font">
+                <textarea class="gbook_content" name="gbook_content" data-placeholder="string_gbook_srly" placeholder="输入留言内容"></textarea>
+                <div class="show-mobile zishu">
+                    <span class="is_zishu">0</span>/<span>200</span>
+                </div>
+                <div class="msg_code">
+                    <div class="remaining_w">
+                        <span data-lang="string_gbook_ts">提示：还可输入</span>
+                        <span class="gbook_remaining remaining">200</span> 
+                        <span data-lang="string_pinglun_zi">字</span>
+                    </div>
+                    {if condition="$gbook.verify eq 1"}
+                    <input type="text" name="verify" data-placeholder='user_yanzhengma' placeholder="验证码" class="verify">
+                    <img class="comm-code" data-title='string_pinglun_kan' src="{:mac_url('verify/index')}" data-role="{:mac_url('verify/index')}" title="看不清楚? 换一张！" onClick="this.src=this.src+'?v={:time()}'" />
+                    {/if}
+                    <input type="button" data-value='string_gbook_tjly' class="gbook_submit submit_btn" value="提交留言">
+                </div>
+            </form>
+        </div>
+        
+        {maccms:gbook paging="yes" order="desc" by="id"}
+        {/maccms:gbook}		
+	   </div>
+    </div>
+	<div class="commlist_row">
+	    <div class="comm_list pannel clearfix">
+			{include file="gbook/ajax"}
+		</div>
+	</div>
+</div>
+</div>
+{include file="public/foot"}
+</body>
+</html>

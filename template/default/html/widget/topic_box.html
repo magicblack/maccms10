@@ -1,0 +1,26 @@
+<li class="topiclist_item num_{$key}">
+	<a class="topiclist_thumb lazyload" href="{:mac_url_topic_detail($vo)}" title="{$vo.topic_name}" data-original="{$vo.topic_pic|mac_url_img}">						
+		<span class="play hidden_xs"></span>		
+		<span class="pic_text text_right ">
+			<span class="pic_bg">
+				<i class="top-icon"></i>
+				<span class="pic_t" data-lang="string_topic">专题</span>
+				<p class="pic_c">
+					<i class="throw"></i>
+					<span>
+						{if $vo['topic_rel_vod'] == ""}
+							0
+						{else}
+							{$vo.topic_rel_vod|explode=',',###|count}
+						{/if}
+						{//$obj.vod_list|count}
+					<span data-lang="string_yingpian">个影片</span> </span>
+					<i class="throw"></i>
+				</p>
+				<span>{$vo.topic_name}</span>
+			</span>
+		</span>
+	</a>
+	<!-- <span class="show-mobile name">{$vo.topic_name}</span>									 -->
+	
+</li>

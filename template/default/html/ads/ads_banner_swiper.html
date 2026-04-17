@@ -1,0 +1,24 @@
+{php}
+$bannerSwiperRows = [];
+if (!empty($tplconfig['theme']['ad_slots']['banner_swiper']['ad_data']) && is_array($tplconfig['theme']['ad_slots']['banner_swiper']['ad_data'])) {
+    foreach ($tplconfig['theme']['ad_slots']['banner_swiper']['ad_data'] as $row) {
+        if (!is_array($row)) { continue; }
+        if (strtolower(trim((string)($row['active'] ?? 'off'))) !== 'on') { continue; }
+        $expireAt = isset($row['date']) ? trim((string)$row['date']) : '';
+        if ($expireAt !== '') {
+            $expireTs = strtotime($expireAt);
+            if ($expireTs !== false && $expireTs < time()) { continue; }
+        }
+        if (empty($row['image']) || empty($row['url'])) { continue; }
+        $bannerSwiperRows[] = $row;
+    }
+}
+if (!empty($bannerSwiperRows)) {
+    usort($bannerSwiperRows, function ($a, $b) {
+        $oa = intval($a['order'] ?? 0);
+        $ob = intval($b['order'] ?? 0);
+        if ($oa === $ob) { return 0; }
+        return $oa < $ob ? -1 : 1;
+    });
+}
+{/php}

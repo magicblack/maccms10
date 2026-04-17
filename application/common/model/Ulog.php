@@ -34,6 +34,25 @@ class Ulog extends Base {
                 $user_ids[$v['user_id']] = $v['user_id'];
             }
 
+            if($v['ulog_mid']==12){
+                // 漫画收藏 / 历史
+                $manga_info = model('Manga')->infoData(['manga_id'=>['eq',$v['ulog_rid']]],'*',1);
+                if (!empty($manga_info['info'])) {
+                    $manga_info['info']['link'] = mac_url_manga_detail($manga_info['info']);
+                    $v['data'] = [
+                        'id'   => $manga_info['info']['manga_id'],
+                        'name' => $manga_info['info']['manga_name'],
+                        'pic'  => mac_url_img($manga_info['info']['manga_pic']),
+                        'link' => $manga_info['info']['link'],
+                        'type' => [
+                            'type_id'   => $manga_info['info']['type']['type_id'],
+                            'type_name' => $manga_info['info']['type']['type_name'],
+                            'link'      => mac_url_type($manga_info['info']['type']),
+                        ],
+                    ];
+                }
+            }
+
             if($v['ulog_mid']==1){
                 $vod_info = model('Vod')->infoData(['vod_id'=>['eq',$v['ulog_rid']]],'*',1);
 
@@ -141,7 +160,7 @@ class Ulog extends Base {
             return ['code'=>1001,'msg'=>lang('param_err').'：'.$validate->getError() ];
         }
 
-        if($data['user_id']==0 || !in_array($data['ulog_mid'],['1','2','3','8']) || !in_array($data['ulog_type'],['1','2','3','4','5']) ) {
+        if($data['user_id']==0 || !in_array($data['ulog_mid'],['1','2','3','8','12']) || !in_array($data['ulog_type'],['1','2','3','4','5']) ) {
             return ['code'=>1002,'msg'=>lang('param_err')];
         }
 

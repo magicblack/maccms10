@@ -1,0 +1,8 @@
+{if condition="($tplconfig['theme']['ads']['btn'] eq 1 || ($tplconfig['theme']['ads']['btn'] eq 2 && isset($user['group_id']) && $user['group_id'] lt 3))"}
+{if condition="$tplconfig['theme']['ads']['vod_r']['btn'] eq 1"}
+	<div class="pannel clearfix">
+		<div id="1002" class="ads right_ads">
+			{$tplconfig['theme']['ads']['vod_r']['content']}
+		</div>
+	</div>
+{/if}{/if}

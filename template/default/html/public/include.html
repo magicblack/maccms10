@@ -1,0 +1,68 @@
+<meta charset="utf-8" />
+{include file="widget/seos"}
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=EmulateIE10" />
+<meta name="renderer" content="webkit|ie-comp|ie-stand">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+
+<link rel="stylesheet" href="{$maccms.path}template/default/asset/css/iconfont-alicdn.css">
+<link rel="stylesheet" type="text/css" href="{$maccms.path}template/default/asset/css/public-head-early.css?v=202604161">
+<link rel="stylesheet" type="text/css" href="{$maccms.path}template/default/asset/css/black.css" id="macThemeDarkSheet">
+
+<script type="text/javascript" src="{$maccms.path}template/default/asset/js/jquery.js"></script>
+<script type="text/javascript" src="{$maccms.path}template/default/asset/js/head-sync.js?v=202604161"></script>
+
+<link href="{$maccms.path}template/default/asset/css/public-head-main.css?v=202604161" rel="stylesheet" type="text/css" />
+<script defer src="{$maccms.path}template/default/asset/js/head-defer-public.js?v=202604161"></script>
+<style>
+html.license-locked body {
+	visibility: hidden !important;
+}
+
+html.license-locked body::after {
+	content: '';
+	visibility: visible;
+	position: fixed;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	background: var(--tpl-bg-base);
+	z-index: 999999;
+}
+#mac_site_card_layer {
+	display: none !important;
+}
+#mac_site_card_layer.is-open {
+	display: flex !important;
+}
+</style>
+<script defer type="text/javascript" src="{$maccms.path}template/default/asset/js/public-home-stack.js?v=202604161"></script>
+<link href="{$maccms.path_tpl}/asset/css/mac-pop-sheets.css" rel="stylesheet" type="text/css" />
+<script defer type="text/javascript" src="{$maccms.path_tpl}/asset/js/user-upgrade-submit.js"></script>
+<script defer type="text/javascript" src="{$maccms.path}template/default/asset/js/auth-reg-success.js"></script>
+<script defer type="text/javascript" src="{$maccms.path_tpl}/asset/js/auth-invite-collapsible.js"></script>
+
+
+{include file="public/jsvar"}
+<script>
+(function(){
+  document.addEventListener('DOMContentLoaded',function(){
+    if (typeof window.macApplyLazyPlaceholderBg === 'function') {
+      window.macApplyLazyPlaceholderBg(document);
+    }
+  });
+})();
+</script>
+
+<link rel="apple-touch-icon-precomposed" sizes="180x180" href="{:mac_url_img(!empty($tplconfig['theme']['logo']['webapp']) ? $tplconfig['theme']['logo']['webapp'] : substr($maccms['path_tpl'], strlen($maccms['path'])).'asset/img/ios_fav.png')}">
+<link rel="shortcut icon" href="{:mac_url_img(!empty($tplconfig['theme']['logo']['icon']) ? $tplconfig['theme']['logo']['icon'] : substr($maccms['path_tpl'], strlen($maccms['path'])).'asset/img/favicon.ico')}" type="image/x-icon" />
+
+<script type="text/javascript" src="{$maccms.path}template/default/asset/js/jquery.cookie.js"></script>
+<script defer type="text/javascript" src="{$maccms.path_tpl}/asset/js/vendor-lottie.js"></script>
+<script defer type="text/javascript" src="{$maccms.path_tpl}/asset/js/mac-logo-lottie.js"></script>
+{include file="widget/themes"}
+{if condition="!empty($tplconfig['theme']['head']['text'])"}
+{$tplconfig.theme.head.text}
+{/if}
+<link href="{$maccms.path}template/default/asset/css/auth-ui.css" rel="stylesheet" type="text/css" />

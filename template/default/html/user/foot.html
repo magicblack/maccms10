@@ -1,0 +1,59 @@
+<div id="show" style="display: none;">
+    <div class="co-cg">
+       <p data-lang="copy_success">耶～～复制成功</p>
+    </div>
+</div>
+<script>
+	$(".face").imageUpload({
+		formAction: "{:url('user/portrait')}",
+		inputFileName:'file',
+		browseButtonValue: '<i class="iconfont xiazai">&#xe65e;</i>',
+		browseButtonClass:'btn btn-default btn-xs face-upload',
+		automaticUpload: true,
+		hideDeleteButton: true,
+		hover:true
+	})
+	$(".face").on("imageUpload.uploadFailed", function (ev, err) {
+		MAC.alert(err);
+	});
+</script>
+<div class="footer clearfix">
+	<div class="layout">
+		<div class="copyright">
+			<p>&copy; {:date('Y')} <a class="color" href="//{$maccms.site_url}">{$maccms.site_url}</a>  All Rights Reserved.</p>
+		</div>
+	</div>
+	{include file="widget/foot_nav"}
+</div>
+<script src="{$maccms.path}template/default/asset/js/stem-clipboard.js"></script>
+<script type="text/javascript">
+    $(".flip").click(function(){
+		$(".panel").slideToggle("slow");
+		$(".xs1").toggle();
+		$(".xs2").toggle();
+    });
+</script>
+{if condition="$GLOBALS['config']['user']['reward_status'] eq 1"}
+<script>
+	var btn=document.getElementById('btn');
+	var clipboard=new Clipboard(btn);
+	clipboard.on('success', function(e){
+		$('#show').slideDown().delay(1500).slideUp(300);
+	});
+	clipboard.on('error', function(e){
+		$('#show').slideDown().delay(1500).slideUp(300);
+	});
+	var btn=document.getElementById('btn2');
+	var clipboard=new Clipboard(btn2);
+	clipboard.on('success', function(e){
+		$('#show').slideDown().delay(1500).slideUp(300);
+	});
+	clipboard.on('error', function(e){
+		$('#show').slideDown().delay(1500).slideUp(300);
+	});
+</script>{/if}
+<script type="text/javascript">
+	if (typeof window.macVanillaLazyUpdate === 'function') {
+		window.macVanillaLazyUpdate();
+	}
+</script>

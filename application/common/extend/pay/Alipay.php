@@ -6,7 +6,7 @@ class Alipay {
     public $name = '支付宝';
     public $ver = '1.0';
 
-    public function submit($user,$order,$param)
+    public function submit($user,$order,$param,$return_only=false)
     {
         $data = array();
         $data['service'] = 'create_direct_pay_by_user';//使用即时到帐交易接口
@@ -24,12 +24,15 @@ class Alipay {
         //待请求参数数组
         $para = $this->buildRequestPara($data);
         $sHtml = "<form id='alipaysubmit' name='alipaysubmit' action='https://mapi.alipay.com/gateway.do?_input_charset=utf-8' method='POST'>";
-        while (list ($key, $val) = each ($para)) {
+        foreach ($para as $key => $val) {
             $sHtml.= "<input type='hidden' name='".$key."' value='".$val."'/>";
         }
         //submit按钮控件请不要含有name属性
         $sHtml = $sHtml."<input type='submit' value='正在提交'></form>";
         $sHtml = $sHtml."<script>document.forms['alipaysubmit'].submit();</script>";
+        if ($return_only) {
+            return $sHtml;
+        }
         echo $sHtml;
         die;
     }
@@ -80,7 +83,7 @@ class Alipay {
 
     public function paraFilter($para) {
         $para_filter = array();
-        while (list ($key, $val) = each ($para)) {
+        foreach ($para as $key => $val) {
             if($key == "sign" || $key == "sign_type" || $val == "")continue;
             else	$para_filter[$key] = $para[$key];
         }
@@ -104,14 +107,14 @@ class Alipay {
 
     public function createLinkstring($para) {
         $arg  = "";
-        while (list ($key, $val) = each ($para)) {
+        foreach ($para as $key => $val) {
             $arg.=$key."=".$val."&";
         }
         //去掉最后一个&字符
-        $arg = substr($arg,0,count($arg)-2);
+        $arg = rtrim($arg, '&');
 
         //如果存在转义字符，那么去掉转义
-        if(get_magic_quotes_gpc()){$arg = stripslashes($arg);}
+        if(function_exists('get_magic_quotes_gpc') && get_magic_quotes_gpc()){$arg = stripslashes($arg);}
 
         return $arg;
     }

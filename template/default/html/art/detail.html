@@ -1,4 +1,4 @@
-<!doctype html>
+<!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8">
@@ -9,26 +9,292 @@
     {else/}
     <title>{$obj.art_name|default='Article Detail'}</title>
     {/notempty}
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <style>
-        body{max-width:920px;margin:24px auto;padding:0 14px;font-family:Arial,Helvetica,sans-serif;line-height:1.8;color:#222}
-        h1{line-height:1.4;margin:0 0 8px}
-        .meta{color:#777;font-size:13px;margin-bottom:14px}
-        .content{word-break:break-word}
-        img{max-width:100%;height:auto}
-    </style>
+	{include file="public/include"}
+	{include file="public/include_rating_svg" /}
+	<link rel="stylesheet" type="text/css" href="{$maccms.path_tpl}/asset/css/content-detail-app.css" />
+	<link rel="stylesheet" type="text/css" href="{$maccms.path_tpl}/asset/css/art-detail.css" />
 </head>
-<body>
-<article>
-    <h1>{$obj.art_name}</h1>
-    <div class="meta">
-        <span>分类：{$obj.type.type_name|default='-'}</span>
-        <span style="margin-left:12px;">时间：{$obj.art_time|mac_day}</span>
-        <span style="margin-left:12px;">浏览：{$obj.art_hits|default='0'}</span>
-    </div>
-    <div class="content">
-        {$obj.art_content}
-    </div>
-</article>
+<body class="art-detail-csr-body"
+	data-detail-id="{$param.id|default='0'}"
+	data-logged-user="{$GLOBALS['user']['user_id']|default='0'}">
+    {include file="public/th" /}
+{php}$art_poster_class = (mac_tpl_art_cover() === 'h') ? 'mac-poster--h' : 'mac-poster--v';{/php}
+{assign name="isSingleRow" value="1"}
+{include file="public/head" /}
+<div id="artcon_page" class="content-detail-app {$art_poster_class}">
+   <div class="container ">
+       {include file="ads/ads_banner1"}
+       {include file="ads/ads_icon1" ads_icon1_marquee="0"}
+       {include file="ads/ads_all"}
+		<div class="art_list_row">
+             <div class="pannel article_box content-detail-panel">
+                  <div class="content-detail-app-main">
+                  <div class="content-detail-hero-wrap">
+                  <div class="content-detail-hero">
+                      <a class="content-detail-hero-link js-art-hero-link" href="{:mac_url('art/read',['id'=>$param.id,'page'=>1])}" title="">
+                          <img class="content-detail-hero-img lazyload js-art-hero-img" style="display:none" src="{:mac_url_img(!empty($tplconfig['theme']['lazy']) ? $maccms['path'].$tplconfig['theme']['lazy'] : $maccms['path_tpl'].'/asset/img/load.gif')}" data-original="" alt="">
+                          <div class="content-detail-hero-placeholder js-art-hero-placeholder">文</div>
+                          <span class="mac_badge_top_right js-art-hero-badge"></span>
+                          <span class="cd-badge cd-badge-count js-art-chapter-badge"></span>
+                          <span class="cd-badge cd-badge-status js-art-status-badge"></span>
+                      </a>
+                  </div>
+                  </div>
+
+                  <div class="content-detail-main-stack">
+                  <div class="content-detail-body">
+                      <h1 class="content-detail-title js-art-title"></h1>
+                      <div class="content-detail-tags js-art-tags"></div>
+                      <div id="js-art-rating" class="art-detail-rating-mount content-detail-rating-wrap"></div>
+                      <div class="content-detail-meta-grid">
+                          <div class="cdm-cell"><span class="cdm-label" data-lang="string_show_leixing">类型</span><span class="cdm-val js-art-type-name"></span></div>
+                          <div class="cdm-cell js-art-author-cell"><span class="cdm-label" data-lang="string_art_author">作者</span><span class="cdm-val js-art-author-name">—</span></div>
+                          <div class="cdm-cell"><span class="cdm-label" data-lang="read">阅读</span><span class="cdm-val js-art-hits">0</span></div>
+                          <div class="cdm-cell"><span class="cdm-label" data-lang="content_detail_meta_time">时间</span><span class="cdm-val js-art-date"></span></div>
+                      </div>
+                      <div class="content-detail-btns content-detail-btns--art">
+                          <a class="cdb-primary cdb-primary--icon" id="artReadBtn" href="{:mac_url('art/read',['id'=>$param.id,'page'=>1])}"><span class="cdb-btn-ico cdb-btn-ico--read" aria-hidden="true"></span><span class="js-art-read-label" data-lang="art_start_read">开始阅读</span></a>
+                          {if condition="$GLOBALS['config']['user']['status'] eq 1"}
+                          <a class="cdb-fav mac_ulog js-art-fav cdb-fav--icon" data-type="2" data-mid="{$maccms.mid}" data-id="{$param.id|default='0'}" data-uid="" href="javascript:;"><span class="cdb-btn-ico cdb-btn-ico--fav" aria-hidden="true"></span><span class="js-art-fav-label" data-lang="art_add_fav">加入收藏</span></a>
+                          {else/}
+                          <span class="cdb-fav cdb-fav--disabled cdb-fav--icon"><span class="cdb-btn-ico cdb-btn-ico--fav" aria-hidden="true"></span><span data-lang="art_add_fav">加入收藏</span></span>
+                          {/if}
+                          <a class="cdb-share open-share art-detail-share-pc" href="javascript:;" role="button" aria-haspopup="dialog" aria-expanded="false"><i class="iconfont" aria-hidden="true">&#xe615;</i><span data-lang="string_vod_share">分享</span></a>
+                      </div>
+                  </div>
+
+                      <div class="content-detail-rows js-art-detail-rows" style="display:none">
+                          <a class="content-detail-row content-detail-row--boxed js-art-row-latest" href="#">
+                              <span class="cdr-icon cdr-icon--img"><img src="{$maccms.path_tpl}images/content-detail/icon-recent.png" width="22" height="22" alt="" loading="lazy" decoding="async"></span>
+                              <div class="cdr-main">
+                                  <div class="cdr-label" data-lang="content_detail_recent_update">最近更新</div>
+                                  <div class="cdr-sub js-art-latest-sub"></div>
+                              </div>
+                              <span class="cdr-right js-art-latest-date"></span>
+                          </a>
+                      </div>
+
+                  <section class="content-detail-intro-vod">
+                      <h2 data-lang="string_vod_introduction">剧情介绍</h2>
+                      <div class="content_desc context clearfix">
+                          <span class="js-art-intro-short"></span>
+                          <a href="javascript:void(0);" class="show_btn" onclick="showdiv(this);"><i class="line_bg"></i><i class="iconfont" aria-hidden="true">&#xe63a;</i><em class="hidden_xs">&nbsp; <span data-lang="string_vod_expand">展开全部</span> </em></a>
+                      </div>
+                      <div class="content_desc full_text clearfix" style="display:none;">
+                          <span class="js-art-intro-full"></span>
+                          <a href="javascript:void(0);" class="hidden_btn" onclick="hidediv(this);"><i class="iconfont" aria-hidden="true">&#xe628;</i><em class="hidden_xs">&nbsp;<span data-lang="string_vod_pull">收起全部</span></em></a>
+                      </div>
+                  </section>
+
+                  </div>
+
+                  {include file="ads/ads_artw"}
+                  <div class="art_zan_box js-art-digg-wrap" style="display:none">
+                  <div class="digg_zan">
+                      <a class="digg_link js-art-digg-link" data-id="" data-mid="{$maccms.mid}" data-type="up" href="javascript:;">
+						  <span class="is_digg js-art-digg-label" data-lang="string_art_zan">赞</span>
+						  <em class="digg_num js-art-digg-num">0</em>
+                      </a>
+                  </div>
+                  </div>
+                  </div>
+              </div>
+              <div class="pannel article_box clearfix js-art-playlist-panel" id="art-playlist-panel" style="display:none">
+                  <div class="pannel_head pannel_head--vod-playlist content-detail-playlist-head">
+                      <h3 class="title" data-lang="string_vod_playlist">播放列表</h3>
+                      <div class="vod-playlist-head-center">
+                          <div class="player_infotip player_infotip--marquee js-art-toc-marquee" data-marquee-ready="0">
+                              <div class="player_infotip__viewport">
+                                  <div class="player_infotip__track js-art-toc-marquee-track"></div>
+                              </div>
+                          </div>
+                      </div>
+                  </div>
+                  <div class="play_source content-detail-play-source">
+                      <div class="js-art-toc-content"></div>
+                  </div>
+              </div>
+              <div class="pannel art_pren_list clearfix js-art-prevnext" style="display:none">
+				  <a class="art_prev js-art-prev" href="#" style="display:none"><span data-lang="string_art_syp">上一篇</span><div class="art_name_prev"></div></a>
+				  <a class="art_next js-art-next" href="#" style="display:none"><span data-lang="string_art_xyp">下一篇</span><div class="art_name_next"></div></a>
+		      </div>
+              {if condition="$GLOBALS['config']['comment']['status'] eq 1"}
+              <div class="pannel clearfix" id="pinglun" >
+				<div class="pannel_head clearfix">
+				    <span class="pull_right"> <span data-lang="string_play_yg">共</span> &nbsp;<font color="#40CC92"><em class="mac_total"></em></font>&nbsp; <span data-lang="string_play_tpl">条评论</span> </span>
+					<h3 class="title" data-lang="string_play_pl">评论</h3>
+				</div>
+				<div class="mac_comment comm_list comm_list_box"
+					data-id="{$param.id|default='0'}"
+					data-mid="{$maccms.mid}"
+					data-comment-login="{$comment.login|default='0'}"
+					data-comment-verify="{$comment.verify|default='0'}"></div>
+				<script>
+					$(function(){
+						function initComment(){
+							if(typeof MAC !== 'undefined'){
+								var $box = $('#pinglun .comm_list_box').first();
+								var login = parseInt($box.attr('data-comment-login'), 10);
+								var verify = parseInt($box.attr('data-comment-verify'), 10);
+								MAC.Comment.Login = isNaN(login) ? 0 : login;
+								MAC.Comment.Verify = isNaN(verify) ? 0 : verify;
+								MAC.Comment.Init();
+								MAC.Comment.Show(1);
+							}else{
+								setTimeout(initComment, 50);
+							}
+						}
+						initComment();
+					});
+				</script>
+			  </div>
+             {/if}
+		</div>
+		<div class="art_sider_row content-detail-guess"
+			data-art-id="{$param.id|default='0'}"
+			data-type-id="0"
+			data-guess-url="{:url('ajax/guess_art')}">
+			{include file="ads/ads_artr"}
+			<div class="pannel clearfix content-detail-panel">
+				<div class="content-detail-guess-head">
+					<h3 class="title" data-lang="vod_guess">猜你喜欢</h3>
+					<a href="javascript:;" class="content-detail-guess-refresh" role="button"><i class="iconfont">&#xe62a;</i> <span data-lang="content_guess_refresh">换一换</span></a>
+				</div>
+				<div class="content-detail-guess-scroll"></div>
+			</div>
+		</div>
+   </div>
+   <div class="content-detail-friendlink-wrap show-pc">
+	{include file="public/friendLink" }
+</div>
+	<span class="mac_hits hits content-detail-hit-tracker" data-mid="{$maccms.mid}" data-id="{$param.id|default='0'}" data-type="hits"></span>
+	<span class="mac_hits hits_day content-detail-hit-tracker" data-mid="{$maccms.mid}" data-id="{$param.id|default='0'}" data-type="hits_day"></span>
+	<span class="mac_hits hits_week content-detail-hit-tracker" data-mid="{$maccms.mid}" data-id="{$param.id|default='0'}" data-type="hits_week"></span>
+	<span class="mac_hits hits_month content-detail-hit-tracker" data-mid="{$maccms.mid}" data-id="{$param.id|default='0'}" data-type="hits_month"></span>
+   {include file="public/foot"}
+<script type="text/javascript" src="{$maccms.path_tpl}/asset/js/art-detail-ajax-render.js"></script>
+<script>
+(function(){
+    var guessEl = document.querySelector('.content-detail-guess');
+    var refreshBtn = document.querySelector('.content-detail-guess-refresh');
+    var scrollEl = document.querySelector('.content-detail-guess-scroll');
+    if (!guessEl || !refreshBtn || !scrollEl) return;
+    var guessUrl = (guessEl.getAttribute('data-guess-url') || '').toString().trim();
+    if (!guessUrl) return;
+    refreshBtn.addEventListener('click', function(){
+        var id = guessEl.getAttribute('data-art-id') || '';
+        var tid = guessEl.getAttribute('data-type-id') || '';
+        refreshBtn.classList.add('loading');
+        refreshBtn.style.pointerEvents = 'none';
+        var sep = guessUrl.indexOf('?') >= 0 ? '&' : '?';
+        var xhr = new XMLHttpRequest();
+        xhr.open('GET', guessUrl + sep + 'id=' + encodeURIComponent(id) + '&tid=' + encodeURIComponent(tid) + '&num=9');
+        xhr.onload = function(){
+            refreshBtn.classList.remove('loading');
+            refreshBtn.style.pointerEvents = '';
+            try {
+                var res = JSON.parse(xhr.responseText);
+                if (res.code === 1 && res.list && res.list.length) {
+                    var html = '';
+                    for (var i = 0; i < res.list.length; i++) {
+                        var v = res.list[i];
+                        html += '<div class="guess-card"><a href="' + (v.link || '#').replace(/"/g, '&quot;') + '" title="' + (v.art_name || '').replace(/"/g, '&quot;') + '">';
+                        html += '<div class="guess-thumb"><img class="lazyload" src="' + (v.art_pic || '').replace(/"/g, '&quot;') + '" data-original="' + (v.art_pic || '').replace(/"/g, '&quot;') + '" alt="">';
+                        if (v.page_total > 0) html += '<span class="guess-ep">' + v.page_total + '<span data-lang="art_read_chapter_unit">章</span></span>';
+                        html += '</div><div class="guess-title">' + (v.art_name || '').replace(/</g, '&lt;').replace(/>/g, '&gt;') + '</div></a></div>';
+                    }
+                    scrollEl.innerHTML = html;
+                    if (window.MacCatalogMedia && window.MacCatalogMedia.triggerLazyload) {
+                        window.MacCatalogMedia.triggerLazyload(scrollEl);
+                    }
+                }
+            } catch (e) {}
+        };
+        xhr.onerror = function(){ refreshBtn.classList.remove('loading'); refreshBtn.style.pointerEvents = ''; };
+        xhr.send();
+    });
+})();
+</script>
+<script>
+(function(){
+    function readUrl(artId, page) {
+        artId = parseInt(artId, 10) || 0;
+        page = parseInt(page, 10) || 1;
+        if (artId <= 0) return '#';
+        var b = (window.maccms && maccms.path) ? String(maccms.path).replace(/\/+$/, '') : '';
+        return (b ? b + '/' : '/') + 'index.php/art/read/id/' + artId + '/page/' + page + '.html';
+    }
+    var artId = document.body.getAttribute('data-detail-id') || '';
+    var key = 'novel_reader_progress_art_' + artId;
+    try{
+        sessionStorage.setItem('art_detail_history_length', String(history.length));
+    }catch(e){}
+    try {
+        var raw = window.localStorage.getItem(key);
+        if(!raw) return;
+        var data = JSON.parse(raw);
+        if(!data || !data.page) return;
+        var page = parseInt(data.page, 10);
+        if(isNaN(page) || page <= 1) return;
+        var title = ('第' + page + '章');
+        var $btn = $('#artReadBtn');
+        if($btn.length){
+            $btn.attr('href', readUrl(artId, page));
+            var $lab = $btn.find('.js-art-read-label');
+            if ($lab.length) {
+                $lab.text('继续阅读 · ' + title);
+            } else {
+                $btn.text('继续阅读 · ' + title);
+            }
+        }
+    } catch(e){}
+})();
+</script>
+<script>
+(function(){
+    var ajaxUlogUrl = "{:url('user/ajax_ulog')}";
+    var delUlogUrl = "{:url('user/ulog_del')}";
+    $('#artcon_page').on('click', '.js-art-fav.mac_ulog', function(e){
+        e.preventDefault();
+        e.stopImmediatePropagation();
+        if (window.MAC && MAC.User && Number(MAC.User.IsLogin || 0) !== 1) {
+            if (typeof MAC.User.Login === 'function') MAC.User.Login();
+            return;
+        }
+        var $btn = $(this);
+        var rid = parseInt($btn.attr('data-id'), 10) || 0;
+        var mid = parseInt($btn.attr('data-mid'), 10) || 2;
+        if(rid < 1){
+            MAC.alert('参数错误');
+            return;
+        }
+        if($btn.hasClass('is_fav')){
+            var uid = parseInt($btn.attr('data-uid'), 10) || 0;
+            if(uid < 1){
+                location.reload();
+                return;
+            }
+            $.post(delUlogUrl, {ids: uid, type: 2, all: 0}, function(res){
+                if(res && Number(res.code) === 1){
+                    MAC.alert('已取消收藏');
+                    location.reload();
+                }else{
+                    MAC.alert((res && res.msg) ? res.msg : '取消收藏失败');
+                }
+            }, 'json');
+            return;
+        }
+        $.get(ajaxUlogUrl, {ac:'set', mid: mid, id: rid, sid: 0, nid: 0, type: 2}, function(res){
+            if(res && Number(res.code) === 1){
+                MAC.alert('收藏成功');
+                location.reload();
+            }else{
+                MAC.alert((res && res.msg) ? res.msg : '收藏失败');
+            }
+        }, 'json');
+    });
+})();
+</script>
+</div>
 </body>
 </html>

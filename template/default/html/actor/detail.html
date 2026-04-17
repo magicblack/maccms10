@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+<head>
+	{include file="public/include"}
+	<link rel="stylesheet" href="{$maccms.path}template/default/asset/css/hlactor.css" type="text/css" />
+	<link rel="stylesheet" type="text/css" href="{$maccms.path_tpl}/asset/css/actor-detail.css" />
+</head>
+
+
+<body class="actor-detail-csr-body" data-detail-id="{$param.id|default='0'}">
+	<div class="show-pc">
+		{include file="public/head"}
+	</div>
+	<div id="left"  class="show-mobile">
+		<div class="m-nav mobile-nav">
+			<a href="javascript:MAC.GoBack()" class="btn-left"><i class="iconfont ico-right">&#xe625;</i></a>
+			<span class="mb-title"></span>
+		</div>
+	</div>
+    <div class="hot_banner actor_ber ">
+         <div class="actor_list">
+				<p class="js-actor-load-error" style="display:none;padding:0.75rem 1rem;text-align:center;color:#888;" role="alert"></p>
+				<div class="content_actor clearfix">
+					<div class="actor_thumb">
+						<a class="vodlist_thumb lazyload js-actor-hero-thumb" href="javascript:;" style="background:url({:mac_url_img(!empty($tplconfig['theme']['lazy']) ? $maccms['path'].$tplconfig['theme']['lazy'] : $maccms['path_tpl'].'/asset/img/load.gif')}) no-repeat center;background-size:cover;" title="" data-original=""></a>
+					</div>
+					<div class="actor_detail">
+						<span class="text_muted pull_right">
+							<a class="digg_link js-actor-digg" data-id="" data-mid="{$maccms.mid}" data-type="up" href="javascript:;" title=""><i class="iconfont">&#xe655;</i>&nbsp;<em class="digg_num js-actor-digg-num">0</em></a>
+						</span>
+						<h3 class="title show-pc js-actor-title"></h3>
+                        <ul>
+                        <li class="data js-actor-hero-birth"></li>
+						<li class="desc hidden_xs js-actor-hero-blurb"></li>
+						</ul>
+					</div>
+				</div>
+         </div>
+    </div>
+   <div class="container ">
+        <div class="row">
+			<div class="pannel actor_vod clearfix">
+				<div class="tabs">
+				  <input type="radio" id="tab1" name="tab-control" checked>
+				  <input type="radio" id="tab2" name="tab-control">
+				  <input type="radio" id="tab3" name="tab-control">
+				  <ul class="title_nav">
+					<li class="tab-det" data-title="string_actor_grzl" title="个人资料"><label for="tab1" role="button"><span data-lang="string_actor_grzl">个人资料</span></label></li>
+					<li class="tab-det" data-title="string_actor_xgzp" title="相关作品"><label for="tab2" role="button"><span data-lang="string_actor_xgzp">相关作品</span></label></li>
+					<li class="tab-det" data-title="string_actor_cyjs" title="参演角色"><label for="tab3" role="button"><span data-lang="string_actor_cyjs">参演角色</span></label></li>
+				  </ul>
+				  {include file="ads/ads_all"}
+				  <div class="content">
+					<section>
+					  <h2 data-lang="string_actor_grjs">个人介绍</h2>
+						<div class="content_desc clearfix">
+						<ul class="actor_text clearfix js-actor-profile-fields"></ul>
+						 <div id="js-actor-rich-content"></div>
+						</div>
+					</section>
+					<section>
+					  <h2 data-lang="string_actor_xgzp">相关作品</h2>
+						<div class="content_desc clearfix">
+						    <h3 class="vod_tit1" data-lang="string_actor_dy">电影</h3>
+							<ul id="vod_actor1" class="vodlist vodlist_wi list_scroll"></ul>
+							<h3 class="vod_tit2" data-lang="string_actor_dsj">电视剧</h3>
+							<ul id="vod_actor2" class="vodlist vodlist_wi list_scroll"></ul>
+							<h3 class="vod_tit3" data-lang="string_actor_zongyi">综艺</h3>
+							<ul id="vod_actor3" class="vodlist vodlist_wi list_scroll"></ul>
+						</div>
+					</section>
+					<section>
+					  <h2 data-lang="string_actor_cyjs">参演角色</h2>
+						<div class="clearfix">
+                   <div class="vodlist_smt clearfix">
+					<ul id="actor-role-list"></ul>
+                </div>
+						</div>
+					</section>
+				  </div>
+				 </div>
+			</div>
+
+        </div>
+
+    </div>
+	<div style="width:30rem;margin: 2rem auto;">
+		{include file="public/friendLink" }
+	</div>
+<script type="text/javascript" src="{$maccms.path_tpl}/asset/js/actor-detail-ajax-render.js"></script>
+
+</body>
+</html>

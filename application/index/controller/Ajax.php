@@ -350,7 +350,7 @@ class Ajax extends Base
         $mid = $this->_param['mid'];
         $score = $this->_param['score'];
 
-        if(empty($id) ||  !in_array($mid,['1','2','3','8','9','11']) ) {
+        if(empty($id) ||  !in_array($mid,['1','2','3','8','9','11','12']) ) {
             return json(['code'=>1001,'msg'=>lang('param_err')]);
         }
 
@@ -455,6 +455,343 @@ class Ajax extends Base
 
         session($key,'1');
         return json(['code'=>1,'msg'=>'ok']);
+    }
+
+    /**
+     * 漫画猜你喜欢 - 换一换 AJAX 接口
+     * 参数: id=当前漫画ID, tid=分类ID(可选), num=数量(默认9)
+     */
+    public function guess_manga()
+    {
+        $id = intval($this->_param['id'] ?? 0);
+        $tid = intval($this->_param['tid'] ?? 0);
+        $num = intval($this->_param['num'] ?? 9);
+        if ($num < 1 || $num > 20) $num = 9;
+
+        $where = ['manga_status' => ['eq', 1]];
+        if ($id > 0) $where['manga_id'] = ['neq', $id];
+        if ($tid > 0) $where['type_id'] = $tid;
+
+        $order = 'manga_hits desc, manga_id desc';
+        $page = mt_rand(1, max(1, 5));
+        $res = model('Manga')->listData($where, $order, $page, $num, 0, '*', 1);
+        if ($res['code'] != 1) {
+            return json($res);
+        }
+
+        $list = [];
+        foreach ($res['list'] as $v) {
+            $ep = 0;
+            if (!empty($v['manga_chapter_from']) && !empty($v['manga_chapter_url'])) {
+                $pl = mac_manga_list($v['manga_chapter_from'], $v['manga_chapter_url'], $v['manga_play_server'] ?? '', $v['manga_play_note'] ?? '');
+                foreach ($pl as $f) {
+                    if (!empty($f['urls']) && is_array($f['urls'])) $ep += count($f['urls']);
+                }
+            }
+            $list[] = [
+                'manga_id' => $v['manga_id'],
+                'manga_name' => $v['manga_name'],
+                'manga_pic' => mac_url_img($v['manga_pic']),
+                'link' => mac_url_manga_detail($v),
+                'ep_count' => (int)$ep,
+            ];
+        }
+        return json(['code' => 1, 'msg' => lang('data_list'), 'list' => $list]);
+    }
+
+    /**
+     * 文章猜你喜欢 - 换一换 AJAX 接口
+     * 参数: id=当前文章ID, tid=分类ID(可选), num=数量(默认9)
+     */
+    public function guess_art()
+    {
+        $id = intval($this->_param['id'] ?? 0);
+        $tid = intval($this->_param['tid'] ?? 0);
+        $num = intval($this->_param['num'] ?? 9);
+        if ($num < 1 || $num > 20) $num = 9;
+
+        $where = ['art_status' => ['eq', 1]];
+        if ($id > 0) $where['art_id'] = ['neq', $id];
+        if ($tid > 0) $where['type_id'] = $tid;
+
+        $order = 'art_hits desc, art_id desc';
+        $page = mt_rand(1, max(1, 5));
+        $res = model('Art')->listData($where, $order, $page, $num, 0, '*', 1);
+        if ($res['code'] != 1) {
+            return json($res);
+        }
+
+        $list = [];
+        foreach ($res['list'] as $v) {
+            $pageTotal = 0;
+            if (!empty($v['art_content'])) {
+                $pageTotal = count(explode('$$$', $v['art_content']));
+            }
+            $list[] = [
+                'art_id' => $v['art_id'],
+                'art_name' => $v['art_name'],
+                'art_pic' => mac_url_img($v['art_pic']),
+                'link' => mac_url_art_detail($v),
+                'page_total' => (int)$pageTotal,
+            ];
+        }
+        return json(['code' => 1, 'msg' => lang('data_list'), 'list' => $list]);
+    }
+
+    /**
+     * 首页热门 tab 分段加载
+     * 参数: tab=2..7
+     */
+    public function home_hot_tab()
+    {
+        $tab = intval(input('param.tab/d', 0));
+        if ($tab <= 0) {
+            $tab = intval($this->_param['id'] ?? 0);
+        }
+        if ($tab < 2 || $tab > 7) {
+            return json(['code' => 1001, 'msg' => lang('param_err')]);
+        }
+
+        $vars = $this->buildIndexThemeVars();
+        $data = $this->buildHomeHotTabData($tab, $vars);
+        return json(['code' => 1, 'msg' => 'ok', 'data' => $data]);
+    }
+
+    /**
+     * 构造首页主题变量（供首页 AJAX 片段使用）
+     */
+    protected function buildIndexThemeVars()
+    {
+        $tplconfig = isset($GLOBALS['mctheme']) && is_array($GLOBALS['mctheme'])
+            ? $GLOBALS['mctheme']
+            : (config('mctheme') ?: ['theme' => []]);
+        $theme = isset($tplconfig['theme']) && is_array($tplconfig['theme']) ? $tplconfig['theme'] : [];
+
+        $mangaTheme = isset($theme['manga']) && is_array($theme['manga']) ? $theme['manga'] : [];
+        $mangaHbtn = (!isset($mangaTheme['hbtn']) || (string)($mangaTheme['hbtn']) !== '0') ? 1 : 0;
+        $mangaHnumInt = (isset($mangaTheme['hnum']) && (string)$mangaTheme['hnum'] === '12') ? 12 : 6;
+
+        $artTheme = isset($theme['art']) && is_array($theme['art']) ? $theme['art'] : [];
+        $artHbtn = (!isset($artTheme['hbtn']) || (string)($artTheme['hbtn']) !== '0') ? 1 : 0;
+        $artHnumInt = (isset($artTheme['hnum']) && (string)$artTheme['hnum'] === '12') ? 12 : 6;
+
+        return [
+            'index_hotvod_tabs' => mac_theme_index_hotvod_tabs($theme),
+            'index_manga_hbtn' => $mangaHbtn,
+            'index_manga_hnum_str' => (string)$mangaHnumInt,
+            'index_manga_hot_txt_num' => (string)($mangaHnumInt * 2),
+            'index_manga_hot_txt_start' => (string)$mangaHnumInt,
+            'index_manga_poster_class' => mac_tpl_manga_cover() === 'h' ? 'mac-poster--h' : 'mac-poster--v',
+            'index_art_hbtn' => $artHbtn,
+            'index_art_hnum' => (string)$artHnumInt,
+            'index_art_hot_txt_num' => (string)($artHnumInt * 2),
+            'index_art_hot_txt_start' => (string)$artHnumInt,
+            'index_art_poster_class' => mac_tpl_art_cover() === 'h' ? 'mac-poster--h' : 'mac-poster--v',
+        ];
+    }
+
+    protected function buildHomeHotTabData($tab, $vars)
+    {
+        if (in_array($tab, [2, 3, 4, 5], true)) {
+            $tabs = isset($vars['index_hotvod_tabs']) && is_array($vars['index_hotvod_tabs']) ? $vars['index_hotvod_tabs'] : [];
+            $idx = $tab - 2;
+            $typeId = 0;
+            if (isset($tabs[$idx]) && is_array($tabs[$idx])) {
+                $typeId = intval($tabs[$idx]['id'] ?? 0);
+            }
+            return $this->buildVodHotTabData($tab, $typeId);
+        }
+        if ($tab === 6) {
+            return $this->buildMangaHotTabData($tab, $vars);
+        }
+        return $this->buildArtHotTabData($tab, $vars);
+    }
+
+    protected function buildVodHotTabData($tab, $typeId)
+    {
+        if ($typeId <= 0) {
+            return [
+                'tab' => $tab,
+                'content_type' => 'vod',
+                'append_remarks' => $tab === 2 ? 1 : 0,
+                'img_list' => [],
+                'txt_list' => [],
+            ];
+        }
+        $where = ['vod_status' => ['eq', 1]];
+        $ids = $this->resolveTypeIds($typeId);
+        $where['type_id|type_id_1'] = ['in', implode(',', $ids)];
+
+        $model = model('Vod');
+        $imgRes = $model->listData($where, 'vod_hits_month desc', 1, 6, 0, '*', 1, 1);
+        $txtRes = $model->listData($where, 'vod_hits_month desc', 1, 12, 6, '*', 1, 1);
+
+        $imgList = [];
+        $userId = intval($GLOBALS['user']['user_id'] ?? 0);
+        $favMap = [];
+        $vodIds = [];
+        if (($imgRes['code'] ?? 0) == 1 && !empty($imgRes['list'])) {
+            foreach ($imgRes['list'] as $v) {
+                if (!empty($v['vod_id'])) {
+                    $vodIds[] = intval($v['vod_id']);
+                }
+            }
+            if ($userId > 0 && !empty($vodIds)) {
+                $favRows = model('Ulog')->where([
+                    'user_id' => $userId,
+                    'ulog_type' => 2,
+                    'ulog_rid' => ['in', implode(',', array_unique($vodIds))],
+                ])->column('ulog_id', 'ulog_rid');
+                if (is_array($favRows)) {
+                    $favMap = $favRows;
+                }
+            }
+            foreach ($imgRes['list'] as $v) {
+                $classBadge = '';
+                if (!empty($v['vod_class'])) {
+                    $parts = preg_split('/[\s,，\/|]+/u', (string)$v['vod_class'], -1, PREG_SPLIT_NO_EMPTY);
+                    if (!empty($parts)) {
+                        $classBadge = trim((string)$parts[0]);
+                    }
+                }
+                $vodId = intval($v['vod_id'] ?? 0);
+                $favUid = isset($favMap[$vodId]) ? intval($favMap[$vodId]) : 0;
+                $imgList[] = [
+                    'name' => (string)($v['vod_name'] ?? ''),
+                    'pic' => mac_url_img($v['vod_pic'] ?? ''),
+                    'link' => mac_url_vod_detail($v),
+                    'sub' => (string)($v['vod_sub'] ?? ''),
+                    'id' => $vodId,
+                    'points_play' => (string)($v['vod_points_play'] ?? ''),
+                    'vod_class' => (string)($v['vod_class'] ?? ''),
+                    'vod_area' => (string)($v['vod_area'] ?? ''),
+                    'vod_year' => (string)($v['vod_year'] ?? ''),
+                    'vod_actor' => (string)($v['vod_actor'] ?? ''),
+                    'vod_blurb' => (string)($v['vod_blurb'] ?? ''),
+                    'vod_isend' => intval($v['vod_isend'] ?? 0),
+                    'type_is_vip_exclusive' => intval($v['type_is_vip_exclusive'] ?? 0),
+                    'class_badge' => $classBadge,
+                    'is_fav' => $favUid > 0 ? 1 : 0,
+                    'fav_uid' => $favUid,
+                ];
+            }
+        }
+
+        $txtList = [];
+        if (($txtRes['code'] ?? 0) == 1 && !empty($txtRes['list'])) {
+            foreach ($txtRes['list'] as $v) {
+                $txtList[] = [
+                    'id' => intval($v['vod_id'] ?? 0),
+                    'name' => (string)($v['vod_name'] ?? ''),
+                    'link' => mac_url_vod_detail($v),
+                    'time_md' => !empty($v['vod_time']) ? date('m-d', intval($v['vod_time'])) : '',
+                    'remarks' => (string)($v['vod_remarks'] ?? ''),
+                ];
+            }
+        }
+
+        return [
+            'tab' => $tab,
+            'content_type' => 'vod',
+            'append_remarks' => $tab === 2 ? 1 : 0,
+            'img_list' => $imgList,
+            'txt_list' => $txtList,
+        ];
+    }
+
+    protected function buildMangaHotTabData($tab, $vars)
+    {
+        if (intval($vars['index_manga_hbtn'] ?? 0) !== 1) {
+            return ['tab' => $tab, 'content_type' => 'manga', 'img_list' => [], 'txt_list' => []];
+        }
+
+        $model = model('Manga');
+        $imgRes = $model->listData(['manga_status' => ['eq', 1]], 'manga_hits_month desc', 1, intval($vars['index_manga_hnum_str']), 0, '*', 1, 1);
+        $txtRes = $model->listData(['manga_status' => ['eq', 1]], 'manga_hits_month desc', 1, intval($vars['index_manga_hot_txt_num']), intval($vars['index_manga_hot_txt_start']), '*', 1, 1);
+
+        $imgList = [];
+        if (($imgRes['code'] ?? 0) == 1 && !empty($imgRes['list'])) {
+            foreach ($imgRes['list'] as $v) {
+                $imgList[] = [
+                    'name' => (string)($v['manga_name'] ?? ''),
+                    'pic' => mac_url_img($v['manga_pic'] ?? ''),
+                    'link' => mac_url_manga_detail($v),
+                    'sub' => (string)($v['manga_remarks'] ?? '连载中'),
+                    'type_is_vip_exclusive' => intval($v['type_is_vip_exclusive'] ?? 0),
+                    'manga_points' => (string)($v['manga_points'] ?? ''),
+                ];
+            }
+        }
+
+        $txtList = [];
+        if (($txtRes['code'] ?? 0) == 1 && !empty($txtRes['list'])) {
+            foreach ($txtRes['list'] as $v) {
+                $txtList[] = [
+                    'name' => (string)($v['manga_name'] ?? ''),
+                    'link' => mac_url_manga_detail($v),
+                    'time_md' => !empty($v['manga_time']) ? date('m-d', intval($v['manga_time'])) : '',
+                ];
+            }
+        }
+
+        return ['tab' => $tab, 'content_type' => 'manga', 'img_list' => $imgList, 'txt_list' => $txtList];
+    }
+
+    protected function buildArtHotTabData($tab, $vars)
+    {
+        if (intval($vars['index_art_hbtn'] ?? 0) !== 1) {
+            return ['tab' => $tab, 'content_type' => 'art', 'img_list' => [], 'txt_list' => []];
+        }
+
+        $model = model('Art');
+        $imgRes = $model->listData(['art_status' => ['eq', 1]], 'art_time desc', 1, intval($vars['index_art_hnum']), 0, '*', 1, 1);
+        $txtRes = $model->listData(['art_status' => ['eq', 1]], 'art_time desc', 1, intval($vars['index_art_hot_txt_num']), intval($vars['index_art_hot_txt_start']), '*', 1, 1);
+
+        $imgList = [];
+        if (($imgRes['code'] ?? 0) == 1 && !empty($imgRes['list'])) {
+            foreach ($imgRes['list'] as $v) {
+                $imgList[] = [
+                    'name' => (string)($v['art_name'] ?? ''),
+                    'pic' => mac_url_img($v['art_pic'] ?? ''),
+                    'link' => mac_url_art_detail($v),
+                    'sub' => (string)($v['art_actor'] ?? ''),
+                    'type_is_vip_exclusive' => intval($v['type_is_vip_exclusive'] ?? 0),
+                    'art_points' => (string)($v['art_points'] ?? ''),
+                    'art_remarks' => (string)($v['art_remarks'] ?? ''),
+                ];
+            }
+        }
+
+        $txtList = [];
+        if (($txtRes['code'] ?? 0) == 1 && !empty($txtRes['list'])) {
+            foreach ($txtRes['list'] as $v) {
+                $txtList[] = [
+                    'name' => (string)($v['art_name'] ?? ''),
+                    'link' => mac_url_art_detail($v),
+                    'time_md' => !empty($v['art_time']) ? date('m-d', intval($v['art_time'])) : '',
+                ];
+            }
+        }
+
+        return ['tab' => $tab, 'content_type' => 'art', 'img_list' => $imgList, 'txt_list' => $txtList];
+    }
+
+    protected function resolveTypeIds($typeId)
+    {
+        $typeId = intval($typeId);
+        if ($typeId <= 0) {
+            return [];
+        }
+        $typeList = model('Type')->getCache('type_list');
+        $info = is_array($typeList) && isset($typeList[$typeId]) ? $typeList[$typeId] : [];
+        if (empty($info)) {
+            return [$typeId];
+        }
+        if (intval($info['type_pid'] ?? 0) === 0 && !empty($info['childids'])) {
+            $childids = array_filter(array_map('intval', explode(',', (string)$info['childids'])));
+            return empty($childids) ? [$typeId] : $childids;
+        }
+        return [intval($info['type_id'] ?? $typeId)];
     }
 
     public function verify_check()

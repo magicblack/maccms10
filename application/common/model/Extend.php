@@ -107,8 +107,8 @@ class Extend extends Base {
     public function areaData($lp)
     {
         $order = $lp['order'];
-        $start = intval(abs($lp['start']));
-        $num = intval(abs($lp['num']));
+        $start = abs(intval($lp['start']));
+        $num = abs(intval($lp['num']));
         $tid = intval($lp['tid']);
 
         $config = config('maccms.app');
@@ -151,8 +151,8 @@ class Extend extends Base {
     public function langData($lp)
     {
         $order = $lp['order'];
-        $start = intval(abs($lp['start']));
-        $num = intval(abs($lp['num']));
+        $start = abs(intval($lp['start']));
+        $num = abs(intval($lp['num']));
         $tid = intval($lp['tid']);
 
         $config = config('maccms.app');
@@ -194,8 +194,8 @@ class Extend extends Base {
     public function classData($lp)
     {
         $order = $lp['order'];
-        $start = intval(abs($lp['start']));
-        $num = intval(abs($lp['num']));
+        $start = abs(intval($lp['start']));
+        $num = abs(intval($lp['num']));
         $tid = intval($lp['tid']);
 
         $config = config('maccms.app');
@@ -237,8 +237,8 @@ class Extend extends Base {
     public function yearData($lp)
     {
         $order = $lp['order'];
-        $start = intval(abs($lp['start']));
-        $num = intval(abs($lp['num']));
+        $start = abs(intval($lp['start']));
+        $num = abs(intval($lp['num']));
         $tid = intval($lp['tid']);
 
         $config = config('maccms.app');
@@ -280,8 +280,8 @@ class Extend extends Base {
     public function versionData($lp)
     {
         $order = $lp['order'];
-        $start = intval(abs($lp['start']));
-        $num = intval(abs($lp['num']));
+        $start = abs(intval($lp['start']));
+        $num = abs(intval($lp['num']));
         $tid = intval($lp['tid']);
 
         $config = config('maccms.app');
@@ -324,8 +324,8 @@ class Extend extends Base {
     public function stateData($lp)
     {
         $order = $lp['order'];
-        $start = intval(abs($lp['start']));
-        $num = intval(abs($lp['num']));
+        $start = abs(intval($lp['start']));
+        $num = abs(intval($lp['num']));
         $tid = intval($lp['tid']);
 
         $config = config('maccms.app');
@@ -374,8 +374,8 @@ class Extend extends Base {
         $tmp = explode(',',$data_str);
 
         $order = $lp['order'];
-        $start = intval(abs($lp['start']));
-        $num = intval(abs($lp['num']));
+        $start = abs(intval($lp['start']));
+        $num = abs(intval($lp['num']));
         $tid = intval($lp['tid']);
 
         if (!in_array($order, ['asc', 'desc'])) {

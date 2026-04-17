@@ -1,0 +1,14 @@
+<div class="header">
+	<div class="layout fn-clear">
+	    <div class="user-logo">{include file="widget/logo" /}</div>
+		<div class="user-n"><span data-lang="user_grzx">个人中心</span></div>
+		<ul class="nav">
+		    <li class="nav-item"><a class="nav-link" href="javascript:MAC.GoBack()" data-lang="string_fh">返回</a></li>
+			<li class="nav-item"><a class="nav-link" href="{$maccms.path}" data-lang="string_fhsy">返回首页</a></li>
+			<li class="nav-item" ><a class="nav-link">{$obj.user_nick_name|mac_default=$obj.user_name}</a></li>
+			<li class="nav-item" ><a class="nav-link" href="{:url('user/logout')}" data-lang="string_tc">退出</a></li>
+		</ul>
+	</div>
+</div>
+
+

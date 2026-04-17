@@ -14,7 +14,7 @@ class Maccms extends Taglib {
         'version'=> ['attr'=>'order,start,num'],
         'state'=> ['attr'=>'order,start,num'],
         'letter'=> ['attr'=>'order,start,num'],
-        'type' => ['attr' =>'order,by,start,num,id,ids,not,parent,flag,mid,format,cachetime'],
+        'type' => ['attr' =>'order,by,start,num,id,ids,names,not,parent,flag,mid,format,cachetime'],
         'comment'=>['attr' =>'order,by,start,num,paging,pageurl,id,pid,rid,mid,uid,half'],
         'gbook'=>['attr' =>'order,by,start,num,paging,pageurl,rid,uid,half'],
         'role'=>['attr' =>'order,by,start,num,paging,pageurl,id,ids,not,rid,actor,name,level,letter,half,timeadd,timehits,time,cachetime'],
@@ -392,7 +392,9 @@ class Maccms extends Taglib {
         }
 
         $parse = '<?php ';
-        $parse .= '$__TAG__ = \'' . json_encode($tag) . '\';';
+        $parse .= '$__TAG__ = json_decode(\'' . addslashes(json_encode($tag)) . '\', true);';
+        $parse .= 'if(isset($comment_mid)) $__TAG__["mid"] = $comment_mid;';
+        $parse .= 'if(isset($comment_rid)) $__TAG__["rid"] = $comment_rid;';
         $parse .= '$__LIST__ = model("Comment")->listCacheData($__TAG__);';
         if($tag['paging']=='yes'){
             $parse .= '$__PAGING__ = mac_page_param($__LIST__[\'total\'],$__LIST__[\'limit\'],$__LIST__[\'page\'],$__LIST__[\'pageurl\'],$__LIST__[\'half\']);';

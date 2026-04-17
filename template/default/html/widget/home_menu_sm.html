@@ -1,0 +1,17 @@
+<li class="hidden_xs">
+    <div class="smlist_box list_m">
+        <a class="text_muted" href="{:mac_url_type($vo1)}" title="{$vo1.type_name}">
+		{include file="widget/icon"}{$vo1.type_name}
+        </a>
+        {if$vo1.childids||$vo1.parent.childids}
+		{maccms:type num="5" parent="'.$vo1['type_id'].'" order="asc" by="sort" id="vo2" key="key2"}
+        <a class="num{$key2}" href="{:mac_url_type($vo2)}" title="{$vo2.type_name}">{$vo2.type_name|mac_substring=2}</a>
+        {/maccms:type}
+		{else}
+		{maccms:foreach name=":explode(',',$vo1.type_extend.class)" id="vo2" key="key2"}
+		{if condition="$key2 lt 5"}
+		<a class="num{$key2}" href="{:mac_url_type($vo1,['class'=>$vo2],'show')}" title="{$vo2}">{$vo2|mac_substring=2}</a>{/if}
+		{/maccms:foreach}
+		{/if}
+    </div>
+</li>

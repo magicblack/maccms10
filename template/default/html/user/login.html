@@ -1,0 +1,306 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<title>用户登录 - {$maccms.site_name}</title>
+<meta name="keywords" content="{$maccms.site_keywords}"/>
+<meta name="description" content="{$maccms.site_description}"/>
+	{include file="user/include" /}
+</head>
+<body id="reg" class="auth-ui auth-ui-page">
+	<div class="show-mobile">
+        <div id="ui-nav" class="m-nav">
+            <a href="javascript:;" class="btn-left" id="auth_nav_back"><i class="iconfont ico-right">&#xe625;</i></a>
+            <span class="mb-title" data-lang="user_unified_page_title">登录 / 注册</span>
+        </div>
+    </div>
+	<div class="auth-page-layout">
+		<div class="auth-page-hero">
+		</div>
+		<div class="auth-page-form">
+			<div class="reg-w auth-shell">
+			    <div class="reg-logo auth-logo">{include file="widget/logo" /}</div>
+				<div class="auth-inline-head no-show" id="auth_findpass_head">
+					<a href="javascript:;" class="auth-inline-back" id="auth_findpass_back" aria-label="返回">
+						<i class="iconfont ico-right">&#xe625;</i>
+					</a>
+					<span class="auth-inline-title" id="auth_inline_title" data-lang="user_ylwtzhmm">找回密码</span>
+				</div>
+
+				<form method="post" id="fm-login" class="auth-panel auth-panel-login" action="">
+					<div class="auth-field-label" data-lang="user_zhanghao">账号</div>
+					<div class="reg-group">
+						<input type="text" data-placeholder="user_unified_account_hint" id="user_name" name="user_name" class="reg-control" placeholder="">
+					</div>
+					<div class="auth-field-label" data-lang="user_mima">密码</div>
+					<div class="reg-group auth-pwd-group">
+						<input type="password" data-placeholder="user_place_mm" id="user_pwd" name="user_pwd" class="reg-control" placeholder="">
+						<span class="auth-pwd-eye" data-target="#user_pwd" role="button" tabindex="0" aria-label="显示或隐藏密码"></span>
+					</div>
+					<div class="auth-invite-collapsible">
+						<div class="auth-invite-toggle-row">
+							<button type="button" class="auth-invite-toggle js-auth-invite-toggle" aria-expanded="false">
+								<span class="auth-invite-toggle__rule" aria-hidden="true"></span>
+								<span class="auth-invite-toggle__mid">
+									<span class="auth-invite-toggle__text" data-lang-collapsed="string_auth_invite_expand" data-lang-expanded="string_auth_invite_collapse" data-lang="string_auth_invite_expand"></span>
+									<span class="auth-invite-toggle__chev" aria-hidden="true"><img class="auth-invite-toggle__chev-img" src="{$maccms.path_tpl}/images/filter-toggle-collapse.png" alt="" width="18" height="18" decoding="async" /></span>
+								</span>
+								<span class="auth-invite-toggle__rule" aria-hidden="true"></span>
+							</button>
+						</div>
+						<div class="auth-invite-panel no-show">
+							<div class="auth-field-label" data-lang="user_invite_code_optional">邀请码（可选）</div>
+							<div class="reg-group">
+								<input type="text" class="reg-control" id="invite_code" name="invite_code" data-placeholder="user_place_invite_code_optional" placeholder="">
+							</div>
+						</div>
+					</div>
+					<div class="auth-forgot-row">
+						<a class="auth-forgot-link" data-lang="user_wjmm2" href="javascript:;" id="switch_to_findpass">忘记密码?</a>
+					</div>
+					<p class="error-tip" id="error_tip_login" data-lang="user_zhmmcu">账号密码错误</p>
+					<input type="button" data-value="btn_login_or_register" id="btn_submit_login" class="btn-brand btn-sub auth-page-btn" value="">
+				</form>
+				<form method="post" id="fm-findpass" class="auth-panel auth-panel-findpass no-show" action="">
+					<div class="auth-field-label" data-lang="user_zhanghao">账号</div>
+					<div class="reg-group">
+						<input type="text" data-placeholder="user_place_dlzh" id="find_user_name" name="user_name" class="reg-control" placeholder="输入您的登录账号">
+					</div>
+					<div class="auth-field-label" data-lang="user_mbwt">密保问题</div>
+					<div class="reg-group">
+						<input type="text" data-placeholder="user_place_mbwentyi" id="find_user_question" name="user_question" class="reg-control" placeholder="请输入您的密保问题">
+					</div>
+					<div class="auth-field-label" data-lang="user_mbda">密保答案</div>
+					<div class="reg-group">
+						<input type="text" data-placeholder="user_place_mbdaan" id="find_user_answer" name="user_answer" class="reg-control" placeholder="请输入您的密保答案">
+					</div>
+					<div class="auth-field-label" data-lang="user_xmm">新密码</div>
+					<div class="reg-group auth-pwd-group">
+						<input type="password" data-placeholder="user_place_xmm" id="find_user_pwd" name="user_pwd" class="reg-control" placeholder="请输入新密码">
+						<span class="auth-pwd-eye" data-target="#find_user_pwd" role="button" tabindex="0" aria-label="显示或隐藏密码"></span>
+					</div>
+					<div class="auth-field-label" data-lang="string_login_qrmm">确认密码</div>
+					<div class="reg-group auth-pwd-group">
+						<input type="password" data-placeholder="user_place_querenmm" id="find_user_pwd2" name="user_pwd2" class="reg-control" placeholder="请输入您的确认密码">
+						<span class="auth-pwd-eye" data-target="#find_user_pwd2" role="button" tabindex="0" aria-label="显示或隐藏密码"></span>
+					</div>
+					<div class="auth-field-label" data-lang="user_yanzhengma">验证码</div>
+					<div class="reg-group verify_code">
+						<input type="text" data-placeholder="user_place_yanzm" class="reg-control w150" id="verify_findpass" name="verify" placeholder="请输入您的验证码">
+						<img class="fr m-hi" id="verify_img_findpass" src="{:url('verify/index')}" onClick="this.src=this.src+'?'" data-title="string_click_refresh" alt="单击刷新" />
+					</div>
+					<p class="error-tip" id="error_tip_findpass"></p>
+					<input type="button" id="btn_submit_findpass" class="btn-brand btn-sub auth-page-btn" value="立即找回">
+				</form>
+
+		    </div>
+		</div>
+	</div>
+
+
+<script type="text/javascript">
+	$(function(){
+		var lang=localStorage.getItem('lang');
+		var loginOrRegUrl = (function(){
+			if (typeof maccms === 'undefined' || maccms.path == null) return '/api.php/user/login_or_register';
+			var base = String(maccms.path).replace(/\/+$/, '');
+			return (base ? base + '/' : '/') + 'api.php/user/login_or_register';
+		})();
+
+		(function syncInviteFromUrl(){
+			try {
+				var sp = new URLSearchParams(window.location.search);
+				var code = sp.get('invite_code');
+				if (code) {
+					try { code = decodeURIComponent(code.replace(/\+/g, ' ')); } catch (e0) {}
+					var $ic = $('#invite_code');
+					if ($ic.length && !$.trim($ic.val())) {
+						$ic.val(code);
+					}
+				}
+				if (typeof window.macAuthInviteRevealIfHasValue === 'function') {
+					window.macAuthInviteRevealIfHasValue(document.getElementById('reg'));
+				}
+			} catch (e1) {}
+		})();
+
+		var currentAuthMode = 'login';
+		function setInlineHead(langKey, fallbackText){
+			var text = fallbackText || '';
+			if(typeof MAC !== 'undefined' && typeof MAC.GetLang === 'function' && langKey){
+				var langText = MAC.GetLang(langKey);
+				if(langText){
+					text = langText;
+				}
+			}
+			$('#auth_inline_title').attr('data-lang', langKey || '').text(text);
+		}
+		function switchPanel(mode){
+			if(mode === 'findpass'){
+				$('.auth-panel-login').addClass('no-show');
+				$('.auth-panel-findpass').removeClass('no-show');
+				$('.reg-logo.auth-logo').addClass('no-show');
+				setInlineHead('user_ylwtzhmm', '找回密码');
+				$('#auth_findpass_head').removeClass('no-show');
+				$('#ui-nav .mb-title').attr('data-lang','user_ylwtzhmm').text('找回密码');
+				currentAuthMode = 'findpass';
+			}
+			else{
+				$('.auth-panel-login').removeClass('no-show');
+				$('.auth-panel-findpass').addClass('no-show');
+				$('.reg-logo.auth-logo').removeClass('no-show');
+				$('#auth_findpass_head').addClass('no-show');
+				$('#ui-nav .mb-title').attr('data-lang','user_unified_page_title');
+				var _unifiedTitle = (typeof MAC !== 'undefined' && MAC.GetLang) ? MAC.GetLang('user_unified_page_title') : '';
+				$('#ui-nav .mb-title').text(_unifiedTitle || '登录 / 注册');
+				currentAuthMode = 'login';
+			}
+			language_pack.loadProperties(lang);
+			updateSubmitState();
+		}
+
+		function updateSubmitState(){
+			var loginReady = $.trim($('#user_name').val()).length > 0;
+			var findpassReady =
+				$.trim($('#find_user_name').val()).length > 0 &&
+				$.trim($('#find_user_question').val()).length > 0 &&
+				$.trim($('#find_user_answer').val()).length > 0 &&
+				$.trim($('#find_user_pwd').val()).length > 0 &&
+				$.trim($('#find_user_pwd2').val()).length > 0 &&
+				$.trim($('#verify_findpass').val()).length > 0;
+			$('#btn_submit_login').toggleClass('is-active', loginReady);
+			$('#btn_submit_findpass').toggleClass('is-active', findpassReady);
+		}
+
+		function bindPasswordToggle(){
+			function toggleEye($eye){
+				var targetSelector = $eye.attr('data-target');
+				var $input = targetSelector ? $(targetSelector) : $eye.siblings('input[type="password"],input[type="text"]').first();
+				if(!$input.length){
+					return;
+				}
+				var isPassword = $input.attr('type') === 'password';
+				$input.attr('type', isPassword ? 'text' : 'password');
+				$eye.toggleClass('is-open', isPassword);
+			}
+
+			$('.auth-pwd-eye').off('.pwdtoggle');
+			$('.auth-pwd-eye').on('click.pwdtoggle', function(){
+				toggleEye($(this));
+			});
+			$('.auth-pwd-eye').on('keydown.pwdtoggle', function(e){
+				if(e.key === 'Enter' || e.key === ' ' || e.keyCode === 13 || e.keyCode === 32){
+					e.preventDefault();
+					toggleEye($(this));
+				}
+			});
+		}
+
+		$("body").bind('keyup',function(event) {
+			if(event.keyCode==13){
+				if(currentAuthMode === 'findpass'){
+					$('#btn_submit_findpass').click();
+				}
+				else{
+					$('#btn_submit_login').click();
+				}
+			}
+		});
+		$('.reg-control').focus(function(){
+			$('.reg-group').removeClass('err');
+		});
+		$('#user_name').on('input propertychange', updateSubmitState);
+		$('#find_user_name,#find_user_question,#find_user_answer,#find_user_pwd,#find_user_pwd2,#verify_findpass').on('input propertychange', updateSubmitState);
+
+		$('#switch_to_findpass').on('click', function(){ switchPanel('findpass'); });
+		function handleAuthBack(){
+			if(currentAuthMode === 'login'){
+				MAC.GoBack();
+				return;
+			}
+			switchPanel('login');
+		}
+		$('#auth_findpass_back').on('click', handleAuthBack);
+		$('#auth_nav_back').on('click', function(e){
+			e.preventDefault();
+			handleAuthBack();
+		});
+		bindPasswordToggle();
+
+		$('#btn_submit_login').click(function() {
+			if ($('#user_name').val()  == '') {
+				MAC.alert(MAC.GetLang('string_login_sryh'));
+				$("#user_name").focus();
+				return false;
+			}
+			if ($('#user_pwd').val()  == '') {
+				MAC.alert(MAC.GetLang('string_login_srmm'));
+				$("#user_pwd").focus();
+				 return false;
+			}
+
+			$.ajax({
+				url: loginOrRegUrl,
+				type: "post",
+				dataType: "json",
+				data: $('#fm-login').serialize(),
+				beforeSend: function () {
+					$("#btn_submit_login").val(typeof MAC !== 'undefined' && MAC.GetLang ? MAC.GetLang('string_auth_loading') : '加载中...');
+				},
+				success: function (r) {
+					if(r.code==1){
+						location.href="{:url('user/index')}";
+						$('#error_tip_login').hide();
+					}
+					else{
+						$('#error_tip_login').html(r.msg).show();
+						$('#fm-login .reg-group').addClass('err');
+					}
+				},
+				complete: function () {
+					$("#btn_submit_login").val(MAC.GetLang('btn_login_or_register'));
+				}
+			});
+		});
+
+		$('#btn_submit_findpass').click(function() {
+			if ($('#find_user_name').val()  == '') { MAC.alert(MAC.GetLang('string_login_sryh')); $("#find_user_name").focus(); return false; }
+			if ($('#find_user_question').val()  == '') { MAC.alert(MAC.GetLang('string_login_srmbwt')); $("#find_user_question").focus(); return false; }
+			if ($('#find_user_answer').val()  == '') { MAC.alert(MAC.GetLang('string_login_srmbda')); $("#find_user_answer").focus(); return false; }
+			if ($('#find_user_pwd').val()  == '') { MAC.alert(MAC.GetLang('string_login_srxmm')); $("#find_user_pwd").focus(); return false; }
+			if ($('#find_user_pwd2').val()  == '') { MAC.alert(MAC.GetLang('string_login_srqrmm')); $("#find_user_pwd2").focus(); return false; }
+			if ($('#find_user_pwd').val() !== $('#find_user_pwd2').val()) { MAC.alert(MAC.GetLang('string_login_mmbyz')); $("#find_user_pwd2").focus(); return false; }
+			if ($('#verify_findpass').val()  == '') { MAC.alert(MAC.GetLang('string_login_sryzm')); $("#verify_findpass").focus(); return false; }
+
+			$.ajax({
+				url: "{:url('user/findpass')}",
+				type: "post",
+				dataType: "json",
+				data: $('#fm-findpass').serialize(),
+				beforeSend: function () {
+					$("#btn_submit_findpass").val(typeof MAC !== 'undefined' && MAC.GetLang ? MAC.GetLang('string_auth_loading') : '加载中...');
+				},
+				success: function (r) {
+					if(r.code==1){
+						location.href="{:url('user/index')}";
+						$('#error_tip_findpass').hide();
+					}
+					else{
+						$('#error_tip_findpass').html(r.msg).show();
+						if($('#verify_img_findpass').length){ $('#verify_img_findpass').click(); }
+					}
+				},
+				complete: function () {
+					$("#btn_submit_findpass").val(MAC.GetLang('btn_ljzh'));
+				}
+			});
+		});
+
+		switchPanel('login');
+		updateSubmitState();
+	});
+
+</script>
+
+</body>
+</html>

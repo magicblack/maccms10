@@ -1,0 +1,1 @@
+(function(){function n(){var t=document.querySelector(".last-vod-page");if(t){var e=t.getAttribute("data-record-total");if(!(e==null||e==="")){var o=t.querySelector(".mac_total");o&&(o.textContent=e)}}}document.readyState==="loading"?document.addEventListener("DOMContentLoaded",n):n()})();

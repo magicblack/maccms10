@@ -1,0 +1,17 @@
+<li class="ranklist_item">
+    <a href="{:mac_url_actor_detail($vo)}" title="{$vo.actor_name}">
+	<div class="ranklist_img">
+		 <div class="ranklist_thumb lazyload" style="padding-top: 100%; background: url({$vo.actor_pic|mac_url_img}) no-repeat;background-size:cover;">						
+			<span class="play hidden_xs"></span>
+            <span class="part_nums part_num{$key}">{$key}</span>
+            {if condition="$vo['type_id_1']==1"}
+            {if condition="$vo.vod_score eq 0"}
+            {else/}
+            <span class="pic_text text_right text_dy">{$vo.vod_score}</span>
+            {/if}
+            {/if}
+	     </div>
+	</div>	
+    <div class="ranklist_txt">
+	     <div class="pannel_head clearfix">
+              <span class="text_muted pull_right"><i class="iconfont">&#xe631;</i>

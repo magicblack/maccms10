@@ -18,8 +18,8 @@ return array (
   'site' => 
   array (
     'site_name' => '免费短视频分享大全 - 大中国',
-    'site_url' => 'www.test.cn',
-    'site_wapurl' => 'wap.test.cn',
+    'site_url' => 'localhost:9985',
+    'site_wapurl' => 'localhost:9985',
     'site_keywords' => '短视频,搞笑视频,视频分享,免费视频,在线视频,预告片',
     'site_description' => '提供最新最快的视频分享数据',
     'site_icp' => 'icp123',
@@ -28,14 +28,19 @@ return array (
     'install_dir' => '/',
     'site_logo' => 'static/images/logo.jpg',
     'site_waplogo' => 'static/images/logo.jpg',
+    'site_banner' => '',
+    'site_app_launch_image' => '',
     'template_dir' => 'default',
     'html_dir' => 'html',
+    'site_polyfill' => '0',
     'mob_status' => '0',
     'mob_template_dir' => 'default',
     'mob_html_dir' => 'html',
     'site_tj' => '统计代码',
     'site_status' => '1',
     'site_close_tip' => '站点暂时关闭，请稍后访问',
+    'mainland_ip_limit' => '0',
+    'new_version' => '',
     'ads_dir' => 'ads',
     'mob_ads_dir' => 'ads',
   ),
@@ -51,15 +56,24 @@ return array (
     'cache_password' => '',
     'cache_db' => '0',
     'cache_flag' => 'a6bcf9aa58',
-    'cache_core' => '0',
+    'cache_core' => '1',
     'cache_time' => '3600',
     'cache_page' => '0',
     'cache_time_page' => '3600',
     'compress' => '0',
+    'input_type' => '1',
+    'ajax_page' => '0',
+    'wall_filter' => '0',
+    'show' => '1',
+    'show_verify' => '0',
     'search' => '1',
+    'search_verify' => '0',
+    'search_len' => '',
     'search_timespan' => '3',
     'search_vod_rule' => 'vod_en|vod_sub',
     'search_art_rule' => 'art_en|art_sub',
+    'vod_search_optimise' => 'frontend|collect',
+    'vod_search_optimise_cache_minutes' => 20160,
     'copyright_status' => '1',
     'copyright_notice' => '该视频由于版权限制，暂不提供播放。',
     'browser_junmp' => '0',
@@ -84,7 +98,6 @@ return array (
     'admin_login_verify' => '1',
     'editor' => 'Ueditor',
     'lang' => 'zh-cn',
-    'input_type' => '1',
   ),
   'user' => 
   array (
@@ -191,7 +204,7 @@ return array (
   'interface' => 
   array (
     'status' => 0,
-    'pass' => '2RK20D7UKAWWC5RV',
+    'pass' => 'E4UMURASOGWCLH8C',
     'vodtype' => '动作片=动作',
     'arttype' => '头条=头条',
     'actortype' => '',
@@ -338,13 +351,31 @@ return array (
       'words' => '',
       'uprule' => ',',
     ),
+    'manga' => 
+    array (
+      'status' => '0',
+      'hits_start' => '',
+      'hits_end' => '',
+      'updown_start' => '',
+      'updown_end' => '',
+      'score' => '0',
+      'pic' => '0',
+      'psernd' => '0',
+      'psesyn' => '0',
+      'filter' => '',
+      'thesaurus' => '',
+      'words' => '',
+      'inrule' => ',a',
+      'uprule' => ',a',
+    ),
   ),
   'api' => 
   array (
     'vod' => 
     array (
-      'status' => 0,
+      'status' => '1',
       'charge' => '0',
+      'detail_inc_hits' => '1',
       'pagesize' => '20',
       'imgurl' => 'http://img.test.com/',
       'typefilter' => '',
@@ -355,7 +386,7 @@ return array (
     ),
     'art' => 
     array (
-      'status' => 0,
+      'status' => '1',
       'charge' => '0',
       'pagesize' => '20',
       'imgurl' => '',
@@ -366,7 +397,7 @@ return array (
     ),
     'actor' => 
     array (
-      'status' => '0',
+      'status' => '1',
       'charge' => '0',
       'pagesize' => '20',
       'imgurl' => '',
@@ -377,7 +408,7 @@ return array (
     ),
     'role' => 
     array (
-      'status' => '0',
+      'status' => '1',
       'charge' => '0',
       'pagesize' => '20',
       'imgurl' => '',
@@ -386,9 +417,9 @@ return array (
       'cachetime' => '',
       'auth' => '',
     ),
-    'website' =>
+    'website' => 
     array (
-      'status' => '0',
+      'status' => '1',
       'charge' => '0',
       'pagesize' => '20',
       'imgurl' => '',
@@ -397,17 +428,23 @@ return array (
       'cachetime' => '',
       'auth' => '',
     ),
-  'publicapi' =>
-      array (
-          'status' => '0',
-          'charge' => '0',
-          'pagesize' => '20',
-          'imgurl' => '',
-          'typefilter' => '',
-          'datafilter' => '',
-          'cachetime' => '',
-          'auth' => '',
-      ),
+    'manga' => 
+    array (
+      'status' => '1',
+      'charge' => '0',
+      'pagesize' => '20',
+      'imgurl' => '',
+      'typefilter' => '',
+      'datafilter' => 'manga_status=1',
+      'cachetime' => '',
+      'auth' => '',
+    ),
+    'publicapi' => 
+    array (
+      'status' => '1',
+      'charge' => '0',
+      'auth' => '',
+    ),
   ),
   'connect' => 
   array (

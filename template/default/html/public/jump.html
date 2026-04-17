@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=EmulateIE10" />
+	<meta name="renderer" content="webkit|ie-comp|ie-stand">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <title  data-lang="string_xitonts">系统提示...</title>
+    <link rel="stylesheet" href="{$maccms.path}template/default/asset/css/hlstyle.css">
+    <link rel="stylesheet" href="{$maccms.path}template/default/asset/css/theme-tokens.css">
+
+    <link rel="stylesheet" type="text/css" href="{$maccms.path}template/default/asset/css/black.css" id="macThemeDarkSheet" disabled> 
+    <script type="text/javascript" src="{$maccms.path}template/default/asset/js/jquery.js"></script>
+    <script src="{$maccms.path}template/default/asset/js/hlhtml.js?v=202604161"></script>
+    <script src="{$maccms.path}template/default/asset/js/head-defer-public.js?v=202604161"></script>
+    
+	<link rel="stylesheet" type="text/css" href="{$maccms.path_tpl}/asset/css/public-jump.css" />
+</head>
+<body>
+<div class="jump-wrap">
+<div class="weui_msg_jump">
+    <div class="weui_icon">
+        <div class="jump-bg"></div>
+    </div>
+    <div class="weui_text">
+        <h4 class="weui_msg_title" data-lang="string_xitonts">系统提示...</h4>
+        <p class="weui_xtts"> <span data-lang="string_qinaid">亲爱的：:</span> {$msg}</p>
+        <p class="weui_tzt"> <span data-lang="string_yemianzid">页面自动</span> <a id="href" href="<?php echo($url);?>" data-lang="string_tiaoz">跳转</a> <span data-lang="string_dengdai">等待时间：</span> <b id="wait"><?php echo($wait);?></b></p>
+    </div>
+</div>
+</div>
+
+<script type="text/javascript">
+    (function(){
+        var wait = document.getElementById('wait'),
+                href = document.getElementById('href').href;
+        var interval = setInterval(function(){
+            var time = --wait.innerHTML;
+            if(time <= 0) {
+                location.href = href;
+                clearInterval(interval);
+            };
+        }, 1000);
+    })();
+</script>
+</body>
+</html>

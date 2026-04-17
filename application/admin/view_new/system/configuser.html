@@ -172,6 +172,56 @@
                     </div>
 
                     <div class="layui-form-item">
+                        <label class="layui-form-label">{:lang('admin/system/configuser/invite_reward_status')}：</label>
+                        <div class="layui-input-block">
+                            <input type="radio" name="user[invite_reward_status]" value="0" title="{:lang('close')}" {if
+                                condition="$config['user']['invite_reward_status'] neq 1" }checked {/if}>
+                            <input type="radio" name="user[invite_reward_status]" value="1" title="{:lang('open')}" {if
+                                condition="$config['user']['invite_reward_status'] eq 1" }checked {/if}>
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:lang('admin/system/configuser/invite_reward_config')}：</label>
+                        <div class="layui-input-block">
+                            <table class="layui-table" style="margin-bottom: 10px;">
+                                <thead>
+                                    <tr>
+                                        <th width="100">{:lang('admin/system/configuser/invite_count')}</th>
+                                        <th>{:lang('admin/system/configuser/vip_group')}</th>
+                                        <th width="100">{:lang('admin/system/configuser/vip_duration')}</th>
+                                        <th width="100">{:lang('admin/system/configuser/reward_points')}</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {volist name="invite_reward_form" id="reward" key="k"}
+                                    <tr>
+                                        <td><input type="text" name="user[invite_reward][{$k-1}][count]" value="{$reward.count}" class="layui-input" placeholder="如：5"></td>
+                                        <td>
+                                            <select name="user[invite_reward][{$k-1}][group_id]">
+                                                {volist name="group_list" id="g"}
+                                                <option value="{$g.group_id}" {if condition="$reward.group_id eq $g.group_id"}selected{/if}>{$g.group_name}</option>
+                                                {/volist}
+                                            </select>
+                                        </td>
+                                        <td>
+                                            <select name="user[invite_reward][{$k-1}][long]">
+                                                <option value="day" {if condition="$reward.long eq 'day'"}selected{/if}>{:lang('admin/system/configuser/vip_day')}</option>
+                                                <option value="week" {if condition="$reward.long eq 'week'"}selected{/if}>{:lang('admin/system/configuser/vip_week')}</option>
+                                                <option value="month" {if condition="$reward.long eq 'month'"}selected{/if}>{:lang('admin/system/configuser/vip_month')}</option>
+                                                <option value="year" {if condition="$reward.long eq 'year'"}selected{/if}>{:lang('admin/system/configuser/vip_year')}</option>
+                                            </select>
+                                        </td>
+                                        <td><input type="text" name="user[invite_reward][{$k-1}][points]" value="{$reward.points}" class="layui-input"></td>
+                                    </tr>
+                                    {/volist}
+                                </tbody>
+                            </table>
+                            <div class="layui-word-aux">{:lang('admin/system/configuser/invite_reward_tip')}</div>
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
                         <label class="layui-form-label">{:lang('admin/system/configuser/cash_status')}：</label>
                         <div class="layui-input-block">
                             <input type="radio" name="user[cash_status]" value="0" title="{:lang('close')}" {if
@@ -225,6 +275,17 @@
                             <input type="radio" name="user[art_points_type]" value="1"
                                 title="{:lang('admin/system/configuser/art_points_1')}" {if
                                 condition="$config['user']['art_points_type'] eq 1" }checked {/if}>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">漫画积分扣费：</label>
+                        <div class="layui-input-block">
+                            <input type="radio" name="user[manga_points_type]" value="0"
+                                title="按章扣费" {if
+                                condition="$config['user']['manga_points_type'] neq 1" }checked {/if}>
+                            <input type="radio" name="user[manga_points_type]" value="1"
+                                title="按部扣费" {if
+                                condition="$config['user']['manga_points_type'] eq 1" }checked {/if}>
                         </div>
                     </div>
                     <div class="layui-form-item">

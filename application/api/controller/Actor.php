@@ -39,10 +39,11 @@ class Actor extends Base
         }
         $offset = isset($param['offset']) ? (int)$param['offset'] : 0;
         $limit = isset($param['limit']) ? (int)$param['limit'] : 20;
-        // 查询条件组装
+        // 查询条件组装（0/1 均展示：采集/默认入库常见 actor_status=0，仅 eq 1 会导致「库里有数据但接口为空」）
         $where = [];
+        $where['actor_status'] = ['in', [0, 1]];
 
-        if (isset($param['type_id'])) {
+        if (isset($param['type_id']) && (int)$param['type_id'] > 0) {
             $where['type_id'] = (int)$param['type_id'];
         }
 
@@ -88,11 +89,16 @@ class Actor extends Base
         if ($total > 0) {
             // 排序
             $order = "actor_time DESC";
-            if (strlen($param['orderby']) > 0) {
+            if (!empty($param['orderby'])) {
                 $order = 'actor_' . $param['orderby'] . " DESC";
             }
-            $field = 'actor_id,actor_name,actor_en,actor_alias,actor_sex,actor_hits_month,actor_hits_week,actor_hits_day,actor_time';
-            $list = model('Actor')->getListByCond($offset, $limit, $where, $order, $field, []);
+            $field = 'actor_id,actor_name,actor_en,actor_alias,actor_sex,actor_pic,actor_remarks,actor_hits,actor_hits_month,actor_hits_week,actor_hits_day,actor_time,type_id';
+            $list = model('Actor')->getListByCond($offset, $limit, $where, $order, $field, false);
+            foreach ($list as &$row) {
+                $row['actor_pic'] = mac_url_img($row['actor_pic'] ?? '');
+                $row['actor_link'] = mac_url_actor_detail($row);
+            }
+            unset($row);
         }
         // 返回
         return json([
@@ -127,13 +133,79 @@ class Actor extends Base
             ]);
         }
 
-        $res = Db::table('mac_actor')->where(['actor_id' => $param['actor_id']])->select();
+        $res = Db::table('mac_actor')
+            ->where('actor_id', (int) $param['actor_id'])
+            ->where('actor_status', 'in', [0, 1])
+            ->find();
+        if (empty($res)) {
+            return json(['code' => 1001, 'msg' => '数据不存在']);
+        }
+
+        // 处理图片 URL
+        $res['actor_pic'] = mac_url_img($res['actor_pic']);
+        $res['actor_pic_thumb'] = mac_url_img($res['actor_pic_thumb'] ?? '');
+        $res['actor_link'] = mac_url_actor_detail($res);
 
         // 返回
         return json([
             'code' => 1,
             'msg' => '获取成功',
             'info' => $res
+        ]);
+    }
+
+    /**
+     * 获取推荐明星
+     * 对应首页推荐明星区块
+     *
+     * @param Request $request
+     * @return \think\response\Json
+     *
+     * 参数说明:
+     *   ids - 可选，指定明星ID，多个用逗号分隔
+     *   num - 可选，数量，默认8
+     *   by  - 可选，排序字段，默认 time，可选: hits,hits_day,hits_week,hits_month,time
+     */
+    public function get_recommend(Request $request)
+    {
+        $param = $request->param();
+        $ids = isset($param['ids']) ? trim($param['ids']) : '';
+        $num = isset($param['num']) ? (int)$param['num'] : 8;
+        $start = isset($param['start']) ? max(0, (int)$param['start']) : 0;
+        $by = isset($param['by']) ? trim($param['by']) : 'time';
+
+        $allowBy = ['hits', 'hits_day', 'hits_week', 'hits_month', 'time'];
+        if (!in_array($by, $allowBy)) {
+            $by = 'time';
+        }
+
+        $where = [];
+        $where['actor_status'] = ['eq', 1];
+        if (!empty($ids)) {
+            $idArr = array_map('intval', explode(',', $ids));
+            $where['actor_id'] = ['in', $idArr];
+        }
+
+        $list = Db::table('mac_actor')
+            ->field('actor_id,actor_name,actor_pic,actor_sex,actor_area,actor_hits,actor_hits_month,actor_time')
+            ->where($where)
+            ->order('actor_' . $by . ' desc')
+            ->limit($start, $num)
+            ->select();
+
+        foreach ($list as &$v) {
+            $v['actor_pic'] = mac_url_img($v['actor_pic']);
+            $v['actor_link'] = mac_url_actor_detail($v);
+        }
+        unset($v);
+
+        return json([
+            'code' => 1,
+            'msg'  => '获取成功',
+            'info' => [
+                'total' => count($list),
+                'rows'  => $list,
+            ],
         ]);
     }
 }

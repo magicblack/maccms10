@@ -8,6 +8,10 @@ class Init
 {
     public function run(&$params)
     {
+        // 主题配置已在 App::init() 中通过 extra 扫描加载，此处不再重复 include mctheme.php
+        // 同步到 $GLOBALS 供模板与 mac_tpl_* 直接读取，避免重复 config() 解析
+        $GLOBALS['mctheme'] = config('mctheme') ?: ['theme' => []];
+
         $config = config('maccms');
         $domain = config('domain');
 

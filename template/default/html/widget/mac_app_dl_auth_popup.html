@@ -1,0 +1,34 @@
+{if condition="$__app_dl_android !== '' || $__app_dl_ios !== ''"}
+<aside class="mac-app-dl-bar mac-app-dl-bar--auth-popup auth-app-dl-promo"
+    role="region"
+    aria-label="App"
+    data-app-android-url="{:htmlspecialchars($__app_dl_android, ENT_QUOTES, 'UTF-8')}"
+    data-app-ios-url="{:htmlspecialchars($__app_dl_ios, ENT_QUOTES, 'UTF-8')}"
+    data-rev="{php}echo substr(md5($__app_dl_android . '|' . $__app_dl_ios . '|' . $__app_dl_logo_light . '|' . $__app_dl_logo_dark), 0, 12);{/php}">
+    <span class="mac-app-dl-bar__logos">
+        <img class="mac-app-dl-bar__logo mac-app-dl-bar__logo--light" width="48" height="48" decoding="async" alt=""
+            src="{$__app_dl_logo_light_src}" />
+        <img class="mac-app-dl-bar__logo mac-app-dl-bar__logo--dark" width="48" height="48" decoding="async" alt=""
+            src="{$__app_dl_logo_dark_src}" />
+    </span>
+    <div class="mac-app-dl-bar__main">
+        {if condition="isset($tplconfig['theme']['app_dl']['title']) && trim((string)$tplconfig['theme']['app_dl']['title']) !== ''"}
+        <p class="mac-app-dl-bar__line mac-app-dl-bar__line--title">{$tplconfig.theme.app_dl.title}</p>
+        {else/}
+        <p class="mac-app-dl-bar__line mac-app-dl-bar__line--title"><span data-lang="string_app_dl_title">APP独享超清加速，永久免费</span></p>
+        {/if}
+        {if condition="isset($tplconfig['theme']['app_dl']['subtitle']) && trim((string)$tplconfig['theme']['app_dl']['subtitle']) !== ''"}
+        <p class="mac-app-dl-bar__line mac-app-dl-bar__line--sub">{$tplconfig.theme.app_dl.subtitle}</p>
+        {else/}
+        <p class="mac-app-dl-bar__line mac-app-dl-bar__line--sub"><span data-lang="string_app_dl_subtitle">海量高清影片抢先看</span></p>
+        {/if}
+    </div>
+    <a class="mac-app-dl-bar__btn" href="{:htmlspecialchars($__app_dl_android !== '' ? $__app_dl_android : $__app_dl_ios, ENT_QUOTES, 'UTF-8')}" target="_blank" rel="noopener noreferrer">
+        {if condition="isset($tplconfig['theme']['app_dl']['btn']) && trim((string)$tplconfig['theme']['app_dl']['btn']) !== ''"}
+        {$tplconfig.theme.app_dl.btn}
+        {else/}
+        <span data-lang="string_app_dl_btn">立即下载</span>
+        {/if}
+    </a>
+</aside>
+{/if}

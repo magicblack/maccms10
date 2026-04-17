@@ -1,0 +1,82 @@
+<link rel="stylesheet" type="text/css" href="{$maccms.path}template/default/asset/css/foot.css">
+<div class="foot {if condition="!empty($tplconfig['theme']['bnav'])"}foot_nav{/if} clearfix">
+    <div class="container foot-wrap ">
+        <ul class="extra clearfix extra-fab">
+            <li class="extra-fab-main">
+                <a href="javascript:void(0)" class="extra-toggle" data-title="string_quick_menu" title="快捷菜单">
+                    <span class="m_ico"><i class="iconfont">&#xe640;</i></span>
+                </a>
+                <ul class="extra-fab-menu">
+                    <li id="backtop-ico">
+                        <a class="backtop" href="javascript:scroll(0,0)" data-title="string_foot_toTop" title="返回顶部"><span class="top_ico"><i class="iconfont">&#xe628;</i></span></a>
+                    </li>
+                    {if condition="isset($tplconfig['theme']['contact']['url']) && $tplconfig['theme']['contact']['url'] neq ''"}
+                    <li>
+                        <a class="extra-fab-service" href="{$tplconfig.theme.contact.url}" target="_blank" rel="noopener noreferrer" data-title="string_user_contact_service" title="联系客服" aria-label="联系客服">
+                            <span class="extra-fab-service__ico"><img src="{$maccms.path_tpl}/asset/img/contact-service.png" width="22" height="22" alt="" decoding="async" /></span>
+                        </a>
+                    </li>
+                    {/if}
+                    <li>
+                        <a id="black" data-title="string_foot_black" class="mycolor" href="javascript:void(0)" title="暗夜模式">
+                            <span class="m_ico theme_ico"><i class="iconfont">&#xe656;</i></span>
+                        </a>
+                        <a id="white" data-title="string_foot_white" class="mycolor hide" href="javascript:void(0)" title="白昼模式">
+                            <span class="m_ico theme_ico"><i class="iconfont">&#xe657;</i></span>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+        </ul>
+        <div class="foot-logo-region">
+        {assign name="logo_vari" value="foot" /}
+        {assign name="logo_wrap_class" value="foot-logo show-pc" /}
+        {include file="widget/logo" /}
+        </div>
+        <div class="fo_t show-pc">
+            <p >
+                {maccms:type ids="parent" order="asc" by="sort"}
+                    <a class="color" href="{:mac_url_type($vo)}" title="{$vo.type_name}">{$vo.type_name}</a> - {/maccms:type}
+                <a class="color" data-lang="string_zuijingx" href="{:mac_url('map/index')}" title="最近更新">
+                    最近更新
+                </a> -
+                <a class="color" data-lang="string_foot_fk1" href="{:mac_url('gbook/index')}" title="反馈留言">反馈留言</a> -
+            </p>
+            
+            <p>&copy;&nbsp;{:date('Y')}&nbsp;{$maccms.site_url}&nbsp;&nbsp;E-Mail：{$maccms.site_email}</p>
+            
+        </div> 
+    </div>
+    {include file="widget/foot_nav"}
+    {include file="ads/ads_bottom"}
+
+    {include file="widget/infobox"}
+{include file="widget/copy"}
+{if condition="!empty($tplconfig['theme']['foot']['text'])"}
+<div class="theme-foot-text">{$tplconfig.theme.foot.text}</div>
+{/if}
+{include file="ads/ads_sitejs"}
+</div>
+
+<div style="display: none;" class="mac_timming" data-file="" ></div>
+<script type="text/javascript" src="{$maccms.path}template/default/asset/js/foot-hlstem.js?v=202604161"></script>
+<script type="text/javascript">
+jQuery(function () {
+    if (typeof window.macSyncThemeUi === 'function') {
+        window.macSyncThemeUi();
+    }
+});
+</script>
+<script type="text/javascript" src="{$maccms.path}template/default/asset/js/foot-expand.js?v=202604161"></script>
+<script>
+if(typeof window.waitForMAC === 'undefined'){
+    window.waitForMAC = function(callback) {
+        if (typeof window.MAC !== 'undefined') {
+            callback();
+        } else {
+            setTimeout(function() { window.waitForMAC(callback); }, 50);
+        }
+    };
+}
+</script>
+{include file="ads/ads_double"}

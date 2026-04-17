@@ -407,7 +407,77 @@ return array (
         'controller' => 'comment',
         'action' => 'field',
       ),
-      36 => 
+      39 =>
+      array (
+        'show' => 1,
+        'name' => lang('menu/task'),
+        'controller' => 'task',
+        'action' => 'data',
+      ),
+      3901 =>
+      array (
+        'show' => 0,
+        'name' => '--'.lang('add'),
+        'controller' => 'task',
+        'action' => 'info',
+      ),
+      3902 =>
+      array (
+        'show' => 0,
+        'name' => '--'.lang('del'),
+        'controller' => 'task',
+        'action' => 'del',
+      ),
+      3903 =>
+      array (
+        'show' => 0,
+        'name' => '--'.lang('status'),
+        'controller' => 'task',
+        'action' => 'field',
+      ),
+      3904 =>
+      array (
+        'show' => 1,
+        'name' => lang('menu/task_log'),
+        'controller' => 'task',
+        'action' => 'log',
+      ),
+      3905 =>
+      array (
+        'show' => 0,
+        'name' => '--'.lang('del'),
+        'controller' => 'task',
+        'action' => 'log_del',
+      ),
+      3910 =>
+      array (
+        'show' => 1,
+        'name' => lang('menu/sign_milestone'),
+        'controller' => 'sign_milestone',
+        'action' => 'data',
+      ),
+      3911 =>
+      array (
+        'show' => 0,
+        'name' => '--'.lang('add'),
+        'controller' => 'sign_milestone',
+        'action' => 'info',
+      ),
+      3912 =>
+      array (
+        'show' => 0,
+        'name' => '--'.lang('del'),
+        'controller' => 'sign_milestone',
+        'action' => 'del',
+      ),
+      3913 =>
+      array (
+        'show' => 0,
+        'name' => '--'.lang('status'),
+        'controller' => 'sign_milestone',
+        'action' => 'field',
+      ),
+      38 =>
       array (
         'show' => 1,
         'name' => lang('menu/images'),
@@ -1167,6 +1237,13 @@ return array (
         'name' => lang('menu/wizard'),
         'controller' => 'template',
         'action' => 'wizard',
+      ),
+      74 => 
+      array (
+        'show' => 1,
+        'name' => lang('menu/theme/config'),
+        'controller' => 'tpl_config',
+        'action' => 'theme',
       ),
     ),
   ),

@@ -1,0 +1,13 @@
+<script type="text/javascript">
+    var linum = document.getElementById('vod_level').getElementsByTagName("li").length;
+    if (linum > 5) {
+        $("#vod_level").css("display", "block");
+        $("#vod_time").css("display", "none");
+    } else {
+        $("#vod_level").css("display", "none");
+        $("#vod_time").css("display", "block");
+    }
+</script>
+<script type="text/javascript">
+    $('.mac_total').html('{$__PAGING__.record_total}');
+</script>

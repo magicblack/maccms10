@@ -127,33 +127,53 @@ class Order extends Base {
             return $user;
         }
 
-        $update = [];
-        $update['order_status'] = 1;
-        $update['order_pay_time'] = time();
-        $update['order_pay_type'] = $pay_type;
-        $res = $this->where($where)->update($update);
-        if($res===false){
-            return ['code'=>2002,'msg'=>lang('model/order/update_status_err')];
+        Db::startTrans();
+        try{
+            $update = [];
+            $update['order_status'] = 1;
+            $update['order_pay_time'] = time();
+            $update['order_pay_type'] = $pay_type;
+            $res = $this->where($where)->update($update);
+            if($res===false){
+                Db::rollback();
+                return ['code'=>2002,'msg'=>lang('model/order/update_status_err')];
+            }
+
+            $where2 = [];
+            $where2['user_id'] = $user['info']['user_id'];
+            $res = model('User')->where($where2)->setInc('user_points',$order['info']['order_points']);
+            if($res===false){
+                Db::rollback();
+                return ['code'=>2003,'msg'=>lang('model/order/update_user_points_err')];
+            }
+
+            //积分日志
+            $data = [];
+            $data['user_id'] = $user['info']['user_id'];
+            $data['plog_type'] = 1;
+            $data['plog_points'] = $order['info']['order_points'];
+            model('Plog')->saveData($data);
+
+            $remarks = json_decode($order['info']['order_remarks'], true);
+            if(!empty($remarks) && is_array($remarks) && ($remarks['biz'] ?? '') === 'member_upgrade'){
+                $user_latest = model('User')->infoData(['user_id' => $user['info']['user_id']]);
+                if($user_latest['code'] > 1){
+                    Db::rollback();
+                    return $user_latest;
+                }
+                $upgrade_res = model('User')->upgradeByPaidOrder($order['info'], $user_latest['info']);
+                if($upgrade_res['code'] > 1){
+                    Db::rollback();
+                    return $upgrade_res;
+                }
+            }
+
+            Db::commit();
+            return ['code'=>1,'msg'=>lang('model/order/pay_ok')];
+        }catch (\Exception $e){
+            Db::rollback();
+            return ['code'=>2004,'msg'=>$e->getMessage()];
         }
-
-        $where2 = [];
-        $where2['user_id'] = $user['info']['user_id'];
-        $res = model('User')->where($where2)->setInc('user_points',$order['info']['order_points']);
-        if($res===false){
-            return ['code'=>2003,'msg'=>lang('model/order/update_user_points_err')];
-        }
-
-        //积分日志
-        $data = [];
-        $data['user_id'] = $user['info']['user_id'];
-        $data['plog_type'] = 1;
-        $data['plog_points'] = $order['info']['order_points'];
-        model('Plog')->saveData($data);
-
-
-
-
-        return ['code'=>1,'msg'=>lang('model/order/pay_ok')];
 
     }
 

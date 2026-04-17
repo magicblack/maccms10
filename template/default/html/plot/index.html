@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+	{include file="public/include"}
+	<link rel="stylesheet" type="text/css" href="{$maccms.path_tpl}/asset/css/plot-index.css" />
+</head>
+
+<body>
+  {include file="public/head"}
+<div class="container ">
+    {include file="ads/ads_all"}
+    <div class="vod_row tit_up">
+    <div class="pannel clearfix">
+        <div class="pannel_head clearfix">
+            <span class="pull_right">
+                <span data-lang='string_zg'>共有</span>
+                <em class="mac_total"></em><span data-lang="vod_jqsj">个剧情数据</span>
+            </span>
+            <h2 class="title"><i class="iconfont">&#xe630;</i> <span data-lang="vod_plot">分集剧情</span> </h2>
+        </div>
+        
+        <ul class="vodlist vodlist_hb clearfix">
+            {maccms:vod num="30" paging="yes" half="3" pageurl="plot/index" type="all" plot="1" order="desc" by="sort"}
+			<li class="vodlist_item num_{$key}">
+				<a class="vodlist_thumb lazyload" href="{:mac_url_plot_detail($vo)}" data-original="{:mac_url_img($vo.vod_pic)}">
+					<span class="play hidden_xs"></span>
+					<span class="pic_text text_right">
+                        {if condition="$vo.vod_remarks neq ''"}{$vo.vod_remarks}{elseif condition="$vo.vod_serial gt 0"}
+                        <span data-lang="string_is">第</span>
+                        {$vo.vod_serial}
+                        <span data-lang="string_vod_js">集</span>{else /}
+                        <span data-lang="string_vod_close">已完结</span>{/if}
+                    </span>
+				</a>
+				<div class="vodlist_titbox">									
+					<p class="vodlist_title">
+					<a href="{:mac_url_plot_detail($vo)}" title="{$vo.vod_name}">{$vo.vod_name}</a>
+					</p>
+					<p class="vodlist_sub">
+                        {php} if($vo['vod_sub']){
+                        echo mac_filter_html(mac_url_create($vo['vod_sub'],'actor'));
+                        }else{ {/php}
+                        <span data-lang='string_no_have'>暂无</span>
+                        {php} } {/php}
+                    </p>
+				</div>
+			</li>
+			{/maccms:vod}
+        </ul>
+        
+        {include file="widget/page"}
+        
+    </div>
+    </div>
+</div>
+<script type="text/javascript">
+    $('.mac_total').html('{$__PAGING__.record_total}');
+</script>
+	{include file="public/foot"}
+</body>
+</html>

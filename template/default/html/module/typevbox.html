@@ -1,0 +1,120 @@
+	<link rel="stylesheet" type="text/css" href="{$maccms.path_tpl}/asset/css/module-typevbox.css" />
+
+
+<div id="vod_time" class="pannel clearfix">
+    <div class="show-mobile ">
+        <div class="classify_list">
+            <img class="classify_img " src="{$maccms.path}template/default/images/la/h-list5-a.png" >
+            {foreach name="vod_class" key="k" item="vo"}
+                <a class="classify_item" href="{:mac_url_type($info,['class'=>$vo],'show')}">{$vo}</a>
+            {/foreach}
+        </div>
+
+    </div>
+    <div class="pannel_head clearfix">
+        <h2 class="title"> <span data-lang="string_type_recent_hot">近期热门</span>{$obj.type_name}</h2>
+        <span class="hidden_xs pull_left">
+              {$obj.type_name} <span data-lang="string_type_channel">频道</span> <span class="split_line"></span>
+        </span>
+        <a class="text_muted pull_left" href="{:mac_url_type($obj,[],'show')}" data-lang="string_type_more2">更多<i class="iconfont more_i">&#xe623;</i></a>
+    </div>
+    
+    <div class="cbox_list">
+        <div class="cbox1">
+            <ul class="vodlist vodlist_wi">
+                {maccms:vod num="18" type="current" order="desc" by="hits_week"}
+                {include file="widget/vod_box"}
+                {/maccms:vod}
+            </ul>
+            <li class="vodlist_item1 vod_rank_list show-pc">
+                <div class="pannel clearfix">
+                    <div class="pannel_head clearfix">
+                        <h3 class="title" data-lang="string_type_hot_rank">
+                            热播排行榜
+                        </h3>
+                    </div>
+                    <ul class="ranklist_r clearfix">
+                        {php}
+                            $num = 0;
+                        {/php}
+                        {maccms:vod num="20" paging="no" type="current"}
+                        {php}
+                            $num++;
+                        {/php}
+                        {/maccms:vod}
+                        {php}
+                            if($num <= 0){
+                                $status = 1;
+                            }elseif($num > 0 && $num <= 18){
+                                $status = 2;
+                            }else{
+                                $status = 3;
+                            }
+                        {/php}
+                        {if condition="$status == 1"}
+                            <li class="part_eone rank-more">
+                                <a class="rank-more-href" data-lang="string_type_no_data">暂无</a>
+                            </li>
+                        {/if}
+
+                        {if condition="$status == 2"}
+                            {maccms:vod num="18" paging="no" type="current" order="desc" by="score"}
+                            {include file="widget/rank_box_text"}
+                            {/maccms:vod}
+
+                        {/if}
+                        {if condition="$status == 3"}
+                            {maccms:vod num="18" paging="no" type="current" order="desc" by="score"}
+                            {include file="widget/rank_box_text"}
+                            {/maccms:vod}
+                            <li class="part_eone rank-more">
+                                <a class="rank-more-href" href="{:mac_url('label/rank')}" data-lang="string_type_more">更多></a>
+                            </li>
+                        {/if}
+
+                    </ul>
+                </div>
+            </li>
+        </div>
+        <div class="cbox2 hide">
+            <ul class="vodlist vodlist_wi">
+                {maccms:vod num="18" type="current" start="19" order="desc" by="hits_week"} {include file="widget/vod_box"} {/maccms:vod}
+            </ul>
+        </div>
+        <div class="cbox3 hide">
+            <ul class="vodlist vodlist_wi">
+                {maccms:vod num="18" type="current" start="37" order="desc" by="hits_week"} {include file="widget/vod_box"} {/maccms:vod}
+            </ul>
+        </div>
+    </div>
+    
+</div>
+<div id="vod_level" class="pannel clearfix" style="display: none;">
+    <div class="pannel_head clearfix">
+        <h2 class="title">{$obj.type_name} <span data-lang="string_type_recommendation">特别推荐</span> </h2>
+        <span class="hidden_xs pull_left">
+               {$obj.type_name}<span data-lang="string_type_channel">频道</span><span class="split_line"></span>
+        </span>
+        <a class="text_muted pull_left" href="{:mac_url_type($obj,[],'show')}"> <span data-lang="string_type_more2">更多</span>  <i class="iconfont more_i">&#xe623;</i></a>
+    </div>
+    
+    <div class="cbox_list">
+        <div class="cbox1">
+            <ul class="vodlist vodlist_wi">
+                {maccms:vod num="18" type="current" level="1" order="desc" by="sort"} {include file="widget/vod_box"} {/maccms:vod}
+            </ul>
+        </div>
+        <div class="cbox2 hide">
+            <ul class="vodlist vodlist_wi">
+                {maccms:vod num="18" type="current" level="1" start="19" order="desc" by="sort"} {include file="widget/vod_box"} {/maccms:vod}
+            </ul>
+        </div>
+        <div class="cbox3 hide">
+            <ul class="vodlist vodlist_wi">
+                {maccms:vod num="18" type="current" level="1" start="37" order="desc" by="sort"} {include file="widget/vod_box"} {/maccms:vod}
+            </ul>
+        </div>
+    </div>
+    
+    
+</div>

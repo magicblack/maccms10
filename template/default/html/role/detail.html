@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>{$obj.data.vod_name}{$obj.role_name},{$obj.role_name}扮演者,{$obj.role_name}谁演的-{$maccms.site_name}</title>
+<meta name="keywords" content="{$obj.data.vod_name}{$obj.role_name},{$obj.role_name}扮演着,{$obj.data.vod_name}{$obj.role_name}谁演的,{$obj.data.vod_name}{$obj.role_name}结局,{$obj.role_name}剧照" />
+<meta name="description" content="{$obj.data.vod_name}{$obj.role_name}扮演者是演员{$obj.role_actor},{$obj.role_content}" />  
+	{include file="public/include"}
+	<link rel="stylesheet" href="{$maccms.path}template/default/asset/css/hlrole.css" type="text/css" />
+</head>
+<body class="js-role-detail-ajax" data-role-id="{$obj.role_id|default='0'}">
+    {include file="public/head"}       	       	
+     <div class="container ">
+        {include file="ads/ads_all"}
+        <div class="left_row fl"> 
+			<div class="pannel clearfix" id="downlist">
+                 <div class="down_vodl">
+                 <a class="vodlist_thumb lazyload" href="{$obj.data|mac_url_vod_detail}" title="{$obj.data.vod_name}" data-original="{:mac_url_img($obj.data.vod_pic)}">
+				 </a>
+                 </div>
+                 <div class="down_vodr">
+                 <div class="pannel_head down_title clearfix">
+					  <h2 class="title fl">{$obj.data.vod_name}</h2>
+                      <span class="fl" data-lang="string_role_yyjs">演员角色</span>
+                 </div>
+                 <div class="down_context cblock ma_bottom">
+                       <p class="fl">
+                            {if condition="$obj.data.vod_score gt 0"}
+                            <span class="text_score">{$obj.data.vod_score}</span>
+                            <span class="split_line"></span>
+                            {/if}
+                            <span class="text_muted hidden_xs" data-lang="string_vod_age">年份：</span>{$obj.data.vod_year}
+							<span class="split_line"></span>
+							<span class="text_muted hidden_xs" data-lang="string_vod_region">地区：</span>{$obj.data.vod_area}
+							<span class="split_line"></span>
+							<span class="text_muted hidden_xs" data-lang="string_vod_type">类型：</span>{$obj.data.vod_class}
+					   </p>
+                  </div>
+                 </div>
+			</div>
+			<div class="pannel role_box clearfix">
+				<div class="role_info">
+					<div class="pannel_head clearfix">
+						<h3 class="title">
+							{$obj.data.vod_name}&nbsp;&nbsp;<span data-lang="string_role">角色</span>：<span class="role_name">{$obj.role_name}</span>&nbsp;&nbsp;<span data-lang="string_actor_syz">扮演者</span>：<span class="role_name">{$obj.role_actor}</span>
+						</h3>						
+					</div>
+				<div class="role_cont">
+					<ul>
+							<li class="rolelist_item">
+								<a class="rolelist_thumb lazyload" href="{$obj|mac_url_role_detail}" title="{$obj.data.vod_name}{$obj.role_name}剧照" data-original="{$obj.role_pic|mac_url_img}"></a>	<p class="rolelist_title">{$obj.data.vod_name}{$obj.role_name}剧照</p>
+							</li>
+							{maccms:actor num="1" wd="'.$obj['role_actor'].'" order="desc" by="time"}
+							<li class="rolelist_item">
+								<a class="rolelist_thumb lazyload" href="{$vo|mac_url_actor_detail}" title="{$obj.data.vod_name}{$obj.role_actor}饰演{$obj.role_name}" data-original="{$vo.actor_pic|mac_url_img}"></a>
+								<p class="rolelist_title">{$obj.role_actor}&nbsp;&nbsp;<span data-lang="string_decorate">饰</span>&nbsp;&nbsp;{$obj.role_name}</p>
+							</li>
+							{/maccms:actor}
+					</ul>
+				</div>
+				<div class="role_txt">
+					{$obj.role_content|mac_filter_html}
+				</div>
+				</div>
+			</div>
+           	
+			<div class="pannel clearfix">
+				<div class="pannel_head clearfix">
+					<h3 class="title">
+						{$obj.data.vod_name}角色表
+					</h3>						
+				</div>
+				<ul class="vodlist_smt role_show clearfix">
+					{maccms:role num="6" rid="'.$obj['role_rid'].'" order="desc" by="time"}
+						<li class="ranklist_item">
+							<a href="{$vo|mac_url_role_detail}" title="{$vo.data.vod_name}">
+							<div class="ranklist_img">
+								 <div class="ranklist_thumb lazyload" data-original="{$vo.role_pic|mac_url_img}">
+								 </div>
+							</div>	
+							<div class="ranklist_txt">
+								 <div class="pannel_head clearfix">		 
+									  <h4 class="title">{$vo.role_name}</h4>	
+								 </div>
+								 <p class="vodlist_sub"><span data-lang="string_actor_yy">演员：</span>：<span class="role_name">{$vo.role_actor}</span></p>
+								 <p class="vodlist_sub">
+								 {if $vo.role_content}{:mac_filter_html($vo.role_content)}{else}<span data-lang='string_no_have'>暂无</span>{/if}
+								 </p>
+							</div>
+							</a>  		
+						</li>	
+					{/maccms:role}
+				</ul>
+			</div>
+           {maccms:actor num="1" wd="'.$obj['role_actor'].'" order="desc" by="time"}
+          	<div class="pannel clearfix">
+				<div class="pannel_head clearfix">
+				<a class="text_muted pull_right" href="{$vo|mac_url_actor_detail}">更多<i class="iconfont more_i">&#xe623;</i></a>
+					<h3 class="title">
+						{$vo.actor_name}近期作品
+					</h3>						
+				</div>
+				<ul class="role_starlist">
+				{maccms:vod num="8" actor="'.$vo['actor_name'].'" order="desc" by="time" id="vo1" key="key1"}
+					<li><span class="srolename">{$vo1.vod_year}<a href="{:mac_url_vod_detail($vo1)}" target="_blank">《{$vo1.vod_name}》</a></span><span class="svodinfo"><span data-lang="string_play_zy">主演：</span>{$vo1.vod_actor|mac_url_create='actor'}</span></li>
+				{/maccms:vod}
+				</ul>
+			</div>
+           {/maccms:actor}
+        </div>
+        <div class="right_row pa_left fr hidden_xs hidden_mi">
+			
+			<div class="pannel clearfix">
+				<div class="pannel_head clearfix">
+					<h3 class="title">
+						影视热播榜
+					</h3>						
+				</div>
+				<ul class="vodlist clearfix">
+					{maccms:vod num="1" type="all" order="desc" by="hits"}
+					{include file="widget/rank_box_all"}		
+					{/maccms:vod}
+					{maccms:vod num="9" type="all" start="2" order="desc" by="hits"}
+					<li class="part_eone">
+						<a href="{:mac_url_vod_detail($vo)}">
+						<span class="part_nums part_num{$key+1}">{$key+1}</span><span class="text_muted pull_right renqi"><i class="iconfont">&#xe631;</i>&nbsp;{$vo.vod_hits}</span>{$vo.vod_name}</a>
+					</li>	
+					{/maccms:vod}
+				</ul>
+			</div>
+			
+        </div>
+   </div>
+{include file="public/foot"}
+<script type="text/javascript" src="{$maccms.path_tpl}/asset/js/role-pages-ajax.js"></script>
+</body>
+</html>

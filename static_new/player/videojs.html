@@ -5,15 +5,59 @@
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 	<meta http-equiv="X-UA-Compatible" content="IE=11" />
 	<meta content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no" id="viewport" name="viewport">
+	<link rel="stylesheet" href="/static/player/videojs/video-js.min.css">
 	<style type="text/css">
 	html,body{width:100%;height:100%; padding:0; margin:0;}
+	#macVjsLayout{display:flex;flex-direction:column;width:100%;height:100%;box-sizing:border-box;}
+	.mac-vjs-player-slot{flex:1;min-height:0;position:relative;width:100%;}
+	.mac-vjs-player-slot .video-js{width:100%;height:100%;}
 	#playerCnt{width:100%;height:100%;}
+	.mac-vjs-seekbar{
+		flex-shrink:0;
+		display:flex;
+		flex-wrap:wrap;
+		align-items:center;
+		justify-content:center;
+		gap:8px;
+		padding:8px 10px;
+		box-sizing:border-box;
+		background:#2c2c2c;
+		border-top:1px solid #444;
+	}
+	.mac-vjs-seekbtn{
+		margin:0;
+		padding:8px 14px;
+		font-size:13px;
+		line-height:1.2;
+		color:#333;
+		background:#e8e8e8;
+		border:1px solid #ccc;
+		border-radius:6px;
+		cursor:pointer;
+		-webkit-tap-highlight-color:transparent;
+	}
+	.mac-vjs-seekbtn:hover{background:#ddd;}
+	.mac-vjs-seekbtn:active{background:#cfcfcf;}
+	.mac-vjs-seekbtn:focus{outline:2px solid #6cf;outline-offset:2px;}
+	@media (max-width:480px){
+		.mac-vjs-seekbar{gap:6px;padding:6px;}
+		.mac-vjs-seekbtn{padding:7px 10px;font-size:12px;}
+	}
+	.video-js .vjs-big-play-button{
+		top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+	}
 	</style>
-	<link rel="stylesheet" href="/static/player/videojs/video-js.min.css">
 	<script type="text/javascript" src="/static/player/videojs/video.min.js"></script>
 </head>
 <body marginwidth="0" marginheight="0">
-<video id="playerCnt" class="video-js vjs-default-skin" controls preload="none" width="100%" height="100%"></video>
+<div id="macVjsLayout">
+	<div class="mac-vjs-player-slot">
+		<video id="playerCnt" class="video-js vjs-default-skin" controls preload="none" width="100%" height="100%"></video>
+	</div>
+	<div id="macVjsSeekBar" class="mac-vjs-seekbar" role="toolbar" aria-label="快进快退"></div>
+</div>
 <script type="text/javascript">
 var type='video/mp4';
 
@@ -31,18 +75,56 @@ sources: [{
   }]
 };
 
+function seekBySeconds(p, delta) {
+	var cur = p.currentTime();
+	if (typeof cur !== 'number' || isNaN(cur)) {
+		cur = 0;
+	}
+	var next = cur + delta;
+	var dur = p.duration();
+	if (typeof dur === 'number' && isFinite(dur) && dur > 0) {
+		next = Math.min(dur, Math.max(0, next));
+	} else {
+		next = Math.max(0, next);
+	}
+	p.currentTime(next);
+}
+
 var player = videojs('playerCnt', options, function onPlayerReady() {
-  videojs.log('Your player is ready!');
+	var p = this;
+	videojs.log('Your player is ready!');
+	p.play();
 
-  // In this context, `this` is the player that was created by Video.js.
-  this.play();
+	p.on('ended', function() {
+		videojs.log('Awww...over so soon?!');
+	});
 
-  // How about an event listener?
-  this.on('ended', function() {
-    videojs.log('Awww...over so soon?!');
-  });
+	var bar = document.getElementById('macVjsSeekBar');
+	if (!bar) {
+		return;
+	}
+	var steps = [
+		{ label: '< 10m', delta: -600 },
+		{ label: '< 1m', delta: -60 },
+		{ label: '< 15s', delta: -15 },
+		{ label: '15s >', delta: 15 },
+		{ label: '1m >', delta: 60 },
+		{ label: '10m >', delta: 600 }
+	];
+	for (var i = 0; i < steps.length; i++) {
+		(function (item) {
+			var btn = document.createElement('button');
+			btn.type = 'button';
+			btn.className = 'mac-vjs-seekbtn';
+			btn.textContent = item.label;
+			btn.addEventListener('click', function () {
+				seekBySeconds(p, item.delta);
+			});
+			bar.appendChild(btn);
+		})(steps[i]);
+	}
 });
-    
+
 	try{
 		//document.getElementById('playerCnt').style.height = parent.MacPlayer.Height + 'px';
 	}

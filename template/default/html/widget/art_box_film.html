@@ -1,0 +1,26 @@
+{if condition="$vo.art_pic eq ''"}
+<li class="art-show-film-item art-show-film-item--nopic num_{$key}">
+    <a class="art-show-film_thumb art-show-film_thumb--placeholder" href="{:mac_url_art_detail($vo)}" title="{$vo.art_name}">
+        {assign name="mac_points_value" value="$vo.art_points" /}
+        {include file="widget/mac_badge_top_right" /}
+        {include file="widget/mac_badge_bottom_right" /}
+        <span class="art-show-film_ph_letter">{php}echo htmlspecialchars(function_exists('mb_substr') ? (mb_substr(trim((string)($vo['art_name'] ?? '')), 0, 1, 'UTF-8') ?: '文') : (substr(trim((string)($vo['art_name'] ?? '')), 0, 1) ?: '文'));{/php}</span>
+    </a>
+    <div class="art-show-film_titbox">
+        <p class="art-show-film_title"><a href="{:mac_url_art_detail($vo)}" title="{$vo.art_name}">{$vo.art_name}</a></p>
+        <p class="art-show-film_sub"><span>{$vo.art_time|mac_friend_date}</span><span class="art-show-film_dot">·</span><span>{$vo.art_hits}<span data-lang="read">阅读</span></span></p>
+    </div>
+</li>
+{else /}
+<li class="art-show-film-item num_{$key}">
+    <a class="art-show-film_thumb lazyload" href="{:mac_url_art_detail($vo)}" title="{$vo.art_name}" data-original="{$vo.art_pic|mac_url_img}">
+        {assign name="mac_points_value" value="$vo.art_points" /}
+        {include file="widget/mac_badge_top_right" /}
+        {include file="widget/mac_badge_bottom_right" /}
+    </a>
+    <div class="art-show-film_titbox">
+        <p class="art-show-film_title"><a href="{:mac_url_art_detail($vo)}" title="{$vo.art_name}">{$vo.art_name}</a></p>
+        <p class="art-show-film_sub"><span>{$vo.art_time|mac_friend_date}</span><span class="art-show-film_dot">·</span><span>{$vo.art_hits}<span data-lang="read">阅读</span></span></p>
+    </div>
+</li>
+{/if}

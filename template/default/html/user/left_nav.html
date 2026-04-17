@@ -1,0 +1,154 @@
+		<div id="macUserLeftNav" class="mac-user-left-nav-host"
+			data-path-tpl="{$maccms.path_tpl}"
+			data-path="{$maccms.path}"
+			data-url-buy="{:url('user/buy')}"
+			data-url-upgrade="{:url('user/upgrade')}"
+			data-url-benefits="{:url('user/benefits')}"
+			data-url-login="{:url('user/login')}"
+			data-url-plog="{:url('user/plog')}"
+			data-url-checkin="{:url('user/checkin')}"
+			data-url-invite="{:url('user/invite')}"
+			data-url-portrait="{:url('user/portrait')}">
+			<div id="mac-user-left-profile" class="mac-user-left-profile-root" aria-live="polite"></div>
+		</div>
+		<ul class="show-pc">
+			<li data-index='0'>
+				<a href="{:url('user/info')}">
+					<i class="iconfont yonghu">&#xe62b;</i><span data-lang="user_my_info">我的资料</span>
+				</a>
+			</li>
+			<li data-index='2'>
+				<a href="{:url('user/favs')}">
+					<i class="iconfont lishi">&#xe629;</i><span data-lang="user_my_collection">我的收藏</span>
+				</a>
+			</li>
+			<li data-index='3'>
+				<a href="{:url('user/plays')}">
+					<i class="iconfont lishi">&#xe624;</i><span data-lang="user_view_record">观看记录</span>
+				</a>
+			</li>
+			<li data-index='5'>
+				<a class="mac_left_recharge" href="{:url('user/upgrade')}">
+					<i class="iconfont xiazai">&#xe65c;</i><span data-lang="user_recharge">充值中心</span>
+				</a>
+			</li>
+			<li data-index='6'>
+				<a href="{:url('user/orders')}">
+					<i class="iconfont xiazai">&#xe660;</i><span data-lang="user_recharge_record">充值记录</span>
+				</a>
+			</li>
+			<li data-index='7' style="display:none;">
+				<a href="{:url('user/cash')}">
+					<i class="iconfont xiazai">&#xe65f;</i><span data-lang="user_cash">我要提现</span>
+				</a>
+			</li>
+			<li data-index='9'>
+				<a href="{:url('user/checkin')}">
+					<i class="iconfont lishi">&#xe624;</i><span data-lang="user_checkin_nav">每日签到</span>
+				</a>
+			</li>
+			<li data-index='8'>
+				<a href="{:url('user/plog')}">
+					<i class="iconfont congzhi">&#xe662;</i><span data-lang="user_poin_record">金币记录</span>
+				</a>
+			</li>
+			<li data-index='10'>
+				<a href="{:url('user/index')}#cooperation">
+					{include file="widget/coop_icon_handshake" /}<span data-lang="user_business_coop">商务合作</span>
+				</a>
+			</li>
+		</ul>
+
+		<ul class="show-mobile">
+			<li>
+				<a href="{:url('user/info')}">
+					<img class="userli-img" src="{$maccms.path}template/default/images/member/user-li1.png" alt="">
+					<span data-lang="user_my_info">我的资料</span>
+					<i class="iconfont ico-right">&#xe623;</i>
+				</a>
+			</li>
+			<li>
+				<a href="{:url('user/favs')}">
+					<img class="userli-img" src="{$maccms.path}template/default/images/member/user-li11.png" alt="">
+					<span data-lang="user_my_collection">我的收藏</span>
+					<i class="iconfont ico-right">&#xe623;</i>
+				</a>
+			</li>
+			<li>
+				<a href="{:url('user/plays')}">
+					<img class="userli-img" src="{$maccms.path}template/default/images/member/user-li3.png" alt="">
+					<span data-lang="user_view_record">观看记录</span>
+					<i class="iconfont ico-right">&#xe623;</i>
+				</a>
+			</li>
+			<li class="mtop">
+				<a class="mac_left_recharge_mb" href="{:url('user/upgrade')}" id="mobileUpgradeLink">
+					<img class="userli-img" src="{$maccms.path}template/default/images/member/user-li6.png" alt="">
+					<span data-lang="user_recharge">充值中心</span>
+					<i class="iconfont ico-right">&#xe623;</i>
+				</a>
+			</li>
+			<li>
+				<a href="{:url('user/orders')}">
+					<img class="userli-img" src="{$maccms.path}template/default/images/member/user-li7.png" alt="">
+					<span data-lang="user_recharge_record">充值记录</span>
+					<i class="iconfont ico-right">&#xe623;</i>
+				</a>
+			</li>
+			<li style="display:none;">
+				<a href="{:url('user/cash')}">
+					<img class="userli-img" src="{$maccms.path}template/default/images/member/user-li8.png" alt="">
+					<span data-lang="user_cash">我要提现</span>
+					<i class="iconfont ico-right">&#xe623;</i>
+				</a>
+			</li>
+			<li>
+				<a href="{:url('user/plog')}">
+					<img class="userli-img" src="{$maccms.path}template/default/images/member/user-li9.png" alt="">
+					<span data-lang="user_poin_record">金币记录</span>
+					<i class="iconfont ico-right">&#xe623;</i>
+				</a>
+			</li>
+			<li>
+				<a href="{:url('user/index')}#cooperation">
+					<span class="userli-icon-wrap">{include file="widget/coop_icon_handshake" /}</span>
+					<span data-lang="user_business_coop">商务合作</span>
+					<i class="iconfont ico-right">&#xe623;</i>
+				</a>
+			</li>
+			<li class="change-lang member-left-lang-mobile">
+				<a href="javascript:;" title="语言切换" data-title="string_lang_change" class="top_link">
+					<i class="iconfont no-lang member-left-lang-earth">&#xe611;</i>
+					<span class="userli-img has-lang" role="img" aria-hidden="true"></span>
+					<span data-lang="string_lang_change">语言切换</span>
+					<i class="iconfont ico-right">&#xe623;</i>
+					<div class="lang-wrap">
+						<div class="lang" data-lang="cn">
+							<span class="lang-img lang-img-emoji" role="img" aria-label="简体中文" data-lang-src="{$maccms.path_tpl}/images/la/lang-zh.png">🇨🇳</span>
+							<span class="lang-txt" data-lang="string_lang_zh">简体中文</span>
+						</div>
+						<div class="lang" data-lang="en">
+							<span class="lang-img lang-img-emoji" role="img" aria-label="English" data-lang-src="{$maccms.path_tpl}/images/la/lang-us.png">🇺🇸</span>
+							<span class="lang-txt" data-lang="string_lang_en">English</span>
+						</div>
+					</div>
+				</a>
+			</li>
+		</ul>
+		<ul class="logout-ul" id="macUserLeftLogoutUl" hidden>
+			<li class="logout-item">
+				<a class="logout-link mac_left_nav_logout" href="javascript:;">
+					<span data-lang="user_logout">退出账号</span>
+				</a>
+			</li>
+		</ul>
+		<style>
+		@media (max-width:991px){
+			#member #left .logout-ul[hidden]{display:none!important}
+			#member #left .logout-ul:not([hidden]){display:block!important;margin-bottom:100px}
+			#member #left.mac-user-sidebar--guest-footer ul.show-mobile{padding-bottom:calc(100px + env(safe-area-inset-bottom,0px))}
+		}
+		</style>
+		<script defer type="text/javascript" src="{$maccms.path_tpl}/asset/js/user-auth-me.js"></script>
+		<script defer type="text/javascript" src="{$maccms.path_tpl}/asset/js/user-left-nav.js"></script>
+		{include file="widget/coop_modal" /}

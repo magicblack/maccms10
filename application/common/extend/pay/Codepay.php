@@ -6,7 +6,7 @@ class Codepay {
     public $name = '码支付';
     public $ver = '1.0';
 
-    public function submit($user,$order,$param)
+    public function submit($user,$order,$param,$return_only=false)
     {
         $pay_type = 1;
         if(!empty($param['paytype'])){
@@ -45,6 +45,9 @@ class Codepay {
         $query = $urls . '&sign='.md5($sign.trim( $GLOBALS['config']['pay']['codepay']['appkey'] )); //创建订单所需的参数
         $url = "https://api.xiuxiu888.com/creat_order/?{$query}"; //支付页面
 
+        if ($return_only) {
+            return '<script>location.href="' . $url . '";</script>';
+        }
         mac_redirect($url);
     }
 

@@ -1,0 +1,17 @@
+{php}
+$GLOBALS['_tpl_manga_cd'] = ['mu' => 0, 'sid' => 1, 'nid' => 1, 'sub' => '', 'date' => ''];
+$GLOBALS['_tpl_manga_cd']['date'] = isset($obj['manga_time']) ? date('Y-m-d', (int)$obj['manga_time']) : '';
+foreach (($obj['manga_page_list'] ?? []) as $from) {
+    if (empty($from['urls']) || !is_array($from['urls'])) {
+        continue;
+    }
+    $GLOBALS['_tpl_manga_cd']['mu'] += count($from['urls']);
+    $last = end($from['urls']);
+    if ($last) {
+        $GLOBALS['_tpl_manga_cd']['sid'] = (int)($from['sid'] ?? 1);
+        $GLOBALS['_tpl_manga_cd']['nid'] = (int)($last['nid'] ?? 1);
+        $GLOBALS['_tpl_manga_cd']['sub'] = (string)($last['name'] ?? ('第' . $GLOBALS['_tpl_manga_cd']['nid'] . '话'));
+    }
+}
+$cd_mu_cnt = (int)($GLOBALS['_tpl_manga_cd']['mu'] ?? 0);
+{/php}

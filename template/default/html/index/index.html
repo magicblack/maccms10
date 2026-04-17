@@ -1,51 +1,249 @@
-<!doctype html>
-<html>
+<!DOCTYPE html>
 <head>
-    <meta charset="utf-8">
-    <title>功能模块及系统标签等等介绍 - 苹果CMS</title>
-    <style>
-        @font-face{font-family:octicons-link;src:url(data:font/woff;charset=utf-8;base64,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) format('woff')}.markdown-body{-ms-text-size-adjust:100%;-webkit-text-size-adjust:100%;color:#24292e;font-family:-apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif;font-size:1pc;line-height:1.5;word-wrap:break-word}.markdown-body .pl-c{color:#6a737d}.markdown-body .pl-c1,.markdown-body .pl-s .pl-v{color:#005cc5}.markdown-body .pl-e,.markdown-body .pl-en{color:#6f42c1}.markdown-body .pl-s .pl-s1,.markdown-body .pl-smi{color:#24292e}.markdown-body .pl-ent{color:#22863a}.markdown-body .pl-k{color:#d73a49}.markdown-body .pl-pds,.markdown-body .pl-s,.markdown-body .pl-s .pl-pse .pl-s1,.markdown-body .pl-sr,.markdown-body .pl-sr .pl-cce,.markdown-body .pl-sr .pl-sra,.markdown-body .pl-sr .pl-sre{color:#032f62}.markdown-body .pl-smw,.markdown-body .pl-v{color:#e36209}.markdown-body .pl-bu{color:#b31d28}.markdown-body .pl-ii{color:#fafbfc;background-color:#b31d28}.markdown-body .pl-c2{color:#fafbfc;background-color:#d73a49}.markdown-body .pl-c2:before{content:"^M"}.markdown-body .pl-sr .pl-cce{font-weight:700;color:#22863a}.markdown-body .pl-ml{color:#735c0f}.markdown-body .pl-mh,.markdown-body .pl-mh .pl-en,.markdown-body .pl-ms{font-weight:700;color:#005cc5}.markdown-body .pl-mi{font-style:italic;color:#24292e}.markdown-body .pl-mb{font-weight:700;color:#24292e}.markdown-body .pl-md{color:#b31d28;background-color:#ffeef0}.markdown-body .pl-mi1{color:#22863a;background-color:#f0fff4}.markdown-body .pl-mc{color:#e36209;background-color:#ffebda}.markdown-body .pl-mi2{color:#f6f8fa;background-color:#005cc5}.markdown-body .pl-mdr{font-weight:700;color:#6f42c1}.markdown-body .pl-ba{color:#586069}.markdown-body .pl-sg{color:#959da5}.markdown-body .pl-corl{text-decoration:underline;color:#032f62}.markdown-body .octicon{display:inline-block;vertical-align:text-top;fill:currentColor}.markdown-body a{background-color:transparent;-webkit-text-decoration-skip:objects}.markdown-body a:active,.markdown-body a:hover{outline-width:0}.markdown-body strong{font-weight:inherit;font-weight:bolder}.markdown-body h1{font-size:2em;margin:.67em 0}.markdown-body img{border-style:none}.markdown-body svg:not(:root){overflow:hidden}.markdown-body code,.markdown-body kbd,.markdown-body pre{font-family:monospace;font-size:1em}.markdown-body hr{box-sizing:content-box;height:0;overflow:visible}.markdown-body input{font:inherit;margin:0;overflow:visible}.markdown-body [type=checkbox]{box-sizing:border-box;padding:0}.markdown-body *{box-sizing:border-box}.markdown-body input{font-family:inherit;font-size:inherit;line-height:inherit}.markdown-body a{color:#0366d6;text-decoration:none}.markdown-body a:hover{text-decoration:underline}.markdown-body strong{font-weight:600}.markdown-body hr{height:0;margin:15px 0;overflow:hidden;background:transparent;border:0;border-bottom:1px solid #dfe2e5}.markdown-body hr:after,.markdown-body hr:before{display:table;content:""}.markdown-body hr:after{clear:both}.markdown-body table{border-spacing:0;border-collapse:collapse}.markdown-body td,.markdown-body th{padding:0}.markdown-body h1,.markdown-body h2,.markdown-body h3,.markdown-body h4,.markdown-body h5,.markdown-body h6{margin-top:0;margin-bottom:0}.markdown-body h1{font-size:2pc;font-weight:600}.markdown-body h2{font-size:24px;font-weight:600}.markdown-body h3{font-size:20px;font-weight:600}.markdown-body h4{font-size:1pc;font-weight:600}.markdown-body h5{font-size:14px;font-weight:600}.markdown-body h6{font-size:9pt;font-weight:600}.markdown-body p{margin-top:0;margin-bottom:10px}.markdown-body blockquote{margin:0}.markdown-body ol,.markdown-body ul{padding-left:0;margin-top:0;margin-bottom:0}.markdown-body ol ol,.markdown-body ul ol{list-style-type:lower-roman}.markdown-body ol ol ol,.markdown-body ol ul ol,.markdown-body ul ol ol,.markdown-body ul ul ol{list-style-type:lower-alpha}.markdown-body dd{margin-left:0}.markdown-body code,.markdown-body pre{font-family:SFMono-Regular,Consolas,Liberation Mono,Menlo,Courier,monospace;font-size:9pt}.markdown-body pre{margin-top:0;margin-bottom:0}.markdown-body .octicon{vertical-align:text-bottom}.markdown-body .pl-0{padding-left:0!important}.markdown-body .pl-1{padding-left:4px!important}.markdown-body .pl-2{padding-left:8px!important}.markdown-body .pl-3{padding-left:1pc!important}.markdown-body .pl-4{padding-left:24px!important}.markdown-body .pl-5{padding-left:2pc!important}.markdown-body .pl-6{padding-left:40px!important}.markdown-body:after,.markdown-body:before{display:table;content:""}.markdown-body:after{clear:both}.markdown-body>:first-child{margin-top:0!important}.markdown-body>:last-child{margin-bottom:0!important}.markdown-body a:not([href]){color:inherit;text-decoration:none}.markdown-body .anchor{float:left;padding-right:4px;margin-left:-20px;line-height:1}.markdown-body .anchor:focus{outline:0}.markdown-body blockquote,.markdown-body dl,.markdown-body ol,.markdown-body p,.markdown-body pre,.markdown-body table,.markdown-body ul{margin-top:0;margin-bottom:1pc}.markdown-body hr{height:.25em;padding:0;margin:24px 0;background-color:#e1e4e8;border:0}.markdown-body blockquote{padding:0 1em;color:#6a737d;border-left:.25em solid #dfe2e5}.markdown-body blockquote>:first-child{margin-top:0}.markdown-body blockquote>:last-child{margin-bottom:0}.markdown-body kbd{display:inline-block;padding:3px 5px;font-size:11px;line-height:10px;color:#444d56;vertical-align:middle;background-color:#fafbfc;border:1px solid #c6cbd1;border-bottom-color:#959da5;border-radius:3px;box-shadow:inset 0 -1px 0 #959da5}.markdown-body h1,.markdown-body h2,.markdown-body h3,.markdown-body h4,.markdown-body h5,.markdown-body h6{margin-top:24px;margin-bottom:1pc;font-weight:600;line-height:1.25}.markdown-body h1 .octicon-link,.markdown-body h2 .octicon-link,.markdown-body h3 .octicon-link,.markdown-body h4 .octicon-link,.markdown-body h5 .octicon-link,.markdown-body h6 .octicon-link{color:#1b1f23;vertical-align:middle;visibility:hidden}.markdown-body h1:hover .anchor,.markdown-body h2:hover .anchor,.markdown-body h3:hover .anchor,.markdown-body h4:hover .anchor,.markdown-body h5:hover .anchor,.markdown-body h6:hover .anchor{text-decoration:none}.markdown-body h1:hover .anchor .octicon-link,.markdown-body h2:hover .anchor .octicon-link,.markdown-body h3:hover .anchor .octicon-link,.markdown-body h4:hover .anchor .octicon-link,.markdown-body h5:hover .anchor .octicon-link,.markdown-body h6:hover .anchor .octicon-link{visibility:visible}.markdown-body h1{font-size:2em}.markdown-body h1,.markdown-body h2{padding-bottom:.3em;border-bottom:1px solid #eaecef}.markdown-body h2{font-size:1.5em}.markdown-body h3{font-size:1.25em}.markdown-body h4{font-size:1em}.markdown-body h5{font-size:.875em}.markdown-body h6{font-size:.85em;color:#6a737d}.markdown-body ol,.markdown-body ul{padding-left:2em}.markdown-body ol ol,.markdown-body ol ul,.markdown-body ul ol,.markdown-body ul ul{margin-top:0;margin-bottom:0}.markdown-body li>p{margin-top:1pc}.markdown-body li+li{margin-top:.25em}.markdown-body dl{padding:0}.markdown-body dl dt{padding:0;margin-top:1pc;font-size:1em;font-style:italic;font-weight:600}.markdown-body dl dd{padding:0 1pc;margin-bottom:1pc}.markdown-body table{display:block;width:100%;overflow:auto}.markdown-body table th{font-weight:600}.markdown-body table td,.markdown-body table th{padding:6px 13px;border:1px solid #dfe2e5}.markdown-body table tr{background-color:#fff;border-top:1px solid #c6cbd1}.markdown-body table tr:nth-child(2n){background-color:#f6f8fa}.markdown-body img{max-width:100%;box-sizing:content-box;background-color:#fff}.markdown-body img[align=right]{padding-left:20px}.markdown-body img[align=left]{padding-right:20px}.markdown-body code{padding:0;padding-top:.2em;padding-bottom:.2em;margin:0;font-size:85%;background-color:rgba(27,31,35,.05);border-radius:3px}.markdown-body code:after,.markdown-body code:before{letter-spacing:-.2em;content:"\00a0"}.markdown-body pre{word-wrap:normal}.markdown-body pre>code{padding:0;margin:0;font-size:100%;word-break:normal;white-space:pre;background:transparent;border:0}.markdown-body .highlight{margin-bottom:1pc}.markdown-body .highlight pre{margin-bottom:0;word-break:normal}.markdown-body .highlight pre,.markdown-body pre{padding:1pc;overflow:auto;font-size:85%;line-height:1.45;background-color:#f6f8fa;border-radius:3px}.markdown-body pre code{display:inline;max-width:auto;padding:0;margin:0;overflow:visible;line-height:inherit;word-wrap:normal;background-color:transparent;border:0}.markdown-body pre code:after,.markdown-body pre code:before{content:normal}.markdown-body .full-commit .btn-outline:not(:disabled):hover{color:#005cc5;border-color:#005cc5}.markdown-body kbd{display:inline-block;padding:3px 5px;font:11px "SFMono-Regular",Consolas,Liberation Mono,Menlo,Courier,monospace;line-height:10px;color:#444d56;vertical-align:middle;background-color:#fafbfc;border:1px solid #d1d5da;border-bottom-color:#c6cbd1;border-radius:3px;box-shadow:inset 0 -1px 0 #c6cbd1}.markdown-body :checked+.radio-label{position:relative;z-index:1;border-color:#0366d6}.markdown-body .task-list-item{list-style-type:none}.markdown-body .task-list-item+.task-list-item{margin-top:3px}.markdown-body .task-list-item input{margin:0 .2em .25em -1.6em;vertical-align:middle}.markdown-body hr{border-bottom-color:#eee}
+    {include file="public/include"}
+    <link rel="stylesheet" type="text/css" href="{$maccms.path}template/default/asset/css/home-banner.css">
+    <style id="home-skeleton-critical">
+        .home-unified .home-skeleton{position:relative}
+        .home-unified .home-skeleton-card,.home-unified .home-skeleton-banner-item,.home-unified .home-skeleton-menu-item,.home-unified .home-skeleton-link-item,.home-unified .home-skeleton-rank-box,.home-unified .home-skeleton-type-box,.home-unified .home-skeleton-line,.home-unified .home-skeleton .thumb{position:relative;overflow:hidden;background:#f3f4f6;border-radius:4px}
+        .bstem .home-unified .home-skeleton-card,.bstem .home-unified .home-skeleton-banner-item,.bstem .home-unified .home-skeleton-menu-item,.bstem .home-unified .home-skeleton-link-item,.bstem .home-unified .home-skeleton-rank-box,.bstem .home-unified .home-skeleton-type-box,.bstem .home-unified .home-skeleton-line,.bstem .home-unified .home-skeleton .thumb{background:#2f3138}
+        .home-unified .home-skeleton-card::after,.home-unified .home-skeleton-banner-item::after,.home-unified .home-skeleton-menu-item::after,.home-unified .home-skeleton-link-item::after,.home-unified .home-skeleton-rank-box::after,.home-unified .home-skeleton-type-box::after,.home-unified .home-skeleton-line::after,.home-unified .home-skeleton .thumb::after{content:'';position:absolute;top:0;left:-140px;width:140px;height:100%;background:linear-gradient(90deg,rgba(255,255,255,0),rgba(255,255,255,.45),rgba(255,255,255,0));animation:homeSkeletonShimmer 1.3s infinite}
+        .bstem .home-unified .home-skeleton-card::after,.bstem .home-unified .home-skeleton-banner-item::after,.bstem .home-unified .home-skeleton-menu-item::after,.bstem .home-unified .home-skeleton-link-item::after,.bstem .home-unified .home-skeleton-rank-box::after,.bstem .home-unified .home-skeleton-type-box::after,.bstem .home-unified .home-skeleton-line::after,.bstem .home-unified .home-skeleton .thumb::after{background:linear-gradient(90deg,rgba(255,255,255,0),rgba(255,255,255,.18),rgba(255,255,255,0))}
+        @keyframes homeSkeletonShimmer{0%{transform:translateX(0)}100%{transform:translateX(420px)}}
+        .home-unified .home-skeleton-card{list-style:none;padding:8px}
+        .home-unified .home-skeleton-card .thumb{width:100%;padding-top:140%;margin-bottom:8px}
+        .home-unified .home-skeleton-line{height:12px;margin-top:8px}
+        .home-unified .home-skeleton-line.w220{width:220px}.home-unified .home-skeleton-line.w200{width:200px}.home-unified .home-skeleton-line.w180{width:180px}.home-unified .home-skeleton-line.w160{width:160px}.home-unified .home-skeleton-line.w140{width:140px}.home-unified .home-skeleton-line.w90{width:90%}.home-unified .home-skeleton-line.w70{width:70%}
     </style>
+    <link rel="stylesheet" type="text/css" href="{$maccms.path}template/default/asset/css/index.css">
+    <link rel="stylesheet" type="text/css" href="{$maccms.path_tpl}/asset/css/home-topic-tangram-preview.css">
+    <script src="{$maccms.path}template/default/asset/js/jquery-adaptive.js?v=202604161"></script>
 </head>
-<body>
+<body class="home-index-body" data-header-scroll-threshold="12">
+    {include file="public/th" /}
+    {include file="module/index_theme_vars" /}
+<div class="member-wrap">
+    <div class="container home-unified">
+        {include file="public/head"}
+        {include file="module/banner"}
+        {include file="ads/ads_banner1"}
+        {include file="ads/ads_icon1" ads_icon1_marquee="0"}
 
-<div class="markdown-body" style="padding:40px;">
+        <div class="home-detail">
+            {if condition="empty($tplconfig['theme']['hotvod']['btn']) || $tplconfig['theme']['hotvod']['btn'] eq 1"}
+            <div class="layout fn-clear box show-pc" id="latest-focus" data-hot-tab-url="{:mac_url('ajax/home_hot_tab')}">
+                <div class="latest-tab-nav">
+                    <ul class="fn-clear nav-list">
+                        <li id="latest1" onmouseover="setTab('latest',1,8);" class="current">
+                            <span>
+                                <img class="laset_new_img hl_icon_light" src="{$maccms.path_tpl}/images/la/home-icon10.png" alt="">
+                                <img class="laset_new_img hl_icon_black" src="{$maccms.path_tpl}/images/black/home-icon10.png" alt="">
+                                <span style="margin: 0;">{$tplconfig.theme.hotvod.title|default='热门推荐'}</span>
+                            </span>
+                        </li>
+                        {volist name="index_hotvod_tabs" id="ht" key="hidx"}
+                        <li id="latest{$hidx+2}" data-tab="{$hidx+2}" onmouseover="setTab('latest',this.getAttribute('data-tab'),8);"><span><img class="laset_new_img hl_icon_light" src="{:mac_url_img($ht.icon_l)}" alt=""><img class="laset_new_img hl_icon_black" src="{:mac_url_img($ht.icon_b)}" alt=""><span style="margin: 0;"><span data-lang="string_hot_dy">热门</span> {$ht.name}</span></span></li>
+                        {/volist}
+                    </ul>
+                </div>
+                <div class="latest-tab-box">
+                    <div id="con_latest_1" class="latest-item wei-latest ">
+                        <div class="silder-cnt">
+                            <ul class="img-list">
+                                {maccms:vod num="6" level="1,2,3,4,5,6,7,8,9" order="desc" by="hits_month"}
+                                {notempty name="vo"}{include file="widget/vod_box"}{else}{include file="public/notempty"}{/notempty}
+                                {/maccms:vod}
+                            </ul>
+                        </div>
+                        <ul class="txt-list">
+                            {maccms:vod num="12" type="1" start="6" level="1,2,3,4,5,6,7,8,9" order="desc" by="hits_month"}
+                            <li><span>{$vo.vod_time|date='m-d',###}.</span><a {if condition="$mac_vod_playlink eq 1"}href="{:mac_url_vod_play($vo,['sid'=>$vo.sid,'nid'=>1])}"{else/}href="{:mac_url_vod_detail($vo)}"{/if} title="{$vo.vod_name}">{$vo.vod_name}</a>/ {$vo.vod_remarks}</li>
+                            {/maccms:vod}
+                        </ul>
+                    </div>
+                    {volist name="index_hotvod_tabs" id="ht" key="hidx"}
+                    <div id="con_latest_{$hidx+2}" class="latest-item movie-latest fn-hide"></div>
+                    {/volist}
+                    {if condition="$index_manga_hbtn eq 1"}
+                    <div id="con_latest_6" class="latest-item movie-latest fn-hide {$index_manga_poster_class}"></div>
+                    {else/}
+                    <div id="con_latest_6" class="latest-item movie-latest fn-hide"></div>
+                    {/if}
+                    {if condition="$index_art_hbtn eq 1"}
+                    <div id="con_latest_7" class="latest-item movie-latest fn-hide {$index_art_poster_class}"></div>
+                    {else/}
+                    <div id="con_latest_7" class="latest-item movie-latest fn-hide"></div>
+                    {/if}
+                </div>
+            </div>
+            {/if}
 
-    <h2>免责声明</h2>
-    <blockquote>
-        <p>
-            本程序免费且开源仅供内部学习和交流使用，没有内置任何数据，请在遵守当地法律的前提下使用本站程序!<br>
-            对用户在使用过程中的自行维护的信息内容本站不负任何责任!<br>
-            前台页面的一切展示均为html+css+js配合系统标签来实现，如需修改显示内容请学习相关标签文档!
-        </p>
-        <p>
-        This program is for internal learning and communication only, there is no built-in data, please follow local laws, please use this site program! <br>
-            The user in the process of self-maintenance of the information content of this site is not responsible! <br>
-            All displays on the front desk page are implemented with the system label, if you need to modify the display content please learn the relevant label documentation!
-        </p>
-    </blockquote>
+            {if condition="!empty($tplconfig['theme']['topic']['hbtn']) && $tplconfig['theme']['topic']['hbtn'] eq 1"}
+            <div class="box">
+                <div class="latest-item">
+                    <ul class="img-list dis js-home-lazy-section"
+                        id="js-home-topic-list"
+                        data-section="home-topic"
+                        data-api-action="topic/get_recommend"
+                        data-num="5"
+                        data-start="0">
+                        <li class="home-skeleton-card"><div class="thumb"></div><div class="home-skeleton-line w90"></div></li>
+                        <li class="home-skeleton-card"><div class="thumb"></div><div class="home-skeleton-line w90"></div></li>
+                        <li class="home-skeleton-card"><div class="thumb"></div><div class="home-skeleton-line w90"></div></li>
+                        <li class="home-skeleton-card"><div class="thumb"></div><div class="home-skeleton-line w90"></div></li>
+                        <li class="home-skeleton-card"><div class="thumb"></div><div class="home-skeleton-line w90"></div></li>
+                    </ul>
+                </div>
+            </div>
+            {/if}
 
+            {include file="module/index_hom_type" /}
 
-    <h2>包含模块</h2>
-    <blockquote>
-        <p>
-            专题、留言本、评论、文章、网址导航、视频、明星、角色、剧情、用户中心等!<br><br>
-            更多内容请参阅程序包内说明文档!<br><br>
-            不再内置默认模板，如果需要请自行搜索引擎查找!
-        </p>
-    </blockquote>
+            {if condition="$index_manga_hbtn eq 1"}
+            <div class="box latest-tab-box {$index_manga_poster_class}">
+                <div class="title home-unified-section-head hu-section-head">
+                    <img class="laset_new_img hl_icon_light" src="{$maccms.path}template/default/images/la/home-icon5.png" ><img class="laset_new_img hl_icon_black" src="{$maccms.path}template/default/images/black/home-icon5.png" >
+                    <h2><span data-lang="string_zuixin">最新</span><span>{$index_manga_htitle}</span></h2>
+                    <a class="pc_more" href="{:mac_url('manga/index')}"><span data-lang="string_type_more2">更多</span> <i class="iconfont more_i">&#xe623;</i></a>
+                </div>
+                <div class="latest-item cbox_list">
+                    <ul class="img-list dis vodlist home-unified-vlist hu-vlist js-home-lazy-section"
+                        id="js-home-manga-list"
+                        data-section="home-manga"
+                        data-api-action="manga/get_latest"
+                        data-num="{$index_manga_hnum_str|default='6'}"
+                        data-start="0">
+                        <li class="home-skeleton-card"><div class="thumb"></div><div class="home-skeleton-line w90"></div><div class="home-skeleton-line w70"></div></li>
+                        <li class="home-skeleton-card"><div class="thumb"></div><div class="home-skeleton-line w90"></div><div class="home-skeleton-line w70"></div></li>
+                        <li class="home-skeleton-card"><div class="thumb"></div><div class="home-skeleton-line w90"></div><div class="home-skeleton-line w70"></div></li>
+                        <li class="home-skeleton-card"><div class="thumb"></div><div class="home-skeleton-line w90"></div><div class="home-skeleton-line w70"></div></li>
+                        <li class="home-skeleton-card"><div class="thumb"></div><div class="home-skeleton-line w90"></div><div class="home-skeleton-line w70"></div></li>
+                        <li class="home-skeleton-card"><div class="thumb"></div><div class="home-skeleton-line w90"></div><div class="home-skeleton-line w70"></div></li>
+                    </ul>
+                    <div class="home-refresh-wrap">
+                        <button type="button" class="home-refresh-btn" data-target="#js-home-manga-list">
+                            <i class="iconfont" aria-hidden="true">&#xe62a;</i><span>换一换</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            {/if}
 
-	<h2>版权声明</h2>
-    <blockquote>
-        <p>
-            苹果CMS(maccms)遵循Apache2开源协议发布，并提供免费使用。<br>
-		版权所有Copyright © 2014-2021 by magicblack (<a href="https://github.com/magicblack">https://github.com/magicblack</a>)<br>
-		All rights reserved。
-        </p>
-    </blockquote>
+            {if condition="$index_art_hbtn eq 1"}
+            <div class="box latest-tab-box {$index_art_poster_class}">
+                <div class="title home-unified-section-head hu-section-head">
+                    <img class="laset_new_img hl_icon_light" src="{$maccms.path}template/default/images/la/home-icon8.png" ><img class="laset_new_img hl_icon_black" src="{$maccms.path}template/default/images/black/home-icon8.png" >
+                    <h2><span data-lang="string_zuixin">最新</span><span>{$index_art_home.type_name|default=$index_art_htitle}</span></h2>
+                    <dl class="home-unified-art-subtypes" id="js-home-art-subtypes"></dl>
+                    <a class="pc_more" href="{:mac_url('art/index')}"><span data-lang="string_type_more2">更多</span> <i class="iconfont more_i">&#xe623;</i></a>
+                </div>
+                <div class="latest-item cbox_list">
+                    <ul class="img-list dis vodlist home-unified-vlist hu-vlist js-home-lazy-section"
+                        id="js-home-art-list"
+                        data-section="home-art"
+                        data-api-action="art/get_latest"
+                        data-num="{$index_art_hnum|default='6'}"
+                        data-type-id="{$index_art_home.type_id|default='0'}"
+                        data-start="0">
+                        <li class="home-skeleton-card"><div class="thumb"></div><div class="home-skeleton-line w90"></div><div class="home-skeleton-line w70"></div></li>
+                        <li class="home-skeleton-card"><div class="thumb"></div><div class="home-skeleton-line w90"></div><div class="home-skeleton-line w70"></div></li>
+                        <li class="home-skeleton-card"><div class="thumb"></div><div class="home-skeleton-line w90"></div><div class="home-skeleton-line w70"></div></li>
+                        <li class="home-skeleton-card"><div class="thumb"></div><div class="home-skeleton-line w90"></div><div class="home-skeleton-line w70"></div></li>
+                        <li class="home-skeleton-card"><div class="thumb"></div><div class="home-skeleton-line w90"></div><div class="home-skeleton-line w70"></div></li>
+                        <li class="home-skeleton-card"><div class="thumb"></div><div class="home-skeleton-line w90"></div><div class="home-skeleton-line w70"></div></li>
+                    </ul>
+                    <div class="home-refresh-wrap">
+                        <button type="button" class="home-refresh-btn" data-target="#js-home-art-list">
+                            <i class="iconfont" aria-hidden="true">&#xe62a;</i><span>换一换</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            {/if}
+
+            {include file="ads/ads_all"}
+
+            {if condition="!empty($tplconfig['theme']['actor']['hbtn']) && $tplconfig['theme']['actor']['hbtn'] eq 1"}
+            <div class="box mingxing">
+                <div class="title home-unified-section-head hu-section-head">
+                    <img class="laset_new_img hl_icon_light" src="{$maccms.path}template/default/images/la/home-icon6.png" ><img class="laset_new_img hl_icon_black" src="{$maccms.path}template/default/images/black/home-icon6.png" >
+                    <h2><span>{$tplconfig.theme.actor.htitle|default='推荐明星'}</span></h2>
+                    <a class="pc_more" href="{:mac_url('actor/index')}"><span data-lang="string_type_more2">更多</span><i class="iconfont more_i">&#xe623;</i></a>
+                </div>
+                <div class="latest-item">
+                    <ul class="img-list dis js-home-lazy-section"
+                        id="js-home-actor-list"
+                        data-section="home-actor"
+                        data-api-action="actor/get_recommend"
+                        data-ids="{$index_actor_ids|default=''}"
+                        data-num="8"
+                        data-start="0">
+                        <li class="home-skeleton-card"><div class="thumb"></div><div class="home-skeleton-line w90"></div></li>
+                        <li class="home-skeleton-card"><div class="thumb"></div><div class="home-skeleton-line w90"></div></li>
+                        <li class="home-skeleton-card"><div class="thumb"></div><div class="home-skeleton-line w90"></div></li>
+                        <li class="home-skeleton-card"><div class="thumb"></div><div class="home-skeleton-line w90"></div></li>
+                    </ul>
+                    <div class="home-refresh-wrap">
+                        <button type="button" class="home-refresh-btn" data-target="#js-home-actor-list">
+                            <i class="iconfont" aria-hidden="true">&#xe62a;</i><span>换一换</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            {/if}
+
+            
+
+            {if condition="!empty($tplconfig['theme']['rank']['hbtn']) && $tplconfig['theme']['rank']['hbtn'] eq 1"}
+            <div class="box rank_waterfall">
+                <div class="title home-unified-section-head hu-section-head">
+                    <img class="laset_new_img hl_icon_light" src="{$maccms.path}template/default/images/la/home-icon9.png" ><img class="laset_new_img hl_icon_black" src="{$maccms.path}template/default/images/black/home-icon9.png" >
+                    <h2><span>{$tplconfig.theme.rank.htitle|default='热播排行榜'}</span></h2>
+                    <a class="pc_more" href="{:mac_url('label/rank')}"><span data-lang="string_type_more2">更多</span><i class="iconfont more_i">&#xe623;</i></a>
+                </div>
+                <div class="latest-item js-home-lazy-section"
+                    id="js-home-rank-lazy-root"
+                    data-section="home-rank"
+                    data-api-action="vod/get_rank"
+                    data-start="0">
+                    <div class="img-list dis show-pc"
+                        id="js-home-rank-pc-list">
+                        <div class="home-skeleton-rank-box"><div class="home-skeleton-line w140"></div><div class="home-skeleton-line w200"></div><div class="home-skeleton-line w180"></div><div class="home-skeleton-line w160"></div></div>
+                        <div class="home-skeleton-rank-box"><div class="home-skeleton-line w140"></div><div class="home-skeleton-line w200"></div><div class="home-skeleton-line w180"></div><div class="home-skeleton-line w160"></div></div>
+                        <div class="home-skeleton-rank-box"><div class="home-skeleton-line w140"></div><div class="home-skeleton-line w200"></div><div class="home-skeleton-line w180"></div><div class="home-skeleton-line w160"></div></div>
+                    </div>
+                    <div class="hu-rank-mobile show-mobile">
+                        <div class="hu-rank-nav-swiper swiper-container">
+                            <div class="swiper-wrapper" id="js-home-rank-mobile-nav">
+                                <div class="swiper-slide"><button type="button" class="hu-rank-nav-item is-active home-skeleton-line w140"></button></div>
+                                <div class="swiper-slide"><button type="button" class="hu-rank-nav-item home-skeleton-line w140"></button></div>
+                            </div>
+                        </div>
+                        <div class="hu-rank-content-swiper swiper-container">
+                            <div class="swiper-wrapper" id="js-home-rank-mobile-content">
+                                <div class="swiper-slide hu-rank-slide"><div class="home-skeleton-rank-box"><div class="home-skeleton-line w140"></div><div class="home-skeleton-line w200"></div><div class="home-skeleton-line w180"></div></div></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {/if}
+
+            {include file="public/friendLink"}
+            <div class="show-mobile">
+                {include file="widget/copyright"}
+            </div>
+        </div>
+    </div>
 </div>
-<div style="display:none">
-
-</div>
+<script type="application/json" id="js-home-topic-cards-json">{php}echo json_encode($index_topic_cells, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);{/php}</script>
+<script type="application/json" id="js-home-rank-types-json">{php}echo json_encode($index_rank_types, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);{/php}</script>
+<script type="application/json" id="js-home-art-home-json">{php}echo json_encode($index_art_home, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);{/php}</script>
+<script type="application/json" id="js-home-banner-ads-json">{php}echo json_encode((isset($bannerSwiperRows) && is_array($bannerSwiperRows)) ? array_values($bannerSwiperRows) : [], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);{/php}</script>
+<div id="js-home-api-config" data-api-base="{$maccms.path}api.php" data-vod-playlink="{:(isset($mac_vod_playlink) && (int)$mac_vod_playlink === 1) ? '1' : '0'}"></div>
+<div id="js-home-notempty-tpl" class="fn-hide" aria-hidden="true">{include file="public/notempty"}</div>
+<script src="{$maccms.path_tpl}/asset/js/mac-catalog-media.js"></script>
+<script src="{$maccms.path}template/default/asset/js/mac-home-card-render.js?v=202604161"></script>
+<script src="{$maccms.path}template/default/asset/js/index-home-parts.js?v=202604161"></script>
+{include file="public/foot"}
 </body>
 </html>

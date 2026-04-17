@@ -1,0 +1,17 @@
+<script>
+var maccms = {
+    "path": (function(){var p="{$maccms.path}".replace(/\/+$/,''); return (p==='/'||p==='') ? '' : p;})(),
+    "path_assets": "{$maccms.path}",
+    "base_url": "{$maccms.http_type}{$maccms.site_url}",
+    "path_tpl": "{$maccms.path}template/default",
+    "mid": "{$maccms['mid']}",
+    "aid": "{$maccms['aid']}",
+    "url": "{$maccms['site_url']}",
+    "wapurl": "{$maccms['site_wapurl']}",
+    "mob_status": "{$maccms['mob_status']}",
+    "lazyImg": {:json_encode(mac_url_img(!empty($tplconfig['theme']['lazy']) ? $maccms['path'].$tplconfig['theme']['lazy'] : $maccms['path_tpl'].'asset/img/load.gif'), JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE)},
+    "site_name": {:json_encode(isset($maccms['site_name']) ? (string)$maccms['site_name'] : '', JSON_UNESCAPED_UNICODE)},
+    "vodPlaylink": {:json_encode(isset($mac_vod_playlink) && (int)$mac_vod_playlink === 1)}
+};
+var MAC_PATH = maccms.path;
+</script>

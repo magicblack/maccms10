@@ -1,0 +1,39 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>{$obj.type_name}网址收录 - {$maccms.site_name}</title>
+    <meta name="keywords" content="{$obj.type_key}" />
+    <meta name="description" content="{$obj.type_des}" />
+    {include file="public/include"}
+	<link rel="stylesheet" type="text/css" href="{$maccms.path_tpl}/asset/css/website-type.css" />
+</head>
+
+<body>
+    <div class="show-pc">
+    {include file="public/head"}
+    </div>
+    <div class="show-mobile">
+        <div id="ui-nav" class="m-nav">
+            <a href="javascript:MAC.GoBack()" class="btn-left"><i class="iconfont ico-right">&#xe625;</i></a>
+            <span class="mb-title" data-lang="string_show_leixing">类型 </span>
+        </div>
+    </div>
+
+<div class="bread-crumb-nav fn-clear show-pc">
+    <ul class="bread-crumbs">
+        <li class="home"><a href="{$maccms.path}" data-lang="string_home">首页 </a></li>
+        <li><a href="{:mac_url_type($obj)}">{$obj.type_name}</a></li>
+        <li class="back"><a href="javascript:MAC.GoBack()" data-lang="website_fanh">返回上一页 </a></li>
+    </ul>
+</div>
+
+{include file="website/tableList"}
+<div style="width:30rem;margin: 2.5rem auto;" class="show-pc">
+	{include file="public/friendLink" }
+</div>
+
+{include file="public/foot"}
+</body>
+
+</html>

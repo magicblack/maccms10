@@ -1,0 +1,14 @@
+<li class="ranklist_item">
+    <a title="{$vo.vod_name}" href="{:mac_url_vod_detail($vo)}">
+	<div class="ranklist_img">
+		 <div class="ranklist_thumb lazyload" data-original="{$vo.vod_pic|mac_url_img}">
+			{assign name="mac_points_value" value="$vo.vod_points_play" /}
+			{include file="widget/mac_badge_top_right" /}
+			{include file="widget/mac_badge_bottom_right" /}
+			<span class="play hidden_xs"></span>
+            <span class="part_nums part_num{$key+1}">{$key+1}</span>
+	     </div>
+	</div>	
+    <div class="ranklist_txt">
+	     <div class="pannel_head clearfix">
+              <span class="text_muted pull_right">

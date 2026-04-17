@@ -4,12 +4,50 @@ API 接口说明 V2（基于当前实现）
 - 基础路径：/api.php
 - 请求方式：GET（除特别说明外）
 - 返回格式：默认 JSON；部分 Provide 聚合接口支持 XML（at=xml）
+- 配置/主题/广告（PublicApi）：见 **12) Config** — `get_config`、`get_extra_var`、`get_tpl_config`、`get_mctheme`、`get_ads_files`
+- 搜索（联想、列表检索、采集关键字）：见 **二、搜索接口**
 - 通用返回：
   - 成功：{"code":1,"msg":"获取成功","info":{...}}
   - 列表 info 结构常见为：{"offset":number,"limit":number,"total":number,"rows":[...]}
   - 详情 info 结构：对象或数组（视具体模块）
 
-二、Provide 聚合接口（采集/对接用，兼容老格式）
+二、搜索接口
+说明：
+- 与 **四、模块接口** 相同，受后台 **API 公开接口（PublicApi）** 开关约束；未开启时请求可能被拒绝。
+- 视频 **联想** 另受后台 **网站参数 → 搜索** 是否开启约束：关闭时联想接口返回 code=999（与前台关闭搜索一致）。
+
+1) 视频 — 搜索联想（自动完成）
+- 路径：GET /api.php/vod/suggest
+- 参数：
+  - wd：string 必填，关键字（trim 后不可为空）
+  - limit：number 可选，1～20，默认 10
+- 行为：按 vod_name、vod_en 模糊匹配，排序 vod_id desc（具体可见数据范围以 `Vod::listData` 查询条件为准）。
+- 返回（在 listData 分页字段基础上附加 **url**）：
+  - code=1：含 page、pagecount、limit、total、**list**、**url**
+    - **list**：每项为 { id, name, en, pic, vod_link } — pic、vod_link 已为完整可访问 URL；vod_link 为详情页链接（与伪静态规则一致）。
+    - **url**：当前关键字对应的 **视频搜索结果页** 完整 URL（参数 wd 已编码），用于「查看全部搜索结果」跳转。
+  - code=999：站点关闭了搜索功能（config app.search ≠ 1），msg 多为「搜索关闭」类文案。
+  - code=1001：wd 为空或参数校验失败。
+- 典型用途：搜索框防抖联想、独立搜索页（如 `vod/search_hub`）前端 AJAX。
+
+2) 视频 — 列表条件搜索（JSON 分页）
+- 路径：GET /api.php/vod/get_list/
+- 说明：与 **四、1) Vod**「列表」一致。除 **vod_name**（标题模糊，最长 50）外，可与 vod_tag、vod_blurb、vod_class、vod_actor、type_id、orderby、offset、limit 等组合，语义与前台列表筛选对齐。
+- 返回：{"code":1,"msg":"获取成功","info":{"offset","limit","total","rows":[...]}}，rows 内字段含 vod_link、vod_pic（已处理 URL）、type_is_vip_exclusive 等。
+
+3) 文章 — 列表条件搜索
+- 路径：GET /api.php/art/get_list/
+- 说明：与 **四、2) Art**「列表」一致。标题类检索主要使用 **name**（art_name 模糊）；另有 sub、blurb、title、content、tag、class 等 like 条件，详见该节参数表。
+
+4) 漫画 — 列表关键字搜索
+- 路径：GET /api.php/manga/get_list/
+- 参数：**wd** — 非空时对 manga_name 模糊匹配；可与 t（分类）、ids、page、limit、order 组合，见 **四、11) Manga**。
+
+5) 采集 Provide — 按关键字拉数据
+- 路径：/api.php/provide/{vod|art|actor|role|website|manga}/
+- 参数：**ac=list**（或文档所述其它 ac）时支持 **wd** 作为搜索关键字，分页参数为 pg、pagesize 等，见 **三、Provide 聚合接口** 各子节。
+
+三、Provide 聚合接口（采集/对接用，兼容老格式）
 1) 视频（Vod）
 - 路径：/api.php/provide/vod/
 - 主要参数：
@@ -49,7 +87,7 @@ API 接口说明 V2（基于当前实现）
 - 路径：/api.php/provide/manga/
 - 参数：ac=list|detail，t、ids、pg、wd、h、pagesize 等
 
-三、模块接口（REST 风格）
+四、模块接口（REST 风格）
 说明：除特别说明外，列表接口统一支持 offset、limit、orderby 等；详情接口统一以 {xxx_id} 为必填参数。
 
 1) Vod（视频）
@@ -65,6 +103,7 @@ API 接口说明 V2（基于当前实现）
     - vod_tag：string(<=20)
     - vod_blurb：string(<=20)
     - vod_class：string(<=10)
+  - 返回：每条记录含 vod_link、vod_pic（已处理 URL）、type_is_vip_exclusive（VIP 角标）
 - 详情：/api.php/vod/get_detail/
   - 参数：vod_id：number 必填(0..MAX)
 - 年份：/api.php/vod/get_year/
@@ -73,6 +112,33 @@ API 接口说明 V2（基于当前实现）
   - 参数：type_id_1：number 必填(0..MAX)
 - 地区：/api.php/vod/get_area/
   - 参数：type_id_1：number 必填(0..MAX)
+- Banner 推荐：/api.php/vod/get_banner/
+  - 参数：
+    - num：number 可选，数量，默认5
+    - start：number 可选，偏移量，默认0
+    - level：string 可选，推荐等级，默认9，多个用逗号分隔
+  - 返回：每条含 vod_link、vod_pic、vod_pic_slide、is_fav、type_is_vip_exclusive 等
+- 热门推荐：/api.php/vod/get_hot/
+  - 参数：
+    - num：number 可选，数量，默认6
+    - type_id：number 可选，分类ID
+    - start：number 可选，偏移量，默认0
+    - level：string 可选，推荐等级，多个逗号分隔
+    - by：string 可选，排序字段，默认 hits_month，可选: hits,hits_day,hits_week,hits_month,score,time
+  - 返回：每条含 vod_link、vod_pic、type_is_vip_exclusive
+- 按分类最新：/api.php/vod/get_latest_by_type/
+  - 参数：
+    - type_id：number 必填，分类ID
+    - num：number 可选，数量，默认24
+    - start：number 可选，偏移量，默认0
+  - 返回：info.total、info.today_new_count（创建 vod_time_add 或更新 vod_time 任一落在服务器当天自然日即计入，每条视频计 1）、rows；每条含 vod_link、vod_pic、type_is_vip_exclusive
+- 排行榜：/api.php/vod/get_rank/
+  - 参数：
+    - type_id：number 可选，分类ID，不传查全站
+    - num：number 可选，数量，默认10
+    - start：number 可选，偏移量，默认0
+    - by：string 可选，排序字段，默认 hits_month，可选: hits,hits_day,hits_week,hits_month,score,time
+  - 返回：每条含 vod_link、vod_pic、type_is_vip_exclusive
 
 2) Art（文章）
 - 列表：/api.php/art/get_list/
@@ -92,6 +158,21 @@ API 接口说明 V2（基于当前实现）
     - time_end：number(1..MAX)
 - 详情：/api.php/art/get_detail/
   - 参数：art_id：number 必填(0..MAX)
+- 阅读单页：/api.php/art/get_read_page/
+  - 参数：art_id：number 必填；page：number 可选默认 1
+  - 返回：{"code":1,"info":{"can_read":0|1,"content_html":"...","deny_msg":"","page":1,"page_total":n,...}}
+- 最新文章：/api.php/art/get_latest/
+  - 参数：
+    - num：number 可选，数量，默认24
+    - type_id：number 可选，分类ID
+    - start：number 可选，偏移量，默认0
+  - 返回：每条含 art_link、art_pic、art_time_text
+- 热门文章：/api.php/art/get_hot/
+  - 参数：
+    - num：number 可选，数量，默认6
+    - type_id：number 可选，分类ID
+    - start：number 可选，偏移量，默认0
+    - by：string 可选，排序字段，默认 time，可选: hits,hits_day,hits_week,hits_month,time
 
 3) Actor（演员）
 - 列表：/api.php/actor/get_list/
@@ -112,14 +193,39 @@ API 接口说明 V2（基于当前实现）
     - orderby：in[hits,hits_month,hits_week,hits_day,time]
 - 详情：/api.php/actor/get_detail/
   - 参数：actor_id：number 必填(1..MAX)
+- 推荐明星：/api.php/actor/get_recommend/
+  - 参数：
+    - ids：string 可选，指定明星ID，多个用逗号分隔
+    - num：number 可选，数量，默认8
+    - start：number 可选，偏移量，默认0
+    - by：string 可选，排序字段，默认 time，可选: hits,hits_day,hits_week,hits_month,time
+  - 返回：每条含 actor_link、actor_pic
 
 4) Comment（评论）
-- 列表：/api.php/comment/get_list/
+- 列表：GET /api.php/comment/get_list/
   - 参数：
-    - offset：number(1..MAX)
-    - limit：number(1..MAX)
-    - rid：number(1..MAX)
-    - orderby：in[time,up,down]
+    - rid：number(1..MAX) 必填，资源 id（与模板 data-id 一致）
+    - mid：number(1..99) 必填，模块 id（与模板 data-mid 一致）
+    - offset：number(0..MAX) 可选，分页偏移，默认 0
+    - limit：number(1..100) 可选，每页条数，默认 20
+    - orderby：string 可选，time|up|down|id，默认 time（模板侧常用 id 与旧版列表一致）
+  - 返回：{code:1,msg,info:{offset,limit,total,page,pagecount,rows}}
+    - rows：主楼数组；每条含 sub 子楼数组；字段含 user_portrait、comment_content（已表情替换）、comment_time_iso、comment_time_title、comment_time_label 等
+- 提交评论：POST /api.php/comment/submit
+  - 参数：
+    - comment_mid：string 必填，模型 1|2|3|8|9|11|12（含漫画等）
+    - comment_rid：number 必填，资源 id
+    - comment_content：string 必填，正文
+    - comment_pid：number 可选，父评论 id，默认 0
+    - comment_name：string 可选，未登录游客昵称（已登录从 Cookie 取用户）
+  - 说明：后台「网站参数配置 → 评论」可强制登录(comment.login)、审核(comment.audit)；有频率 Cookie 限制
+  - 返回：与 model 保存结果一致（code/msg）
+- 举报：GET /api.php/comment/report
+  - 参数：id：number 必填，comment_id
+  - 返回：{code:1, msg:'ok'}
+- 顶/踩：GET /api.php/comment/digg
+  - 参数：id：number 必填；type：up|down
+  - 返回：{code:1, msg:'ok', data:{up, down}}
 
 5) Gbook（留言）
 - 列表：/api.php/gbook/get_list/
@@ -135,6 +241,15 @@ API 接口说明 V2（基于当前实现）
     - orderby：in[id,time,reply_time]
     - time_start：number(0..MAX)
     - time_end：number(0..MAX)
+- 提交留言：POST /api.php/gbook/submit
+  - 参数：
+    - gbook_content：string 必填
+    - gbook_name：string 可选，未登录时昵称（已登录从 Cookie 取）
+  - 说明：后台可强制登录(gbook.login)、审核(gbook.audit)；有频率 Cookie 限制
+  - 返回：与 model 保存结果一致
+- 举报：GET /api.php/gbook/report
+  - 参数：id：number 必填，gbook_id
+  - 返回：{code:1, msg:'ok'}
 
 6) Link（友情链接）
 - 列表：/api.php/link/get_list/
@@ -159,12 +274,30 @@ API 接口说明 V2（基于当前实现）
     - orderby：in[id,time,time_add,score,hits,hits_day,hits_week,hits_month,up,down,level]
 - 详情：/api.php/topic/get_detail/
   - 参数：topic_id：number 必填(0..MAX)
+- 推荐专题：/api.php/topic/get_recommend/
+  - 参数：
+    - num：number 可选，数量，默认5
+    - start：number 可选，偏移量，默认0
+    - by：string 可选，排序字段，默认 time，可选: time,hits
+  - 返回：每条含 topic_link、topic_pic、topic_pic_slide
 
 8) Type（分类）
 - 分类树列表（顶级含 children）：/api.php/type/get_list/
   - 参数：type_id：number(1..MAX) 可选（传入则筛选该顶级）
 - 分类顶栏（全部顶级）：/api.php/type/get_all_list/
   - 参数：无
+- 导航栏分类（含子分类 + 扩展信息）：/api.php/type/get_nav_types/
+  - 参数：
+    - ids：string 可选，指定分类ID，多个用逗号分隔
+    - num：number 可选，限制返回数量，默认不限
+    - mid：number 可选，筛选模型ID（type_mid）
+    - parent：number 可选，传1只返回父级分类(type_pid=0)
+  - 返回：每条含 type_extend（JSON 解析后）、children 子分类数组
+- 分类及子分类：/api.php/type/get_type_with_children/
+  - 参数：
+    - type_id：number 必填，父分类ID
+    - num：number 可选，子分类数量限制
+  - 返回：父分类对象，含 children 数组
 
 9) User（用户）
 - 列表：/api.php/user/get_list/
@@ -182,6 +315,45 @@ API 接口说明 V2（基于当前实现）
     - orderby：in[login_time,reg_time,points]
 - 详情：/api.php/user/get_detail/
   - 参数：id：number 必填(1..MAX)
+- 分销推广下线列表：GET /api.php/user/get_reward_list
+  - 参数：
+    - level：number 可选，下线层级（1=一级 默认, 2=二级, 3=三级）
+    - page：number 可选，页码，默认1
+    - limit：number 可选，每页条数，默认20，最大100
+  - 返回：{code:1, msg:'获取成功', info:{page, pagecount, limit, total, list:[...]}}
+
+  补充（同一 User 控制器，面向「当前登录用户」与账户行为，易与上列「用户资料列表/详情」混淆；以下均需 publicapi 开启，且多数需登录）
+- 登录：POST /api.php/user/login
+  - 参数：user_name、user_pwd（表单或 param 可读）
+  - 返回：{code:1, msg:'登录成功', info:{user_id, user_name, user_nick_name, ...}}
+- 注册：POST /api.php/user/register
+  - 参数：user_name、user_pwd 必填；可选 user_email、user_phone、invite_code 等
+- 退出：任意方式 /api.php/user/logout
+  - 返回：{code:1, msg:'已退出登录'}
+- 当前用户资料：GET /api.php/user/get_info
+  - 需登录；返回用户表常用字段 + user_portrait
+- 更新资料：POST /api.php/user/update_info
+  - 需登录；可选 user_nick_name、user_email、user_phone、user_qq；改密传 user_old_pwd + user_new_pwd
+- 用户行为日志（浏览/收藏/想看/播放/下载）：GET /api.php/user/get_ulog
+  - 需登录；参数：page、limit；可选 type（1浏览 2收藏 3想看 4播放 5下载）、mid（模型）
+  - 返回：{code:1, info:{page, limit, total, list/pagecount 等与 Ulog listData 一致}}
+- 添加/更新行为日志：POST /api.php/user/add_ulog
+  - 需登录；参数：mid、rid、type；可选 sid、nid（与播放集相关）
+- 删除行为日志：POST /api.php/user/del_ulog
+  - 需登录；参数：ids 逗号分隔或 ulog_id；或 all=1 且 type=1..5 清空该类
+- 积分日志：GET /api.php/user/get_plog
+  - 需登录；参数：page、limit；可选 filter=income|expense
+- 删除积分日志：POST /api.php/user/del_plog
+  - 需登录；参数：ids 或 all=1
+- 充值订单列表：GET /api.php/user/get_orders
+  - 需登录；参数：page、limit；与 index 用户中心订单数据源一致
+- 找回密码发码：POST /api.php/user/find_password
+  - 参数：user_email 或 user_phone
+- 邀请信息：GET /api.php/user/get_my_invite（需登录）
+- 邀请记录列表：GET /api.php/user/get_invite_list（需登录，参数见源码）
+- 批量收藏状态：GET /api.php/user/get_favorites_status
+  - 需登录；参数：vod_ids 逗号分隔必填；可选 mid（默认1视频）、ulog_type（默认2收藏）
+  - 返回：{code:1, info:{rows:[{rid, is_fav, ulog_id}, ...]}}
 
 10) Website（网址）
 - 列表：/api.php/website/get_list/
@@ -217,8 +389,238 @@ API 接口说明 V2（基于当前实现）
 - 详情：/api.php/manga/get_detail/
   - 参数：id：number（漫画ID）
   - 返回：{"code":1,"msg":"获取成功","info":{...}}
+- 单话阅读：/api.php/manga/get_chapter/
+  - 参数：id：number 漫画ID；sid、nid：number 可选默认 1（与前台 play 一致）
+  - 返回：{"code":1,"info":{"can_read":0|1,"images":["url",...],"deny_msg":"","episode_total":n,...}}
+- 最新漫画：/api.php/manga/get_latest/
+  - 参数：
+    - num：number 可选，数量，默认24
+    - start：number 可选，偏移量，默认0
+  - 返回：每条含 manga_link、manga_pic、manga_time_text
+- 热门漫画：/api.php/manga/get_hot/
+  - 参数：
+    - num：number 可选，数量，默认6
+    - start：number 可选，偏移量，默认0
+    - by：string 可选，排序字段，默认 hits_month，可选: hits,hits_day,hits_week,hits_month,time
+  - 返回：每条含 manga_link、manga_pic、manga_time_text
 
 12) Config（配置）
-- 获取配置：/api.php/config/get_config/
+- 获取配置：GET /api.php/config/get_config/
   - 参数：无
   - 返回：{"code":1,"msg":"获取成功","data":{"site_banner":["..."], "site_app_launch_image":"..."}}
+- 预留参数（扩展分类/地区/年份等）：GET /api.php/config/get_extra_var/
+  - 参数：无
+  - 返回：{"code":1,"msg":"...","data":{"vod_extend_area":[],"vod_extend_year":[],"art_extend_class":[],"vod_extend_class":[],"extra_var":{...}, ...}}
+  - 说明：与后台「网站参数配置 → 预留参数」一致；模板 default 中 vod/manga/art 的 show 筛选器通过前端 ajax 拉取本接口填充选项
+- 站点壳层 + config.json：GET /api.php/config/get_tpl_config/
+  - 参数：无
+  - 返回：{code:1, msg:'获取成功', info:{site:{site_name, site_url, site_logo, site_wap_logo, template_dir, ...}, features:{user_status, gbook_status, comment_status}, search:{search_hot}, tpl_config:{...}}}
+  - 说明：
+    - tpl_config 来自 **template/{模板目录}/config.json**（若文件不存在则为 {}）
+    - 模板目录优先 **site.site_tpl_dir**，否则 **site.template_dir**（与 API 内解析一致）
+    - **与 PC 页 `$tplconfig` 不同源**：前台视图里 `$tplconfig` 实际为 **config('mctheme')**（见下条 get_mctheme）。SPA 若要对齐首页广告位、模块开关，应以 **get_mctheme** 为准或同时拉取两条自行合并
+- 主题配置（与 PC 模板 assign 同源）：GET /api.php/config/get_mctheme/
+  - 参数：无
+  - 返回：{code:1, info:{template_dir, mctheme:{...}}}
+  - 说明：**mctheme** 即 `application/extra/mctheme.php` 与后台主题配置合并结果；含 **theme.ad_slots**（如 banner1 素材）、**theme.ads**（各广告位 HTML/开关）等，与 `template/default/html/ads/*.html` 使用的数据结构一致
+- 广告脚本文件清单：GET /api.php/config/get_ads_files/
+  - 参数：无
+  - 返回：{code:1, info:{template_dir, ads_dir, files:[{name, path, url}, ...]}}
+  - 说明：扫描 **template/{模板目录}/{ads_dir}/*.js**；ads_dir 来自站点配置（默认 ads），与运行时 MAC_PATH_ADS 目录一致；**url** 为经 mac_url_img 规则处理后的可访问地址，供 SPA 按需加载脚本广告
+
+13) Auth（认证与权限）
+- 获取当前用户状态：/api.php/auth/me/
+  - 请求方式：GET（携带 cookie/session，credentials: same-origin）
+  - 参数：无
+  - 说明：获取当前登录用户基础信息（头像、昵称、会员到期等）。未登录也返回 code=1，但 info.is_login=0。
+  - 返回：{"code":1,"msg":"ok","info":{"is_login":1,"user_id":123,"user_name":"demo","nick_name":"演示用户","group_id":3,"group_name":"VIP","points":200,"user_portrait":"https://...","vip_expire_time":1767225600}}
+
+- 获取资源权限：/api.php/auth/permission/
+  - 请求方式：GET（携带 cookie/session）
+  - 参数：
+    - mid：number 必填，资源模块（1=视频 / 2=文章 / 6=漫画）
+    - id：number 必填，资源 id（vod_id / art_id / manga_id）
+    - action：string 可选，play|read|download|comment|favorite（不传则返回全部权限位）
+  - 说明：按"用户 + 资源"返回可操作权限位，用于按钮显示和点击拦截。
+    后端逻辑：视频积分取 vod_points_play/vod_points_down；文章积分优先 art_points_detail（详情阅读积分），回退 art_points；漫画积分取 manga_points。
+    VIP 判断：从 mac_type.type_extend JSON 中读取 type_is_vip_exclusive。
+  - 返回：{"code":1,"msg":"ok","info":{"is_login":1,"is_vip":1,"resource":{"mid":1,"id":123},"can_play":1,"can_read":1,"can_download":1,"can_comment":1,"can_favorite":1,"deny_reason":""}}
+  - deny_reason 可能值：NOT_LOGIN / VIP_REQUIRED / POINTS_NOT_ENOUGH / RESOURCE_OFFLINE / RESOURCE_NOT_FOUND / GROUP_PERMISSION_DENIED
+
+14) Role（角色）
+- 列表：/api.php/role/get_list/
+  - 参数：
+    - offset：number(0..MAX) 默认0
+    - limit：number(1..500) 默认20
+    - rid：number(1..MAX) 关联视频ID
+    - name：string(<=50) 角色名称模糊搜索
+    - letter：string(<=1) 首字母筛选
+    - level：string(<=50) 推荐等级，多个用逗号分隔
+    - actor：string(<=50) 配音/演员筛选
+    - orderby：in[id,time,time_add,hits,hits_day,hits_week,hits_month,score,up,down,level]
+- 详情：/api.php/role/get_detail/
+  - 参数：role_id：number 必填(1..MAX)
+  - 返回含关联视频信息 vod_info 对象
+- 推荐：/api.php/role/get_recommend/
+  - 参数：
+    - rid：number 可选，关联视频ID
+    - num：number 可选，数量，默认8
+    - by：string 可选，排序字段，默认 time
+    - level：string 可选，推荐等级
+
+15) Order（充值订单）
+  说明：下列列表/详情/状态接口均需用户登录（Cookie/Session）。**创建充值订单**可用：
+
+- 订单列表：GET /api.php/order/get_list
+  - 参数：
+    - page：number 可选，页码，默认1
+    - limit：number 可选，每页条数，默认20，最大100
+    - status：number 可选，订单状态筛选（0=未支付，1=已支付）
+  - 返回：{code:1, msg:'获取成功', info:{page, pagecount, limit, total, list:[...]}}
+
+- 订单详情：GET /api.php/order/get_detail
+  - 参数：
+    - order_id：number 可选（与 order_code 二选一）
+    - order_code：string 可选
+  - 返回：{code:1, msg:'获取成功', info:{...}}
+
+- 查询订单状态：GET /api.php/order/check_status
+  - 参数：
+    - order_code：string 必填，订单号
+  - 返回：{code:1, msg:'获取成功', info:{order_code, order_price, order_points, order_status, order_status_text, order_pay_type, order_pay_time, order_time}}
+
+16) Payment（支付/充值）
+
+- 获取支付配置：GET /api.php/payment/get_config
+  - 参数：无
+  - 登录：非必须（未登录时 `is_login=0`、`user_points=0`，仍返回支付方式列表供展示）
+  - 返回：{code:1, msg:'获取成功', info:{min, scale, methods, card_config, is_login, user_points}}
+  - info 字段说明：
+    - min：最小充值金额（元），对应后台 maccms.pay.min
+    - scale：兑换比例（1 元 = N 积分），对应 pay.scale
+    - methods：数组，每项 {key, name, enabled, paytypes?}；enabled=1 表示该通道后台必填项已配齐；paytypes 为码支付/幻兮等子通道（value/label/label_en），与 POST gopay 的 **paytype** 对应
+    - card_config：{enabled, card_url} 卡密充值是否开启
+    - is_login、user_points：当前用户状态
+
+- 发起支付（收银台，JSON）：POST /api.php/payment/gopay
+  - Content-Type：application/x-www-form-urlencoded（与模板 jQuery 默认 POST 一致）
+  - 参数：
+    - order_code：string 必填，订单号
+    - order_id：number 必填，订单 ID
+    - payment：string 必填，支付方式小写（alipay、weixin、codepay、zhapay、epay 及扩展名等）
+    - paytype：string 可选，子通道（与 get_config 中对应 methods[].paytypes[].value 一致）
+  - 正常返回：{code:1, msg:'支付发起成功', info:{payment, order_code, order_price, payment_data}}
+  - payment_data 常见形态：
+    - type=qrcode（微信）：含 code_url 等，前端用站内二维码页展示
+    - type=data：含 data.pay_url / data.url 等跳转链接
+    - type=form：含 html（扩展 echo 的表单/脚本），及可选 action_url、fields 供前端构造 POST
+    - type=unknown：扩展返回值未识别时的兜底
+
+- 支付回调通知：GET/POST /api.php/payment/notify?pay_type={type}
+  - 参数：
+    - pay_type：string 必填，支付类型（alipay/weixin 等）
+  - 说明：
+    - 由第三方支付平台异步调用，不需要用户登录
+    - 回调地址格式：/api.php/payment/notify/pay_type/{type}
+    - 功能等同原有 /index.php/payment/notify
+
+- 卡密充值：POST /api.php/payment/use_card
+  - 参数：
+    - card_no：string 必填，充值卡卡号
+    - card_pwd：string 必填，充值卡密码
+  - 返回：{code:1, msg:'充值成功，增加积分【xxx】'}
+
+- 积分购买内容权限：POST /api.php/payment/buy_popedom
+  - 参数：
+    - mid：number 必填，模型（1=视频, 2=文章）
+    - id：number 必填，资源ID（vod_id 或 art_id）
+    - type：number 必填，操作类型（1=文章阅读, 4=播放, 5=下载）
+    - sid：number 可选，播放源编号
+    - nid：number 可选，集编号
+  - 返回：{code:1, msg:'购买成功'} 或 {code:1005, msg:'积分不足...', info:{need_points, current_points}}
+  - 说明：
+    - 已购买过的不会重复扣费
+    - 购买成功后自动记录购买日志、积分日志和分销佣金
+
+- 会员升级：POST /api.php/payment/upgrade
+  - 参数：
+    - group_id：number 必填，目标用户组ID（>=3）
+    - long：string 必填，时长周期（day|week|month|year）
+  - 返回：{code:1, msg:'升级成功'}
+  - 说明：
+    - 积分 = 对应用户组的 group_points_{long} 值
+    - 升级后 user_end_time 自动延长
+    - 如已在会员有效期内，时间叠加
+
+- 获取可升级的用户组列表：GET /api.php/payment/get_groups
+  - 参数：无
+  - 返回：{code:1, msg:'获取成功', info:[{group_id, group_name, group_points_day, group_points_week, group_points_month, group_points_year}...]}
+  - 说明：只返回 group_id>=3 且已启用的付费用户组
+
+- 充值卡使用记录：GET /api.php/payment/get_cards
+  - 参数：
+    - page：number 可选，页码，默认1
+    - limit：number 可选，每页条数，默认20，最大100
+  - 返回：{code:1, msg:'获取成功', info:{page, pagecount, limit, total, list:[...]}}
+
+17) Cash（提现管理）
+  说明：所有接口均需用户登录。
+
+- 获取提现配置：GET /api.php/cash/get_config
+  - 参数：无
+  - 返回：{code:1, msg:'获取成功', info:{cash_status, cash_min, cash_ratio}}
+  - 说明：
+    - cash_status：提现功能开关（0=关闭, 1=开启）
+    - cash_min：最小提现金额（单位：元）
+    - cash_ratio：兑换比例（1元 = N积分）
+
+- 提现列表：GET /api.php/cash/get_list
+  - 参数：
+    - page：number 可选，页码，默认1
+    - limit：number 可选，每页条数，默认20，最大100
+    - status：number 可选，提现状态（0=待审核，1=已审核）
+  - 返回：{code:1, msg:'获取成功', info:{page, pagecount, limit, total, list:[...]}}
+
+- 提现详情：GET /api.php/cash/get_detail
+  - 参数：
+    - cash_id：number 必填，提现记录ID
+  - 返回：{code:1, msg:'获取成功', info:{...}}
+
+- 提交提现申请：POST /api.php/cash/create
+  - 参数：
+    - cash_money：float 必填，提现金额（单位：元）
+    - cash_bank_name：string 必填，银行名称
+    - cash_bank_no：string 必填，银行账号
+    - cash_payee_name：string 必填，收款人姓名
+  - 返回：{code:1, msg:'保存成功'}
+  - 说明：
+    - 需后台开启提现功能
+    - 提现金额不能低于最小提现金额
+    - 提现后积分冻结，待管理员审核后正式扣除
+
+- 删除提现记录：POST /api.php/cash/del
+  - 参数：
+    - ids：string 可选，提现记录ID列表，逗号分隔
+    - all：string 可选，传 "1" 删除全部
+  - 返回：{code:1, msg:'删除成功'}
+  - 说明：未审核的提现记录删除后，冻结积分自动恢复
+
+五、前台充值 / 支付（与 default 模板对齐的推荐流程）
+
+1) 拉取支付配置（正式接口）
+  - **GET /api.php/payment/get_config**（详见「四、16)」）。
+  - 勿再请求已移除的 **user/recharge_config**。
+
+2) 创建订单：user/buy 与 /api.php/order/create
+  - **GET user/buy**：返回在线充值页 HTML（模板 `user/buy`）；允许游客打开页面，真正下单仍需登录。
+  - **POST user/buy**：创建现金充值订单（须登录），参数 **price**（元）、可选 **flag=card** 走卡密等（与历史行为一致）。
+  - **POST /api.php/order/create**：JSON 建单（须登录），参数 **price**；成功返回 `info`/`data` 内含 `order_code`（前缀 `PAY`）、`order_price`、`order_points`、`order_id` 等（以实际返回字段为准）。
+
+3) 发起支付：推荐 POST /api.php/payment/gopay
+  - 参数与返回见「四、16)」。前端建议 **dataType: text** 后解析 JSON，以兼容个别环境下接口仍返回纯 HTML 的极端情况。
+  - **POST user/gopay**：遗留表单提交；返回多为 HTML/跳转，**不是**统一 JSON。
+
+4) 查询订单支付结果（正式接口）
+  - **GET /api.php/order/check_status?order_code=...**（详见「四、15)」）。
+  - 勿再请求已移除的 **user/order_query**。旧接口曾返回 `status`、`points`；新接口对应 **`info.order_status`**、**`info.order_points`**。
+

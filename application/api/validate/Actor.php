@@ -8,20 +8,20 @@ class Actor extends Validate
 {
     protected $rule = [
         'actor_id'      => 'require|number|between:1,' . PHP_INT_MAX,
-        'offset'      => 'number|between:1,' . PHP_INT_MAX,
+        'offset'      => 'number|between:0,' . PHP_INT_MAX,
         'limit'      => 'number|between:1,' . PHP_INT_MAX,
         'id'      => 'number|between:1,' . PHP_INT_MAX,
-        'type_id'      => 'number|between:1,100',
+        'type_id'      => 'number|between:1,' . PHP_INT_MAX,
         'sex' =>  'in:男,女',
         'area' =>  'max:255',
         'letter'      => 'max:1',
         'level'      => 'max:1',
-        'name'      => 'max:20',
+        'name'      => 'max:64',
         'blood'      => 'max:10',
         'starsign'      => 'max:255',
         'time_end'      => 'number|between:1,' . PHP_INT_MAX,
         'time_start'      => 'number|between:1,' . PHP_INT_MAX,
-        'orderby' => 'in:hits,hits_month,hits_week,hits_day,time',
+        'orderby' => 'in:hits,hits_month,hits_week,hits_day,time,level',
 
     ];
 
@@ -47,5 +47,6 @@ class Actor extends Validate
         'get_detail' => [
             'actor_id',
         ],
+        'get_recommend' => [],
     ];
 }

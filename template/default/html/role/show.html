@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>角色库高级筛选 - {$maccms.site_name}</title>
+    <meta name="keywords" content="电影角色,电视剧角色,明星主演的角色" />
+    <meta name="description" content="最新电影电视剧角色，为各位提供电视剧主要角色介绍，电影中主要角色介绍，角色名电影角色介绍，等丰富的节目主演角色介绍" /> 
+	{include file="public/include"}
+	<link rel="stylesheet" href="{$maccms.path}template/default/asset/css/hlrole.css" type="text/css" />
+</head>
+<body>
+<div id="show_page" class="js-role-show-ajax"
+     data-letter="{$param.letter|default=''}"
+     data-by="{$param.by|default='time'}"
+     data-page="{$param.page|default='1'}"
+     data-page-size="36">
+   {include file="public/head"}
+     <div class="container">
+        <div class="row">       	
+            <div class="pannel vod_all clearfix">
+				
+				<div class="scroller" id="hl01">
+				<ul class="screen_list clearfix">
+					<li class="text hidden_xs">
+						<span class="text_muted" data-lang="string_show_zm">字母</span>
+					</li>
+					<li></li>
+					<li {if condition="$param['letter'] eq ''"} class="hl filter-letter"{/if}><a href="{:mac_url('role/show',['area'=>$param['area'],'lang'=>$param['lang'],'year'=>$param['year'],'level'=>$param['level'],'letter'=>'','state'=>$param['state'],'tag'=>$param['tag'],'class'=>$param['class'],'order'=>$param['order'],'by'=>$param['by'] ],'show')}" data-lang="string_show_all">全部</a></li>
+				{maccms:foreach name=":explode(',','A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,R,S,T,U,V,W,X,Y,Z,0-9')" id="vo1" key="key1"}
+					<li {if condition="$param['letter'] eq $vo1"} class="hl filter-letter"{/if}><a href="{:mac_url('role/show',['area'=>$param['area'],'lang'=>$param['lang'],'year'=>$param['year'],'level'=>$param['level'],'letter'=>$vo1,'state'=>$param['state'],'tag'=>$param['tag'],'class'=>$param['class'],'order'=>$param['order'],'by'=>$param['by'] ],'show')}">{$vo1}</a></li>
+				{/maccms:foreach}				
+                </ul>
+				</div>
+
+				
+				</div>
+				
+				<div class="pannel clearfix">
+				
+        <div class="row">
+	        <div class="pannel clearfix">
+                <div class="pannel_head clearfix">
+				<ul class="screen_list sx_tz clearfix" style="float: left;">
+					<li {if condition="$param['by'] eq '' || $param.by eq 'time'"} class="ik_fl"{/if}><a href="{:mac_url('role/show',['area'=>$param['area'],'sex'=>$param['sex'],'blood'=>$param['blood'],'starsign'=>$param['starsign'],'letter'=>$param['letter'],'order'=>$param['order'],'by'=>'time'])}" data-lang="string_role_gxsj">更新时间</a></li>
+			        <li {if condition="$param['by'] eq 'hits'"} class="ik_fl"{/if}><a href="{:mac_url('role/show',['area'=>$param['area'],'sex'=>$param['sex'],'blood'=>$param['blood'],'starsign'=>$param['starsign'],'letter'=>$param['letter'],'order'=>$param['order'],'by'=>'hits'])}" data-lang="string_role_rqrd">人气热度</a></li>
+				</ul>
+
+                <span class="sx_total"><span data-lang="string_zg">共有</span><em class="mac_total"></em><span data-lang="string_role_wjs">位角色</span></span>
+	            </div>
+							
+                <div class="vodlist_smt clearfix">
+					<ul>
+						<li class="ranklist_item" style="display:none;"></li>
+					</ul>
+                </div>				
+	
+				
+				
+				<div class="js-ajax-pager"></div>
+				<div class="show_no js-ajax-empty" data-lang="string_art_nodata" style="display:none;">暂无数据</div>
+                      </div>
+			</div>
+        </div>
+    </div>
+{include file="public/foot"}
+<script type="text/javascript" src="{$maccms.path_tpl}/asset/js/show-list-ajax.js"></script>
+</body>
+</html>

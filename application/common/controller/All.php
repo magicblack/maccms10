@@ -113,6 +113,9 @@ polyfill;
             $maccms['aid'] = mac_get_aid($this->_cl,$this->_ac);
         }
         $this->assign( ['maccms'=>$maccms] );
+        // 默认模板主题配置
+        $this->assign('tplconfig', $GLOBALS['mctheme']);
+        $this->assign('mac_vod_playlink', mac_tpl_vod_playlink_on() ? 1 : 0);
     }
 
     protected function page_error($msg='')
@@ -137,7 +140,8 @@ polyfill;
 
     protected function label_user()
     {
-        if(ENTRANCE != 'index'){
+        // api 模块需填充 $GLOBALS['user']，供 check_user_popedom 等与前台一致的阅读权限判断
+        if (ENTRANCE != 'index' && ENTRANCE != 'api') {
             return;
         }
         $user_id = intval(cookie('user_id'));
@@ -161,6 +165,18 @@ polyfill;
         }
         else{
             $user['group'] = $group_list[1];
+        }
+        // 顶栏 VIP 徽标等：与会员组逻辑一致（付费组 max(group_id)>=3），不依赖未使用的 is_member cookie
+        $user['vip_nav'] = 0;
+        if (!empty($user['user_id']) && !empty($user['group_id'])) {
+            $gids = array_map('intval', explode(',', (string)$user['group_id']));
+            $gids = array_filter($gids);
+            if (!empty($gids) && max($gids) >= 3) {
+                $user['vip_nav'] = 1;
+            }
+        }
+        if (!empty(cookie('is_member'))) {
+            $user['vip_nav'] = 1;
         }
         $GLOBALS['user'] = $user;
         $this->assign('user',$user);
@@ -294,6 +310,8 @@ polyfill;
         }
 
         $this->assign('obj',$info);
+        $this->assign('comment_mid', 8);
+        $this->assign('comment_rid', $info['actor_id']);
         $comment = config('maccms.comment');
         $this->assign('comment',$comment);
         return $info;
@@ -323,6 +341,8 @@ polyfill;
             $info = $res['info'];
         }
         $this->assign('obj',$info);
+        $this->assign('comment_mid', 9);
+        $this->assign('comment_rid', $info['role_id']);
         $comment = config('maccms.comment');
         $this->assign('comment',$comment);
 
@@ -363,6 +383,8 @@ polyfill;
         }
 
         $this->assign('obj',$info);
+        $this->assign('comment_mid', 11);
+        $this->assign('comment_rid', $info['website_id']);
         $comment = config('maccms.comment');
         $this->assign('comment',$comment);
 
@@ -397,6 +419,8 @@ polyfill;
             $info = $res['info'];
         }
         $this->assign('obj',$info);
+        $this->assign('comment_mid', 3);
+        $this->assign('comment_rid', $info['topic_id']);
 
         $comment = config('maccms.comment');
         $this->assign('comment',$comment);
@@ -404,7 +428,7 @@ polyfill;
         return $info;
     }
 
-    protected function label_art_detail($info=[],$view=0)
+    protected function label_art_detail($info=[],$view=0,$fullPointsPopedom=false)
     {
         $param = mac_param_url();
         $this->assign('param',$param);
@@ -421,19 +445,19 @@ polyfill;
         }
 
         if($view <2) {
-            $popedom = $this->check_user_popedom($info['type_id'], 2,$param,'art',$info);
-            $this->assign('popedom',$popedom);
+            if ($fullPointsPopedom) {
+                $popedom = $this->check_user_popedom($info['type_id'], 3, $param, 'art_read', $info);
+                $this->assign('popedom',$popedom);
 
-            if($popedom['code']>1){
-                $this->assign('obj',$info);
-
-                if($popedom['confirm']==1){
-                    echo $this->fetch('art/confirm');
+                if($popedom['code']>1){
+                    $this->assign('obj',$info);
+                }
+            } else {
+                $popedom = $this->check_user_popedom($info['type_id'], 2);
+                if($popedom['code']>1){
+                    echo $this->error($popedom['msg'], mac_url('user/index') );
                     exit;
                 }
-
-                echo $this->error($popedom['msg'], mac_url('user/index') );
-                exit;
             }
         }
 
@@ -447,6 +471,51 @@ polyfill;
         $__PAGING__ = mac_page_param($info['art_page_total'],1,$param['page'],$url);
         $this->assign('__PAGING__',$__PAGING__);
 
+        $this->assign('comment_mid', 2);
+        $this->assign('comment_rid', $info['art_id']);
+        $this->label_comment();
+
+        return $info;
+    }
+
+    protected function label_manga_detail($info=[],$view=0,$fullPointsPopedom=false)
+    {
+        $param = mac_param_url();
+        $this->assign('param',$param);
+
+        if(empty($info)) {
+            $res = mac_label_manga_detail($param);
+            if ($res['code'] > 1) {
+                $this->page_error($res['msg']);;
+            }
+            $info = $res['info'];
+        }
+        if(empty($info['manga_tpl'])){
+            $info['manga_tpl'] = $info['type']['type_tpl_detail'];
+        }
+
+        if($view <2) {
+            if ($fullPointsPopedom) {
+                $popedom = $this->check_user_popedom($info['type_id'], 3, $param, 'manga_play', $info);
+                $this->assign('popedom',$popedom);
+
+                if($popedom['code']>1){
+                    $this->assign('obj',$info);
+
+                    // 不再跳转确认页，直接进入阅读页，由模板内的权限引导进行购买/充值
+                }
+            } else {
+                $popedom = $this->check_user_popedom($info['type_id'], 2);
+                if($popedom['code']>1){
+                    echo $this->error($popedom['msg'], mac_url('user/index') );
+                    exit;
+                }
+            }
+        }
+
+        $this->assign('obj',$info);
+        $this->assign('comment_mid', 12);
+        $this->assign('comment_rid', $info['manga_id']);
         $this->label_comment();
 
         return $info;
@@ -486,6 +555,8 @@ polyfill;
         $seo_ai = model('SeoAiResult')->getByObject(1, intval($info['vod_id']));
         $this->assign('seo_ai', $seo_ai);
         $this->mergeDetailSeoIntoMaccms(1, $info, $seo_ai);
+        $this->assign('comment_mid', 1);
+        $this->assign('comment_rid', $info['vod_id']);
         $this->label_comment();
 
         return $info;
@@ -536,6 +607,8 @@ polyfill;
 
 
         $trysee = 0;
+        $vod_popedom_locked = false;
+        $popedom = ['code' => 1, 'msg' => '', 'trysee' => 0, 'confirm' => 0];
         $urlfun='mac_url_vod_'.$flag;
         $listfun = 'vod_'.$flag.'_list';
         if($view <2) {
@@ -549,21 +622,64 @@ polyfill;
             else {
                 $popedom =  $this->check_user_popedom($info['type_id'], 4,$param,$flag,$info);
             }
-            $this->assign('popedom',$popedom);
-
 
             if($pe==0 && $popedom['code']>1 && empty($popedom["trysee"])){
                 $info['player_info']['flag'] = $flag;
                 $this->assign('obj',$info);
 
-                if($popedom['confirm']==1){
-                    $this->assign('flag',$flag);
-                    echo $this->fetch('vod/confirm');
-                    exit;
-                }
-                echo $this->error($popedom['msg'], mac_url('user/index') );
-                exit;
+                // 不再跳转确认页，直接进入播放页，由模板内的权限引导进行购买/充值
+                $vod_popedom_locked = true;
             }
+        }
+        $this->assign('popedom',$popedom);
+
+        if (!empty($vod_popedom_locked)) {
+            $player_info = [
+                'flag' => $flag,
+                'encrypt' => 0,
+                'trysee' => 0,
+                'points' => intval($info['vod_points_'.$flag]),
+                'link' => '',
+                'link_next' => '',
+                'link_pre' => '',
+                'url' => '',
+                'url_next' => '',
+                'from' => '',
+                'server' => '',
+                'note' => '',
+                'id' => $param['id'],
+                'sid' => $param['sid'],
+                'nid' => $param['nid'],
+                'vod_data' => [
+                    'vod_name'     => $info['vod_name'],
+                    'vod_actor'    => $info['vod_actor'],
+                    'vod_director' => $info['vod_director'],
+                    'vod_class'    => $info['vod_class'],
+                ],
+            ];
+            // 无权限时仍生成上/下集播放页链接，便于游客切换集数（各集仍受权限门控）
+            if ($param['nid'] > 1) {
+                $player_info['link_pre'] = $urlfun($info, ['sid' => $param['sid'], 'nid' => $param['nid'] - 1]);
+            }
+            $list_key = 'vod_' . $flag . '_list';
+            if (!empty($info[$list_key][$param['sid']]['url_count'])
+                && $param['nid'] < $info[$list_key][$param['sid']]['url_count']) {
+                $player_info['link_next'] = $urlfun($info, ['sid' => $param['sid'], 'nid' => $param['nid'] + 1]);
+            }
+            $info['player_info'] = $player_info;
+            $this->assign('obj',$info);
+            $favPlay = mac_user_fav_state((int)($GLOBALS['user']['user_id'] ?? 0), 1, (int)($info['vod_id'] ?? 0));
+            $this->assign('vod_play_fav_ulog_id', $favPlay['fav_ulog_id']);
+            $this->assign('vod_play_is_fav', $favPlay['is_fav']);
+            $this->assign('player_data','');
+            $this->assign('player_js','');
+            $this->assign('comment_mid', 1);
+            $this->assign('comment_rid', $info['vod_id']);
+            $this->label_comment();
+            $__vodTagwall = mac_vod_play_tagwall_payload($info);
+            $this->assign('vod_play_tagwall_enabled', $__vodTagwall['enabled']);
+            $this->assign('vod_play_tagwall_json', $__vodTagwall['json']);
+            return $info;
         }
 
         $player_info=[];
@@ -619,6 +735,9 @@ polyfill;
         $seo_ai = model('SeoAiResult')->getByObject(1, intval($info['vod_id']));
         $this->assign('seo_ai', $seo_ai);
         $this->mergeDetailSeoIntoMaccms(1, $info, $seo_ai);
+        $favPlay = mac_user_fav_state((int)($GLOBALS['user']['user_id'] ?? 0), 1, (int)($info['vod_id'] ?? 0));
+        $this->assign('vod_play_fav_ulog_id', $favPlay['fav_ulog_id']);
+        $this->assign('vod_play_is_fav', $favPlay['is_fav']);
 
         $pwd_key = '1-'.($flag=='play' ?'4':'5').'-'.$info['vod_id'];
 
@@ -635,7 +754,252 @@ polyfill;
             $this->assign('player_data', '<script type="text/javascript">var player_aaaa=' . json_encode($player_info) . '</script>');
             $this->assign('player_js', '<script type="text/javascript" src="' . MAC_PATH . 'static/js/playerconfig.js?t='.$this->_tsp.'"></script><script type="text/javascript" src="' . MAC_PATH . 'static/js/player.js?t=a'.$this->_tsp.'"></script>');
         }
+        $this->assign('comment_mid', 1);
+        $this->assign('comment_rid', $info['vod_id']);
         $this->label_comment();
+        $__vodTagwall = mac_vod_play_tagwall_payload($info);
+        $this->assign('vod_play_tagwall_enabled', $__vodTagwall['enabled']);
+        $this->assign('vod_play_tagwall_json', $__vodTagwall['json']);
         return $info;
+    }
+
+    /**
+     * 用户组/积分阅读与播放权限（前台 index 与 api 模块共用）
+     */
+    protected function check_user_popedom($type_id, $popedom, $param = [], $flag = '', $info = [], $trysee = 0)
+    {
+        $user = $GLOBALS['user'];
+        $group_ids = explode(',', $user['group_id']);
+        $group_list = model('Group')->getCache();
+
+        $res = false;
+        $read_popedoms = [$popedom];
+        foreach ($group_ids as $group_id) {
+            if (!isset($group_list[$group_id])) {
+                continue;
+            }
+            $group = $group_list[$group_id];
+            if (strpos(',' . $group['group_type'], ',' . $type_id . ',') === false) {
+                continue;
+            }
+            foreach ($read_popedoms as $p) {
+                if (!empty($group['group_popedom'][$type_id][$p])) {
+                    $res = true;
+                    break 2;
+                }
+            }
+        }
+
+        $pre = $flag;
+        $col = 'detail';
+        if ($flag == 'play' || $flag == 'down') {
+            $pre = 'vod';
+            $col = $flag;
+        } elseif ($flag == 'art_read') {
+            $pre = 'art';
+            $col = 'detail';
+        } elseif ($flag == 'manga_play') {
+            $pre = 'manga';
+            $col = 'detail';
+        }
+
+        $points = 0;
+        if (in_array($pre, ['art', 'manga'], true)) {
+            $points = mac_content_read_points_amount($pre, $info);
+        } elseif (in_array($pre, ['vod', 'actor', 'website'], true)) {
+            $points = (int) ($info[$pre . '_points_' . $col] ?? 0);
+            if ($GLOBALS['config']['user'][$pre . '_points_type'] == '1') {
+                $points = (int) ($info[$pre . '_points'] ?? 0);
+            }
+        }
+
+        if ($GLOBALS['config']['user']['status'] == 0) {
+        } elseif (($popedom == 2 && in_array($pre, ['art', 'actor', 'website', 'manga'])) || ($popedom == 3 && in_array($flag, ['art_read', 'manga_play']))) {
+            $has_permission = false;
+            $has_trysee = false;
+            $check_p = in_array($flag, ['art_read', 'manga_play']) ? [3] : [2];
+            foreach ($group_ids as $group_id) {
+                if (!isset($group_list[$group_id])) {
+                    continue;
+                }
+                $group = $group_list[$group_id];
+                foreach ($check_p as $p) {
+                    if (!empty($group['group_popedom'][$type_id][$p])) {
+                        $has_permission = true;
+                        break;
+                    }
+                }
+                if ($trysee > 0) {
+                    $has_trysee = true;
+                }
+            }
+
+            if ($res === false) {
+                if ($has_trysee) {
+                    return ['code' => 1, 'msg' => lang('controller/in_try_see'), 'trysee' => $trysee];
+                }
+                if (in_array($flag, ['art_read', 'manga_play'], true) && $points > 0) {
+                    if ($user['user_id'] > 0) {
+                        $mid = mac_get_mid($pre);
+                        $where = [];
+                        $where['ulog_mid'] = $mid;
+                        $where['ulog_type'] = 1;
+                        $where['ulog_rid'] = $param['id'];
+                        $where['ulog_sid'] = ($pre == 'manga') ? ($param['sid'] ?? 0) : ($param['page'] ?? 0);
+                        $where['ulog_nid'] = ($pre == 'manga') ? ($param['nid'] ?? 0) : 0;
+                        $where['user_id'] = $user['user_id'];
+                        $where['ulog_points'] = $points;
+                        if ($GLOBALS['config']['user'][$pre . '_points_type'] == '1') {
+                            $where['ulog_sid'] = 0;
+                            $where['ulog_nid'] = 0;
+                        }
+                        $ulogRes = model('Ulog')->infoData($where);
+                        if ($ulogRes['code'] == 1) {
+                            return ['code' => 1, 'msg' => lang('controller/popedom_ok')];
+                        }
+                    }
+                    return ['code' => 3003, 'msg' => lang('controller/pay_play_points', [$points]), 'points' => $points, 'confirm' => 1, 'trysee' => 0];
+                }
+                return ['code' => 3001, 'msg' => lang('controller/no_popedom'), 'trysee' => 0];
+            }
+
+            if (max($group_ids) < 3 && $points > 0) {
+                $mid = mac_get_mid($pre);
+                $where = [];
+                $where['ulog_mid'] = $mid;
+                $where['ulog_type'] = 1;
+                $where['ulog_rid'] = $param['id'];
+                $where['ulog_sid'] = ($pre == 'manga') ? ($param['sid'] ?? 0) : ($param['page'] ?? 0);
+                $where['ulog_nid'] = ($pre == 'manga') ? ($param['nid'] ?? 0) : 0;
+                $where['user_id'] = $user['user_id'];
+                $where['ulog_points'] = $points;
+                if ($GLOBALS['config']['user'][$pre . '_points_type'] == '1') {
+                    $where['ulog_sid'] = 0;
+                    $where['ulog_nid'] = 0;
+                }
+                $res = model('Ulog')->infoData($where);
+
+                if ($res['code'] > 1) {
+                    return ['code' => 3003, 'msg' => lang('controller/pay_play_points', [$points]), 'points' => $points, 'confirm' => 1, 'trysee' => 0];
+                }
+            }
+        } elseif ($popedom == 3) {
+            $has_permission = false;
+            foreach ($group_ids as $group_id) {
+                if (!isset($group_list[$group_id])) {
+                    continue;
+                }
+                $group = $group_list[$group_id];
+                if (!empty($group['group_popedom'][$type_id][5])) {
+                    $has_permission = true;
+                    break;
+                }
+            }
+
+            if ($res === false) {
+                if ($has_permission && max($group_ids) < 3) {
+                    return ['code' => 3002, 'msg' => lang('controller/in_try_see'), 'trysee' => $trysee];
+                } else {
+                    return ['code' => 3001, 'msg' => lang('controller/no_popedom'), 'trysee' => 0];
+                }
+            }
+            if (max($group_ids) < 3 && $points > 0) {
+                $where = [];
+                $where['ulog_mid'] = 1;
+                $where['ulog_type'] = $flag == 'play' ? 4 : 5;
+                $where['ulog_rid'] = $param['id'];
+                $where['ulog_sid'] = $param['sid'];
+                $where['ulog_nid'] = $param['nid'];
+                $where['user_id'] = $user['user_id'];
+                $where['ulog_points'] = $points;
+                if ($GLOBALS['config']['user']['vod_points_type'] == '1') {
+                    $where['ulog_sid'] = 0;
+                    $where['ulog_nid'] = 0;
+                }
+                $res_ulog = model('Ulog')->infoData($where);
+
+                if ($res_ulog['code'] > 1) {
+                    return ['code' => 3003, 'msg' => lang('controller/pay_play_points', [$points]), 'points' => $points, 'confirm' => 1, 'trysee' => 0];
+                }
+            }
+        } else {
+            if ($res === false) {
+                return ['code' => 1001, 'msg' => lang('controller/no_popedom')];
+            }
+            if ($popedom == 4) {
+                if (max($group_ids) == 1 && $points > 0) {
+                    return ['code' => 4001, 'msg' => lang('controller/charge_data'), 'trysee' => 0];
+                } elseif (max($group_ids) == 2 && $points > 0) {
+                    $where = [];
+                    $where['ulog_mid'] = 1;
+                    $where['ulog_type'] = $flag == 'play' ? 4 : 5;
+                    $where['ulog_rid'] = $param['id'];
+                    $where['ulog_sid'] = $param['sid'];
+                    $where['ulog_nid'] = $param['nid'];
+                    $where['user_id'] = $user['user_id'];
+                    $where['ulog_points'] = $points;
+                    if ($GLOBALS['config']['user']['vod_points_type'] == '1') {
+                        $where['ulog_sid'] = 0;
+                        $where['ulog_nid'] = 0;
+                    }
+                    $res = model('Ulog')->infoData($where);
+
+                    if ($res['code'] > 1) {
+                        return ['code' => 4003, 'msg' => lang('controller/pay_down_points', [$points]), 'points' => $points, 'confirm' => 1, 'trysee' => 0];
+                    }
+                }
+            } elseif ($popedom == 5) {
+                $has_permission = false;
+                $has_trysee = false;
+                foreach ($group_ids as $group_id) {
+                    if (!isset($group_list[$group_id])) {
+                        continue;
+                    }
+                    $group = $group_list[$group_id];
+                    if (!empty($group['group_popedom'][$type_id][3])) {
+                        $has_permission = true;
+                    }
+                    if (!empty($group['group_popedom'][$type_id][5])) {
+                        $has_trysee = true;
+                    }
+                }
+
+                if (!$has_permission && $has_trysee && max($group_ids) < 3) {
+                    $where = [];
+                    $where['ulog_mid'] = 1;
+                    $where['ulog_type'] = $flag == 'play' ? 4 : 5;
+                    $where['ulog_rid'] = $param['id'];
+                    $where['ulog_sid'] = $param['sid'];
+                    $where['ulog_nid'] = $param['nid'];
+                    $where['user_id'] = $user['user_id'];
+                    $where['ulog_points'] = $points;
+                    if ($GLOBALS['config']['user']['vod_points_type'] == '1') {
+                        $where['ulog_sid'] = 0;
+                        $where['ulog_nid'] = 0;
+                    }
+                    $res = model('Ulog')->infoData($where);
+
+                    if ($points > 0 && $res['code'] == 1) {
+                        return ['code' => 5001, 'msg' => lang('controller/popedom_ok')];
+                    }
+
+                    if ($user['user_id'] > 0) {
+                        if ($points > intval($user['user_points'])) {
+                            return ['code' => 5002, 'msg' => lang('controller/not_enough_points', [$points, $user['user_points']]), 'trysee' => $trysee];
+                        } else {
+                            return ['code' => 5001, 'msg' => lang('controller/try_see_end', [$points, $user['user_points']]), 'trysee' => $trysee];
+                        }
+                    } else {
+                        if ($points > 0) {
+                            return ['code' => 5002, 'msg' => lang('controller/not_enough_points', [$points, $user['user_points']]), 'trysee' => $trysee];
+                        } else {
+                            return ['code' => 5001, 'msg' => lang('controller/try_see_end', [$points, $user['user_points']]), 'trysee' => $trysee];
+                        }
+                    }
+                }
+            }
+        }
+
+        return ['code' => 1, 'msg' => lang('controller/popedom_ok')];
     }
 }

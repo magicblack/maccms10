@@ -1,0 +1,151 @@
+
+<link rel="stylesheet" href="{$maccms.path_tpl}/asset/css/user-upgrade.css">
+<div class="ajax-upgrade-pop"
+	data-url-user-upgrade="{:url('user/upgrade')}"
+	data-url-login="{:url('user/login')}"
+	data-url-benefits="{:url('user/benefits')}"
+	data-is-login="{if condition="isset($obj) and !empty($obj['user_id'])"}1{else/}0{/if}">
+	<div class="co-right co-hi co-upgrade-hero">
+		<div id="listCon">
+			<div class="upgrade-dark-card member-overview">
+				<div class="upgrade-dark-card__top">
+					<div class="upgrade-dark-card__copy">
+						<p class="upgrade-dark-card__title">
+							<span class="upgrade-dark-card__title-line" data-lang="string_user_upgrade_hero_title_l1">解锁更多专属权益</span>
+							<span class="upgrade-dark-card__title-line" data-lang="string_user_upgrade_hero_title_l2">选择下方套餐立即升级</span>
+						</p>
+						<p class="overview-sub upgrade-dark-card__sub" data-lang="string_user_upgrade_hero_sub">支持金币开通，金币不足时可直接充值并完成支付</p>
+					</div>
+					<div class="upgrade-dark-card__art" aria-hidden="true">
+						<img src="{$maccms.path_tpl}images/upgrade/upgrade-hero.png" width="140" height="120" alt="" decoding="async" />
+					</div>
+				</div>
+				<div class="overview-metrics upgrade-dark-card__metrics">
+					<div class="metric-item">
+						<div class="metric-label">
+							<span class="metric-icon metric-icon-img"><img src="{$maccms.path_tpl}images/upgrade/metric-coins.png" width="20" height="20" alt="" decoding="async" /></span>
+							<span data-lang="user_syjf">剩余金币</span>
+						</div>
+						<div class="metric-value">{if condition="isset($obj) and !empty($obj['user_id'])"}{$obj.user_points}{else/}0{/if}</div>
+					</div>
+					<div class="metric-item">
+						<div class="metric-label">
+							<span class="metric-icon metric-icon-img"><img src="{$maccms.path_tpl}images/upgrade/metric-time.png" width="20" height="20" alt="" decoding="async" /></span>
+							<span data-lang="string_user_dqsj">到期时间</span>
+						</div>
+						<div class="metric-value metric-value-expire">{if condition="!(isset($obj) and !empty($obj['user_id']))"}未登录{elseif condition="$obj.group_id lt 3"}<span data-lang="user_valid">永久有效</span>{else}{$obj.user_end_time|mac_day}{/if}</div>
+					</div>
+					<div class="metric-item">
+						<div class="metric-label">
+							<span class="metric-icon metric-icon-img"><img src="{$maccms.path_tpl}images/upgrade/metric-crown.png" width="20" height="20" alt="" decoding="async" /></span>
+							<span data-lang="string_user_hydj">会员等级</span>
+						</div>
+						<div class="metric-value">{if condition="!(isset($obj) and !empty($obj['user_id']))"}游客{elseif condition="$obj.group_id lt 3"}{$user.group.group_name}{else}{$obj.group.group_name}{/if}</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="co-right co-hi co-bottom co-upgrade-plans">
+		<form action="" method="post" name="form3" id="form3_ajax">
+		<div class="sjhy-ts upgrade-hint-line">
+			<p class="upgrade-hint-line__text" data-lang="string_user_upgrade_hint">选择您需要的会员组及时长，直接购买开通会员权益</p>
+		</div>
+		<div class="upgrade-groups">
+			{volist name="group_list" id="vo" key="gk"}
+				{if condition="$vo.group_id gt 2 && $vo.group_status eq 1"}
+				<div class="group-block">
+					<div class="group-head group-head--vip-chip">
+						<div class="group-vip-chip">
+							<span class="group-vip-chip__text">{$vo.group_name}</span>
+						</div>
+					</div>
+					<ul class="shengji group-plans group-plans--grid">
+				<li data-index='0' class="shengji-item">
+					{php}$price_day = round($vo['group_points_day'] / max(1,intval($pay_config['scale'])),2);{/php}
+					<a class="grade" data-id="{$vo.group_id}" data-name="{$vo.group_name}" data-points="{$vo.group_points_day}" data-price="{$price_day}" data-long="day">
+						<div class="plan-card-head">
+							<span class="plan-tag" data-lang="string_user_bt">包天</span>
+							<p class="time" data-lang="string_user_24xs">24小时</p>
+						</div>
+						<div class="plan-card-body">
+							{if condition="$vo.group_points_day eq 0"}
+							<p class="point point--stack is-free"><span class="point-money">免费开通</span></p>
+							{else}
+							<p class="point point--stack"><span class="point-money">￥{$price_day}</span></p>
+							{/if}
+						</div>
+						<div class="plan-card-foot">
+							<span class="point-pill {if condition='$vo.group_points_day eq 0'}is-free{/if}">{if condition="$vo.group_points_day eq 0"}0{else}{$vo.group_points_day}{/if}<span data-lang="string_jf">金币</span></span>
+						</div>
+					</a>
+				</li>
+				<li data-index='1' class="shengji-item">
+					{php}$price_week = round($vo['group_points_week'] / max(1,intval($pay_config['scale'])),2);{/php}
+					<a class="grade" data-id="{$vo.group_id}" data-name="{$vo.group_name}" data-points="{$vo.group_points_week}" data-price="{$price_week}" data-long="week">
+						<div class="plan-card-head">
+							<span class="plan-tag" data-lang="string_user_bz">包周</span>
+							<p class="time" data-lang="string_user_7t">7天</p>
+						</div>
+						<div class="plan-card-body">
+							{if condition="$vo.group_points_week eq 0"}
+							<p class="point point--stack is-free"><span class="point-money">免费开通</span></p>
+							{else}
+							<p class="point point--stack"><span class="point-money">￥{$price_week}</span></p>
+							{/if}
+						</div>
+						<div class="plan-card-foot">
+							<span class="point-pill {if condition='$vo.group_points_week eq 0'}is-free{/if}">{if condition="$vo.group_points_week eq 0"}0{else}{$vo.group_points_week}{/if}<span data-lang="string_jf">金币</span></span>
+						</div>
+					</a>
+				</li>
+				<li data-index='2' class="shengji-item {if condition='$gk eq 1'}select-vip{/if}">
+					<img class="plan-ribbon plan-ribbon--hot" src="{$maccms.path_tpl}images/upgrade/ribbon-hot.png" width="52" height="52" alt="" decoding="async" />
+					{php}$price_month = round($vo['group_points_month'] / max(1,intval($pay_config['scale'])),2);{/php}
+					<a class="grade" data-id="{$vo.group_id}" data-name="{$vo.group_name}" data-points="{$vo.group_points_month}" data-price="{$price_month}" data-long="month">
+						<div class="plan-card-head">
+							<span class="plan-tag" data-lang="string_user_by">包月</span>
+							<p class="time" data-lang="string_user_30t">30天</p>
+						</div>
+						<div class="plan-card-body">
+							{if condition="$vo.group_points_month eq 0"}
+							<p class="point point--stack is-free"><span class="point-money">免费开通</span></p>
+							{else}
+							<p class="point point--stack"><span class="point-money">￥{$price_month}</span></p>
+							{/if}
+						</div>
+						<div class="plan-card-foot">
+							<span class="point-pill {if condition='$vo.group_points_month eq 0'}is-free{/if}">{if condition="$vo.group_points_month eq 0"}0{else}{$vo.group_points_month}{/if}<span data-lang="string_jf">金币</span></span>
+						</div>
+					</a>
+				</li>
+				<li data-index='3' class="shengji-item">
+					<img class="plan-ribbon plan-ribbon--value" src="{$maccms.path_tpl}images/upgrade/ribbon-value.png" width="52" height="52" alt="" decoding="async" />
+					{php}$price_year = round($vo['group_points_year'] / max(1,intval($pay_config['scale'])),2);{/php}
+					<a class="grade" data-id="{$vo.group_id}" data-name="{$vo.group_name}" data-points="{$vo.group_points_year}" data-price="{$price_year}" data-long="year">
+						<div class="plan-card-head">
+							<span class="plan-tag" data-lang="string_user_bn">包年</span>
+							<p class="time" data-lang="string_user_365t">365天</p>
+						</div>
+						<div class="plan-card-body">
+							{if condition="$vo.group_points_year eq 0"}
+							<p class="point point--stack is-free"><span class="point-money">免费开通</span></p>
+							{else}
+							<p class="point point--stack"><span class="point-money">￥{$price_year}</span></p>
+							{/if}
+						</div>
+						<div class="plan-card-foot">
+							<span class="point-pill {if condition='$vo.group_points_year eq 0'}is-free{/if}">{if condition="$vo.group_points_year eq 0"}0{else}{$vo.group_points_year}{/if}<span data-lang="string_jf">金币</span></span>
+						</div>
+					</a>
+				</li>
+					</ul>
+				</div>
+				{/if}
+			{/volist}
+		</div>
+		</form>
+	</div>
+	<div class="submit-vip" data-lang="string_submit" role="button" tabindex="0">确认</div>
+</div>
+{include file="widget/recharge_modal" /}

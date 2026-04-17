@@ -1,0 +1,29 @@
+{if$__PAGING__.page_total>1}
+<ul class="page text_center cleafix">
+	<li class="hidden_mb"><a href="{$__PAGING__.page_url|mac_url_page=1}"{if$__PAGING__['page_current']==1} class="btns_disad"{/if}><span data-lang="string_home">首页</span></a></li>
+	<li><a href="{$__PAGING__.page_url|mac_url_page=$__PAGING__.page_prev}"{if$__PAGING__['page_current']==1} class="btns_disad"{/if}><span data-lang="string_syy">上一页</span></a></li>
+	{if condition="($maccms.aid==24) OR ($maccms.aid==31)"}
+	{else}
+	{if$__PAGING__.page_current>3}
+	<li class="hidden_xs"><a href="{$__PAGING__.page_url|mac_url_page=1}"{if$__PAGING__['page_current']==1} class="btns_disad"{/if}>1</a></li>
+	<li class="hidden_xs"><span class="btns_disad" href="javascript:;">...</span></li>
+	{/if}
+	{/if}
+	{maccms:foreach name="$__PAGING__.page_num" id="num"}
+	<li class="hidden_xs {if condition="$__PAGING__['page_current'] eq $num"}active{/if}"><a href="{$__PAGING__.page_url|mac_url_page=$num}">{$num}</a></li>
+	{/maccms:foreach}
+	{if condition="($maccms.aid==24) OR ($maccms.aid==31)"}
+	{else}
+	{if$__PAGING__.page_current<($__PAGING__.page_total-2)}
+	<li class="hidden_xs"><span class="btns_disad" href="javascript:;">...</span></li>
+	<li class="hidden_xs"><a href="{$__PAGING__.page_url|mac_url_page=$__PAGING__.page_total}"{if$__PAGING__['page_current']==$__PAGING__.page_total} class="btns_disad"{/if}>{$__PAGING__.page_total}</a></li>
+	{/if}
+	{/if}
+	{if condition="($maccms.aid==24) OR ($maccms.aid==31)"}
+	<li class="hidden_xs active"><span class="num btns_disad">{$__PAGING__.page_current}/{$__PAGING__.page_total}</span></li>
+	{/if}
+	<li><a href="{$__PAGING__.page_url|mac_url_page=$__PAGING__.page_next}"{if$__PAGING__['page_current']==$__PAGING__.page_total} class="btns_disad"{/if}><span data-lang="string_xyy">下一页</span></a></li>
+	<li class="hidden_mb"><a href="{$__PAGING__.page_url|mac_url_page=$__PAGING__.page_total}"{if$__PAGING__['page_current']==$__PAGING__.page_total} class="btns_disad"{/if}>尾页</a></li>		
+</ul>
+<div class="page_tips hidden_mb">当前<span><span data-lang="string_is">第</span>{$__PAGING__.page_current}页</span>&nbsp;/&nbsp;共有{$__PAGING__.page_total}页</div>
+{/if}

@@ -37,7 +37,7 @@ class Plog extends Base {
 
         if(!empty($user_ids)){
             $where2=[];
-            $where['user_id'] = ['in', $user_ids];
+            $where2['user_id'] = ['in', $user_ids];
             $order='user_id desc';
             $user_list = model('User')->listData($where2,$order,1,999);
             $user_list = mac_array_rekey($user_list['list'],'user_id');
@@ -74,7 +74,8 @@ class Plog extends Base {
             return ['code'=>1001,'msg'=>lang('param_err').'：'.$validate->getError() ];
         }
 
-        if($data['user_id']==0 || !in_array($data['plog_type'],['1','2','3','4','5','6','7','8','9']) ) {
+        $plogType = (int)$data['plog_type'];
+        if ($data['user_id'] == 0 || $plogType < 1 || $plogType > 11) {
             return ['code'=>1002,'msg'=>lang('param_err')];
         }
 

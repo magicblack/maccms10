@@ -1,0 +1,9 @@
+{if condition="($tplconfig['theme']['ads']['btn'] eq 1 || ($tplconfig['theme']['ads']['btn'] eq 2 && isset($user['group_id']) && $user['group_id'] lt 3))"}
+{if condition="$tplconfig['theme']['ads']['vod_w']['btn'] eq 1"}
+    <div class="pannel ads_box clearfix">
+		<div id="1001" class="ads ads_w">
+			{$tplconfig['theme']['ads']['vod_w']['content']}
+		</div>
+	</div>
+	<script type="text/javascript">var o = document.getElementById("1001");var h = o.offsetHeight; if (h > 0) {} else {$(".pannel.ads_box").addClass("hide");}</script>
+{/if}{/if}

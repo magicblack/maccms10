@@ -243,7 +243,17 @@ class User extends Base
             return ['code' => 1010, 'msg' => lang('model/user/reg_err')];
         }
         $nid = $this->getLastInsID();
+        
+        $invite_code = $this->generateUniqueInviteCode($nid);
+        $this->where('user_id', $nid)->update(['user_invite_code' => $invite_code]);
+        
+        $invite_code_param = trim($param['invite_code'] ?? '');
         $uid = intval($uid);
+        
+        if (!empty($invite_code_param)) {
+            $uid = $this->getUserIdByInviteCode($invite_code_param);
+        }
+        
         if($uid > 0) {
             $where2 = [];
             $where2['user_id'] = $uid;
@@ -271,6 +281,7 @@ class User extends Base
                     $data['plog_points'] = $config['user']['invite_reg_points'];
                     model('Plog')->saveData($data);
                 }
+                $this->addInviteCount($uid);
             }
         }
         return ['code' => 1, 'msg' => lang('model/user/reg_ok')];
@@ -301,16 +312,46 @@ class User extends Base
 
     public function info($param)
     {
-        if (empty($param['user_pwd'])) {
-            return ['code' => 1001, 'msg' => lang('model/user/input_old_pass')];
-        }
-        $password_raw = trim($param['user_pwd']);
-        $password_formatted = htmlspecialchars(urldecode(trim($param['user_pwd'])));
-        if (!in_array($GLOBALS['user']['user_pwd'], [md5($password_raw), md5($password_formatted)])) {
-            return ['code' => 1002, 'msg' => lang('model/user/old_pass_err')];
-        }
-        if ($param['user_pwd1'] != $param['user_pwd2']) {
-            return ['code' => 1003, 'msg' => lang('model/user/pass_not_same_pass2')];
+        $pwd_old = isset($param['user_pwd']) ? trim($param['user_pwd']) : '';
+        $pwd1 = isset($param['user_pwd1']) ? trim($param['user_pwd1']) : '';
+        $pwd2 = isset($param['user_pwd2']) ? trim($param['user_pwd2']) : '';
+        $wantPwdChange = ($pwd_old !== '' || $pwd1 !== '' || $pwd2 !== '');
+
+        if ($wantPwdChange) {
+            if ($pwd_old === '') {
+                return ['code' => 1001, 'msg' => lang('model/user/input_old_pass')];
+            }
+            $password_raw = $pwd_old;
+            $password_formatted = htmlspecialchars(urldecode($pwd_old));
+            // 必须用库里的哈希：$GLOBALS['user'] 经模板/接口传递时可能不含 user_pwd，导致误判「原密码错误」
+            $uid = intval($GLOBALS['user']['user_id'] ?? 0);
+            if ($uid < 1) {
+                return ['code' => 1002, 'msg' => lang('model/user/not_login')];
+            }
+            $storedHash = $this->where('user_id', $uid)->value('user_pwd');
+            $storedHash = $storedHash === null ? '' : (string) $storedHash;
+            $try = [md5($password_raw), md5($password_formatted)];
+            // 与 login() 一致：兼容仅 md5(trim) 与 htmlspecialchars(urldecode(trim)) 后再 md5 两种入库方式
+            $ok = false;
+            foreach ($try as $h) {
+                if ($h !== '' && hash_equals($storedHash, $h)) {
+                    $ok = true;
+                    break;
+                }
+            }
+            // 与 login() 第二分支一致：极少数旧数据 user_pwd 列为明文
+            if (!$ok && $storedHash !== '' && ($storedHash === $password_raw || $storedHash === $password_formatted)) {
+                $ok = true;
+            }
+            if (!$ok) {
+                return ['code' => 1002, 'msg' => lang('model/user/old_pass_err')];
+            }
+            if ($pwd1 === '' || $pwd2 === '') {
+                return ['code' => 1003, 'msg' => lang('model/user/input_require')];
+            }
+            if ($pwd1 !== $pwd2) {
+                return ['code' => 1004, 'msg' => lang('model/user/pass_not_same_pass2')];
+            }
         }
 
         $data = [];
@@ -322,10 +363,187 @@ class User extends Base
         $data['user_qq'] = htmlspecialchars(urldecode(trim($param['user_qq'])));
         $data['user_question'] = htmlspecialchars(urldecode(trim($param['user_question'])));
         $data['user_answer'] = htmlspecialchars(urldecode(trim($param['user_answer'])));
-        if (!empty($param['user_pwd2'])) {
-            $data['user_pwd'] = trim($param['user_pwd2']);
+        if ($wantPwdChange && $pwd2 !== '') {
+            $data['user_pwd'] = $pwd2;
         }
         return $this->saveData($data);
+    }
+
+    /**
+     * 登录注册一体化：帐号存在则校验密码登录，不存在则自动注册并登录
+     * @param array $param [user_name, user_pwd, invite_code(可选)]
+     * @return array
+     */
+    public function loginOrRegister($param)
+    {
+        $config = config('maccms');
+        $password_raw = trim($param['user_pwd']);
+        $user_name = htmlspecialchars(urldecode(trim($param['user_name'])));
+
+        if (empty($user_name) || empty($password_raw)) {
+            return ['code' => 1001, 'msg' => lang('model/user/input_require')];
+        }
+
+        // 查找用户是否已存在
+        $row = $this->where('user_name', $user_name)->find();
+
+        if (!empty($row)) {
+            // ---- 帐号存在：校验密码 ----
+            $pwd_hash = md5($password_raw);
+            if ($row['user_pwd'] !== $pwd_hash) {
+                return ['code' => 1003, 'msg' => lang('pass_err')];
+            }
+            if ($row['user_status'] != 1) {
+                return ['code' => 1004, 'msg' => lang('model/user/account_disabled')];
+            }
+
+            // 会员过期降级
+            $login_group_ids = explode(',', $row['group_id']);
+            $update = [];
+            if (max($login_group_ids) > 2 && $row['user_end_time'] < time()) {
+                $row['group_id'] = 2;
+                $update['group_id'] = 2;
+            }
+
+            $random = md5(rand(10000000, 99999999));
+            $update['user_random'] = $random;
+            $update['user_login_ip'] = mac_get_ip_long();
+            $update['user_login_time'] = time();
+            $update['user_login_num'] = $row['user_login_num'] + 1;
+            $update['user_last_login_time'] = $row['user_login_time'];
+            $update['user_last_login_ip'] = $row['user_login_ip'];
+
+            $this->where('user_id', $row['user_id'])->update($update);
+
+            $this->_setLoginCookie($row, $random);
+
+            $info = $this->where('user_id', $row['user_id'])->find();
+            if ($info) { $info = $info->toArray(); }
+            $info['user_pwd'] = '';
+
+            return ['code' => 1, 'msg' => lang('model/user/login_ok'), 'action' => 'login', 'info' => $info];
+        }
+
+        // ---- 帐号不存在：自动注册 ----
+        if ($config['user']['status'] == 0) {
+            return ['code' => 1005, 'msg' => lang('model/user/user_feature_closed')];
+        }
+
+        // 用户名格式校验：仅英文+数字
+        if (!preg_match("/^[a-zA-Z\d]{3,30}$/i", $user_name)) {
+            return ['code' => 1006, 'msg' => lang('model/user/name_alnum_3_30')];
+        }
+
+        // 敏感词过滤
+        $filter = !empty($GLOBALS['config']['user']['filter_words']) ? $GLOBALS['config']['user']['filter_words'] : '';
+        if (!empty($filter)) {
+            $filter_arr = explode(',', $filter);
+            $f_name = str_replace($filter_arr, '', $user_name);
+            if ($f_name != $user_name) {
+                return ['code' => 1008, 'msg' => lang('model/user/name_has_sensitive_word')];
+            }
+        }
+
+        // IP 注册限制
+        $ip = mac_get_ip_long();
+        if (!empty($GLOBALS['config']['user']['reg_num']) && $GLOBALS['config']['user']['reg_num'] > 0) {
+            $where2 = [];
+            $where2['user_reg_ip'] = ['eq', $ip];
+            $where2['user_reg_time'] = ['gt', strtotime('today')];
+            $cc = $this->where($where2)->count();
+            if ($cc >= $GLOBALS['config']['user']['reg_num']) {
+                return ['code' => 1009, 'msg' => lang('model/user/reg_daily_limit_reached')];
+            }
+        }
+
+        // 密码长度校验
+        if (strlen($password_raw) < 6) {
+            return ['code' => 1010, 'msg' => lang('model/user/pass_length_err')];
+        }
+
+        // 创建用户
+        $random = md5(rand(10000000, 99999999));
+        $fields = [];
+        $fields['user_name'] = $user_name;
+        $fields['user_pwd'] = md5($password_raw);
+        $fields['group_id'] = $this->_def_group;
+        $fields['user_points'] = intval($config['user']['reg_points']);
+        $fields['user_status'] = intval($config['user']['reg_status']);
+        $fields['user_reg_time'] = time();
+        $fields['user_reg_ip'] = $ip;
+        $fields['user_random'] = $random;
+        $fields['user_login_time'] = time();
+        $fields['user_login_ip'] = $ip;
+        $fields['user_login_num'] = 1;
+
+        $res = $this->insert($fields);
+        if ($res === false) {
+            return ['code' => 1011, 'msg' => lang('model/user/reg_fail_try_later')];
+        }
+        $nid = $this->getLastInsID();
+
+        // 生成邀请码
+        $invite_code = $this->generateUniqueInviteCode($nid);
+        $this->where('user_id', $nid)->update(['user_invite_code' => $invite_code]);
+
+        // 处理邀请码
+        $invite_code_param = trim($param['invite_code'] ?? '');
+        if (!empty($invite_code_param)) {
+            $uid = $this->getUserIdByInviteCode($invite_code_param);
+            if ($uid > 0) {
+                $invite = $this->where('user_id', $uid)->find();
+                if ($invite) {
+                    $upd = [];
+                    $upd['user_pid'] = $invite['user_id'];
+                    $upd['user_pid_2'] = $invite['user_pid'];
+                    $upd['user_pid_3'] = $invite['user_pid_2'];
+                    $this->where('user_id', $nid)->update($upd);
+
+                    if (!empty($config['user']['invite_reg_points']) && $config['user']['invite_reg_points'] > 0) {
+                        $this->where('user_id', $uid)->setInc('user_points', $config['user']['invite_reg_points']);
+                        $pdata = [];
+                        $pdata['user_id'] = $uid;
+                        $pdata['plog_type'] = 2;
+                        $pdata['plog_points'] = $config['user']['invite_reg_points'];
+                        model('Plog')->saveData($pdata);
+                    }
+                    $this->addInviteCount($uid);
+                }
+            }
+        }
+
+        // 注册后自动登录
+        $row = $this->where('user_id', $nid)->find();
+        if ($row) {
+            $this->_setLoginCookie($row, $random);
+            $info = $row->toArray();
+            $info['user_pwd'] = '';
+            return ['code' => 1, 'msg' => lang('model/user/reg_ok_logged_in'), 'action' => 'register', 'info' => $info];
+        }
+
+        return ['code' => 1, 'msg' => lang('index/reg_ok'), 'action' => 'register'];
+    }
+
+    /**
+     * 设置登录 Cookie（loginOrRegister / login 共用）
+     */
+    private function _setLoginCookie($row, $random)
+    {
+        $group_list = model('Group')->getCache('group_list');
+        $group_ids = explode(',', $row['group_id']);
+        $group = [];
+        foreach ($group_ids as $gid) {
+            if (isset($group_list[$gid])) {
+                $group[] = $group_list[$gid];
+            }
+        }
+
+        cookie('user_id', $row['user_id'], ['expire' => 2592000]);
+        cookie('user_name', $row['user_name'], ['expire' => 2592000]);
+        cookie('group_id', !empty($group[0]['group_id']) ? $group[0]['group_id'] : $this->_def_group, ['expire' => 2592000]);
+        cookie('group_name', !empty($group[0]['group_name']) ? $group[0]['group_name'] : '', ['expire' => 2592000]);
+        cookie('user_check', md5($random . '-' . $row['user_name'] . '-' . $row['user_id'] . '-'), ['expire' => 2592000]);
+        cookie('user_portrait', mac_get_user_portrait($row['user_id']), ['expire' => 2592000]);
     }
 
     public function login($param)
@@ -647,6 +865,65 @@ class User extends Base
         cookie('group_name', $group_info['group_name'],['expire'=>2592000] );
 
         return ['code'=>1,'msg'=>lang('model/user/update_group_ok')];
+    }
+
+    public function upgradeByPaidOrder($order, $user)
+    {
+        $remarks = json_decode($order['order_remarks'], true);
+        if (empty($remarks) || !is_array($remarks) || ($remarks['biz'] ?? '') !== 'member_upgrade') {
+            return ['code' => 1001, 'msg' => lang('model/user/order_not_member_upgrade')];
+        }
+
+        $group_id = intval($remarks['group_id'] ?? 0);
+        $long = trim($remarks['long'] ?? '');
+        $point = intval($remarks['upgrade_points'] ?? 0);
+        $points_long = ['day' => 86400, 'week' => 86400 * 7, 'month' => 86400 * 30, 'year' => 86400 * 365];
+        if ($group_id < 3 || !isset($points_long[$long]) || $point < 1) {
+            return ['code' => 1002, 'msg' => lang('model/user/upgrade_param_invalid')];
+        }
+
+        $group_list = model('Group')->getCache();
+        if (!isset($group_list[$group_id]) || intval($group_list[$group_id]['group_status']) !== 1) {
+            return ['code' => 1003, 'msg' => lang('model/user/group_not_found')];
+        }
+
+        if (intval($user['user_points']) < $point) {
+            return ['code' => 1004, 'msg' => lang('model/user/potins_not_enough')];
+        }
+
+        $sj = $points_long[$long];
+        $end_time = time() + $sj;
+        if (intval($user['user_end_time']) > time()) {
+            $end_time = intval($user['user_end_time']) + $sj;
+        }
+
+        $where = ['user_id' => intval($user['user_id'])];
+        $data = [];
+        $data['user_points'] = intval($user['user_points']) - $point;
+        $data['user_end_time'] = $end_time;
+        $data['group_id'] = $group_id;
+        $res = $this->where($where)->update($data);
+        if ($res === false) {
+            return ['code' => 1005, 'msg' => lang('model/user/update_group_err')];
+        }
+
+        $plog = [];
+        $plog['user_id'] = intval($user['user_id']);
+        $plog['plog_type'] = 7;
+        $plog['plog_points'] = $point;
+        $plog['plog_remarks'] = '支付后自动升级会员：' . ($group_list[$group_id]['group_name'] ?? '');
+        model('Plog')->saveData($plog);
+
+        // 为了复用原有分销逻辑，临时填充全局用户上下文
+        $prevUser = $GLOBALS['user'] ?? null;
+        $GLOBALS['user'] = $user;
+        $this->reward($point);
+        $GLOBALS['user'] = $prevUser;
+
+        cookie('group_id', $group_id, ['expire' => 2592000]);
+        cookie('group_name', $group_list[$group_id]['group_name'] ?? '', ['expire' => 2592000]);
+
+        return ['code' => 1, 'msg' => lang('model/user/update_group_ok')];
     }
 
     public function check_msg($param)
@@ -997,6 +1274,190 @@ class User extends Base
         }
 
         return ['code'=>1,'msg'=>lang('model/user/reward_ok')];
+    }
+
+    /**
+     * 根据用户ID生成邀请码
+     * @param int $user_id
+     * @return string
+     */
+    public function generateInviteCode($user_id)
+    {
+        $chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+        $code = '';
+        $charsLength = strlen($chars);
+        for ($i = 0; $i < 5; $i++) {
+            $code .= $chars[random_int(0, $charsLength - 1)];
+        }
+        return $code;
+    }
+    
+    /**
+     * 检查邀请码是否已存在
+     * @param string $code
+     * @return bool
+     */
+    public function checkInviteCodeExists($code)
+    {
+        $count = $this->where('user_invite_code', $code)->count();
+        return $count > 0;
+    }
+    
+    /**
+     * 生成唯一的不重复邀请码
+     * @param int $user_id
+     * @return string
+     */
+    public function generateUniqueInviteCode($user_id)
+    {
+        $max_attempts = 10;
+        for ($i = 0; $i < $max_attempts; $i++) {
+            $code = $this->generateInviteCode($user_id);
+            if (!$this->checkInviteCodeExists($code)) {
+                return $code;
+            }
+        }
+        
+        $fallback_code = strtoupper(substr(bin2hex(random_bytes(4)), 0, 5));
+        if ($this->checkInviteCodeExists($fallback_code)) {
+            $fallback_code = strtoupper(substr(bin2hex(random_bytes(4)), 0, 5));
+        }
+        
+        return $fallback_code;
+    }
+
+    /**
+     * 根据邀请码获取用户ID
+     * @param string $invite_code
+     * @return int
+     */
+    public function getUserIdByInviteCode($invite_code)
+    {
+        $info = $this->where('user_invite_code', $invite_code)->find();
+        return $info ? $info['user_id'] : 0;
+    }
+
+    /**
+     * 处理邀请奖励
+     * 当被邀请人注册时，自动为邀请人发放奖励
+     * @param int $user_id 邀请人用户ID
+     */
+    public function processInviteReward($user_id)
+    {
+        $maccms_config = config('maccms');
+        $config = $maccms_config['user'];
+        
+        if (empty($config['invite_reward_status'])) {
+            return;
+        }
+        
+        $invite_reward = $config['invite_reward'];
+        if (empty($invite_reward) || !is_array($invite_reward)) {
+            return;
+        }
+        
+        $sorted_reward = [];
+        foreach ($invite_reward as $count => $reward) {
+            $count = intval($count);
+            if ($count > 0) {
+                $sorted_reward[$count] = $reward;
+            }
+        }
+        ksort($sorted_reward);
+        
+        // 使用事务 + SELECT FOR UPDATE 行锁，防止并发重复发放奖励
+        \think\Db::startTrans();
+        try {
+            $where = [];
+            $where['user_id'] = $user_id;
+            // lock(true) = SELECT ... FOR UPDATE，锁定该行直到事务结束
+            $user_info = $this->where($where)->lock(true)->find();
+            
+            if (!$user_info) {
+                \think\Db::rollback();
+                return;
+            }
+            
+            $invite_count = intval($user_info['user_invite_count']);
+            $current_reward_level = intval($user_info['user_invite_reward_level']);
+            
+            $update = [];
+            $updated = false;
+            
+            $current_end_time = ($user_info['user_end_time'] > time())
+                ? $user_info['user_end_time'] : time();
+            
+            foreach ($sorted_reward as $count => $reward) {
+                if ($count > $current_reward_level && $invite_count >= $count) {
+                    $group_id = intval($reward['group_id']);
+                    $long = $reward['long'];
+                    $points = intval($reward['points']);
+                    
+                    if ($group_id >= 2) {
+                        $points_long = ['day'=>86400,'week'=>86400*7,'month'=>86400*30,'year'=>86400*365];
+                        
+                        if (isset($points_long[$long])) {
+                            $current_groups = explode(',', $user_info['group_id']);
+                            $current_max_group = max(array_map('intval', $current_groups));
+                            
+                            if ($group_id > $current_max_group) {
+                                $new_groups = array_unique(array_merge($current_groups, [$group_id]));
+                                $new_groups = array_filter($new_groups, function($v) { return intval($v) > 0; });
+                                sort($new_groups, SORT_NUMERIC);
+                                $update['group_id'] = implode(',', $new_groups);
+                            }
+                            
+                            $sj = $points_long[$long];
+                            $current_end_time += $sj;
+                            
+                            $update['user_end_time'] = intval($current_end_time);
+                            $updated = true;
+                            
+                            $data = [];
+                            $data['user_id'] = $user_id;
+                            $data['plog_type'] = 8;
+                            $data['plog_points'] = 0;
+                            $data['plog_remarks'] = '邀请奖：邀请' . $invite_count . '人，获得VIP ' . ($long == 'day' ? '1天' : ($long == 'week' ? '1周' : ($long == 'month' ? '1个月' : '1年')));
+                            model('Plog')->saveData($data);
+                        }
+                    }
+                    
+                    if ($points > 0) {
+                        $this->where($where)->setInc('user_points', $points);
+                        
+                        $data = [];
+                        $data['user_id'] = $user_id;
+                        $data['plog_type'] = 8;
+                        $data['plog_points'] = $points;
+                        $data['plog_remarks'] = '邀请奖励：邀请' . $invite_count . '人，获得' . $points . '积分';
+                        model('Plog')->saveData($data);
+                    }
+                    
+                    $update['user_invite_reward_level'] = $count;
+                    $update['user_invite_reward_time'] = time();
+                    $updated = true;
+                }
+            }
+            
+            if ($updated) {
+                $this->where($where)->update($update);
+            }
+            
+            \think\Db::commit();
+        } catch (\Exception $e) {
+            \think\Db::rollback();
+        }
+    }
+
+    /**
+     * 增加邀请计数并处理奖励
+     * @param int $user_id
+     */
+    public function addInviteCount($user_id)
+    {
+        $this->where('user_id', $user_id)->setInc('user_invite_count', 1);
+        
+        $this->processInviteReward($user_id);
     }
 
 }

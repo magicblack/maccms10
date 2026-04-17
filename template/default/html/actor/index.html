@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+	{include file="public/include"}
+	<link rel="stylesheet" href="{$maccms.path}template/default/asset/css/hlactor.css" type="text/css" />
+	<link rel="stylesheet" type="text/css" href="{$maccms.path_tpl}/asset/css/actor-index.css" />
+</head>
+<body>
+<div class="member-wrap" id="actorIndexRoot"
+	data-api-base="{:rtrim($maccms.path,'/').'/api.php'}"
+	data-page-size="24">
+	<div class="show-pc">
+		{include file="public/head"}
+	</div>
+
+	<div class="bg_light">
+		<div id="left" class="show-mobile">
+			<div class="m-nav mobile-nav">
+				<a href="javascript:MAC.GoBack()" class="btn-left"><i class="iconfont ico-right">&#xe625;</i></a>
+				<span class="mb-title" data-lang="string_actor_ypjx">荧屏巨星</span>
+			</div>
+		</div>
+		<div class="container top-con">
+			<div class="row">
+				<div class="pannel layout-box">
+					<div class="pannel_head clearfix">
+						<span class="text_muted pull_right">
+							<a class="actor-more" href="{:mac_url('actor/show')}"><span data-lang="string_type_more2">更多</span><i class="iconfont more_i">&#xe623;</i></a>
+						</span>
+						<h2 class="title" data-lang="string_actor_ypjx">荧屏巨星</h2>
+					</div>
+
+					<div class="clearfix" id="actorIndexListWrap">
+						<p class="actor-index-hint actor-index-hint--loading" id="actorIndexLoading" data-lang="string_loading">加载中…</p>
+						<p class="actor-index-hint actor-index-hint--err hide" id="actorIndexErr"></p>
+						<p class="actor-index-hint actor-index-hint--empty hide" id="actorIndexEmpty" data-lang="string_art_nodata">暂无数据</p>
+						<ul class="vodlist vodlist_wi hide" id="actorIndexGrid" aria-label="actors"></ul>
+						<div class="actor-index-pager hide" id="actorIndexPager" aria-label="pagination"></div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div style="width:30rem;margin: 2rem auto;">
+		{include file="public/friendLink" }
+	</div>
+</div>
+
+<script type="text/javascript" src="{$maccms.path}template/default/asset/js/actor-index.js?v=202604161"></script>
+{include file="public/foot"}
+</body>
+</html>

@@ -1,0 +1,15 @@
+{if condition="($tplconfig['theme']['ads']['btn'] eq 1 || ($tplconfig['theme']['ads']['btn'] eq 2 && isset($user['group_id']) && $user['group_id'] lt 3)) && !empty($tplconfig['theme']['ads']['search_v']['btn']) && $tplconfig['theme']['ads']['search_v']['btn'] eq 1"}
+<div class="searchlist_img">
+	<a class="vodlist_thumb lazyload" href="{$tplconfig['theme']['ads']['search_v']['link']}" target="_blank" rel="nofollow" title="{$tplconfig['theme']['ads']['search_v']['title']}" data-original="{:mac_url_img($tplconfig['theme']['ads']['search_v']['pic'])}">
+	</a>
+</div>
+<div class="searchlist_titbox" style="padding-top: 0.8rem;">									
+	<h4 class="vodlist_title"><a href="{$tplconfig['theme']['ads']['search_v']['link']}" target="_blank" title="{$tplconfig['theme']['ads']['search_v']['title']}">{if condition="$tplconfig['theme']['ads']['search_v']['tbtn'] eq 1"}<span class="info_right">广告</span>{/if}{$tplconfig['theme']['ads']['search_v']['title']}</a></h4>
+	<p class="vodlist_sub">{$tplconfig['theme']['ads']['search_v']['sub']}</p>
+	<div class="searchlist_btn content_detail">
+   		<div class="seebtn">
+			<a href="{$tplconfig['theme']['ads']['search_v']['link']}" rel="nofollow" target="_blank" data-lang='vod_view_detail'>查看详情&nbsp;<i class="iconfont">&#xe623;</i></a>
+		</div>
+    </div>
+</div>
+{/if}

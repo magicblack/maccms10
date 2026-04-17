@@ -754,7 +754,7 @@
 }
 
 .mac_comment .item_con .con {
-	color: #FAFAFA;
+	color: var(--theme-text);
 	line-height: 20px;
 	overflow: hidden;
 	margin-top: 8px;

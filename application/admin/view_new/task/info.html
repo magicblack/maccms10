@@ -1,0 +1,69 @@
+{include file="../../../application/admin/view_new/public/head" /}
+<div class="page-container p10">
+    <form class="layui-form" method="post" action="{:url('info')}">
+        <input type="hidden" name="task_id" value="{$info.task_id|default=''}">
+        <div class="layui-form-item">
+            <label class="layui-form-label">{:lang('task/task_name')}</label>
+            <div class="layui-input-block">
+                <input type="text" name="task_name" value="{$info.task_name|default=''}" class="layui-input" required>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">{:lang('task/task_type')}</label>
+            <div class="layui-input-block">
+                <select name="task_type">
+                    <option value="1" {if condition="$info['task_type'] eq 1"}selected{/if}>{:lang('task/type_daily')}</option>
+                    <option value="2" {if condition="$info['task_type'] eq 2"}selected{/if}>{:lang('task/type_newbie')}</option>
+                </select>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">{:lang('task/task_action')}</label>
+            <div class="layui-input-block">
+                <input type="text" name="task_action" value="{$info.task_action|default=''}" class="layui-input" {if condition="!empty($info['task_id'])"}readonly{/if}>
+                <div class="layui-form-mid layui-word-aux">{:lang('task/action_tip')}</div>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">{:lang('task/task_desc')}</label>
+            <div class="layui-input-block">
+                <input type="text" name="task_desc" value="{$info.task_desc|default=''}" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">{:lang('task/task_points')}</label>
+            <div class="layui-input-inline w200">
+                <input type="number" name="task_points" value="{$info.task_points|default='0'}" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">{:lang('task/task_target')}</label>
+            <div class="layui-input-inline w200">
+                <input type="number" name="task_target" value="{$info.task_target|default='1'}" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">{:lang('task/task_sort')}</label>
+            <div class="layui-input-inline w200">
+                <input type="number" name="task_sort" value="{$info.task_sort|default='0'}" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">{:lang('status')}</label>
+            <div class="layui-input-block">
+                <input type="radio" name="task_status" value="1" title="{:lang('normal')}" {if condition="$info['task_status'] neq 0"}checked{/if}>
+                <input type="radio" name="task_status" value="0" title="{:lang('disable')}" {if condition="$info['task_status'] eq 0"}checked{/if}>
+            </div>
+        </div>
+        <div class="layui-form-item center">
+            <div class="layui-input-block">
+                <button type="submit" class="layui-btn" lay-submit="" lay-filter="formSubmit" data-child="true">{:lang('btn_save')}</button>
+                <button class="layui-btn layui-btn-primary" type="reset">{:lang('btn_reset')}</button>
+            </div>
+        </div>
+    </form>
+</div>
+{include file="../../../application/admin/view_new/public/foot" /}
+<script>layui.use('form',function(){layui.form.render();});</script>
+</body>
+</html>

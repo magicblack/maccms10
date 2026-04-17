@@ -258,10 +258,8 @@
                         <label class="layui-form-label">{:lang('admin/system/config/suffix')}：</label>
                         <div class="layui-input-inline">
                             <select style="width:150px;" name="app[suffix]">
-                                <option value="html" {if condition="$config['app']['suffix'] eq 'html'" }selected {/if}>
-                                    html</option>
-                                <option value="htm" {if condition="$config['app']['suffix'] eq 'htm'" }selected {/if}>
-                                    htm</option>
+                                <option value="html" {if condition="$config['app']['suffix'] eq 'html'" }selected {/if}>html</option>
+                                <option value="htm" {if condition="$config['app']['suffix'] eq 'htm'" }selected {/if}>htm</option>
                             </select>
                         </div>
                     </div>
@@ -578,7 +576,6 @@
                                 value="{$config['app']['copyright_notice']}" class="layui-input">
                         </div>
                     </div>
-
                     <div class="layui-form-item">
                         <label class="layui-form-label">{:lang('admin/system/config/browser_junmp')}：</label>
                         <div class="layui-input-inline">

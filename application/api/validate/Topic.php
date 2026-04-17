@@ -30,5 +30,6 @@ class Topic extends Validate
         'get_detail' => [
             'topic_id',
         ],
+        'get_recommend' => [],
     ];
 }

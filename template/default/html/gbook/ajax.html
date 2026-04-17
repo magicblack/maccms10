@@ -1,0 +1,58 @@
+<div class="pannel_head clearfix">
+     <span class="pull_right">
+          <span data-lang='string_vod_zg'>共</span>&nbsp;
+          <span class="mycol">{$__PAGING__.record_total}</span>&nbsp;
+          <span data-lang="string_gbook_tly">条留言，当前第</span>&nbsp;<span class="mycol">{$__PAGING__.page_current}</span>&nbsp;<span data-lang="string_page">页</span></span>
+     <h2 class="title">
+          <span data-lang="message">留言</span>
+     </h2>
+</div>
+<ul class="part_rows">
+{maccms:gbook num="10" paging="yes" half="3" order="desc" by="id"}
+<li class="comm_each line_top margin cmt-thread">
+	<div class="cmt-row">
+	{php}$avatar_src = mac_get_user_portrait(isset($vo['user_id']) ? $vo['user_id'] : 0); $avatar_alt = isset($vo['gbook_name']) ? (string)$vo['gbook_name'] : ''; $avatar_user_id = isset($vo['user_id']) ? (int)$vo['user_id'] : 0;{/php}
+	<div class="cmt-avatar-wrap">
+	{include file="widget/user_avatar" avatar_user_id="$avatar_user_id" avatar_size="xs" avatar_variant="list" avatar_class="comm_avat part_roun" /}
+	</div>
+	<div class="cmt-body">
+		<div class="cmt-meta">
+			<strong class="cmt-name text_line">{$vo.gbook_name}</strong>
+		</div>
+		<div class="cmt-text comm_content">{$vo.gbook_content}</div>
+		<div class="cmt-footer cmt-footer--gbook cmt-footer--no-actions">
+			<time class="cmt-time part_tips" datetime="{php}echo date('c', isset($vo['gbook_time']) ? (int)$vo['gbook_time'] : time());{/php}" data-ts="{$vo.gbook_time}" title="{$vo.gbook_time|date='Y-m-d H:i:s',###}">{$vo.gbook_time|date='Y-m-d H:i:s',###}</time>
+			<span class="cmt-gbook-meta" aria-label="留言序号">
+				<span class="hidden_mb"><span class="mycol">{$vo.gbook_id}#</span></span>
+				<span class="hidden_xs">
+					<span data-lang="string_vod_di">第</span> {$vo.gbook_id}
+					<span data-lang="string_gbook_t">条</span>
+					<span data-lang="string_ly">留言</span>
+				</span>
+			</span>
+		</div>
+	</div>
+	</div>
+	<div class="comm_cont cmt-replies">
+	{if$vo.gbook_reply}
+	<div class="comm_reply back_ashen comm_tops cmt-reply-item cmt-gbook-admin">
+		<div class="cmt-row cmt-row--reply cmt-row--admin">
+			<div class="cmt-body">
+				<div class="cmt-meta">
+					<strong class="cmt-name mycol" data-lang="string_gbook_gly">管理员</strong>
+				</div>
+				<div class="cmt-text comm_content">{$vo.gbook_reply}</div>
+				<div class="cmt-footer cmt-footer--gbook cmt-footer--no-actions">
+					<time class="cmt-time part_tips" datetime="{php}echo date('c', isset($vo['gbook_reply_time']) ? (int)$vo['gbook_reply_time'] : time());{/php}" data-ts="{$vo.gbook_reply_time}" title="{$vo.gbook_reply_time|date='Y-m-d H:i:s',###}">{$vo.gbook_reply_time|date='H:i',###}</time>
+				</div>
+			</div>
+		</div>
+	</div>
+	{/if}
+	</div>
+</li>
+{/maccms:gbook}{if$__PAGING__.record_total==0}
+<li class="text_center text_black" data-lang="string_gbook_mrly">还没有人留言哎！</li>
+{/if}
+</ul>
+{include file="widget/page"}

@@ -1,0 +1,27 @@
+
+<div class="mac_report reply_box">
+    <form class="gbook_form">
+        <textarea class="gbook_content" name="gbook_content">{$param.name}</textarea>
+        <div class="msg_code">
+            <div class="remaining-r"> 
+                <span data-lang='string_gbook_hksr'>还可输入</span> 
+                <span class="gbook_remaining remaining" >200</span>
+                <span data-lang="string_pinglun_zi">字</span>
+            </div>
+            <input type="text" name="verify" data-placeholder='user_yanzhengma' placeholder="验证码" class="verify">
+            <img class="comm-code" src="{:mac_url('verify/index')}" data-title='string_pinglun_kan' data-role="{:mac_url('verify/index')}" title="看不清楚? 换一张！" onClick="this.src=this.src+'?v={:time()}'" />
+        </div>
+        <div style="text-align: center;display: block;overflow: hidden;">
+            <input type="button" data-value='string_gbook_tjly' class="gbook_submit submit_btn" style="width:100%" value="提交留言">
+        </div>
+
+    </form>
+</div>
+
+<script>
+    $(function(){
+        MAC.Gbook.Login = {$gbook.login};
+        MAC.Gbook.Verify = {$gbook.verify};
+        MAC.Gbook.Init();
+    });
+</script>

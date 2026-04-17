@@ -16,12 +16,13 @@ return array (
   'videojs' => 
   array (
     'status' => '1',
-    'sort' => '907',
     'from' => 'videojs',
     'show' => 'videojs-H5播放器',
     'des' => 'videojs.com',
+    'target' => '_self',
+    'ps' => '1',
     'parse' => '',
-    'ps' => '0',
+    'sort' => '907',
     'tip' => '无需安装任何插件',
     'id' => 'videojs',
   ),
@@ -86,5 +87,17 @@ return array (
     'sort' => '902',
     'tip' => '无需安装任何插件	',
     'id' => 'flv',
+  ),
+  'modum3u8' => 
+  array (
+    'status' => '1',
+    'from' => 'modum3u8',
+    'show' => '魔都云',
+    'des' => '',
+    'target' => '_self',
+    'ps' => '1',
+    'parse' => 'https://jiexi.moduzyjx.com/?url=',
+    'sort' => '8',
+    'tip' => '',
   ),
 );

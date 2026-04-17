@@ -1,0 +1,18 @@
+{if condition="($tplconfig['theme']['ads']['btn'] eq 1 || ($tplconfig['theme']['ads']['btn'] eq 2 && isset($user['group_id']) && $user['group_id'] lt 3))"}
+{if condition="$tplconfig['theme']['ads']['double']['btn'] eq 1"}
+<style>
+  .hl_ads_double img {
+    width: 100%;
+    height: 100%;
+  }
+</style>
+<div id="LeftDiv" class="hl_ads_double" style="width: {$tplconfig['theme']['ads']['double']['w']|mac_default='100px'};height: {$tplconfig['theme']['ads']['double']['h']|mac_default='300px'};">
+<a class="close_ads_lbtn" href="javascript:void(0)"><i class="iconfont">&#xe616;</i></a>
+{$tplconfig['theme']['ads']['double']['content']}
+</div>
+<div id="RightDiv" class="hl_ads_double" style="width: {$tplconfig['theme']['ads']['double']['w']|mac_default='100px'};height: {$tplconfig['theme']['ads']['double']['h']|mac_default='300px'};">
+<a class="close_ads_rbtn" href="javascript:void(0)"><i class="iconfont">&#xe616;</i></a>
+{$tplconfig['theme']['ads']['double']['content']}
+</div>
+<script>$(".close_ads_lbtn").click(function(){$("#LeftDiv").remove();});$(".close_ads_rbtn").click(function(){$("#RightDiv").remove();});</script>
+{/if}{/if}

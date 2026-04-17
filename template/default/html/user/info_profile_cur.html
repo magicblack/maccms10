@@ -1,0 +1,136 @@
+					<div class="cur member-profile-form">
+						<div class="user-info-stats" aria-label="账户概览">
+							<div class="user-info-stats__deck">
+								<div class="user-info-stats__card">
+									<div class="user-info-stats__head">
+										<span class="user-info-stats__ico user-info-stats__ico--points" role="img" aria-hidden="true"></span>
+										<span class="user-info-stats__label" data-lang="user_zhanghaojifen">金币</span>
+									</div>
+									<span class="user-info-stats__val user-info-stats__val--metric member-profile-form__metric">{$obj.user_points}</span>
+								</div>
+								<div class="user-info-stats__card">
+									<div class="user-info-stats__head">
+										<span class="user-info-stats__ico user-info-stats__ico--time" role="img" aria-hidden="true"></span>
+										<span class="user-info-stats__label" data-lang="user_qixian">到期</span>
+									</div>
+									{if condition="$obj.group_id lt 3"}
+									<span class="user-info-stats__val user-info-stats__val--accent" data-lang="user_valid">永久有效</span>
+									{else/}
+									<span class="user-info-stats__val user-info-stats__val--metric member-profile-form__metric">{$obj.user_end_time|date='m-d',###}</span>
+									{/if}
+								</div>
+								<div class="user-info-stats__card">
+									<div class="user-info-stats__head">
+										<span class="user-info-stats__ico user-info-stats__ico--group" role="img" aria-hidden="true"></span>
+										<span class="user-info-stats__label" data-lang="user_huiyuanzu">会员组</span>
+									</div>
+									<span class="user-info-stats__val user-info-stats__val--group">
+										{if condition="$obj.group_id lt 3"}{$obj.group.group_name}{else/}<i class="iconfont user_vip member-profile-form__vip-ico" aria-hidden="true">&#xe638;</i> {$obj.group.group_name}{/if}
+									</span>
+								</div>
+							</div>
+						</div>
+
+						<form id="fm" name="fm" method="post" action="">
+							<div class="user-info-sheet">
+								<h3 class="user-info-sheet__title" data-lang="user_personal_info">个人信息</h3>
+								<div class="user-info-sheet__body">
+									<p class="user-info-row user-info-row--static">
+										<span class="user-info-row__label xiang" data-lang="user_name">用户名</span>
+										<span class="user-info-row__value member-field-text">{$obj.user_name}</span>
+									</p>
+									<p class="user-info-row user-info-row--field">
+										<span class="user-info-row__label xiang" data-lang="user_nickname">昵称</span>
+										<span class="user-info-row__control">
+											<input type="text" data-placeholder="user_place_nc" name="user_nick_name" class="member-input user-info-row__input" value="{$obj.user_nick_name}" placeholder="请输入昵称">
+											<i class="iconfont user-info-row__chev" aria-hidden="true">&#xe625;</i>
+										</span>
+									</p>
+									<p class="user-info-row user-info-row--field">
+										<span class="user-info-row__label xiang" data-lang="user_qq">QQ</span>
+										<span class="user-info-row__control">
+											<input type="text" name="user_qq" class="member-input user-info-row__input" data-placeholder="user_place_qq" value="{$obj.user_qq}" placeholder="请输入QQ号码">
+											<i class="iconfont user-info-row__chev" aria-hidden="true">&#xe625;</i>
+										</span>
+									</p>
+
+									{if condition="$obj.user_email neq ''"}
+									<p class="user-info-row user-info-row--bind">
+										<span class="user-info-row__label xiang" data-lang="user_email">邮箱</span>
+										<span class="user-info-row__control user-info-row__control--bind">
+											<span class="member-field-text user-info-row__bind-text">{$obj.user_email}</span>
+											<a class="bind-a btn_unbind user-info-row__bind-action" data-lang="user_unbound" ac="email" href="javascript:;">解绑</a>
+											<i class="iconfont user-info-row__chev" aria-hidden="true">&#xe625;</i>
+										</span>
+									</p>
+									{else/}
+									<p class="user-info-row user-info-row--bind">
+										<span class="user-info-row__label xiang" data-lang="user_email">邮箱</span>
+										<span class="user-info-row__control user-info-row__control--bind">
+											<a class="bind-a user-info-row__bind-action" data-lang="user_binding" href="{:url('user/bind')}?ac=email">绑定</a>
+											<i class="iconfont user-info-row__chev" aria-hidden="true">&#xe625;</i>
+										</span>
+									</p>
+									{/if}
+
+									{if condition="$obj.user_phone neq ''"}
+									<p class="user-info-row user-info-row--bind">
+										<span class="user-info-row__label xiang" data-lang="user_phone">手机</span>
+										<span class="user-info-row__control user-info-row__control--bind">
+											<span class="member-field-text user-info-row__bind-text">{$obj.user_phone}</span>
+											<a class="bind-a btn_unbind user-info-row__bind-action" ac="phone" href="javascript:;" data-lang="user_unbound">解绑</a>
+											<i class="iconfont user-info-row__chev" aria-hidden="true">&#xe625;</i>
+										</span>
+									</p>
+									{else/}
+									<p class="user-info-row user-info-row--bind">
+										<span class="user-info-row__label xiang" data-lang="user_phone">手机</span>
+										<span class="user-info-row__control user-info-row__control--bind">
+											<a class="bind-a user-info-row__bind-action" href="{:url('user/bind')}?ac=phone" data-lang="user_binding">绑定</a>
+											<i class="iconfont user-info-row__chev" aria-hidden="true">&#xe625;</i>
+										</span>
+									</p>
+									{/if}
+
+									<a class="user-info-row user-info-row--nav" href="{:url('user/invite')}" target="_blank" rel="noopener noreferrer">
+										<span class="user-info-row__label" data-lang="promotionRecord">推广记录</span>
+										<span class="user-info-row__trail"><i class="iconfont user-info-row__chev" aria-hidden="true">&#xe625;</i></span>
+									</a>
+								</div>
+
+								<div class="pwd-fields user-info-pwd-fields" id="pwdFields">
+									<p class="user-info-row user-info-row--field">
+										<span class="user-info-row__label xiang" data-lang="user_ysmm">原密码</span>
+										<span class="auth-pwd-group member-pwd-field user-info-row__control user-info-row__control--pwd">
+											<input type="password" id="info_user_pwd" data-placeholder="user_place_ysmm" name="user_pwd" class="member-input user-info-row__input" placeholder="请输入原始密码">
+											<span class="auth-pwd-eye" data-target="#info_user_pwd" role="button" tabindex="0" aria-label="显示或隐藏密码"></span>
+										</span>
+									</p>
+									<p class="user-info-row user-info-row--field">
+										<span class="user-info-row__label xiang" data-lang="user_xmm">新密码</span>
+										<span class="auth-pwd-group member-pwd-field user-info-row__control user-info-row__control--pwd">
+											<input type="password" id="info_user_pwd1" name="user_pwd1" data-placeholder="user_place_xmm" class="member-input user-info-row__input" placeholder="请输入新密码">
+											<span class="auth-pwd-eye" data-target="#info_user_pwd1" role="button" tabindex="0" aria-label="显示或隐藏密码"></span>
+										</span>
+									</p>
+									<p class="user-info-row user-info-row--field">
+										<span class="user-info-row__label xiang" data-lang="user_cfmm">确认密码</span>
+										<span class="auth-pwd-group member-pwd-field user-info-row__control user-info-row__control--pwd">
+											<input type="password" id="info_user_pwd2" name="user_pwd2" data-placeholder="user_place_cfmm" class="member-input user-info-row__input" placeholder="请重复新密码">
+											<span class="auth-pwd-eye" data-target="#info_user_pwd2" role="button" tabindex="0" aria-label="显示或隐藏密码"></span>
+										</span>
+									</p>
+								</div>
+							</div>
+
+							<div class="user-info-sheet-after">
+								<button type="button" class="user-info-btn user-info-btn--secondary pwd-toggle" id="pwdToggle">
+									<span data-lang="user_change_pwd">修改密码</span>
+								</button>
+
+								<p class="user-info-actions">
+									<input type="button" data-value="string_save" id="btn_submit" class="search-button user-info-btn user-info-btn--primary" value="保存">
+								</p>
+							</div>
+						</form>
+					</div>

@@ -1,0 +1,18 @@
+{if stristr($vo1['type_name'],'纪录片')==true||stristr($vo1['parent']['type_name'],'纪录片')==true}
+<i class="iconfont">&#xe651;</i>
+{elseif stristr($vo1['type_name'],'福利')==true||stristr($vo1['parent']['type_name'],'福利')==true}
+<i class="iconfont">&#xe655;</i>
+{elseif stristr($vo1['type_name'],'明星')==true||stristr($vo1['parent']['type_name'],'明星')==true}
+<i class="iconfont">&#xe629;</i>
+{else}
+<i class="iconfont">
+    {switch name="vo1.type_id"}
+        {case value="1"}&#xe64a;{/case}
+        {case value="2"}&#xe649;{/case}
+        {case value="3"}&#xe64b;{/case}
+        {case value="4"}&#xe648;{/case}
+        {case value="5"}&#xe630;{/case}
+        {default /}&#xe647;
+    {/switch}
+</i>{/if}
+

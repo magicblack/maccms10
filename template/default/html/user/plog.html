@@ -1,0 +1,66 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>金币记录 - 会员中心 - {$maccms.site_name}</title>
+<meta name="keywords" content="">
+<meta name="description" content="">
+{include file="user/include" /}
+<link rel="stylesheet" href="{$maccms.path_tpl}/asset/css/user-plog.css">
+</head>
+
+<body class="mac-plog-wrap">
+	{include file="public/th" /}
+	{include file="public/head" /}
+
+<div class="member-wrap member-wrap-bg">
+<div id="member" class="fn-clear">
+	<div id="left">
+        <div class="m-nav">
+			<a href="javascript:MAC.GoBack()" class="btn-left"><i class="iconfont ico-right">&#xe625;</i></a>
+			<a href="{$maccms.path}" class="btn-right"><i class="iconfont ico-right">&#xe634;</i></a>
+			<span class="mb-title" data-lang="user_grzx">个人中心</span>
+	    </div>
+        {include file="user/left_nav" /}
+	</div>
+    <div id="right">
+	    <div class="m-nav mac-plog-mnav">
+			<a href="javascript:MAC.GoBack()" class="btn-left"><i class="iconfont ico-right">&#xe625;</i></a>
+			<span class="mb-title" data-lang="user_poin_record">金币记录</span>
+			<a href="javascript:;" id="btnClear" class="btn-right mac-plog-clear" title="">
+				<img class="mac-plog-clear-ico" src="{$maccms.path_tpl}/images/plog/plog-empty.png" width="18" height="18" alt="" decoding="async" />
+				<span data-lang="string_qk">清空</span>
+			</a>
+	    </div>
+	    <div class="co-right co-right-bg "
+			data-mac-user-plog
+			data-api-base="{:rtrim($maccms.path,'/').'/api.php'}"
+			data-url-login="{:url('user/login')}"
+			data-plog-del-ico="{$maccms.path_tpl}/images/plog/plog-del-ico.png">
+		<h2 class="mac-plog-page-title" data-lang="user_poin_record">金币记录</h2>
+		<div class="filter-tabs mac-plog-filter-tabs">
+			<a href="{:url('user/plog')}" class="mac-plog-filter" data-filter="" data-lang="string_all">全部</a>
+			<a href="{:url('user/plog',['filter'=>'income'])}" class="mac-plog-filter" data-filter="income" data-lang="user_plog_income">收入</a>
+			<a href="{:url('user/plog',['filter'=>'expense'])}" class="mac-plog-filter" data-filter="expense" data-lang="user_plog_expense">支出</a>
+		</div>
+		<div class="gong">
+			<a href="javascript:;" class="mac-plog-cb-all" data-lang="string_qx">全选</a>
+			<a href="javascript:;" class="mac-plog-cb-other" data-lang="string_fx">反选</a>
+			<a href="javascript:;" id="btnDel" data-lang="string_sc">删除</a>
+			<a href="javascript:;" id="btnClear2" data-lang="string_qk">清空</a>
+		</div>
+		<ul class="order__list data__list mac-plog-list clearfix"></ul>
+		<p class="mac-ulog-loading muted" data-lang="string_loading">加载中~</p>
+		<div class="member-page"></div>
+		<div id="js-mac-plog-notempty-tpl" class="fn-hide" aria-hidden="true">{include file="public/notempty"}</div>
+    </div>
+    </div>
+</div>
+<div style="width:30rem;margin: 2rem auto;">
+	{include file="public/friendLink" }
+</div>
+</div>
+<script src="{$maccms.path_tpl}/asset/js/mac-member-list-utils.js"></script>
+<script src="{$maccms.path_tpl}/asset/js/user-plog-list.js"></script>
+{include file="public/foot" /}
+</body>
+</html>

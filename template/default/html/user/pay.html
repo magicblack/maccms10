@@ -1,0 +1,103 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<title >确认订单 - 会员中心 - {$maccms.site_name}</title>
+	<meta name="keywords" content="{$maccms.site_keywords}"/>
+	<meta name="description" content="{$maccms.site_description}"/>
+	
+	{include file="user/include" /}
+	<link rel="stylesheet" href="{$maccms.path_tpl}/asset/css/user-pay.css">
+</head>
+<body>
+{include file="public/th" /}
+{include file="public/head" /}
+<div id="mac-user-pay-root"
+	class="member-wrap member-wrap-bg"
+	data-url-login="{:url('user/login')}"
+	data-url-recharge-config="{:rtrim($maccms.path,'/').'/api.php/payment/get_config'}"
+	data-url-gopay="{:rtrim($maccms.path,'/').'/api.php/payment/gopay'}"
+	data-url-order-query="{:rtrim($maccms.path,'/').'/api.php/order/check_status'}"
+	data-order-code="{$info.order_code}"
+	data-order-id="{$info.order_id}">
+<div id="member" class="fn-clear">
+	<div id="left">
+        <div class="m-nav">
+			<a href="javascript:MAC.GoBack()" class="btn-left"><i class="iconfont ico-right">&#xe625;</i></a>
+			<a href="{$maccms.path}" class="btn-right"><i class="iconfont ico-right">&#xe634;</i></a>
+			<span class="mb-title" data-lang='string_user_center'>个人中心</span>
+	    </div>
+        {include file="user/left_nav" /}
+	</div>
+	<div id="right">
+	    <div class="m-nav">
+			<a href="javascript:MAC.GoBack()" class="btn-left"><i class="iconfont ico-right">&#xe625;</i></a>
+			<span class="mb-title" data-lang="string_pay_qrdd">确认订单</span>
+	    </div>
+	    <div class="pay-container">
+			<div class="pay-header">
+				<h2 data-lang="string_pay_qrdd">确认订单</h2>
+			</div>
+
+			<div class="order-summary">
+				<div class="order-row">
+					<span class="order-label" data-lang="string_pay_ddbh">订单编号</span>
+					<span class="order-value">{$info.order_code}</span>
+				</div>
+				<div class="order-row">
+					<span class="order-label" data-lang="string_pay_ddje">订单金额</span>
+					<span class="order-value price">{$info.order_price}<span data-lang="user_yuan">元</span></span>
+				</div>
+			</div>
+
+			<p id="mac-pay-status" class="mac-pay-status-hint" style="display:none;"></p>
+
+			<div class="pay-loading-panel" id="pay_loading_panel" style="display:none;" aria-live="polite">
+				<div class="pay-loading-qrcode-block" id="pay_loading_qrcode_block" style="display:none;" aria-hidden="true">
+					<div class="pay-loading-qrcode-host" id="pay_loading_qrcode_host"></div>
+					<p class="pay-loading-qrcode-caption" data-lang="string_mac_dkwx">打开微信，扫码支付</p>
+				</div>
+				<div class="pay-loading-spinner-wrap" id="pay_loading_spinner_wrap">
+					<div class="pay-loading-spinner"></div>
+				</div>
+				<h3 id="pay_loading_title">等待支付结果</h3>
+				<p id="pay_loading_hint">请在新标签页完成支付<br>支付成功后本页将自动刷新</p>
+				<button type="button" class="pay-loading-cancel">我已取消支付</button>
+			</div>
+
+			<form method="post" action="#" id="payForm" target="_blank">
+				<input type="hidden" name="order_id" value="{$info.order_id}">
+				<input type="hidden" name="order_code" value="{$info.order_code}">
+				<input type="hidden" name="payment" id="payment_input" value="">
+				<input type="hidden" name="paytype" id="paytype_input" value="">
+
+				<div class="pm-section-title" data-lang="string_pay_zffs">支付方式</div>
+				<div class="pm-grid" id="payment_grid">
+					<div class="pm-loading" data-lang="string_loading">加载中…</div>
+				</div>
+
+				<div id="paytype_box" style="display:none;">
+					<div class="pm-section-title" data-lang="string_pay_zflx">支付类型</div>
+					<div class="pt-grid" id="paytype_grid"></div>
+				</div>
+
+				<button type="submit" id="btn_submit" data-value="string_submit" class="pay-confirm-btn">确认支付</button>
+			</form>
+		</div>
+	</div>
+</div>
+</div>
+
+<div id="payPayIconsTpl" style="display:none" aria-hidden="true">
+	<div data-icon="alipay"><svg class="icon" style="vertical-align:middle;fill:currentColor;overflow:hidden" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg"><path d="M789 610.3c-38.7-12.9-90.7-32.7-148.5-53.6 34.8-60.3 62.5-129 80.7-203.6H530.5v-68.6h233.6v-38.3H530.5V132h-95.4c-16.7 0-16.7 16.5-16.7 16.5v97.8H182.2v38.3h236.3v68.6H223.4v38.3h378.4c-13.8 47.6-32.4 92.3-54.5 132.9-122.8-40.4-253.8-73.2-336.1-53-52.6 13-86.5 36.1-106.5 60.3-91.4 111-25.9 279.6 167.2 279.6C386 811.2 496 747.6 581.2 643 708.3 704 960 808.7 960 808.7V659.4s-31.6-2.5-171-49.1zM253.9 746.6c-150.5 0-195-118.3-120.6-183.1 24.8-21.9 70.2-32.6 94.4-35 89.4-8.8 172.2 25.2 269.9 72.8-68.8 89.5-156.3 145.3-243.7 145.3z"/></svg></div>
+	<div data-icon="wechat"><svg class="icon" style="vertical-align:middle;fill:currentColor;overflow:hidden" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9.5 4C5.36 4 2 6.91 2 10.5c0 1.94.98 3.68 2.53 4.88L4 18l2.53-1.39c.92.25 1.9.39 2.97.39.56 0 1.11-.04 1.64-.13-.4-.69-.64-1.48-.64-2.37 0-2.84 2.46-5.15 5.5-5.15.37 0 .74.03 1.09.1C16.3 6.3 13.2 4 9.5 4Zm-2 4.5a1 1 0 1 1 0 2 1 1 0 0 1 0-2Zm4 0a1 1 0 1 1 0 2 1 1 0 0 1 0-2Zm4.5 2c-2.49 0-4.5 1.79-4.5 4s2.01 4 4.5 4c.61 0 1.2-.11 1.73-.31L20 19l-.44-1.88c.58-.69.94-1.57.94-2.62 0-2.21-2.01-4-4.5-4Zm-1.5 3a.8.8 0 1 1 0 1.6.8.8 0 0 1 0-1.6Zm3 0a.8.8 0 1 1 0 1.6.8.8 0 0 1 0-1.6Z"/></svg></div>
+	<div data-icon="qq"><svg class="icon" style="vertical-align:middle;fill:currentColor;overflow:hidden" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg"><path d="M824.8 613.2c-16-51.4-34.4-94.6-62.7-165.3C766.5 262.2 689.3 112 511.5 112 331.7 112 256.2 265.2 261 447.9c-28.4 70.8-46.7 113.7-62.7 165.3-34 109.5-23 154.8-14.6 155.8 18 2.2 70.1-82.4 70.1-82.4 0 49 25.2 112.9 79.8 159-26.4 8.1-85.7 29.9-71.6 53.8 11.4 19.3 196.2 12.3 249.5 6.3 53.3 6 238.1 13 249.5-6.3 14.1-23.8-45.3-45.7-71.6-53.8 54.6-46.2 79.8-110.1 79.8-159 0 0 52.1 84.6 70.1 82.4 8.5-1.1 19.5-46.4-14.5-155.8z"/></svg></div>
+	<div data-icon="wallet"><svg class="icon" style="vertical-align:middle;fill:currentColor;overflow:hidden" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg"><path d="M880 112H144c-17.7 0-32 14.3-32 32v736c0 17.7 14.3 32 32 32h736c17.7 0 32-14.3 32-32V144c0-17.7-14.3-32-32-32zm-40 464H528V448h312v128zm0 264H184V184h656v200H496c-17.7 0-32 14.3-32 32v192c0 17.7 14.3 32 32 32h344v200zM620 512m-40 0a40 40 0 1 0 80 0 40 40 0 1 0-80 0z"/></svg></div>
+</div>
+
+<script src="{$maccms.path_tpl}/asset/js/mac-member-list-utils.js"></script>
+<script src="{$maccms.path_tpl}/asset/js/pay-qrcode-render.js?v=202604161"></script>
+<script src="{$maccms.path_tpl}/asset/js/user-pay-confirm.js"></script>
+{include file="public/foot" /}
+</body>
+</html>

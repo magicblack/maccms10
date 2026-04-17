@@ -1,0 +1,23 @@
+<script>
+  (function () {
+      function readCookie(name) {
+          var m = document.cookie.match(new RegExp('(?:^|;\\s*)' + name + '=([^;]*)'));
+          if (!m) {
+              return '';
+          }
+          try {
+              return decodeURIComponent(m[1].replace(/\+/g, ' '));
+          } catch (e) {
+              return m[1];
+          }
+      }
+      var v = String(readCookie('mystyle') || '').trim();
+      var def = '{$tplconfig.theme.color.ms|default="white"}';
+      var dark = (v === 'black') || ((v !== 'white' && v !== 'black') && String(def) === 'black');
+      document.body.classList.toggle('bstem', dark);
+      var sheet = document.getElementById('macThemeDarkSheet');
+      if (sheet) {
+          sheet.disabled = !dark;
+      }
+  })();
+</script>

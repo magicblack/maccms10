@@ -741,7 +741,12 @@ CREATE TABLE `mac_user` (
   `user_pid` int(10) unsigned NOT NULL DEFAULT '0' ,
   `user_pid_2` int(10) unsigned NOT NULL DEFAULT '0' ,
   `user_pid_3` int(10) unsigned NOT NULL DEFAULT '0' ,
+  `user_invite_code` varchar(20) NOT NULL DEFAULT '' COMMENT '邀请码',
+  `user_invite_count` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '邀请人数',
+  `user_invite_reward_time` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '最后一次发放奖励时间',
+  `user_invite_reward_level` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '已发放奖励档次(避免重复发放)',
   PRIMARY KEY (`user_id`),
+  KEY `user_invite_code` (`user_invite_code`),
   KEY `type_id` (`group_id`) USING BTREE,
   KEY `user_name` (`user_name`),
   KEY `user_reg_time` (`user_reg_time`)
@@ -1209,3 +1214,129 @@ CREATE TABLE `mac_analytics_retention_cohort` (
   KEY `idx_cohort` (`cohort_date`,`cohort_type`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='运营统计-留存 cohort';
 
+-- ----------------------------
+-- Table structure for mac_task
+-- ----------------------------
+DROP TABLE IF EXISTS `mac_task`;
+CREATE TABLE `mac_task` (
+  `task_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `task_name` varchar(100) NOT NULL DEFAULT '' COMMENT '任务名称',
+  `task_type` tinyint(1) unsigned NOT NULL DEFAULT '1' COMMENT '任务类型 1=每日任务 2=新手任务',
+  `task_action` varchar(50) NOT NULL DEFAULT '' COMMENT '任务动作标识',
+  `task_icon` varchar(255) NOT NULL DEFAULT '' COMMENT '任务图标',
+  `task_desc` varchar(255) NOT NULL DEFAULT '' COMMENT '任务描述',
+  `task_points` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '奖励积分',
+  `task_target` int(10) unsigned NOT NULL DEFAULT '1' COMMENT '目标次数',
+  `task_sort` int(10) NOT NULL DEFAULT '0' COMMENT '排序',
+  `task_status` tinyint(1) unsigned NOT NULL DEFAULT '1' COMMENT '状态 0=禁用 1=启用',
+  `task_time_add` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '创建时间',
+  `task_time` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '更新时间',
+  PRIMARY KEY (`task_id`),
+  KEY `task_type` (`task_type`),
+  UNIQUE KEY `task_action` (`task_action`),
+  KEY `task_status` (`task_status`),
+  KEY `task_sort` (`task_sort`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='任务定义表';
+
+-- ----------------------------
+-- Default data for mac_task
+-- ----------------------------
+INSERT INTO `mac_task` (`task_name`,`task_type`,`task_action`,`task_desc`,`task_points`,`task_target`,`task_sort`,`task_status`,`task_time_add`,`task_time`) VALUES
+('每日签到',1,'daily_sign','每天签到获得积分奖励',5,1,1,1,0,0),
+('观看影片',1,'watch_vod','每日观看3部影片',3,3,2,1,0,0),
+('分享影片',1,'share_vod','每日分享1次影片到社交平台',2,1,3,1,0,0),
+('发表评论',1,'post_comment','每日发表1条评论',2,1,4,1,0,0),
+('绑定手机',2,'bind_phone','绑定手机号码',20,1,1,1,0,0),
+('绑定邮箱',2,'bind_email','绑定电子邮箱',20,1,2,1,0,0),
+('设置头像',2,'set_portrait','上传个人头像',10,1,3,1,0,0),
+('完善资料',2,'complete_profile','填写个人昵称等资料',10,1,4,1,0,0),
+('首次充值',2,'first_pay','完成首次充值',50,1,5,1,0,0);
+
+-- ----------------------------
+-- Table structure for mac_task_log
+-- ----------------------------
+DROP TABLE IF EXISTS `mac_task_log`;
+CREATE TABLE `mac_task_log` (
+  `log_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `user_id` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '用户ID',
+  `task_id` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '任务ID',
+  `task_action` varchar(50) NOT NULL DEFAULT '' COMMENT '任务动作标识',
+  `log_progress` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '当前进度',
+  `log_status` tinyint(1) unsigned NOT NULL DEFAULT '0' COMMENT '状态 0=进行中 1=已完成待领取 2=已领取',
+  `log_points` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '获得积分',
+  `log_date` date NOT NULL COMMENT '任务日期',
+  `log_time` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '记录时间',
+  `log_claim_time` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '领取奖励时间',
+  PRIMARY KEY (`log_id`),
+  UNIQUE KEY `user_task_date` (`user_id`, `task_id`, `log_date`),
+  KEY `user_id` (`user_id`),
+  KEY `task_id` (`task_id`),
+  KEY `log_status` (`log_status`),
+  KEY `log_date` (`log_date`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='用户任务记录表';
+
+-- ----------------------------
+-- Table structure for mac_sign_log
+-- ----------------------------
+DROP TABLE IF EXISTS `mac_sign_log`;
+CREATE TABLE `mac_sign_log` (
+  `sign_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `user_id` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '用户ID',
+  `sign_date` date NOT NULL COMMENT '签到日期',
+  `sign_time` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '签到时间戳',
+  `sign_points` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '获得积分',
+  `sign_serial_days` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '连续签到天数',
+  PRIMARY KEY (`sign_id`),
+  UNIQUE KEY `user_date` (`user_id`, `sign_date`),
+  KEY `user_id` (`user_id`),
+  KEY `sign_date` (`sign_date`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='签到记录表';
+
+-- ----------------------------
+-- Table structure for mac_sign_milestone
+-- ----------------------------
+DROP TABLE IF EXISTS `mac_sign_milestone`;
+CREATE TABLE `mac_sign_milestone` (
+  `milestone_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `milestone_name` varchar(100) NOT NULL DEFAULT '' COMMENT '里程碑名称',
+  `milestone_days` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '所需连续签到天数',
+  `milestone_points` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '奖励积分',
+  `milestone_icon` varchar(255) NOT NULL DEFAULT '' COMMENT '里程碑图标',
+  `milestone_desc` varchar(255) NOT NULL DEFAULT '' COMMENT '里程碑描述',
+  `milestone_sort` int(10) NOT NULL DEFAULT '0' COMMENT '排序',
+  `milestone_status` tinyint(1) unsigned NOT NULL DEFAULT '1' COMMENT '状态 0=禁用 1=启用',
+  `milestone_time_add` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '创建时间',
+  `milestone_time` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '更新时间',
+  PRIMARY KEY (`milestone_id`),
+  KEY `milestone_days` (`milestone_days`),
+  KEY `milestone_status` (`milestone_status`),
+  KEY `milestone_sort` (`milestone_sort`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COMMENT='签到里程碑定义表';
+
+-- ----------------------------
+-- Default data for mac_sign_milestone
+-- ----------------------------
+INSERT INTO `mac_sign_milestone` (`milestone_name`,`milestone_days`,`milestone_points`,`milestone_desc`,`milestone_sort`,`milestone_status`,`milestone_time_add`,`milestone_time`) VALUES
+('连续签到3天', 3, 5, '连续签到3天可领取5个金币', 1, 1, 0, 0),
+('连续签到10天', 10, 10, '连续签到10天可领取10个金币', 2, 1, 0, 0),
+('连续签到20天', 20, 20, '连续签到20天可领取20个金币', 3, 1, 0, 0),
+('连续签到35天', 35, 30, '连续签到35天可领取30个金币', 4, 1, 0, 0),
+('连续签到55天', 55, 50, '连续签到55天可领取50个金币', 5, 1, 0, 0),
+('连续签到85天', 85, 100, '连续签到85天可领取100个金币', 6, 1, 0, 0);
+
+-- ----------------------------
+-- Table structure for mac_sign_milestone_log
+-- ----------------------------
+DROP TABLE IF EXISTS `mac_sign_milestone_log`;
+CREATE TABLE `mac_sign_milestone_log` (
+  `log_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `user_id` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '用户ID',
+  `milestone_id` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '里程碑ID',
+  `milestone_days` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '里程碑所需天数',
+  `log_points` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '获得积分',
+  `log_time` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '领取时间',
+  PRIMARY KEY (`log_id`),
+  UNIQUE KEY `user_milestone` (`user_id`, `milestone_id`),
+  KEY `user_id` (`user_id`),
+  KEY `milestone_id` (`milestone_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COMMENT='签到里程碑领取记录表';

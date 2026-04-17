@@ -1,0 +1,25 @@
+{if condition="$vo.art_pic eq ''"}
+<li class="artlist_item no_artpic">  
+    <div class="artlist_txt">	
+	     <h4 class="artlist_title"><a href="{:mac_url_art_detail($vo)}" title="{$vo.art_name}">{$vo.art_name}</a></h4>
+	     <p class="artzy hidden_xs">{$vo.art_blurb}</p>
+	     <p class="artty">{if condition="($maccms.aid eq 1) OR ($obj.type_id eq 5)"}<span class="name_text{$vo.type.type_id} pic_text text_right">{$vo.type.type_name}</span>{/if}<span>{$vo.art_time|mac_friend_date}</span><span class="artyd">{$vo.art_hits}<span data-lang="read">阅读</span></span></p>
+    </div>		
+</li>
+{else}
+<li class="artlist_item">  
+    <div class="artlist_txt">	
+	     <h4 class="artlist_title"><a href="{:mac_url_art_detail($vo)}" title="{$vo.art_name}">{$vo.art_name}</a></h4>
+	     <p class="artzy hidden_xs">{$vo.art_blurb}</p>
+	     <p class="artty">{if condition="($maccms.aid eq 1) OR ($obj.type_id eq 5)"}<span class="name_text{$vo.type.type_id} pic_text text_right">{$vo.type.type_name}</span>{/if}<span>{$vo.art_time|mac_friend_date}</span><span class="artyd">{$vo.art_hits}<span data-lang="read">阅读</span></span></p>
+    </div>
+	<div class="artlist_img">
+		<a class="artlist_thumb lazyload" href="{:mac_url_art_detail($vo)}" title="{$vo.art_name}" data-original="{$vo.art_pic|mac_url_img}">						
+			{assign name="mac_points_value" value="$vo.art_points" /}
+			{include file="widget/mac_badge_top_right" /}
+			{include file="widget/mac_badge_bottom_right" /}
+			<span class="look hidden_xs"></span>
+	    </a>
+	</div> 		
+</li>
+{/if}

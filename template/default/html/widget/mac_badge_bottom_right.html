@@ -1,0 +1,25 @@
+
+<span class="mac_badge_bottom_right">
+{if condition="isset($vo['vod_id'])"}
+
+{if condition="$vo.vod_isend eq 1"}
+<span class="mac_badge_serial mac_badge_end"><span data-lang="string_vod_close">已完结</span></span>
+{else /}
+<span class="mac_badge_serial mac_badge_ongoing"><span data-lang="string_lianzai">连载中</span></span>
+{/if}
+{elseif condition="isset($vo['art_id'])"}
+
+{if condition="!empty($vo.art_remarks) && strpos($vo.art_remarks,'完结') !== false"}
+<span class="mac_badge_serial mac_badge_end"><span data-lang="string_vod_close">已完结</span></span>
+{else /}
+<span class="mac_badge_serial mac_badge_ongoing"><span data-lang="string_lianzai">连载中</span></span>
+{/if}
+{elseif condition="isset($vo['manga_id'])"}
+
+{if condition="!empty($vo.manga_remarks) && strpos($vo.manga_remarks,'完结') !== false"}
+<span class="mac_badge_serial mac_badge_end"><span data-lang="string_vod_close">已完结</span></span>
+{else /}
+<span class="mac_badge_serial mac_badge_ongoing"><span data-lang="string_lianzai">连载中</span></span>
+{/if}
+{/if}
+</span>

@@ -1,0 +1,106 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no">
+    <title>单页播放器</title>
+    
+    {include file="public/include"}
+	<link rel="stylesheet" type="text/css" href="{$maccms.path_tpl}/asset/css/vod-player.css" />
+    <script src="{$maccms.path}static/js/jquery.js"></script>
+    <script src="{$maccms.path}template/default/asset/js/head-defer-public.js?v=202604161"></script>
+    
+</head>
+<body topmargin="0" leftmargin="0" marginheight="0" marginwidth="0">
+    {include file="public/th" /}
+    {$player_data}
+{$player_js}
+{if condition="$popedom.code gt 1"/}
+<div class="player_showtry" style="display:none;">
+    <div class="player_box">
+        <div class="player_popeom">
+            {if condition="$obj.vod_points_play eq 0"}
+            <p class="sk-time">
+                <span data-lang="play_sk">试看</span>
+                {$popedom.trysee}
+                <span data-lang="play_mjs_min">分钟结束</span>
+            </p>
+			<p class="sk-smm" data-lang="play_wzgk">完整观看本影片需要升级会员组，请升级后观看</p>
+            <small data-lang="play_tshi">提示：购买VIP会员组，享受超级权限，谢谢支持</small>
+            <p>
+                <a data-lang="play_mssj" href="{:url('user/upgrade')}" target="_blank">马上升级</a>
+                <a data-lang="string_mac_hyzx" class="user-wbg" href="{:url('user/index')}" target="_blank">
+                    会员中心
+                </a>
+            </p>
+            {else/}
+            <p class="sk-time">
+                <span data-lang="play_sk">试看</span>{$popedom.trysee}
+                <span data-lang="play_mjs_min">分钟结束</span>
+            </p>
+			<p class="sk-smm">
+                <span data-lang="play_wzhf">完整观看本影片需要花费</span>
+                {$obj.vod_points_play}
+                <span data-lang="play_zfgk">金币，请支付后观看</span>
+            </p>
+            <small data-lang="play_yczf">提示：一次支付，永久观看，不重复扣费，谢谢支持</small>
+            {if condition="$user.group.group_id eq 1"}
+                <p>
+                    <a data-lang="play_msdl" class="mscz" href="{:url('user/login')}" target="_blank">马上登录</a>
+                </p>
+            {else/}
+                <p>
+                    <a data-lang="play_mscz" class="qrgm" href="{:url('user/buy')}" target="_blank">马上充值</a>
+				   <a class="mscz" href="javascript:;" onclick="window.parents.MAC.User.BuyPopedom(this)" data-id="{$obj.vod_id}" data-sid="{$param.sid}" data-nid="{$param.nid}" data-type="4" data-lang="play_qrgm" >确认购买</a>
+                </p>
+            {/if}
+            {/if}
+
+        </div>
+    </div>
+</div>
+<script>
+    var lang=localStorage.getItem('lang');
+    language_pack.loadProperties(lang);
+
+    (function(){
+        var tryseeSeconds = {$popedom.trysee} * 60;
+        var ended = false;
+
+        function endTrysee(){
+            if(ended) return;
+            ended = true;
+            $('.MacPlayer').html( $('.player_showtry').html() );
+        }
+
+        function watchVideo(){
+            var video = document.querySelector('video');
+            if(video){
+                video.addEventListener('timeupdate', function(){
+                    if(this.currentTime >= tryseeSeconds){
+                        this.pause();
+                        endTrysee();
+                    }
+                });
+                video.addEventListener('seeking', function(){
+                    if(this.currentTime >= tryseeSeconds){
+                        this.currentTime = tryseeSeconds - 1;
+                        this.pause();
+                        endTrysee();
+                    }
+                });
+            } else {
+                setTimeout(watchVideo, 500);
+            }
+        }
+        watchVideo();
+
+        window.setTimeout(endTrysee, tryseeSeconds * 1000);
+    })();
+</script>
+{/if}
+
+
+</body>
+</html>
+

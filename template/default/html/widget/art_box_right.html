@@ -1,0 +1,19 @@
+{if condition="$vo.art_pic eq ''"}
+<li class="no_artpic">
+   <a href="{:mac_url_art_detail($vo)}" title="{$vo.art_name}">
+   <div class="artlr_tit"><p class="artlr_b">{$vo.art_name}</p><p class="artlr_name">{$vo.type.type_name}</p></div>
+   </a>
+</li>
+{else}
+<li>
+   <a href="{:mac_url_art_detail($vo)}" title="{$vo.art_name}">
+   <div class="artlr_tit"><p class="artlr_b">{$vo.art_name}</p><p class="artlr_name">{$vo.type.type_name}</p></div>
+   <div class="artlr_pic lazyload" data-original="{$vo.art_pic|mac_url_img}">
+       {assign name="mac_points_value" value="$vo.art_points" /}
+       {include file="widget/mac_badge_top_right" /}
+       {include file="widget/mac_badge_bottom_right" /}
+       <span class="look hidden_xs"></span>
+   </div>
+   </a>
+</li>
+{/if}

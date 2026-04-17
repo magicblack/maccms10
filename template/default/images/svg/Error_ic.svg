@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="14" height="14" viewBox="0 0 14 14" xmlns="http://www.w3.org/2000/svg" fill="none" aria-hidden="true">
+    <title>Error_ic</title>
+    <circle cx="7" cy="7" r="6.5" stroke="currentColor" />
+    <g transform="translate(6.461538 3.230769)" stroke="currentColor">
+        <line x1="0.538461538" y1="0" x2="0.538461538" y2="4.84615385" />
+        <line x1="0.538461538" y1="5.92307692" x2="0.538461538" y2="7" />
+    </g>
+</svg>

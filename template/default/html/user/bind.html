@@ -1,0 +1,99 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<title>{if condition="$ac eq 'phone'"}绑定手机{else/}绑定邮箱{/if} - 会员中心 - {$maccms.site_name}</title>
+	<meta name="keywords" content="">
+	<meta name="description" content="">
+	{include file="user/include" /}
+	<link rel="stylesheet" href="{$maccms.path_tpl}/asset/css/user-info.css" />
+	<link rel="stylesheet" href="{$maccms.path_tpl}/asset/css/user-bind.css" />
+</head>
+<body class="user-info-page-wrap user-bind-page-wrap">
+{include file="public/head" /}
+
+<div class="member-wrap member-wrap-bg">
+<div id="member" class="fn-clear">
+	<div id="left">
+        <div class="m-nav">
+			<a href="javascript:MAC.GoBack()" class="btn-left"><i class="iconfont ico-right">&#xe625;</i></a>
+			<a href="{$maccms.path}" class="btn-right"><i class="iconfont ico-right">&#xe634;</i></a>
+			<span class="mb-title" data-lang="user_grzx">个人中心</span>
+	    </div>
+        {include file="user/left_nav" /}
+	</div>
+	<div id="right">
+	    <div class="m-nav">
+			<a href="javascript:MAC.GoBack()" class="btn-left"><i class="iconfont ico-right">&#xe625;</i></a>
+			<span class="mb-title">
+				<span data-lang="user_binding">绑定</span>
+				{if condition="$ac eq 'phone'"}<span data-lang="user_phone">手机</span>{else/}<span data-lang="user_email">邮箱</span>{/if}
+			</span>
+	    </div>
+	    <div class="co-right co-right-bg">
+		<h2 class="bind-page-title-pc">
+			<span data-lang="user_binding">绑定</span>
+			{if condition="$ac eq 'phone'"}<span data-lang="user_phone">手机</span>{else/}<span data-lang="user_email">邮箱</span>{/if}
+		</h2>
+		<div id="tab">
+			<div id="listCon">
+				<div class="cur bind-page-card" id="userBindRoot"
+					data-url-bindmsg="{:url('user/bindmsg')}"
+					data-url-bind="{:url('user/bind')}"
+					data-url-info="{:url('user/info')}"
+					data-readonly="{$bind_readonly}">
+					{if condition="$bind_readonly"}
+					{if condition="$ac eq 'phone'"}
+					<p class="bind-tip"><span data-lang="user_bind_already_phone">当前账号已绑定手机。如需更换，请先在「我的资料」中解绑后再绑定新手机号。</span></p>
+					{else/}
+					<p class="bind-tip"><span data-lang="user_bind_already_email">当前账号已绑定邮箱。如需更换，请先在「我的资料」中解绑后再绑定新邮箱。</span></p>
+					{/if}
+					<div class="bind-row">
+						<span class="xiang">{if condition="$ac eq 'phone'"}<span data-lang="user_phone">手机</span>{else/}<span data-lang="user_email">邮箱</span>{/if}</span>
+						<div class="bind-row-main">
+							{if condition="$ac eq 'phone'"}
+							<input type="text" class="member-input wt-input" readonly="readonly" aria-readonly="true" value="{$obj.user_phone}">
+							{else/}
+							<input type="text" class="member-input wt-input" readonly="readonly" aria-readonly="true" value="{$obj.user_email}">
+							{/if}
+						</div>
+					</div>
+					<div class="bind-submit-wrap">
+						<a href="{:url('user/info')}" class="bind-back-btn" data-lang="user_bind_go_info">返回我的资料</a>
+					</div>
+					{else/}
+					<p class="bind-page-desc"><span data-lang="user_bind_intro">请填写需要绑定的账号并完成验证</span></p>
+					<form id="fm" name="fm" method="post" action="">
+						<input type="hidden" name="ac" value="{$ac}">
+						<div class="bind-row bind-row--to">
+							<span class="xiang">{if condition="$ac eq 'phone'"}<span data-lang="user_phone">手机</span>{else/}<span data-lang="user_email">邮箱</span>{/if}</span>
+							<div class="bind-row-main">
+								{if condition="$ac eq 'phone'"}
+								<input type="text" name="to" class="member-input wt-input" autocomplete="off" data-placeholder="user_place_shouji" placeholder="请输入手机号码" value="">
+								{else/}
+								<input type="text" name="to" class="member-input wt-input" autocomplete="off" data-placeholder="user_place_email" placeholder="请输入邮箱" value="">
+								{/if}
+								<input type="button" class="bind-send" id="btn_bind_send" data-lang="string_login_yzm" value="获取验证码" />
+							</div>
+						</div>
+						<div class="bind-row">
+							<span class="xiang" data-lang="user_yanzhengma">验证码</span>
+							<div class="bind-row-main">
+								<input type="text" name="code" class="member-input" data-placeholder="user_place_yanzm" autocomplete="one-time-code" placeholder="请输入您的验证码" value="">
+							</div>
+						</div>
+						<div class="bind-submit-wrap">
+							<input type="button" id="btn_submit" class="search-button" data-lang="confirm_binding" value="确认绑定">
+						</div>
+					</form>
+					{/if}
+				</div>
+			</div>
+		</div>
+	</div>
+	</div>
+</div>
+</div>
+<script src="{$maccms.path_tpl}/asset/js/user-bind.js"></script>
+{include file="public/foot" /}
+</body>
+</html>

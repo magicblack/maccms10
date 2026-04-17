@@ -131,13 +131,34 @@ class Website extends Base
             ]);
         }
 
-        $res = Db::table('mac_website')->where(['website_id' => $param['website_id']])->select();
+        $wid = (int)$param['website_id'];
+        $res = Db::table('mac_website')->where(['website_id' => $wid, 'website_status' => 1])->find();
+        if (empty($res)) {
+            return json(['code' => 1001, 'msg' => '数据不存在']);
+        }
 
-        // 返回
+        $res['website_pic'] = mac_url_img($res['website_pic'] ?? '');
+        $res['website_logo'] = mac_url_img($res['website_logo'] ?? '');
+        $res['website_link'] = mac_url_website_detail($res);
+
+        $typeList = model('Type')->getCache('type_list');
+        if (!empty($res['type_id']) && isset($typeList[$res['type_id']])) {
+            $res['type'] = $typeList[$res['type_id']];
+            $pid = (int)($res['type']['type_pid'] ?? 0);
+            $res['type_1'] = $pid && isset($typeList[$pid]) ? $typeList[$pid] : [];
+            $res['type_link'] = mac_url_type($res['type']);
+            $res['type_1_link'] = (!empty($res['type_1']) && is_array($res['type_1'])) ? mac_url_type($res['type_1']) : '';
+        } else {
+            $res['type'] = [];
+            $res['type_1'] = [];
+            $res['type_link'] = '';
+            $res['type_1_link'] = '';
+        }
+
         return json([
             'code' => 1,
             'msg'  => '获取成功',
-            'info' => $res
+            'info' => $res,
         ]);
     }
 }

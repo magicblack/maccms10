@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head>
+    {include file="public/include"}
+	<link rel="stylesheet" type="text/css" href="{$maccms.path_tpl}/asset/css/manga-index.css" />
+</head>
+
+<body id="manga_index_page">
+    {include file="public/th" /}
+    {php}$manga_poster_class = (mac_tpl_manga_cover() === 'h') ? 'mac-poster--h' : 'mac-poster--v';{/php}
+{include file="public/head"}
+<div class="container manga-index">
+    {include file="ads/ads_all"}
+
+    <section class="manga-index-hero" aria-labelledby="manga-index-hero-kicker manga-index-hero-lead">
+        <div class="manga-index-hero__bg" aria-hidden="true"></div>
+        <div class="manga-index-hero__content">
+            <p class="manga-index-kicker" id="manga-index-hero-kicker"><span data-lang="string_manga_index_kicker">漫画库</span></p>
+            <p class="manga-index-lead" id="manga-index-hero-lead" data-lang="string_manga_index_lead">全分类一览 · 按更新时间刷最新</p>
+        </div>
+    </section>
+
+    <div class="manga_nav_row">
+        <div class="manga_navlist" id="hl01">
+            <div class="scroller">
+                <ul class="clearfix">
+                    {maccms:type mid="12" order="sort desc" by="sort" id="vo"}
+                    <li {if condition="($vo.type_id eq $GLOBALS['type_id'] || $vo.type_id eq $GLOBALS['type_pid'])"}class="active"{/if}>
+                        <a href="{:mac_url_type($vo)}" class="text_muted">{$vo.type_name}</a>
+                    </li>
+                    {/maccms:type}
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    
+    <div class="manga_list_row">
+        <div class="pannel">
+            <div class="pannel_head manga-head manga-head--stage">
+                <div class="manga-head-left">
+                    <h2 class="title" id="manga-index-main-title" data-lang="string_all_manga">全部漫画</h2>
+                    <div class="manga-head-sub" data-lang="string_manga_index_panel_sub">按更新时间排序 · 持续更新</div>
+                </div>
+                <span class="pull_right manga-total manga-total--badge">
+                    <span data-lang="string_zg">共有</span>
+                    <em class="mac_total"></em>
+                    <span data-lang="string_manga_unit">部漫画</span>
+                </span>
+            </div>
+            <ul class="vodlist vodlist_wi manga-grid {$manga_poster_class}">
+                {maccms:manga num="24" paging="yes" half="3" pageurl="manga/index" order="desc" by="time"}
+                <li class="vodlist_item num_{$key}">
+                    <a class="vodlist_thumb lazyload" href="{:mac_url_manga_detail($vo)}" title="{$vo.manga_name}" data-original="{:mac_url_img($vo.manga_pic)}">
+                        {assign name="mac_points_value" value="$vo.manga_points" /}
+                        {include file="widget/mac_badge_top_right" /}
+                        {include file="widget/mac_badge_bottom_right" /}
+                    </a>
+                    <div class="vodlist_titbox">
+                        <p class="vodlist_title">
+                            <a href="{:mac_url_manga_detail($vo)}" title="{$vo.manga_name}">{$vo.manga_name}</a>
+                        </p>
+                        <p class="vodlist_sub">{if condition="$vo.manga_remarks eq ''"}<span data-lang="string_lianzai">连载中</span>{else/}{$vo.manga_remarks}{/if}</p>
+                    </div>
+                </li>
+                {/maccms:manga}
+            </ul>
+            <span id="manga-index-total-src" hidden data-total="{$__PAGING__.record_total|default='0'}"></span>
+            {empty name="$__PAGING__.record_total"}
+            <div class="show_no" data-lang="string_manga_nodata">抱歉！暂无漫画数据</div>
+            {/empty}
+            {include file="widget/page"}
+        </div>
+    </div>
+</div>
+<script type="text/javascript" src="{$maccms.path_tpl}/asset/js/manga-index.js"></script>
+{include file="public/foot"}
+</body>
+</html>
+

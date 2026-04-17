@@ -1,0 +1,19 @@
+<link rel="stylesheet" type="text/css" href="{$maccms.path}template/default/asset/css/friendLink.css">
+{if condition="empty($tplconfig['theme']['links']['btn']) || $tplconfig['theme']['links']['btn'] eq 1"}
+<div id="link" class="block show-pc">
+    <div id="title">{$tplconfig.theme.links.title|default='友情链接'}</div>
+    <ul class="js-home-lazy-section"
+        id="js-home-link-list"
+        data-section="friend-links"
+        data-api-action="link/get_list"
+        data-limit="{$tplconfig.theme.links.num|default='50'}"
+        data-start="0">
+        <li class="home-skeleton-link-item"></li>
+        <li class="home-skeleton-link-item"></li>
+        <li class="home-skeleton-link-item"></li>
+        <li class="home-skeleton-link-item"></li>
+        <li class="home-skeleton-link-item"></li>
+        <div class="clear"></div>
+    </ul>
+</div>
+{/if}

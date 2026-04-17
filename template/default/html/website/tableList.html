@@ -1,0 +1,66 @@
+<div class="ui-box ui-qire fn-clear show-pc" id="qire-lasted">
+    <div class="ui-title fn-clear">
+        <div class="table-head lasted-time" data-lang="string_zuijingx">最近更新</div>
+        <div class="table-head " data-lang="string_show_leixing">类型</div>
+        <div class="table-head lasted-tags " data-lang="website_bq">标签</div>
+        <div class="table-head lasted-type" data-lang="website_gxsj">更新时间</div>
+
+    </div>
+    <div class="ui-cnt">
+        <ul class="lasted-list fn-clear website-list">
+            {maccms:website num="200" paging="yes" order="desc" by="time"}
+            <li>
+                <div class="table-body lasted-tit fn-left">
+                    <h5 class="show-tipinfo"><a href="{:mac_url_website_detail($vo)}">{$vo.website_name}</a><em></em></h5>
+                </div>
+                <div class="table-body lasted-type fn-left"><a href="{:mac_url_type($vo.type)}">{$vo.type.type_name}</a></div>
+                <div class="table-body lasted-tags fn-left"><span target='_blank'>{$vo.website_area}</span></div>
+                <div class="table-body lasted-time fn-right">{$vo.website_time|date='Y-m-d',###}</div>
+            </li>
+            {/maccms:website}
+        </ul>
+        {//include file="public/paging"}
+    </div>
+</div>
+
+<div class="show-mobile" id="qire-lasted">
+    <div class="">
+        <ul class="website-list">
+            {maccms:website num="200" paging="yes" order="desc" by="time"}
+            <div class="table-wrap">
+                <div class="table-con">
+                    <p class="left" data-lang="string_zuijingx">最近更新</p>
+                    <a class="right" href="{:mac_url_website_detail($vo)}">{$vo.website_name}</a>
+                </div>
+                <div class="table-con type">
+                    <p class="left" data-lang="string_show_leixing">类型</p>
+                    <a class="right" href='{:mac_url_type($vo.type,['area'=>$vo.website_area],'list')}' target='_blank'>{$vo.website_area}</a>
+                </div>
+                <div class="table-con  sign">
+                    <p class="left" data-lang="website_bq">标签</p>
+                    <a class="right" href="{:mac_url_type($vo.type)}">{$vo.type.type_name}</a>
+                </div>
+                <div class="table-con ">
+                    <p class="left"  data-lang="website_gxsj">更新时间</p>
+                    <p class="right">{$vo.website_time|date='Y-m-d',###}</p>
+                </div>
+            </div>
+           
+            {/maccms:website}
+        </ul>
+        {include file="public/paging"}
+    </div>
+</div>
+
+<div class="no_list">
+    {include file="public/notempty"}
+</div>
+<script>
+    (function(){
+        if($('.website-list').children().length<=0){
+            $('.no_list').show()
+        }else{
+            $('.no_list').hide() 
+        }
+    })()
+</script>

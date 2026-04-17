@@ -1,0 +1,82 @@
+{if condition="!empty($tplconfig['theme']['bnav'])"}
+{php}
+$__app_dl_android = trim((string)($tplconfig['theme']['site_card']['apk_android_url'] ?? ''));
+$__app_dl_ios = trim((string)($tplconfig['theme']['site_card']['apk_ios_url'] ?? ''));
+$__app_dl_legacy = trim((string)($tplconfig['theme']['site_card']['apk_url'] ?? ''));
+if ($__app_dl_android === '' && $__app_dl_legacy !== '') { $__app_dl_android = $__app_dl_legacy; }
+if ($__app_dl_ios === '' && $__app_dl_legacy !== '') { $__app_dl_ios = $__app_dl_legacy; }
+if ($__app_dl_android === '' && $__app_dl_ios === '') {
+    $__old = trim((string)($tplconfig['theme']['app_dl']['url'] ?? ''));
+    $__app_dl_android = $__old;
+    $__app_dl_ios = $__old;
+}
+$__mac_show_app_dl_bar = isset($maccms['controller_action']) && strtolower((string)$maccms['controller_action']) === 'index/index';
+$__app_dl_logo_def = 'template/default/images/la/logo@2x.png';
+$__app_dl_logo_legacy = trim((string)($tplconfig['theme']['app_dl']['applogo'] ?? ''));
+$__app_dl_logo_light = trim((string)($tplconfig['theme']['app_dl']['applogo_light'] ?? ''));
+$__app_dl_logo_dark = trim((string)($tplconfig['theme']['app_dl']['applogo_dark'] ?? ''));
+if ($__app_dl_logo_light === '') {
+    $__app_dl_logo_light = $__app_dl_logo_legacy !== '' ? $__app_dl_logo_legacy : $__app_dl_logo_def;
+}
+if ($__app_dl_logo_dark === '') {
+    $__app_dl_logo_dark = $__app_dl_logo_legacy !== '' ? $__app_dl_logo_legacy : $__app_dl_logo_light;
+}
+$__app_dl_logo_light_src = mac_url_img($__app_dl_logo_light);
+$__app_dl_logo_dark_src = mac_url_img($__app_dl_logo_dark);
+{/php}
+{if condition="$__app_dl_android !== '' || $__app_dl_ios !== ''"}
+{if condition="$__mac_show_app_dl_bar"}
+<aside class="hidden_mb mac-app-dl-bar" id="macAppDlBar" hidden
+    data-app-android-url="{:htmlspecialchars($__app_dl_android, ENT_QUOTES, 'UTF-8')}"
+    data-app-ios-url="{:htmlspecialchars($__app_dl_ios, ENT_QUOTES, 'UTF-8')}"
+    data-rev="{php}echo substr(md5($__app_dl_android . '|' . $__app_dl_ios . '|' . $__app_dl_logo_light . '|' . $__app_dl_logo_dark), 0, 12);{/php}"
+    role="region"
+    aria-label="App">
+    <button type="button" class="mac-app-dl-bar__close js-mac-app-dl-close" aria-label="关闭">
+        <span class="mac-app-dl-bar__close-x" aria-hidden="true">×</span>
+    </button>
+    <span class="mac-app-dl-bar__logos">
+        <img class="mac-app-dl-bar__logo mac-app-dl-bar__logo--light" width="48" height="48" decoding="async" alt=""
+            src="{$__app_dl_logo_light_src}" />
+        <img class="mac-app-dl-bar__logo mac-app-dl-bar__logo--dark" width="48" height="48" decoding="async" alt=""
+            src="{$__app_dl_logo_dark_src}" />
+    </span>
+    <div class="mac-app-dl-bar__main">
+        {if condition="isset($tplconfig['theme']['app_dl']['title']) && trim((string)$tplconfig['theme']['app_dl']['title']) !== ''"}
+        <p class="mac-app-dl-bar__line mac-app-dl-bar__line--title">{$tplconfig.theme.app_dl.title}</p>
+        {else/}
+        <p class="mac-app-dl-bar__line mac-app-dl-bar__line--title"><span data-lang="string_app_dl_title">APP独享超清加速，永久免费</span></p>
+        {/if}
+        {if condition="isset($tplconfig['theme']['app_dl']['subtitle']) && trim((string)$tplconfig['theme']['app_dl']['subtitle']) !== ''"}
+        <p class="mac-app-dl-bar__line mac-app-dl-bar__line--sub">{$tplconfig.theme.app_dl.subtitle}</p>
+        {else/}
+        <p class="mac-app-dl-bar__line mac-app-dl-bar__line--sub"><span data-lang="string_app_dl_subtitle">海量高清影片抢先看</span></p>
+        {/if}
+    </div>
+    <a class="mac-app-dl-bar__btn" href="{:htmlspecialchars($__app_dl_android !== '' ? $__app_dl_android : $__app_dl_ios, ENT_QUOTES, 'UTF-8')}" target="_blank" rel="noopener noreferrer">
+        {if condition="isset($tplconfig['theme']['app_dl']['btn']) && trim((string)$tplconfig['theme']['app_dl']['btn']) !== ''"}
+        {$tplconfig.theme.app_dl.btn}
+        {else/}
+        <span data-lang="string_app_dl_btn">立即下载</span>
+        {/if}
+    </a>
+</aside>
+<script type="text/javascript" src="{$maccms.path_tpl}/asset/js/app-download-bar.js"></script>
+{/if}
+{/if}
+<div class="hidden_mb" id="bottomNav"></div>
+<script type="application/json" id="bottomNavConfig">{php}
+$__cur = 0;
+if (isset($obj) && is_array($obj) && isset($obj['type_id']) && $obj['type_id'] !== '' && $obj['type_id'] !== null) {
+    $__cur = (int) $obj['type_id'];
+}
+echo json_encode([
+    'bnav' => isset($tplconfig['theme']['bnav']) && is_array($tplconfig['theme']['bnav']) ? $tplconfig['theme']['bnav'] : [],
+    'curTypeId' => $__cur,
+    'userHref' => mac_url('user/index'),
+    'homeHref' => isset($maccms['path']) ? (string) $maccms['path'] : '/',
+    'vipMemberIconRel' => 'images/user/bot_vip_ic@2x.png',
+], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS);
+{/php}</script>
+<script type="text/javascript" src="{$maccms.path_tpl}/asset/js/bottom-nav.js"></script>
+{/if}

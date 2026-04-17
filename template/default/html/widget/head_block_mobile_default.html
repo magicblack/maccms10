@@ -1,0 +1,81 @@
+<div class="head_box show-mobile mobile-head ">
+    {if condition="$isSingleRow eq 1"}
+    <div class="head_inner_mobile_toolbar">
+        {include file="widget/head_inner_mobile_toolbar" /}
+    </div>
+    {include file="widget/share"}
+    {else/}
+    <div class="header">
+            <div class="head_a ">
+                <div class="head_logo">{include file="widget/logo" /}</div>
+                <div class="head_user">
+                    <ul>
+                        <li class="top_ico">
+                            <a class="top_link" href="{:mac_url('label/rank')}" data-title="string_rank" title="{$tplconfig.theme.rank.title|default='排行榜'}">
+                                <span class="head-nav-icon-theme head-nav-icon-theme--lightbg" aria-hidden="true">
+                                    <img class="head-nav-icon" src="{$maccms.path_tpl}images/head-nav/排行榜.png" width="52" height="52" alt="" decoding="async">
+                                </span>
+                                <span class="head-nav-icon-theme head-nav-icon-theme--darkbg" aria-hidden="true">
+                                    <img class="head-nav-icon" src="{$maccms.path_tpl}images/head-nav/排行榜-黑色使用.png" width="52" height="52" alt="" decoding="async">
+                                </span>
+                            </a>
+                        </li>
+                        <li class="top_ico">
+                            <a class="top_link js-save-site-url" href="javascript:;" data-title="string_save_site" title="">
+                                <span class="head-nav-icon-theme head-nav-icon-theme--lightbg" aria-hidden="true">
+                                    <span class="head-latest-url-flip">
+                                        <img class="head-latest-url-flip__img head-latest-url-flip__img--a" src="{$maccms.path_tpl}images/head-nav/最新网址.png" width="52" height="52" alt="" decoding="async">
+                                        <img class="head-latest-url-flip__img head-latest-url-flip__img--b" src="{$maccms.path_tpl}images/head-nav/最新网址2.png" width="52" height="52" alt="" decoding="async">
+                                    </span>
+                                </span>
+                                <span class="head-nav-icon-theme head-nav-icon-theme--darkbg" aria-hidden="true">
+                                    <span class="head-latest-url-flip">
+                                        <img class="head-latest-url-flip__img head-latest-url-flip__img--a" src="{$maccms.path_tpl}images/head-nav/最新网址1-黑色使用.png" width="52" height="52" alt="" decoding="async">
+                                        <img class="head-latest-url-flip__img head-latest-url-flip__img--b" src="{$maccms.path_tpl}images/head-nav/最新网址2-黑色使用.png" width="52" height="52" alt="" decoding="async">
+                                    </span>
+                                </span>
+                            </a>
+                        </li>
+                        <li class="top_ico">
+                            <a class="user_login top_link mac_head_plays" href=" javascript:; " data-title="user_view_record" title="播放记录">
+                                <span class="head-nav-icon-theme head-nav-icon-theme--lightbg" aria-hidden="true">
+                                    <img class="head-nav-icon" src="{$maccms.path_tpl}images/head-nav/观看历史.png" width="52" height="52" alt="" decoding="async">
+                                </span>
+                                <span class="head-nav-icon-theme head-nav-icon-theme--darkbg" aria-hidden="true">
+                                    <img class="head-nav-icon" src="{$maccms.path_tpl}images/head-nav/观看历史-黑色使用.png" width="52" height="52" alt="" decoding="async">
+                                </span>
+                            </a>
+                        </li>
+                        {if condition="$GLOBALS['config']['user']['status'] eq 1"}
+                        <li class="top_ico">
+                            <a class="mac_user top_link"
+                                href=" javascript:;"
+                                data-title="string_hy"
+                                title="会员">
+                                <img class="head-nav-icon" src="{$maccms.path_tpl}images/head-nav/用户默认.png" width="52" height="52" alt="" decoding="async">
+                            </a>
+                        </li>
+                        {/if}
+                    </ul>
+                </div>
+            </div>
+    </div>
+    <div class="header box">
+        <div class="head_b ">
+            {include file="widget/share"}
+            <div class="head_search head_search_mobile head_search_mobile_capsule head_search_capsule_host">
+                <div class="head_menu_b">
+                    <a class="menu " href="javascript:void(0)" title="全部分类">
+                        <i class="iconfont menu_ico ">&#xe640;</i>
+                        <span class="hidden_xs">&nbsp;<span data-lang="all_types">全部分类</span></span>
+                    </a>
+                    {include file="widget/all_menu"}
+                </div>
+                <div class="head_search_inner">
+                    {include file="widget/head_search_capsule_mobile" /}
+                </div>
+            </div>
+        </div>
+    </div>
+    {/if}
+</div>

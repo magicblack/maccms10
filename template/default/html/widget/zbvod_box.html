@@ -1,0 +1,10 @@
+<li class="zbvodlist_item num_{$key}">
+    <a class="zbvodlist_box" href="{:mac_url_vod_play($vo,['sid'=>$vo.sid,'nid'=>1])}" title="{$vo.vod_name}">
+	<span class="zbvodlist_thumb lazyload" title="{$vo.vod_name}" data-original="{:mac_url_img($vo.vod_pic)}">
+        {assign name="mac_points_value" value="$vo.vod_points_play" /}
+        {include file="widget/mac_badge_top_right" /}
+        {include file="widget/mac_badge_bottom_right" /}
+    </span>									
+	<p class="zbvodlist_title">{$vo.vod_name}</p>
+	</a>
+</li>

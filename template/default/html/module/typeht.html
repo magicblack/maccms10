@@ -1,0 +1,143 @@
+	<link rel="stylesheet" type="text/css" href="{$maccms.path_tpl}/asset/css/module-typeht.css" />
+
+
+<body class="bstem">
+    {include file="public/head"}
+    {include file="module/banner"}
+    <div class="container ">
+
+
+        
+        {if$obj.parent}{else}
+        <div class="pannel clearfix">
+
+            
+            <div class="directory-item show-pc" id="tv-directory">
+                <ul class="directory-list">
+                    <li>
+                        <dl class="leixing">
+                            <dt> <span data-lang="string_type_byType">按类型</span>  <i class="iconfont"></i></dt> {empty name="$obj.type_extend.class"} {maccms:foreach name=":explode(',',$obj.parent.type_extend.class)"}
+                            <dd><a href="{:mac_url_type($obj,['class'=>$vo],'show')}">{$vo}</a></dd>
+                            {/maccms:foreach} {else /} {maccms:foreach name=":explode(',',$obj.type_extend.class)"}
+                            <dd><a href="{:mac_url_type($obj,['class'=>$vo],'show')}">{$vo}</a></dd>
+                            {/maccms:foreach} {/empty}
+                        </dl>
+                    </li>
+                    <li>
+                        <dl class="area">
+                            <dt><span data-lang="string_type_byRegion">按地区</span> <i class="iconfont"></i></dt> {empty name="$obj.type_extend.area"} {maccms:foreach name=":explode(',',$obj.parent.type_extend.area)"}
+                            <dd><a href="{:mac_url_type($obj,['class'=>$vo],'show')}">{$vo}</a></dd>
+                            {/maccms:foreach} {else /} {maccms:foreach name=":explode(',',$obj.type_extend.area)"}
+                            <dd><a href="{:mac_url_type($obj,['area'=>$vo],'show')}">{$vo}</a></dd>
+                            {/maccms:foreach} {/empty}
+                        </dl>
+                    </li>
+                    <li>
+                        <dl>
+                            <dt><span data-lang="string_type_byAge">按年代</span> <i class="iconfont"></i></dt> {empty name="$obj.type_extend.year"} {maccms:foreach name=":explode(',',$obj.parent.type_extend.year)"}
+                            <dd><a href="{:mac_url_type($obj,['class'=>$vo],'show')}">{$vo}</a></dd>
+                            {/maccms:foreach} {else /} {maccms:foreach name=":explode(',',$obj.type_extend.year)"}
+                            <dd><a href="{:mac_url_type($obj,['year'=>$vo],'show')}">{$vo}</a></dd>
+                            {/maccms:foreach} {/empty}
+                        </dl>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        {/if}
+        
+        {include file="ads/ads_all"}
+        <div class="vod_row tit_up">
+            {include file="module/typevbox"}
+            {maccms:type ids="'.$GLOBALS['type_id'].'" order="asc" by="sort" }
+            {maccms:type parent="'.$vo['type_id'].'" order="asc" by="sort" id="vo1" key="key1"}
+            <div class="pannel clearfix">
+                <div class="pannel_head clearfix">
+                    <h2 class="title">{$vo1.type_name}</h2>
+                    <a class="text_muted pull_left" href="{:mac_url_type($vo1,[],'show')}"><span data-lang="string_type_more2">更多</span><i class="iconfont more_i">&#xe623;</i></a>
+                    <span class="hidden_xs pull_left">
+						{maccms:vod num="3" type="'.$vo1['type_id'].'" order="desc" by="hits" id="vo2" key="key2"}
+                        <span class="split_line"></span>
+                        <a href="{:mac_url_vod_detail($vo2)}" title="{$vo2.vod_name}" class="text_muted">
+                            {$vo2.vod_name|mac_substring=16}
+                        </a>
+                        {/maccms:vod}
+                    </span>
+                </div>
+                
+                <div class="cbox_list">
+                    <div class="cbox1">
+
+                        <ul class="vodlist vodlist_wi">
+                            {maccms:vod num="18" type="'.$vo1['type_id'].'" order="desc" by="time"} {include file="widget/vod_box"} {/maccms:vod}
+                        </ul>
+
+                        <li class="vodlist_item1 vod_rank_list show-pc">
+                            <div class="pannel clearfix">
+                                <div class="pannel_head clearfix">
+                                    <h3 class="title" data-lang="string_type_hot_rank">
+                                        热播排行榜
+                                    </h3>
+                                </div>
+
+                                <ul class="ranklist_r clearfix">
+                                    {php}
+                                        $num = 0;
+                                    {/php}
+                                    {maccms:vod num="20" paging="no" type="'.$vo1['type_id'].'"}
+                                    {php}
+                                        $num++;
+                                    {/php}
+                                    {/maccms:vod}
+
+                                    {php}
+                                        if($num <= 0){
+                                            $status = 1;
+                                        }elseif($num > 0 && $num <= 18){
+                                            $status = 2;
+                                        }else{
+                                            $status = 3;
+                                        }
+                                    {/php}
+                                    {if condition="$status == 1"}
+                                        <li class="part_eone rank-more">
+                                            <a class="rank-more-href" data-lang="string_type_no_data">暂无</a>
+                                        </li>
+                                    {/if}
+                                    {if condition="$status == 2"}
+                                        {maccms:vod num="18" paging="no" type="'.$vo1['type_id'].'" order="desc" by="score"}
+                                        {include file="widget/rank_box_text"}
+                                        {/maccms:vod}
+                                    {/if}
+                                    {if condition="$status == 3"}
+                                        {maccms:vod num="18" paging="no" type="'.$vo1['type_id'].'" order="desc" by="score"}
+                                        {include file="widget/rank_box_text"}
+                                        {/maccms:vod}
+                                        <li class="part_eone rank-more">
+                                            <a class="rank-more-href" href="{:mac_url('label/rank')}" data-lang="string_type_more">更多></a>
+                                        </li>
+                                    {/if}
+
+                                </ul>
+                            </div>
+                        </li>
+
+                    </div>
+                    <div class="cbox2 hide">
+                        <ul class="vodlist vodlist_wi">
+                            {maccms:vod num="18" type="'.$vo1['type_id'].'" start="19" order="desc" by="time"} {include file="widget/vod_box"} {/maccms:vod}
+                        </ul>
+                    </div>
+                    <div class="cbox3 hide">
+                        <ul class="vodlist vodlist_wi">
+                            {maccms:vod num="18" type="'.$vo1['type_id'].'" start="37" order="desc" by="time"} {include file="widget/vod_box"} {/maccms:vod}
+                        </ul>
+                    </div>
+                </div>
+                
+            </div>
+            {/maccms:type} {/maccms:type}
+        </div>
+    </div>
+    {include file="module/banstem"}

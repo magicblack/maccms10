@@ -98,4 +98,54 @@ class Gbook extends Base
             ],
         ]);
     }
+
+    /**
+     * 提交留言
+     * api.php/gbook/submit (POST)
+     * 参数: gbook_content, [gbook_name]
+     */
+    public function submit(Request $request)
+    {
+        $content = trim($request->param('gbook_content', ''));
+        if (empty($content)) return json(['code' => 1004, 'msg' => lang('index/require_content')]);
+        $cookie = 'gbook_timespan';
+        if (!empty(cookie($cookie))) return json(['code' => 1005, 'msg' => lang('frequently')]);
+        if ($GLOBALS['config']['gbook']['login'] == 1) {
+            $check = model('User')->checkLogin();
+            if ($check['code'] > 1) return json(['code' => 1003, 'msg' => lang('index/require_login')]);
+        }
+        $data = [];
+        $data['gbook_content'] = htmlentities(mac_filter_words($content));
+        $data['gbook_reply'] = '';
+        $data['gbook_ip'] = mac_get_client_ip();
+        $data['gbook_time'] = time();
+        if (!empty(cookie('user_id'))) {
+            $uinfo = model('User')->field('user_nick_name,user_name')->where(['user_id' => intval(cookie('user_id'))])->find();
+            $data['user_id'] = intval(cookie('user_id'));
+            $data['gbook_name'] = htmlentities($uinfo['user_nick_name'] ?: $uinfo['user_name']);
+        } else {
+            $data['user_id'] = 0;
+            $name = trim($request->param('gbook_name', ''));
+            $data['gbook_name'] = htmlentities($name ?: lang('controller/visitor'));
+        }
+        $data['gbook_status'] = ($GLOBALS['config']['gbook']['audit'] == 1) ? 0 : 1;
+        $res = model('Gbook')->saveData($data);
+        cookie($cookie, 't', 30);
+        return json($res);
+    }
+
+    /**
+     * 举报留言
+     * api.php/gbook/report?id=1
+     */
+    public function report(Request $request)
+    {
+        $id = intval($request->param('id', 0));
+        if ($id < 1) return json(['code' => 1001, 'msg' => '参数错误']);
+        $cookie = 'gbook-report-' . $id;
+        if (!empty(cookie($cookie))) return json(['code' => 1002, 'msg' => lang('index/haved')]);
+        model('Gbook')->where(['gbook_id' => $id])->setInc('gbook_up');
+        cookie($cookie, 't', 86400);
+        return json(['code' => 1, 'msg' => 'ok']);
+    }
 }

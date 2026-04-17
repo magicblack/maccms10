@@ -1,0 +1,159 @@
+	<link rel="stylesheet" type="text/css" href="{$maccms.path_tpl}/asset/css/widget-popedom_upgrade_gate.css" />
+{php}
+$__buy_mid = intval($maccms['mid'] ?? 0);
+$__buy_id = 0;
+$__buy_sid = 0;
+$__buy_nid = 0;
+$__buy_type = 1;
+if($__buy_mid === 1){
+	$__buy_id = intval($obj['vod_id'] ?? 0);
+	$__buy_sid = intval($param['sid'] ?? 1);
+	$__buy_nid = intval($param['nid'] ?? 1);
+	$__buy_type = (($obj['player_info']['flag'] ?? 'play') === 'play') ? 4 : 5;
+}
+elseif($__buy_mid === 2){
+	$__buy_id = intval($obj['art_id'] ?? 0);
+	$__buy_sid = intval($param['page'] ?? 1);
+	$__buy_nid = 0;
+	$__buy_type = 1;
+}
+elseif($__buy_mid === 12){
+	$__buy_id = intval($obj['manga_id'] ?? 0);
+	$__buy_sid = intval($param['sid'] ?? 1);
+	$__buy_nid = intval($param['nid'] ?? 1);
+	$__buy_type = 1;
+}
+$__buy_enabled = $__buy_id > 0 ? 1 : 0;
+$__need_points = intval($popedom['points'] ?? 0);
+$__show_confirm_buy = ($__buy_enabled === 1 && $__need_points > 0) ? 1 : 0;
+{/php}
+
+<div class="popedom-upgrade-gate" data-upgrade-url="{:url('user/upgrade')}" data-ajax-upgrade-url="{:url('user/ajax_upgrade')}" data-upgrade-css-url="{$maccms.path}template/default/asset/css/user-upgrade.css" data-user-buy-url="{:url('user/buy')}" data-user-index-url="{:url('user/index')}" data-buy-enabled="{$__buy_enabled}" data-need-points="{$__need_points}">
+	<div class="popedom-upgrade-gate-inner player_popeom">
+		<div class="popedom-upgrade-gate__icon" aria-hidden="true">
+			<img class="popedom-upgrade-gate__icon-img popedom-upgrade-gate__icon-img--light" src="{$maccms.path_tpl}/images/home/popedom-upgrade@2x.png" alt="" width="88" height="88" decoding="async" />
+			<img class="popedom-upgrade-gate__icon-img popedom-upgrade-gate__icon-img--dark" src="{$maccms.path_tpl}/images/home/popedom-upgrade@2x-balck.png" alt="" width="88" height="88" decoding="async" />
+		</div>
+		<p class="popedom-upgrade-title">这部分内容需要会员才能观看哦～</p>
+		<p class="popedom-upgrade-subtitle">开通会员即可畅享全部精彩内容，感谢您的支持</p>
+		<div class="popedom-upgrade-hints">
+			{if condition="$__show_confirm_buy eq 1"}
+			<p class="popedom-upgrade-hint-line">可选选择金币单次购买（{$__need_points}金币）</p>
+			<p class="popedom-upgrade-hint-line">或升级会员畅看全站内容</p>
+			{else/}
+			<p class="popedom-upgrade-hint-line">本内容需会员观看，请升级会员后即可观看</p>
+			{/if}
+		</div>
+		<div class="popedom-upgrade-actions">
+			{if condition="$__show_confirm_buy eq 1"}
+			<a class="qrgm js-popedom-buy-btn" href="javascript:;" data-lang="play_qrgm" data-id="{$__buy_id}" data-sid="{$__buy_sid}" data-nid="{$__buy_nid}" data-mid="{$__buy_mid}" data-type="{$__buy_type}">确认购买</a>
+			{/if}
+			<a class="mscz js-popedom-upgrade-btn" href="javascript:;" data-lang="user_upgrade">升级会员</a>
+		</div>
+	</div>
+</div>
+<script>
+$(function(){
+	var $gate = $('.popedom-upgrade-gate');
+	if(!$gate.length) return;
+	var _upgradeCssReady = false;
+	function ensureUpgradeCssLoaded(done){
+		if(_upgradeCssReady){ done(); return; }
+		var cssUrl = $gate.attr('data-upgrade-css-url') || '';
+		if(!cssUrl){ done(); return; }
+		var exist = document.querySelector('link[data-upgrade-sheet="1"][href="' + cssUrl + '"]');
+		if(exist){
+			_upgradeCssReady = true;
+			done();
+			return;
+		}
+		var link = document.createElement('link');
+		link.rel = 'stylesheet';
+		link.href = cssUrl;
+		link.setAttribute('data-upgrade-sheet', '1');
+		link.onload = function(){ _upgradeCssReady = true; done(); };
+		link.onerror = function(){ done(); };
+		document.head.appendChild(link);
+	}
+	function isPointsNotEnough(resp){
+		if(!resp) return false;
+		if(Number(resp.code) === 1005) return true;
+		var msg = String(resp.msg || '');
+		return ((msg.indexOf('金币') > -1 || msg.indexOf('积分') > -1) && msg.indexOf('不') > -1) || msg.toLowerCase().indexOf('not enough') > -1;
+	}
+	$gate.on('click', '.js-popedom-buy-btn', function(e){
+		e.preventDefault();
+		if(typeof MAC !== 'undefined' && MAC.User){
+			if(MAC.User.IsLogin == 0){
+				MAC.User.Login();
+				return;
+			}
+			var $btn = $(this);
+			var reqUrl = ((typeof maccms !== 'undefined' && maccms.base_url) ? maccms.base_url : '') + '/index.php/user/ajax_buy_popedom.html?id='
+				+ encodeURIComponent($btn.attr('data-id') || '')
+				+ '&mid=' + encodeURIComponent($btn.attr('data-mid') || '')
+				+ '&sid=' + encodeURIComponent($btn.attr('data-sid') || '')
+				+ '&nid=' + encodeURIComponent($btn.attr('data-nid') || '')
+				+ '&type=' + encodeURIComponent($btn.attr('data-type') || '');
+			$btn.addClass('disabled');
+			$.ajax({
+				url: reqUrl,
+				type: 'get',
+				dataType: 'json',
+				success: function(r){
+					if(typeof MAC !== 'undefined' && MAC.Pop && MAC.Pop.Msg){
+						MAC.Pop.Msg(300, 50, r.msg || '', 2000);
+					}else if(r && r.msg){
+						MAC.alert(r.msg);
+					}
+					if(r && Number(r.code) === 1){
+						top.location.reload();
+						return;
+					}
+					if(isPointsNotEnough(r)){
+						if(typeof window.openRechargeModal === 'function'){
+							setTimeout(function(){
+								window.openRechargeModal();
+							}, 500);
+						}else{
+							location.href = $gate.attr('data-user-buy-url') || '/index.php/user/buy';
+						}
+					}
+				},
+				error: function(){
+					MAC.alert('请求失败，请稍后再试');
+				},
+				complete: function(){
+					$btn.removeClass('disabled');
+				}
+			});
+			return;
+		}
+		MAC.alert('当前环境不支持直接购买，请先前往会员中心操作');
+	});
+	$gate.on('click', '.js-popedom-upgrade-btn', function(e){
+		e.preventDefault();
+		if(typeof MAC !== 'undefined' && MAC.User){
+			if(MAC.User.IsLogin == 1){
+				var ajaxUrl = $gate.attr('data-ajax-upgrade-url');
+				if(ajaxUrl && typeof MAC.Pop !== 'undefined' && MAC.Pop.Show){
+					ensureUpgradeCssLoaded(function(){
+						var fullUrl = (ajaxUrl.indexOf('http')===0 || ajaxUrl.indexOf('//')===0) ? ajaxUrl : ((typeof maccms!=='undefined' && maccms.base_url) ? maccms.base_url.replace(/\/$/,'') : location.origin) + (ajaxUrl.indexOf('/')===0 ? ajaxUrl : '/'+ajaxUrl);
+						/* PC 加宽；高度由内容 + CSS max-height 控制（MAC.Pop.Show 第二参数未用于 mac_pop） */
+						MAC.Pop.Show(720, 620, (typeof lang!=='undefined'&&lang==1)?'Upgrade Member':'升级会员', fullUrl, function(r){
+							$('.mac_pop_bg').addClass('mac_pop_bg--upgrade');
+							$('.mac_pop').addClass('mac_pop_upgrade_sheet');
+						});
+					});
+				}else{
+					location.href = $gate.attr('data-upgrade-url') || '';
+				}
+			}else{
+				MAC.User.Login();
+			}
+		}else{
+			location.href = $gate.attr('data-upgrade-url') || '';
+		}
+	});
+});
+</script>

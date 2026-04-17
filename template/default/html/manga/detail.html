@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html>
+<head>
+    {include file="public/include"}
+    {include file="public/include_rating_svg" /}
+    <link rel="stylesheet" type="text/css" href="{$maccms.path_tpl}/asset/css/content-detail-app.css" />
+    <link rel="stylesheet" type="text/css" href="{$maccms.path_tpl}/asset/css/manga-detail.css" />
+</head>
+<body class="manga-detail-csr-body"
+    data-detail-id="{$param.id|default='0'}"
+    data-logged-user="{$GLOBALS['user']['user_id']|default='0'}">
+{assign name="isSingleRow" value="1"}
+    {include file="public/th" /}
+    {include file="public/head" /}
+{php}$manga_poster_class = (mac_tpl_manga_cover() === 'h') ? 'mac-poster--h' : 'mac-poster--v';{/php}
+<div id="manga_detail_page" class="content-detail-app {$manga_poster_class}">
+    <div class="container ">
+        {include file="ads/ads_banner1"}
+        {include file="ads/ads_icon1" ads_icon1_marquee="0"}
+        {include file="ads/ads_all"}
+        <div class="pannel article_box content-detail-panel">
+            <div class="content-detail-app-main">
+                <div class="content-detail-hero-wrap">
+                    <div class="content-detail-hero">
+                        <a class="content-detail-hero-link js-manga-hero-link" href="#" title="">
+                            <img class="content-detail-hero-img lazyload js-manga-hero-img" style="display:none" src="{:mac_url_img(!empty($tplconfig['theme']['lazy']) ? $maccms['path'].$tplconfig['theme']['lazy'] : $maccms['path_tpl'].'/asset/img/load.gif')}" data-original="" alt="">
+                            <div class="content-detail-hero-placeholder js-manga-hero-placeholder">漫</div>
+                            <span class="mac_badge_top_right js-manga-hero-badge"></span>
+                            <span class="cd-badge cd-badge-count js-manga-chapter-badge"></span>
+                            <span class="cd-badge cd-badge-status js-manga-status-badge"></span>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="content-detail-main-stack">
+                <div class="content-detail-body">
+                    <h1 class="content-detail-title js-manga-title"></h1>
+                    <div class="manga-tags content-detail-tags js-manga-tags"></div>
+                    <div id="js-manga-rating" class="manga-detail-rating-mount content-detail-rating-wrap"></div>
+                    <div class="content-detail-meta-grid">
+                        <div class="cdm-cell"><span class="cdm-label" data-lang="string_show_leixing">类型</span><span class="cdm-val js-manga-type-name"></span></div>
+                        <div class="cdm-cell"><span class="cdm-label" data-lang="string_art_author">作者</span><span class="cdm-val js-manga-author"></span></div>
+                        <div class="cdm-cell"><span class="cdm-label" data-lang="read">阅读</span><span class="cdm-val js-manga-hits">0</span></div>
+                        <div class="cdm-cell"><span class="cdm-label" data-lang="content_detail_meta_time">时间</span><span class="cdm-val js-manga-date"></span></div>
+                    </div>
+                    <div class="content-detail-btns content-detail-btns--manga">
+                        <a class="cdb-primary cdb-primary--icon js-manga-read-btn" href="#"><span class="cdb-btn-ico cdb-btn-ico--read" aria-hidden="true"></span><span data-lang="manga_read_now">立即阅读</span></a>
+                        {if condition="$GLOBALS['config']['user']['status'] eq 1"}
+                        <a class="cdb-fav mac_ulog js-manga-fav cdb-fav--icon" data-type="2" data-mid="{$maccms.mid}" data-id="{$param.id|default='0'}" data-uid="" href="javascript:;"><span class="cdb-btn-ico cdb-btn-ico--fav" aria-hidden="true"></span><span class="js-manga-fav-label" data-lang="art_add_fav">加入收藏</span></a>
+                        {else/}
+                        <span class="cdb-fav cdb-fav--disabled cdb-fav--icon"><span class="cdb-btn-ico cdb-btn-ico--fav" aria-hidden="true"></span><span data-lang="art_add_fav">加入收藏</span></span>
+                        {/if}
+                    </div>
+                </div>
+
+                <div class="content-detail-rows js-manga-detail-rows" style="display:none">
+                    <a class="content-detail-row content-detail-row--boxed js-manga-row-latest" href="#">
+                        <span class="cdr-icon cdr-icon--img"><img src="{$maccms.path_tpl}images/content-detail/icon-recent.png" width="22" height="22" alt="" loading="lazy" decoding="async"></span>
+                        <div class="cdr-main">
+                            <div class="cdr-label" data-lang="content_detail_recent_update">最近更新</div>
+                            <div class="cdr-sub js-manga-latest-sub"></div>
+                        </div>
+                        <span class="cdr-right js-manga-latest-date"></span>
+                    </a>
+                </div>
+
+                <section class="content-detail-intro-vod">
+                    <h2 data-lang="string_vod_introduction">剧情介绍</h2>
+                    <div class="content_desc context clearfix">
+                        <span class="js-manga-intro-short"></span>
+                        <a href="javascript:void(0);" class="show_btn" onclick="showdiv(this);"><i class="line_bg"></i><i class="iconfont" aria-hidden="true">&#xe63a;</i><em class="hidden_xs">&nbsp; <span data-lang="string_vod_expand">展开全部</span> </em></a>
+                    </div>
+                    <div class="content_desc full_text clearfix" style="display:none;">
+                        <span class="js-manga-intro-full"></span>
+                        <a href="javascript:void(0);" class="hidden_btn" onclick="hidediv(this);"><i class="iconfont" aria-hidden="true">&#xe628;</i><em class="hidden_xs">&nbsp;<span data-lang="string_vod_pull">收起全部</span></em></a>
+                    </div>
+                </section>
+                </div>
+            </div>
+        </div>
+
+        <div class="pannel article_box clearfix" id="manga-toc-panel">
+            <div class="pannel_head pannel_head--vod-playlist content-detail-playlist-head">
+                <h3 class="title" data-lang="string_vod_playlist">播放列表</h3>
+                <div class="vod-playlist-head-center">
+                    <div class="player_infotip player_infotip--marquee js-manga-toc-marquee" data-marquee-ready="0">
+                        <div class="player_infotip__viewport">
+                            <div class="player_infotip__track js-manga-toc-marquee-track"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="play_source content-detail-play-source">
+                <div class="js-manga-toc-content"><div class="show_no">加载中…</div></div>
+            </div>
+        </div>
+
+        {if condition="$GLOBALS['config']['comment']['status'] eq 1"}
+        <div class="pannel clearfix" id="pinglun">
+            <div class="pannel_head clearfix">
+                <span class="pull_right">
+                    <span data-lang="string_play_yg">共</span>
+                    &nbsp;<font color="#40CC92"><em class="mac_total"></em></font>&nbsp;
+                    <span data-lang="string_play_tpl">条评论</span>
+                </span>
+                <h3 class="title" data-lang="string_play_pl">评论</h3>
+            </div>
+            <div class="mac_comment comm_list comm_list_box"
+                data-id="{$param.id|default='0'}"
+                data-mid="{$maccms.mid}"
+                data-comment-login="{$comment.login|default='0'}"
+                data-comment-verify="{$comment.verify|default='0'}"></div>
+            <script>
+                $(function(){
+                    function waitForMAC(cb){
+                        if(typeof MAC !== 'undefined'){ cb(); }
+                        else { setTimeout(function(){ waitForMAC(cb); }, 50); }
+                    }
+                    waitForMAC(function(){
+                        var $box = $('#pinglun .comm_list_box').first();
+                        var login = parseInt($box.attr('data-comment-login'), 10);
+                        var verify = parseInt($box.attr('data-comment-verify'), 10);
+                        MAC.Comment.Login = isNaN(login) ? 0 : login;
+                        MAC.Comment.Verify = isNaN(verify) ? 0 : verify;
+                        MAC.Comment.Init();
+                        MAC.Comment.Show(1);
+                    });
+                });
+            </script>
+        </div>
+        {/if}
+
+        <div class="content-detail-guess"
+            data-manga-id="{$param.id|default='0'}"
+            data-type-id="0"
+            data-guess-url="{:url('ajax/guess_manga')}">
+            <div class="pannel clearfix content-detail-panel">
+                <div class="content-detail-guess-head">
+                    <h3 class="title" data-lang="vod_guess">猜你喜欢</h3>
+                    <a href="javascript:;" class="content-detail-guess-refresh" role="button"><i class="iconfont">&#xe62a;</i> <span data-lang="content_guess_refresh">换一换</span></a>
+                </div>
+                <div class="content-detail-guess-scroll"></div>
+            </div>
+        </div>
+
+        <div class="content-detail-friendlink-wrap show-pc">
+            {include file="public/friendLink" }
+        </div>
+    </div>
+    {include file="public/foot"}
+    <script type="text/javascript" src="{$maccms.path_tpl}/asset/js/manga-detail-ajax-render.js"></script>
+    <script>
+    try{
+        sessionStorage.setItem('manga_detail_history_length', String(history.length));
+    }catch(e){}
+    (function(){
+        var guessEl = document.querySelector('.content-detail-guess');
+        var refreshBtn = document.querySelector('.content-detail-guess-refresh');
+        var scrollEl = document.querySelector('.content-detail-guess-scroll');
+        if (!guessEl || !refreshBtn || !scrollEl) return;
+        var guessUrl = (guessEl.getAttribute('data-guess-url') || '').toString().trim();
+        if (!guessUrl) return;
+        refreshBtn.addEventListener('click', function(){
+            var id = guessEl.getAttribute('data-manga-id') || '';
+            var tid = guessEl.getAttribute('data-type-id') || '';
+            refreshBtn.classList.add('loading');
+            refreshBtn.style.pointerEvents = 'none';
+            var sep = guessUrl.indexOf('?') >= 0 ? '&' : '?';
+            var xhr = new XMLHttpRequest();
+            xhr.open('GET', guessUrl + sep + 'id=' + encodeURIComponent(id) + '&tid=' + encodeURIComponent(tid) + '&num=9');
+            xhr.onload = function(){
+                refreshBtn.classList.remove('loading');
+                refreshBtn.style.pointerEvents = '';
+                try {
+                    var res = JSON.parse(xhr.responseText);
+                    if (res.code === 1 && res.list && res.list.length) {
+                        function escq(s){ return String(s==null?'':s).replace(/"/g,'&quot;'); }
+                        var html = '';
+                        for (var i = 0; i < res.list.length; i++) {
+                            var v = res.list[i];
+                            html += '<div class="guess-card"><a href="' + escq(v.link || '#') + '" title="' + escq(v.manga_name || '') + '">';
+                            html += '<div class="guess-thumb"><img class="lazyload" src="' + escq(v.manga_pic || '') + '" data-original="' + escq(v.manga_pic || '') + '" alt="">';
+                            if (v.ep_count > 0) html += '<span class="guess-ep">' + v.ep_count + '话</span>';
+                            html += '</div><div class="guess-title">' + String(v.manga_name || '').replace(/</g,'&lt;').replace(/>/g,'&gt;') + '</div></a></div>';
+                        }
+                        scrollEl.innerHTML = html;
+                        if (window.MacCatalogMedia && window.MacCatalogMedia.triggerLazyload) {
+                            window.MacCatalogMedia.triggerLazyload(scrollEl);
+                        }
+                    }
+                } catch (e) {}
+            };
+            xhr.onerror = function(){ refreshBtn.classList.remove('loading'); refreshBtn.style.pointerEvents = ''; };
+            xhr.send();
+        });
+    })();
+    (function(){
+        var ajaxUlogUrl = "{:url('user/ajax_ulog')}";
+        var delUlogUrl = "{:url('user/ulog_del')}";
+        $('#manga_detail_page').on('click', '.js-manga-fav.mac_ulog', function(e){
+            e.preventDefault();
+            e.stopImmediatePropagation();
+            if (window.MAC && MAC.User && Number(MAC.User.IsLogin || 0) !== 1) {
+                if (typeof MAC.User.Login === 'function') MAC.User.Login();
+                return;
+            }
+            var $btn = $(this);
+            var rid = parseInt($btn.attr('data-id'), 10) || 0;
+            var mid = parseInt($btn.attr('data-mid'), 10) || 12;
+            if(rid < 1){
+                MAC.alert('参数错误');
+                return;
+            }
+            if($btn.hasClass('is_fav')){
+                var uid = parseInt($btn.attr('data-uid'), 10) || 0;
+                if(uid < 1){
+                    location.reload();
+                    return;
+                }
+                $.post(delUlogUrl, {ids: uid, type: 2, all: 0}, function(res){
+                    if(res && Number(res.code) === 1){
+                        MAC.alert('已取消收藏');
+                        location.reload();
+                    }else{
+                        MAC.alert((res && res.msg) ? res.msg : '取消收藏失败');
+                    }
+                }, 'json');
+                return;
+            }
+            $.get(ajaxUlogUrl, {ac:'set', mid: mid, id: rid, sid: 0, nid: 0, type: 2}, function(res){
+                if(res && Number(res.code) === 1){
+                    MAC.alert('收藏成功');
+                    location.reload();
+                }else{
+                    MAC.alert((res && res.msg) ? res.msg : '收藏失败');
+                }
+            }, 'json');
+        });
+    })();
+    </script>
+</div>
+</body>
+</html>

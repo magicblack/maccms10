@@ -1,0 +1,18 @@
+{maccms:type ids="5" order="asc" by="sort"}
+<div class="pannel clearfix">
+	<div class="pannel_head clearfix">
+		{maccms:type order="asc" by="sort" mid="2" ids="5"}
+		<a class="text_muted pull_right" href="{:mac_url_type($vo)}">
+			<span data-lang="string_type_more2">推荐阅读</span>
+			<i class="iconfont more_i">&#xe623;</i>
+		</a>
+		{/maccms:type}
+		<h3 class="title" data-lang="string_art_recommend">推荐阅读</h3>						
+	</div>
+    <ul class="art_relates clearfix">
+        {maccms:art num="6" ids="'.$obj['vod_rel_art'].'" order="desc" by="time"}
+		{include file="widget/art_box_right"}
+        {/maccms:art}
+	</ul>
+</div>
+{/maccms:type}

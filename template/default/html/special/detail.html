@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+<head>    
+	{include file="public/include"}
+</head>
+<body>
+    {include file="public/head"}       	       	
+     <div class="container ">
+        {include file="ads/ads_all"}
+        <div class="left_row fl"> 
+			<div class="pannel clearfix" id="downlist">
+                 <div class="down_vodl">
+                 <a class="vodlist_thumb lazyload" href="javascript:void(0);" title="{$obj.vod_name}" data-original="{:mac_url_img($obj.vod_pic)}">
+				 </a>
+                 </div>
+                 <div class="down_vodr">
+                 <div class="pannel_head down_title clearfix">
+					  <h2 class="title fl">{$obj.vod_name}</h2>
+                      <span class="fl" data-lang="vod_plot">分集剧情</span>
+                 </div>
+                 <div class="down_context cblock ma_bottom">
+                    {php}$count=1;{/php}{maccms:foreach name="obj.vod_play_list" key="play"}
+					{if$maccms.aid!=15&&$count==1}	
+					 <a class="bo_tip fr" href="{:mac_url_vod_play($obj,['sid'=>$vo.sid,'nid'=>1])}"><i class="iconfont vtop_i">&#xe62f;</i>&nbsp;<span data-lang="string_vod_bofang">播放</span></a>
+				    {/if}
+					{php}$count++;{/php}{/maccms:foreach}
+                     <p class="date fl">
+                            {if condition="$obj.vod_score gt 0"}
+                            <span class="text_score">{$obj.vod_score}</span>
+                            <span class="split_line"></span>
+                            {/if}
+							<span class="text_muted hidden_xs"><span data-lang="string_vod_age">年份：</span></span>{$obj.vod_year|mac_url_create='year'}
+							<span class="split_line"></span>
+							<span class="text_muted hidden_xs"><span data-lang="string_vod_region">地区：</span></span>{$obj.vod_area|mac_url_create='area'}
+							<span class="split_line"></span>
+							<span class="text_muted hidden_xs"><span data-lang="string_vod_type">类型：</span></span>{$obj.vod_class|mac_url_create='class'}
+					   </p>
+                  </div>
+                  </div>
+			</div>	
+            {include file="ads/ads_vodw"}
+            {if$obj.vod_plot}
+		<div class="art_plot_row">
+            <div class="plot_head clearfix">
+                    <div class="showbtn" style="display:none;">
+						<span class="playlist_notfull text_center" style="display:block;">
+						<a href="javascript:;" onclick="showlist(this);" class=""><i class="iconfont">&#xe63a;</i>&nbsp;<span data-lang="string_zkjq">展开全部剧情分集</span></a></span>
+						</span>
+						<span class="playlist_full text_center" style="display:none;">
+							<a href="javascript:;" onclick="hidelist(this);" class=""><i class="iconfont">&#xe628;</i>&nbsp;<span data-lang="string_sqjq">收起全部剧情分集</span></a></span>
+						</span>
+                    </div>
+				</div>
+             <div class="pannel article_box plot_stem">
+                      <div id="playlistbox" class="playlist_notfull">
+							<ul class="content_playlist list_scroll">
+								{volist name="$obj['vod_plot_list']" id="vo2"}								
+								<li {if condition="$key eq $param['page']"}class="active plot-active"{/if}><a href="{:mac_url_plot_detail($obj,['page'=>$key])}">{$vo2.name}</a></li>
+								{/volist}
+							</ul>
+                            <a href="javascript:;" onclick="showlist(this);" class="listshow hidden_xs">
+								<span><i class="iconfont">&#xe63a;</i>&nbsp;
+								<span data-lang="string_play_zkqb">展开全部</span>
+							</span>
+							</a>
+                        </div>
+                        <div class="playlist_full" style="display:none;">
+						  <ul class="content_playlist">
+							 {volist name="$obj['vod_plot_list']" id="vo2"}								
+							 <li {if condition="$key eq $param['page']"}class="active plot-active"{/if}><a href="{:mac_url_plot_detail($obj,['page'=>$key])}">{$vo2.name}</a></li>
+							 {/volist}
+						  </ul>
+                        </div>
+                  <header class="article_header" style="text-align:center;">
+					  <h1 class="article_title">{$obj.vod_name}
+						  <span data-lang="vod_plot">分集剧情</span> - {$obj['vod_plot_list'][$param['page']]['name']}</h1>
+                  </header>
+                  <article class="article_content"> 
+					  <div class="plot_text"><p>{$obj['vod_plot_list'][$param['page']]['detail']}</p></div> 
+                  </article>
+               
+              <div class="pannel art_pren_list clearfix">
+                {if condition="$obj['vod_plot_list'][$param['page'] -1 ]['name'] neq ''"}
+				  <a class="art_prev" href="{:mac_url_plot_detail($obj,['page'=>$param['page']-1])}"><span data-lang="string_syj">上一集</span><div class="art_name_prev">{$obj.vod_name}<span data-lang="vod_plot">分集剧情</span> - {$obj['vod_plot_list'][$param['page']-1]['name']}</div></a>
+                {/if}
+                {if condition="$obj['vod_plot_list'][$param['page'] +1 ]['name'] neq ''"}
+				  <a class="art_next" href="{:mac_url_plot_detail($obj,['page'=>$param['page']+1])}"><span data-lang="string_xyj">下一集</span><div class="art_name_next">{$obj.vod_name}<span data-lang="vod_plot">分集剧情</span>> - {$obj['vod_plot_list'][$param['page']+1]['name']}</div></a>
+                {/if}
+		      </div>
+
+              </div>
+              {else}<div class="show_no" style="background: none;" data-lang="string_zwjq">暂无分集剧情</div>{/if}
+			
+			<div class="pannel clearfix">
+				<div class="pannel_head clearfix">
+					<h3 class="title" data-lang="string_down_xgtj">
+						相关推荐
+					</h3>						
+				</div>
+				<ul class="vodlist vodlist_sm list_scroll clearfix">
+					{maccms:vod num="12" type="current" order="desc" by="time"}
+					{include file="widget/vod_box"}		
+					{/maccms:vod}
+				</ul>
+			</div>
+			
+		</div>
+          </div>
+               <div class="right_row pa_left fr hidden_xs hidden_mi">
+            {include file="ads/ads_vodr"}
+            {include file="module/vod_rank"}
+        </div>
+    </div>
+{include file="public/foot"}
+</body>
+</html>

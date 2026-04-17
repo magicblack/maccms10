@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+{include file="public/include"}
+<link rel="stylesheet" type="text/css" href="{$maccms.path_tpl}/asset/css/vod-search-hub.css" />
+</head>
+<body class="vod-search-hub-body">
+	{include file="public/th" /}
+<div class="search-hub" id="searchHub" data-search-url="{:mac_url('vod/search')}" data-home-url="{$maccms.path}" data-api-base="{:rtrim($maccms.path,'/').'/api.php'}">
+	<header class="search-hub__bar">
+		<form class="search-hub__form" id="searchHubForm" method="get" action="{:mac_url('vod/search')}" autocomplete="off">
+			<div class="search-hub__capsule">
+				<span class="search-hub__hot-ico" aria-hidden="true"><img src="{$maccms.path_tpl}images/svg/hot.svg" width="18" height="18" alt=""></span>
+				<div class="search-hub__field search-hub__field--suggest js-head-hot-overlay-host">
+					<input type="search" name="wd" id="searchHubWd" class="search-hub__input js-head-hot-sync" value="" maxlength="50" enterkeyhint="search" autocomplete="off" placeholder="" />
+					<div class="head_hot_overlay head_hot_overlay_home search-hub__head-hot-overlay" data-fallback-hot-lang="string_home_search_placeholder" data-hot-words="{:htmlspecialchars(isset($maccms['search_hot']) ? (string)$maccms['search_hot'] : '', ENT_QUOTES, 'UTF-8')}" data-permanent-hot="{:htmlspecialchars('永久域名: '.(isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : ''), ENT_QUOTES, 'UTF-8')}" id="headHotOverlaySearchHub">
+						<div class="head_hot_overlay_viewport"><div class="head_hot_overlay_track"></div></div>
+					</div>
+					<div class="mac_results mac_results_hot" style="display:none;" aria-hidden="true">
+						<div class="hot mac_item">
+							<ul class="hot_keys"></ul>
+						</div>
+					</div>
+					<div class="search-hub__suggest" id="searchHubSuggest" role="listbox" aria-label="搜索建议" hidden></div>
+				</div>
+				<button type="submit" class="search-hub__submit" title="搜索" data-title="string_search">
+					<img class="search-hub__ai-ico" src="{$maccms.path_tpl}images/home/search_ai.gif" width="20" height="20" alt="">
+					<span data-lang="string_search">搜索</span>
+				</button>
+			</div>
+		</form>
+		<a href="javascript:;" class="search-hub__cancel" id="searchHubCancel" data-lang="string_cancel">取消</a>
+	</header>
+
+	<main class="search-hub__main">
+		<section class="search-hub__section search-hub__history" id="searchHubHistory" aria-labelledby="searchHubHistoryTitle">
+			<div class="search-hub__section-head">
+				<h2 class="search-hub__section-title" id="searchHubHistoryTitle" data-lang="string_search_history">搜索历史</h2>
+				<button type="button" class="search-hub__history-clear" id="searchHubHistoryClear" data-lang="string_qk" title="清空" aria-label="清空搜索历史">清空</button>
+			</div>
+			<div class="search-hub__history-body">
+				<div class="search-hub__tags" id="searchHubHistoryTags"></div>
+				<div class="search-hub__history-toggle-wrap">
+					<button type="button" class="search-hub__history-toggle" id="searchHubHistoryToggle" aria-expanded="false" aria-label="展开或收起历史">
+						<i class="iconfont search-hub__history-toggle-ico">&#xe623;</i>
+					</button>
+				</div>
+			</div>
+		</section>
+
+		<section class="search-hub__section" aria-labelledby="searchHubHotTitle">
+			<div class="search-hub__section-head search-hub__section-head--hot">
+				<h2 class="search-hub__section-title" id="searchHubHotTitle" data-lang="hot_search">热门搜索</h2>
+			</div>
+			<ul class="search-hub__hot-list" id="searchHubHotList"></ul>
+			<p class="search-hub__hot-msg search-hub__hot-msg--loading" id="searchHubHotLoading">加载中…</p>
+			<p class="search-hub__hot-msg search-hub__hot-msg--empty" id="searchHubHotEmpty" hidden>暂无热门推荐</p>
+			<p class="search-hub__hot-msg search-hub__hot-msg--error" id="searchHubHotError" hidden>热门加载失败，请稍后重试</p>
+		</section>
+	</main>
+</div>
+{include file="public/foot"}
+<script type="text/javascript" src="{$maccms.path}template/default/asset/js/module-head.js?v=202604161"></script>
+<script src="{$maccms.path_tpl}/asset/js/vod-search-hub.js"></script>
+</body>
+</html>

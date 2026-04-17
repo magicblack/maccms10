@@ -1,0 +1,42 @@
+{include file="../../../application/admin/view_new/public/head" /}
+<div class="page-container p10">
+    <form class="layui-form" method="post" action="{:url('info')}">
+        <input type="hidden" name="milestone_id" value="{$info.milestone_id|default=''}">
+        <div class="layui-form-item">
+            <label class="layui-form-label">{:lang('milestone/days')}</label>
+            <div class="layui-input-block">
+                <input type="number" name="milestone_days" value="{$info.milestone_days|default=''}" class="layui-input" required min="1">
+                <div class="layui-form-mid layui-word-aux">{:lang('milestone/days_tip')}</div>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">{:lang('milestone/points')}</label>
+            <div class="layui-input-inline w200">
+                <input type="number" name="milestone_points" value="{$info.milestone_points|default=''}" class="layui-input" required min="1">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">{:lang('milestone/sort')}</label>
+            <div class="layui-input-inline w200">
+                <input type="number" name="milestone_sort" value="{$info.milestone_sort|default='0'}" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">{:lang('status')}</label>
+            <div class="layui-input-block">
+                <input type="radio" name="milestone_status" value="1" title="{:lang('normal')}" {if condition="$info['milestone_status'] neq 0"}checked{/if}>
+                <input type="radio" name="milestone_status" value="0" title="{:lang('disable')}" {if condition="$info['milestone_status'] eq 0"}checked{/if}>
+            </div>
+        </div>
+        <div class="layui-form-item center">
+            <div class="layui-input-block">
+                <button type="submit" class="layui-btn" lay-submit="" lay-filter="formSubmit" data-child="true">{:lang('btn_save')}</button>
+                <button class="layui-btn layui-btn-primary" type="reset">{:lang('btn_reset')}</button>
+            </div>
+        </div>
+    </form>
+</div>
+{include file="../../../application/admin/view_new/public/foot" /}
+<script>layui.use('form',function(){layui.form.render();});</script>
+</body>
+</html>

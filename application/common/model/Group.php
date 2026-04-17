@@ -122,6 +122,8 @@ class Group extends Base {
         $key = $GLOBALS['config']['app']['cache_flag']. '_'.'group_list';
         Cache::set($key,$list);
 
+        $vip_key = ($GLOBALS['config']['app']['cache_flag'] ?? 'maccms') . '_vip_exclusive_type_ids';
+        Cache::rm($vip_key);
     }
 
     public function getCache($flag='group_list')

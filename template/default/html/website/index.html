@@ -1,0 +1,38 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    {include file="public/include"}
+	<link rel="stylesheet" type="text/css" href="{$maccms.path_tpl}/asset/css/website-index.css" />
+</head>
+
+<body>
+<div class="show-pc">
+{include file="public/head"}
+</div>
+
+<div class="show-mobile">
+    <div id="ui-nav" class="m-nav">
+        <a href="javascript:MAC.GoBack()" class="btn-left"><i class="iconfont ico-right">&#xe625;</i></a>
+        <span class="mb-title" data-lang='website_biaoti'>网址导航模块首页</span>
+    </div>
+</div>
+
+<div class="bread-crumb-nav fn-clear show-pc">
+    <ul class="bread-crumbs">
+        <li class="home"><a href="{$maccms.path}" data-lang="string_home">首页</a></li>
+        <li><a href="{:mac_url_website_index()}" data-lang='website_biaoti'>网址导航模块首页</a></li>
+        <li class="back"><a href="javascript:MAC.GoBack()" data-lang="website_fanh">返回上一页</a></li>
+    </ul>
+</div>
+
+{include file="website/tableList"}
+
+<span style="display:none" class="mac_referer" alt="获取并记录网址导航来路"></span>
+<div style="width:30rem;margin: 2.5rem auto;" class="show-pc">
+	{include file="public/friendLink" }
+</div>
+{include file="public/foot"}
+</body>
+
+</html>

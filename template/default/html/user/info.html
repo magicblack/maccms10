@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<title>我的资料 - 会员中心 - {$maccms.site_name}</title>
+	<meta name="keywords" content="">
+	<meta name="description" content="">
+	{include file="user/include" /}
+	<link rel="stylesheet" type="text/css" href="{$maccms.path_tpl}/asset/css/user-info.css" />
+</head>
+<body class="user-info-page-wrap">
+    {include file="public/th" /}
+		{include file="public/head" /}
+
+<div class="member-wrap member-wrap-bg" id="mac-user-info-root" data-url-unbind="{:url('user/unbind')}" data-url-info="{:url('user/info')}">
+	<div id="member" class="fn-clear">
+		<div id="left">
+			<div class="m-nav">
+				<a href="javascript:MAC.GoBack()" class="btn-left"><i class="iconfont ico-right">&#xe625;</i></a>
+				<a href="{$maccms.path}" class="btn-right"><i class="iconfont ico-right">&#xe634;</i></a>
+				<span class="mb-title" data-lang="user_grzx">个人中心</span>
+			</div>
+			{include file="user/left_nav" /}
+		</div>
+		<div id="right">
+			<div class="m-nav">
+				<a href="javascript:MAC.GoBack()" class="btn-left"><i class="iconfont ico-right">&#xe625;</i></a>
+				<span class="mb-title" data-lang="user_my_info">我的资料</span>
+			</div>
+			<div class="co-right co-right-bg">
+			<div id="tab">
+				<div id="listCon">
+					{include file="user/info_profile_cur" /}
+				</div>
+			</div>
+		 </div>
+
+		</div>
+	</div>
+	<div style="max-width:30rem;margin:0 auto;">
+		{include file="public/friendLink" }
+	</div>
+</div>
+
+<script src="{$maccms.path_tpl}/asset/js/user-info-profile.js"></script>
+{include file="public/foot" /}
+</body>
+</html>

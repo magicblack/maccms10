@@ -1,0 +1,22 @@
+<link rel="stylesheet" type="text/css" href="{$maccms.path_tpl}/asset/css/module-home_menu.css" />
+
+<div class="row">
+    <div class="pannel">
+        <ul class="hom_mob_list js-home-lazy-section"
+            id="js-home-menu-list"
+            data-section="home-menu"
+            data-api-action="type/get_nav_types"
+            data-parent="1"
+            data-mid="1"
+            data-num="5">
+            <li class="home-skeleton-menu-item"></li>
+            <li class="home-skeleton-menu-item"></li>
+            <li class="home-skeleton-menu-item"></li>
+            <li class="home-skeleton-menu-item"></li>
+            <li class="home-skeleton-menu-item"></li>
+        </ul>
+    </div>
+</div>
+<script type="application/json" id="js-home-menu-items-json">
+{php}echo json_encode($index_home_menu_items, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);{/php}
+</script>

@@ -1,0 +1,23 @@
+                        <div class="head_search_row head_search_row_capsule">
+                            <form name="searchMobile" method="get" onsubmit="return qrsearch(this);">
+                                <div class="head_search_capsule">
+                                    <span class="head_search_capsule_hot" aria-hidden="true"><img src="{$maccms.path_tpl}images/svg/hot.svg" alt=""></span>
+                                    <div class="head_search_capsule_field">
+                                        <input id="txtMobile" autocomplete="off" type="text" name="wd" class="mac_wd form_control" value="{$param.wd}" placeholder="">
+                                        <div class="head_hot_overlay head_hot_overlay_home" data-fallback-hot-lang="string_home_search_placeholder" data-hot-words="{:htmlspecialchars(isset($maccms['search_hot']) ? (string)$maccms['search_hot'] : '', ENT_QUOTES, 'UTF-8')}" data-permanent-hot="{:htmlspecialchars('永久域名: '.(isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : ''), ENT_QUOTES, 'UTF-8')}" id="headHotOverlayMobile">
+                                            <div class="head_hot_overlay_viewport"><div class="head_hot_overlay_track"></div></div>
+                                        </div>
+                                    </div>
+                                    <button class="submit head_search_capsule_submit" id="searchbuttonMobile" type="submit" name="submit" title="搜索" data-title="string_search">
+                                        <img class="head_search_capsule_ai_ico" src="{$maccms.path_tpl}images/home/search_ai.gif" alt="" width="20" height="20">
+                                        <span data-lang="string_search">搜索</span>
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="mac_results mac_results_hot" style="display:none;">
+                            <div class="hot mac_item">
+                                <p class="mac_title" data-lang="hot_search">热门搜索</p>
+                                <ul class="hot_keys"></ul>
+                            </div>
+                        </div>

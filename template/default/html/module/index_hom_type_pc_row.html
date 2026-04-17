@@ -1,0 +1,16 @@
+<div class="box latest-tab-box {if condition="$homRow.cover eq 'h'"}mac-poster--h{else /}mac-poster--v{/if}">
+    <div class="title home-unified-section-head hu-section-head">
+        <img class="laset_new_img hl_icon_light" src="{:mac_url_img($homRow.icon_l)}" >
+        <img class="laset_new_img hl_icon_black" src="{:mac_url_img($homRow.icon_b)}" >
+        <h2><span data-lang="string_zuixin">最新</span><span>{$homRow.home_name}</span></h2>
+        <dl class="home-unified-art-subtypes">{maccms:type parent="'.($homRow['type_id_block']).'" order="asc" by="sort" id="vo3" num="8"}<dd><a href="{:mac_url_type($vo3)}">{$vo3.type_name}</a></dd>{/maccms:type}</dl>
+        <a class="pc_more" href="{$homRow.more_url}"><span data-lang="string_type_more2">更多</span> <i class="iconfont more_i">&#xe623;</i></a>
+    </div>
+    <div class="latest-item cbox_list">
+        <ul class="img-list dis vodlist home-unified-vlist hu-vlist">
+            {maccms:vod num="'.($index_mobile_vod_num).'" type="'.($homRow['type_id_block']).'" order="desc" by="time"}
+            {include file="widget/vod_box"}
+            {/maccms:vod}
+        </ul>
+    </div>
+</div>

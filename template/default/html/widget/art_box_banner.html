@@ -1,0 +1,10 @@
+<li class="artbanner_item swiper-slide">  
+	<div class="artbanner_img">
+		<a class="artbanner_thumb swiper-lazy" href="{:mac_url_art_detail($vo)}" title="{$vo.art_name}" data-background="{$vo.art_pic|mac_url_img}">						
+			{assign name="mac_points_value" value="$vo.art_points" /}
+			{include file="widget/mac_badge_top_right" /}
+			{include file="widget/mac_badge_bottom_right" /}
+			<span class="artbanner_title">{$vo.art_name}</span>
+	    </a>
+	</div>
+</li>

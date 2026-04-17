@@ -36,6 +36,8 @@
                     class="layui-icon">&#xe654;</i>{:lang('add')}</a>
             <a data-href="{:url('del')}" class="layui-btn layui-btn-primary j-page-btns confirm"><i
                     class="layui-icon">&#xe640;</i>{:lang('del')}</a>
+            <a data-href="{:url('generateInviteCode')}" class="layui-btn layui-btn-normal j-ajax" refresh="yes" confirm="{:lang('admin/user/confirm_generate_code')}"><i
+                    class="layui-icon">&#xe673;</i>{:lang('admin/user/generate_invite_code')}</a>
         </div>
 
     </div>
@@ -50,6 +52,9 @@
                     <th width="80">{:lang('group')}</th>
                     <th width="80">{:lang('status')}</th>
                     <th width="80">{:lang('points')}</th>
+                    <th width="100">{:lang('admin/user/invite_code')}</th>
+                    <th width="80">{:lang('admin/user/invite_count')}</th>
+                    <th width="100">{:lang('admin/user/last_reward')}</th>
                     <th width="130">{:lang('last_login_time')}</th>
                     <th width="130">{:lang('last_login_ip')}</th>
                     <th width="80">{:lang('login_num')}</th>
@@ -76,6 +81,9 @@
                         data-href="{:url('field?col=user_status&ids='.$vo['user_id'])}">
                 </td>
                 <td>{$vo.user_points}</td>
+                <td><span class="layui-badge">{$vo.user_invite_code|default='-'}</span></td>
+                <td><span class="layui-badge layui-bg-green">{$vo.user_invite_count|default='0'}</span></td>
+                <td>{if condition="$vo['user_invite_reward_time'] gt 0"}{$vo.user_invite_reward_time|mac_day='color'}{else/}-{/if}</td>
                 <td>{$vo.user_login_time|mac_day='color'}</td>
                 <td>{$vo.user_login_ip|long2ip}</td>
                 <td>{$vo.user_login_num}</td>

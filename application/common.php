@@ -38,6 +38,194 @@ if (!function_exists('str_contains')) {
     }
 }
 
+/**
+ * 视频分类封面方向：使用后台「页面配置」theme[list_cover][vod]；子分类沿父链查找。
+ *
+ * @param int $typeId 当前分类 ID
+ * @return string h|v
+ */
+function mac_tpl_vod_type_cover($typeId)
+{
+    $typeId = (int) $typeId;
+    $tplconfig = $GLOBALS['mctheme'];
+    $theme = isset($tplconfig['theme']) && is_array($tplconfig['theme']) ? $tplconfig['theme'] : [];
+
+    $pageRows = $theme['list_cover']['vod'] ?? [];
+    if (!is_array($pageRows)) {
+        $pageRows = [];
+    }
+    $pageMap = [];
+    foreach ($pageRows as $row) {
+        if (!is_array($row) || empty($row['id'])) {
+            continue;
+        }
+        $id = (string) $row['id'];
+        $c = isset($row['cover']) ? (string) $row['cover'] : 'v';
+        $pageMap[$id] = ($c === 'h') ? 'h' : 'v';
+    }
+
+    $typeList = model('Type')->getCache('type_list');
+    if (!is_array($typeList)) {
+        $typeList = [];
+    }
+
+    $resolve = function ($startId, array $map) use ($typeList) {
+        $tid = (int) $startId;
+        while ($tid > 0) {
+            if (isset($map[(string) $tid])) {
+                return $map[(string) $tid];
+            }
+            if (!isset($typeList[$tid])) {
+                break;
+            }
+            $tid = (int) ($typeList[$tid]['type_pid'] ?? 0);
+        }
+
+        return null;
+    };
+
+    $hit = $resolve($typeId, $pageMap);
+    if ($hit !== null) {
+        return $hit;
+    }
+
+    return 'v';
+}
+
+/**
+ * 漫画列表封面方向：theme[list_cover][manga]。
+ *
+ * @return string h|v
+ */
+function mac_tpl_manga_cover()
+{
+    $tplconfig = $GLOBALS['mctheme'];
+    $theme = isset($tplconfig['theme']) && is_array($tplconfig['theme']) ? $tplconfig['theme'] : [];
+    $raw = isset($theme['list_cover']['manga']) ? (string) $theme['list_cover']['manga'] : 'v';
+
+    return ($raw === 'h') ? 'h' : 'v';
+}
+
+/**
+ * 小说/资讯列表封面方向：theme[list_cover][art]。
+ *
+ * @return string h|v
+ */
+function mac_tpl_art_cover()
+{
+    $tplconfig = $GLOBALS['mctheme'];
+    $theme = isset($tplconfig['theme']) && is_array($tplconfig['theme']) ? $tplconfig['theme'] : [];
+    $raw = isset($theme['list_cover']['art']) ? (string) $theme['list_cover']['art'] : 'v';
+
+    return ($raw === 'h') ? 'h' : 'v';
+}
+
+/**
+ * 主题「视频卡片/列表点击进播放页」是否开启（theme.playlink.btn）。
+ * 与 $GLOBALS['mctheme'] / assign('tplconfig') 同源，避免模板里多层数组判断不一致。
+ */
+function mac_tpl_vod_playlink_on()
+{
+    $mc = isset($GLOBALS['mctheme']) && is_array($GLOBALS['mctheme']) ? $GLOBALS['mctheme'] : (config('mctheme') ?: []);
+    $theme = isset($mc['theme']) && is_array($mc['theme']) ? $mc['theme'] : [];
+    if (empty($theme['playlink']) || !is_array($theme['playlink'])) {
+        return false;
+    }
+    $btn = $theme['playlink']['btn'] ?? null;
+    if ($btn === null || $btn === '') {
+        return false;
+    }
+    return $btn === '1' || $btn === 1 || $btn === true;
+}
+
+/**
+ * 播放页「热门标签墙」数据：全站 maccms.app.search_hot + 本片 vod_tag / vod_class / 分类名。
+ * 须在 $GLOBALS['config'] 已由 Init 行为赋值后调用（与模板 {php} 不同，避免匿名函数内 `}` 与 Think 标签 `}` 冲突导致整块 PHP 编译失败）。
+ *
+ * @param array $info mac_label_vod_detail 的 info
+ * @return array{enabled:bool,json:string}
+ */
+function mac_vod_play_tagwall_payload($info)
+{
+    $info = is_array($info) ? $info : [];
+    $split = function ($raw, $pattern) {
+        $raw = trim((string) $raw);
+        if ($raw === '') {
+            return [];
+        }
+        $parts = preg_split($pattern, $raw, -1, PREG_SPLIT_NO_EMPTY);
+        if (!is_array($parts)) {
+            return [];
+        }
+
+        return array_values(array_filter(array_map('trim', $parts)));
+    };
+    $hotRaw = '';
+    if (!empty($GLOBALS['config']['app']['search_hot'])) {
+        $hotRaw = (string) $GLOBALS['config']['app']['search_hot'];
+    }
+    $hot = array_slice($split($hotRaw, '/[,，\s]+/u'), 0, 48);
+    $local = [];
+    if (!empty($info['vod_tag'])) {
+        $local = array_merge($local, $split($info['vod_tag'], '/[,，\/|、\s]+/u'));
+    }
+    if (!empty($info['vod_class'])) {
+        $local = array_merge($local, $split($info['vod_class'], '/[,，\/|、\s]+/u'));
+    }
+    if (count($local) === 0 && !empty($info['type']['type_name'])) {
+        $local[] = trim((string) $info['type']['type_name']);
+    }
+    $local = array_slice(array_values(array_unique(array_filter($local))), 0, 40);
+    $enabled = (count($hot) + count($local)) > 0;
+    $json = json_encode(['hot' => $hot, 'local' => $local], JSON_UNESCAPED_UNICODE | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS);
+
+    return ['enabled' => $enabled, 'json' => $json];
+}
+
+/**
+ * 首页热门推荐 Tab（latest2–latest5）：读取 theme.hotvod.tabs。
+ * 无配置时返回空数组，不做默认兜底。
+ *
+ * @param array $theme mctheme.theme
+ * @return array<int, array{id:string,name:string,icon_l:string,icon_b:string}>
+ */
+function mac_theme_index_hotvod_tabs(array $theme)
+{
+    $tabsCfg = isset($theme['hotvod']['tabs']) && is_array($theme['hotvod']['tabs']) ? $theme['hotvod']['tabs'] : [];
+    if (count($tabsCfg) === 0) {
+        return [];
+    }
+
+    $typeModel = model('Type');
+    $out = [];
+
+    for ($i = 0; $i < 4; $i++) {
+        if (!isset($tabsCfg[$i]) || !is_array($tabsCfg[$i])) {
+            continue;
+        }
+        $row = $tabsCfg[$i];
+        $id = isset($row['id']) ? trim((string) $row['id']) : '';
+        if ($id === '') {
+            continue;
+        }
+
+        $name = isset($row['name']) ? trim((string) $row['name']) : '';
+        if ($name === '') {
+            $vo2 = $typeModel->getCacheInfo((int) $id);
+            $name = !empty($vo2['type_name']) ? (string) $vo2['type_name'] : '';
+        }
+
+        $out[] = [
+            'id' => $id,
+            'name' => $name,
+            'icon_l' => isset($row['icon_l']) ? trim((string) $row['icon_l']) : '',
+            'icon_b' => isset($row['icon_b']) ? trim((string) $row['icon_b']) : '',
+        ];
+    }
+
+    return $out;
+}
+
 //访问日志记录，根目录创建log目录
 function slog($logs)
 {
@@ -145,6 +333,21 @@ function mac_arr2file($f,$arr='')
     if (function_exists('opcache_invalidate')) {
         opcache_invalidate($f, true);
     }
+}
+
+/**
+ * 保存配置到 extra 文件（用于主题配置等）
+ * @param string $f 文件路径
+ * @param array $arr 配置数组
+ * @return bool
+ */
+function mac_save_config_data($f, $arr = '')
+{
+    if (!is_array($arr)) {
+        return false;
+    }
+    mac_arr2file($f, $arr);
+    return true;
 }
 
 function mac_replace_text($txt,$type=1)
@@ -591,7 +794,6 @@ function mac_curl_post($url,$data,$heads=array(),$cookie='')
     curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
     curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 15);
     curl_setopt($ch, CURLOPT_TIMEOUT, 30);
-    curl_setopt($ch, CURLINFO_CONTENT_LENGTH_UPLOAD,strlen($data));
     curl_setopt($ch, CURLOPT_HEADER,0);
     curl_setopt($ch, CURLOPT_REFERER, $url);
     curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
@@ -645,6 +847,7 @@ function mac_curl_get($url,$heads=array(),$cookie='')
 
 function mac_substring($str, $lenth, $start=0)
 {
+    $str = mac_scalar_string($str);
     $len = strlen($str);
     $r = array();
     $n = 0;
@@ -1131,6 +1334,52 @@ function mac_get_mid($controller)
     ];
     return $arr[$controller];
 }
+
+/**
+ * 与 index/ajax/digg 一致：当前请求是否已对该内容点过赞（Cookie）
+ */
+function mac_user_has_digg($mid, $id)
+{
+    $mid = (int) $mid;
+    $id = (int) $id;
+    if ($id < 1 || $mid < 1) {
+        return 0;
+    }
+    $pre = mac_get_mid_code($mid);
+    if ($pre === null || $pre === '') {
+        return 0;
+    }
+    $cookie = $pre . '-digg-' . $id;
+
+    return !empty(cookie($cookie)) ? 1 : 0;
+}
+
+/**
+ * 登录用户是否已收藏（ulog_type=2）
+ *
+ * @return array{is_fav:int,fav_ulog_id:int}
+ */
+function mac_user_fav_state($userId, $ulogMid, $rid)
+{
+    $userId = (int) $userId;
+    $ulogMid = (int) $ulogMid;
+    $rid = (int) $rid;
+    if ($userId < 1 || $rid < 1 || $ulogMid < 1) {
+        return ['is_fav' => 0, 'fav_ulog_id' => 0];
+    }
+    $row = model('Ulog')->where([
+        'user_id'   => $userId,
+        'ulog_mid'  => $ulogMid,
+        'ulog_type' => 2,
+        'ulog_rid'  => $rid,
+    ])->field('ulog_id')->find();
+    if (!empty($row['ulog_id'])) {
+        return ['is_fav' => 1, 'fav_ulog_id' => (int) $row['ulog_id']];
+    }
+
+    return ['is_fav' => 0, 'fav_ulog_id' => 0];
+}
+
 function mac_get_aid($controller,$action='')
 {
     $controller=strtolower($controller);
@@ -1142,7 +1391,7 @@ function mac_get_aid($controller,$action='')
 
     // https://github.com/magicblack/maccms10/issues/960
     $arr=[
-        'vod/type'=>11,'vod/show'=>12,'vod/search'=>13,'vod/detail'=>14,'vod/play'=>15,'vod/down'=>16,'vod/role'=>17,'vod/plot'=>18,
+        'vod/type'=>11,'vod/show'=>12,'vod/search'=>13,'vod/search_hub'=>13,'vod/detail'=>14,'vod/play'=>15,'vod/down'=>16,'vod/role'=>17,'vod/plot'=>18,
         'art/type'=>21,'art/show'=>22,'art/search'=>23,'art/detail'=>24,
         'manga/type'=>121,'manga/show'=>122,'manga/search'=>123,'manga/detail'=>124,
         'topic/search'=>33,'topic/detail'=>34,
@@ -1199,8 +1448,10 @@ function mac_get_plog_type_text($data)
         7 => lang('points_upgrade'),
         8 => lang('integral_consumption'),
         9 => lang('integral_withdrawal'),
+        10 => lang('plog_sign_milestone_reward'),
+        11 => lang('plog_task_sign_reward'),
     ];
-    return $arr[$data];
+    return isset($arr[$data]) ? $arr[$data] : '';
 }
 
 function mac_get_card_sale_status_text($data)
@@ -1230,9 +1481,12 @@ function mac_get_order_status_text($data)
     return $arr[$data];
 }
 
-function mac_get_user_portrait($user_id)
+function mac_get_user_portrait($user_id = null)
 {
     $res = MAC_PATH . 'static_new/images/touxiang.png';
+    if ($user_id === null && !empty($GLOBALS['user']['user_id'])) {
+        $user_id = (int)$GLOBALS['user']['user_id'];
+    }
     if(!empty($user_id)){
         $res2 = 'upload/user/'.($user_id % 10 ). '/'.$user_id.'.jpg';
         if(file_exists(ROOT_PATH . $res2)){
@@ -1242,13 +1496,29 @@ function mac_get_user_portrait($user_id)
     return $res;
 }
 
+function mac_scalar_string($val, $default = '')
+{
+    if (is_string($val)) {
+        return $val;
+    }
+    if (is_array($val) || is_object($val)) {
+        return $default;
+    }
+    if ($val === null || $val === false) {
+        return $default;
+    }
+    return (string)$val;
+}
+
 function mac_filter_html($str)
 {
+    $str = mac_scalar_string($str);
     return strip_tags($str);
 }
 
 function mac_filter_xss($str)
 {
+    $str = mac_scalar_string($str);
     // 识别URL类型，跳过HTML实体转义
     // 判断是否为URL格式：http://、https://、//、mac: 开头，或包含 :// 的字符串
     $trimmed_str = trim($str);
@@ -1726,6 +1996,10 @@ function mac_get_order($order,$param)
 
 function mac_url_img($url)
 {
+    $url = mac_scalar_string($url);
+    if ($url === '') {
+        return '';
+    }
     if(substr($url,0,4) == 'mac:'){
         $protocol = $GLOBALS['config']['upload']['protocol'];
         if(empty($protocol)){
@@ -1752,6 +2026,7 @@ function mac_url_img($url)
 
 function mac_url_content_img($content)
 {
+    $content = mac_scalar_string($content);
     $protocol = $GLOBALS['config']['upload']['protocol'];
     if(empty($protocol)){
         $protocol = 'http';
@@ -1979,6 +2254,35 @@ function mac_url($model,$param=[],$info=[])
             }
             $replace_to = array_merge($replace_to,[date('Y',$info['vod_time']),date('m',$info['vod_time']),date('d',$info['vod_time'])]);
             break;
+        case 'manga/detail':
+            $replace_to = [$info['manga_id'],$info['manga_en'],'',
+                $info['type_id'],$info['type']['type_en'],$info['type_1']['type_id'],$info['type_1']['type_en']
+            ];
+            if($config['view']['manga_detail'] == 2){
+                $path = $config['path' ]['manga_detail'];
+                if(substr($path,strlen($path)-1,1)=='/'){
+                    $path .= 'index';
+                }
+                $replace_to[] = md5($info['manga_id']);
+            }
+            else{
+                switch($config['rewrite']['manga_id'])
+                {
+                    case 1:
+                        $id = $info['manga_en'];
+                        break;
+                    case 2:
+                        $id = mac_alphaID($info['manga_id'],false,$config['rewrite']['encode_len'],$config['rewrite']['encode_key']);
+                        break;
+                    default:
+                        $id = $info['manga_id'];
+                        break;
+                }
+
+                $url = url($model,['id'=> $id ]);
+            }
+            $replace_to = array_merge($replace_to,[date('Y',$info['manga_time']),date('m',$info['manga_time']),date('d',$info['manga_time'])]);
+            break;
         case 'vod/play':
             $replace_to = [
                 $info['vod_id'],$info['vod_en'],'',
@@ -2020,6 +2324,41 @@ function mac_url($model,$param=[],$info=[])
                 $url = url($model,['id'=>$id,'sid'=>$param['sid'],'nid'=>$param['nid']]);
             }
             $replace_to = array_merge($replace_to,[date('Y',$info['vod_time']),date('m',$info['vod_time']),date('d',$info['vod_time']),$param['sid'],$param['nid']]);
+            break;
+        case 'manga/play':
+            $replace_to = [
+                $info['manga_id'],$info['manga_en'],'',
+                $info['type_id'],$info['type']['type_en'],$info['type_1']['type_id'],$info['type_1']['type_en'],
+            ];
+            if(isset($config['view']['manga_play']) && $config['view']['manga_play'] >= 2){
+                $path = $config['path']['manga_play'];
+                if(substr($path,strlen($path)-1,1)=='/'){
+                    $path .= 'index';
+                }
+                $replace_to[] = md5($info['manga_id']);
+                if($config['view']['manga_play'] == 2){
+                    $path.= '.'.$config['path']['suffix'];
+                    $path .= '?'.$info['manga_id'].'-'.$param['sid'].'-'.$param['nid'];
+                }
+                elseif($config['view']['manga_play'] == 3){
+                    $path .= $config['path']['page_sp'].$param['sid'].$config['path']['page_sp'].$param['nid'];
+                }
+            }else{
+                switch($config['rewrite']['manga_id'])
+                {
+                    case 1:
+                        $id = $info['manga_en'];
+                        break;
+                    case 2:
+                        $id = mac_alphaID($info['manga_id'],false,$config['rewrite']['encode_len'],$config['rewrite']['encode_key']);
+                        break;
+                    default:
+                        $id = $info['manga_id'];
+                        break;
+                }
+                $url = url($model,['id'=>$id,'sid'=>$param['sid'],'nid'=>$param['nid']]);
+            }
+            $replace_to = array_merge($replace_to,[date('Y',$info['manga_time']),date('m',$info['manga_time']),date('d',$info['manga_time']),$param['sid'],$param['nid']]);
             break;
         case 'vod/down':
             $replace_to = [
@@ -2592,6 +2931,12 @@ function mac_url_type($info,$param=[],$flag='type')
     else if($info['type_mid'] == 11) {
         $tab ='website';
     }
+    else if($info['type_mid'] == 12) {
+        if(empty($param['id'])){
+            $param['id'] = $info['type_id'];
+        }
+        return mac_url('manga/'.$flag,$param,$info);
+    }
     if(empty($param['id'])){
         $param['id'] = $info['type_id'];
     }
@@ -2681,6 +3026,61 @@ function mac_url_vod_detail($info)
 function mac_url_manga_detail($info)
 {
     return mac_url('manga/detail',[],$info);
+}
+function mac_url_manga_play($info,$param=[])
+{
+    if($param=='first'){
+        if(empty($info['manga_page_list']) || !is_array($info['manga_page_list'])){
+            return '';
+        }
+        $sid = intval(key($info['manga_page_list']));
+        if(empty($info['manga_page_list'][$sid]['urls']) || !is_array($info['manga_page_list'][$sid]['urls'])){
+            return '';
+        }
+        $nid = intval(key($info['manga_page_list'][$sid]['urls']));
+        if($sid==0 || $nid==0){
+            return '';
+        }
+        $param = [];
+        $param['sid'] = $sid;
+        $param['nid'] = $nid;
+    }
+    if(intval($param['sid'])<1){
+        $param['sid'] = 1;
+    }
+    if(intval($param['nid'])<1){
+        $param['nid'] = 1;
+    }
+
+    return mac_url('manga/play',['sid'=>$param['sid'],'nid'=>$param['nid']],$info);
+}
+function mac_url_manga_down($info,$param=[])
+{
+    if($param=='first'){
+        if(empty($info['manga_page_list']) || !is_array($info['manga_page_list'])){
+            return '';
+        }
+        $sid = intval(key($info['manga_page_list']));
+        if(empty($info['manga_page_list'][$sid]['urls']) || !is_array($info['manga_page_list'][$sid]['urls'])){
+            return '';
+        }
+        $nid = intval(key($info['manga_page_list'][$sid]['urls']));
+        if($sid==0 || $nid==0){
+            return '';
+        }
+        $param = [];
+        $param['sid'] = $sid;
+        $param['nid'] = $nid;
+    }
+
+    if(intval($param['sid'])<1){
+        $param['sid'] = 1;
+    }
+    if(intval($param['nid'])<1){
+        $param['nid'] = 1;
+    }
+
+    return mac_url('manga/down',['sid'=>$param['sid'],'nid'=>$param['nid']],$info);
 }
 function mac_url_vod_search($param)
 {
@@ -2829,6 +3229,28 @@ function mac_label_art_detail($param)
 
     return $res;
 }
+function mac_label_manga_detail($param)
+{
+    $where = [];
+    if($GLOBALS['config']['rewrite']['manga_id']==1){
+        $where['manga_en'] = ['eq',$param['id']];
+    }
+    else{
+        if($GLOBALS['config']['rewrite']['manga_id']==2) {
+            $param['id'] = mac_alphaID($param['id'], true, $GLOBALS['config']['rewrite']['encode_len'],$GLOBALS['config']['rewrite']['encode_key'] );
+        }
+        $where['manga_id'] = ['eq',$param['id']];
+    }
+    $where['manga_status'] = ['eq',1];
+    $res = model('Manga')->infoData($where,'*',1);
+    if($res['code'] != 1){
+        return $res;
+    }
+    $GLOBALS['type_id'] = $res['info']['type_id'];
+    $GLOBALS['type_pid'] = $res['info']['type']['type_pid'];
+
+    return $res;
+}
 function mac_label_vod_detail($param)
 {
     $where = [];
@@ -2918,6 +3340,130 @@ function mac_get_popedom_filter($group_type_list, $type_list = [])
     $group_keys = get_array_unique_id_list($group_keys);
     $cha_keys = array_diff($type_keys, $group_keys);
     return implode(',', $cha_keys);
+}
+
+/**
+ * VIP 专属分类 = VIP 有播放/阅读权限 - (游客 ∪ 默认会员 有播放/阅读权限)
+ * 仅针对播放页权限 (popedom 3)，Vod/Art/Manga 统一用 popedom 3
+ * 返回 type_id 数组
+ */
+function mac_get_vip_exclusive_type_ids()
+{
+    $cache_flag = $GLOBALS['config']['app']['cache_flag'] ?? 'maccms';
+    $key = $cache_flag . '_vip_exclusive_type_ids';
+    $list = \think\Cache::get($key);
+    if (is_array($list)) {
+        return $list;
+    }
+    $group_list = model('Group')->getCache('group_list');
+    $type_list = model('Type')->getCache('type_list');
+    if (empty($group_list) || empty($type_list)) {
+        return [];
+    }
+    $guest_ids = [];
+    $member_ids = [];
+    $vip_ids = [];
+    $content_mids = [1 => 1, 2 => 1, 12 => 1]; // Vod, Art, Manga 有播放/阅读页
+    foreach ($type_list as $type_id => $type_info) {
+        $mid = $type_info['type_mid'] ?? 0;
+        if (empty($content_mids[$mid])) {
+            continue;
+        }
+        foreach ($group_list as $gid => $group) {
+            $has = strpos(',' . ($group['group_type'] ?? ''), ',' . $type_id . ',') !== false
+                && !empty($group['group_popedom'][$type_id][3]);
+            if (!$has) {
+                continue;
+            }
+            if ($gid == 1) {
+                $guest_ids[$type_id] = 1;
+            } elseif ($gid == 2) {
+                $member_ids[$type_id] = 1;
+            } else {
+                $vip_ids[$type_id] = 1;
+            }
+        }
+    }
+    $ab = $guest_ids + $member_ids;
+    $exclusive = array_diff_key($vip_ids, $ab);
+    $list = array_keys($exclusive);
+    \think\Cache::set($key, $list);
+    return $list;
+}
+
+/**
+ * 为列表每行补充 type_is_vip_exclusive，供前台角标（SSR 模板 / CSR MacHomeCardRender）与接口 JSON 一致
+ *
+ * @param array $list 引用传递，行内需含 type_id（视频/文章/漫画分类 ID）
+ */
+function mac_append_type_is_vip_exclusive_for_rows(array &$list)
+{
+    if (empty($list)) {
+        return;
+    }
+    $vip_exclusive = mac_get_vip_exclusive_type_ids();
+    foreach ($list as &$row) {
+        $row['type_is_vip_exclusive'] = in_array((int)($row['type_id'] ?? 0), $vip_exclusive, true) ? 1 : 0;
+    }
+    unset($row);
+}
+
+/**
+ * 文章/漫画「阅读」实际扣费积分：与前台权限、user/ajax_buy_popedom 一致。
+ * 「每数据」用 *_points；「每页/每话」优先 *_points_detail，为 0 时回退整本/整条 *_points（常见只填了 art_points 的情况）。
+ *
+ * @param string $pre art|manga
+ * @param array  $info 详情行
+ * @return int
+ */
+function mac_content_read_points_amount($pre, array $info)
+{
+    $pre = strtolower((string)$pre);
+    if (!in_array($pre, ['art', 'manga'], true)) {
+        return 0;
+    }
+    $typeKey = $pre . '_points_type';
+    $ptype = isset($GLOBALS['config']['user'][$typeKey]) ? (string)$GLOBALS['config']['user'][$typeKey] : '0';
+    if ($ptype === '1') {
+        return (int)($info[$pre . '_points'] ?? 0);
+    }
+    $detail = (int)($info[$pre . '_points_detail'] ?? 0);
+    if ($detail > 0) {
+        return $detail;
+    }
+
+    return (int)($info[$pre . '_points'] ?? 0);
+}
+
+/**
+ * 与 model Vod::listCacheData 中按分类筛选逻辑一致：自身 type_id + 直接子分类的 type_id。
+ * 用于把 (type_id=X OR type_id_1=X) 改为 type_id IN (...)，便于走 type_id 索引、避免 OR 低效扫描。
+ *
+ * @param int $typeId 分类 ID
+ * @return int[]
+ */
+function mac_vod_type_filter_ids_for_list($typeId)
+{
+    $typeId = (int)$typeId;
+    if ($typeId <= 0) {
+        return [];
+    }
+    $type_list = model('Type')->getCache('type_list');
+    if (empty($type_list) || !is_array($type_list)) {
+        return [$typeId];
+    }
+    $tmp_arr = explode(',', (string)$typeId);
+    $ids = [];
+    foreach ($type_list as $v2) {
+        if (!is_array($v2)) {
+            continue;
+        }
+        if (in_array($v2['type_id'] . '', $tmp_arr) || in_array($v2['type_pid'] . '', $tmp_arr)) {
+            $ids[] = (int)$v2['type_id'];
+        }
+    }
+    $ids = array_values(array_unique(array_filter($ids)));
+    return !empty($ids) ? $ids : [$typeId];
 }
 
 function reset_html_filename($htmlfile)

@@ -1,0 +1,38 @@
+{php}$count=1;{/php}{maccms:foreach name="obj.vod_play_list" key="play"}
+
+{php} if ($popedom['code'] == 3002 && $maccms.aid != 15 && $count == 1 && !cookie('is_member')){ {/php}
+<div class="playbtn o_play">
+	<a data-lang="play_sk" class="btn btn_primary" href="{:mac_url('vod/player',['id'=>$obj.vod_id,'sid'=>$vo.sid,'nid'=>1])}">
+		试看
+	</a>
+</div>
+{php} }else{ {/php}
+
+{if $maccms.aid != 15 && $count == 1 }
+<div class="playbtn o_play">
+	<a class="btn btn_primary" href="{:mac_url_vod_play($obj,['sid'=>$vo.sid,'nid'=>1])}">
+		<i class="iconfont">&#xe659;</i>&nbsp; <span data-lang="string_play_ljbf">立即播放</span> </a>
+</div>
+{/if}
+
+{php} } {/php}
+
+{php}$count++;{/php}{/maccms:foreach}
+{php}$count=1;{/php}{maccms:foreach name="obj.vod_down_list"}
+{if$maccms.aid!=16&&$count==1}						    
+<div class="playbtn o_down"{if condition="$obj.vod_play_list gt 0"} {/if}>
+	<a class="btn btn_primary" href="{:mac_url_vod_down($obj,['sid'=>$vo.sid,'nid'=>1])}">
+		<i class="iconfont">&#xe63c;</i>&nbsp; <span data-lang="string_play_xzgk">下载观看</span> </a>
+</div>
+{/if}
+{php}$count++;{/php}{/maccms:foreach}
+
+{if condition="($obj.vod_play_list eq 0) OR ($obj.vod_down_list eq 0)"}
+	<div class="playbtn o_like" >
+        {if condition="$GLOBALS['config']['user']['status'] eq 1"}
+	    <a class="btn btn_like digg_link" data-id="{$obj.vod_id}" data-mid="{$maccms.mid}" data-type="up" href="javascript:;"><i class="iconfont">&#xe655;</i>&nbsp; <span class="is_digg" data-lang="string_play_xh">喜欢 </span> &nbsp;<em class="digg_num">{$obj.vod_up}</em></a>
+	    {/if}
+    </div>
+{/if}
+
+

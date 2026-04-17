@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title data-lang="browser_title">使用浏览器打开</title>
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport">
+    <meta content="yes" name="apple-mobile-web-app-capable">
+    <meta content="black" name="apple-mobile-web-app-status-bar-style">
+    <meta name="format-detection" content="telephone=no">
+    <meta content="false" name="twcClient" id="twcClient">
+    <meta name="aplus-touch" content="1">
+    <link rel="stylesheet" href="{$maccms.path}template/default/asset/css/theme-tokens.css">
+	<link rel="stylesheet" type="text/css" href="{$maccms.path_tpl}/asset/css/public-browser.css" />
+</head>
+<body>
+<div class="top-bar-guidance">
+    <p><span data-lang="browser_click_corner">点击右上角</span><img src="//gw.alicdn.com/tfs/TB1xwiUNpXXXXaIXXXXXXXXXXXX-55-55.png" class="icon-safari"> <span id="openm" data-lang="browser_safari_open">Safari打开</span></p>
+    <p data-lang="browser_continue_tip">可以继续浏览本站哦~</p>
+</div>
+<a style="display: none;" href="" id="vurl" rel="noreferrer"></a>
+<div id="browser">
+    <p data-lang="browser_avoid_block">避免微信和QQ屏蔽本站网址，请理解支持！</p>
+</div>
+<div class="app-download-tip">
+    <span class="guidance-desc" data-lang="browser_click_or_copy">点击右上角或复制网址自行打开</span>
+</div>
+<script src="{$maccms.path}static/js/jquery.js"></script>
+<script src="{$maccms.path}static/js/jquery.clipboard.js"></script>
+<a data-clipboard-text="{$maccms.http_url}" class="app-download-btn" data-lang="browser_copy_url_btn">点此复制本站网址</a>
+<script type="text/javascript">
+    new ClipboardJS(".app-download-btn");
+    $(".app-download-btn").click(function() {
+        var tip = $('<div class="mac-browser-copy-tip">复制成功，么么哒</div>');
+        $("body").append(tip);
+        setTimeout(function(){ tip.fadeOut(200, function(){ tip.remove(); }); }, 500);
+    });
+</script>
+
+<script>
+    function openu(u){
+        document.getElementById("vurl").href= u;
+        document.getElementById("vurl").click();
+    }
+    var url = window.location.href;
+    if(navigator.userAgent.indexOf("QQ/")> -1){
+        openu("ucbrowser://"+url);
+        openu("mttbrowser://url="+url);
+        openu("baiduboxapp://browse?url="+url);
+        openu("googlechrome://browse?url="+url);
+        openu("mibrowser:"+url);
+        openu("taobao://"+url.split("://")[1]);
+        openu("alipays://platformapi/startapp?appId=20000067&url="+url);
+        $("html").on("click",function(){
+            openu("ucbrowser://"+url);
+            openu("mttbrowser://url="+url);
+            openu("baiduboxapp://browse?url="+url);
+            openu("googlechrome://browse?url="+url);
+            openu("mibrowser:"+url);
+            openu("taobao://"+url.split("://")[1]);
+            openu("alipays://platformapi/startapp?appId=20000067&url="+url);
+        });
+    }else if(navigator.userAgent.indexOf("MicroMessenger") > -1){
+        if(navigator.userAgent.indexOf("Android") > -1){
+            var iframe = document.createElement("iframe");
+            iframe.style.display = "none";
+            document.body.appendChild(iframe);
+        }else{
+
+        }
+    }
+</script>
+</body>
+</html>

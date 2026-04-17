@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    {include file="public/include"}
+    <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+    <link rel="stylesheet" href="{$maccms.path}template/default/asset/css/head.css">
+    <link rel="stylesheet" href="{$maccms.path}template/default/asset/css/manga-play.css">
+</head>
+<body class=" page-manga-play">
+    {include file="public/th" /}
+    {php}
+$curSid = intval($param['sid'])>0 ? intval($param['sid']) : 1;
+$curNid = intval($param['nid'])>0 ? intval($param['nid']) : 1;
+$mangaFrom = isset($obj['manga_page_list'][$curSid]) ? $obj['manga_page_list'][$curSid] : [];
+$mangaEp = isset($mangaFrom['urls'][$curNid]) ? $mangaFrom['urls'][$curNid] : [];
+$manga_img_list = [];
+if(!empty($mangaEp['url'])){
+    $manga_img_list = explode(',', $mangaEp['url']);
+}
+$epTotal = isset($mangaFrom['url_count']) ? intval($mangaFrom['url_count']) : 0;
+if($epTotal<1 && !empty($mangaFrom['urls']) && is_array($mangaFrom['urls'])){
+    $epTotal = count($mangaFrom['urls']);
+}
+$prevNid = $curNid>1 ? $curNid-1 : 1;
+$nextNid = ($epTotal>0 && $curNid<$epTotal) ? $curNid+1 : $curNid;
+$hasPrev = $curNid > 1;
+$hasNext = $epTotal > 0 && $curNid < $epTotal;
+{/php}
+<div id="manga_play_page">
+    
+    <header class="manga-reader-top">
+        <a class="back" href="{:mac_url_manga_detail($obj)}" data-title="manga_back_detail" title="返回详情" id="mangaBackBtn">
+            <i class="iconfont">&#xe625;</i>
+        </a>
+        <div class="title-wrap">
+            <div class="title">
+                {if condition="!empty($mangaEp['name'])"}
+                    {$mangaEp.name}
+                {else/}
+                    <span data-lang="string_manga_di">第</span>{$curNid}<span data-lang="string_manga_hua">话</span>
+                {/if}
+            </div>
+            <div class="ep">{$obj.manga_name} · <span data-lang="string_zg">共</span>{$epTotal|default='0'}<span data-lang="string_manga_hua">话</span></div>
+        </div>
+        <a class="share-btn open-share" href="javascript:;" data-title="manga_share" title="分享">
+            <i class="iconfont">&#xe615;</i>
+        </a>
+    </header>
+    {include file="widget/share"}
+    {include file="ads/ads_banner1"}
+    {include file="ads/ads_icon1" ads_icon1_marquee="0"}
+
+    
+    {if condition="!empty($mangaFrom['urls'])"}
+    <aside class="manga-catalog" id="mangaCatalog" aria-hidden="true">
+        <div class="manga-catalog-mask" data-close="1"></div>
+        <div class="manga-catalog-panel" role="dialog" aria-modal="true" aria-label="目录">
+            <div class="manga-catalog-header">
+                <div class="manga-catalog-title">
+                    <div class="t1" data-lang="manga_toc">目录</div>
+                    <div class="t2">{$obj.manga_name} · <span data-lang="string_zg">共</span>{$epTotal|default='0'}<span data-lang="string_manga_hua">话</span></div>
+                </div>
+                <button type="button" class="manga-catalog-close" data-close="1" aria-label="关闭">×</button>
+            </div>
+            <div class="manga-catalog-list">
+                {volist name="mangaFrom.urls" id="ep2"}
+                <a class="manga-catalog-item{if condition="$ep2.nid eq $curNid"} active{/if}" href="{:mac_url_manga_play($obj,['sid'=>$curSid,'nid'=>$ep2.nid])}">
+                    <span class="c-no">{$ep2.nid}</span>
+                    <span class="c-title">{$ep2.name|default='第'.$ep2.nid.'话'}</span>
+                    {if condition="$ep2.nid eq $curNid"}<span class="c-now" data-lang="manga_reading">当前</span>{/if}
+                </a>
+                {/volist}
+            </div>
+        </div>
+    </aside>
+    {/if}
+
+    
+    <div class="manga-reader-body">
+        <div class="manga-reader-inner">
+            {if condition="$popedom.code eq 1"}
+                {if condition="!empty($manga_img_list)"}
+                    {volist name="manga_img_list" id="img"}
+                    <div class="manga-page">
+                        <img class="lazyload" src="{:mac_url_img(!empty($tplconfig['theme']['lazy']) ? $maccms['path'].$tplconfig['theme']['lazy'] : $maccms['path_tpl'].'/asset/img/load.gif')}" data-original="{$img}" alt="{$obj.manga_name} 第{$curNid}话">
+                    </div>
+                    {/volist}
+                {else /}
+                    <div class="manga-empty-tip" data-lang="manga_empty_tip">本话暂无图片</div>
+                {/if}
+            {else /}
+            <div class="manga-popedom-gate">
+                {include file="widget/popedom_upgrade_gate"}
+            </div>
+            {/if}
+        </div>
+
+        
+        {if condition="$GLOBALS['config']['comment']['status'] eq 1 && $popedom.code eq 1"}
+        <section class="manga-comment-section" id="pinglun">
+            <h3 class="section-title"><span data-lang="manga_comment">评论</span> <small style="color:#888;font-weight:normal;"><span data-lang="string_zg">共</span> <em class="mac_total">0</em> <span data-lang="string_gbook_t">条</span></small></h3>
+            <div class="mac_comment comm_list comm_list_box" data-id="{$obj.manga_id}" data-mid="{$maccms.mid}"></div>
+            <script>
+                $(function(){
+                    function initComment(){
+                        if(typeof MAC !== 'undefined'){
+                            MAC.Comment.Login = {$comment.login};
+                            MAC.Comment.Verify = {$comment.verify};
+                            MAC.Comment.Init();
+                            MAC.Comment.Show(1);
+                        }else{
+                            setTimeout(initComment, 50);
+                        }
+                    }
+                    initComment();
+                });
+            </script>
+        </section>
+        {/if}
+    </div>
+
+    
+    <nav class="manga-reader-bar">
+        <a class="bar-item" href="{:mac_url_manga_detail($obj)}">
+            <i class="iconfont icon">&#xe62f;</i>
+            <span data-lang="manga_detail">详情</span>
+        </a>
+
+        {if condition="$hasPrev"}
+        <a class="bar-item primary" href="{:mac_url_manga_play($obj,['sid'=>$curSid,'nid'=>$prevNid])}">
+            <span class="circle"><i class="iconfont">&#xe626;</i></span>
+            <span data-lang="manga_prev">上一话</span>
+        </a>
+        {else /}
+        <span class="bar-item primary disabled">
+            <span class="circle"><i class="iconfont">&#xe626;</i></span>
+            <span data-lang="manga_prev">上一话</span>
+        </span>
+        {/if}
+
+        {if condition="$hasNext"}
+        <a class="bar-item primary" href="{:mac_url_manga_play($obj,['sid'=>$curSid,'nid'=>$nextNid])}">
+            <span class="circle"><i class="iconfont">&#xe62c;</i></span>
+            <span data-lang="manga_next">下一话</span>
+        </a>
+        {else /}
+        <span class="bar-item primary disabled">
+            <span class="circle"><i class="iconfont">&#xe62c;</i></span>
+            <span data-lang="manga_next">下一话</span>
+        </span>
+        {/if}
+
+        {if condition="$GLOBALS['config']['user']['status'] eq 1"}
+        <a class="bar-item mac_ulog" href="javascript:;" data-type="4" data-mid="{$maccms.mid}" data-id="{$obj.manga_id}">
+            <i class="iconfont icon">&#xe629;</i>
+            <span data-lang="manga_fav">收藏</span>
+        </a>
+        {/if}
+
+        <span class="bar-item" id="mangaCatalogBar">
+            <i class="iconfont icon">&#xe640;</i>
+            <span data-lang="manga_toc">目录</span>
+        </span>
+    </nav>
+
+    <span class="mac_hits hits hide" data-mid="{$maccms.mid}" data-id="{$obj.manga_id}" data-type="hits"></span>
+    <span class="mac_hits hits_day hide" data-mid="{$maccms.mid}" data-id="{$obj.manga_id}" data-type="hits_day"></span>
+    <span class="mac_hits hits_week hide" data-mid="{$maccms.mid}" data-id="{$obj.manga_id}" data-type="hits_week"></span>
+    <span class="mac_hits hits_month hide" data-mid="{$maccms.mid}" data-id="{$obj.manga_id}" data-type="hits_month"></span>
+    <span class="hl_history hide" data-name="{$obj.manga_name}" data-link="{:mac_url_manga_play($obj,['sid'=>$curSid,'nid'=>$curNid])}" data-pic="{$obj.manga_pic|mac_url_img}" data-part="{$mangaEp.name|default='第'.$curNid.'话'}"></span>
+    <div class="mac_ulog_set hide" data-mid="{$maccms.mid}" data-id="{$obj.manga_id}" data-sid="{$curSid}" data-nid="{$curNid}" data-type="4"></div>
+</div>
+{include file="widget/recharge_modal" /}
+{include file="public/foot"}
+<script>
+$(function(){
+    function saveGuestPlayHistory(item){
+        try{
+            var key='guest_play_history';
+            var list=JSON.parse(window.localStorage.getItem(key)||'[]');
+            if(!Array.isArray(list)){list=[];}
+            list=list.filter(function(v){ return v && v.link && v.link!==item.link; });
+            list.unshift(item);
+            if(list.length>60){ list=list.slice(0,60); }
+            window.localStorage.setItem(key, JSON.stringify(list));
+        }catch(ex){}
+    }
+    saveGuestPlayHistory({
+        mid: 12,
+        name: "{$obj.manga_name|default=''}",
+        link: "{:mac_url_manga_play($obj,['sid'=>$curSid,'nid'=>$curNid])}",
+        pic: "{$obj.manga_pic|mac_url_img}",
+        part: "{$mangaEp.name|default='第'.$curNid.'话'}"
+    });
+
+    $('#mangaBackBtn, #mangaBackBtnPc').on('click', function(e){
+        e.preventDefault();
+        try{
+            var detailLen = parseInt(sessionStorage.getItem('manga_detail_history_length'), 10);
+            if(!isNaN(detailLen) && detailLen > 0){
+                var steps = history.length - detailLen;
+                if(steps > 0){
+                    history.go(-steps);
+                    return;
+                }
+            }
+        }catch(ex){}
+        location.replace($(this).attr('href'));
+    });
+
+    var $catalog = $('#mangaCatalog');
+    function openCatalog(){
+        $catalog.addClass('open').attr('aria-hidden','false');
+        var $active = $catalog.find('.manga-catalog-item.active');
+        if($active.length){
+            var $list = $catalog.find('.manga-catalog-list');
+            $list.scrollTop($active[0].offsetTop - $list[0].offsetTop - 60);
+        }
+    }
+    function closeCatalog(){
+        $catalog.removeClass('open').attr('aria-hidden','true');
+    }
+    $('#mangaCatalogBar').on('click', openCatalog);
+    $catalog.on('click', '[data-close="1"]', closeCatalog);
+    $(document).on('keydown', function(e){ if(e && e.key === 'Escape') closeCatalog(); });
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,109 @@
+<link rel="stylesheet" href="{$maccms.path_tpl}/asset/css/share.css">
+{php}
+  $u = isset($GLOBALS['user']) && is_array($GLOBALS['user']) ? $GLOBALS['user'] : [];
+  $inviteCode = trim((string)($u['user_invite_code'] ?? ''));
+  $userId = intval($u['user_id'] ?? 0);
+  $inviteCount = intval($u['user_invite_count'] ?? 0);
+  $isGuest = $userId <= 0;
+  $base = rtrim($maccms['http_type'].$maccms['site_url'], '/');
+  $regPath = mac_url('index/index');
+  if ($isGuest) {
+      $inviteLink = !empty($maccms['http_url']) ? (string)$maccms['http_url'] : $base;
+  } elseif ($inviteCode !== '') {
+      $inviteLink = $base.$regPath.'?invite_code='.rawurlencode($inviteCode);
+  } elseif ($userId > 0) {
+      $inviteLink = $base.$regPath.'?uid='.$userId;
+  } else {
+      $inviteLink = $base.$regPath;
+  }
+  if ($inviteCode !== '') {
+      $inviteCodeDisplay = $inviteCode;
+  } elseif ($userId > 0) {
+      $inviteCodeDisplay = $userId;
+  } else {
+      $inviteCodeDisplay = '—';
+  }
+  $shareInfoLabel = $isGuest ? '分享网址' : '我的邀请码';
+  $shareInfoValue = $isGuest ? $inviteLink : $inviteCodeDisplay;
+  $isGuestFlag = $isGuest ? 1 : 0;
+{/php}
+<div class="share-drop-wrap"
+     data-invite-link="{:htmlspecialchars($inviteLink, ENT_QUOTES, 'UTF-8')}"
+     data-invite-code="{:htmlspecialchars($inviteCode, ENT_QUOTES, 'UTF-8')}"
+     data-invite-code-display="{:htmlspecialchars($inviteCodeDisplay, ENT_QUOTES, 'UTF-8')}"
+     data-is-guest="{$isGuestFlag}"
+     data-invite-count="{$inviteCount}">
+  <div class="invite-share-panel">
+    <div class="invite-topbar">
+      <div class="invite-close" aria-label="关闭">
+        <span aria-hidden="true">×</span>
+      </div>
+      <div class="invite-topbar-title">分享邀请</div>
+      {if condition="!$isGuest"}
+      <a class="invite-record-link js-invite-record" href="{:url('user/invite')}" data-href="{:url('user/invite')}">推广记录</a>
+      {/if}
+    </div>
+
+    <div class="invite-scroll">
+      <div class="invite-card">
+        <span class="invite-notch invite-notch-left"></span>
+        <span class="invite-notch invite-notch-right"></span>
+        <div class="invite-site">{$maccms.site_name|default='本站'}</div>
+        {if condition="!$isGuest"}
+        <div class="invite-count">累计邀请 <b class="invite-count-num">{$inviteCount}</b> 人</div>
+        {/if}
+        <div class="invite-qr-wrap">
+          <div class="share-qrcode invite-qr"></div>
+        </div>
+        <div class="invite-code">
+          <span class="invite-code-label">{$shareInfoLabel}</span>
+          <span class="invite-code-val">{$shareInfoValue}</span>
+        </div>
+      </div>
+
+      <div class="invite-actions">
+        <button type="button" class="invite-btn invite-btn-primary js-invite-save">保存二维码</button>
+        <button type="button" class="invite-btn invite-btn-ghost copy_btn js-invite-copy">{if condition="$isGuest"}复制网址{else/}复制推广链接{/if}</button>
+      </div>
+
+      <div class="invite-steps">
+        <div class="invite-steps-hd">邀请步骤</div>
+        <div class="invite-vip-note">VIP限时特惠，畅看全场</div>
+        <div class="invite-step">
+          <div class="invite-step-title">第一步</div>
+          <div class="invite-step-desc">{if condition="$isGuest"}点击保存推广图片，或复制网址{else/}点击保存推广图片，或复制推广链接{/if}</div>
+        </div>
+        <div class="invite-step invite-step--channels">
+          <div class="invite-step-title">第二步</div>
+          <div class="invite-step-desc">{if condition="$isGuest"}点击保存推广图片，或复制网址{else/}点击保存推广图片，或复制推广链接{/if}</div>
+          <div class="invite-steps-section-label">常用社交软件：</div>
+          <div class="invite-app-icons" aria-label="常用社交软件">
+            <span class="invite-app-icon"><img src="{$maccms.path_tpl}/images/share/weixin.png" width="48" height="48" loading="lazy" alt="微信"></span>
+            <span class="invite-app-icon"><img src="{$maccms.path_tpl}/images/share/qq.png" width="48" height="48" loading="lazy" alt="QQ"></span>
+            <span class="invite-app-icon"><img src="{$maccms.path_tpl}/images/share/weibo.png" width="48" height="48" loading="lazy" alt="微博"></span>
+            <span class="invite-app-icon"><img src="{$maccms.path_tpl}/images/share/douyin.png" width="48" height="48" loading="lazy" alt="抖音"></span>
+            <span class="invite-app-icon"><img src="{$maccms.path_tpl}/images/share/xiaohongshu.png" width="48" height="48" loading="lazy" alt="小红书"></span>
+            <span class="invite-app-icon"><img src="{$maccms.path_tpl}/images/share/kuaishou.png" width="48" height="48" loading="lazy" alt="快手"></span>
+            <span class="invite-app-icon"><img src="{$maccms.path_tpl}/images/share/mm.png" width="48" height="48" loading="lazy" alt="陌陌"></span>
+            <span class="invite-app-icon"><img src="{$maccms.path_tpl}/images/share/tt.png" width="48" height="48" loading="lazy" alt="探探"></span>
+            <span class="invite-app-icon"><img src="{$maccms.path_tpl}/images/share/tieba.png" width="48" height="48" loading="lazy" alt="百度贴吧"></span>
+            <span class="invite-app-icon"><img src="{$maccms.path_tpl}/images/share/bzhan.png" width="48" height="48" loading="lazy" alt="哔哩哔哩"></span>
+            <span class="invite-app-icon"><img src="{$maccms.path_tpl}/images/share/zhihu.png" width="48" height="48" loading="lazy" alt="知乎"></span>
+          </div>
+          <div class="invite-steps-section-label">各类游戏公共频道：</div>
+          <div class="invite-app-icons invite-app-icons--games" aria-label="游戏社区">
+            <span class="invite-app-icon"><img src="{$maccms.path_tpl}/images/share/wangzhe.png" width="48" height="48" loading="lazy" alt="王者荣耀"></span>
+            <span class="invite-app-icon"><img src="{$maccms.path_tpl}/images/share/heping.png" width="48" height="48" loading="lazy" alt="和平精英"></span>
+            <span class="invite-app-icon"><img src="{$maccms.path_tpl}/images/share/dandan.png" width="48" height="48" loading="lazy" alt="蛋仔派对"></span>
+          </div>
+        </div>
+        <div class="invite-step">
+          <div class="invite-step-title">第三步</div>
+          <div class="invite-step-desc">被邀请用户下载并打开 APP，即可绑定推荐关系，您即可获得相应推荐奖励。</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script src="{$maccms.path}template/default/asset/js/stem-jquery.qrcode.js?v=202604161"></script>
+<script src="{$maccms.path_tpl}/asset/js/share.js?v=202604161"></script>

@@ -1,0 +1,18 @@
+<div id="show" style="display: none;">
+    <div class="copy-tip">
+       <p data-lang="copy_success">耶～～复制成功</p>
+    </div>
+</div>
+<div class="am-share">
+	<div class="am-share-url">
+	<span class="title_span"><span data-lang="string_share_tit">复制下方链接，去粘贴给好友吧：</span></span>
+	<span id="short" class="url_span shorturl">
+		{$obj.vod_name}{$obj.art_name}{if condition="$maccms.mid eq 3"}
+		<span data-lang="string_topic">专题</span>-{$obj.topic_name}{/if}-{$obj['vod_play_list'][$param['sid']]['urls'][$param['nid']]['name']}-
+	</span>
+	</div>
+	<div class="am-share-footer">
+	<span class="share_btn"><span data-lang="string_cancel">取消</span></span>
+	<span id="btn" class="copy_btn" data-clipboard-action="copy" data-clipboard-target="#short"><span data-lang="one_clickcopy">一键复制</span></span>
+	</div>
+</div>

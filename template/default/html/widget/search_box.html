@@ -1,0 +1,32 @@
+<li class="searchlist_item">
+    <div class="searchlist_img">
+        <a class="vodlist_thumb lazyload" href="{:mac_url_vod_detail($vo)}" title="{$vo.vod_name}" data-original="{:mac_url_img($vo.vod_pic)}">
+            {assign name="mac_points_value" value="$vo.vod_points_play" /}
+            {include file="widget/mac_badge_top_right" /}
+            {include file="widget/mac_badge_bottom_right" /}
+            <span class="play hidden_xs"></span>
+        </a>
+    </div>
+    <div class="searchlist_titbox">
+        <h4 class="vodlist_title">
+            <a href="{:mac_url_vod_detail($vo)}" title="{$vo.vod_name}">
+                <span class="info_right">
+                    {if condition="$vo.type_1.type_id neq '' "}
+                        {$vo.type_1.type_name}
+                    {else/}
+                        {$vo.type.type_name}
+                    {/if}
+                </span>
+                {$vo.vod_name}
+            </a>
+        </h4>
+        <p class="vodlist_sub"><span data-lang="string_play_zy">主演：：</span>{if $vo.vod_actor}{:mac_url_create($vo['vod_actor'],'actor')}{else}<span data-lang='string_no_have'>暂无</span>{/if}</p>
+        <p class="vodlist_sub"><span data-lang="string_play_dy">导演：：</span>{if $vo.vod_director}{:mac_url_create($vo['vod_director'],'director')}{else}<span data-lang='string_no_have'>暂无</span>{/if}</p>
+        <p class="vodlist_sub hidden_xs"><span data-lang="string_actor_jj">简介：：</span>{if $vo.vod_content}{:mac_filter_html($vo['vod_content'])}{else}<span data-lang='string_no_have'>暂无</span>{/if}</p>
+        <div class="seebtn">
+            <a class="ck_detail" href="{:mac_url_vod_detail($vo)}">
+                <span data-lang="detail_information">详细信息</span>&nbsp;<i class="iconfont">&#xe623;</i>
+            </a>
+        </div>
+    </div>
+</li>

@@ -1,0 +1,1016 @@
+	<link rel="stylesheet" type="text/css" href="{$maccms.path_tpl}/asset/css/widget-recharge_modal.css" />
+	<link rel="stylesheet" type="text/css" href="{$maccms.path_tpl}/asset/css/mac-pop-sheets.css" />
+	<script src="{$maccms.path_tpl}/asset/js/pay-qrcode-render.js?v=202604161"></script>
+
+<div id="recharge-overlay" data-rc-img-base="{$maccms.path_tpl}/images/recharge/" data-url-benefits="{:url('user/benefits')}" data-rc-config-url="{:rtrim($maccms.path,'/').'/api.php/payment/get_config'}" data-rc-order-create-url="{:rtrim($maccms.path,'/').'/api.php/order/create'}" data-rc-gopay-url="{:rtrim($maccms.path,'/').'/api.php/payment/gopay'}" data-rc-order-query-url="{:rtrim($maccms.path,'/').'/api.php/order/check_status'}">
+  <div class="rc-modal">
+    <div class="rc-hd">
+      <h3 data-lang="user_zxcz">在线充值</h3>
+      <button class="rc-close" id="rcCloseBtn" type="button" aria-label="关闭">×</button>
+    </div>
+    <div class="rc-bd">
+      
+      <div class="rc-loading-init" id="rcInitLoading">加载中...</div>
+      
+      <div id="rcLoginPanel" style="display:none;text-align:center;padding:30px 10px">
+        <div style="width:64px;height:64px;border-radius:50%;background:linear-gradient(135deg,#f1f5f9,#e2e8f0);margin:0 auto 16px;display:flex;align-items:center;justify-content:center">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        </div>
+        <h3 style="font-size:17px;font-weight:700;color:#1E293B;margin:0 0 6px">请先登录</h3>
+        <p style="font-size:13px;color:#94a3b8;margin:0 0 22px;line-height:1.6">登录后即可充值金币</p>
+        <a id="rcGoLogin" href="" style="display:inline-block;width:80%;max-width:280px;padding:12px 0;background:linear-gradient(135deg,#40CC92,#36b67e);color:#fff;border-radius:10px;font-size:15px;font-weight:600;text-decoration:none">去登录</a>
+      </div>
+      
+      <div id="rcAmountPanel" class="rc-amount-stage" style="display:none">
+        <div class="rc-balance-row">
+          <img class="rc-coin-ico" src="{$maccms.path_tpl}/images/recharge/recharge-coin.png" width="22" height="22" alt="" decoding="async" />
+          <p class="rc-balance-txt"><span data-lang="user_syjf">剩余金币</span>：<strong id="rcPoints">0</strong></p>
+        </div>
+        <div class="rc-card">
+          <div class="rc-amounts" id="rcAmountsGrid"></div>
+          <label class="rc-field-label" for="rcPriceInput">充值的金额</label>
+          <div class="rc-input-wrap">
+            <input type="text" maxlength="8" id="rcPriceInput" class="rc-input" placeholder="请输入金额" inputmode="decimal" autocomplete="off">
+          </div>
+          <div class="rc-tips" id="rcTips"></div>
+          <button type="button" class="rc-submit" id="rcSubmitBtn">确认充值</button>
+        </div>
+      </div>
+      
+      <div class="rc-pay-panel" id="rcPayPanel">
+        <div class="order-summary">
+          <div class="order-row">
+            <span class="order-label" data-lang="string_pay_ddbh">订单编号</span>
+            <span class="order-value" id="rcOrderCode">-</span>
+          </div>
+          <div class="order-row">
+            <span class="order-label" data-lang="string_pay_ddje">订单金额</span>
+            <span class="order-value price"><span id="rcOrderPrice">0</span><span data-lang="user_yuan">元</span></span>
+          </div>
+        </div>
+        <form method="post" target="_blank" id="rcPayForm">
+          <input type="hidden" name="order_id" id="rcPayOrderId">
+          <input type="hidden" name="order_code" id="rcPayOrderCode">
+          <input type="hidden" name="payment" id="rcPayment">
+          <input type="hidden" name="paytype" id="rcPaytype">
+          <div class="pm-section-title" data-lang="string_pay_zffs">支付方式</div>
+          <div class="pm-grid" id="rcPayGrid"></div>
+          <div id="rcPaytypeBox" style="display:none">
+            <div class="pm-section-title" data-lang="string_pay_zflx">支付类型</div>
+            <div class="pt-grid" id="rcPaytypeGrid"></div>
+          </div>
+          <button type="submit" class="pay-confirm-btn">确认支付</button>
+        </form>
+      </div>
+      
+      <div class="rc-loading-panel" id="rcLoadingPanel">
+        <div class="rc-loading-qrcode-block" id="rcLoadingQrcodeBlock" style="display:none;" aria-hidden="true">
+          <div class="rc-loading-qrcode-host" id="rcLoadingQrcodeHost"></div>
+          <p class="rc-loading-qrcode-caption" data-lang="string_mac_dkwx">打开微信，扫码支付</p>
+        </div>
+        <div class="rc-spinner-wrap" id="rcSpinnerWrap">
+          <div class="rc-spinner"></div>
+        </div>
+        <h3 id="rcLoadingTitle">等待支付结果</h3>
+        <p id="rcLoadingHint">请在新标签页完成支付<br>支付成功后将自动更新</p>
+        <button class="rc-loading-cancel" id="rcCancelPoll">我已取消支付</button>
+      </div>
+      
+    </div>
+  </div>
+</div>
+
+
+<div id="rcPayIconsTpl" style="display:none;">
+  <div data-icon="alipay"><svg class="icon" style="vertical-align:middle;fill:currentColor;overflow:hidden" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg"><path d="M789 610.3c-38.7-12.9-90.7-32.7-148.5-53.6 34.8-60.3 62.5-129 80.7-203.6H530.5v-68.6h233.6v-38.3H530.5V132h-95.4c-16.7 0-16.7 16.5-16.7 16.5v97.8H182.2v38.3h236.3v68.6H223.4v38.3h378.4c-13.8 47.6-32.4 92.3-54.5 132.9-122.8-40.4-253.8-73.2-336.1-53-52.6 13-86.5 36.1-106.5 60.3-91.4 111-25.9 279.6 167.2 279.6C386 811.2 496 747.6 581.2 643 708.3 704 960 808.7 960 808.7V659.4s-31.6-2.5-171-49.1zM253.9 746.6c-150.5 0-195-118.3-120.6-183.1 24.8-21.9 70.2-32.6 94.4-35 89.4-8.8 172.2 25.2 269.9 72.8-68.8 89.5-156.3 145.3-243.7 145.3z"/></svg></div>
+  <div data-icon="wechat"><svg class="icon" style="vertical-align:middle;fill:currentColor;overflow:hidden" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9.5 4C5.36 4 2 6.91 2 10.5c0 1.94.98 3.68 2.53 4.88L4 18l2.53-1.39c.92.25 1.9.39 2.97.39.56 0 1.11-.04 1.64-.13-.4-.69-.64-1.48-.64-2.37 0-2.84 2.46-5.15 5.5-5.15.37 0 .74.03 1.09.1C16.3 6.3 13.2 4 9.5 4Zm-2 4.5a1 1 0 1 1 0 2 1 1 0 0 1 0-2Zm4 0a1 1 0 1 1 0 2 1 1 0 0 1 0-2Zm4.5 2c-2.49 0-4.5 1.79-4.5 4s2.01 4 4.5 4c.61 0 1.2-.11 1.73-.31L20 19l-.44-1.88c.58-.69.94-1.57.94-2.62 0-2.21-2.01-4-4.5-4Zm-1.5 3a.8.8 0 1 1 0 1.6.8.8 0 0 1 0-1.6Zm3 0a.8.8 0 1 1 0 1.6.8.8 0 0 1 0-1.6Z"/></svg></div>
+  <div data-icon="qq"><svg class="icon" style="vertical-align:middle;fill:currentColor;overflow:hidden" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg"><path d="M824.8 613.2c-16-51.4-34.4-94.6-62.7-165.3C766.5 262.2 689.3 112 511.5 112 331.7 112 256.2 265.2 261 447.9c-28.4 70.8-46.7 113.7-62.7 165.3-34 109.5-23 154.8-14.6 155.8 18 2.2 70.1-82.4 70.1-82.4 0 49 25.2 112.9 79.8 159-26.4 8.1-85.7 29.9-71.6 53.8 11.4 19.3 196.2 12.3 249.5 6.3 53.3 6 238.1 13 249.5-6.3 14.1-23.8-45.3-45.7-71.6-53.8 54.6-46.2 79.8-110.1 79.8-159 0 0 52.1 84.6 70.1 82.4 8.5-1.1 19.5-46.4-14.5-155.8z"/></svg></div>
+  <div data-icon="wallet"><svg class="icon" style="vertical-align:middle;fill:currentColor;overflow:hidden" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg"><path d="M880 112H144c-17.7 0-32 14.3-32 32v736c0 17.7 14.3 32 32 32h736c17.7 0 32-14.3 32-32V144c0-17.7-14.3-32-32-32zm-40 464H528V448h312v128zm0 264H184V184h656v200H496c-17.7 0-32 14.3-32 32v192c0 17.7 14.3 32 32 32h344v200zM620 512m-40 0a40 40 0 1 0 80 0 40 40 0 1 0-80 0z"/></svg></div>
+</div>
+
+<script>
+(function(){
+  (function dedupeRechargeDom(){
+    var overlays = document.querySelectorAll('#recharge-overlay');
+    if (overlays.length > 1) {
+      for (var i = 1; i < overlays.length; i++) {
+        if (overlays[i] && overlays[i].parentNode) overlays[i].parentNode.removeChild(overlays[i]);
+      }
+    }
+    var sheetLinks = document.querySelectorAll('link[href*="widget-recharge_modal.css"]');
+    if (sheetLinks.length > 1) {
+      for (var j = 1; j < sheetLinks.length; j++) {
+        if (sheetLinks[j] && sheetLinks[j].parentNode) sheetLinks[j].parentNode.removeChild(sheetLinks[j]);
+      }
+    }
+    var popSheetLinks = document.querySelectorAll('link[href*="mac-pop-sheets.css"]');
+    if (popSheetLinks.length > 1) {
+      for (var k = 1; k < popSheetLinks.length; k++) {
+        if (popSheetLinks[k] && popSheetLinks[k].parentNode) popSheetLinks[k].parentNode.removeChild(popSheetLinks[k]);
+      }
+    }
+  })();
+
+  if (window.__RECHARGE_MODAL_INITED__) {
+    return;
+  }
+  window.__RECHARGE_MODAL_INITED__ = true;
+
+  function getPayIcon(key) {
+    var k = key.toLowerCase();
+    var $tpl = $('#rcPayIconsTpl');
+    if (!$tpl.length) return '';
+    if (k.indexOf('alipay') !== -1 || k.indexOf('zhifubao') !== -1) return $tpl.find('[data-icon="alipay"]').html() || '';
+    if (k.indexOf('wechat') !== -1 || k.indexOf('weixin') !== -1) return $tpl.find('[data-icon="wechat"]').html() || '';
+    if (k.indexOf('qq') !== -1) return $tpl.find('[data-icon="qq"]').html() || '';
+    return $tpl.find('[data-icon="wallet"]').html() || '';
+  }
+
+  function escRcAttr(s) {
+    return String(s == null ? '' : s)
+      .replace(/&/g, '&amp;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;')
+      .replace(/</g, '&lt;');
+  }
+
+  function rcGetLang(key, zh, en) {
+    if (typeof MAC !== 'undefined' && MAC.GetLang) {
+      var s = MAC.GetLang(key);
+      if (s) return s;
+    }
+    return String(localStorage.getItem('lang')) === '1' ? en : zh;
+  }
+
+  function rcStatusErr(msg) {
+    var m = String(msg == null ? '' : msg);
+    if (typeof MAC !== 'undefined' && MAC.Pop && typeof MAC.Pop.StatusSheet === 'function') {
+      MAC.Pop.StatusSheet({ type: 'error', message: m });
+    } else {
+      MAC.alert(m);
+    }
+  }
+
+  function rcParseJsonMaybe(text) {
+    var s = String(text == null ? '' : text).replace(/^\uFEFF/, '').trim();
+    if (!s) return null;
+    try {
+      return JSON.parse(s);
+    } catch (e) {
+      return null;
+    }
+  }
+
+  function rcFriendlyAjaxMessage(xhr) {
+    var def = rcGetLang('string_load_err', '加载失败，请稍后重试', 'Failed to load');
+    if (!xhr) return def;
+    var t = '';
+    try {
+      t = String(xhr.responseText || '').replace(/^\s+/, '');
+    } catch (e) {}
+    if (!t) return def;
+    if (t.charAt(0) === '<') return def;
+    var line = t.split(/[\r\n]/)[0] || t;
+    line = line.replace(/\s+/g, ' ').trim();
+    if (line.length > 120) line = line.substring(0, 120) + '…';
+    return line || def;
+  }
+
+  function rcApiPhpBase() {
+    var u = String($('#recharge-overlay').attr('data-rc-order-create-url') || '');
+    var idx = u.indexOf('/order/create');
+    if (idx !== -1) return u.substring(0, idx);
+    var g = rcGopayUrl();
+    idx = g.indexOf('/payment/gopay');
+    if (idx !== -1) return g.substring(0, idx);
+    return '/api.php';
+  }
+
+  function rcOrderCreateUrl() {
+    return $('#recharge-overlay').attr('data-rc-order-create-url') || rcApiPhpBase() + '/order/create';
+  }
+
+  function findRcMethodByKey(methods, paymentKey) {
+    var pk = String(paymentKey || '').toLowerCase();
+    if (!methods || !methods.length) return null;
+    for (var i = 0; i < methods.length; i++) {
+      var m = methods[i];
+      if (m && String(m.key || '').toLowerCase() === pk) return m;
+    }
+    return null;
+  }
+
+  function buildRcPaytypeCardsFromApi(paytypes) {
+    if (!paytypes || !paytypes.length) return '';
+    var isEn = localStorage.getItem('lang') === '1';
+    var html = '';
+    for (var i = 0; i < paytypes.length; i++) {
+      var pt = paytypes[i];
+      var v = pt.value != null ? String(pt.value) : '';
+      var t = isEn
+        ? String(pt.label_en != null ? pt.label_en : pt.label != null ? pt.label : v)
+        : String(pt.label != null ? pt.label : pt.label_en != null ? pt.label_en : v);
+      html +=
+        '<div class="pt-card" data-type="' +
+        escRcAttr(v) +
+        '" role="button" tabindex="0">' +
+        escRcAttr(t) +
+        '</div>';
+    }
+    return html;
+  }
+
+  function normalizeRcConfigFromApi(r) {
+    var inf = r && (r.info || r.data);
+    if (!inf) return null;
+    var methods = inf.methods || [];
+    var ext_list = {};
+    for (var i = 0; i < methods.length; i++) {
+      var m = methods[i];
+      if (m && Number(m.enabled) === 1 && m.key) {
+        ext_list[m.key] = m.name != null ? String(m.name) : String(m.key);
+      }
+    }
+    return {
+      is_login: inf.is_login != null ? inf.is_login : 0,
+      user_points: inf.user_points != null ? inf.user_points : 0,
+      pay_min: inf.min != null ? inf.min : inf.pay_min != null ? inf.pay_min : 1,
+      pay_scale: inf.scale != null ? inf.scale : inf.pay_scale != null ? inf.pay_scale : 1,
+      ext_list: ext_list,
+      methods: methods
+    };
+  }
+
+  function rcGopayUrl() {
+    return $('#recharge-overlay').attr('data-rc-gopay-url') || '/api.php/payment/gopay';
+  }
+
+  function rcOrderQueryUrl() {
+    return $('#recharge-overlay').attr('data-rc-order-query-url') || '/api.php/order/check_status';
+  }
+
+  function resetRcLoadingVisuals() {
+    var $qb = $('#rcLoadingQrcodeBlock');
+    var $host = $('#rcLoadingQrcodeHost');
+    var $sw = $('#rcSpinnerWrap');
+    if ($qb.length) $qb.hide().attr('aria-hidden', 'true');
+    if ($host.length) $host.empty();
+    if ($sw.length) $sw.show();
+    $('#rcLoadingTitle').text('等待支付结果');
+    $('#rcLoadingHint').html('请在新标签页完成支付<br>支付成功后将自动更新');
+  }
+
+  function rcExtractRedirectUrlFromHtml(html) {
+    if (!html || typeof html !== 'string') return '';
+    var m = html.match(
+      /(?:(?:window|top|parent|self)\.)?location\.href\s*=\s*["']([^"']+)["']/i
+    );
+    return m ? m[1] : '';
+  }
+
+  function rcLooksLikePaymentHtml(s) {
+    if (!s || typeof s !== 'string') return false;
+    var t = s.replace(/^\uFEFF/, '').trim();
+    if (!t || t.charAt(0) !== '<') return false;
+    if (/<\s*(script|form|html|body)\b/i.test(t)) return true;
+    if (/location\.(href|replace)\s*=/i.test(t)) return true;
+    return false;
+  }
+  function rcParseGopayResponseText(text) {
+    var s = String(text == null ? '' : text).replace(/^\uFEFF/, '').trim();
+    if (!s) return { code: 0, msg: 'empty response' };
+    var first = s.charAt(0);
+    if (first === '{' || first === '[') {
+      try {
+        return JSON.parse(s);
+      } catch (e) {
+        return { code: 0, msg: 'invalid json' };
+      }
+    }
+    if (rcLooksLikePaymentHtml(s)) {
+      return {
+        code: 1,
+        msg: 'pay_html',
+        info: {
+          payment: '',
+          order_code: '',
+          payment_data: { type: 'html', html: s }
+        }
+      };
+    }
+    return { code: 0, msg: s.substring(0, 120) };
+  }
+
+  function rcIsExecutablePaymentHtml(html) {
+    if (!html || typeof html !== 'string') return false;
+    var s = html.replace(/^\uFEFF/, '').replace(/^\s+/, '');
+    if (!s) return false;
+    if (s.charAt(0) === '<') return true;
+    return /<\s*(script|form|html|head|body|iframe|meta)\b/i.test(html);
+  }
+
+  function rcOpenPaymentHtmlDocument(html) {
+    if (!html || typeof html !== 'string') return;
+    if (rcIsExecutablePaymentHtml(html)) {
+      var w0 = window.open('', '_blank');
+      if (w0) {
+        try {
+          w0.document.open();
+          w0.document.write(html);
+          w0.document.close();
+        } catch (e) {}
+      }
+      return;
+    }
+    var jumpUrl = rcExtractRedirectUrlFromHtml(html);
+    if (jumpUrl) {
+      window.open(jumpUrl, '_blank');
+      return;
+    }
+    var w = window.open('', '_blank');
+    if (w) {
+      try {
+        w.document.open();
+        w.document.write(html);
+        w.document.close();
+      } catch (e) {}
+    }
+  }
+
+  function rcOpenPaymentChannel(gopayInfo, opts) {
+    var opts0 = opts || {};
+    var target = opts0.target === '_self' ? '_self' : '_blank';
+    var pd = (gopayInfo && gopayInfo.payment_data) || {};
+    var type = pd.type;
+
+    function go(u) {
+      if (!u) return false;
+      if (target === '_self') window.location.href = u;
+      else window.open(u, '_blank');
+      return true;
+    }
+
+    if (type === 'qrcode') {
+      if (!pd.code_url) return false;
+      var $h = $('#rcLoadingQrcodeHost');
+      if ($h.length && typeof window.macRenderPaymentQrcode === 'function') {
+        $h.empty();
+        window.macRenderPaymentQrcode($h, pd.code_url, function () {});
+        return true;
+      }
+      return false;
+    }
+
+    if ((type === 'form' || type === 'html') && pd.html) {
+      if (target === '_self') {
+        if (rcIsExecutablePaymentHtml(pd.html)) {
+          try {
+            document.open();
+            document.write(pd.html);
+            document.close();
+          } catch (e) {
+            return false;
+          }
+          return true;
+        }
+        var ju = rcExtractRedirectUrlFromHtml(pd.html);
+        if (ju) {
+          window.location.href = ju;
+          return true;
+        }
+        try {
+          document.open();
+          document.write(pd.html);
+          document.close();
+        } catch (e) {
+          return false;
+        }
+        return true;
+      }
+      rcOpenPaymentHtmlDocument(pd.html);
+      return true;
+    }
+
+    if (type === 'data' && pd.data && typeof pd.data === 'object') {
+      var payUrl = pd.data.pay_url || pd.data.url;
+      if (payUrl) return go(payUrl);
+      return false;
+    }
+
+    if (
+      pd.action_url &&
+      pd.fields &&
+      typeof pd.fields === 'object' &&
+      Object.keys(pd.fields).length > 0
+    ) {
+      var form = document.createElement('form');
+      form.method = 'POST';
+      form.action = pd.action_url;
+      form.target = target === '_self' ? '_self' : '_blank';
+      Object.keys(pd.fields).forEach(function (k) {
+        var inp = document.createElement('input');
+        inp.type = 'hidden';
+        inp.name = k;
+        inp.value = pd.fields[k];
+        form.appendChild(inp);
+      });
+      document.body.appendChild(form);
+      form.submit();
+      document.body.removeChild(form);
+      return true;
+    }
+
+    return false;
+  }
+
+  var _pollTimer = null,
+    _pollGen = 0,
+    _pollJqXHR = null,
+    _isPaying = false,
+    _config = null;
+  var _context = { mode: 'recharge' };
+  var $overlay = null;
+  var _afterPayCloseAction = '';
+
+  function getBaseUrl() {
+    if (typeof MAC !== 'undefined' && MAC.Path) return MAC.Path;
+    return '/index.php/';
+  }
+
+  function url(path) {
+    var base = getBaseUrl();
+    return base + path;
+  }
+
+  function calcTopZIndex() {
+    var maxZ = 0;
+    var nodes = document.querySelectorAll('body *');
+    for (var i = 0; i < nodes.length; i++) {
+      var el = nodes[i];
+      if (!el || el.id === 'recharge-overlay' || (el.closest && el.closest('#recharge-overlay'))) continue;
+      var z = window.getComputedStyle(el).zIndex;
+      var n = parseInt(z, 10);
+      if (!isNaN(n)) maxZ = Math.max(maxZ, n);
+    }
+    return maxZ;
+  }
+
+  function resetPanels() {
+    $('#rcInitLoading').show();
+    $('#rcLoginPanel').hide();
+    $('#rcAmountPanel').hide();
+    $('#rcPayPanel').hide();
+    $('#rcLoadingPanel').hide();
+    $('#rcPayment').val('');
+    $('#rcPaytype').val('');
+    $('#rcPaytypeBox').hide();
+    _isPaying = false;
+    _afterPayCloseAction = '';
+  }
+
+  window.openRechargeModal = function(ctx) {
+    $overlay = $('#recharge-overlay');
+    if ($overlay.length && document.body) {
+      document.body.appendChild($overlay[0]);
+    }
+    if ($overlay.length) {
+      var topZ = calcTopZIndex();
+      $overlay[0].style.setProperty('z-index', String(topZ + 10), 'important');
+    }
+    _context = ctx || { mode: 'recharge' };
+    if (!_context.mode) { _context.mode = 'recharge'; }
+    resetPanels();
+    $overlay.addClass('show');
+    if ($overlay.length && document.body) {
+      document.body.appendChild($overlay[0]);
+    }
+    $('body').css('overflow', 'hidden');
+
+    $.ajax({
+      url: ($overlay.attr('data-rc-config-url') || '/api.php/payment/get_config'),
+      type: 'get',
+      dataType: 'text',
+      success: function(text) {
+        var r = rcParseJsonMaybe(text);
+        if (!r) {
+          $('#rcInitLoading').text(rcGetLang('string_load_err', '加载失败，请稍后重试', 'Failed to load'));
+          return;
+        }
+        if (Number(r.code) === 1) {
+          _config = normalizeRcConfigFromApi(r);
+          if (!_config) {
+            $('#rcInitLoading').text(rcGetLang('string_load_err', '加载失败，请稍后重试', 'Failed to load'));
+            return;
+          }
+          if (_context.mode === 'member_upgrade') {
+            createMemberUpgradeOrder();
+          } else {
+            renderAmountPanel(_config);
+          }
+        } else {
+          $('#rcInitLoading').text(
+            (r && r.msg) ? String(r.msg) : rcGetLang('string_load_err', '加载失败，请稍后重试', 'Failed to load')
+          );
+        }
+      },
+      error: function(xhr) {
+        $('#rcInitLoading').text(rcFriendlyAjaxMessage(xhr));
+      }
+    });
+  };
+
+  function createMemberUpgradeOrder() {
+    var groupId = _context.group_id;
+    var groupName = _context.group_name || '会员';
+    var groupLong = _context.long;
+    if (!groupId || !groupLong) {
+      $('#rcInitLoading').text('会员参数错误，请返回重试');
+      return;
+    }
+    $('#rcInitLoading').text('正在创建会员订单...');
+    $.ajax({
+      url: rcApiPhpBase() + '/user/upgrade_order_create',
+      type: 'post',
+      dataType: 'json',
+      data: { group_id: groupId, long: groupLong },
+      success: function(r){
+        if (r.code == 1 && r.data) {
+          _context.orderBiz = 'member_upgrade';
+          _context.orderTitle = groupName;
+          showPayPanel(r.data);
+        } else {
+          $('#rcInitLoading').text(r.msg || '创建订单失败，请重试');
+        }
+      },
+      error: function(xhr) {
+        $('#rcInitLoading').text(rcFriendlyAjaxMessage(xhr));
+      }
+    });
+  }
+
+  function rcFinishCreateOrderFromApi(r) {
+    var row = r && (r.info || r.data);
+    if (!row || !row.order_code) {
+      rcStatusErr((r && r.msg) || rcGetLang('string_load_err', '创建订单失败', 'Order failed'));
+      return;
+    }
+    if (row.order_id != null && String(row.order_id) !== '') {
+      showPayPanel(row);
+      return;
+    }
+    $.ajax({
+      url: rcApiPhpBase() + '/order/get_detail',
+      type: 'get',
+      dataType: 'text',
+      data: { order_code: row.order_code },
+      success: function(text) {
+        var r2 = rcParseJsonMaybe(text);
+        var inf = r2 && (r2.info || r2.data);
+        if (r2 && Number(r2.code) === 1 && inf && inf.order_id != null) {
+          showPayPanel(
+            $.extend({}, row, {
+              order_id: inf.order_id,
+              order_code: inf.order_code || row.order_code,
+              order_price: row.order_price != null ? row.order_price : inf.order_price
+            })
+          );
+        } else {
+          rcStatusErr((r2 && r2.msg) || rcGetLang('string_load_err', '获取订单信息失败', 'Failed to load order'));
+        }
+      },
+      error: function(xhr) {
+        rcStatusErr(rcFriendlyAjaxMessage(xhr));
+      }
+    });
+  }
+
+  function renderAmountPanel(data) {
+    $('#rcPoints').text(data.user_points);
+    var amounts = [50, 100, 200, 500];
+    var base = String(($('#recharge-overlay').attr('data-rc-img-base') || '')).replace(/\/?$/, '/');
+    var html = '';
+    for (var i = 0; i < amounts.length; i++) {
+      var a = amounts[i];
+      var ribbon = a === 200
+        ? '<img class="rc-amt__ribbon" src="' + escRcAttr(base + 'recharge-ribbon-hot.png') + '" width="48" height="48" alt="" />'
+        : '';
+      var hotCls = a === 200 ? ' rc-amt--hot' : '';
+      html += '<div class="rc-amt' + hotCls + '" data-amount="' + a + '" role="button" tabindex="0">' + ribbon
+        + '<span class="rc-amt__yen">¥</span><span class="rc-amt__num">' + a + '</span></div>';
+    }
+    $('#rcAmountsGrid').html(html);
+    var min = data.pay_min != null ? data.pay_min : 1;
+    var scale = data.pay_scale != null ? data.pay_scale : 1;
+    $('#rcPriceInput').val(min);
+    $('#recharge-overlay .rc-amt').removeClass('active');
+    $('#recharge-overlay .rc-amt[data-amount="' + min + '"]').addClass('active');
+    var isEn = localStorage.getItem('lang') === '1';
+    var tipTxt = isEn
+      ? ('Minimum top-up is ' + min + ' CNY. 1 CNY = ' + scale + ' points.')
+      : ('最小充值金额为' + min + '元，1元可以兑换' + scale + '金币');
+    $('#rcTips').html(
+      '<span class="rc-tips-inner"><img class="rc-tips-ico" src="' + escRcAttr(base + 'recharge-tip-ico.png')
+      + '" width="18" height="18" alt="" /><span class="rc-tips-txt">' + tipTxt + '</span></span>'
+    );
+    $('#rcInitLoading').hide();
+    $('#rcAmountPanel').show();
+  }
+
+  $(document).on('click', '#recharge-overlay .rc-amt', function() {
+    $('#recharge-overlay .rc-amt').removeClass('active');
+    $(this).addClass('active');
+    $('#rcPriceInput').val($(this).data('amount'));
+  });
+
+  $(document).on('click', '#rcSubmitBtn', function() {
+    var price = $('#rcPriceInput').val();
+    if (Number(price) < 1) { rcStatusErr(rcGetLang('string_pay_price_err', '请输入充值金额', 'Enter amount')); return; }
+    if (_config && Number(price) < _config.pay_min) {
+      rcStatusErr(rcGetLang('user_zcts1', '最小充值金额为', 'Min ') + _config.pay_min + rcGetLang('user_yuan', '元', ''));
+      return;
+    }
+    if (!_config || Number(_config.is_login) !== 1) {
+      var loginUrl = url('user/login');
+      var backUrl = encodeURIComponent(window.location.href || '/');
+      rcStatusErr(rcGetLang('string_pay_login_first', '请先登录后完成下单支付', 'Please login first'));
+      window.location.href = loginUrl + '?url=' + backUrl;
+      return;
+    }
+    var $btn = $(this);
+    $.ajax({
+      url: rcOrderCreateUrl(),
+      type: 'post',
+      dataType: 'text',
+      data: { price: price },
+      beforeSend: function() { $btn.text('处理中...').prop('disabled', true); },
+      success: function(text) {
+        var r = rcParseJsonMaybe(text);
+        if (!r) {
+          rcStatusErr(rcGetLang('string_load_err', '加载失败，请稍后重试', 'Failed to load'));
+          return;
+        }
+        if (Number(r.code) === 1) {
+          rcFinishCreateOrderFromApi(r);
+        } else {
+          rcStatusErr((r && r.msg) || rcGetLang('string_load_err', '创建订单失败', 'Order failed'));
+        }
+      },
+      error: function(xhr) {
+        rcStatusErr(rcFriendlyAjaxMessage(xhr));
+      },
+      complete: function() { $btn.text('确认充值').prop('disabled', false); }
+    });
+  });
+
+  function showPayPanel(orderData) {
+    resetRcLoadingVisuals();
+    $('#rcOrderCode').text(orderData.order_code);
+    $('#rcOrderPrice').text(orderData.order_price);
+    $('#rcPayOrderId').val(orderData.order_id || '');
+    $('#rcPayOrderCode').val(orderData.order_code);
+    $('#rcPayForm').attr('action', '#');
+    if (_config && _config.ext_list) {
+      var html = '';
+      for (var key in _config.ext_list) {
+        if (_config.ext_list.hasOwnProperty(key)) {
+          html += '<div class="pm-card" data-payment="' + key + '">' + getPayIcon(key) + '<div class="pm-name">' + _config.ext_list[key] + '</div></div>';
+        }
+      }
+      $('#rcPayGrid').html(html);
+    }
+    $('#rcPayment').val('');
+    $('#rcPaytype').val('');
+    $('#rcPaytypeBox').hide();
+    $('#rcPaytypeGrid').html('');
+    $('#rcPayGrid .pm-card').removeClass('active');
+    $('#rcAmountPanel').hide();
+    $('#rcPayPanel').show();
+    $('#rcPayForm').show();
+    if (_context.mode === 'member_upgrade') {
+      $('#rcTips').html('会员订单已创建，请选择支付方式完成开通。');
+    }
+  }
+
+  $(document).on('click', '#recharge-overlay .pm-card', function() {
+    $('#recharge-overlay .pm-card').removeClass('active');
+    $(this).addClass('active');
+    var payment = $(this).attr('data-payment');
+    $('#rcPayment').val(payment || '');
+    $('#rcPaytype').val('');
+    $('#recharge-overlay .pt-card').removeClass('active');
+    var sel = findRcMethodByKey(_config && _config.methods, payment);
+    var subHtml =
+      sel && sel.paytypes && sel.paytypes.length
+        ? buildRcPaytypeCardsFromApi(sel.paytypes)
+        : '';
+    if (subHtml) {
+      $('#rcPaytypeGrid').html(subHtml);
+      $('#rcPaytypeBox').slideDown();
+    } else {
+      $('#rcPaytypeGrid').html('');
+      $('#rcPaytypeBox').slideUp();
+    }
+  });
+
+  $(document).on('click', '#recharge-overlay .pt-card', function() {
+    $('#recharge-overlay .pt-card').removeClass('active');
+    $(this).addClass('active');
+    $('#rcPaytype').val($(this).attr('data-type') || '');
+  });
+
+  $(document).on('submit', '#rcPayForm', function(e) {
+    e.preventDefault();
+    var payMethod = String($('#rcPayment').val() || '').trim();
+    if (!payMethod) {
+      rcStatusErr(rcGetLang('string_pay_zffs_err', '请选择支付方式', 'Select payment method'));
+      return false;
+    }
+    var $actPm = $('#recharge-overlay .pm-card.active');
+    var pmFromUi = String($actPm.attr('data-payment') || '').trim();
+    if (!$actPm.length || pmFromUi.toLowerCase() !== payMethod.toLowerCase()) {
+      rcStatusErr(rcGetLang('string_pay_zffs_err', '请选择支付方式', 'Select payment method'));
+      return false;
+    }
+    var selM = findRcMethodByKey(_config && _config.methods, payMethod);
+    if (!selM || Number(selM.enabled) !== 1) {
+      rcStatusErr(rcGetLang('string_pay_zffs_err', '请选择支付方式', 'Select payment method'));
+      return false;
+    }
+    var needPaytype = selM.paytypes && selM.paytypes.length > 0;
+    if (needPaytype) {
+      var ptVal = String($('#rcPaytype').val() || '').trim();
+      var $ptActive = $('#recharge-overlay #rcPaytypeGrid .pt-card.active');
+      var ptFromUi = String($ptActive.attr('data-type') || '').trim();
+      if (!ptVal || !$ptActive.length || ptFromUi !== ptVal) {
+        rcStatusErr(rcGetLang('string_pay_zflx_err', '请选择支付类型', 'Select pay type'));
+        return false;
+      }
+      var ptOk = false;
+      for (var pi = 0; pi < selM.paytypes.length; pi++) {
+        var pto = selM.paytypes[pi];
+        if (pto && String(pto.value) === ptVal) {
+          ptOk = true;
+          break;
+        }
+      }
+      if (!ptOk) {
+        rcStatusErr(rcGetLang('string_pay_zflx_err', '请选择支付类型', 'Select pay type'));
+        return false;
+      }
+    }
+    var orderId = String($('#rcPayOrderId').val() || '').trim();
+    var orderCode = String($('#rcPayOrderCode').val() || '').trim();
+    if (!orderId || !orderCode) {
+      rcStatusErr(rcGetLang('string_load_err', '订单信息不完整', 'Order incomplete'));
+      return false;
+    }
+    var pk = payMethod.toLowerCase();
+    var isMobile = /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent);
+    var isWeixinMobile = isMobile && pk === 'weixin';
+    var postData = {
+      order_id: orderId,
+      order_code: orderCode,
+      payment: payMethod
+    };
+    var pt = String($('#rcPaytype').val() || '').trim();
+    if (pt) postData.paytype = pt;
+
+    $.ajax({
+      url: rcGopayUrl(),
+      type: 'post',
+      dataType: 'text',
+      data: postData,
+      success: function(text) {
+        var r = rcParseGopayResponseText(text);
+        if (!r || r.code != 1 || !r.info) {
+          rcStatusErr((r && r.msg) || rcGetLang('string_load_err', '发起支付失败', 'Payment start failed'));
+          return;
+        }
+        var pd0 = r.info.payment_data;
+        if (pd0 && pd0.type === 'qrcode' && pd0.code_url) {
+          enterLoading(pd0.code_url);
+          startPoll(orderCode);
+          return;
+        }
+        var opened = rcOpenPaymentChannel(r.info, {
+          target: isWeixinMobile ? '_self' : '_blank'
+        });
+        if (!opened) {
+          rcStatusErr(rcGetLang('string_pay_open_fail', '无法打开支付页，请检查支付插件配置或尝试其他支付方式', 'Could not open payment page.'));
+          return;
+        }
+        if (!isWeixinMobile) {
+          setTimeout(function() {
+            enterLoading();
+            startPoll(orderCode);
+          }, 300);
+        } else {
+          enterLoading();
+          startPoll(orderCode);
+        }
+      },
+      error: function(xhr) {
+        rcStatusErr(rcFriendlyAjaxMessage(xhr));
+      }
+    });
+    return false;
+  });
+
+  function enterLoading(weixinCodeUrl) {
+    _isPaying = true;
+    $('#rcPayForm').hide();
+    if (weixinCodeUrl) {
+      $('#rcLoadingQrcodeBlock').show().attr('aria-hidden', 'false');
+      $('#rcSpinnerWrap').hide();
+      $('#rcLoadingHint').html('请使用微信扫码完成支付<br>支付成功后将自动更新');
+      var $host = $('#rcLoadingQrcodeHost');
+      $host.empty();
+      if (typeof window.macRenderPaymentQrcode === 'function') {
+        window.macRenderPaymentQrcode($host, weixinCodeUrl, function (err) {
+          if (err) rcStatusErr(rcGetLang('string_pay_qr_fail', '二维码生成失败，请刷新重试', 'Could not render QR code.'));
+        });
+      }
+    } else {
+      resetRcLoadingVisuals();
+    }
+    $('#rcLoadingPanel').fadeIn(200);
+    $('#rcCloseBtn').prop('disabled', true).css('opacity', '.3');
+  }
+
+  function exitLoading() {
+    _isPaying = false;
+    resetRcLoadingVisuals();
+    $('#rcCloseBtn').prop('disabled', false).css('opacity', '');
+  }
+
+  function startPoll(orderCode) {
+    stopPoll();
+    var myGen = ++_pollGen;
+    var count = 0;
+    function doQuery() {
+      if (myGen !== _pollGen) return;
+      count++;
+      if (count > 30) {
+        if (myGen !== _pollGen) return;
+        stopPoll();
+        exitLoading();
+        $('#rcLoadingPanel').hide();
+        $('#rcPayForm').fadeIn(200);
+        rcStatusErr(rcGetLang('string_pay_poll_timeout', '支付结果查询超时，如已支付请稍后查看金币变化', 'Payment status timeout.'));
+        return;
+      }
+      try {
+        if (_pollJqXHR && _pollJqXHR.abort) {
+          _pollJqXHR.abort();
+        }
+      } catch (e) {}
+      _pollJqXHR = $.ajax({
+        url: rcOrderQueryUrl(),
+        type: 'get',
+        dataType: 'json',
+        data: { order_code: orderCode },
+        success: function (r) {
+          if (myGen !== _pollGen) return;
+          var inf = r && (r.info || r.data);
+          if (r.code == 1 && inf && Number(inf.order_status) === 1) {
+            stopPoll();
+            exitLoading();
+            showSuccess(Number(inf.order_points || 0));
+          }
+        },
+        complete: function () {
+          _pollJqXHR = null;
+        }
+      });
+    }
+    _pollTimer = setInterval(function () {
+      if (myGen !== _pollGen) return;
+      if (count === 3) {
+        clearInterval(_pollTimer);
+        _pollTimer = setInterval(doQuery, 10000);
+      }
+      doQuery();
+    }, 5000);
+  }
+
+  function stopPoll() {
+    if (_pollTimer) {
+      clearInterval(_pollTimer);
+      _pollTimer = null;
+    }
+  }
+
+  function abortPaymentPoll() {
+    _pollGen++;
+    try {
+      if (_pollJqXHR && _pollJqXHR.abort) {
+        _pollJqXHR.abort();
+      }
+    } catch (e) {}
+    _pollJqXHR = null;
+    stopPoll();
+  }
+
+  function showSuccess(points) {
+    resetRcLoadingVisuals();
+    $('#rcLoadingPanel').hide();
+    $('#rcPayPanel').hide();
+    _isPaying = false;
+    var isMemberUp = _context.mode === 'member_upgrade' || _context.orderBiz === 'member_upgrade';
+    var $ov = $('#recharge-overlay');
+    var benefitsUrl = String($ov.attr('data-url-benefits') || '').trim();
+    $ov.removeClass('show');
+    $('body').css('overflow', '');
+    _afterPayCloseAction = '';
+    _context = { mode: 'recharge' };
+
+    if (isMemberUp) {
+      if (typeof MAC !== 'undefined' && MAC.Pop && typeof MAC.Pop.VipUpgradeSheet === 'function') {
+        MAC.Pop.VipUpgradeSheet({
+          benefitsUrl: benefitsUrl,
+          onClose: function () {
+            try {
+              $('.mac_pop_bg,.mac_pop').remove();
+            } catch (e) {}
+            location.reload();
+          }
+        });
+      } else {
+        try {
+          $('.mac_pop_bg,.mac_pop').remove();
+        } catch (e2) {}
+        location.reload();
+      }
+      return;
+    }
+
+    var detail = '';
+    if (points > 0) {
+      var tpl = rcGetLang('string_mac_recharge_detail_points', '+%s 金币', '+%s points');
+      detail = tpl.replace('%s', String(points));
+    }
+    var title = rcGetLang('string_mac_recharge_ok', '充值成功', 'Recharge successful');
+    var needReloadUser = /\/user\//i.test(String(window.location.pathname || ''));
+    if (typeof MAC !== 'undefined' && MAC.Pop && typeof MAC.Pop.StatusSheet === 'function') {
+      MAC.Pop.StatusSheet({
+        type: 'success',
+        message: title,
+        detail: detail,
+        onClose: function () {
+          if (needReloadUser) location.reload();
+        }
+      });
+    } else {
+      MAC.alert(title + (detail ? '\n' + detail : ''));
+      if (needReloadUser) location.reload();
+    }
+  }
+
+  $(document).on('click', '#rcCancelPoll', function() {
+    abortPaymentPoll();
+    exitLoading();
+    $('#rcLoadingPanel').hide();
+    $('#rcPayForm').fadeIn(200);
+  });
+
+  function closeModal() {
+    if (_isPaying) return;
+    abortPaymentPoll();
+    var act = _afterPayCloseAction;
+    _afterPayCloseAction = '';
+    $('#recharge-overlay').removeClass('show');
+    $('body').css('overflow', '');
+    _context = { mode: 'recharge' };
+    if (act === 'reload_pop') {
+      try {
+        $('.mac_pop_bg,.mac_pop').remove();
+      } catch (e) {}
+      location.reload();
+      return;
+    }
+    if (act === 'reload') {
+      location.reload();
+      return;
+    }
+  }
+
+  $(document).on('click', '#rcCloseBtn', closeModal);
+  $(document).on('click', '#recharge-overlay', function(e) {
+    if ($(e.target).is('#recharge-overlay')) closeModal();
+  });
+
+  var isMobile = /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent);
+  if (isMobile) {
+    $(document).on('click', '#mobileRechargeLink', function(e) {
+      var href = ($(this).attr('href') || '').toString();
+      if (href.indexOf('user/login') !== -1) {
+        return;
+      }
+      if (typeof window.openRechargeModal === 'function') {
+        e.preventDefault();
+        window.openRechargeModal();
+      }
+    });
+  }
+})();
+</script>

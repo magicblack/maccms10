@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html>
+<head>
+    {include file="public/include"}
+    <link rel="stylesheet" type="text/css" href="{$maccms.path_tpl}/asset/css/vod-play.css" />
+</head>
+<body>
+    <noscript>
+        <div class="mac-noscript-seo" style="padding:16px;max-width:960px;margin:0 auto;line-height:1.6;">
+            <p style="font-weight:600;">{$obj.vod_name|mac_filter_html} — {:mac_filter_html(isset($obj['vod_play_list'][$param['sid']]['urls'][$param['nid']]['name']) ? $obj['vod_play_list'][$param['sid']]['urls'][$param['nid']]['name'] : '')}</p>
+            <p>{$obj.vod_blurb|mac_filter_html|mac_substring=300|mac_default=''}</p>
+            <p style="color:#666;font-size:12px;">开启 JavaScript 以正常播放视频。</p>
+        </div>
+    </noscript>
+    {include file="public/th" /}
+    {assign name="isSingleRow" value="1"}
+    {include file="public/head" /}
+    {php}$type_poster_class = (mac_tpl_vod_type_cover(isset($obj['type_id']) ? (int) $obj['type_id'] : 0) === 'h') ? 'mac-poster--h' : 'mac-poster--v';{/php}
+    <div id="play_page">
+        <div class="play_boxbg">
+            <div class="container" style="margin-bottom: 0;">
+                <div class="play_box play_video">
+                    <div class="left_row fl ">
+                        <div class="player_video embed-responsive embed-responsive-16by9 author-qq362695000 clearfix">
+                            {if condition="$obj.vod_copyright eq 1 && $GLOBALS['config']['app']['copyright_status'] eq 1 "}
+                            <div class="play_tips"><h3>{if $GLOBALS['config']['app']['copyright_notice']}{$GLOBALS['config']['app']['copyright_notice']}{else}<span data-lang="resources_closed">应版权方要求！本片相关资源已关闭！</span>{/if}</h3></div>
+                            {elseif condition="$obj.vod_lock"}
+                            <div class="lock_tipe_box" style="background-image: url({:mac_url_img($obj.vod_pic)})"></div>
+                            <div class="play_tips lock_tips">
+                                <h3 data-lang="string_play_wfgk">因特殊原因，该视频暂时无法观看</h3>
+                                <p data-lang="string_play_bq">给您带来不便非常抱歉</p>
+                            </div>
+                            {elseif condition="$popedom.code gt 1"}
+                            <div class="lock_tipe_box" style="background-image: url({:mac_url_img($obj.vod_pic)})"></div>
+                            <div class="play_tips lock_tips popedom-play-gate-wrap">
+                                {include file="widget/popedom_upgrade_gate"}
+                            </div>
+                            {else}
+                            <div id="fd_tips" class="fodong_box">
+                                <div id="mq" class="fodong_tips">
+                                    <a class="close_tips" href="javascript:void(0)"><i class="iconfont">&#xe616;</i></a>
+                                    <ul>
+                                        <li> <span data-lang="string_play_dqbf">当前播放：：</span> {$obj.vod_name} - {$obj['vod_play_list'][$param['sid']]['urls'][$param['nid']]['name']}</li>
+                                        {if condition="!empty($tplconfig['theme']['play']['notice'])"}{$tplconfig.theme.play.notice}{/if}
+                                    </ul>
+                                </div>
+                            </div>
+                            {$player_data}{$player_js}
+                            {/if}
+                        </div>
+
+                        <div class="play_but">
+                            <div class="wrapper_fl play-but-wrap" id="playButScroll">
+                                <div class="scroller">
+                                    <ul class="play-but-strip clearfix">
+                                        {if condition="$GLOBALS['config']['comment']['status'] eq 1"}
+                                        <li class="play-but-item play-but-item--comment hidden_xs">
+                                            <a class="play_pl" href="#pinglun">
+                                                <i class="iconfont">&#xe632;</i>
+                                                <span data-lang="string_play_pl">评论</span>
+                                            </a>
+                                        </li>
+                                        {/if}
+                                        <!-- <li class="play-but-item play-but-anchor">
+                                            <a href="#bofy">
+                                                <i class="iconfont">&#xe62a;</i>
+                                                <span data-lang="string_play_xl">线路</span>
+                                            </a>
+                                        </li> -->
+                                        {if condition="$GLOBALS['config']['gbook']['status'] eq 1"}
+                                        <li class="play-but-item">
+                                            <a class="report_click" href="javascript:void(0)" onclick="MAC.Gbook.Report('ID:{$obj.vod_id} -【名称：{$obj.vod_name} - {$obj['vod_play_list'][$param['sid']]['urls'][$param['nid']]['name']}】无法观看请检查修复')">
+                                                <svg class="play-but-item__report-ico" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 14 14" fill="none" aria-hidden="true" focusable="false">
+                                                    <circle cx="7" cy="7" r="6.5" stroke="currentColor" />
+                                                    <g transform="translate(6.461538 3.230769)" stroke="currentColor">
+                                                        <line x1="0.538461538" y1="0" x2="0.538461538" y2="4.84615385" />
+                                                        <line x1="0.538461538" y1="5.92307692" x2="0.538461538" y2="7" />
+                                                    </g>
+                                                </svg> <span data-lang="string_play_bc">报错</span>
+                                            </a>
+                                        </li>
+                                        {/if}
+                                        <li class="play-but-item">
+                                            <a href="javascript:;" onclick="location.reload()"><i class="iconfont">&#xe621;</i> <span data-lang="string_play_sx">刷新</span></a>
+                                        </li>
+                                        <li class="play-but-item play-but-item--share hidden_xs">
+                                            <div class="play_share">
+                                                <a href="javascript:;" class="open-share"><i class="iconfont">&#xe615;</i> <span data-lang="string_vod_share">分享</span></a>
+                                            </div>
+                                        </li>
+                                        {if condition="$GLOBALS['config']['user']['status'] eq 1"}
+                                        <li class="play-but-item">
+                                            <div class="mac_ulog play_collec{if condition="$vod_play_is_fav eq 1"} is_fav{/if}" data-type="2" data-mid="{$maccms.mid}" data-id="{$obj.vod_id}"{if condition="$vod_play_is_fav eq 1"} data-uid="{$vod_play_fav_ulog_id}"{/if}><i class="iconfont">&#xe629;</i> <span data-lang="{if condition="$vod_play_is_fav eq 1"}art_fav_done{else/}string_play_sc{/if}">{if condition="$vod_play_is_fav eq 1"}已收藏{else/}收藏{/if}</span></div>
+                                        </li>
+                                        {/if}
+                                        <li class="play-but-item">
+                                            <a href="{$obj.player_info.link_pre}" class="{if$param.nid==1}btns_disad{/if}"><i class="iconfont pre-t">&#xe626;</i> <span data-lang="string_play_sj">上集</span></a>
+                                        </li>
+                                        <li class="play-but-item">
+                                            <a href="{$obj.player_info.link_next}" class="{if$param.nid==$obj['vod_play_list'][$param['sid']]['url_count']}btns_disad{/if}"><span data-lang="string_play_xj">下集</span> <i class="iconfont next-p next-t">&#xe62c;</i></a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        {include file="ads/ads_icon1" ads_icon1_marquee="1"}
+                    </div>
+                    <div class="right_row fr hidden_xs hidden_mi" style="position: relative;">
+                        <div class="play_box_right">
+                            <div class="play_namebox">
+                                <h3 class="title">{$obj.vod_name}</h3>
+                                <span class="fenlei">{$obj.type.type_name}</span>
+                            </div>
+                            <div class="play_infobox">
+                                <div class="play_vlist cblock">
+                                    <div class="play_vlist_thumb vnow lazyload" data-original="{:mac_url_img($obj.vod_pic)}"></div>
+                                    <div class="play_vlist_text vnow">
+                                        <p class="play_vlist_title">{$obj.vod_name}</p>
+                                        <p class="play_vlist_now">{if condition="$obj.vod_copyright eq 1 && $GLOBALS['config']['app']['copyright_status'] eq 1 "}{else}<a class="pull_right" href="#bofy"><i class="iconfont">&#xe62a;</i>&nbsp; <span data-lang="string_play_qhxl">切换线路</span> </a>{/if}{$obj['vod_play_list'][$param['sid']]['urls'][$param['nid']]['name']}</p>
+                                    </div>
+                                </div>
+                                <div class="play_clike " data-lang="vod_guess">猜你喜欢</div>
+                                {include file="widget/play_list_con"}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="play_box">
+                    <div class="left_row fl ">
+                        <div class="pannel play_pan clearfix">
+                            <div class="player">
+                                <div class="player_detail detail cblock">
+                                    <div class="video_title fl">
+                                        <h1 class="title margin_0">{$obj.vod_name|mac_filter_html}</h1>
+                                    </div>
+                                    <div class="play_now">
+                                        <a class="flip" href="javascript:void(0)"> <span data-lang="string_play_jj">简介</span> &nbsp;<span class="xs1"><i class="iconfont">&#xe623;</i></span><span class="xs2" style="display:none;"><i class="iconfont">&#xe63a;</i></span></a>
+                                    </div>
+                                </div>
+                                <div class="play_text">
+                                    <p class="nstem data ms_p margin_0">
+                                        {if condition="$obj.vod_score gt 0"}
+                                        <span class="text_score">{$obj.vod_score}<span class="split_line"></span></span>
+                                        {/if}
+                                        {if condition="($obj.vod_year neq '') and ($obj.vod_year neq 0)"}{$obj.vod_year|mac_url_create='year'}{/if}
+                                        {if condition="$obj.vod_area neq ''"}{$obj.vod_area|mac_url_create='area'}{/if}
+                                        {if condition="$obj.vod_class neq ''"}{$obj.vod_class|mac_url_create='class'}{/if}
+                                    </p>
+                                    {php}$count=1;{/php}{maccms:foreach name="obj.vod_down_list"}
+                                    {if$maccms.aid!=16&&$count==1}
+                                    <div class="text_muted pull_right">
+                                        <a href="{:mac_url_vod_down($obj,['sid'=>$vo.sid,'nid'=>1])}#downlist" title="下载"><i class="iconfont vtop_i">&#xe63c;</i>&nbsp; <span data-lang="string_play_xz1">下载</span> </a>
+                                    </div>
+                                    {/if}{php}$count++;{/php}
+                                    {/maccms:foreach}
+                                </div>
+                                <div class="panel play_content" style="display:none;">
+                                    <p> <span data-lang="string_play_dy">导演：：</span>{if $obj.vod_director}{$obj.vod_director}{else}<span data-lang='string_no_have'>暂无</span>{/if}</p>
+                                    <p> <span data-lang="string_play_zy">主演：：</span>{if $obj.vod_actor}{$obj.vod_actor}{else}<span data-lang='string_no_have'>暂无</span>{/if}</p>
+                                    <p>{if $obj.vod_content}{:mac_filter_html($obj['vod_content'])}{else}<span data-lang='string_no_have'>暂无</span>{/if}{if$obj.vod_plot}<a href="{:mac_url_plot_detail($obj,['page'=>1])}"> <span data-lang="string_play_fjjq">[[查看分集剧情]]</span> </a>{/if}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="container">
+            <div class="left_row fl container-wrap">
+                   {if condition="$obj.vod_actor neq ''"}
+                            {maccms:actor num="1" order="desc" name="$obj.vod_actor" id="vo1"}
+                                {if condition="$vo1.actor_name neq ''"}
+                                <div id="actor_vbox" class="pannel clearfix">
+                                    <div class="pannel_head clearfix">
+                                        <h3 class="title">
+                                            {$obj.vod_name} <span data-lang="string_play_zyyy">主要演职员</span>
+                                        </h3>                        
+                                    </div>
+                                    <ul id="vod_actor" class="actor_vlist list_scroll clearfix">    
+                                        {maccms:actor num="6" order="desc" name="$obj.vod_actor" id="vo2"}
+                                        <li><a class="actor_part" title="{$vo2.actor_name}" href="{:mac_url_actor_detail($vo2)}">
+                                        <div class="actor_pic lazyload" data-original="{$vo2.actor_pic|mac_url_img}"></div>
+                                        <div class="actor_name">{$vo2.actor_name}</div></a>
+                                        </li>
+                                        {/maccms:actor}
+                                    </ul>
+                                </div>          
+                                {/if} 
+                           {/maccms:actor}
+                     {/if}
+                        {if condition="$vod_play_tagwall_enabled"}
+                        <script type="application/json" id="vod-play-tagwall-data">{php}echo isset($vod_play_tagwall_json) ? $vod_play_tagwall_json : '';{/php}</script>
+                        <section class="vod-play-tagwall pannel clearfix" id="vodPlayTagwall" data-search-url="{:mac_url('vod/search')}">
+                            <div class="vod-play-tagwall__body">
+                                <div class="vod-play-tagwall__lane vod-play-tagwall__lane--hot" data-tagwall-lane="hot"></div>
+                                <div class="vod-play-tagwall__lane vod-play-tagwall__lane--local" data-tagwall-lane="local"></div>
+                            </div>
+                        </section>
+                        {/if}
+
+                        {if condition="$obj.vod_copyright eq 1 && $GLOBALS['config']['app']['copyright_status'] eq 1 "}{else}
+                        <div class="pannel clearfix" id="bofy">
+                            <!-- 信号列表：将下方 if condition 改为 1 可启用；当前恒走 else 播放列表 -->
+                            {if condition="0"}
+                                <div class="pannel_head clearfix">
+                                <h3 class="title" data-lang="string_play_xhlb">信号列表</h3>
+                            </div>
+                            <div class="tabs">
+                                    <div class="content ">
+                                    <ul class="content_playlist">
+                                            {maccms:foreach name="obj.vod_play_list" id="vo" by="num"}
+                                        {maccms:foreach name="vo.urls" id="vo2"}                            
+                                        <li {if condition="$param.sid eq $vo.sid && $param.nid eq $vo2.nid"}class="active"{/if}><a href="{:mac_url_vod_play($obj,['sid'=>$vo.sid,'nid'=>$vo2.nid])}">{if condition="$param.sid eq $vo.sid && $param.nid eq $vo2.nid"}<em class="hl-play-active hl-bg-conch" aria-hidden="true"></em>{/if}{$vo2.name}</a></li>
+                                        {/maccms:foreach}
+                                        {empty name="vo.urls"}
+                                        <li><a href="javascript:void(0)" data-lang="string_play_zwxh">暂无信号</a></li>
+                                        {/empty}
+                                        {/maccms:foreach}
+                                    </ul> 
+                                    </div>
+                            </div>
+                                    {else}
+                                <div class="pannel_head pannel_head--vod-playlist">
+                                    <h3 class="title" data-lang="string_play_bflb">播放列表</h3>
+                                    <div class="vod-playlist-head-center">
+                                        {maccms:foreach name="obj.vod_play_list" id="vh" by="sort"}
+                                        {if condition="$vh.player_info.from==$obj['vod_play_list'][$param['sid']]['player_info']['from']"}
+                                        <div class="player_infotip player_infotip--marquee js-play-page-marquee" data-marquee-ready="0">
+                                            <div class="player_infotip__viewport">
+                                                <div class="player_infotip__track">
+                                                    <span class="player_infotip__chunk">
+                                                        <i class="iconfont player_infotip__ico">&#xe62d;</i>
+                                                        <span data-lang="string_play_dqzy">当前资源由</span>
+                                                        <span class="player_infotip__name">{$vh.player_info.show}</span>
+                                                        <span data-lang="string_play_tg">提供</span>
+                                                        <span class="player_infotip__dot"> · </span>
+                                                        {if condition="!empty($obj.player_info.tip)"}
+                                                        <span class="player_infotip__tip">{:mac_substring($obj['player_info']['tip'],20)}</span>
+                                                        {else/}
+                                                        <span data-lang="line_play">在线播放,在线播放,开通VIP体验更畅快。</span>
+                                                        {/if}
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        {/if}
+                                        {/maccms:foreach}
+                                    </div>
+                                    <div class="text_muted vod-playlist-head-sort">
+                                        <a href="javascript:;" class="sort_btn"><i class="iconfont">&#xe658;</i>&nbsp; <span data-lang="string_play_px">排序</span> </a>
+                                    </div>
+                                </div>
+                            <div class="tabs playlist">
+                                    <div class="wrapper_fl xl" id="hl01">
+                                    <div class="scroller">
+                                    <ul class="title_nav">
+                                    {maccms:foreach name="obj.vod_play_list" id="vo" by="sort"}
+                                    <li class="tab-play {if$vo.player_info.from==$obj['vod_play_list'][$param['sid']]['player_info']['from']}active{/if}" title="{$vo.player_info.show}"><a {if$vo.player_info.from==$obj['vod_play_list'][$param['sid']]['player_info']['from']}href="javascript:;" class="playnow_info"{else}href="{:mac_url_vod_play($obj,['sid'=>$vo.sid,'nid'=>$param.nid])}"{/if}><i class="iconfont">&#xe62f;</i>&nbsp;{$vo.player_info.show}</a></li>
+                                    {/maccms:foreach}
+                                    </ul>
+                                    </div>
+                                </div>
+                                {maccms:foreach name="obj.vod_play_list" id="vo" key="key" by="sort"}
+                                {php}
+                                $__vpc = (!empty($vo['urls']) && is_array($vo['urls'])) ? count($vo['urls']) : 0;
+                                $__plcls = ($__vpc > 6) ? ' playlist_notfull--collapsible is-collapsed' : '';
+                                {/php}
+                                <div class="content {if$vo.player_info.from==$obj['vod_play_list'][$param['sid']]['player_info']['from']}show{else}hide{/if}">
+                                    <div id="playlistbox" class="playlist_notfull{$__plcls}">
+                                        <ul class="content_playlist list_scroll">
+                                            {maccms:foreach name="vo.urls" id="vo2" key="key2"}
+                                            <li {if condition="$param.sid eq $vo.sid && $param.nid eq $vo2.nid"}class="active"{/if}><a href="{:mac_url_vod_play($obj,['sid'=>$vo.sid,'nid'=>$vo2.nid])}">{if condition="$param.sid eq $vo.sid && $param.nid eq $vo2.nid"}<em class="hl-play-active hl-bg-conch" aria-hidden="true"></em>{/if}{$vo2.name}</a></li>
+                                            {/maccms:foreach}
+                                        </ul>
+                                        {if condition="$__vpc gt 6"}
+                                        <button type="button" class="vod-playlist-expand js-vod-playlist-expand" aria-expanded="false">
+                                            <i class="iconfont vod-playlist-expand-ico">&#xe63a;</i>
+                                            <span class="vod-playlist-expand-label" data-lang="string_play_zkqb">展开全部</span>
+                                        </button>
+                                        {/if}
+                                    </div>
+                                </div>
+                                {/maccms:foreach}
+                            </div>
+                        </div>
+                            {/if}
+                        {/if}
+                    <div class="pannel clearfix">
+                        <div class="pannel_head clearfix">
+                            <h3 class="title">
+                                <span data-lang="vod_like_watch">喜欢看</span>"<span class="tj-title">{$obj.vod_name}</span>"<span data-lang="vod_also_like">的人也喜欢</span>
+                            </h3>                        
+                        </div>
+                        <ul class="vodlist vodlist_wi {$type_poster_class}">
+                            {maccms:vod num="12" type="current" order="desc" by="time"}
+                            {include file="widget/vod_box"}        
+                            {/maccms:vod}
+                        </ul>
+                    </div>
+                {include file="module/vod_art"}
+                {if condition="$GLOBALS['config']['comment']['status'] eq 1"}
+                                <div class="pannel clearfix" id="pinglun" >
+                                    <div class="pannel_head clearfix">
+                                            <span class="pull_right"> <span data-lang="string_play_yg">共</span> &nbsp;<font color="#40CC92"><em class="mac_total"></em></font>&nbsp; <span data-lang="string_play_tpl">条评论</span> </span>
+                                        <h3 class="title" data-lang="string_play_pl">评论</h3>
+                                    </div>
+                                    <div class="mac_comment comm_list comm_list_box" data-id="{$obj.vod_id}" data-mid="{$maccms.mid}" ></div>
+                                    <script>
+                                        $(function(){
+                                            waitForMAC(function(){
+                                                MAC.Comment.Login = {$comment.login};
+                                                MAC.Comment.Verify = {$comment.verify};
+                                                MAC.Comment.Init();
+                                                MAC.Comment.Show(1);
+                                            });
+                                        });
+                                    </script>
+                                </div>
+                {/if}
+            </div>
+        </div>
+        <script>
+            {if condition="$obj.vod_jumpurl neq ''"}
+            location.href='{$obj.vod_jumpurl}';
+            {/if}
+            var lang = localStorage.getItem('lang');
+            function changeLang() {
+                if (lang == 1) {
+                    var s = "MAC.Gbook.Report('ID:{$obj.vod_id} -【name：{$obj.vod_name} - {$obj['vod_play_list'][$param['sid']]['urls'][$param['nid']]['name']}】Unable to view. Please check and repair')";
+                    $('.report_click').attr('onclick', s);
+                } else {
+                    var s1 = "MAC.Gbook.Report('ID:{$obj.vod_id} -【名称：{$obj.vod_name} - {$obj['vod_play_list'][$param['sid']]['urls'][$param['nid']]['name']}】无法观看请检查修复')";
+                    $('.report_click').attr('onclick', s1);
+                }
+            }
+            changeLang();
+            $(document).click(function () {
+                lang = localStorage.getItem('lang');
+                changeLang();
+            });
+            function saveGuestPlayHistory(item) {
+                try {
+                    var key = 'guest_play_history';
+                    var list = JSON.parse(window.localStorage.getItem(key) || '[]');
+                    if (!Array.isArray(list)) {
+                        list = [];
+                    }
+                    list = list.filter(function (v) {
+                        return v && v.link && v.link !== item.link;
+                    });
+                    list.unshift(item);
+                    if (list.length > 60) {
+                        list = list.slice(0, 60);
+                    }
+                    window.localStorage.setItem(key, JSON.stringify(list));
+                } catch (ex) {}
+            }
+            saveGuestPlayHistory({
+                mid: 1,
+                name: "{$obj.vod_name|default=''}",
+                link: "{:mac_url_vod_play($obj,['sid'=>$param['sid'],'nid'=>$param['nid']])}",
+                pic: "{$obj.vod_pic|mac_url_img}",
+                part: "{$obj['vod_play_list'][$param['sid']]['urls'][$param['nid']]['name']|default=''}"
+            });
+        </script>
+        <script type="text/javascript">
+            var w = $(window).width();
+            var ph = "{$tplconfig.theme.play.height|default='56.25'}%";
+            if (w < 820) {
+                $(".player_video.embed-responsive").css("padding-bottom", ph);
+                $(".MacPlayer").addClass("embed-responsive").css("padding-bottom", ph);
+            } else {
+                $(".MacPlayer").addClass("embed-responsive").css("padding-bottom", ph);
+            }
+        </script>
+        <script type="text/javascript" src="{$maccms.path}template/default/asset/js/parts-gold.js?v=202604161"></script>
+        <span class="mac_hits hits hide" data-mid="{$maccms.mid}" data-id="{$obj.vod_id}" data-type="hits"></span>
+        <span class="hl_history hide" data-name="{$obj.vod_name}"
+            data-link="{:mac_url_vod_play($obj,['sid'=>$param['sid'],'nid'=>$param['nid']])}"
+            data-pic="{$obj.vod_pic|mac_url_img}"
+            data-part="{$obj['vod_play_list'][$param['sid']]['urls'][$param['nid']]['name']}"></span>
+        <span style="display: none" class="mac_hits hits" data-mid="{$maccms.mid}"
+            data-id="{$obj.vod_id}{$obj.art_id}{$obj.topic_id}" data-type="hits"></span>
+        <span style="display: none" class="mac_hits hits_day" data-mid="{$maccms.mid}"
+            data-id="{$obj.vod_id}{$obj.art_id}{$obj.topic_id}" data-type="hits_day"></span>
+        <span style="display: none" class="mac_hits hits_week" data-mid="{$maccms.mid}"
+            data-id="{$obj.vod_id}{$obj.art_id}{$obj.topic_id}" data-type="hits_week"></span>
+        <span style="display: none" class="mac_hits hits_month" data-mid="{$maccms.mid}"
+            data-id="{$obj.vod_id}{$obj.art_id}{$obj.topic_id}" data-type="hits_month"></span>
+        <span style="display:none" class="mac_ulog_set" data-type="4" data-mid="{$maccms.mid}" data-id="{$obj.vod_id}"
+            data-sid="{$param.sid}" data-nid="{$param.nid}"></span>
+        <div style="width:30rem;margin: 2rem auto;">
+            {include file="public/friendLink" }
+        </div>
+        {include file="widget/recharge_modal" /}
+        {include file="public/foot"}
+        <script type="text/javascript" src="{$maccms.path_tpl}/asset/js/vod-play-playlist.js"></script>
+        <script type="text/javascript" src="{$maccms.path_tpl}/asset/js/vod-play-tagwall.js"></script>
+    </div>
+</body>
+</html>

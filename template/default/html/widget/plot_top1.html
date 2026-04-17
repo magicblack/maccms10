@@ -1,0 +1,16 @@
+<li class="ranklist_item">
+    <a title="{$vo.vod_name}" href="{:mac_url_plot_detail($vo,['sid'=>$vo.sid,'nid'=>1])}">
+	<div class="plotlist_img">
+			<span class="play hidden_xs"></span>
+            <span class="part_nums part_num{$key}">{$key}</span>
+            {if condition="$vo['type_id_1']==1"}
+            {if condition="$vo.vod_score eq 0"}
+            {else/}
+            <span class="pic_text text_right text_dy">{$vo.vod_score}</span>
+            {/if}
+            {/if}
+	     </div>
+	</div>	
+    <div class="plotlist_txt">
+	     <div class="pannel_head clearfix">
+              <span class="text_muted pull_right"><i class="iconfont">&#xe631;</i>

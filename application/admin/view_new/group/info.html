@@ -46,10 +46,15 @@
                 <blockquote class="layui-elem-quote layui-quote-nm">
                     {:lang('admin/group/popedom_tip')}
                 </blockquote>
-
+                <div class="layui-btn-group perm-filter" style="margin-bottom:10px">
+                    <button type="button" class="layui-btn layui-btn-xs layui-btn-primary perm-filter-btn active" data-mid="">{:lang('admin/group/filter_all')}</button>
+                    <button type="button" class="layui-btn layui-btn-xs layui-btn-primary perm-filter-btn" data-mid="1">{:lang('vod')}</button>
+                    <button type="button" class="layui-btn layui-btn-xs layui-btn-primary perm-filter-btn" data-mid="2">{:lang('art')}</button>
+                    <button type="button" class="layui-btn layui-btn-xs layui-btn-primary perm-filter-btn" data-mid="12">{:lang('manga')}</button>
+                </div>
                 <div class="role-list-form ">
                 {volist name="type_tree" id="vo" key="k1"}
-                    <dl class="role-list-form-top permission-list">
+                    <dl class="role-list-form-top permission-list perm-row" data-type-mid="{$vo.type_mid}" data-parent-id="{$k1}">
                         <dt>
                             {:lang('type')}：<input type="checkbox" value="{$vo.type_id}" name="group_type[]" data-id="{$k1}" lay-skin="primary" lay-filter="roleAuth1" title="{$vo.type_name}" {if condition="strpos(','.$info['group_type'],','.$vo['type_id'].',')>0"}checked {/if}>
                             {:lang('popedom')}：<input type="checkbox" name="group_popedom[{$vo.type_id}][1]" value="1" lay-skin="primary" title="{:lang('admin/group/popedom_list')}" {if condition="!empty($info['group_popedom'][$vo.type_id][1])"}checked {/if}>
@@ -58,11 +63,13 @@
                             <input type="checkbox" name="group_popedom[{$vo.type_id}][3]" value="3" lay-skin="primary" title="{:lang('admin/group/popedom_play')}" {if condition="!empty($info['group_popedom'][$vo.type_id][3])"}checked {/if}>
                             <input type="checkbox" name="group_popedom[{$vo.type_id}][4]" value="4" lay-skin="primary" title="{:lang('admin/group/popedom_down')}" {if condition="!empty($info['group_popedom'][$vo.type_id][4])"}checked {/if}>
                             <input type="checkbox" name="group_popedom[{$vo.type_id}][5]" value="5" lay-skin="primary" title="{:lang('admin/group/popedom_trysee')}" {if condition="!empty($info['group_popedom'][$vo.type_id][5])"}checked {/if}>
+                            {elseif condition="in_array($vo.type_mid,[2,12])" /}
+                            <input type="checkbox" name="group_popedom[{$vo.type_id}][3]" value="3" lay-skin="primary" title="{:lang('admin/group/popedom_read')}" {if condition="!empty($info['group_popedom'][$vo.type_id][3])"}checked {/if}>
                             {/if}
                         </dt>
                     </dl>
                     {volist name="$vo.child" id="sub" key="k2"}
-                    <dl class="role-list-form-top permission-list">
+                    <dl class="role-list-form-top permission-list perm-row" data-type-mid="{$sub.type_mid}" data-parent-id="{$k1}">
                         <dt>
                             {:lang('type')}：<input type="checkbox" value="{$sub.type_id}" name="group_type[]" data-id="{$k1}" lay-skin="primary" lay-filter="roleAuth1" title="---{$sub.type_name}" {if condition="strpos(','.$info['group_type'],','.$sub  ['type_id'].',')>0"}checked {/if}>
                             {:lang('popedom')}：<input type="checkbox" name="group_popedom[{$sub.type_id}][1]" value="1" lay-skin="primary" title="{:lang('admin/group/popedom_list')}" {if condition="!empty($info['group_popedom'][$sub.type_id][1])"}checked {/if}>
@@ -71,6 +78,8 @@
                             <input type="checkbox" name="group_popedom[{$sub.type_id}][3]" value="3" lay-skin="primary" title="{:lang('admin/group/popedom_play')}" {if condition="!empty($info['group_popedom'][$sub.type_id][3])"}checked {/if}>
                             <input type="checkbox" name="group_popedom[{$sub.type_id}][4]" value="4" lay-skin="primary" title="{:lang('admin/group/popedom_down')}" {if condition="!empty($info['group_popedom'][$sub.type_id][4])"}checked {/if}>
                             <input type="checkbox" name="group_popedom[{$sub.type_id}][5]" value="5" lay-skin="primary" title="{:lang('admin/group/popedom_trysee')}" {if condition="!empty($info['group_popedom'][$sub.type_id][5])"}checked {/if}>
+                            {elseif condition="in_array($sub.type_mid,[2,12])" /}
+                            <input type="checkbox" name="group_popedom[{$sub.type_id}][3]" value="3" lay-skin="primary" title="{:lang('admin/group/popedom_read')}" {if condition="!empty($info['group_popedom'][$sub.type_id][3])"}checked {/if}>
                             {/if}
                         </dt>
                     </dl>
@@ -82,8 +91,12 @@
 
         <div class="layui-form-item center">
             <div class="layui-input-block">
-                <button type="button" class="layui-btn layui-btn-normal formCheckAll" lay-filter="formCheckAll" >{:lang('check_all')}</button>
-                <button type="button" class="layui-btn layui-btn-normal formCheckOther" lay-filter="formCheckOther">{:lang('check_other')}</button>
+                <button type="button" class="layui-btn layui-btn-normal formCheckAll">{:lang('check_all')}</button>
+                <button type="button" class="layui-btn layui-btn-normal formCheckOther">{:lang('check_other')}</button>
+                <span class="layui-badge-dot"></span>
+                <button type="button" class="layui-btn layui-btn-normal layui-btn-sm perm-batch-full">{:lang('admin/group/batch_module_full')}</button>
+                <button type="button" class="layui-btn layui-btn-normal layui-btn-sm perm-batch-list-detail">{:lang('admin/group/batch_module_list_detail')}</button>
+                <button type="button" class="layui-btn layui-btn-normal layui-btn-sm perm-batch-play">{:lang('admin/group/batch_module_play')}</button>
                 <button type="submit" class="layui-btn" lay-submit="" lay-filter="formSubmit" data-child="true">{:lang('btn_save')}</button>
                 <button class="layui-btn layui-btn-primary" type="reset">{:lang('btn_reset')}</button>
             </div>
@@ -95,38 +108,72 @@
 
 <script type="text/javascript">
     layui.use(['form', 'layer'], function () {
-        // 操作对象
-        var form = layui.form
-                , layer = layui.layer
-                , $ = layui.jquery;
+        var form = layui.form, layer = layui.layer, $ = layui.jquery;
 
-        // 验证
         form.verify({
             group_name: function (value) {
-                if (value == "") {
-                    return "{:lang('name_empty')}";
-                }
+                if (value == "") return "{:lang('name_empty')}";
+            }
+        });
+
+        function visibleRows() {
+            var mid = $('.perm-filter-btn.active').data('mid');
+            return mid === '' ? $('.perm-row') : $('.perm-row[data-type-mid="' + mid + '"]');
+        }
+
+        $('.perm-filter-btn').on('click', function(){
+            var mid = $(this).data('mid');
+            $('.perm-filter-btn').removeClass('active');
+            $(this).addClass('active');
+            $('.perm-row').hide();
+            if (mid === '') {
+                $('.perm-row').show();
+            } else {
+                $('.perm-row[data-type-mid="' + mid + '"]').show();
             }
         });
 
         $('.formCheckAll').click(function(){
-            var child = $('.role-list-form').find('input');
-            /* 自动选中子节点 */
-            child.each(function(index, item) {
-                item.checked = true;
-            });
+            $('.role-list-form').find('input').prop('checked', true);
             form.render('checkbox');
         });
         $('.formCheckOther').click(function(){
-            var child = $('.role-list-form').find('input');
-            /* 自动选中子节点 */
-            child.each(function(index, item) {
-                item.checked = (item.checked  ? false : true);
-            });
+            $('.role-list-form').find('input').each(function(){ this.checked = !this.checked; });
             form.render('checkbox');
         });
-    });
 
+        function batchOnVisible(opt) {
+            var rows = visibleRows();
+            rows.each(function(){
+                var $dl = $(this), $dt = $dl.find('dt');
+                var typeCb = $dt.find('input[name^="group_type"]');
+                var popedomCbs = $dt.find('input[name^="group_popedom"]');
+                typeCb.prop('checked', true);
+                if (opt === 'full') {
+                    popedomCbs.prop('checked', true);
+                } else if (opt === 'list_detail') {
+                    popedomCbs.filter('[value="1"],[value="2"]').prop('checked', true);
+                } else if (opt === 'play') {
+                    popedomCbs.filter('[value="1"],[value="2"],[value="3"]').prop('checked', true);
+                }
+            });
+            form.render('checkbox');
+        }
+        $('.perm-batch-full').on('click', function(){ batchOnVisible('full'); });
+        $('.perm-batch-list-detail').on('click', function(){ batchOnVisible('list_detail'); });
+        $('.perm-batch-play').on('click', function(){ batchOnVisible('play'); });
+
+        $('.role-list-form').on('change', 'input[name^="group_type"]', function(){
+            var $cb = $(this), checked = $cb.prop('checked');
+            var $row = $cb.closest('.perm-row');
+            var pid = $row.data('parent-id');
+            var title = $cb.attr('title') || '';
+            if (checked && title.indexOf('---') < 0) {
+                $('.perm-row[data-parent-id="' + pid + '"]').find('input').prop('checked', true);
+                form.render('checkbox');
+            }
+        });
+    });
 </script>
 
 </body>

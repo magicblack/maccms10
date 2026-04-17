@@ -1,0 +1,69 @@
+	<link rel="stylesheet" type="text/css" href="{$maccms.path_tpl}/asset/css/ads-ads_icon1.css" />
+{php}
+$iconRows = [];
+if (!empty($tplconfig['theme']['ad_slots']['icon1']['ad_data']) && is_array($tplconfig['theme']['ad_slots']['icon1']['ad_data'])) {
+    foreach ($tplconfig['theme']['ad_slots']['icon1']['ad_data'] as $row) {
+        if (!is_array($row)) { continue; }
+        if (strtolower(trim((string)($row['active'] ?? 'off'))) !== 'on') { continue; }
+        $expireAt = isset($row['date']) ? trim((string)$row['date']) : '';
+        if ($expireAt !== '') {
+            $expireTs = strtotime($expireAt);
+            if ($expireTs !== false && $expireTs < time()) { continue; }
+        }
+        if (empty($row['url']) || empty($row['image'])) { continue; }
+        $iconRows[] = $row;
+    }
+}
+if (!empty($iconRows)) {
+    usort($iconRows, function ($a, $b) {
+        $oa = intval($a['order'] ?? 0);
+        $ob = intval($b['order'] ?? 0);
+        if ($oa === $ob) { return 0; }
+        return $oa < $ob ? -1 : 1;
+    });
+}
+{/php}
+{if condition="($tplconfig['theme']['ads']['btn'] eq 1 || ($tplconfig['theme']['ads']['btn'] eq 2 && isset($user['group_id']) && $user['group_id'] lt 3))"}
+{if condition="!empty($iconRows)"}
+{if condition="'[ads_icon1_marquee]' eq '1'"}
+
+<div class="ads_icon1-marquee" role="region" aria-label="推广">
+    <div class="ads_icon1-marquee-viewport">
+        <div class="ads_icon1-marquee-track">
+            <div class="ads_icon1-marquee-group">
+                {volist name="iconRows" id="vo"}
+                <div class="ads_icon1-marquee-item">
+                    <a href="{$vo.url}" target="_blank" rel="nofollow noopener">
+                        <img src="{:mac_url_img($vo.image)}" alt="{$vo.note|default=$vo.text|default='广告'}" loading="lazy" width="56" height="56">
+                        <span>{$vo.text|default=$vo.note|default=''}</span>
+                    </a>
+                </div>
+                {/volist}
+            </div>
+            <div class="ads_icon1-marquee-group" aria-hidden="true">
+                {volist name="iconRows" id="vo"}
+                <div class="ads_icon1-marquee-item">
+                    <a href="{$vo.url}" target="_blank" rel="nofollow noopener" tabindex="-1">
+                        <img src="{:mac_url_img($vo.image)}" alt="" loading="lazy" width="56" height="56">
+                        <span>{$vo.text|default=$vo.note|default=''}</span>
+                    </a>
+                </div>
+                {/volist}
+            </div>
+        </div>
+    </div>
+</div>
+{else /}
+<div class="ads_icon1_grid" style="display:flex;flex-wrap:wrap;justify-content:space-between;padding:10px;margin-top:8px;max-width: 30rem;margin:0 auto;">
+    {volist name="iconRows" id="vo"}
+    <div style="width:16%;margin-bottom:10px;box-sizing:border-box;">
+        <a href="{$vo.url}" target="_blank" rel="nofollow" style="display:block; text-align:center;">
+            <img src="{:mac_url_img($vo.image)}" style="width:80%;border-radius:6px;display:block; margin:0 auto;" alt="{$vo.note|default=$vo.text|default='广告'}">
+        </a>
+        <span style="display:block;text-align:center;font-size:10.5px;color:#666;margin-top:4px;">{$vo.text|default=$vo.note|default=''}</span>
+    </div>
+    {/volist}
+</div>
+{/if}
+{/if}
+{/if}

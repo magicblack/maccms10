@@ -1,0 +1,61 @@
+<div id="mac_site_card_layer" class="mac-site-card-layer" aria-hidden="true" role="presentation"
+     data-site-url="{:htmlspecialchars(rtrim((isset($maccms['http_type']) ? (string)$maccms['http_type'] : '') . (isset($maccms['site_url']) ? (string)$maccms['site_url'] : ''), '/').'/', ENT_QUOTES, 'UTF-8')}"
+     data-site-name="{:htmlspecialchars(isset($maccms['site_name']) ? (string)$maccms['site_name'] : '', ENT_QUOTES, 'UTF-8')}"
+     data-contact-email="{$maccms.site_email|default=''}"
+     data-apk-url="{:htmlspecialchars(isset($tplconfig['theme']['site_card']['apk_url']) ? (string)$tplconfig['theme']['site_card']['apk_url'] : '', ENT_QUOTES, 'UTF-8')}"
+     data-apk-android-url="{:htmlspecialchars(isset($tplconfig['theme']['site_card']['apk_android_url']) ? (string)$tplconfig['theme']['site_card']['apk_android_url'] : '', ENT_QUOTES, 'UTF-8')}"
+     data-apk-ios-url="{:htmlspecialchars(isset($tplconfig['theme']['site_card']['apk_ios_url']) ? (string)$tplconfig['theme']['site_card']['apk_ios_url'] : '', ENT_QUOTES, 'UTF-8')}"
+     data-vpn-url="">
+    <div class="mac-site-card-backdrop" data-site-card-act="close"></div>
+    <div class="mac-site-card-dialog" role="dialog" aria-modal="true" aria-labelledby="mac_site_card_title">
+        <header class="mac-site-card-header">
+            <div class="mac-site-card-header-row">
+                <span class="mac-site-card-head-ico mac-site-card-head-ico--notice" aria-hidden="true">
+                    <img class="mac-site-card-head-img" src="{$maccms.path_tpl}/images/modal/Notice_ic@2x.png" width="40" height="40" decoding="async" alt="">
+                </span>
+                <h2 id="mac_site_card_title" class="mac-site-card-title">
+                    <span class="mac-site-card-name">{$maccms.site_name|default='本站'}</span><span class="mac-site-card-title-gap"> </span><span class="mac-site-card-title-suffix" data-lang="string_site_card_title_suffix">最新公告</span>
+                </h2>
+                <div class="mac-site-card-head-ico mac-site-card-close" data-site-card-act="close" aria-label="关闭">
+                    <img class="mac-site-card-head-img" src="{$maccms.path_tpl}/images/modal/close@2x.png" width="40" height="40" decoding="async" alt="">
+                </div>
+            </div>
+        </header>
+        <div class="mac-site-card-rule" aria-hidden="true"></div>
+        <div class="mac-site-card-body">
+            <div class="mac-site-card-top-split">
+                <div class="mac-site-card-copycol">
+                    <div class="mac-site-card-domain-stack">
+                        <p class="mac-site-card-domain-heading">
+                            <span class="mac-site-card-dh-name">{$maccms.site_name|default='本站'}</span><span data-lang="string_site_card_domain_suffix">最新域名</span>
+                        </p>
+                        <div class="mac-site-card-domain" title=""></div>
+                    </div>
+                    <div class="mac-site-card-email-block">
+                        <p class="mac-site-card-email-lines">
+                            <span data-lang="string_site_card_email_intro">发送任意邮件至</span><br>
+                            <span data-lang="string_site_card_email_sub">秒得最新地址</span>
+                        </p>
+                        <a class="mac-site-card-email-link" href="mailto:"></a>
+                    </div>
+                </div>
+                <div class="mac-site-card-qr">
+                    <div class="mac-site-card-qrcode"></div>
+                    <button type="button" class="mac-site-card-qr-cap" data-site-card-act="save-qr" data-lang="string_site_card_qr_save_hint">点击保存二维码</button>
+                </div>
+            </div>
+            <div class="mac-site-card-apk-wrap">
+                <a class="mac-site-card-primary-btn js-site-card-apk" href="#" target="_blank" rel="noopener noreferrer" data-lang="string_site_card_apk_btn">点击下载APP</a>
+            </div>
+            <div class="mac-site-card-vpn-wrap">
+                <div class="mac-site-card-extra-tip">
+                    <span data-lang="string_site_card_vpn_tip">推荐使用旋风加速器翻墙访问</span>
+                    <p class="mac-site-card-extra-link-wrap">
+                        旋风下载地址
+                    </p>
+                </div>
+            </div>
+            <div class="mac-site-card-screen-cta" data-lang="string_site_card_screen_tip">请截屏保存，以防走失！</div>
+        </div>
+    </div>
+</div>

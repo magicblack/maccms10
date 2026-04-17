@@ -1,0 +1,13 @@
+{if condition="($tplconfig['theme']['ads']['btn'] eq 1 || ($tplconfig['theme']['ads']['btn'] eq 2 && isset($user['group_id']) && $user['group_id'] lt 3))"}
+{if condition="$tplconfig['theme']['ads']['artlist']['btn'] eq 1"}
+<li>
+   <a target="_blank" rel="nofollow" href="{$tplconfig['theme']['ads']['artlist']['link']}" title="{$tplconfig['theme']['ads']['artlist']['title']}">
+   <div class="artlr_tit"><p class="artlr_b">{$tplconfig['theme']['ads']['artlist']['title']}</p><p class="artlr_name" data-lang="just_looking_around">随便看看</p></div>
+   <div class="artlr_pic lazyload" data-original="{:mac_url_img($tplconfig['theme']['ads']['artlist']['pic'])}">
+   {if condition="$tplconfig['theme']['ads']['artlist']['tbtn'] eq 1"}
+       <span class="ad_tips" data-lang="string_ads_gg">广告</span>
+   {/if}
+   </div>
+   </a>
+</li>
+{/if}{/if}

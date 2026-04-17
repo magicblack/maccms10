@@ -1,0 +1,70 @@
+	<link rel="stylesheet" type="text/css" href="{$maccms.path_tpl}/asset/css/widget-coop_modal.css" />
+
+<div id="coop-modal-overlay" class="coop-modal-overlay">
+	<div class="coop-modal">
+		<div class="coop-modal-hd">
+			<h3 class="coop-modal-title">{include file="widget/coop_icon_handshake" /}<span data-lang="user_business_coop">商务合作</span></h3>
+			<button type="button" class="coop-modal-close" aria-label="关闭">
+				<svg viewBox="0 0 24 24" aria-hidden="true">
+					<path d="M18.3 5.71a1 1 0 0 0-1.41 0L12 10.59 7.11 5.7a1 1 0 0 0-1.41 1.42L10.59 12 5.7 16.89a1 1 0 1 0 1.41 1.41L12 13.41l4.89 4.89a1 1 0 0 0 1.41-1.41L13.41 12l4.89-4.89a1 1 0 0 0 0-1.4z"/>
+				</svg>
+			</button>
+		</div>
+		<div class="coop-modal-bd">
+			<p class="coop-modal-desc" data-lang="user_business_coop_desc">诚邀各类商务合作，包括但不限于：广告投放、内容合作、品牌推广等。欢迎与我们联系。</p>
+			<div class="coop-modal-contacts">
+				{if condition="!empty($maccms.site_email)"}
+				<a class="coop-modal-item" href="mailto:{$maccms.site_email}" title="{$maccms.site_email}">
+					{include file="widget/coop_icon_mail" /}
+					<span class="coop-label" data-lang="user_email">邮箱</span>
+					<span class="coop-val">{$maccms.site_email}</span>
+				</a>
+				{/if}
+				{if condition="!empty($maccms.site_qq)"}
+				<a class="coop-modal-item coop-qq" href="javascript:void(0)" data-qq="{$maccms.site_qq}" title="QQ: {$maccms.site_qq}">
+					{include file="widget/coop_icon_message" /}
+					<span class="coop-label">telegram</span>
+					<span class="coop-val">{$maccms.site_qq}</span>
+				</a>
+				{/if}
+				{if condition="$GLOBALS['config']['gbook']['status'] eq 1"}
+				<a class="coop-modal-item coop-cta" href="{:mac_url('gbook/index')}">
+					{include file="widget/coop_icon_chat" /}
+					<span data-lang="user_contact_us">联系我们</span>
+				</a>
+				{/if}
+			</div>
+		</div>
+	</div>
+</div>
+
+<script>
+(function(){
+	function openCoopModal(){ $('#coop-modal-overlay').addClass('show'); $('body').css('overflow','hidden'); }
+	function closeCoopModal(){ $('#coop-modal-overlay').removeClass('show'); $('body').css('overflow',''); }
+	function isMobile(){ return window.innerWidth <= 820; }
+	$(document).on('click', 'a[href*="#cooperation"]', function(e){
+		if(isMobile()){ e.preventDefault(); openCoopModal(); }
+	});
+	$(document).on('click', '.coop-modal-overlay', function(e){
+		if(e.target===this) closeCoopModal();
+	});
+	$(document).on('click', '.coop-modal', function(e){
+		if($(e.target).closest('.coop-modal-close').length){ e.preventDefault(); closeCoopModal(); return; }
+		e.stopPropagation();
+	});
+	$(document).on('click', '.coop-modal-item.coop-qq', function(e){
+		e.preventDefault();
+		var qq=$(this).data('qq');
+		if(!qq) return;
+		if(navigator.clipboard && navigator.clipboard.writeText){
+			navigator.clipboard.writeText(String(qq)).then(function(){
+				MAC.alert(typeof MAC!=='undefined'&&MAC.GetLang?MAC.GetLang('copy_success'):(localStorage.getItem('lang')==1?'Copy succeeded':"复制成功"));
+			});
+		}else{
+			var ta=document.createElement('textarea');ta.value=qq;ta.style.cssText='position:fixed;opacity:0';document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);
+			MAC.alert(typeof MAC!=='undefined'&&MAC.GetLang?MAC.GetLang('copy_success'):(localStorage.getItem('lang')==1?'Copy succeeded':"复制成功"));
+		}
+	});
+})();
+</script>

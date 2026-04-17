@@ -86,6 +86,12 @@ class Comment extends Base {
                 $vod = model('Role')->infoData($where3);
                 $list[$k]['data'] = $vod['info'];
             }
+            elseif($v['comment_mid'] == 12){
+                $where3=[];
+                $where3['manga_id'] = ['eq',$v['comment_rid']];
+                $vod = model('Manga')->infoData($where3);
+                $list[$k]['data'] = $vod['info'];
+            }
             elseif($v['comment_mid'] == 11){
                 $where3=[];
                 $where3['website_id'] = ['eq',$v['comment_rid']];
@@ -106,13 +112,13 @@ class Comment extends Base {
         $order = $lp['order'];
         $by = $lp['by'];
         $paging = $lp['paging'];
-        $start = intval(abs($lp['start']));
-        $num = intval(abs($lp['num']));
-        $rid = intval(abs($lp['rid']));
-        $pid = intval(abs($lp['pid']));
-        $mid = intval(abs($lp['mid']));
-        $uid = intval(abs($lp['uid']));
-        $half = intval(abs($lp['half']));
+        $start = abs(intval($lp['start']));
+        $num = abs(intval($lp['num']));
+        $rid = abs(intval($lp['rid']));
+        $pid = abs(intval($lp['pid']));
+        $mid = abs(intval($lp['mid']));
+        $uid = abs(intval($lp['uid']));
+        $half = abs(intval($lp['half']));
         $pageurl = $lp['pageurl'];
         $page = 1;
         $where = [];

@@ -1,0 +1,1 @@
+(function(){function e(){var n=document.getElementById("manga-index-total-src"),t=n&&n.getAttribute("data-total");(t==null||t==="")&&(t="0");var a=document.querySelector("#manga_index_page .mac_total");a&&(a.textContent=t)}document.readyState==="loading"?document.addEventListener("DOMContentLoaded",e):e()})();

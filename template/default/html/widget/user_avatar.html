@@ -1,0 +1,3 @@
+<span class="mac-avatar mac-avatar--{$avatar_size|default='xs'} mac-avatar--{$avatar_variant|default='list'}{notempty name="avatar_class"} {$avatar_class}{/notempty}"{if condition="isset($avatar_user_id) && $avatar_user_id gt 0"} data-user-id="{$avatar_user_id}"{/if}{if condition="isset($avatar_sync) && $avatar_sync eq 1"} data-mac-avatar="1"{/if}{if condition="isset($avatar_aria_hidden) && $avatar_aria_hidden eq 1"} aria-hidden="true"{/if}>
+	<img class="mac-avatar__img{notempty name="avatar_img_extra_class"} {$avatar_img_extra_class}{/notempty}" src="{$avatar_src|default=''}" alt="{$avatar_alt|default=''}" loading="lazy" decoding="async" onerror="this.onerror=null;this.src='{$maccms.path_tpl}/images/member/touxiang.png';" />
+</span>

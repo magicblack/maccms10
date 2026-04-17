@@ -1,0 +1,41 @@
+{php}
+$bannerRows = [];
+if (!empty($tplconfig['theme']['ad_slots']['banner1']['ad_data']) && is_array($tplconfig['theme']['ad_slots']['banner1']['ad_data'])) {
+    foreach ($tplconfig['theme']['ad_slots']['banner1']['ad_data'] as $row) {
+        if (!is_array($row)) { continue; }
+        if (strtolower(trim((string)($row['active'] ?? 'off'))) !== 'on') { continue; }
+        $expireAt = isset($row['date']) ? trim((string)$row['date']) : '';
+        if ($expireAt !== '') {
+            $expireTs = strtotime($expireAt);
+            if ($expireTs !== false && $expireTs < time()) { continue; }
+        }
+        if (empty($row['image']) || empty($row['url'])) { continue; }
+        $bannerRows[] = $row;
+    }
+}
+if (!empty($bannerRows)) {
+    usort($bannerRows, function ($a, $b) {
+        $oa = intval($a['order'] ?? 0);
+        $ob = intval($b['order'] ?? 0);
+        if ($oa === $ob) { return 0; }
+        return $oa < $ob ? -1 : 1;
+    });
+}
+{/php}
+{if condition="($tplconfig['theme']['ads']['btn'] eq 1 || ($tplconfig['theme']['ads']['btn'] eq 2 && isset($user['group_id']) && $user['group_id'] lt 3))"}
+{if condition="!empty($bannerRows)"}
+{volist name="bannerRows" id="bannerOne"}
+<div class="pannel ads_all clearfix" style="margin-top:0;max-width: 30rem;margin:0 auto;">
+    <div class="ads ads_w">
+        <a href="{$bannerOne.url}" target="_blank" rel="nofollow" title="{$bannerOne.note|default='广告'}">
+            {if condition="!empty($bannerOne.height)"}
+            <img src="{:mac_url_img($bannerOne.image)}" alt="{$bannerOne.note|default='广告'}" style="width:100%;height:{$bannerOne.height};">
+            {else/}
+            <img src="{:mac_url_img($bannerOne.image)}" alt="{$bannerOne.note|default='广告'}" style="width:100%;">
+            {/if}
+        </a>
+    </div>
+</div>
+{/volist}
+{/if}
+{/if}

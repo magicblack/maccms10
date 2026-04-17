@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>{$tplconfig.theme.rank.title|default='排行榜'} - {$maccms.site_name}</title>
+    <meta name="keywords" content="电影排行榜,电视剧排行榜,综艺排行榜,动漫排行榜,热播影视排行榜" />
+    <meta name="description" content="本站提供最新最全热播影视排行榜数据" /> 
+    {include file="public/include"}
+	<link rel="stylesheet" type="text/css" href="{$maccms.path_tpl}/asset/css/label-rank.css" />
+</head>
+
+
+<body id="rankpage">
+    {include file="public/th" /}
+    {include file="public/head" /}
+    <div class="show-mobile">
+        <div id="ui-nav" class="m-nav">
+            <a href="javascript:MAC.GoBack()" class="btn-left"><i class="iconfont ico-right">&#xe625;</i></a>
+            <span class="mb-title">{$tplconfig.theme.rank.title|default='排行榜'}</span>
+        </div>
+    </div>
+    <div class="container white_pal ">
+        {include file="ads/ads_all"}
+        <div class="row">
+            <div class="pannel rankpage clearfix">
+                <div class="tabs">
+                    <input type="radio" id="tab1" name="tab-control" checked>
+                    <input type="radio" id="tab2" name="tab-control">
+                    <input type="radio" id="tab3" name="tab-control">
+                    <ul class="title_nav">
+                        <li class="tab_rank"  title="周榜" data-title="string_zhoub">
+                            <label for="tab1"  role="button">
+                                <span data-lang="string_zhoub">周榜</span>
+                            </label>
+                        </li>
+                        <li class="tab_rank" data-title="string_yueb" title="月榜">
+                            <label for="tab2" role="button">
+                                <span data-lang="string_yueb">月榜</span>
+                            </label>
+                        </li>
+                        <li class="tab_rank" data-title="string_zongb" title="总榜">
+                            <label for="tab3" role="button">
+                                <span data-lang="string_zongb">总榜</span>
+                            </label>
+                        </li>
+                    </ul>
+
+                    <div class="content">
+                        <section>
+                            <h2 data-lang="string_zhoub">周榜</h2>
+                            
+                            {maccms:type num="6" ids="'.(!empty($tplconfig['theme']['rank']['id']) ? $tplconfig['theme']['rank']['id'] : 'parent').'" order="asc" by="sort" flag="vod" id="vo"}
+                            <div class="rank_info">
+                                <div class="list_info">
+                                    <div class="pannel_head clearfix">
+                                        <span class="text_muted pull_right"></span>
+                                        <h3 class="title">
+                                            {$vo.type_name}
+                                        </h3>
+                                    </div>
+                                    <div class="rank-list-block">
+                                        <ul class="part_rows">
+                                            {maccms:vod num="'.((int)($tplconfig['theme']['rank']['num'] ?? 10)).'" type="'.$vo['type_id'].'" order="desc" by="hits_week"}
+                                            {if condition="$key eq 0"}
+                                            {include file="widget/rank_box_week"}
+                                            {else /}
+                                            <li class="part_eone">
+                                                <a href="{:mac_url_vod_detail($vo)}">
+                                                    <span class="part_nums part_num{$key+1}">{$key+1}</span>
+                                                    <span class="text_muted pull_right renqi">{$vo.vod_score} <span data-lang="string_fen">分</span> </span>
+                                                    {$vo.vod_name}
+                                                </a>
+                                            </li>
+                                            {/if}
+                                            {/maccms:vod}
+                                        </ul>
+                                        <div class="rank-page-empty-fallback" aria-hidden="true">{include file="public/notempty"}</div>
+                                    </div>
+                                </div>
+                            </div>
+                            {/maccms:type}
+                            
+                        </section>
+                        <section>
+                            <h2 data-lang="string_yueb">月榜</h2>
+                            
+                            {maccms:type num="6" ids="'.(!empty($tplconfig['theme']['rank']['id']) ? $tplconfig['theme']['rank']['id'] : 'parent').'" order="asc" by="sort" flag="vod" id="vo"}
+                            <div class="rank_info">
+                                <div class="list_info">
+                                    <div class="pannel_head clearfix">
+                                        <span class="text_muted pull_right"></span>
+                                        <h3 class="title">
+                                            {$vo.type_name}
+                                        </h3>
+                                    </div>
+                                    <div class="rank-list-block">
+                                        <ul class="part_rows">
+                                            {maccms:vod num="'.((int)($tplconfig['theme']['rank']['num'] ?? 10)).'" type="'.$vo['type_id'].'" order="desc" by="hits_month"}
+                                            {if condition="$key eq 0"}
+                                            {include file="widget/rank_box_month"}
+                                            {else /}
+                                            <li class="part_eone">
+                                                <a href="{:mac_url_vod_detail($vo)}">
+                                                    <span class="part_nums part_num{$key+1}">{$key+1}</span><span class="text_muted pull_right renqi">{$vo.vod_score}<span data-lang="string_fen">分</span></span>
+                                                    {$vo.vod_name}</a>
+                                            </li>
+                                            {/if}
+                                            {/maccms:vod}
+                                        </ul>
+                                        <div class="rank-page-empty-fallback" aria-hidden="true">{include file="public/notempty"}</div>
+                                    </div>
+                                </div>
+                            </div>
+                            {/maccms:type}
+                            
+                        </section>
+                        <section>
+                            <h2 data-lang="string_zongb">总榜</h2>
+                            
+                            {maccms:type num="6" ids="'.(!empty($tplconfig['theme']['rank']['id']) ? $tplconfig['theme']['rank']['id'] : 'parent').'" order="asc" by="sort" flag="vod" id="vo"}
+                            <div class="rank_info">
+                                <div class="list_info">
+                                    <div class="pannel_head clearfix">
+                                        <span class="text_muted pull_right"></span>
+                                        <h3 class="title">
+                                            {$vo.type_name}
+                                        </h3>
+                                    </div>
+                                    <div class="rank-list-block">
+                                        <ul class="part_rows">
+                                            {maccms:vod num="'.((int)($tplconfig['theme']['rank']['num'] ?? 10)).'" type="'.$vo['type_id'].'" order="desc" by="hits"}
+                                            {if condition="$key eq 0"}
+                                            {include file="widget/rank_box_all"}
+                                            {else /}
+                                            <li class="part_eone">
+                                                <a href="{:mac_url_vod_detail($vo)}">
+                                                    <span class="part_nums part_num{$key+1}">{$key+1}</span><span class="text_muted pull_right renqi">{$vo.vod_score}<span data-lang="string_fen">分</span></span>
+                                                    {$vo.vod_name}</a>
+                                            </li>
+                                            {/if}
+                                            {/maccms:vod}
+                                        </ul>
+                                        <div class="rank-page-empty-fallback" aria-hidden="true">{include file="public/notempty"}</div>
+                                    </div>
+                                </div>
+                            </div>
+                            {/maccms:type}
+                            
+                        </section>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+    {include file="public/friendLink"}
+    </div>
+    <script src="{$maccms.path_tpl}/asset/js/label-rank.js" defer></script>
+    {include file="public/foot"}
+</body>
+
+</html>

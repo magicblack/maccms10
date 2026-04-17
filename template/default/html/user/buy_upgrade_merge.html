@@ -1,0 +1,193 @@
+<div id="mac-user-buy-root"
+	class="member-wrap member-wrap-bg member-wrap--recharge member-wrap--user-upgrade"
+	data-url-login="{:url('user/login')}"
+	data-url-user-upgrade="{:url('user/upgrade')}"
+	data-is-login="{if condition="isset($obj) and !empty($obj['user_id'])"}1{else/}0{/if}"
+	data-url-recharge-config="{:rtrim($maccms.path,'/').'/api.php/payment/get_config'}"
+	data-url-buy="{:rtrim($maccms.path,'/').'/api.php/order/create'}"
+	data-url-gopay="{:rtrim($maccms.path,'/').'/api.php/payment/gopay'}"
+	data-url-order-query="{:rtrim($maccms.path,'/').'/api.php/order/check_status'}"
+	data-url-upgrade-data="{:rtrim($maccms.path,'/').'/api.php/user/ajax_upgrade_data'}"
+	data-url-benefits="{:url('user/benefits')}"
+	data-path-tpl="{$maccms.path_tpl}"
+	data-recharge-img-base="{$maccms.path_tpl}/images/recharge/">
+	<div id="member" class="fn-clear">
+		<div id="left">
+			<div class="m-nav">
+				<a href="{:url('user/index')}" class="btn-left"><i class="iconfont ico-right">&#xe625;</i></a>
+				<a href="{$maccms.path}" class="btn-right"><i class="iconfont ico-right">&#xe634;</i></a>
+				<span class="mb-title" data-lang="user_grzx">个人中心</span>
+			</div>
+			{include file="user/left_nav" /}
+		</div>
+		<div id="right" class="user-upgrade-shell">
+			<div class="m-nav recharge-mnav">
+				<a href="{:url('user/index')}" class="btn-left"><i class="iconfont ico-right">&#xe625;</i></a>
+				<span class="mb-title" data-lang="user_zxcz">在线充值</span>
+			</div>
+			<div class="recharge-balance-row">
+				<img class="recharge-coin-ico" src="{$maccms.path_tpl}/images/recharge/recharge-coin.png" width="24" height="24" alt="" decoding="async" />
+				<p class="recharge-balance-txt">
+					<span data-lang="user_syjf">剩余金币</span>：<strong id="buy_user_points">--</strong>
+				</p>
+			</div>
+			<nav class="user-buy-upgrade-tabs" role="tablist" aria-label="充值与会员">
+				<button type="button" role="tab" class="user-buy-upgrade-tabs__tab user-buy-upgrade-tabs__tab--recharge" data-mac-buy-upgrade-tab="recharge" data-lang="string_user_tab_recharge">充值</button>
+				<button type="button" role="tab" class="user-buy-upgrade-tabs__tab user-buy-upgrade-tabs__tab--upgrade" data-mac-buy-upgrade-tab="upgrade" data-lang="string_user_tab_upgrade_vip">升级VIP</button>
+			</nav>
+
+			<div class="user-buy-upgrade-panels">
+			<div class="user-buy-upgrade-panel user-buy-upgrade-panel--recharge">
+				<div class="recharge-page">
+					<div class="recharge-card">
+						<form id="fm" name="fm" method="post" action="">
+							<div class="quick-amount">
+								<div class="amount-card" data-amount="50" role="button" tabindex="0">
+									<span class="amount-card__yen">¥</span><span class="amount-card__num">50</span>
+								</div>
+								<div class="amount-card" data-amount="100" role="button" tabindex="0">
+									<span class="amount-card__yen">¥</span><span class="amount-card__num">100</span>
+								</div>
+								<div class="amount-card amount-card--hot" data-amount="200" role="button" tabindex="0">
+									<img class="amount-card__ribbon" src="{$maccms.path_tpl}/images/recharge/recharge-ribbon-hot.png" width="48" height="48" alt="" />
+									<span class="amount-card__yen">¥</span><span class="amount-card__num">200</span>
+								</div>
+								<div class="amount-card" data-amount="500" role="button" tabindex="0">
+									<span class="amount-card__yen">¥</span><span class="amount-card__num">500</span>
+								</div>
+							</div>
+							<p class="user-info-row user-info-row--field recharge-amount-row">
+								<span class="user-info-row__label xiang" data-lang="user_czje">充值的金额</span>
+								<span class="user-info-row__control">
+									<input type="text" maxlength="8" name="price" id="price_input" value="" class="member-input user-info-row__input" placeholder="请输入金额" inputmode="decimal" autocomplete="off">
+								</span>
+							</p>
+							<div class="tips-box recharge-tips">
+								<img class="recharge-tips-ico" src="{$maccms.path_tpl}/images/recharge/recharge-tip-ico.png" width="18" height="18" alt="" decoding="async" />
+								<span id="buy_recharge_tips" data-lang="string_loading">加载中…</span>
+							</div>
+						</form>
+					</div>
+					<button type="button" id="btn_submit_pay" class="submit-btn recharge-confirm-btn">确认充值</button>
+				</div>
+			</div>
+
+			<div class="user-buy-upgrade-panel user-buy-upgrade-panel--upgrade">
+				<div class="co-right co-hi co-upgrade-hero">
+					<div id="listCon">
+						<div class="upgrade-dark-card member-overview">
+							<div class="upgrade-dark-card__top">
+								<div class="upgrade-dark-card__copy">
+									<p class="upgrade-dark-card__title">
+										<span class="upgrade-dark-card__title-line" data-lang="string_user_upgrade_hero_title_l1">解锁更多专属权益</span>
+										<span class="upgrade-dark-card__title-line" data-lang="string_user_upgrade_hero_title_l2">选择下方套餐立即升级</span>
+									</p>
+									<p class="overview-sub upgrade-dark-card__sub" data-lang="string_user_upgrade_hero_sub">支持金币开通，金币不足时可直接充值并完成支付</p>
+								</div>
+								<div class="upgrade-dark-card__art" aria-hidden="true">
+									<img src="{$maccms.path_tpl}images/upgrade/upgrade-hero.png" width="140" height="120" alt="" decoding="async" />
+								</div>
+							</div>
+							<div class="overview-metrics upgrade-dark-card__metrics">
+								<div class="metric-item">
+									<div class="metric-label">
+										<span class="metric-icon metric-icon-img"><img src="{$maccms.path_tpl}images/upgrade/metric-time.png" width="20" height="20" alt="" decoding="async" /></span>
+										<span data-lang="string_user_dqsj">到期时间</span>
+									</div>
+									<div class="metric-value metric-value-expire js-upgrade-metric-expire">--</div>
+								</div>
+								<div class="metric-item">
+									<div class="metric-label">
+										<span class="metric-icon metric-icon-img"><img src="{$maccms.path_tpl}images/upgrade/metric-crown.png" width="20" height="20" alt="" decoding="async" /></span>
+										<span data-lang="string_user_hydj">会员等级</span>
+									</div>
+									<div class="metric-value js-upgrade-metric-level">--</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="co-right co-hi co-bottom co-upgrade-plans">
+					<form action="" method="post" name="form3" id="form3">
+						<div class="sjhy-ts upgrade-hint-line">
+							<p class="upgrade-hint-line__text" data-lang="string_user_upgrade_hint">选择您需要的会员组及时长，直接购买开通会员权益</p>
+						</div>
+						<div class="upgrade-groups js-upgrade-groups">
+							<p class="upgrade-groups-loading js-upgrade-groups-loading text_muted" data-lang="string_loading">加载中…</p>
+						</div>
+					</form>
+				</div>
+				<div class="submit-vip" data-lang="string_submit" role="button" tabindex="0">确认</div>
+			</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="pay-overlay" id="pay-overlay">
+		<div class="pay-modal">
+			<div class="pay-modal-hd">
+				<h3 data-lang="string_pay_qrdd">确认支付</h3>
+				<button type="button" class="pay-modal-close" aria-label="Close">×</button>
+			</div>
+			<div class="pay-modal-bd">
+				<div class="order-summary">
+					<div class="order-row">
+						<span class="order-label" data-lang="string_pay_ddbh">订单编号</span>
+						<span class="order-value" id="modal_order_code">-</span>
+					</div>
+					<div class="order-row">
+						<span class="order-label" data-lang="string_pay_ddje">订单金额</span>
+						<span class="order-value price"><span id="modal_order_price">0</span><span data-lang="user_yuan">元</span></span>
+					</div>
+				</div>
+
+				<div class="pay-loading-panel" id="pay_loading_panel">
+					<div class="pay-loading-qrcode-block" id="pay_loading_qrcode_block" style="display:none;" aria-hidden="true">
+						<div class="pay-loading-qrcode-host" id="pay_loading_qrcode_host"></div>
+						<p class="pay-loading-qrcode-caption" data-lang="string_mac_dkwx">打开微信，扫码支付</p>
+					</div>
+					<div class="pay-loading-spinner-wrap" id="pay_loading_spinner_wrap">
+						<div class="pay-loading-spinner"></div>
+					</div>
+					<h3 id="pay_loading_title">等待支付结果</h3>
+					<p id="pay_loading_hint">请在新标签页完成支付<br>支付成功后此页面将自动更新</p>
+					<button type="button" class="pay-loading-cancel">我已取消支付</button>
+				</div>
+
+				<form method="post" action="{:url('user/gopay')}" id="payForm" target="_blank">
+					<input type="hidden" name="order_id" id="modal_order_id" value="">
+					<input type="hidden" name="order_code" id="modal_order_code_input" value="">
+					<input type="hidden" name="payment" id="payment_input" value="">
+					<input type="hidden" name="paytype" id="paytype_input" value="">
+					<div class="pm-section-title" data-lang="string_pay_zffs">支付方式</div>
+					<div class="pm-grid" id="payment_grid">
+						<div class="pm-loading" data-lang="string_loading">加载中…</div>
+					</div>
+					<div id="paytype_box" style="display:none;">
+						<div class="pm-section-title" data-lang="string_pay_zflx">支付类型</div>
+						<div class="pt-grid" id="paytype_grid"></div>
+					</div>
+					<button type="submit" class="pay-confirm-btn" data-value="string_submit">确认支付</button>
+				</form>
+			</div>
+		</div>
+	</div>
+	{if condition="isset($tplconfig['theme']['contact']['url']) && $tplconfig['theme']['contact']['url'] neq ''"}
+	<div class="user-buy-service-foot">
+		<a class="user-buy-service-foot__link" href="{$tplconfig.theme.contact.url}" target="_blank" rel="noopener noreferrer">
+			<img class="user-buy-service-foot__ico" src="{$maccms.path_tpl}/asset/img/contact-service.png" width="22" height="22" alt="" decoding="async" />
+			<span data-lang="string_user_contact_service">联系客服</span>
+		</a>
+	</div>
+	{/if}
+	<div style="max-width:30rem;margin:0 auto;">
+		{include file="public/friendLink" }
+	</div>
+</div>
+
+<div id="buyPayIconsTpl" style="display:none" aria-hidden="true">
+	<div data-icon="alipay"><svg class="icon" style="vertical-align:middle;fill:currentColor;overflow:hidden" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg"><path d="M789 610.3c-38.7-12.9-90.7-32.7-148.5-53.6 34.8-60.3 62.5-129 80.7-203.6H530.5v-68.6h233.6v-38.3H530.5V132h-95.4c-16.7 0-16.7 16.5-16.7 16.5v97.8H182.2v38.3h236.3v68.6H223.4v38.3h378.4c-13.8 47.6-32.4 92.3-54.5 132.9-122.8-40.4-253.8-73.2-336.1-53-52.6 13-86.5 36.1-106.5 60.3-91.4 111-25.9 279.6 167.2 279.6C386 811.2 496 747.6 581.2 643 708.3 704 960 808.7 960 808.7V659.4s-31.6-2.5-171-49.1zM253.9 746.6c-150.5 0-195-118.3-120.6-183.1 24.8-21.9 70.2-32.6 94.4-35 89.4-8.8 172.2 25.2 269.9 72.8-68.8 89.5-156.3 145.3-243.7 145.3z"/></svg></div>
+	<div data-icon="wechat"><svg class="icon" style="vertical-align:middle;fill:currentColor;overflow:hidden" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9.5 4C5.36 4 2 6.91 2 10.5c0 1.94.98 3.68 2.53 4.88L4 18l2.53-1.39c.92.25 1.9.39 2.97.39.56 0 1.11-.04 1.64-.13-.4-.69-.64-1.48-.64-2.37 0-2.84 2.46-5.15 5.5-5.15.37 0 .74.03 1.09.1C16.3 6.3 13.2 4 9.5 4Zm-2 4.5a1 1 0 1 1 0 2 1 1 0 0 1 0-2Zm4 0a1 1 0 1 1 0 2 1 1 0 0 1 0-2Zm4.5 2c-2.49 0-4.5 1.79-4.5 4s2.01 4 4.5 4c.61 0 1.2-.11 1.73-.31L20 19l-.44-1.88c.58-.69.94-1.57.94-2.62 0-2.21-2.01-4-4.5-4Zm-1.5 3a.8.8 0 1 1 0 1.6.8.8 0 0 1 0-1.6Zm3 0a.8.8 0 1 1 0 1.6.8.8 0 0 1 0-1.6Z"/></svg></div>
+	<div data-icon="qq"><svg class="icon" style="vertical-align:middle;fill:currentColor;overflow:hidden" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg"><path d="M824.8 613.2c-16-51.4-34.4-94.6-62.7-165.3C766.5 262.2 689.3 112 511.5 112 331.7 112 256.2 265.2 261 447.9c-28.4 70.8-46.7 113.7-62.7 165.3-34 109.5-23 154.8-14.6 155.8 18 2.2 70.1-82.4 70.1-82.4 0 49 25.2 112.9 79.8 159-26.4 8.1-85.7 29.9-71.6 53.8 11.4 19.3 196.2 12.3 249.5 6.3 53.3 6 238.1 13 249.5-6.3 14.1-23.8-45.3-45.7-71.6-53.8 54.6-46.2 79.8-110.1 79.8-159 0 0 52.1 84.6 70.1 82.4 8.5-1.1 19.5-46.4-14.5-155.8z"/></svg></div>
+	<div data-icon="wallet"><svg class="icon" style="vertical-align:middle;fill:currentColor;overflow:hidden" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg"><path d="M880 112H144c-17.7 0-32 14.3-32 32v736c0 17.7 14.3 32 32 32h736c17.7 0 32-14.3 32-32V144c0-17.7-14.3-32-32-32zm-40 464H528V448h312v128zm0 264H184V184h656v200H496c-17.7 0-32 14.3-32 32v192c0 17.7 14.3 32 32 32h344v200zM620 512m-40 0a40 40 0 1 0 80 0 40 40 0 1 0-80 0z"/></svg></div>
+</div>

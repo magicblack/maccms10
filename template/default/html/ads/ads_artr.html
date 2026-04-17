@@ -1,0 +1,12 @@
+{if condition="($tplconfig['theme']['ads']['btn'] eq 1 || ($tplconfig['theme']['ads']['btn'] eq 2 && isset($user['group_id']) && $user['group_id'] lt 3))"}
+{if condition="$tplconfig['theme']['ads']['art_r']['btn'] eq 1"}
+	<div class="ads_rbox hidden_xs hidden_mi">
+		<div class="pannel ads_rmk clearfix">
+			<div class="ads_rmkc">
+				<div id="1002" class="ads right_ads">
+					{$tplconfig['theme']['ads']['art_r']['content']}
+				</div>
+			</div>
+		</div>
+    </div>
+{/if}{/if}

@@ -1,0 +1,3 @@
+{if condition="($tplconfig['theme']['ads']['btn'] eq 1 || ($tplconfig['theme']['ads']['btn'] eq 2 && isset($user['group_id']) && $user['group_id'] lt 3)) && !empty($tplconfig['theme']['ads']['user']['btn']) && $tplconfig['theme']['ads']['user']['btn'] eq 1"}
+<a href="{$tplconfig.theme.ads.user.link|default='javascript:void(0)'}" target="_blank"><img src="{:mac_url_img($tplconfig['theme']['ads']['user']['pic'])}"></a>
+{/if}

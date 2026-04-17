@@ -1,0 +1,88 @@
+{include file="../../../application/admin/view_new/public/head" /}
+<div class="page-container p10">
+    <div class="my-toolbar-box">
+        <div class="mb10">
+            <form class="layui-form" method="post" action="{:url('data')}">
+                <div class="layui-input-inline w100">
+                    <select name="status">
+                        <option value="">{:lang('select_status')}</option>
+                        <option value="0" {if condition="$param['status'] == '0'"}selected{/if}>{:lang('disable')}</option>
+                        <option value="1" {if condition="$param['status'] == '1'"}selected{/if}>{:lang('normal')}</option>
+                    </select>
+                </div>
+                <div class="layui-input-inline w100">
+                    <select name="type">
+                        <option value="">{:lang('task/select_type')}</option>
+                        <option value="1" {if condition="$param['type'] eq '1'"}selected{/if}>{:lang('task/type_daily')}</option>
+                        <option value="2" {if condition="$param['type'] eq '2'"}selected{/if}>{:lang('task/type_newbie')}</option>
+                    </select>
+                </div>
+                <div class="layui-input-inline">
+                    <input type="text" autocomplete="off" placeholder="{:lang('task/search_wd')}" class="layui-input" name="wd" value="{$param['wd']|default=''|htmlspecialchars}">
+                </div>
+                <button class="layui-btn mgl-20 j-search">{:lang('btn_search')}</button>
+            </form>
+        </div>
+        <div class="flex gap-5 overflow-x-auto overflow-y-hidden">
+            <a data-href="{:url('info')}" data-width="900px" data-height="600px" class="layui-btn layui-btn-primary j-iframe"><i class="layui-icon">&#xe654;</i>{:lang('add')}</a>
+            <a data-href="{:url('del')}" class="layui-btn layui-btn-primary j-page-btns confirm"><i class="layui-icon">&#xe640;</i>{:lang('del')}</a>
+            <a data-href="{:url('index/select')}?tab=task&col=task_status&tpl=select_status&url=task/field" data-width="470" data-height="100" data-checkbox="1" class="layui-btn layui-btn-primary j-select"><i class="layui-icon">&#xe620;</i>{:lang('status')}</a>
+        </div>
+    </div>
+
+    <form class="layui-form" method="post" id="pageListForm">
+        <table class="layui-table" lay-size="sm">
+            <thead>
+            <tr>
+                <th width="25"><input type="checkbox" lay-skin="primary" lay-filter="allChoose"></th>
+                <th width="50">{:lang('id')}</th>
+                <th width="80">{:lang('task/task_type')}</th>
+                <th>{:lang('task/task_name')}</th>
+                <th width="120">{:lang('task/task_action')}</th>
+                <th width="80">{:lang('task/task_points')}</th>
+                <th width="80">{:lang('task/task_target')}</th>
+                <th width="60">{:lang('task/task_sort')}</th>
+                <th width="80">{:lang('status')}</th>
+                <th width="120">{:lang('opt')}</th>
+            </tr>
+            </thead>
+            <tbody>
+            {volist name="list" id="vo"}
+            <tr>
+                <td><input type="checkbox" name="ids[]" value="{$vo.task_id}" class="layui-checkbox checkbox-ids" lay-skin="primary"></td>
+                <td>{$vo.task_id}</td>
+                <td>{if condition="$vo.task_type eq 1"}<span class="layui-badge layui-bg-blue">{:lang('task/type_daily')}</span>{else}<span class="layui-badge layui-bg-orange">{:lang('task/type_newbie')}</span>{/if}</td>
+                <td>{$vo.task_name}</td>
+                <td><code>{$vo.task_action}</code></td>
+                <td>{$vo.task_points}</td>
+                <td>{$vo.task_target}</td>
+                <td>{$vo.task_sort}</td>
+                <td>{if condition="$vo.task_status eq 0"}<span class="layui-badge">{:lang('disable')}</span>{else}<span class="layui-badge layui-bg-green">{:lang('normal')}</span>{/if}</td>
+                <td>
+                    <a data-href="{:url('info?id='.$vo['task_id'])}" data-width="900px" data-height="600px" class="layui-badge-rim j-iframe" title="{:lang('edit')}">{:lang('edit')}</a>
+                    <a class="layui-badge-rim j-tr-del" data-href="{:url('del?ids='.$vo['task_id'])}" href="javascript:;" title="{:lang('del')}">{:lang('del')}</a>
+                </td>
+            </tr>
+            {/volist}
+            </tbody>
+        </table>
+        <div id="pages" class="center"></div>
+    </form>
+</div>
+
+{include file="../../../application/admin/view_new/public/foot" /}
+<script type="text/javascript">
+var curUrl="{:url('task/data',$param)}";
+layui.use(['laypage','layer','form'], function(){
+    var laypage=layui.laypage, layer=layui.layer, form=layui.form;
+    laypage.render({
+        elem:'pages', count:{$total}, limit:{$limit}, curr:{$page},
+        layout:['count','prev','page','next','limit','skip'],
+        jump:function(obj,first){
+            if(!first){ location.href=curUrl.replace('%7Bpage%7D',obj.curr).replace('%7Blimit%7D',obj.limit); }
+        }
+    });
+});
+</script>
+</body>
+</html>

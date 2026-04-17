@@ -378,6 +378,16 @@ return array (
     array (
     ),
   ),
+  'artread/<id>-<page?>' =>
+  array(
+    0 => 'art/read',
+    1 =>
+    array(
+    ),
+    2 =>
+    array(
+    ),
+  ),
     'manga-<page?>' =>
     array (
         0 => 'manga/index',

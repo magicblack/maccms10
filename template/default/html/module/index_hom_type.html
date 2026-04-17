@@ -1,0 +1,32 @@
+<!-- 骨架在容器内；各 .latest-tab-box 与块内「换一换」由 index-home-ajax.js 在接口返回后拼接进 #js-home-type-sections -->
+<div id="js-home-type-sections"
+     class="js-home-lazy-section"
+     data-section="home-types"
+     data-api-action="vod/get_latest_by_type"
+     data-num="{$index_mobile_vod_num|default='12'}">
+    <div class="home-skeleton-type-box">
+        <div class="home-skeleton-line w220"></div>
+        <div class="home-skeleton-grid">
+            <div class="home-skeleton-card"><div class="thumb"></div><div class="home-skeleton-line w90"></div><div class="home-skeleton-line w70"></div></div>
+            <div class="home-skeleton-card"><div class="thumb"></div><div class="home-skeleton-line w90"></div><div class="home-skeleton-line w70"></div></div>
+            <div class="home-skeleton-card"><div class="thumb"></div><div class="home-skeleton-line w90"></div><div class="home-skeleton-line w70"></div></div>
+            <div class="home-skeleton-card"><div class="thumb"></div><div class="home-skeleton-line w90"></div><div class="home-skeleton-line w70"></div></div>
+            <div class="home-skeleton-card"><div class="thumb"></div><div class="home-skeleton-line w90"></div><div class="home-skeleton-line w70"></div></div>
+            <div class="home-skeleton-card"><div class="thumb"></div><div class="home-skeleton-line w90"></div><div class="home-skeleton-line w70"></div></div>
+        </div>
+    </div>
+    <div class="home-skeleton-type-box">
+        <div class="home-skeleton-line w220"></div>
+        <div class="home-skeleton-grid">
+            <div class="home-skeleton-card"><div class="thumb"></div><div class="home-skeleton-line w90"></div><div class="home-skeleton-line w70"></div></div>
+            <div class="home-skeleton-card"><div class="thumb"></div><div class="home-skeleton-line w90"></div><div class="home-skeleton-line w70"></div></div>
+            <div class="home-skeleton-card"><div class="thumb"></div><div class="home-skeleton-line w90"></div><div class="home-skeleton-line w70"></div></div>
+            <div class="home-skeleton-card"><div class="thumb"></div><div class="home-skeleton-line w90"></div><div class="home-skeleton-line w70"></div></div>
+            <div class="home-skeleton-card"><div class="thumb"></div><div class="home-skeleton-line w90"></div><div class="home-skeleton-line w70"></div></div>
+            <div class="home-skeleton-card"><div class="thumb"></div><div class="home-skeleton-line w90"></div><div class="home-skeleton-line w70"></div></div>
+        </div>
+    </div>
+</div>
+<script type="application/json" id="js-home-type-rows-json">
+{php}echo json_encode($index_hom_type_rows, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);{/php}
+</script>

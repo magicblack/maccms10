@@ -1,0 +1,33 @@
+<body>
+{include file="public/head"} 
+<div class="container ">
+    {include file="ads/ads_all"}
+    <div class="vod_row tit_up">
+    <div class="pannel clearfix">
+        <div class="pannel_head clearfix">
+            <span class="pull_right">
+                <span data-lang='string_zg'>共有</span>
+                <em class="mac_total"></em>
+                <span data-lang="string_yingpian">个影片</span>
+                
+            </span>
+            <h2 class="title">{$obj.type_name}</h2>
+            <span class="hidden_xs pull_left">
+				{maccms:vod num="3" type="current" order="desc" by="hits" id="vo"}
+                 <a href="{:mac_url_vod_play($vo,['sid'=>$vo.sid,'nid'=>1])}" title="{$vo.vod_name}" class="text_muted">{$vo.vod_name|mac_substring=16}</a><span class="split_line"></span>
+                {/maccms:vod}
+            </span>
+        </div>
+        {php}$type_poster_class = (mac_tpl_vod_type_cover(isset($obj['type_id']) ? (int) $obj['type_id'] : 0) === 'h') ? 'mac-poster--h' : 'mac-poster--v';{/php}
+        <ul class="vodlist vodlist_hb clearfix {$type_poster_class}">
+            {maccms:vod num="40" paging="yes" half="3" type="current" order="desc" by="sort"} {include file="widget/vod_box"} {/maccms:vod}
+        </ul>
+        
+        {include file="widget/page"}
+        
+    </div>
+    </div>
+</div>
+<script type="text/javascript">
+    $('.mac_total').html('{$__PAGING__.record_total}');
+</script>

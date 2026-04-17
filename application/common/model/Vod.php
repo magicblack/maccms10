@@ -69,7 +69,9 @@ class Vod extends Base {
         //用户组
         $group_list = model('Group')->getCache('group_list');
 
+        $vip_exclusive = mac_get_vip_exclusive_type_ids();
         foreach($list as $k=>$v){
+            $list[$k]['type_is_vip_exclusive'] = in_array($v['type_id'] ?? 0, $vip_exclusive) ? 1 : 0;
             if($addition==1){
 	            if(!empty($v['type_id'])) {
 	                $list[$k]['type'] = $type_list[$v['type_id']];
@@ -113,7 +115,9 @@ class Vod extends Base {
         //用户组
         $group_list = model('Group')->getCache('group_list');
 
+        $vip_exclusive = mac_get_vip_exclusive_type_ids();
         foreach($list as $k=>$v){
+            $list[$k]['type_is_vip_exclusive'] = in_array($v['type_id'] ?? 0, $vip_exclusive) ? 1 : 0;
             if($addition==1){
                 if(!empty($v['type_id'])) {
                     $list[$k]['type'] = $type_list[$v['type_id']];
@@ -152,9 +156,9 @@ class Vod extends Base {
         $director = $lp['director'];
         $version = $lp['version'];
         $year = $lp['year'];
-        $start = intval(abs($lp['start']));
-        $num = intval(abs($lp['num']));
-        $half = intval(abs($lp['half']));
+        $start = abs(intval($lp['start']));
+        $num = abs(intval($lp['num']));
+        $half = abs(intval($lp['half']));
         $weekday = $lp['weekday'];
         $tv = $lp['tv'];
         $timeadd = $lp['timeadd'];
@@ -665,6 +669,8 @@ class Vod extends Base {
                 $group_list = model('Group')->getCache('group_list');
                 $info['group'] = $group_list[$info['group_id']];
             }
+            $vip_exclusive = mac_get_vip_exclusive_type_ids();
+            $info['type_is_vip_exclusive'] = in_array($info['type_id'] ?? 0, $vip_exclusive) ? 1 : 0;
             if($GLOBALS['config']['app']['cache_core']==1 && $data_cache && $cache==1) {
                 Cache::set($key, $info);
             }

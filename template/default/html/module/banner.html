@@ -1,0 +1,50 @@
+
+{if condition="!empty($tplconfig['theme']['banner']['btn']) && $tplconfig['theme']['banner']['btn'] eq 1"}
+<div class="banstem hot_banner banner_ms_{$tplconfig.theme.banner.ms|default='small'} banstem-style-pc-{$tplconfig.theme.banner.style_pc|default='1'} banstem-style-h5-{$tplconfig.theme.banner.style_h5|default='1'} {if condition="$tplconfig['theme']['banner']['smbg'] eq 1"}banner_smbg{/if}" data-style-pc="{$tplconfig.theme.banner.style_pc|default='1'}" data-style-h5="{$tplconfig.theme.banner.style_h5|default='1'}" {if condition="!empty($tplconfig['theme']['banner']['bgstyle'])"}data-bgstyle="{$tplconfig.theme.banner.bgstyle}"{/if}>
+    <script>
+    !function(){
+        var s=document.currentScript,r=s&&s.parentNode;
+        if(!r||!r.getAttribute){return;}
+        var pc=String(r.getAttribute('data-style-pc')||'1'),h5=String(r.getAttribute('data-style-h5')||'1');
+        if(pc!=='1'&&pc!=='2'&&pc!=='3')pc='1';
+        if(h5!=='1'&&h5!=='2'&&h5!=='3')h5='1';
+        var isM=!1;
+        try{isM=window.matchMedia&&window.matchMedia('(max-width:820px)').matches}catch(e){}
+        if(!isM)try{isM=document.documentElement.clientWidth<=820}catch(e2){}
+        var active=isM?h5:pc;
+        r.classList.add('banstem-style-active-'+active);
+        /* 样式一：首页 body 顶距交给轮播区处理（见 home-banner.css .home-banner-style-1） */
+        if(active==='1'){
+            try{
+                var b=document.body;
+                if(b&&b.classList&&b.classList.contains('home-index-body')){
+                    b.classList.add('home-banner-style-1');
+                }
+            }catch(e3){}
+        }
+    }();
+    </script>
+    {include file="ads/ads_banner_swiper"}
+    <div class="bgi_box">
+        <span class="bgi banstem-bgimage" {if condition="!empty($tplconfig['theme']['banner']['bgstyle'])"}style="background-image:{$tplconfig.theme.banner.bgstyle};"{/if}></span>
+        <span class="bgfd"></span>
+    </div>
+    <div class="banstem_list">
+        <div class="hot_banner_box">
+            <div class="banner-top">
+                <ul class="swiper-wrapper vodlist clearfix js-home-lazy-section"
+                    id="js-home-banner-list"
+                    data-section="home-banner"
+                    data-api-action="vod/get_banner"
+                    data-num="10"
+                    data-level="9"></ul>
+                <div class="swiper-pagination"></div>
+            </div>
+            <div class="banner-arrow">
+                <a class="swiper-button-prev" href="javascript:;"><i class="iconfont">&#xe625;</i></a>
+                <a class="swiper-button-next" href="javascript:;"><i class="iconfont">&#xe623;</i></a>
+            </div>
+        </div>
+    </div>
+</div>
+{/if}

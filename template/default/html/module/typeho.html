@@ -1,0 +1,83 @@
+<body class="bstem">
+    {include file="public/head"}
+    {include file="module/banner"}
+    
+    <div class="container ">
+        
+        <div class="directory-item" id="tv-directory">
+            <ul class="directory-list show-pc">
+                    <li>
+                        <dl class="leixing">
+                            <dt><span data-lang="string_type_byType">按类型</span><i class="iconfont"></i></dt> {empty name="$obj.type_extend.class"} {maccms:foreach name=":explode(',',$obj.parent.type_extend.class)"}
+                            <dd><a href="{:mac_url_type($obj,['class'=>$vo],'show')}">{$vo}</a></dd>
+                            {/maccms:foreach} {else /} {maccms:foreach name=":explode(',',$obj.type_extend.class)"}
+                            <dd><a href="{:mac_url_type($obj,['class'=>$vo],'show')}">{$vo}</a></dd>
+                            {/maccms:foreach} {/empty}
+                        </dl>
+                    </li>
+                    <li>
+                        <dl class="area">
+                            <dt><span data-lang="string_type_byRegion">按地区</span><i class="iconfont"></i></dt> {empty name="$obj.type_extend.area"} {maccms:foreach name=":explode(',',$obj.parent.type_extend.area)"}
+                            <dd><a href="{:mac_url_type($obj,['class'=>$vo],'show')}">{$vo}</a></dd>
+                            {/maccms:foreach} {else /} {maccms:foreach name=":explode(',',$obj.type_extend.area)"}
+                            <dd><a href="{:mac_url_type($obj,['area'=>$vo],'show')}">{$vo}</a></dd>
+                            {/maccms:foreach} {/empty}
+                        </dl>
+                    </li>
+                    <li>
+                        <dl>
+                            <dt><span data-lang="string_type_byAge">按年代</span><i class="iconfont"></i></dt> {empty name="$obj.type_extend.year"} {maccms:foreach name=":explode(',',$obj.parent.type_extend.year)"}
+                            <dd><a href="{:mac_url_type($obj,['class'=>$vo],'show')}">{$vo}</a></dd>
+                            {/maccms:foreach} {else /} {maccms:foreach name=":explode(',',$obj.type_extend.year)"}
+                            <dd><a href="{:mac_url_type($obj,['year'=>$vo],'show')}">{$vo}</a></dd>
+                            {/maccms:foreach} {/empty}
+                        </dl>
+                    </li>
+            </ul>
+        </div>
+        {if$obj.parent}{else}
+        {/if}
+        
+        {include file="ads/ads_all"}
+        <div class="vod_row tit_up">
+            {include file="module/typevbox"} {maccms:foreach name=":explode(',',$obj.type_extend.area)" id="vo1" key="key1"} {if condition="$key1 lt 4"}
+            <div class="pannel clearfix">
+                <div class="pannel_head clearfix">
+                    
+                    <h2 class="title">{$vo1}{$obj.type_name}</h2>
+                    <a class="text_muted pull_left" href="{:mac_url_type($obj,['area'=>$vo1],'show')}">
+                        <span data-lang="string_type_more2">更多</span><i class="iconfont more_i">&#xe623;</i>
+                    </a>
+                    <span class="hidden_xs pull_left">
+						{maccms:vod num="3" type="current" area="'.$vo1.'" order="dasc" by="hits" id="vo2" key="key2"}
+                        <span class="split_line"></span>
+                        <a href="{:mac_url_vod_detail($vo2)}" title="{$vo2.vod_name}" class="text_muted">
+                            {$vo2.vod_name|mac_substring=16}
+                        </a>
+                        {/maccms:vod}
+                    </span>
+                </div>
+                
+                <div class="cbox_list">
+                    <div class="cbox1">
+                        <ul class="vodlist vodlist_wi">
+                            {maccms:vod num="18" type="current" area="'.$vo1.'" order="desc" by="time"} {include file="widget/vod_box"} {/maccms:vod}
+                        </ul>
+                    </div>
+                    <div class="cbox2 hide">
+                        <ul class="vodlist vodlist_wi">
+                            {maccms:vod num="18" type="current" area="'.$vo1.'" start="19" order="desc" by="time"} {include file="widget/vod_box"} {/maccms:vod}
+                        </ul>
+                    </div>
+                    <div class="cbox3 hide">
+                        <ul class="vodlist vodlist_wi">
+                            {maccms:vod num="18" type="current" area="'.$vo1.'" start="37" order="desc" by="time"} {include file="widget/vod_box"} {/maccms:vod}
+                        </ul>
+                    </div>
+                </div>
+                
+            </div>
+            {/if} {/maccms:foreach}
+        </div>
+    </div>
+    {include file="module/banstem"}

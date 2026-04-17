@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	{include file="public/include"}
+	{include file="public/include_rating_svg" /}
+	<link rel="stylesheet" href="{$maccms.path}template/default/asset/css/vod-detail.css" type="text/css" />
+</head>
+
+<body class="detail-wrap" data-detail-module="vod" data-detail-id="{$param.id|default='0'}">
+	<noscript>
+		<div class="mac-noscript-seo" style="padding:16px;max-width:960px;margin:0 auto;line-height:1.6;">
+			<p style="font-weight:600;">{$obj.vod_name|mac_filter_html|mac_default='本页为影视详情'}</p>
+			<p>{$obj.vod_blurb|mac_filter_html|mac_substring=300|mac_default=''}</p>
+			<p style="color:#666;font-size:12px;">开启 JavaScript 可获得完整排版与交互。</p>
+		</div>
+	</noscript>
+	{include file="public/th" /}
+	{php}$type_poster_class = (mac_tpl_vod_type_cover(isset($obj['type_id']) ? (int) $obj['type_id'] : 0) === 'h') ? 'mac-poster--h' : 'mac-poster--v';{/php}
+	{include file="public/head"}
+	{include file="ads/ads_banner1"}
+	<div class="hot_banner ">
+		<div class="detail_list_box">
+			<div class="detail_list">
+				<div class="content_box clearfix">
+					<div class="content_thumb fl">
+						<a class="vodlist_thumb lazyload" href="javascript:;" title="" data-original="">
+							<span class="mac_badge_top_right"></span>
+							<span class="mac_badge_bottom_right"></span>
+							<span class="play hidden_xs"></span>
+						</a>
+					</div>
+					<div class="content_detail content_top fl">
+						<div class="pannel_head clearfix detail-mobile-head">
+							<h1 class="title js-vod-name">{$obj.vod_name|mac_filter_html}</h1>
+						</div>
+						<div id="detail_rating" class="fn-clear show-mobile detail-rating-mobile-inline"></div>
+					</div>
+					<div class="content_detail content_min fl">
+						<ul>
+							<li class="data js-vod-meta-line"></li>
+							<li class="data js-vod-status-line"></li>
+							<li class="data js-vod-actor-line"></li>
+							<li class="data js-vod-director-line"></li>
+							<li class="desc hidden_xs"><span class="left text_muted" data-lang="string_vod_jj">简介：</span><span class="js-vod-blurb"></span></li>
+						</ul>
+
+						<div class="content_min content_btn">
+							{include file="widget/detail_button"}
+							<div class="playbtn o_share ">
+								<a class="btn btn_share open-share" href="javascript:;"><i class="iconfont">&#xe615;</i>&nbsp; <span
+										data-lang="string_vod_share">分享</span> </a>
+								{include file="widget/share"}
+							</div>
+						</div>
+
+					</div>
+
+					<div class="content_progress show-pc">
+						<div class="js-vod-rating-pc"></div>
+
+						<div class="progress_item">
+							<p class="p_title" data-lang="string_vod_greate">超棒</p>
+							<div class="layui-progress">
+								<div class="layui-progress-bar" lay-percent="0%"></div>
+							</div>
+						</div>
+						<div class="progress_item">
+							<p class="p_title" data-lang="string_vod_preferably">较好</p>
+							<div class="layui-progress">
+								<div class="layui-progress-bar" lay-percent="0%"></div>
+							</div>
+						</div>
+						<div class="progress_item">
+							<p class="p_title" data-lang="string_vod_commonly">一般</p>
+							<div class="layui-progress">
+								<div class="layui-progress-bar" lay-percent="0%"></div>
+							</div>
+						</div>
+						<div class="progress_item">
+							<p class="p_title" data-lang="string_vod_poor">较差</p>
+							<div class="layui-progress">
+								<div class="layui-progress-bar" lay-percent="0%"></div>
+							</div>
+						</div>
+						<div class="progress_item">
+							<p class="p_title" data-lang="string_vod_rotten">很差</p>
+							<div class="layui-progress">
+								<div class="layui-progress-bar" lay-percent="0%"></div>
+							</div>
+						</div>
+					</div>
+
+
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="member-wrap">
+		<div class="container ">
+			{include file="ads/ads_all"}
+			<div class="left_row fl">
+				<div class="pannel clearfix">
+					<div class="tabs">
+						<input type="radio" id="tab1" name="tab-control" checked>
+						<input type="radio" id="tab2" name="tab-control">
+						<ul class="title_nav">
+							<li data-title="string_vod_introduction" class="tab-det" title="剧情介绍" id="desc"><label for="tab1"
+									role="button"><span data-lang="string_vod_introduction">剧情介绍</span></label></li>
+						</ul>
+						<div class="content">
+							<section>
+								<h2 data-lang="string_vod_introduction">剧情介绍</h2>
+								<div class="content_desc context clearfix">
+									<span class="js-vod-content-short"><span data-lang='string_no_have'>暂无</span></span>
+									<a href="javascript:void(0);" class="show_btn" onclick="showdiv(this);"><i class="line_bg"></i><i
+											class="iconfont">&#xe63a;</i><em class="hidden_xs">&nbsp; <span
+												data-lang="string_vod_expand">展开全部</span> </em></a>
+								</div>
+								<div class="content_desc full_text clearfix" style="display:none;">
+									<span class="js-vod-content-full"><span data-lang='string_no_have'>暂无</span></span>
+									<a href="javascript:void(0);" class="hidden_btn" onclick="hidediv(this);"><i
+											class="iconfont">&#xe628;</i><em class="hidden_xs">&nbsp;<span
+												data-lang="string_vod_pull">收起全部</span></em></a>
+								</div>
+							</section>
+							<section>
+
+							</section>
+						</div>
+					</div>
+				</div>
+				<div class="pannel clearfix" id="bofy">
+					<div class="pannel_head pannel_head--vod-playlist">
+						<h3 class="title" data-lang="string_vod_playlist">播放列表</h3>
+						<div class="vod-playlist-head-center">
+							<div class="player_infotip player_infotip--marquee js-vod-playlist-marquee" data-marquee-ready="0">
+								<div class="player_infotip__viewport">
+									<div class="player_infotip__track js-vod-playlist-marquee-track"></div>
+								</div>
+							</div>
+						</div>
+						<div class="text_muted vod-playlist-head-sort">
+							<a href="javascript:;" class="sort_btn"><i class="iconfont">&#xe658;</i>&nbsp; <span
+									data-lang="string_vod_sort">排序</span> </a>
+						</div>
+					</div>
+					<div class="play_source">
+						<div class="play_source_tab list_scroll clearfix" id="NumTab"></div>
+						<div class="js-vod-play-source-body"></div>
+					</div>
+				</div>
+				{include file="ads/ads_vodw"}
+		    {include file="ads/ads_icon1" ads_icon1_marquee="0"}
+				<div class="pannel clearfix js-vod-plot-panel" style="display:none;">
+					<div class="pannel_head clearfix">
+						<a class="text_muted pull_right js-vod-plot-more" href="javascript:;"> <span
+								data-lang="vod_view_detail">查看详情</span> <i class="iconfont more_i">&#xe623;</i></a>
+						<h3 class="title" data-lang="vod_plot">分集剧情</h3>
+					</div>
+					<div class="plot_list_box js-vod-plot-box"></div>
+				</div>
+				
+				<div class="pannel clearfix">
+					<div class="pannel_head clearfix">
+						<h3 class="title" data-lang="vod_guess">
+							猜你喜欢
+						</h3>
+					</div>
+					<ul id="js-vod-guess-list" class="vodlist vodlist_wi {$type_poster_class}">
+						<li class="home-skeleton-card"><div class="thumb"></div><div class="line w90"></div><div class="line w70"></div></li>
+					</ul>
+				</div>
+				
+				
+				<div class="pannel clearfix">
+					<div class="pannel_head clearfix">
+						<h3 class="title">
+							
+							<span data-lang="vod_like_watch">喜欢看</span>
+							<span class="tj-title js-vod-name-wrap"></span>
+							<span data-lang="vod_also_like">的人也喜欢</span>
+
+						</h3>
+					</div>
+					<ul id="js-vod-like-list" class="vodlist vodlist_wi {$type_poster_class}">
+						<li class="home-skeleton-card"><div class="thumb"></div><div class="line w90"></div><div class="line w70"></div></li>
+					</ul>
+				</div>
+				
+				{include file="module/vod_art"}
+			</div>
+			<div class="pannel clearfix" id="pinglun">
+				<div class="pannel_head clearfix">
+					<span class="pull_right"> <span data-lang="string_play_yg">共</span> &nbsp;<font color="#40CC92"><em
+								class="mac_total"></em></font>&nbsp; <span data-lang="string_play_tpl">条评论</span> </span>
+					<h3 class="title" data-lang="string_play_pl">评论</h3>
+				</div>
+				<div class="mac_comment comm_list comm_list_box"
+					data-id="{$param.id|default='0'}"
+					data-mid="{$maccms.mid}"
+					data-comment-login="{$comment.login|default='0'}"
+					data-comment-verify="{$comment.verify|default='0'}"></div>
+				<script>
+					$(function () {
+						waitForMAC(function () {
+							var $box = $('.comm_list_box').first();
+							var login = parseInt($box.attr('data-comment-login'), 10);
+							var verify = parseInt($box.attr('data-comment-verify'), 10);
+							MAC.Comment.Login = isNaN(login) ? 0 : login;
+							MAC.Comment.Verify = isNaN(verify) ? 0 : verify;
+							MAC.Comment.Init();
+							MAC.Comment.Show(1);
+						});
+					});
+				</script>
+			</div>
+			{include file="public/friendLink"}
+		</div>
+		
+
+	</div>
+	
+	<span style="display:none" class="mac_ulog_set" data-type="1" data-mid="{$maccms.mid}" data-id="{$param.id|default='0'}"
+		data-sid="{$param.sid}" data-nid="{$param.nid}"></span>
+	{include file="public/foot"}
+	<script type="text/javascript" src="{$maccms.path_tpl}/asset/js/mac-catalog-media.js"></script>
+	<script type="text/javascript" src="{$maccms.path}template/default/asset/js/mac-home-card-render.js?v=202604161"></script>
+	<script type="text/javascript" src="{$maccms.path_tpl}/asset/js/vod-detail-ajax-render.js"></script>
+</body>
+
+</html>

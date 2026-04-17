@@ -99,11 +99,12 @@ class Type extends Base {
         $by = $lp['by'];
         $mid = $lp['mid'];
         $ids = $lp['ids'];
+        $names = $lp['names'];
         $parent = $lp['parent'];
         $format = $lp['format'];
         $flag = $lp['flag'];
-        $start = intval(abs($lp['start']));
-        $num = intval(abs($lp['num']));
+        $start = abs(intval($lp['start']));
+        $num = abs(intval($lp['num']));
         $cachetime = $lp['cachetime'];
         $not = $lp['not'];
         $page=1;
@@ -125,7 +126,7 @@ class Type extends Base {
         if (!in_array($format, ['def', 'tree'])) {
             $format = 'def';
         }
-        if (in_array($mid, ['1', '2','8','11'])) {
+        if (in_array($mid, ['1', '2', '8', '11', '12'])) {
             $where['type_mid'] = ['eq',$mid];
         }
         if(!empty($flag)){
@@ -174,6 +175,14 @@ class Type extends Base {
         }
         if(!empty($not)){
             $where['type_id'] = ['not in',$not];
+        }
+        // 按名称查询：仅展示名称在列表中的分类，查不到的不展示
+        if(!empty($names)){
+            $name_arr = array_map('trim', explode(',', $names));
+            $name_arr = array_filter($name_arr);
+            if(!empty($name_arr)){
+                $where['type_name'] = ['in', $name_arr];
+            }
         }
 
         if(defined('ENTRANCE') && ENTRANCE == 'index' && $GLOBALS['config']['app']['popedom_filter'] ==1){

@@ -18,5 +18,9 @@ class Type extends Validate
         'get_list' => [
             'type_id',
         ],
+        'get_nav_types' => [],
+        'get_type_with_children' => [
+            'type_id',
+        ],
     ];
 }

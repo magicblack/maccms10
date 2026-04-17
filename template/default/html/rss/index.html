@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+	<channel>
+		<title>{$maccms.site_name}</title>
+		<language>zh-cn</language>
+		<pubDate>{:date('Y-m-d H:i:s')}</pubDate>
+		<generator>Rss Powered By {$maccms.site_url}</generator>
+		<description>{$maccms.site_description}</description>
+		<link>{$maccms.http_type}{$maccms.site_url}</link>
+		{maccms:vod num="100" order="desc" by="time"}
+		<item>
+			<title>
+				<![CDATA[{$vo.vod_name} {$vo.vod_remarks}]]>
+			</title>
+			<link>{$maccms.http_type}{$maccms.site_url}{:mac_url_vod_detail($vo)}</link>
+			<guid>{$maccms.http_type}{$maccms.site_url}{:mac_url_vod_detail($vo)}</guid>
+			<description>
+				<![CDATA[{$vo.vod_content|mac_filter_html}]]>
+			</description>
+			<pubDate>{$vo.vod_time|date='Y-m-d H:i:s',###}</pubDate>
+		</item>
+		{/maccms:vod} {maccms:art num="100" order="desc" by="time"}
+		<item>
+			<title>
+				<![CDATA[{$vo.art_name} {$vo.art_remarks}]]>
+			</title>
+			<link>{$maccms.http_type}{$maccms.site_url}{:mac_url_art_detail($vo)}</link>
+			<guid>{$maccms.http_type}{$maccms.site_url}{:mac_url_art_detail($vo)}</guid>
+			<description>
+				<![CDATA[{$vo.art_content|mac_filter_html}]]>
+			</description>
+			<pubDate>{$vo.art_time|date='Y-m-d H:i:s',###}</pubDate>
+		</item>
+		{/maccms:art}
+	</channel>
+</rss>

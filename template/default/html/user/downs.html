@@ -1,0 +1,131 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>下载记录 - 会员中心 -{$maccms.site_name}</title>
+<meta name="keywords" content="{$maccms.site_keywords}"/>
+<meta name="description" content="{$maccms.site_description}"/>
+{include file="user/include" /}
+<link rel="stylesheet" href="{$maccms.path}template/default/asset/css/user-downs.css">
+</head>
+
+<body>
+{include file="public/head" /}
+
+<div class="member-wrap member-wrap-bg">
+<div id="member" class="fn-clear">
+	<div id="left">
+        <div class="m-nav">
+			<a href="javascript:MAC.GoBack()" class="btn-left"><i class="iconfont ico-right">&#xe625;</i></a>
+			<a href="{$maccms.path}" class="btn-right"><i class="iconfont ico-right">&#xe634;</i></a>
+			<span class="mb-title" data-lang="user_grzx">个人中心</span>
+	    </div>
+        {include file="user/left_nav" /}
+	</div>
+    <div id="right">
+		<div class="m-nav">
+			<a href="javascript:MAC.GoBack()" class="btn-left"><i class="iconfont ico-right">&#xe625;</i></a>
+			<a href="javascript:;" id="btnClear" class="btn-right"  data-lang="string_qk">清空</a>
+			<span class="mb-title" data-lang="user_down_record">下载记录</span>
+	    </div>
+	    <div class="co-right co-right-bg">
+		<h2 data-lang="user_down_record">下载记录</h2>
+		<div class="gong">
+				<a href="javascript:;" onClick="MAC.CheckBox.All('ids[]');" data-lang="string_qx">全选</a>
+				<a href="javascript:;" onClick="MAC.CheckBox.Other('ids[]');" data-lang="string_fx">反选</a>
+				<a href="javascript:;" id="btnDel" data-lang="string_sc">删除</a>
+				<a href="javascript:;" id="btnClear2" data-lang="string_qk">清空</a>
+		</div>
+		<ul class="data__list clearfix">
+		{volist name="list" id="vo"}
+			<li class="data__item">
+                <div class="xz-box">
+                    <input name="ids[]" type="checkbox" value="{$vo.ulog_id}">
+                </div>
+	            <div class="data__img">
+		            <a class="data__thumb lazyload" href="{$vo.data.link}" title="{$vo.data.name}" data-original="{$vo.data.pic}">						
+	                </a>
+	            </div>	
+                <div class="data__txt">								
+	                <h4 class="data__title">
+	                <a href="{$vo.data.link}" title="{$vo.data.name}">{$vo.data.name}<span>({$vo.ulog_nid})</span></a>
+	                </h4>
+	                <p > <span data-lang="string_vod_type">类型：</span> {$vo.data.type.type_name}</p>
+					<p > 
+						<span data-lang="string_xh">消耗</span>
+						<span class="co-tz">[{$vo.ulog_points}]</span> 
+						<span data-lang="string_jf">金币</span> </p>
+					<p> 
+						<span  data-lang="string_vod_time">时间：</span>{$vo.ulog_time|date='Y-m-d H:i',###}</p>
+                </div>
+				<div class="data__del clearfix">
+					<a class="btn-brand btn-del"  data-lang="string_sc" href="javascript:void(0)" onclick="delData({$vo.ulog_id})">删除</a>
+			    </div>   		
+            </li>
+	    {/volist}
+	        {if $__PAGING__.record_total==0}
+			{include file="public/notempty"}
+            {/if}
+	    </ul>
+		<div class="member-page">
+		{if$__PAGING__.page_total>1}
+			<ul class="page text-center cleafix">
+				<li><a href="{$__PAGING__.page_url|mac_url_page=1}"{if$__PAGING__['page_current']==1} class="btns-disad"{/if} data-lang="string_home">首页</a></li>
+				<li><a href="{$__PAGING__.page_url|mac_url_page=$__PAGING__.page_prev}"{if$__PAGING__['page_current']==1} class="btns-disad"{/if} data-lang="string_syy">上一页</a></li>							
+				{maccms:foreach name="$__PAGING__.page_num" id="num"}
+				<li class="hidden-xs {if condition="$__PAGING__['page_current'] eq $num"}active{/if}"><a href="{$__PAGING__.page_url|mac_url_page=$num}">{$num}</a></li>
+				{/maccms:foreach}
+				<li class="hidden-xs active"><span class="num btns-disad">{$__PAGING__.page_current}/{$__PAGING__.page_total}</span></li>
+				<li><a href="{$__PAGING__.page_url|mac_url_page=$__PAGING__.page_next}"{if$__PAGING__['page_current']==$__PAGING__.page_total} class="btns-disad"{/if} data-lang="string_xyy">下一页</a></li>
+				<li><a href="{$__PAGING__.page_url|mac_url_page=$__PAGING__.page_total}"{if$__PAGING__['page_current']==$__PAGING__.page_total} class="btns-disad"{/if} data-lang="string_last_page">尾页</a></li>							
+			</ul>
+			<div class="page-tips visible-xs"> 
+				<span data-lang="string_now">当前</span> 
+				<span> 
+					<span data-lang="string_is">第</span>{$__PAGING__.page_current} 
+					<span data-lang="string_page">页</span>
+					</span>&nbsp;/&nbsp; <span data-lang="string_zg">共有 </span>  {$__PAGING__.page_total}<span data-lang="string_page">页</span>
+			</div>
+		{/if}
+		</div>
+    </div>
+    </div>
+</div>
+<div style="width:30rem;margin: 2rem auto;">
+	{include file="public/friendLink" }
+</div>
+</div>
+<script>
+	function delData(ids,all){
+		var lang=localStorage.getItem('lang');
+
+		var msg = MAC.GetLang('string_sc');
+		if(all==1){
+			msg= MAC.GetLang('string_qk');
+		}
+		MAC.confirm(MAC.GetLang('are_you_sure') +(lang==1 ? ' ':'') + msg+ (lang==1? ' ':'') + MAC.GetLang('string_jlm'), function(){
+			$.post("{:url('user/ulog_del')}",{ids:ids,type:5,all:all},function(data) {
+				console.log(data);
+				if (data.code == '1') {
+					MAC.alert( MAC.GetLang('string_sccg'));
+					location.reload();
+				}else {
+					MAC.alert(MAC.GetLang('string_shibai') + data.msg);
+				}
+			}, 'json');
+		});
+	}
+	$("#btnClear,#btnClear2").click(function(){
+		delData('',1);
+	});
+	$("#btnDel").click(function(){
+		var ids = MAC.CheckBox.Ids('ids[]');
+		if(ids==''){
+			MAC.alert(MAC.GetLang('string_xzygsj'));
+			return;
+		}
+		delData(ids,0);
+	});
+</script>
+{include file="public/foot" /}
+</body>
+</html>

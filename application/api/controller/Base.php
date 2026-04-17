@@ -8,6 +8,7 @@ class Base extends All
     public function __construct()
     {
         parent::__construct();
+        $this->label_user();
         $config = $GLOBALS['config']['site'];
         $this->assign($config);
 

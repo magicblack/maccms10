@@ -1,0 +1,228 @@
+{php}
+if (!isset($tplconfig) || !is_array($tplconfig)) {
+    $tplconfig = config('mctheme') ?: ['theme' => []];
+}
+$theme = $tplconfig['theme'] ?? [];
+
+$homeTypes = $theme['type']['hom'] ?? [];
+if (!is_array($homeTypes)) {
+    $homeTypes = [];
+}
+$homIds = [];
+foreach ($homeTypes as $item) {
+    if (!empty($item['id'])) {
+        $homIds[] = $item['id'];
+    }
+}
+
+$rawVodHnum = $theme['vod']['hnum'] ?? null;
+$index_mobile_vod_num = (string) (($rawVodHnum !== null && $rawVodHnum !== '') ? (int) $rawVodHnum : 12);
+
+$rankHid = $theme['rank']['hid'] ?? '';
+$index_rank_type_ids = !empty($rankHid) ? $rankHid : 'parent';
+
+$index_hotvod_tabs = mac_theme_index_hotvod_tabs($theme);
+
+$index_actor_ids = (string) (($theme['actor'] ?? [])['id'] ?? '');
+
+$topicTheme = $theme['topic'] ?? [];
+$index_topic_cells = (isset($topicTheme['cells']) && is_array($topicTheme['cells'])) ? $topicTheme['cells'] : [];
+
+$mangaTheme = $theme['manga'] ?? [];
+$index_manga_hbtn = (!isset($mangaTheme['hbtn']) || (string) ($mangaTheme['hbtn'] ?? '1') !== '0') ? 1 : 0;
+$index_manga_htitle = (isset($mangaTheme['htitle']) && trim((string) $mangaTheme['htitle']) !== '')
+    ? trim((string) $mangaTheme['htitle']) : '漫画';
+$index_manga_hnum_int = (isset($mangaTheme['hnum']) && (string) $mangaTheme['hnum'] === '12') ? 12 : 6;
+$index_manga_hnum_str = (string) $index_manga_hnum_int;
+$index_manga_hot_txt_num = (string) ($index_manga_hnum_int * 2);
+$index_manga_hot_txt_start = (string) $index_manga_hnum_int;
+$index_manga_list_pc = (string) ($index_manga_hnum_int * 4);
+$index_manga_list_mobile = (string) ($index_manga_hnum_int * 2);
+$index_manga_cover = mac_tpl_manga_cover();
+$index_manga_poster_class = ($index_manga_cover === 'h') ? 'mac-poster--h' : 'mac-poster--v';
+
+$artTheme = $theme['art'] ?? [];
+$index_art_hbtn = (!isset($artTheme['hbtn']) || (string) ($artTheme['hbtn'] ?? '1') !== '0') ? 1 : 0;
+$index_art_htitle = (isset($artTheme['htitle']) && trim((string) $artTheme['htitle']) !== '')
+    ? trim((string) $artTheme['htitle']) : '小说';
+$index_art_hnum_int = (isset($artTheme['hnum']) && (string) $artTheme['hnum'] === '12') ? 12 : 6;
+$index_art_hnum = (string) $index_art_hnum_int;
+$index_art_hot_txt_num = (string) ($index_art_hnum_int * 2);
+$index_art_hot_txt_start = (string) $index_art_hnum_int;
+$index_art_list_pc = (string) ($index_art_hnum_int * 4);
+$index_art_list_mobile = (string) ($index_art_hnum_int * 2);
+$index_art_cover = mac_tpl_art_cover();
+$index_art_poster_class = ($index_art_cover === 'h') ? 'mac-poster--h' : 'mac-poster--v';
+
+$typeModel = model('Type');
+
+if (!isset($art_type_array) || !is_array($art_type_array)) {
+    $art_type_array = [];
+}
+if (count($art_type_array) === 0) {
+    $typeList = $typeModel->getCache('type_list');
+    if (is_array($typeList)) {
+        foreach ($typeList as $tid => $t) {
+            if (is_array($t) && !empty($t['type_mid']) && (int) $t['type_mid'] === 2
+                && (!isset($t['type_status']) || (int) $t['type_status'] === 1)) {
+                $art_type_array[] = $tid;
+            }
+        }
+    }
+}
+$art_type_str = implode(',', $art_type_array);
+$first_type_id = isset($art_type_array[0]) ? (string) $art_type_array[0] : '';
+
+$defaultIcons = [
+    0 => ['l' => 'template/default/images/la/home-icon1.png', 'b' => 'template/default/images/black/home-icon1.png'],
+    1 => ['l' => 'template/default/images/la/home-icon2.png', 'b' => 'template/default/images/black/home-icon2.png'],
+    2 => ['l' => 'template/default/images/la/home-icon3.png', 'b' => 'template/default/images/black/home-icon3.png'],
+    3 => ['l' => 'template/default/images/la/home-icon4.png', 'b' => 'template/default/images/black/home-icon4.png'],
+];
+$index_hom_type_rows = [];
+$displayIdx = 0;
+foreach ($homIds as $hid) {
+    $vo2 = $typeModel->getCacheInfo((int) $hid);
+    if (empty($vo2) || empty($vo2['type_id'])) {
+        continue;
+    }
+    $conf = isset($homeTypes[$displayIdx]) && is_array($homeTypes[$displayIdx]) ? $homeTypes[$displayIdx] : [];
+    $iconLight = !empty($conf['icon_l']) ? $conf['icon_l'] : ($defaultIcons[$displayIdx]['l'] ?? 'template/default/images/la/home-icon1.png');
+    $iconBlack = !empty($conf['icon_b']) ? $conf['icon_b'] : ($defaultIcons[$displayIdx]['b'] ?? 'template/default/images/black/home-icon1.png');
+    $homeName = isset($conf['name']) && $conf['name'] !== '' ? $conf['name'] : $vo2['type_name'];
+    $typeIdForBlock = !empty($conf['id']) ? $conf['id'] : $vo2['type_id'];
+    $typeInfoForUrl = array_merge($vo2, ['type_id' => $typeIdForBlock]);
+    $homCover = mac_tpl_vod_type_cover((int) $typeIdForBlock);
+    $index_hom_type_rows[] = [
+        'icon_l' => $iconLight,
+        'icon_b' => $iconBlack,
+        'home_name' => $homeName,
+        'type_id_block' => $typeIdForBlock,
+        'more_url' => mac_url_type($typeInfoForUrl),
+        'cover' => $homCover,
+    ];
+    $displayIdx++;
+}
+
+$index_rank_types = [];
+$rankTypeIdsRaw = trim((string) $index_rank_type_ids);
+$rankTypeList = [];
+$typeListCache = $typeModel->getCache('type_list');
+if (is_array($typeListCache)) {
+    if ($rankTypeIdsRaw === '' || $rankTypeIdsRaw === 'parent') {
+        foreach ($typeListCache as $typeInfo) {
+            if (!is_array($typeInfo)) {
+                continue;
+            }
+            if ((int) ($typeInfo['type_pid'] ?? 0) !== 0) {
+                continue;
+            }
+            if ((int) ($typeInfo['type_mid'] ?? 0) !== 1) {
+                continue;
+            }
+            if (isset($typeInfo['type_status']) && (int) $typeInfo['type_status'] !== 1) {
+                continue;
+            }
+            $rankTypeList[] = $typeInfo;
+        }
+        usort($rankTypeList, function ($a, $b) {
+            return ((int) ($a['type_sort'] ?? 0)) <=> ((int) ($b['type_sort'] ?? 0));
+        });
+        $rankTypeList = array_slice($rankTypeList, 0, 6);
+    } else {
+        $ids = array_filter(array_map('intval', explode(',', $rankTypeIdsRaw)));
+        foreach ($ids as $rid) {
+            $info = $typeModel->getCacheInfo($rid);
+            if (!empty($info) && (int) ($info['type_mid'] ?? 0) === 1) {
+                $rankTypeList[] = $info;
+            }
+        }
+        $rankTypeList = array_slice($rankTypeList, 0, 6);
+    }
+}
+foreach ($rankTypeList as $typeInfo) {
+    $index_rank_types[] = [
+        'type_id' => (int) ($typeInfo['type_id'] ?? 0),
+        'type_name' => (string) ($typeInfo['type_name'] ?? ''),
+        'type_link' => mac_url_type($typeInfo),
+    ];
+}
+
+$index_home_menu_items = [];
+$homeMenuConf = $theme['homemenu'] ?? [];
+if (is_array($homeMenuConf) && count($homeMenuConf) > 0) {
+    foreach ($homeMenuConf as $menuItem) {
+        if (!is_array($menuItem) || empty($menuItem['id'])) {
+            continue;
+        }
+        $menuTypeInfo = $typeModel->getCacheInfo((int) $menuItem['id']);
+        if (empty($menuTypeInfo)) {
+            continue;
+        }
+        $index_home_menu_items[] = [
+            'id' => (int) ($menuItem['id'] ?? 0),
+            'name' => (string) ($menuItem['name'] ?? ($menuTypeInfo['type_name'] ?? '')),
+            'icon' => !empty($menuItem['icon']) ? mac_url_img((string) $menuItem['icon']) : '',
+            'url' => mac_url_type($menuTypeInfo),
+        ];
+    }
+}
+
+$index_art_home = [
+    'type_id' => 0,
+    'type_name' => '',
+    'type_link' => mac_url('art/index'),
+    'children' => [],
+];
+if ((int) $index_art_hbtn === 1) {
+    $typeList = $typeModel->getCache('type_list');
+    $topArts = [];
+    if (is_array($typeList)) {
+        foreach ($typeList as $typeInfo) {
+            if (!is_array($typeInfo)) {
+                continue;
+            }
+            if ((int) ($typeInfo['type_mid'] ?? 0) !== 2 || (int) ($typeInfo['type_pid'] ?? -1) !== 0) {
+                continue;
+            }
+            if (isset($typeInfo['type_status']) && (int) $typeInfo['type_status'] !== 1) {
+                continue;
+            }
+            $topArts[] = $typeInfo;
+        }
+    }
+    usort($topArts, function ($a, $b) {
+        return ((int) ($a['type_sort'] ?? 0)) <=> ((int) ($b['type_sort'] ?? 0));
+    });
+    $firstArtType = $topArts[0] ?? null;
+    if (!empty($firstArtType)) {
+        $index_art_home['type_id'] = (int) ($firstArtType['type_id'] ?? 0);
+        $index_art_home['type_name'] = (string) ($firstArtType['type_name'] ?? '');
+        $index_art_home['type_link'] = mac_url_type($firstArtType);
+        $childArts = [];
+        foreach ($typeList as $typeInfo) {
+            if (!is_array($typeInfo)) {
+                continue;
+            }
+            if ((int) ($typeInfo['type_pid'] ?? 0) !== (int) ($firstArtType['type_id'] ?? 0)) {
+                continue;
+            }
+            if (isset($typeInfo['type_status']) && (int) $typeInfo['type_status'] !== 1) {
+                continue;
+            }
+            $childArts[] = $typeInfo;
+        }
+        usort($childArts, function ($a, $b) {
+            return ((int) ($a['type_sort'] ?? 0)) <=> ((int) ($b['type_sort'] ?? 0));
+        });
+        $childArts = array_slice($childArts, 0, 8);
+        foreach ($childArts as $child) {
+            $index_art_home['children'][] = [
+                'type_id' => (int) ($child['type_id'] ?? 0),
+                'type_name' => (string) ($child['type_name'] ?? ''),
+                'type_link' => mac_url_type($child),
+            ];
+        }
+    }
+}
+{/php}

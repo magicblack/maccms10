@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no">
+    <title>系统提示【{$obj['vod_name']}】因为版权问题，本站不提供在线播放</title>
+    <link rel="stylesheet" href="{$maccms.path}static/css/home.css">
+    
+	<link rel="stylesheet" type="text/css" href="{$maccms.path_tpl}/asset/css/vod-copyright.css" />
+</head>
+<body>
+<div class="mac_msg_jump">
+    <div class="msg_jump_tit" data-lang="string_xitonts">系统提示...</div>
+    <div class="title" data-lang="string_qinaidyh">亲爱的用户：</div>
+    <div class="text">【{$obj['vod_name']}】{$GLOBALS['config']['app']['copyright_notice']}</div>
+    <div class="jump">
+        {if condition="$obj['vod_jumpurl'] neq ''"}
+        <span data-lang='string_yemianzid'>页面自动</span>
+        <a id="href" href="<?php echo($obj['vod_jumpurl']);?>" data-lang="string_tiaoz">因为版权问题，本站不提供在线播放</a> 
+        <span data-lang="string_dengdai">等待时间：</span> <b id="wait">3</b>
+        {/if}
+    </div>
+    
+</div>
+<script type="text/javascript">
+    {if condition="$obj['vod_jumpurl'] neq ''"}
+    (function(){
+        var wait = document.getElementById('wait'),
+            href = document.getElementById('href').href;
+        var interval = setInterval(function(){
+            var time = --wait.innerHTML;
+            if(time <= 0) {
+                top.location.href = href;
+                clearInterval(interval);
+            };
+        }, 1000);
+    })();
+    {/if}
+</script>
+</body>
+</html>

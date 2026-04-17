@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html>
+<head>
+       
+	{include file="public/include"}
+	<link rel="stylesheet" type="text/css" href="{$maccms.path_tpl}/asset/css/vod-down.css" />
+</head>
+
+<body>
+    {include file="public/head"}       	       	
+     <div class="container ">
+        {include file="ads/ads_all"}
+        <div class="left_row fl"> 
+			<div class="pannel clearfix" id="downlist">
+                 <div class="down_vodl">
+                 <a class="vodlist_thumb lazyload" href="javascript:void(0);" title="{$obj.vod_name}" data-original="{:mac_url_img($obj.vod_pic)}">
+				 </a>
+                 </div>
+                 <div class="down_vodr">
+                 <div class="pannel_head down_title clearfix">
+					  <h2 class="title fl">{$obj.vod_name}</h2>
+                      <span class="fl" data-lang='string_play_xz1'>下载</span>
+                 </div>
+                 <div class="down_context cblock ma_bottom">
+                       <p class="date fl">
+                            {if condition="$obj.vod_score gt 0"}
+                            <span class="text_score">{$obj.vod_score}</span>
+                            <span class="split_line"></span>
+                            {/if}
+							<span class="text_muted hidden_xs" data-lang="string_vod_age">年份：</span>{$obj.vod_year|mac_url_create='year'}
+							<span class="split_line"></span>
+							<span class="text_muted hidden_xs" data-lang="string_vod_region">地区：</span>{$obj.vod_area|mac_url_create='area'}
+							<span class="split_line"></span>
+							<span class="text_muted hidden_xs" data-lang="string_vod_type">类型：</span>{$obj.vod_class|mac_url_create='class'}
+					   </p>
+                    {php}$count=1;{/php}{maccms:foreach name="obj.vod_play_list" key="play"}
+					{if$maccms.aid!=15&&$count==1}	
+						<a class="bo_tip fr" href="{:mac_url_vod_play($obj,['sid'=>$vo.sid,'nid'=>1])}"><i class="iconfont vtop_i">&#xe62f;</i>&nbsp; <span data-lang="string_vod_bofang">播放</span> </a>
+				    {/if}
+					{php}$count++;{/php}{/maccms:foreach}
+                  </div>
+                  </div>
+			</div>	
+            {include file="ads/ads_vodw"}
+			{if condition="$obj.vod_copyright eq 1 && $GLOBALS['config']['app']['copyright_status'] eq 1 "}
+			<div class="pannel clearfix">
+				 <div class="pannel_head clearfix">
+				      <h3 class="title" data-lang="string_down_xzlb">下载列表</h3>
+				 </div>
+				 <h3 class="down_tips_text">{if $GLOBALS['config']['app']['copyright_notice']}{$GLOBALS['config']['app']['copyright_notice']}{else}<span data-lang="resources_closed">应版权方要求！本片相关资源已关闭！</span>{/if}</h3>
+			</div>
+			{elseif$obj.vod_lock}
+			<div class="pannel clearfix">
+				 <div class="pannel_head clearfix">
+				      <h3 class="title" data-lang="string_down_xzlb">下载列表</h3>
+				 </div>
+				 <h3 class="down_tips_text" data-lang="string_down_bnxz">因特殊原因，该片不提供下载</h3>
+			</div>
+			{else}
+			 
+				<script src="{$maccms.path}template/default/asset/js/vod-down.js?v=202604161"></script>
+			{maccms:foreach name="obj.vod_down_list" id="vo" key="key" by="sort"}
+			<div class="pannel clearfix">
+				<div id="downlist_{$key}">
+					<div class="pannel_head clearfix">
+						<div class="down_tips pull_right">
+							<span class="hidden_xs" data-lang="string_down_ts1">※ 若点击迅雷下载无反应，请手动复制框内下载地址到迅雷软件</span>
+							<span class="hidden_mb" data-lang="string_down_ts2">※ 下载需安装迅雷手机版</span>
+						</div>
+					<h3 class="title">{$vo.player_info.show}</h3>
+					</div>
+					<div class="down_list">
+					<ul id="downul">
+					{maccms:foreach name="vo.urls" id="vo2" key="key2"}
+					<li>
+						<input type="checkbox" name="down_url_list_{$key}" class="style-input down_url" value="{$vo2.url}" file_name="{$vo2.name}" />
+					<p>
+						<strong class="down_part_name">
+							<span class="filename">{$vo2.name}</span>
+							<span class="filesize"></span>
+						</strong>
+						<input type="text" data-title='string_down_ts3' class="thunder_url" value="{$vo2.url}" title="鼠标左键单击可全选后手动复制该条迅雷地址进行分享或其它操作" onclick="this.select()" />
+					</p>
+						<span>
+							<label class="thunder_down" data-lang="string_down_xl">迅雷下载</label>
+							<label class="xiaomi" data-lang="string_down_xm">小米路由</label>
+							<a href="{$vo2.url}" class="btn_bd btnd" data-lang="string_down_bd">本地下载</a>
+						</span>
+					</li>
+					{/maccms:foreach}
+					</ul>
+					<div class="downtools">
+					<input id="allcheck{$key}" class="style-input" type="checkbox" name="checkall">
+					<em data-lang="string_qx">全选</em>
+					<a rel="nofollow" href="javascript:void(0);" target="_self" class="thunder_down_all" data-lang="string_down_xlxz">迅雷批量下载</a>
+					</div>
+					</div>
+				</div>
+	        </div>
+	        {/maccms:foreach}
+		    
+		    {/if}
+			
+			
+			<div class="pannel clearfix" id="desc">
+				<div class="pannel_head clearfix">
+					<h3 class="title" data-lang="string_vod_introduction">
+						剧情介绍
+					</h3>						
+				</div>																		
+				<div class="content_desc context clearfix">
+					<span>
+						{php}
+							if($obj['vod_content']){
+							{/php}
+							{$obj.vod_content|mac_filter_html}
+							{php}
+							}else{
+							{/php}
+							<span data-lang="unfilled">未填写</span>
+						{php}}{/php}
+					</span>
+					<a href="javascript:void(0);" class="show_btn" onclick="showdiv(this);"><i class="line_bg"></i><i class="iconfont">&#xe63a;</i><em class="hidden_xs">&nbsp; <span data-lang="string_vod_expand">展开全部</span></em></a>
+				</div>
+				<div class="content_desc full_text clearfix" style="display:none;">
+					<span>
+						{php}
+							if($obj['vod_content']){
+							{/php}
+							{$obj.vod_content|mac_filter_html}
+							{php}
+							}else{
+							{/php}
+							<span data-lang="unfilled">未填写</span>
+						{php}}{/php}
+					</span>
+					<a href="javascript:void(0);" class="hidden_btn" onclick="hidediv(this);"><i class="iconfont">&#xe628;</i><em class="hidden_xs">&nbsp; <span data-lang="string_vod_pull">收起全部</span></em></a>
+				</div>				
+			</div>
+			
+            
+			
+			<div class="pannel clearfix">
+				<div class="pannel_head clearfix">
+					<h3 class="title" data-lang="string_down_xgtj">
+						相关推荐
+					</h3>						
+				</div>
+				<ul class="vodlist vodlist_sm list_scroll clearfix">
+					{maccms:vod num="12" type="current" order="desc" by="time"}
+					{include file="widget/vod_box"}		
+					{/maccms:vod}
+				</ul>
+			</div>
+			
+            {include file="module/vod_art"}
+        </div>
+        <div class="right_row pa_left fr hidden_xs hidden_mi">
+            {include file="ads/ads_vodr"}
+            {include file="module/vod_rank"}
+        </div>
+    </div>
+    <span style="display:none" class="mac_ulog_set" data-type="5" data-mid="{$maccms.mid}" data-id="{$obj.vod_id}" data-sid="{$param.sid}" data-nid="{$param.nid}"></span>
+{include file="public/foot"}
+</body>
+</html>

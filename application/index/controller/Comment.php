@@ -37,6 +37,36 @@ class Comment extends Base
     public function saveData() {
         $param = input();
 
+        // 兼容：部分模板/历史版本会使用 mid/rid 作为参数名
+        if (empty($param['comment_mid']) && isset($param['mid'])) {
+            $param['comment_mid'] = $param['mid'];
+        }
+        if (empty($param['comment_rid']) && isset($param['rid'])) {
+            $param['comment_rid'] = $param['rid'];
+        }
+
+        // 兼容：部分调用会传模块字符串（vod/art/topic/actor/role/website）
+        if (!empty($param['comment_mid']) && !is_numeric($param['comment_mid'])) {
+            $mid_map = [
+                'vod' => 1,
+                'art' => 2,
+                'topic' => 3,
+                'actor' => 8,
+                'role' => 9,
+                'website' => 11,
+                'manga' => 12,
+            ];
+            $mid_key = strtolower(trim((string)$param['comment_mid']));
+            if (isset($mid_map[$mid_key])) {
+                $param['comment_mid'] = (string)$mid_map[$mid_key];
+            }
+        }
+
+        // 兼容：有些模板会误把 comment_mid 传为 4（评论自身），若同时存在合法 mid 则优先使用之
+        if (isset($param['comment_mid']) && (string)$param['comment_mid'] === '4' && isset($param['mid']) && in_array((string)$param['mid'], ['1','2','3','8','9','11','12'], true)) {
+            $param['comment_mid'] = (string)$param['mid'];
+        }
+
         if($GLOBALS['config']['comment']['verify'] == 1){
             if(!captcha_check($param['verify'])){
                 return ['code'=>1002,'msg'=>lang('verify_err')];
@@ -67,7 +97,7 @@ class Comment extends Base
         //     return ['code'=>1005,'msg'=>lang('index/require_cn')];
         // }
 
-        if(!in_array($param['comment_mid'],['1','2','3','8','9','11'])){
+        if(!in_array($param['comment_mid'],['1','2','3','8','9','11','12'])){
             return ['code'=>1006,'msg'=>lang('index/mid_err')];
         }
 

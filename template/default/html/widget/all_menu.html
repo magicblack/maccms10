@@ -1,0 +1,97 @@
+
+<div class="all_menu">
+  <div class="all_menu_inner g_wrap_p">
+    <div class="all_menu_header">
+      <span class="all_menu_title">{$maccms.site_name}</span>
+      <a class="close_menu" href="javascript:void(0)" data-title="string_close" title="关闭">
+        <i class="iconfont all_menu_close_icon">&#xe616;</i>
+      </a>
+    </div>
+    <ul class="menuNavList all-menu-nav">
+      <li class="all-menu-item">
+        <a class="all-menu-row" href="{$maccms.path}" title="首页">
+          <span class="all-menu-ico">
+            <img class="size-6" src="{$maccms.path}template/default/images/nav/home@2x.png" alt="">
+          </span>
+          <span class="all-menu-label" data-lang="string_home">首页</span>
+        </a>
+      </li>
+
+      {if condition="!empty($tplconfig['theme']['allmenu']) && is_array($tplconfig['theme']['allmenu'])"}
+      {volist name="tplconfig.theme.allmenu" id="item" key="key"}
+      {maccms:type ids="'.(isset($item['id']) ? $item['id'] : '').'" num="1" id="vo"}
+      <li class="all-menu-item all-menu-item--branch{if condition="($vo.type_id eq $GLOBALS['type_id'] || $vo.type_id eq $GLOBALS['type_pid'])"} active{/if}">
+        <a class="all-menu-row" href="{:mac_url_type($vo)}" title="{$item.name}">
+          <span class="all-menu-ico">
+            {if condition="$item.icon"}
+            <img class="size-46" src="{:mac_url_img($item.icon)}" alt="{$item.name}">
+            {/if}
+          </span>
+          <span class="all-menu-label">{$item.name}</span>
+        </a>
+        <div class="all-menu-sub" role="group" aria-label="子分类">
+          {maccms:type parent="'.$vo['type_id'].'" mid="'.$vo['type_mid'].'" num="100" order="asc" by="sort" id="subvo"}
+          <a class="all-menu-tag{if condition="$subvo.type_id eq $GLOBALS['type_id']"} is-active{/if}" href="{:mac_url_type($subvo)}">{$subvo.type_name}</a>
+          {/maccms:type}
+        </div>
+      </li>
+      {/maccms:type}
+      {/volist}
+      {else /}
+      {maccms:type ids="parent" order="asc" by="sort" key="key" id="vo"}
+      <li class="all-menu-item all-menu-item--branch{if condition="($vo.type_id eq $GLOBALS['type_id'] || $vo.type_id eq $GLOBALS['type_pid'])"} active{/if}">
+        <a class="all-menu-row" href="{:mac_url_type($vo)}" title="{$vo.type_name}">
+          <span class="all-menu-ico">
+            {if condition="$key gt 10"}
+            <img class="size-46" src="{$maccms.path}template/default/images/nav/nav10.png" alt="">
+            {else /}
+            <img class="size-46" src="{$maccms.path}template/default/images/nav/nav{$key}.png" alt="">
+            {/if}
+          </span>
+          <span class="all-menu-label">{$vo.type_name}</span>
+        </a>
+        <div class="all-menu-sub" role="group" aria-label="子分类">
+          {maccms:type parent="'.$vo['type_id'].'" mid="'.$vo['type_mid'].'" num="100" order="asc" by="sort" id="subvo"}
+          <a class="all-menu-tag{if condition="$subvo.type_id eq $GLOBALS['type_id']"} is-active{/if}" href="{:mac_url_type($subvo)}">{$subvo.type_name}</a>
+          {/maccms:type}
+        </div>
+      </li>
+      {/maccms:type}
+      {/if}
+
+      <li class="all-menu-item{if condition="$maccms.aid eq 7"} active{/if}">
+        <a class="all-menu-row" href="{:mac_url('label/rank')}" title="排行榜">
+          <span class="all-menu-ico">
+            <img class="size-46" src="{$maccms.path}template/default/images/nav/nav8.png" alt="">
+          </span>
+          <span class="all-menu-label" data-lang="string_rank">排行榜</span>
+        </a>
+      </li>
+      <li class="all-menu-item{if condition="$maccms.mid eq 3"} active{/if}">
+        <a class="all-menu-row" href="{:mac_url('topic/index')}" title="专题">
+          <span class="all-menu-ico">
+            <img class="size-46" src="{$maccms.path}template/default/images/nav/nav9.png" alt="">
+          </span>
+          <span class="all-menu-label" data-lang="string_topic">专题</span>
+        </a>
+      </li>
+      <li class="all-menu-item{if condition="$maccms.aid eq 4"} active{/if}">
+        <a class="all-menu-row" href="{:mac_url('gbook/index')}" title="留言">
+          <span class="all-menu-ico">
+            <img class="size-46" src="{$maccms.path}template/default/images/nav/nav10.png" alt="">
+          </span>
+          <span class="all-menu-label" data-lang="string_gbook">留言</span>
+        </a>
+      </li>
+      <li class="all-menu-item{if condition="$maccms.aid eq 10"} active{/if}">
+        <a class="all-menu-row" href="{:mac_url('vod/last_vod')}" title="最新">
+          <span class="all-menu-ico">
+            <img class="size-46" src="{$maccms.path}template/default/images/nav/nav7.png" alt="">
+          </span>
+          <span class="all-menu-label" data-lang="string_zuixin">最新</span>
+        </a>
+      </li>
+    </ul>
+  </div>
+  <div class="all_menu_overlay" aria-hidden="true"></div>
+</div>

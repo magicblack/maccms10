@@ -1,0 +1,17 @@
+<li class="vodlist_item">
+	<a class="vodlist_thumb lazyload" href="{:mac_url_plot_detail($vo,['sid'=>$vo.sid,'nid'=>1])}" title="{$vo.vod_name}" data-original="{:mac_url_img($vo.vod_pic)}">					
+		{assign name="mac_points_value" value="$vo.vod_points_play" /}
+		{include file="widget/mac_badge_top_right" /}
+		{include file="widget/mac_badge_bottom_right" /}
+		<span class="play hidden_xs"></span>
+		{if condition="$maccms.aid eq 1"}
+		<span class="vodlist_top">{if condition="($vo.vod_year neq '') and ($vo.vod_year neq 0)"}<em class="voddate voddate_year">{$vo.vod_year}</em>{/if}{if condition="$vo.vod_class neq ''"}<em class="voddate voddate_type">{$vo.vod_class|mac_substring=2}</em>{/if}</span>
+        {/if}
+	</a>
+	<div class="vodlist_titbox">									
+		<p class="vodlist_title">
+		<a href="{:mac_url_plot_detail($vo,['sid'=>$vo.sid,'nid'=>1])}" title="{$vo.vod_name}">{$vo.vod_name}</a>
+		</p>
+		<p class="vodlist_sub">{if $vo.vod_sub}{php}echo mac_filter_html(mac_url_create($vo['vod_sub'],'actor'));{/php}{else}<span data-lang='string_no_have'>暂无</span>{/if}</p>
+	</div>
+</li>

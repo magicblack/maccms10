@@ -1,0 +1,189 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>我的权益 - 会员中心 - {$maccms.site_name}</title>
+<meta name="keywords" content="{$maccms.site_keywords}"/>
+<meta name="description" content="{$maccms.site_description}"/>
+{include file="user/include" /}
+<link rel="stylesheet" type="text/css" href="{$maccms.path_tpl}/asset/css/user-benefits.css">
+</head>
+<body class="user-benefits-page">
+{include file="public/th" /}
+{include file="public/head" /}
+
+<div class="member-wrap member-wrap-bg">
+<div id="member" class="fn-clear">
+	<div id="left">
+        <div class="m-nav">
+			<a href="javascript:MAC.GoBack()" class="btn-left"><i class="iconfont ico-right">&#xe625;</i></a>
+			<a href="{$maccms.path}" class="btn-right"><i class="iconfont ico-right">&#xe634;</i></a>
+			<span class="mb-title" data-lang="string_user_center">个人中心</span>
+	    </div>
+        {include file="user/left_nav" /}
+	</div>
+
+    <div id="right">
+		<div class="m-nav">
+			<a href="javascript:MAC.GoBack()" class="btn-left"><i class="iconfont ico-right">&#xe625;</i></a>
+			<span class="mb-title" data-lang="user_benefits_page_title">我的权益</span>
+	    </div>
+	    <div class="co-right co-hi user-benefits">
+		<h2 class="user-benefits__page-title" data-lang="user_benefits_page_title">我的权益</h2>
+
+		{if condition="$obj.group_id egt 3"}
+		<div class="user-benefits__hero user-benefits__hero--vip">
+			<div class="user-benefits__hero-top">
+				<div class="user-benefits__hero-main">
+					<p class="user-benefits__hero-tier" aria-label="VIP tier"><span class="user-benefits__hero-plus">PLUS</span> <span class="user-benefits__hero-tier-name">{$obj.group.group_name}</span></p>
+					<p class="user-benefits__hero-kicker" data-lang="user_benefits_hero_vip_title">专属权益已全部解锁</p>
+					<p class="user-benefits__hero-meta">
+						<span data-lang="user_benefits_valid_prefix">有效期</span>
+						<span class="user-benefits__hero-meta-sep">：</span>
+						{$obj.user_end_time|date='Y-m-d',###}<span class="user-benefits__hero-meta-end"> </span><span data-lang="user_expire">到期</span>
+					</p>
+				</div>
+				<div class="user-benefits__hero-badge" aria-hidden="true"><span class="user-benefits__hero-crown"></span></div>
+			</div>
+			<div class="user-benefits__quick user-benefits__quick--in-hero">
+				{include file="user/benefits_quick_grid_cards" /}
+			</div>
+		</div>
+		{else/}
+		<div class="user-benefits__hero user-benefits__hero--guest">
+			<div class="user-benefits__hero-main">
+				<p class="user-benefits__hero-kicker" data-lang="user_benefits_hero_guest_title">开通会员享专属权益</p>
+				<p class="user-benefits__hero-lead" data-lang="user_benefits_hero_guest_hint">以下为会员权益说明，开通后立即生效</p>
+				<a class="user-benefits__hero-cta" href="{:url('user/upgrade')}" data-lang="user_benefits_cta_upgrade">去开通VIP</a>
+			</div>
+		</div>
+		<div class="user-benefits__quick user-benefits__quick--standalone">
+			{include file="user/benefits_quick_grid_cards" /}
+		</div>
+		{/if}
+
+		<div class="user-benefits__sections">
+			<section class="user-benefits__section" aria-labelledby="ub-sec-watch">
+				<div class="user-benefits__section-head" id="ub-sec-watch">
+					<span data-lang="user_benefits_section_watch">观影特权</span>
+				</div>
+				<div class="user-benefits__grid">
+					<div class="user-benefits__cell">
+						<span class="user-benefits__check" aria-hidden="true"></span>
+						<div class="user-benefits__cell-text">
+							<span class="user-benefits__cell-title" data-lang="user_benefits_item_01_title">全站影视免费观看</span>
+							<span class="user-benefits__cell-desc" data-lang="user_benefits_item_01_desc">VIP用户可观看全部影片</span>
+						</div>
+					</div>
+					<div class="user-benefits__cell">
+						<span class="user-benefits__check" aria-hidden="true"></span>
+						<div class="user-benefits__cell-text">
+							<span class="user-benefits__cell-title" data-lang="user_benefits_item_02_title">专属片源</span>
+							<span class="user-benefits__cell-desc" data-lang="user_benefits_item_02_desc">提供VIP专属资源</span>
+						</div>
+					</div>
+					<div class="user-benefits__cell">
+						<span class="user-benefits__check" aria-hidden="true"></span>
+						<div class="user-benefits__cell-text">
+							<span class="user-benefits__cell-title" data-lang="user_benefits_item_03_title">热门内容抢先看</span>
+							<span class="user-benefits__cell-desc" data-lang="user_benefits_item_03_desc">热播剧/新片优先观看</span>
+						</div>
+					</div>
+					<div class="user-benefits__cell">
+						<span class="user-benefits__check" aria-hidden="true"></span>
+						<div class="user-benefits__cell-text">
+							<span class="user-benefits__cell-title" data-lang="user_benefits_item_04_title">独家内容免费看</span>
+							<span class="user-benefits__cell-desc" data-lang="user_benefits_item_04_desc">平台独播内容仅会员可看</span>
+						</div>
+					</div>
+				</div>
+			</section>
+
+			<section class="user-benefits__section" aria-labelledby="ub-sec-play">
+				<div class="user-benefits__section-head" id="ub-sec-play">
+					<span data-lang="user_benefits_section_playback">播放体验</span>
+				</div>
+				<div class="user-benefits__grid">
+					<div class="user-benefits__cell">
+						<span class="user-benefits__check" aria-hidden="true"></span>
+						<div class="user-benefits__cell-text">
+							<span class="user-benefits__cell-title" data-lang="user_benefits_item_05_title">无广告播放</span>
+							<span class="user-benefits__cell-desc" data-lang="user_benefits_item_05_desc">观影过程无广告打扰</span>
+						</div>
+					</div>
+					<div class="user-benefits__cell">
+						<span class="user-benefits__check" aria-hidden="true"></span>
+						<div class="user-benefits__cell-text">
+							<span class="user-benefits__cell-title" data-lang="user_benefits_item_06_title">高清/超清画质</span>
+							<span class="user-benefits__cell-desc" data-lang="user_benefits_item_06_desc">支持更高画质播放</span>
+						</div>
+					</div>
+					<div class="user-benefits__cell">
+						<span class="user-benefits__check" aria-hidden="true"></span>
+						<div class="user-benefits__cell-text">
+							<span class="user-benefits__cell-title" data-lang="user_benefits_item_07_title">极速加载</span>
+							<span class="user-benefits__cell-desc" data-lang="user_benefits_item_07_desc">专属线路不卡顿</span>
+						</div>
+					</div>
+					<div class="user-benefits__cell">
+						<span class="user-benefits__check" aria-hidden="true"></span>
+						<div class="user-benefits__cell-text">
+							<span class="user-benefits__cell-title" data-lang="user_benefits_item_08_title">倍速播放</span>
+							<span class="user-benefits__cell-desc" data-lang="user_benefits_item_08_desc">支持0.5x - 2.0x</span>
+						</div>
+					</div>
+				</div>
+			</section>
+
+			<section class="user-benefits__section" aria-labelledby="ub-sec-feat">
+				<div class="user-benefits__section-head" id="ub-sec-feat">
+					<span data-lang="user_benefits_section_features">功能权益</span>
+				</div>
+				<div class="user-benefits__grid">
+					<div class="user-benefits__cell">
+						<span class="user-benefits__check" aria-hidden="true"></span>
+						<div class="user-benefits__cell-text">
+							<span class="user-benefits__cell-title" data-lang="user_benefits_item_09_title">离线缓存</span>
+							<span class="user-benefits__cell-desc" data-lang="user_benefits_item_09_desc">下载影片随时观看</span>
+						</div>
+					</div>
+					<div class="user-benefits__cell">
+						<span class="user-benefits__check" aria-hidden="true"></span>
+						<div class="user-benefits__cell-text">
+							<span class="user-benefits__cell-title" data-lang="user_benefits_item_10_title">投屏播放</span>
+							<span class="user-benefits__cell-desc" data-lang="user_benefits_item_10_desc">支持电视大屏观看</span>
+						</div>
+					</div>
+					<div class="user-benefits__cell">
+						<span class="user-benefits__check" aria-hidden="true"></span>
+						<div class="user-benefits__cell-text">
+							<span class="user-benefits__cell-title" data-lang="user_benefits_item_11_title">自动连播</span>
+							<span class="user-benefits__cell-desc" data-lang="user_benefits_item_11_desc">自动播放下一集</span>
+						</div>
+					</div>
+					<div class="user-benefits__cell">
+						<span class="user-benefits__check" aria-hidden="true"></span>
+						<div class="user-benefits__cell-text">
+							<span class="user-benefits__cell-title" data-lang="user_benefits_item_12_title">多端同步</span>
+							<span class="user-benefits__cell-desc" data-lang="user_benefits_item_12_desc">记录实时同步</span>
+						</div>
+					</div>
+				</div>
+			</section>
+		</div>
+
+		<div class="user-benefits__notes">
+			<p class="user-benefits__notes-title" data-lang="user_benefits_note_title">会员权益说明</p>
+			<ul class="user-benefits__notes-list">
+				<li data-lang="user_benefits_note_1">部分影片因版权限制暂不可观看</li>
+				<li data-lang="user_benefits_note_2">权益内容以实际开通为准</li>
+				<li data-lang="user_benefits_note_3">如有问题请联系客服</li>
+			</ul>
+		</div>
+	    </div>
+    </div>
+</div>
+</div>
+
+{include file="public/foot" /}
+</body>
+</html>
