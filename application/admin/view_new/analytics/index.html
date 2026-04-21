@@ -1,0 +1,124 @@
+{include file="../../../application/admin/view_new/public/head" /}
+<div class="page-container p10">
+    <div class="my-toolbar-box mb-2">
+        <form class="layui-form space-x-1 space-y-1" method="get" action="{:url('index')}">
+            <div class="layui-input-inline w150">
+                <input type="text" class="layui-input" id="start_date" name="start_date" value="{$param.start_date}">
+            </div>
+            <div class="layui-input-inline w150">
+                <input type="text" class="layui-input" id="end_date" name="end_date" value="{$param.end_date}">
+            </div>
+            <div class="layui-input-inline w150">
+                <select name="dim_type">
+                    <option value="device" {if condition="$param['dim_type'] eq 'device'"}selected{/if}>{:lang('admin/analytics/dim_device')}</option>
+                    <option value="region" {if condition="$param['dim_type'] eq 'region'"}selected{/if}>{:lang('admin/analytics/dim_region')}</option>
+                    <option value="category" {if condition="$param['dim_type'] eq 'category'"}selected{/if}>{:lang('admin/analytics/dim_category')}</option>
+                    <option value="channel" {if condition="$param['dim_type'] eq 'channel'"}selected{/if}>{:lang('admin/analytics/dim_channel')}</option>
+                    <option value="os" {if condition="$param['dim_type'] eq 'os'"}selected{/if}>{:lang('admin/analytics/dim_os')}</option>
+                </select>
+            </div>
+            <button class="layui-btn">{:lang('btn_search')}</button>
+            <a class="layui-btn layui-btn-primary" href="{:url('export',['format'=>'xlsx','start_date'=>$param['start_date'],'end_date'=>$param['end_date'],'dim_type'=>$param['dim_type']])}">{:lang('admin/analytics/export_excel')}</a>
+            <a class="layui-btn layui-btn-primary" href="{:url('export',['format'=>'pdf','start_date'=>$param['start_date'],'end_date'=>$param['end_date'],'dim_type'=>$param['dim_type']])}">{:lang('admin/analytics/export_pdf')}</a>
+        </form>
+    </div>
+
+    <div class="layui-row layui-col-space15">
+        <div class="layui-col-md2"><div class="layui-card"><div class="layui-card-header">PV</div><div class="layui-card-body f-20">{$report.overview.total_pv}</div></div></div>
+        <div class="layui-col-md2"><div class="layui-card"><div class="layui-card-header">UV</div><div class="layui-card-body f-20">{$report.overview.total_uv}</div></div></div>
+        <div class="layui-col-md2"><div class="layui-card"><div class="layui-card-header">{:lang('admin/analytics/session_cnt')}</div><div class="layui-card-body f-20">{$report.overview.total_session_cnt}</div></div></div>
+        <div class="layui-col-md2"><div class="layui-card"><div class="layui-card-header">{:lang('admin/analytics/order_amount')}</div><div class="layui-card-body f-20">{$report.overview.total_order_amount}</div></div></div>
+        <div class="layui-col-md2"><div class="layui-card"><div class="layui-card-header">{:lang('admin/analytics/avg_bounce_rate')}</div><div class="layui-card-body f-20">{$report.overview.avg_bounce_rate}%</div></div></div>
+        <div class="layui-col-md2"><div class="layui-card"><div class="layui-card-header">{:lang('admin/analytics/avg_stay')}</div><div class="layui-card-body f-20">{$report.overview.avg_session_duration_sec}s</div></div></div>
+    </div>
+
+    <div class="layui-row layui-col-space15 mt10">
+        <div class="layui-col-md6">
+            <div class="layui-card">
+                <div class="layui-card-header">{:lang('admin/analytics/trend_title')}</div>
+                <div class="layui-card-body"><div id="trendChart" style="height:300px;"></div></div>
+            </div>
+        </div>
+        <div class="layui-col-md6">
+            <div class="layui-card">
+                <div class="layui-card-header">{:lang('admin/analytics/dim_title')}（{$param.dim_type}）</div>
+                <div class="layui-card-body"><div id="dimChart" style="height:300px;"></div></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="layui-row layui-col-space15 mt10">
+        <div class="layui-col-md6">
+            <div class="layui-card">
+                <div class="layui-card-header">{:lang('admin/analytics/behavior_title')}</div>
+                <div class="layui-card-body">
+                    <table class="layui-table" lay-size="sm">
+                        <thead><tr><th>{:lang('admin/analytics/from')}</th><th>{:lang('admin/analytics/to')}</th><th>{:lang('admin/analytics/count')}</th></tr></thead>
+                        <tbody>
+                        {volist name="report.behavior.top_flows" id="vo"}
+                        <tr><td>{$vo.from|mac_filter_xss}</td><td>{$vo.to|mac_filter_xss}</td><td>{$vo.flow_cnt}</td></tr>
+                        {/volist}
+                        </tbody>
+                    </table>
+                    <div>{:lang('admin/analytics/avg_stay')}：{$report.behavior.avg_stay_sec}s ，{:lang('admin/analytics/avg_bounce_rate')}：{$report.behavior.bounce_rate}%</div>
+                </div>
+            </div>
+        </div>
+        <div class="layui-col-md6">
+            <div class="layui-card">
+                <div class="layui-card-header">{:lang('admin/analytics/content_title')}</div>
+                <div class="layui-card-body"><div id="contentChart" style="height:300px;"></div></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="/static_new/js/apexcharts.js"></script>
+<script>
+    var report = {:json_encode($report, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES)};
+    layui.use(['laydate'], function () {
+        var laydate = layui.laydate;
+        laydate.render({elem: '#start_date', type: 'date'});
+        laydate.render({elem: '#end_date', type: 'date'});
+    });
+
+    var trendChart = new ApexCharts(document.querySelector('#trendChart'), {
+        chart: {type: 'line', height: 300, toolbar: {show: false}},
+        series: [
+            {name: 'PV', data: report.overview.trend_pv},
+            {name: 'UV', data: report.overview.trend_uv}
+        ],
+        xaxis: {categories: report.overview.trend_days}
+    });
+    trendChart.render();
+
+    var dimNames = [];
+    var dimPvs = [];
+    report.dimension.forEach(function (it) {
+        dimNames.push(it.name);
+        dimPvs.push(it.pv);
+    });
+    var dimChart = new ApexCharts(document.querySelector('#dimChart'), {
+        chart: {type: 'bar', height: 300, toolbar: {show: false}},
+        series: [{name: 'PV', data: dimPvs}],
+        xaxis: {categories: dimNames}
+    });
+    dimChart.render();
+
+    var hot = report.content.hot.slice(0, 8);
+    var contentNames = [];
+    var contentRates = [];
+    hot.forEach(function (it) {
+        contentNames.push(it.content_name ? (it.content_key + ' ' + it.content_name) : it.content_key);
+        contentRates.push(it.conversion_rate);
+    });
+    var contentChart = new ApexCharts(document.querySelector('#contentChart'), {
+        chart: {type: 'bar', height: 300, toolbar: {show: false}},
+        series: [{name: '{:lang("admin/analytics/conversion_rate")}(%)', data: contentRates}],
+        xaxis: {categories: contentNames}
+    });
+    contentChart.render();
+</script>
+{include file="../../../application/admin/view_new/public/foot" /}
+</body>
+</html>

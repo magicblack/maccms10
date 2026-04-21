@@ -927,6 +927,214 @@ var MAC = {
                 }
             });
         }
+    },
+    'Analytics': {
+        'visitorCookie': 'mac_ana_vid',
+        'sessionKey': 'mac_ana_sk',
+        'pageCountKey': 'mac_ana_pc',
+        'prevPathKey': 'mac_ana_prev',
+        'startAt': 0,
+        'sessionStarted': false,
+        'Init': function () {
+            if (window.MacAnalytics) {
+                return;
+            }
+            this.startAt = Date.now();
+            this.ensureVisitorId();
+            this.ensureSessionKey();
+            this.sendSession('start');
+            this.sendPageview(0);
+            this.bindLifecycle();
+            window.MacAnalytics = {
+                event: function (eventCode, props) {
+                    MAC.Analytics.trackEvent(eventCode, props || {});
+                },
+                pageview: function (extra) {
+                    MAC.Analytics.sendPageview(0, extra || {});
+                },
+                session: function (extra) {
+                    MAC.Analytics.sendSession('update', extra || {});
+                }
+            };
+        },
+        'bindLifecycle': function () {
+            window.addEventListener('beforeunload', function () {
+                MAC.Analytics.flushBeforeUnload();
+            });
+            document.addEventListener('visibilitychange', function () {
+                if (document.visibilityState === 'hidden') {
+                    MAC.Analytics.flushBeforeUnload();
+                }
+            });
+        },
+        'flushBeforeUnload': function () {
+            var stayMs = Math.max(0, Date.now() - MAC.Analytics.startAt);
+            MAC.Analytics.sendSession('end', { 'duration_sec': Math.round(stayMs / 1000), 'ended_at': Math.floor(Date.now() / 1000) }, true);
+            MAC.Analytics.trackEvent('page_leave', { 'stay_ms': stayMs }, true);
+        },
+        'trackEvent': function (eventCode, props, keepalive) {
+            if (!eventCode) {
+                return;
+            }
+            var payload = this.buildBasePayload();
+            payload.event_code = eventCode;
+            payload.props = props || {};
+            this.post('/api.php/analytics/event', payload, !!keepalive);
+        },
+        'sendPageview': function (stayMs, extra) {
+            var payload = this.buildBasePayload();
+            var ids = this.resolveContentIds();
+            payload.path = location.pathname + location.search;
+            payload.prev_path = sessionStorage.getItem(this.prevPathKey) || document.referrer || '';
+            payload.stay_ms = Math.max(0, parseInt(stayMs || 0));
+            payload.mid = ids.mid;
+            payload.rid = ids.rid;
+            payload.type_id = ids.type_id;
+            if (extra) {
+                for (var k in extra) {
+                    payload[k] = extra[k];
+                }
+            }
+            this.post('/api.php/analytics/pageview', payload, false);
+            sessionStorage.setItem(this.prevPathKey, payload.path);
+        },
+        'sendSession': function (stage, extra, keepalive) {
+            var payload = this.buildBasePayload();
+            payload.entry_path = sessionStorage.getItem(this.prevPathKey) || (location.pathname + location.search);
+            payload.exit_path = location.pathname + location.search;
+            payload.page_count = this.nextPageCount(stage);
+            payload.started_at = this.getSessionStartedAt();
+            payload.ended_at = stage === 'end' ? Math.floor(Date.now() / 1000) : 0;
+            payload.duration_sec = Math.max(0, Math.round((Date.now() - this.startAt) / 1000));
+            payload.is_bounce = payload.page_count <= 1 ? 1 : 0;
+            if (extra) {
+                for (var k in extra) {
+                    payload[k] = extra[k];
+                }
+            }
+            this.post('/api.php/analytics/session', payload, !!keepalive);
+            this.sessionStarted = true;
+        },
+        'nextPageCount': function (stage) {
+            var val = parseInt(sessionStorage.getItem(this.pageCountKey) || '0');
+            if (stage === 'start' && !this.sessionStarted) {
+                val += 1;
+                sessionStorage.setItem(this.pageCountKey, String(val));
+            }
+            return Math.max(1, val || 1);
+        },
+        'getSessionStartedAt': function () {
+            var ts = sessionStorage.getItem('mac_ana_st');
+            if (!ts) {
+                ts = String(Math.floor(Date.now() / 1000));
+                sessionStorage.setItem('mac_ana_st', ts);
+            }
+            return parseInt(ts);
+        },
+        'buildBasePayload': function () {
+            var userId = 0;
+            try {
+                userId = parseInt(MAC.Cookie.Get('user_id') || '0');
+            } catch (e) { }
+            return {
+                session_key: this.ensureSessionKey(),
+                visitor_id: this.ensureVisitorId(),
+                user_id: isNaN(userId) ? 0 : userId,
+                device_type: this.detectDevice(),
+                os: this.detectOs(),
+                browser: this.detectBrowser(),
+                channel: this.getChannel(),
+                region_code: '',
+                ts: Math.floor(Date.now() / 1000)
+            };
+        },
+        'ensureVisitorId': function () {
+            var vid = MAC.Cookie.Get(this.visitorCookie);
+            if (!vid) {
+                vid = 'v_' + this.uuid();
+                MAC.Cookie.Set(this.visitorCookie, vid, 3650);
+            }
+            return vid;
+        },
+        'ensureSessionKey': function () {
+            var sk = sessionStorage.getItem(this.sessionKey);
+            if (!sk) {
+                sk = 's_' + this.uuid();
+                sessionStorage.setItem(this.sessionKey, sk);
+            }
+            return sk;
+        },
+        'detectDevice': function () {
+            if (MAC.UserAgent.android) { return 'android'; }
+            if (MAC.UserAgent.ios || MAC.UserAgent.iPhone || MAC.UserAgent.iPad) { return 'ios'; }
+            if (MAC.UserAgent.mobile) { return 'h5'; }
+            return 'web';
+        },
+        'detectOs': function () {
+            var ua = navigator.userAgent || '';
+            if (/Windows/i.test(ua)) { return 'windows'; }
+            if (/Android/i.test(ua)) { return 'android'; }
+            if (/iPhone|iPad|iPod/i.test(ua)) { return 'ios'; }
+            if (/Mac OS X/i.test(ua)) { return 'macos'; }
+            if (/Linux/i.test(ua)) { return 'linux'; }
+            return 'other';
+        },
+        'detectBrowser': function () {
+            var ua = navigator.userAgent || '';
+            if (/Edg\//i.test(ua)) { return 'edge'; }
+            if (/Chrome\//i.test(ua)) { return 'chrome'; }
+            if (/Safari\//i.test(ua) && !/Chrome\//i.test(ua)) { return 'safari'; }
+            if (/Firefox\//i.test(ua)) { return 'firefox'; }
+            if (/MSIE|Trident/i.test(ua)) { return 'ie'; }
+            return 'other';
+        },
+        'getChannel': function () {
+            var sp = new URLSearchParams(location.search || '');
+            return sp.get('utm_source') || sp.get('channel') || '';
+        },
+        'resolveContentIds': function () {
+            var mid = 0, rid = 0, typeId = 0;
+            var $hits = $('.mac_hits').first();
+            if ($hits.length > 0) {
+                mid = parseInt($hits.attr('data-mid') || '0');
+                rid = parseInt($hits.attr('data-id') || '0');
+            }
+            if (mid <= 0 || rid <= 0) {
+                var path = location.pathname || '';
+                var match = path.match(/voddetail\/(\d+)|voddetail-(\d+)/i);
+                if (match) { mid = 1; rid = parseInt(match[1] || match[2] || '0'); }
+                match = path.match(/artdetail-(\d+)/i);
+                if (match) { mid = 2; rid = parseInt(match[1] || '0'); }
+                match = path.match(/mangadetail-(\d+)/i);
+                if (match) { mid = 8; rid = parseInt(match[1] || '0'); }
+            }
+            var sp = new URLSearchParams(location.search || '');
+            typeId = parseInt(sp.get('tid') || '0');
+            return {
+                mid: isNaN(mid) ? 0 : mid,
+                rid: isNaN(rid) ? 0 : rid,
+                type_id: isNaN(typeId) ? 0 : typeId
+            };
+        },
+        'post': function (path, payload, keepalive) {
+            var url = (maccms.path || '') + path;
+            if (navigator.sendBeacon && keepalive) {
+                var blob = new Blob([JSON.stringify(payload)], { type: 'application/json' });
+                navigator.sendBeacon(url, blob);
+                return;
+            }
+            $.ajax({
+                url: url,
+                type: 'post',
+                dataType: 'json',
+                contentType: 'application/json; charset=UTF-8',
+                data: JSON.stringify(payload),
+                timeout: 5000
+            });
+        },
+        'uuid': function () {
+            return (Date.now().toString(36) + Math.random().toString(36).substr(2, 9));
+        }
     }
 }
 
@@ -957,6 +1165,8 @@ $(function () {
     MAC.History.Init();
     //用户访问记录初始化
     MAC.Ulog.Init();
+    //运营埋点初始化
+    MAC.Analytics.Init();
     //联想搜索初始化
     MAC.Suggest.Init('.mac_wd', 1, '');
     //网址导航来路统计

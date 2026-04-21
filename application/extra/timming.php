@@ -24,4 +24,28 @@ return array (
     'id' => 'bb',
     'runtime' => 1535348998,
   ),
+  'analytics_hour' => 
+  array (
+    'id' => 'analytics_hour',
+    'status' => '1',
+    'name' => 'analytics_hour',
+    'des' => '运营统计小时聚合',
+    'file' => 'analytics',
+    'param' => 'mode=hour',
+    'weeks' => '1,2,3,4,5,6,0',
+    'hours' => '00,01,02,03,04,05,06,07,08,09,10,11,12,13,14,15,16,17,18,19,20,21,22,23',
+    'runtime' => 0,
+  ),
+  'analytics_day' => 
+  array (
+    'id' => 'analytics_day',
+    'status' => '1',
+    'name' => 'analytics_day',
+    'des' => '运营统计日聚合',
+    'file' => 'analytics',
+    'param' => 'mode=day',
+    'weeks' => '1,2,3,4,5,6,0',
+    'hours' => '01',
+    'runtime' => 0,
+  ),
 );

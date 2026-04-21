@@ -1,6 +1,7 @@
 <?php
 namespace app\api\controller;
 use think\Controller;
+use app\common\util\AnalyticsAggregator;
 
 class Timming extends Base
 {
@@ -94,5 +95,18 @@ class Timming extends Base
         @parse_str($param,$output);
         $request = controller('admin/urlsend');
         $request->push($output);
+    }
+
+    protected function analytics($param)
+    {
+        @parse_str($param, $output);
+        $mode = empty($output['mode']) ? 'hour' : trim($output['mode']);
+        $date = empty($output['date']) ? '' : trim($output['date']);
+        $res = $mode === 'day'
+            ? AnalyticsAggregator::runDay($date)
+            : AnalyticsAggregator::runHour($date);
+        if (isset($res['msg'])) {
+            mac_echo('[analytics] ' . $res['msg']);
+        }
     }
 }

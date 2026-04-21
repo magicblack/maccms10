@@ -1166,12 +1166,33 @@ return array (
         'controller' => 'plog',
         'action' => 'index',
       ),
+      671 => 
+      array (
+        'show' => 1,
+        'name' => lang('menu/analytics'),
+        'controller' => 'analytics',
+        'action' => 'index',
+      ),
       6701 => 
       array (
         'show' => 0,
         'name' => '--积分日志删除',
         'controller' => 'plog',
         'action' => 'del',
+      ),
+      67101 =>
+      array (
+        'show' => 0,
+        'name' => lang('admin/analytics/auth_trend'),
+        'controller' => 'analytics',
+        'action' => 'trend',
+      ),
+      67102 =>
+      array (
+        'show' => 0,
+        'name' => lang('admin/analytics/auth_export'),
+        'controller' => 'analytics',
+        'action' => 'export',
       ),
       68 => 
       array (

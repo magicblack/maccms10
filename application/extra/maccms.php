@@ -445,6 +445,12 @@ return array (
       'charge' => '0',
       'auth' => '',
     ),
+    'analytics' => 
+    array (
+      'rate_window_sec' => '60',
+      'rate_limit_visitor' => '60',
+      'rate_limit_ip' => '120',
+    ),
   ),
   'connect' => 
   array (
