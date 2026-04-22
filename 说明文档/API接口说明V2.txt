@@ -83,27 +83,74 @@ API 接口说明 V2（基于当前实现）
 - 路径：/api.php/provide/website/
 - 参数：ac=list|detail，t、ids、pg、wd、h、pagesize 等
 
-5) 漫画（Manga）
+6) 漫画（Manga）
 - 路径：/api.php/provide/manga/
 - 参数：ac=list|detail，t、ids、pg、wd、h、pagesize 等
+
+7) 评论（Comment）
+- 路径：/api.php/provide/comment/
+- 说明：预留接口，当前为空实现（方法体无逻辑），后续可用于采集/对接评论数据
 
 四、模块接口（REST 风格）
 说明：除特别说明外，列表接口统一支持 offset、limit、orderby 等；详情接口统一以 {xxx_id} 为必填参数。
 
 1) Vod（视频）
+- 更新/获取点击数：GET /api.php/vod/update_hits
+  - 参数：
+    - id：number 必填，影片 vod_id
+    - type：string 可选，传 "update" 则自增并返回新值；不传只获取当前值
+  - 返回：{code:1, msg:'ok', data:{hits, hits_day, hits_week, hits_month}}
+- 影片顶/踩：GET /api.php/vod/digg
+  - 参数：
+    - id：number 必填，影片 vod_id
+    - type：string 可选，up=顶，down=踩；不传只获取当前值
+  - 说明：Cookie 防重复（30 秒内同 id 不可重复操作）
+  - 返回：{code:1, msg:'ok', data:{up, down}}
+- 影片评分：GET /api.php/vod/update_score
+  - 参数：
+    - id：number 必填，影片 vod_id
+    - score：number 可选，1-10 评分值；不传只获取当前评分
+  - 说明：Cookie 防重复
+  - 返回：{code:1, msg:'ok/评分成功', data:{score, score_num, score_all}}
+- 验证播放/下载密码：GET /api.php/vod/verify_pwd
+  - 参数：
+    - id：number 必填，影片 vod_id
+    - pwd：string 必填，密码
+    - type：number 必填，1=访问密码，4=播放密码，5=下载密码
+  - 说明：有5秒频率限制；验证成功后写入 session
+  - 返回：{code:1, msg:'ok'} 或 错误码 1001/1002/1003/1012
+- 获取播放页信息：GET /api.php/vod/get_play_info
+  - 参数：
+    - id：number 必填，影片 vod_id
+    - sid：number 可选，播放源编号，默认1
+    - nid：number 可选，集数编号，默认1
+  - 返回：{code:1, msg:'ok', info:{vod_id, vod_name, vod_pic, vod_remarks, vod_score, vod_copyright, vod_points_play, vod_pwd_play(0|1), type_id, play_list, current, sid, nid, play_url}}
+- 获取下载页信息：GET /api.php/vod/get_down_info
+  - 参数：
+    - id：number 必填，影片 vod_id
+    - sid：number 可选，下载源编号，默认1
+    - nid：number 可选，集数编号，默认1
+  - 返回：{code:1, msg:'ok', info:{vod_id, vod_name, vod_pic, vod_points_down, vod_pwd_down(0|1), type_id, down_list, current, sid, nid}}
 - 列表：/api.php/vod/get_list/
   - 参数：
     - id：number(0..MAX)
-    - offset：number(0..MAX)
-    - limit：number(1..500)
+    - offset：number(0..MAX)，默认0
+    - limit：number(1..500)，默认20
     - orderby：in[hits,up,pubdate,hits_week,hits_month,hits_day,score]
-    - type_id：number(0..MAX)
-    - vod_letter：string(<=1)
-    - vod_name：string(<=50)
-    - vod_tag：string(<=20)
-    - vod_blurb：string(<=20)
-    - vod_class：string(<=10)
-  - 返回：每条记录含 vod_link、vod_pic（已处理 URL）、type_is_vip_exclusive（VIP 角标）
+    - type_id：number(0..MAX)，同时匹配 type_id 和 type_id_1（父分类）
+    - vod_letter：string(<=10)，首字母筛选
+    - vod_name：string(<=50)，标题模糊搜索（like）
+    - vod_tag：string(<=20)，标签模糊搜索（like）
+    - vod_blurb：string(<=20)，简介模糊搜索（like）
+    - vod_class：string(<=10)，类型模糊搜索（like）
+    - vod_area：string(<=20)，地区精确匹配
+    - vod_year：string(<=10)，年份精确匹配
+    - vod_lang：string(<=20)，语言精确匹配
+    - vod_level：string(<=50)，推荐等级（支持 in 逗号分隔）
+    - vod_state：string(<=20)，连载状态精确匹配
+    - vod_isend：number in[0,1]，完结筛选（1=完结, 0=连载）
+    - vod_actor：string(<=128)，演员模糊搜索（like OR 多词）
+  - 返回：每条记录含 vod_link、vod_pic（已处理 URL）、vod_play_link（若主题开启）、type_is_vip_exclusive（VIP 角标）
 - 详情：/api.php/vod/get_detail/
   - 参数：vod_id：number 必填(0..MAX)
 - 年份：/api.php/vod/get_year/
@@ -143,17 +190,20 @@ API 接口说明 V2（基于当前实现）
 2) Art（文章）
 - 列表：/api.php/art/get_list/
   - 参数：
+    - type_id：number(0..MAX)，分类ID
     - offset：number(0..MAX)
     - limit：number(1..500)
-    - tag：string(<=100)
+    - tag：string(<=50)，标签模糊搜索
     - orderby：in[id,time,time_add,score,hits,hits_day,hits_week,hits_month,up,down,level]
-    - letter：string(<=1)
+    - letter：string(<=1)，首字母筛选
     - status：number(1..10)
-    - name：string(<=100)
-    - sub：string(<=100)
-    - blurb：string(<=100)
+    - name：string(<=100)，标题模糊搜索（art_name like）
+    - sub：string(<=100)，副标题模糊搜索
+    - blurb：string(<=100)，简介模糊搜索
     - title：string(<=50)
-    - content：string(<=100)
+    - content：string(<=100)，内容模糊搜索
+    - class：string(<=50)，分类名称模糊搜索
+    - level：string(<=50)，推荐等级（支持 in 逗号分隔）
     - time_start：number(1..MAX)
     - time_end：number(1..MAX)
 - 详情：/api.php/art/get_detail/
@@ -173,24 +223,41 @@ API 接口说明 V2（基于当前实现）
     - type_id：number 可选，分类ID
     - start：number 可选，偏移量，默认0
     - by：string 可选，排序字段，默认 time，可选: hits,hits_day,hits_week,hits_month,time
+- 文章顶/踩：GET /api.php/art/digg
+  - 参数：
+    - id：number 必填，文章 art_id
+    - type：string 可选，up=顶，down=踩；不传只获取当前值
+  - 说明：Cookie 防重复（30 秒内同 id 不可重复操作）
+  - 返回：{code:1, msg:'ok', data:{up, down}}
+- 更新/获取文章点击数：GET /api.php/art/update_hits
+  - 参数：
+    - id：number 必填，文章 art_id
+    - type：string 可选，传 "update" 则自增并返回新值；不传只获取当前值
+  - 返回：{code:1, msg:'ok', data:{hits, hits_day, hits_week, hits_month}}
+- 文章评分：GET /api.php/art/update_score
+  - 参数：
+    - id：number 必填，文章 art_id
+    - score：number 可选，1-10 评分值；不传只获取当前评分
+  - 说明：Cookie 防重复
+  - 返回：{code:1, msg:'ok/评分成功', data:{score, score_num, score_all}}
 
 3) Actor（演员）
 - 列表：/api.php/actor/get_list/
   - 参数：
-    - offset：number(1..MAX)
+    - offset：number(0..MAX)
     - limit：number(1..MAX)
     - id：number(1..MAX)
-    - type_id：number(1..100)
+    - type_id：number(1..MAX)
     - sex：in[男,女]
     - area：string(<=255)
     - letter：string(<=1)
     - level：string(<=1)
-    - name：string(<=20)
+    - name：string(<=64)
     - blood：string(<=10)
     - starsign：string(<=255)
     - time_start：number(1..MAX)
     - time_end：number(1..MAX)
-    - orderby：in[hits,hits_month,hits_week,hits_day,time]
+    - orderby：in[hits,hits_month,hits_week,hits_day,time,level]
 - 详情：/api.php/actor/get_detail/
   - 参数：actor_id：number 必填(1..MAX)
 - 推荐明星：/api.php/actor/get_recommend/
@@ -354,6 +421,21 @@ API 接口说明 V2（基于当前实现）
 - 批量收藏状态：GET /api.php/user/get_favorites_status
   - 需登录；参数：vod_ids 逗号分隔必填；可选 mid（默认1视频）、ulog_type（默认2收藏）
   - 返回：{code:1, info:{rows:[{rid, is_fav, ulog_id}, ...]}}
+- 登录/注册一体化：POST /api.php/user/login_or_register
+  - 参数：user_name、user_pwd 必填；可选 invite_code
+  - 说明：帐号存在 → 校验密码 → 登录；帐号不存在 → 自动创建帐号 → 登录。有 IP 速率限制（60秒内最多10次）。
+  - 返回：{code:1, msg:'...', action:'login'|'register', info:{user_id, user_name, user_nick_name, user_email, user_phone, group_id, user_points, user_exp, user_reg_time, user_portrait, user_invite_code}}
+- 升级页数据（会员信息 + 可购套餐）：GET /api.php/user/ajax_upgrade_data
+  - 参数：无
+  - 说明：不强制登录（未登录时 is_login=false，expire_mode='guest'）；返回所有已启用的付费用户组及各时长积分价格、对应现金价格（price_xxx = group_points_xxx / pay.scale）
+  - 返回：{code:1, msg:'ok', data:{is_login, user_points, user_group_id, expire_mode, expire_date, member_mode, member_name, groups:[{group_id, group_name, group_points_day/week/month/year, price_day/week/month/year}, ...]}}
+- 会员现金升级（创建 UPG 订单）：POST /api.php/user/upgrade_order_create
+  - 需登录
+  - 参数：
+    - group_id：number 必填，目标用户组ID（>=3）
+    - long：string 必填，时长周期（day|week|month|year）
+  - 说明：根据用户组配置的积分値计算订单价格；订单号前缀 UPG；创建后返回订单信息和支付页 URL
+  - 返回：{code:1, msg:'保存成功', data:{order_id, order_code, order_price, order_points, pay_url}}
 
 10) Website（网址）
 - 列表：/api.php/website/get_list/
@@ -623,4 +705,157 @@ API 接口说明 V2（基于当前实现）
 4) 查询订单支付结果（正式接口）
   - **GET /api.php/order/check_status?order_code=...**（详见「四、15)」）。
   - 勿再请求已移除的 **user/order_query**。旧接口曾返回 `status`、`points`；新接口对应 **`info.order_status`**、**`info.order_points`**。
+
+六、互动功能接口
+
+18) Chatroom（聊天室）
+  说明：受 PublicApi 开关约束。聊天室绑定到具体影片，实现同一影片下的实时聊天。
+
+- 获取聊天消息列表（支持增量拉取）：GET /api.php/chatroom/get_list
+  - 参数：
+    - vod_id：number 必填，影片ID
+    - after_id：number 可选，上次获取的最后一条 chat_id（增量拉取，只返回该 id 之后的新消息）
+    - limit：number 可选，数量，默认50，最大100
+  - 返回：与 model getNewMessages 一致
+- 发送聊天消息：POST /api.php/chatroom/send
+  - 需登录
+  - 参数：
+    - vod_id：number 必填，影片ID
+    - content：string 必填，聊天内容（最长500字）
+  - 说明：有 IP 黑名单检查和频率限制（同一用户同影片 3 秒内不可重复发送）
+  - 返回：{code:1, msg:'发送成功'} 或错误码 1010/1001/1002/1003/1005
+- 举报聊天消息：POST /api.php/chatroom/report
+  - 需登录
+  - 参数：
+    - chat_id：number 必填，聊天消息ID
+  - 返回：{code:1, msg:'举报成功'}
+
+19) Danmaku（弹幕）
+  说明：受 PublicApi 开关约束。弹幕绑定到具体影片的某集。
+
+- 获取弹幕列表（一次性加载）：GET /api.php/danmaku/get_list
+  - 参数：
+    - vod_id：number 必填，影片ID
+    - sid：number 必填，播放源ID
+    - nid：number 必填，集数ID
+    - limit：number 可选，数量，默认1000，最大2000
+  - 返回：与 model getEpisodeDanmaku 一致
+- DPlayer 兼容格式弹幕接口：GET/POST /api.php/danmaku/dplayer
+  - GET 获取弹幕：参数 id={vod_id}-{sid}-{nid}（连字符拼接）
+    - 返回：DPlayer 标准格式 {code:0|1, data:[...]}
+  - POST 发送弹幕（DPlayer 标准 POST 格式）：需登录
+    - 参数：id（同上格式）、time（秒数）、type（0滚动/1顶部/2底部）、color、text
+    - 返回：{code:0, msg:'发送成功'}（注：DPlayer 约定 code=0 为成功）
+  - 说明：有频率限制（5 秒内不可重复发送）
+- 发送弹幕：POST /api.php/danmaku/send
+  - 需登录
+  - 参数：
+    - vod_id：number 必填，影片ID
+    - sid：number 必填，播放源ID
+    - nid：number 必填，集数ID
+    - time：number 必填，影片播放到的秒数
+    - text：string 必填，弹幕内容（最长200字）
+    - type：number 可选，0=滚动 1=顶部 2=底部，默认0
+    - color：string 可选，弹幕颜色，默认 #FFFFFF
+  - 说明：有 IP 黑名单检查和频率限制（5 秒内不可重复发送）
+  - 返回：{code:1, msg:'发送成功'} 或错误码 1010/1001/1002/1003/1005
+- 举报弹幕：POST /api.php/danmaku/report
+  - 需登录
+  - 参数：
+    - danmaku_id：number 必填，弹幕ID
+  - 返回：{code:1, msg:'举报成功'}
+
+20) Novel（小说）
+  说明：受 PublicApi 开关约束。与 Manga 类似但面向纯文字小说。
+
+- 列表：GET /api.php/novel/get_list
+  - 参数：
+    - page：number 可选，页码，默认1
+    - limit：number 可选，每页条数，默认20
+    - t：number 可选，分类ID（type_id）
+    - ids：string 可选，ID 列表，逗号分隔
+    - wd：string 可选，搜索关键字（novel_name 模糊匹配）
+    - order：string 可选，排序，默认 novel_time desc
+  - 返回：与 model listData 一致：{code:1, msg:'数据列表', page, pagecount, limit, total, list:[...]}
+- 详情：GET /api.php/novel/get_detail
+  - 参数：
+    - id：number 必填，小说ID（novel_id）
+  - 返回：{code:1, msg:'获取成功', info:{...}}
+
+21) Task（任务与签到）
+  说明：受 PublicApi 开关约束。所有接口均需用户登录。
+
+- 获取任务列表及用户完成状态：GET /api.php/task/get_task_list
+  - 参数：无
+  - 返回：{code:1, msg:'获取成功', info:{daily_tasks:[], newbie_tasks:[], sign_info:{}, today_earned:number, user_points:number}}
+- 每日签到：POST /api.php/task/daily_sign
+  - 参数：无
+  - 返回：{code:1, msg:'签到成功', ...} 含今日获得积分等信息
+- 获取签到信息（含里程碑）：GET /api.php/task/get_sign_info
+  - 参数：无
+  - 返回：{code:1, msg:'获取成功', info:{serial_days, total_days, milestones:[...], ...}}
+- 领取签到里程碑奖励：POST /api.php/task/claim_sign_milestone
+  - 参数：
+    - milestone_id：number 必填，里程碑ID
+  - 返回：{code:1, msg:'领取成功'} 或错误码
+- 领取任务奖励：POST /api.php/task/claim_reward
+  - 参数：
+    - task_id：number 必填，任务ID
+  - 返回：{code:1, msg:'领取成功'} 或错误码
+- 上报每日任务进度：POST /api.php/task/report_progress
+  - 参数：
+    - task_action：string 必填，任务动作标识，可选值：watch_vod、share_vod、post_comment
+  - 返回：{code:1, msg:'上报成功'} 或错误码
+
+七、系统/内部接口
+
+22) Receive（数据接收/推送入库）
+  说明：用于外部系统通过密码验证向本站推送数据，需后台开启接口并配置 >=16 位密码（interface.status=1 + interface.pass）。
+  所有接口需携带 pass 参数。非面向普通用户。
+
+- 推送视频：/api.php/receive/vod
+  - 参数：pass + vod_name 必填 + type_id 或 type_name + 其他视频字段
+- 推送文章：/api.php/receive/art
+  - 参数：pass + art_name 必填 + type_id 或 type_name
+- 推送演员：/api.php/receive/actor
+  - 参数：pass + actor_name、actor_sex 必填 + type_id 或 type_name
+- 推送角色：/api.php/receive/role
+  - 参数：pass + role_name、role_actor 必填 + vod_name 或 douban_id
+- 推送网址：/api.php/receive/website
+  - 参数：pass + website_name 必填 + type_id 或 type_name
+- 推送评论：/api.php/receive/comment
+  - 参数：pass + comment_name、comment_content、comment_mid 必填 + rel_name 或 douban_id
+
+23) Sycms（SyCMS 远程采集转换）
+  说明：SyCMS 数据采集桥接接口，从远程 SyCMS API (apiv3.sycms.cc) 获取加密数据并转换为 MacCMS 标准格式。可在后台「采集资源站」中配置此接口地址。不继承 PublicApi 检查。
+
+- 主入口：GET /api.php/sycms/index
+  - 参数：
+    - ac：string 可选，list|detail|class（默认 list）
+    - t：分类ID
+    - pg：页码
+    - limit：每页数量（最大100）
+    - wd：搜索关键字
+    - ids：视频ID（用于 detail）
+  - 返回：MacCMS 标准采集格式 JSON
+- 获取分类列表：GET /api.php/sycms/getClassList
+- 获取视频列表：GET /api.php/sycms/getVideoList
+- 获取视频详情：GET /api.php/sycms/getVideoDetail?ids=xxx
+- 测试连接：GET /api.php/sycms/test
+
+24) Timming（定时任务调度）
+  说明：由服务器 cron 调用，非面向前端用户。根据后台配置的定时任务执行采集、生成、清缓存、推送等操作。
+
+- 执行入口：GET /api.php/timming/index
+  - 参数：
+    - name：string 可选，任务名称（指定执行某条；不传则遍历全部）
+    - enforce：string 可选，传 "1" 强制执行（忽略时间窗口检查）
+  - 说明：判断周几+小时是否命中后台配置的 weeks/hours；命中则执行对应操作（collect/make/cj/cache/urlsend）
+
+25) Wechat（微信公众号接入）
+  说明：微信公众号消息验证与自动回复入口。需后台配置微信参数（maccms.weixin）且 status=1。
+
+- 入口：GET/POST /api.php/wechat/index
+  - GET（含 echostr 参数）：微信服务器验证（valid）
+  - POST：接收微信用户消息并自动回复（responseMsg）
 
