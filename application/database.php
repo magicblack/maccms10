@@ -12,7 +12,7 @@ return [
     // 数据库类型
     'type'            => 'mysql',
     // 服务器地址
-    'hostname'        => 'mysql://avnadmin:AVNS_wCyzWyWjwfl3Ed-8jqn@mysql-17756bff-heyaojin0-aac9.a.aivencloud.com',
+    'hostname'        => 'mysql-17756bff-heyaojin0-aac9.a.aivencloud.com',
     // 数据库名
     'database'        => 'defaultdb',
     // 用户名
