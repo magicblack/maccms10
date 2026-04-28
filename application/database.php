@@ -12,19 +12,21 @@ return [
     // 数据库类型
     'type'            => 'mysql',
     // 服务器地址
-    'hostname'        => '127.0.0.1',
+    'hostname'        => 'mysql-17756bff-heyaojin0-aac9.a.aivencloud.com',
     // 数据库名
-    'database'        => 'maccms10',
+    'database'        => 'defaultdb',
     // 用户名
-    'username'        => 'root',
+    'username'        => 'avnadmin',
     // 密码
-    'password'        => 'root',
+    'password'        => 'AVNS_wCyzWyWjwfl3Ed-8jqn',
     // 端口
-    'hostport'        => '3306',
+    'hostport'        => '15332',
     // 连接dsn
     'dsn'             => '',
     // 数据库连接参数
-    'params'          => [],
+    'params'          => [
+        \PDO::MYSQL_ATTR_SSL_VERIFY_SERVER_CERT => false,
+    ],
     // 数据库编码默认采用utf8
     'charset'         => 'utf8',
     // 数据库表前缀

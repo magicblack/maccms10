@@ -63,7 +63,7 @@ CREATE TABLE `mac_actor` (
   KEY `actor_score` (`actor_score`),
   KEY `actor_score_all` (`actor_score_all`),
   KEY `actor_score_num` (`actor_score_num`)
-) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
 
 -- ----------------------------
 -- Table structure for mac_admin
@@ -83,7 +83,7 @@ CREATE TABLE `mac_admin` (
   `admin_last_login_ip` int(10) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`admin_id`),
   KEY `admin_name` (`admin_name`)
-) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 ;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 ;
 
 -- ----------------------------
 -- Table structure for mac_annex
@@ -99,7 +99,7 @@ CREATE TABLE `mac_annex` (
   KEY `annex_time` (`annex_time`),
   KEY `annex_file` (`annex_file`),
   KEY `annex_type` (`annex_type`)
-) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
 
 -- ----------------------------
 -- Table structure for mac_art
@@ -174,7 +174,7 @@ CREATE TABLE `mac_art` (
   KEY `art_score` (`art_score`),
   KEY `art_score_all` (`art_score_all`),
   KEY `art_score_num` (`art_score_num`)
-) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 ;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 ;
 
 -- ----------------------------
 -- Table structure for mac_manga
@@ -256,7 +256,7 @@ CREATE TABLE `mac_manga` (
   KEY `manga_score` (`manga_score`),
   KEY `manga_score_all` (`manga_score_all`),
   KEY `manga_score_num` (`manga_score_num`)
-) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COMMENT='漫画表';
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COMMENT='漫画表';
 
 -- ----------------------------
 -- Table structure for mac_card
@@ -279,7 +279,7 @@ CREATE TABLE `mac_card` (
   KEY `card_use_time` (`card_use_time`) USING BTREE,
   KEY `card_no` (`card_no`),
   KEY `card_pwd` (`card_pwd`)
-) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 ;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 ;
 
 -- ----------------------------
 -- Table structure for mac_cash
@@ -299,7 +299,7 @@ CREATE TABLE `mac_cash` (
   PRIMARY KEY (`cash_id`),
   KEY `user_id` (`user_id`),
   KEY `cash_status` (`cash_status`) USING BTREE
-) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
 
 -- ----------------------------
 -- Table structure for mac_cj_content
@@ -315,7 +315,7 @@ CREATE TABLE `mac_cj_content` (
   PRIMARY KEY (`id`),
   KEY `nodeid` (`nodeid`),
   KEY `status` (`status`)
-) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC ;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 ROW_FORMAT=DYNAMIC ;
 
 -- ----------------------------
 -- Table structure for mac_cj_history
@@ -325,7 +325,7 @@ CREATE TABLE `mac_cj_history` (
   `md5` char(32) NOT NULL,
   PRIMARY KEY (`md5`),
   KEY `md5` (`md5`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ;
 
 -- ----------------------------
 -- Table structure for mac_cj_node
@@ -364,7 +364,7 @@ CREATE TABLE `mac_cj_node` (
   `program_config` text NOT NULL,
   `mid` tinyint(1) unsigned NOT NULL DEFAULT '1' ,
   PRIMARY KEY (`nodeid`)
-) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC ;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 ROW_FORMAT=DYNAMIC ;
 
 -- ----------------------------
 -- Table structure for mac_collect
@@ -385,7 +385,7 @@ CREATE TABLE `mac_collect` (
   `collect_opt` tinyint(1) unsigned NOT NULL DEFAULT '0' ,
   `collect_sync_pic_opt` tinyint(1) unsigned NOT NULL DEFAULT '0' COMMENT '同步图片选项，0-跟随全局，1-开启，2-关闭',
   PRIMARY KEY (`collect_id`)
-) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 ;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 ;
 
 -- ----------------------------
 -- Table structure for mac_comment
@@ -413,7 +413,7 @@ CREATE TABLE `mac_comment` (
   KEY `comment_pid` (`comment_pid`),
   KEY `user_id` (`user_id`),
   KEY `comment_reply` (`comment_reply`)
-) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 ;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 ;
 
 -- ----------------------------
 -- Table structure for mac_gbook
@@ -436,7 +436,7 @@ CREATE TABLE `mac_gbook` (
   KEY `gbook_reply_time` (`gbook_reply_time`) USING BTREE,
   KEY `user_id` (`user_id`),
   KEY `gbook_reply` (`gbook_reply`)
-) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 ;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 ;
 
 -- ----------------------------
 -- Table structure for mac_group
@@ -455,7 +455,7 @@ CREATE TABLE `mac_group` (
   `group_points_free` tinyint(1) unsigned NOT NULL DEFAULT '0' ,
   PRIMARY KEY (`group_id`),
   KEY `group_status` (`group_status`)
-) ENGINE=MyISAM AUTO_INCREMENT=4 DEFAULT CHARSET=utf8 ;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 ;
 
 INSERT INTO `mac_group` VALUES ('1', '游客', '1', ',1,6,7,8,9,10,11,12,2,13,14,15,16,3,4,5,17,18,', '{\"1\":{\"1\":\"1\",\"2\":\"2\",\"3\":\"3\",\"4\":\"4\",\"5\":\"5\"},\"6\":{\"1\":\"1\",\"2\":\"2\",\"3\":\"3\",\"4\":\"4\",\"5\":\"5\"},\"7\":{\"1\":\"1\",\"2\":\"2\",\"3\":\"3\",\"4\":\"4\",\"5\":\"5\"},\"8\":{\"1\":\"1\",\"2\":\"2\",\"3\":\"3\",\"4\":\"4\",\"5\":\"5\"},\"9\":{\"1\":\"1\",\"2\":\"2\",\"3\":\"3\",\"4\":\"4\",\"5\":\"5\"},\"10\":{\"1\":\"1\",\"2\":\"2\",\"3\":\"3\",\"4\":\"4\",\"5\":\"5\"},\"11\":{\"1\":\"1\",\"2\":\"2\",\"3\":\"3\",\"4\":\"4\",\"5\":\"5\"},\"12\":{\"1\":\"1\",\"2\":\"2\",\"3\":\"3\",\"4\":\"4\",\"5\":\"5\"},\"2\":{\"1\":\"1\",\"2\":\"2\",\"3\":\"3\",\"4\":\"4\",\"5\":\"5\"},\"13\":{\"1\":\"1\",\"2\":\"2\",\"3\":\"3\",\"4\":\"4\",\"5\":\"5\"},\"14\":{\"1\":\"1\",\"2\":\"2\",\"3\":\"3\",\"4\":\"4\",\"5\":\"5\"},\"15\":{\"1\":\"1\",\"2\":\"2\",\"3\":\"3\",\"4\":\"4\",\"5\":\"5\"},\"16\":{\"1\":\"1\",\"2\":\"2\",\"3\":\"3\",\"4\":\"4\",\"5\":\"5\"},\"3\":{\"1\":\"1\",\"2\":\"2\",\"3\":\"3\",\"4\":\"4\",\"5\":\"5\"},\"4\":{\"1\":\"1\",\"2\":\"2\",\"3\":\"3\",\"4\":\"4\",\"5\":\"5\"},\"5\":{\"1\":\"1\",\"2\":\"2\"},\"17\":{\"1\":\"1\",\"2\":\"2\"},\"18\":{\"1\":\"1\",\"2\":\"2\"}}', '0', '0', '0', '0', '0');
 INSERT INTO `mac_group` VALUES ('2', '默认会员', '1', ',1,6,7,8,9,10,11,12,2,13,14,15,16,3,4,5,17,18,', '{\"1\":{\"1\":\"1\",\"2\":\"2\",\"3\":\"3\",\"4\":\"4\",\"5\":\"5\"},\"6\":{\"1\":\"1\",\"2\":\"2\",\"3\":\"3\",\"4\":\"4\",\"5\":\"5\"},\"7\":{\"1\":\"1\",\"2\":\"2\",\"3\":\"3\",\"4\":\"4\",\"5\":\"5\"},\"8\":{\"1\":\"1\",\"2\":\"2\",\"3\":\"3\",\"4\":\"4\",\"5\":\"5\"},\"9\":{\"1\":\"1\",\"2\":\"2\",\"3\":\"3\",\"4\":\"4\",\"5\":\"5\"},\"10\":{\"1\":\"1\",\"2\":\"2\",\"3\":\"3\",\"4\":\"4\",\"5\":\"5\"},\"11\":{\"1\":\"1\",\"2\":\"2\",\"3\":\"3\",\"4\":\"4\",\"5\":\"5\"},\"12\":{\"1\":\"1\",\"2\":\"2\",\"3\":\"3\",\"4\":\"4\",\"5\":\"5\"},\"2\":{\"1\":\"1\",\"2\":\"2\",\"3\":\"3\",\"4\":\"4\",\"5\":\"5\"},\"13\":{\"1\":\"1\",\"2\":\"2\",\"3\":\"3\",\"4\":\"4\",\"5\":\"5\"},\"14\":{\"1\":\"1\",\"2\":\"2\",\"3\":\"3\",\"4\":\"4\",\"5\":\"5\"},\"15\":{\"1\":\"1\",\"2\":\"2\",\"3\":\"3\",\"4\":\"4\",\"5\":\"5\"},\"16\":{\"1\":\"1\",\"2\":\"2\",\"3\":\"3\",\"4\":\"4\",\"5\":\"5\"},\"3\":{\"1\":\"1\",\"2\":\"2\",\"3\":\"3\",\"4\":\"4\",\"5\":\"5\"},\"4\":{\"1\":\"1\",\"2\":\"2\",\"3\":\"3\",\"4\":\"4\",\"5\":\"5\"},\"5\":{\"1\":\"1\",\"2\":\"2\"},\"17\":{\"1\":\"1\",\"2\":\"2\"},\"18\":{\"1\":\"1\",\"2\":\"2\"}}', '0', '0', '0', '0', '0');
@@ -481,7 +481,7 @@ CREATE TABLE `mac_link` (
   KEY `link_type` (`link_type`) USING BTREE,
   KEY `link_add_time` (`link_add_time`),
   KEY `link_time` (`link_time`)
-) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 ;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 ;
 
 -- ----------------------------
 -- Table structure for mac_msg
@@ -500,7 +500,7 @@ CREATE TABLE `mac_msg` (
   KEY `msg_code` (`msg_code`),
   KEY `msg_time` (`msg_time`),
   KEY `user_id` (`user_id`)
-) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
 
 -- ----------------------------
 -- Table structure for mac_order
@@ -521,7 +521,7 @@ CREATE TABLE `mac_order` (
   KEY `order_code` (`order_code`) USING BTREE,
   KEY `user_id` (`user_id`) USING BTREE,
   KEY `order_time` (`order_time`) USING BTREE
-) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 ;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 ;
 
 -- ----------------------------
 -- Table structure for mac_plog
@@ -538,7 +538,7 @@ CREATE TABLE `mac_plog` (
   PRIMARY KEY (`plog_id`),
   KEY `user_id` (`user_id`),
   KEY `plog_type` (`plog_type`) USING BTREE
-) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
 
 -- ----------------------------
 -- Table structure for mac_role
@@ -588,7 +588,7 @@ CREATE TABLE `mac_role` (
   KEY `role_score_num` (`role_score_num`),
   KEY `role_up` (`role_up`),
   KEY `role_down` (`role_down`)
-) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 ;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 ;
 
 -- ----------------------------
 -- Table structure for mac_topic
@@ -649,7 +649,7 @@ CREATE TABLE `mac_topic` (
   KEY `topic_en` (`topic_en`),
   KEY `topic_up` (`topic_up`),
   KEY `topic_down` (`topic_down`)
-) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 ;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 ;
 
 -- ----------------------------
 -- Table structure for mac_type
@@ -682,7 +682,7 @@ CREATE TABLE `mac_type` (
   KEY `type_name` (`type_name`),
   KEY `type_en` (`type_en`),
   KEY `type_mid` (`type_mid`)
-) ENGINE=MyISAM AUTO_INCREMENT=20 DEFAULT CHARSET=utf8 ;
+) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=utf8mb4 ;
 
 
 -- ----------------------------
@@ -704,7 +704,7 @@ CREATE TABLE `mac_ulog` (
   KEY `ulog_mid` (`ulog_mid`),
   KEY `ulog_type` (`ulog_type`),
   KEY `ulog_rid` (`ulog_rid`)
-) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 ;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 ;
 
 -- ----------------------------
 -- Table structure for mac_user
@@ -750,7 +750,7 @@ CREATE TABLE `mac_user` (
   KEY `type_id` (`group_id`) USING BTREE,
   KEY `user_name` (`user_name`),
   KEY `user_reg_time` (`user_reg_time`)
-) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 ;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 ;
 
 -- ----------------------------
 -- Table structure for mac_visit
@@ -765,7 +765,7 @@ CREATE TABLE `mac_visit` (
   PRIMARY KEY (`visit_id`),
   KEY `user_id` (`user_id`),
   KEY `visit_time` (`visit_time`)
-) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 ;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 ;
 
 -- ----------------------------
 -- Table structure for mac_vod
@@ -890,7 +890,7 @@ CREATE TABLE `mac_vod` (
   KEY `vod_version` (`vod_version`),
   KEY `vod_state` (`vod_state`),
   KEY `vod_isend` (`vod_isend`)
-) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 ;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 ;
 
 -- ----------------------------
 -- Table structure for mac_website
@@ -967,7 +967,7 @@ CREATE TABLE `mac_website` (
   KEY `website_referer_day` (`website_referer_day`),
   KEY `website_referer_week` (`website_referer_week`),
   KEY `website_referer_month` (`website_referer_month`)
-) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 ;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 ;
 
 
 -- ----------------------------
@@ -1014,7 +1014,7 @@ CREATE TABLE `mac_seo_ai_result` (
   UNIQUE KEY `seo_obj` (`seo_mid`,`seo_obj_id`),
   UNIQUE KEY `seo_obj_uuid` (`seo_mid`,`seo_obj_uuid`),
   KEY `seo_time_update` (`seo_time_update`)
-) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
 
 -- -----------------------------------------------------------------------------
 -- Table structure for mac_analytics_day_overview
