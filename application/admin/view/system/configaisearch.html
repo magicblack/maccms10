@@ -1,0 +1,190 @@
+{include file="../../../application/admin/view/public/head" /}
+<style>
+    /* Default layui-form-pane labels are ~110px and clip long English titles */
+    .layui-form-pane .layui-form-label {
+        width: 220px;
+        white-space: normal;
+        line-height: 1.35;
+        height: auto;
+        padding-top: 9px;
+        padding-bottom: 9px;
+        overflow: visible;
+        text-overflow: clip;
+    }
+
+    .layui-form-pane .layui-input-block {
+        margin-left: 220px;
+    }
+</style>
+
+<div class="page-container">
+    <form class="layui-form layui-form-pane" action="">
+        <input type="hidden" name="__token__" value="{$Request.token}" />
+
+        <blockquote class="layui-elem-quote layui-quote-nm">
+            {:lang('admin/system/configaisearch/tip')}
+        </blockquote>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">{:lang('admin/system/configaisearch/enabled')}：</label>
+            <div class="layui-input-block">
+                <input type="radio" name="ai_search[enabled]" value="1" title="{:lang('open')}" {if condition="$config['ai_search']['enabled'] eq '1'"}checked{/if}>
+                <input type="radio" name="ai_search[enabled]" value="0" title="{:lang('close')}" {if condition="$config['ai_search']['enabled'] neq '1'"}checked{/if}>
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">{:lang('admin/system/configaisearch/provider')}：</label>
+            <div class="layui-input-block">
+                <input type="text" name="ai_search[provider]" value="{$config['ai_search']['provider']|default='openai'}" class="layui-input" placeholder="openai">
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">{:lang('admin/system/configaisearch/model')}：</label>
+            <div class="layui-input-block">
+                <input type="text" name="ai_search[model]" value="{$config['ai_search']['model']|default='gpt-4o-mini'}" class="layui-input">
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">{:lang('admin/system/configaisearch/api_base')}：</label>
+            <div class="layui-input-block">
+                <input type="text" name="ai_search[api_base]" value="{$config['ai_search']['api_base']|default=''}" class="layui-input" placeholder="https://api.openai.com/v1">
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">{:lang('admin/system/configaisearch/api_key')}：</label>
+            <div class="layui-input-block">
+                <input type="password" name="ai_search[api_key]" value="" autocomplete="new-password" class="layui-input" placeholder="{:lang('admin/system/configaisearch/api_key_tip')}">
+                {if condition="$ai_search_key_saved eq 1"}
+                <div class="layui-form-mid layui-word-aux">{:lang('admin/system/configaisearch/api_key_saved_tip')} (****{$ai_search_key_tail})</div>
+                {/if}
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">{:lang('admin/system/configaisearch/timeout')}：</label>
+            <div class="layui-input-inline w150">
+                <input type="number" name="ai_search[timeout]" value="{$config['ai_search']['timeout']|default='12'}" class="layui-input" min="3">
+            </div>
+            <label class="layui-form-label">{:lang('admin/system/configaisearch/max_terms')}：</label>
+            <div class="layui-input-inline w150">
+                <input type="number" name="ai_search[max_terms]" value="{$config['ai_search']['max_terms']|default='4'}" class="layui-input" min="1" max="12">
+            </div>
+            <label class="layui-form-label">{:lang('admin/system/configaisearch/min_query_len')}：</label>
+            <div class="layui-input-inline w150">
+                <input type="number" name="ai_search[min_query_len]" value="{$config['ai_search']['min_query_len']|default='2'}" class="layui-input" min="1" max="32">
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">{:lang('admin/system/configaisearch/module')}：</label>
+            <div class="layui-input-block">
+                <input type="checkbox" name="ai_search[module][vod]" value="1" title="{:lang('vod')}" {if condition="$config['ai_search']['module']['vod'] eq '1'"}checked{/if}>
+                <input type="checkbox" name="ai_search[module][art]" value="1" title="{:lang('art')}" {if condition="$config['ai_search']['module']['art'] eq '1'"}checked{/if}>
+                <input type="checkbox" name="ai_search[module][topic]" value="1" title="{:lang('topic')}" {if condition="$config['ai_search']['module']['topic'] eq '1'"}checked{/if}>
+                <input type="checkbox" name="ai_search[module][actor]" value="1" title="{:lang('actor')}" {if condition="$config['ai_search']['module']['actor'] eq '1'"}checked{/if}>
+                <input type="checkbox" name="ai_search[module][role]" value="1" title="{:lang('role')}" {if condition="$config['ai_search']['module']['role'] eq '1'"}checked{/if}>
+                <input type="checkbox" name="ai_search[module][plot]" value="1" title="{:lang('plot')}" {if condition="$config['ai_search']['module']['plot'] eq '1'"}checked{/if}>
+                <input type="checkbox" name="ai_search[module][website]" value="1" title="{:lang('website')}" {if condition="$config['ai_search']['module']['website'] eq '1'"}checked{/if}>
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">{:lang('admin/system/configaisearch/external_enabled')}：</label>
+            <div class="layui-input-inline w150">
+                <input type="radio" name="ai_search[external_enabled]" value="1" title="{:lang('open')}" {if condition="$config['ai_search']['external_enabled'] eq '1'"}checked{/if}>
+                <input type="radio" name="ai_search[external_enabled]" value="0" title="{:lang('close')}" {if condition="$config['ai_search']['external_enabled'] neq '1'"}checked{/if}>
+            </div>
+            <label class="layui-form-label">{:lang('admin/system/configaisearch/external_max_links')}：</label>
+            <div class="layui-input-inline w150">
+                <input type="number" name="ai_search[external_max_links]" value="{$config['ai_search']['external_max_links']|default='3'}" class="layui-input" min="1" max="10">
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">{:lang('admin/system/configaisearch/external_domains')}：</label>
+            <div class="layui-input-block">
+                <input type="text" name="ai_search[external_domains]" value="{$config['ai_search']['external_domains']|default=''}" class="layui-input" placeholder="wikipedia.org,imdb.com,douban.com">
+            </div>
+        </div>
+
+        <div class="layui-form-item layui-form-text">
+            <blockquote class="layui-elem-quote layui-quote-nm">{:lang('admin/system/configaisearch/semantic_tip')}</blockquote>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">{:lang('admin/system/configaisearch/semantic_enabled')}：</label>
+            <div class="layui-input-block">
+                <input type="radio" name="ai_search[semantic_enabled]" value="1" title="{:lang('open')}" {if condition="$config['ai_search']['semantic_enabled'] eq '1'"}checked{/if}>
+                <input type="radio" name="ai_search[semantic_enabled]" value="0" title="{:lang('close')}" {if condition="$config['ai_search']['semantic_enabled'] neq '1'"}checked{/if}>
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">{:lang('admin/system/configaisearch/embedding_model')}：</label>
+            <div class="layui-input-block">
+                <input type="text" name="ai_search[embedding_model]" value="{$config['ai_search']['embedding_model']|default='text-embedding-3-small'}" class="layui-input" placeholder="text-embedding-3-small">
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">{:lang('admin/system/configaisearch/semantic_weight')}：</label>
+            <div class="layui-input-inline w150">
+                <input type="number" name="ai_search[semantic_weight]" value="{$config['ai_search']['semantic_weight']|default='0.45'}" class="layui-input" min="0" max="1" step="0.05">
+            </div>
+            <label class="layui-form-label">{:lang('admin/system/configaisearch/semantic_candidates')}：</label>
+            <div class="layui-input-inline w150">
+                <input type="number" name="ai_search[semantic_candidates]" value="{$config['ai_search']['semantic_candidates']|default='40'}" class="layui-input" min="8" max="64">
+            </div>
+        </div>
+
+        <div class="layui-form-item layui-form-text">
+            <blockquote class="layui-elem-quote layui-quote-nm">{:lang('admin/system/configaisearch/rate_limit_tip')}</blockquote>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">{:lang('admin/system/configaisearch/rate_limit_enabled')}：</label>
+            <div class="layui-input-block">
+                <input type="radio" name="ai_search[rate_limit_enabled]" value="1" title="{:lang('open')}" {if condition="$config['ai_search']['rate_limit_enabled'] eq '1'"}checked{/if}>
+                <input type="radio" name="ai_search[rate_limit_enabled]" value="0" title="{:lang('close')}" {if condition="$config['ai_search']['rate_limit_enabled'] neq '1'"}checked{/if}>
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">{:lang('admin/system/configaisearch/rate_limit_window')}：</label>
+            <div class="layui-input-inline w150">
+                <input type="number" name="ai_search[rate_limit_window]" value="{$config['ai_search']['rate_limit_window']|default='60'}" class="layui-input" min="10" max="3600">
+            </div>
+            <label class="layui-form-label">{:lang('admin/system/configaisearch/rate_limit_max')}：</label>
+            <div class="layui-input-inline w150">
+                <input type="number" name="ai_search[rate_limit_max]" value="{$config['ai_search']['rate_limit_max']|default='20'}" class="layui-input" min="1" max="500">
+            </div>
+            <label class="layui-form-label">{:lang('admin/system/configaisearch/max_question_chars')}：</label>
+            <div class="layui-input-inline w150">
+                <input type="number" name="ai_search[max_question_chars]" value="{$config['ai_search']['max_question_chars']|default='800'}" class="layui-input" min="0" max="8000">
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">{:lang('admin/system/configaisearch/debug_log')}：</label>
+            <div class="layui-input-block">
+                <input type="radio" name="ai_search[debug_log]" value="1" title="{:lang('open')}" {if condition="$config['ai_search']['debug_log'] eq '1'"}checked{/if}>
+                <input type="radio" name="ai_search[debug_log]" value="0" title="{:lang('close')}" {if condition="$config['ai_search']['debug_log'] neq '1'"}checked{/if}>
+            </div>
+        </div>
+
+        <div class="layui-form-item center">
+            <div class="layui-input-block">
+                <button type="submit" class="layui-btn" lay-submit="" lay-filter="formSubmit">{:lang('btn_save')}</button>
+                <button class="layui-btn layui-btn-warm" type="reset">{:lang('btn_reset')}</button>
+            </div>
+        </div>
+    </form>
+</div>
+
+{include file="../../../application/admin/view/public/foot" /}
+</body>
+</html>

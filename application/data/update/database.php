@@ -95,6 +95,30 @@ if (empty($col_list[$pre.'vod_search'])) {
     $sql .= "CREATE TABLE `{$pre}vod_search` ( `search_key` char(32) CHARACTER SET ascii COLLATE ascii_bin NOT NULL COMMENT '搜索键（关键词md5）', `search_word` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '搜索关键词', `search_field` varchar(64) CHARACTER SET ascii COLLATE ascii_bin NOT NULL COMMENT '搜索字段名（可有多个，用|分隔）', `search_hit_count` bigint unsigned NOT NULL DEFAULT '0' COMMENT '搜索命中次数', `search_last_hit_time` int unsigned NOT NULL DEFAULT '0' COMMENT '最近命中时间', `search_update_time` int unsigned NOT NULL DEFAULT '0' COMMENT '添加时间', `search_result_count` int unsigned NOT NULL DEFAULT '0' COMMENT '结果Id数量', `search_result_ids` mediumtext CHARACTER SET ascii COLLATE ascii_bin NOT NULL COMMENT '搜索结果Id列表，英文半角逗号分隔', PRIMARY KEY (`search_key`), KEY `search_field` (`search_field`), KEY `search_update_time` (`search_update_time`), KEY `search_hit_count` (`search_hit_count`), KEY `search_last_hit_time` (`search_last_hit_time`) ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='vod搜索缓存表';";
     $sql .="\r";
 }
+// SEO AI 结果缓存表
+if (empty($col_list[$pre.'seo_ai_result'])) {
+    $sql .= "CREATE TABLE `{$pre}seo_ai_result` (
+`seo_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+`seo_mid` tinyint(3) unsigned NOT NULL DEFAULT '0',
+`seo_obj_id` int(10) unsigned NOT NULL DEFAULT '0',
+`seo_obj_uuid` char(36) NOT NULL DEFAULT '',
+`seo_title` varchar(255) NOT NULL DEFAULT '',
+`seo_keywords` varchar(500) NOT NULL DEFAULT '',
+`seo_description` varchar(500) NOT NULL DEFAULT '',
+`seo_provider` varchar(32) NOT NULL DEFAULT '',
+`seo_model` varchar(64) NOT NULL DEFAULT '',
+`seo_source_hash` char(40) NOT NULL DEFAULT '',
+`seo_error` varchar(255) NOT NULL DEFAULT '',
+`seo_status` tinyint(3) unsigned NOT NULL DEFAULT '1',
+`seo_time_add` int(10) unsigned NOT NULL DEFAULT '0',
+`seo_time_update` int(10) unsigned NOT NULL DEFAULT '0',
+PRIMARY KEY (`seo_id`),
+UNIQUE KEY `seo_obj` (`seo_mid`,`seo_obj_id`),
+UNIQUE KEY `seo_obj_uuid` (`seo_mid`,`seo_obj_uuid`),
+KEY `seo_time_update` (`seo_time_update`)
+) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;";
+    $sql .= "\r";
+}
 // 采集时，过滤年份
 // https://github.com/magicblack/maccms10/issues/1057
 if(empty($col_list[$pre.'collect']['collect_filter_year'])){
@@ -305,4 +329,5 @@ if(empty($task_count)){
     $sql .= "('完善资料',2,'complete_profile','填写个人昵称等资料',10,1,4,1,{$now},{$now}),";
     $sql .= "('首次充值',2,'first_pay','完成首次充值',50,1,5,1,{$now},{$now});";
     $sql .= "\r";
+}
 }

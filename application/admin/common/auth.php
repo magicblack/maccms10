@@ -105,6 +105,13 @@ return array (
         'controller' => 'system',
         'action' => 'configaiseo',
       ),
+      215 =>
+      array (
+        'show' => 1,
+        'name' => lang('menu/configaisearch'),
+        'controller' => 'system',
+        'action' => 'configaisearch',
+      ),
       22 => 
       array (
         'show' => 1,

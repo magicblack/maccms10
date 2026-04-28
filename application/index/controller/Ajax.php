@@ -1,6 +1,8 @@
 <?php
 namespace app\index\controller;
 
+use app\common\util\AiChatRateLimit;
+use app\common\util\AiChatService;
 
 class Ajax extends Base
 {
@@ -807,4 +809,128 @@ class Ajax extends Base
         session($param['type'].'_verify','1');
         return json(['code'=>1,'msg'=>lang('ok')]);
     }
+
+    // AI chat search endpoint for custom chat template
+    public function ai_chat()
+    {
+        $service = new AiChatService();
+        $payload = $this->readAiChatPayload();
+        $token = isset($payload['__token__']) ? (string)$payload['__token__'] : '';
+        $sessionToken = (string)session('__token__');
+        if ($token === '' || $sessionToken === '' || !$this->safeHashEquals($sessionToken, $token)) {
+            return json([
+                'code' => 1002,
+                'msg' => lang('token_err'),
+                'data' => $service->emptyPayload()
+            ]);
+        }
+
+        $question = trim(mac_filter_xss((string)$payload['question']));
+        $mid = intval($payload['mid']);
+        $limit = intval($payload['limit']);
+
+        if ($question === '') {
+            return json([
+                'code' => 1001,
+                'msg' => 'question is empty',
+                'data' => $service->emptyPayload()
+            ]);
+        }
+
+        $aiCfg = config('maccms.ai_search');
+        if (!is_array($aiCfg)) {
+            $aiCfg = [];
+        }
+        $maxChars = intval(isset($aiCfg['max_question_chars']) ? $aiCfg['max_question_chars'] : 800);
+        if ($maxChars > 0 && mb_strlen($question, 'UTF-8') > $maxChars) {
+            return json([
+                'code' => 1003,
+                'msg' => 'question exceeds maximum length',
+                'data' => $service->emptyPayload()
+            ]);
+        }
+
+        $rl = AiChatRateLimit::checkHit(mac_get_client_ip(), $aiCfg);
+        if (!$rl['allowed']) {
+            $retry = max(1, intval($rl['retry_after']));
+            header('HTTP/1.1 429 Too Many Requests');
+            header('Retry-After: '.$retry);
+
+            return json([
+                'code' => 429,
+                'msg' => 'Too many requests. Please try again in '.$retry.' seconds.',
+                'data' => array_merge($service->emptyPayload(), ['retry_after' => $retry])
+            ]);
+        }
+
+        if (!in_array($mid, [0,1,2,3,8,9,11,12], true)) {
+            $mid = 0;
+        }
+        if ($limit < 1) {
+            $limit = 6;
+        } elseif ($limit > 12) {
+            $limit = 12;
+        }
+
+        try {
+            $chatPayload = $service->buildPayload($question, $mid, $limit);
+        } catch (\Throwable $e) {
+            return json([
+                'code' => 5001,
+                'msg' => 'ai_chat payload build failed',
+                'data' => $service->emptyPayload()
+            ]);
+        }
+
+        return json([
+            'code' => 1,
+            'msg' => 'ok',
+            'data' => $chatPayload
+        ]);
+    }
+
+    private function readAiChatPayload()
+    {
+        $payload = input('post.');
+        if (!is_array($payload)) {
+            $payload = [];
+        }
+
+        $raw = file_get_contents('php://input');
+        if (!empty($raw)) {
+            $json = json_decode($raw, true);
+            if (is_array($json)) {
+                $payload = array_merge($payload, $json);
+            }
+        }
+
+        return [
+            'question' => isset($payload['question']) ? $payload['question'] : $this->_param['wd'],
+            'mid' => isset($payload['mid']) ? $payload['mid'] : $this->_param['mid'],
+            'limit' => isset($payload['limit']) ? $payload['limit'] : $this->_param['limit'],
+            'session_id' => isset($payload['session_id']) ? $payload['session_id'] : '',
+            '__token__' => isset($payload['__token__']) ? $payload['__token__'] : '',
+        ];
+    }
+
+
+    private function safeHashEquals($knownString, $userString)
+    {
+        if (function_exists('hash_equals')) {
+            return hash_equals((string)$knownString, (string)$userString);
+        }
+        $a = (string)$knownString;
+        $b = (string)$userString;
+        $lenA = strlen($a);
+        $lenB = strlen($b);
+        if ($lenA !== $lenB) {
+            return false;
+        }
+        $res = 0;
+        for ($i = 0; $i < $lenA; $i++) {
+            $res |= ord($a[$i]) ^ ord($b[$i]);
+        }
+        return $res === 0;
+    }
+
 }

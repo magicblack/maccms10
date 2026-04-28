@@ -883,6 +883,148 @@ class System extends Base
         return $this->fetch('admin@system/configaiseo');
     }
 
+    public function configaisearch()
+    {
+        if (Request()->isPost()) {
+            $post = input('post.', '', 'htmlentities');
+            $validate = \think\Loader::validate('Token');
+            if (!$validate->check($post)) {
+                return $this->error($validate->getError());
+            }
+            unset($post['__token__']);
+
+            $config_old = config('maccms');
+            $ai = isset($post['ai_search']) && is_array($post['ai_search']) ? $post['ai_search'] : [];
+
+            $sanitize = function ($v) {
+                return trim(strip_tags((string)$v));
+            };
+
+            $module = isset($ai['module']) && is_array($ai['module']) ? $ai['module'] : [];
+            $row = [
+                'enabled' => isset($ai['enabled']) && (string)$ai['enabled'] === '1' ? '1' : '0',
+                'provider' => $sanitize(isset($ai['provider']) ? $ai['provider'] : 'openai'),
+                'model' => $sanitize(isset($ai['model']) ? $ai['model'] : 'gpt-4o-mini'),
+                'api_base' => $sanitize(isset($ai['api_base']) ? $ai['api_base'] : 'https://api.openai.com/v1'),
+                'timeout' => (string)max(3, intval(isset($ai['timeout']) ? $ai['timeout'] : 12)),
+                'max_terms' => (string)max(1, intval(isset($ai['max_terms']) ? $ai['max_terms'] : 4)),
+                'min_query_len' => (string)max(1, intval(isset($ai['min_query_len']) ? $ai['min_query_len'] : 2)),
+                'debug_log' => isset($ai['debug_log']) && (string)$ai['debug_log'] === '1' ? '1' : '0',
+                'external_enabled' => isset($ai['external_enabled']) && (string)$ai['external_enabled'] === '1' ? '1' : '0',
+                'external_domains' => $sanitize(isset($ai['external_domains']) ? $ai['external_domains'] : 'wikipedia.org,imdb.com,douban.com'),
+                'external_max_links' => (string)max(1, min(10, intval(isset($ai['external_max_links']) ? $ai['external_max_links'] : 3))),
+                'semantic_enabled' => isset($ai['semantic_enabled']) && (string)$ai['semantic_enabled'] === '1' ? '1' : '0',
+                'embedding_model' => $sanitize(isset($ai['embedding_model']) ? $ai['embedding_model'] : 'text-embedding-3-small'),
+                'semantic_weight' => (function () use ($ai) {
+                    $w = floatval(isset($ai['semantic_weight']) ? $ai['semantic_weight'] : '0.45');
+                    if ($w < 0) {
+                        $w = 0;
+                    }
+                    if ($w > 1) {
+                        $w = 1;
+                    }
+                    return (string)$w;
+                })(),
+                'semantic_candidates' => (string)max(8, min(64, intval(isset($ai['semantic_candidates']) ? $ai['semantic_candidates'] : 40))),
+                'rate_limit_enabled' => isset($ai['rate_limit_enabled']) && (string)$ai['rate_limit_enabled'] === '1' ? '1' : '0',
+                'rate_limit_window' => (string)max(10, min(3600, intval(isset($ai['rate_limit_window']) ? $ai['rate_limit_window'] : 60))),
+                'rate_limit_max' => (string)max(1, min(500, intval(isset($ai['rate_limit_max']) ? $ai['rate_limit_max'] : 20))),
+                'max_question_chars' => (string)max(0, min(8000, intval(isset($ai['max_question_chars']) ? $ai['max_question_chars'] : 800))),
+                'module' => [
+                    'vod' => isset($module['vod']) && (string)$module['vod'] === '1' ? '1' : '0',
+                    'art' => isset($module['art']) && (string)$module['art'] === '1' ? '1' : '0',
+                    'topic' => isset($module['topic']) && (string)$module['topic'] === '1' ? '1' : '0',
+                    'actor' => isset($module['actor']) && (string)$module['actor'] === '1' ? '1' : '0',
+                    'role' => isset($module['role']) && (string)$module['role'] === '1' ? '1' : '0',
+                    'plot' => isset($module['plot']) && (string)$module['plot'] === '1' ? '1' : '0',
+                    'website' => isset($module['website']) && (string)$module['website'] === '1' ? '1' : '0',
+                ],
+            ];
+            if ($row['api_base'] === '') {
+                $row['api_base'] = 'https://api.openai.com/v1';
+            }
+            if ($row['embedding_model'] === '') {
+                $row['embedding_model'] = 'text-embedding-3-small';
+            }
+
+            $newKey = isset($ai['api_key']) ? trim((string)$ai['api_key']) : '';
+            if ($newKey !== '') {
+                $row['api_key'] = $newKey;
+            } else {
+                $cfgFile = APP_PATH . 'extra/maccms.php';
+                $latest = is_file($cfgFile) ? include $cfgFile : [];
+                if (isset($latest['ai_search']['api_key']) && $latest['ai_search']['api_key'] !== '') {
+                    $row['api_key'] = (string)$latest['ai_search']['api_key'];
+                } else {
+                    $row['api_key'] = isset($config_old['ai_search']['api_key']) ? $config_old['ai_search']['api_key'] : '';
+                }
+            }
+
+            $config_new = $config_old;
+            $config_new['ai_search'] = $row;
+
+            $res = mac_arr2file(APP_PATH . 'extra/maccms.php', $config_new);
+            if ($res === false) {
+                return $this->error(lang('save_err'));
+            }
+            return $this->success(lang('save_ok'));
+        }
+
+        $config = config('maccms');
+        if (!isset($config['ai_search']) || !is_array($config['ai_search'])) {
+            $config['ai_search'] = [
+                'enabled' => '0',
+                'provider' => 'openai',
+                'model' => 'gpt-4o-mini',
+                'api_base' => 'https://api.openai.com/v1',
+                'api_key' => '',
+                'timeout' => '12',
+                'max_terms' => '4',
+                'min_query_len' => '2',
+                'debug_log' => '0',
+                'external_enabled' => '0',
+                'external_domains' => 'wikipedia.org,imdb.com,douban.com',
+                'external_max_links' => '3',
+                'semantic_enabled' => '0',
+                'embedding_model' => 'text-embedding-3-small',
+                'semantic_weight' => '0.45',
+                'semantic_candidates' => '40',
+                'rate_limit_enabled' => '1',
+                'rate_limit_window' => '60',
+                'rate_limit_max' => '20',
+                'max_question_chars' => '800',
+                'module' => [
+                    'vod' => '1',
+                    'art' => '1',
+                    'topic' => '0',
+                    'actor' => '0',
+                    'role' => '0',
+                    'plot' => '0',
+                    'website' => '0',
+                ],
+            ];
+        }
+
+        $aiSearchFill = [
+            'rate_limit_enabled' => '1',
+            'rate_limit_window' => '60',
+            'rate_limit_max' => '20',
+            'max_question_chars' => '800',
+        ];
+        foreach ($aiSearchFill as $k => $v) {
+            if (!isset($config['ai_search'][$k])) {
+                $config['ai_search'][$k] = $v;
+            }
+        }
+
+        $apiKey = isset($config['ai_search']['api_key']) ? trim((string)$config['ai_search']['api_key']) : '';
+        $this->assign('ai_search_key_saved', $apiKey !== '' ? 1 : 0);
+        $this->assign('ai_search_key_tail', $apiKey !== '' ? substr($apiKey, -6) : '');
+        $this->assign('config', $config);
+        $this->assign('title', lang('admin/system/configaisearch/title'));
+        return $this->fetch('admin@system/configaisearch');
+    }
+
     public function configlang(){
         $param = input();
         $config = config('maccms');
