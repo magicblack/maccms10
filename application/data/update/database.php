@@ -184,6 +184,7 @@ if(empty($col_list[$pre.'analytics_retention_cohort'])){
     $sql .="\r";
 $sql .= "ALTER TABLE `mac_user` MODIFY COLUMN `group_id` varchar(255) NOT NULL DEFAULT '0' COMMENT '会员组ID,多个用逗号分隔';";
 $sql .= "\r";
+}
 // 好友邀请功能 - 添加邀请码相关字段
 if(empty($col_list[$pre.'user']['user_invite_code'])){
     $sql .= "ALTER TABLE `mac_user` ADD `user_invite_code` varchar(20) NOT NULL DEFAULT '' COMMENT '邀请码' AFTER `user_pid_3`;";
@@ -330,4 +331,4 @@ if(empty($task_count)){
     $sql .= "('首次充值',2,'first_pay','完成首次充值',50,1,5,1,{$now},{$now});";
     $sql .= "\r";
 }
-}
+
