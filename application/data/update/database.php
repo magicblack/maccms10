@@ -331,4 +331,18 @@ if(empty($task_count)){
     $sql .= "('首次充值',2,'first_pay','完成首次充值',50,1,5,1,{$now},{$now});";
     $sql .= "\r";
 }
-
+// 前台搜索关键词日志（热门词、登录用户历史）
+if (empty($col_list[$pre . 'search_query_log'])) {
+    $sql .= "CREATE TABLE `{$pre}search_query_log` (
+  `log_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `user_id` int(10) unsigned NOT NULL DEFAULT '0',
+  `mid` tinyint(3) unsigned NOT NULL DEFAULT '1',
+  `keyword` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '',
+  `log_time` int(10) unsigned NOT NULL DEFAULT '0',
+  PRIMARY KEY (`log_id`),
+  KEY `idx_user_time` (`user_id`,`log_time`),
+  KEY `idx_time` (`log_time`),
+  KEY `idx_keyword` (`keyword`(32))
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='前台搜索关键词日志（热门词/用户历史）';";
+    $sql .= "\r";
+}

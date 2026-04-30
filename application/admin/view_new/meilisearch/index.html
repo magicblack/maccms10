@@ -1,0 +1,135 @@
+{include file="../../../application/admin/view_new/public/head" /}
+<div class="page-container p10">
+    <form id="meiliConfigForm">
+        <input type="hidden" name="__token__" value="{$Request.token}" />
+        <table class="layui-table">
+            <tr>
+                <td width="160">{:lang('admin/meilisearch/switch')}</td>
+                <td>
+                    <input type="radio" name="meilisearch[enabled]" value="1" title="{:lang('open')}" {if condition="$cfg.enabled eq '1'"}checked{/if}> {:lang('open')}
+                    <input type="radio" name="meilisearch[enabled]" value="0" title="{:lang('close')}" {if condition="$cfg.enabled neq '1'"}checked{/if}> {:lang('close')}
+                    <div class="layui-word-aux">{:lang('admin/meilisearch/enabled_aux')}</div>
+                </td>
+            </tr>
+            <tr><td>{:lang('admin/meilisearch/host')}</td><td><input type="text" class="layui-input" name="meilisearch[host]" value="{$cfg.host|default=''}" placeholder="http://127.0.0.1:7700"></td></tr>
+            <tr><td>{:lang('admin/meilisearch/index_uid')}</td><td><input type="text" class="layui-input" name="meilisearch[index_uid]" value="{$cfg.index_uid|default='maccms_contents'}"></td></tr>
+            <tr>
+                <td>{:lang('admin/meilisearch/api_key')}</td>
+                <td>
+                    <input type="password" class="layui-input" autocomplete="new-password" name="meilisearch[api_key]" value="" placeholder="{:lang('admin/meilisearch/api_key_tip')}">
+                    {if condition="$meili_key_saved eq 1"}
+                    <div class="layui-word-aux">{:lang('admin/meilisearch/api_key_saved_tip')} (****{$meili_key_tail})</div>
+                    {/if}
+                </td>
+            </tr>
+            <tr><td>{:lang('admin/meilisearch/timeout')}</td><td><input type="number" min="1" class="layui-input" name="meilisearch[timeout]" value="{$cfg.timeout|default='8'}"></td></tr>
+            <tr>
+                <td>{:lang('admin/meilisearch/ssl_verify')}</td>
+                <td>
+                    <input type="radio" name="meilisearch[ssl_verify]" value="1" title="{:lang('open')}" {if condition="$cfg.ssl_verify neq '0'"}checked{/if}> {:lang('open')}
+                    <input type="radio" name="meilisearch[ssl_verify]" value="0" title="{:lang('close')}" {if condition="$cfg.ssl_verify eq '0'"}checked{/if}> {:lang('close')}
+                    <div class="layui-word-aux">{:lang('admin/meilisearch/ssl_verify_tip')}</div>
+                </td>
+            </tr>
+            <tr>
+                <td>{:lang('admin/meilisearch/sync_on_save')}</td>
+                <td>
+                    <input type="radio" name="meilisearch[sync_on_save]" value="1" title="{:lang('open')}" {if condition="$cfg.sync_on_save neq '0'"}checked{/if}> {:lang('open')}
+                    <input type="radio" name="meilisearch[sync_on_save]" value="0" title="{:lang('close')}" {if condition="$cfg.sync_on_save eq '0'"}checked{/if}> {:lang('close')}
+                </td>
+            </tr>
+            <tr>
+                <td>{:lang('admin/meilisearch/search_only_wd')}</td>
+                <td>
+                    <input type="radio" name="meilisearch[search_only_wd]" value="1" title="{:lang('open')}" {if condition="$cfg.search_only_wd neq '0'"}checked{/if}> {:lang('open')}
+                    <input type="radio" name="meilisearch[search_only_wd]" value="0" title="{:lang('close')}" {if condition="$cfg.search_only_wd eq '0'"}checked{/if}> {:lang('close')}
+                </td>
+            </tr>
+        </table>
+        <p style="margin:10px 0 16px;">
+            <button type="button" class="layui-btn" id="btnMeiliSave">{:lang('btn_save')}</button>
+        </p>
+    </form>
+
+    <blockquote class="layui-elem-quote">
+        {if condition="$cfg.enabled neq '1'"}
+        {:lang('admin/meilisearch/state_disabled')}
+        {elseif condition="!$health.ok"/}
+        {:lang('admin/meilisearch/state_down_prefix')}{$cfg.timeout|default='8'}{:lang('admin/meilisearch/state_down_suffix')}
+        {elseif condition="$stats.numberOfDocuments|default=0 eq 0"/}
+        {:lang('admin/meilisearch/state_empty')}
+        {else/}
+        {:lang('admin/meilisearch/state_ok_prefix')}{$stats.numberOfDocuments|default=0}{:lang('admin/meilisearch/state_ok_suffix')}
+        {/if}
+    </blockquote>
+    <table class="layui-table">
+        <tr><td width="160">{:lang('admin/meilisearch/switch')}</td><td>{$cfg.enabled|default='0'}</td></tr>
+        <tr><td>{:lang('admin/meilisearch/host')}</td><td>{$cfg.host|default=''}</td></tr>
+        <tr><td>{:lang('admin/meilisearch/index_uid')}</td><td>{$cfg.index_uid|default=''}</td></tr>
+        <tr><td>{:lang('admin/meilisearch/ssl_verify')}</td><td>{if condition="$cfg.ssl_verify eq '0'"}{:lang('close')}{else/}{:lang('open')}{/if}</td></tr>
+        <tr><td>{:lang('admin/meilisearch/health')}</td><td>{if condition="$health.ok"}{:lang('admin/meilisearch/health_ok')}{else/}{:lang('admin/meilisearch/health_down')}{/if}</td></tr>
+        <tr>
+            <td>{:lang('admin/meilisearch/opencc')}</td>
+            <td>
+                {if condition="$opencc_available"}
+                {:lang('admin/meilisearch/opencc_available')}
+                <span class="layui-word-aux" style="display:inline;margin-left:8px;">{:lang('admin/meilisearch/opencc_available_hint')}</span>
+                {else/}
+                {:lang('admin/meilisearch/opencc_unavailable')}
+                <span class="layui-word-aux" style="display:inline;margin-left:8px;">{:lang('admin/meilisearch/opencc_unavailable_hint')}</span>
+                {/if}
+            </td>
+        </tr>
+    </table>
+    <p>
+        <a class="layui-btn layui-btn-normal" href="{:url('meilisearch/sync')}">{:lang('admin/meilisearch/full_sync')}</a>
+        <button type="button" class="layui-btn layui-btn-warm" id="btnMeiliSelfcheck">{:lang('admin/meilisearch/selfcheck')}</button>
+        <span class="layui-word-aux">{:lang('admin/meilisearch/full_sync_hint_extended')}</span>
+    </p>
+    <pre id="meiliSelfcheckResult" style="display:none; margin-top:10px; padding:12px; background:#0f172a; color:#e2e8f0; border-radius:6px; overflow:auto; max-height:420px;"></pre>
+</div>
+<script>
+    (function () {
+        var saveBtn = document.getElementById('btnMeiliSave');
+        var btn = document.getElementById('btnMeiliSelfcheck');
+        var box = document.getElementById('meiliSelfcheckResult');
+        if (!btn || !box || !saveBtn) {
+            return;
+        }
+        saveBtn.addEventListener('click', function () {
+            var url = "{:url('meilisearch/save')}";
+            saveBtn.disabled = true;
+            $.post(url, $('#meiliConfigForm').serialize(), function (res) {
+                var ok = res && parseInt(res.code, 10) === 1;
+                layer.msg(ok ? "{:lang('save_ok')}" : ((res && res.msg) || "{:lang('save_err')}"));
+                if (ok) {
+                    setTimeout(function () { location.reload(); }, 400);
+                }
+            }, 'json').fail(function () {
+                layer.msg("{:lang('save_err')}");
+            }).always(function () {
+                saveBtn.disabled = false;
+            });
+        });
+        btn.addEventListener('click', function () {
+            var url = "{:url('meilisearch/selfcheck')}";
+            btn.disabled = true;
+            btn.innerText = "{:lang('admin/meilisearch/selfcheck_running')}";
+            $.get(url, function (res) {
+                box.style.display = 'block';
+                box.textContent = JSON.stringify(res || {}, null, 2);
+            }, 'json').fail(function (xhr) {
+                box.style.display = 'block';
+                box.textContent = JSON.stringify({
+                    code: 0,
+                    msg: "{:lang('admin/meilisearch/request_failed')}",
+                    status: xhr && xhr.status ? xhr.status : 0
+                }, null, 2);
+            }).always(function () {
+                btn.disabled = false;
+                btn.innerText = "{:lang('admin/meilisearch/selfcheck')}";
+            });
+        });
+    })();
+</script>
+{include file="../../../application/admin/view_new/public/foot" /}

@@ -44,6 +44,7 @@ class Actor extends Base {
         }
 
         $limit_str = ($limit * ($page-1) + $start) .",".$limit;
+        $total = 0;
         if($totalshow==1) {
             $total = $this->where($where)->count();
         }

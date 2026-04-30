@@ -992,6 +992,23 @@ CREATE TABLE `mac_vod_search` (
 
 
 -- ----------------------------
+-- Table structure for mac_search_query_log
+-- ----------------------------
+DROP TABLE IF EXISTS `mac_search_query_log`;
+CREATE TABLE `mac_search_query_log` (
+  `log_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `user_id` int(10) unsigned NOT NULL DEFAULT '0',
+  `mid` tinyint(3) unsigned NOT NULL DEFAULT '1',
+  `keyword` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '',
+  `log_time` int(10) unsigned NOT NULL DEFAULT '0',
+  PRIMARY KEY (`log_id`),
+  KEY `idx_user_time` (`user_id`,`log_time`),
+  KEY `idx_time` (`log_time`),
+  KEY `idx_keyword` (`keyword`(32))
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='前台搜索关键词日志（热门词/用户历史）';
+
+
+-- ----------------------------
 -- Table structure for mac_seo_ai_result
 -- ----------------------------
 DROP TABLE IF EXISTS `mac_seo_ai_result`;

@@ -1,0 +1,33 @@
+{include file="../../../application/admin/view_new/public/head" /}
+<div class="page-container p10">
+    <p class="layui-word-aux">{$tip|default=''}</p>
+    <button type="button" class="layui-btn" id="btnSync">{:lang('admin/meilisearch/start_full_sync')}</button>
+    <pre id="out" class="layui-code" style="margin-top:15px;min-height:120px;"></pre>
+</div>
+<script>
+layui.use(['jquery','layer'], function(){
+    var $ = layui.jquery, layer = layui.layer;
+    $('#btnSync').on('click', function(){
+        layer.confirm(
+            "{:lang('admin/meilisearch/sync_confirm_text')}",
+            {title: "{:lang('admin/meilisearch/sync_confirm_title')}", area: ['520px', '220px']},
+            function(confirmIndex){
+                layer.close(confirmIndex);
+                layer.load(2);
+                $.post('{:url("meilisearch/sync")}', {}, function(r){
+                    layer.closeAll('loading');
+                    $('#out').text(JSON.stringify(r, null, 2));
+                    layer.msg(r.ok ? '{:lang("admin/meilisearch/done")}' : (r.msg || '{:lang("admin/meilisearch/failed")}'));
+                }, 'json').fail(function(){
+                    layer.closeAll('loading');
+                    layer.msg('{:lang("admin/meilisearch/request_failed")}');
+                });
+            },
+            function(){
+                // 用户取消，无需额外操作
+            }
+        );
+    });
+});
+</script>
+{include file="../../../application/admin/view_new/public/foot" /}

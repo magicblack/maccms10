@@ -1,6 +1,7 @@
 <?php
 namespace app\index\controller;
 use think\Controller;
+use app\common\util\SearchService;
 
 class Role extends Base
 {
@@ -34,6 +35,7 @@ class Role extends Base
     {
         $param = mac_param_url();
         $this->check_search($param);
+        SearchService::logFromParam(9, $param);
         $this->label_search($param);
         return $this->label_fetch('role/search');
     }
@@ -43,6 +45,7 @@ class Role extends Base
         $param = mac_param_url();
         $this->check_ajax();
         $this->check_search($param,1);
+        SearchService::logFromParam(9, $param);
         $this->label_search($param);
         return $this->label_fetch('role/ajax_search');
     }

@@ -1,6 +1,7 @@
 <?php
 namespace app\index\controller;
 use think\Controller;
+use app\common\util\SearchService;
 
 class Actor extends Base
 {
@@ -46,6 +47,7 @@ class Actor extends Base
     {
         $param = mac_param_url();
         $this->check_search($param);
+        SearchService::logFromParam(8, $param);
         $this->label_search($param);
         return $this->label_fetch('actor/search');
     }
@@ -55,6 +57,7 @@ class Actor extends Base
         $param = mac_param_url();
         $this->check_ajax();
         $this->check_search($param,1);
+        SearchService::logFromParam(8, $param);
         $this->label_search($param);
         return $this->label_fetch('actor/ajax_search');
     }

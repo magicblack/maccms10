@@ -3,6 +3,8 @@ namespace app\index\controller;
 
 use app\common\util\AiChatRateLimit;
 use app\common\util\AiChatService;
+use app\common\util\SearchService;
+use think\Cache;
 
 class Ajax extends Base
 {
@@ -94,7 +96,16 @@ class Ajax extends Base
         }
 
         $mid = $this->_param['mid'];
-        $wd = $this->_param['wd'];
+        $wd = isset($this->_param['wd']) ? $this->_param['wd'] : '';
+        if (is_string($wd)) {
+            $wd = trim(urldecode($wd));
+        } else {
+            $wd = '';
+        }
+        $wd = mac_filter_xss($wd);
+        if (mb_strlen($wd, 'UTF-8') > 64) {
+            $wd = mb_substr($wd, 0, 64, 'UTF-8');
+        }
         $limit = intval($this->_param['limit']);
 
         if( $wd=='' || !in_array($mid,['1','2','3','8','9','11']) ) {
@@ -105,21 +116,145 @@ class Ajax extends Base
         if($limit<1){
             $limit = 20;
         }
-        $where = [];
-        $where[$pre.'_name|'.$pre.'_en'] = ['like','%'.$wd.'%'];
-        $order = $pre.'_id desc';
-        $field = $pre.'_id as id,'.$pre.'_name as name,'.$pre.'_en as en,'.$pre.'_pic as pic';
-
+        $limit = min(50, $limit);
         $url = mac_url_search(['wd'=>'mac_wd'],$pre);
 
-        $res = model($pre)->listData($where,$order,1,$limit,0,$field);
+        $appCfg = $GLOBALS['config']['app'];
+        $minChars = max(1, intval(isset($appCfg['search_suggest_min_chars']) ? $appCfg['search_suggest_min_chars'] : 2));
+        if (mb_strlen($wd, 'UTF-8') < $minChars) {
+            return json([
+                'code' => 1,
+                'msg' => lang('data_list'),
+                'page' => 1,
+                'pagecount' => 0,
+                'limit' => $limit,
+                'total' => 0,
+                'list' => [],
+                'url' => $url,
+            ]);
+        }
+
+        $ip = request()->ip(0, true);
+        $uid = intval($GLOBALS['user']['user_id'] ?? 0);
+        $sessionKey = (string)request()->cookie(session_name(), '');
+        $visitorSeed = $uid > 0 ? ('u:' . $uid) : ('s:' . $sessionKey);
+        $visitorId = md5($visitorSeed . '|' . (string)request()->header('user-agent', ''));
+        $rateLimit = max(0, intval(isset($appCfg['search_suggest_rate_ip']) ? $appCfg['search_suggest_rate_ip'] : 90));
+        $rateWin = max(1, intval(isset($appCfg['search_suggest_rate_window_sec']) ? $appCfg['search_suggest_rate_window_sec'] : 60));
+        if (!SearchService::consumeSuggestRate($ip, $rateLimit, $rateWin, $visitorId)) {
+            return json([
+                'code' => 1,
+                'msg' => lang('data_list'),
+                'page' => 1,
+                'pagecount' => 0,
+                'limit' => $limit,
+                'total' => 0,
+                'list' => [],
+                'url' => $url,
+            ]);
+        }
+
+        $orderMode = isset($appCfg['search_suggest_order']) ? $appCfg['search_suggest_order'] : 'popular';
+        $cacheSec = max(30, intval(isset($appCfg['search_suggest_cache_sec']) ? $appCfg['search_suggest_cache_sec'] : 180));
+        $cacheKey = 'search:suggest:v2:' . md5($mid . '|' . mb_strtolower($wd, 'UTF-8') . '|' . $limit . '|' . $orderMode);
+        $debounceSec = max(1, intval(isset($appCfg['search_suggest_debounce_sec']) ? $appCfg['search_suggest_debounce_sec'] : 1));
+        $ipDebounceKey = 'search:suggest:debounce:' . md5($ip . '|' . $mid . '|' . mb_strtolower($wd, 'UTF-8') . '|' . $limit);
+        $cached = Cache::get($cacheKey);
+        if (is_array($cached)) {
+            $cached['url'] = $url;
+            return json($cached);
+        }
+        $debounced = Cache::get($ipDebounceKey);
+        if (is_array($debounced)) {
+            $debounced['url'] = $url;
+            return json($debounced);
+        }
+
+        $where = [];
+        $where[$pre.'_name|'.$pre.'_en'] = ['like','%'.$wd.'%'];
+        $order = SearchService::suggestOrder($pre, $orderMode);
+        $field = $pre.'_id as id,'.$pre.'_name as name,'.$pre.'_en as en,'.$pre.'_pic as pic';
+
+        if ($pre === 'topic') {
+            $res = model('Topic')->listData($where, $order, 1, $limit, 0, $field, 0);
+        } else {
+            $res = model($pre)->listData($where, $order, 1, $limit, 0, $field, 0, 0);
+        }
         if($res['code']==1) {
             foreach ($res['list'] as $k => $v) {
                 $res['list'][$k]['pic'] = mac_url_img($v['pic']);
             }
         }
         $res['url'] = $url;
+        Cache::set($cacheKey, $res, $cacheSec);
+        Cache::set($ipDebounceKey, $res, $debounceSec);
         return json($res);
+    }
+
+    /**
+     * 热门搜索词（聚合自 search_query_log）+ 后台配置的备选热词。
+     */
+    public function search_hot()
+    {
+        if ($GLOBALS['config']['app']['search'] != '1') {
+            return json(['code' => 999, 'msg' => lang('suggest_close')]);
+        }
+        $limit = isset($this->_param['limit']) ? intval($this->_param['limit']) : 15;
+        $days = isset($this->_param['days']) ? intval($this->_param['days']) : 30;
+        $limit = max(1, min(50, $limit));
+        $days = max(1, min(365, $days));
+        $cacheSec = max(15, intval(isset($GLOBALS['config']['app']['search_hot_cache_sec']) ? $GLOBALS['config']['app']['search_hot_cache_sec'] : 60));
+        $cacheKey = 'search:hot:v1:' . md5($limit . '|' . $days . '|' . (string)($GLOBALS['config']['app']['search_hot'] ?? ''));
+        $cached = Cache::get($cacheKey);
+        if (is_array($cached)) {
+            return json($cached);
+        }
+        $hot = SearchService::hotWords($limit, $days);
+        $raw = isset($GLOBALS['config']['app']['search_hot']) ? (string)$GLOBALS['config']['app']['search_hot'] : '';
+        $raw = str_replace('，', ',', $raw);
+        $configHot = [];
+        foreach (explode(',', $raw) as $w) {
+            $w = trim(mac_filter_xss($w));
+            if ($w !== '') {
+                $configHot[] = ['word' => $w, 'count' => 0];
+            }
+        }
+        $payload = ['code' => 1, 'data' => ['hot' => $hot, 'config_hot' => $configHot]];
+        Cache::set($cacheKey, $payload, $cacheSec);
+        return json($payload);
+    }
+
+    /**
+     * 登录用户搜索历史（需在搜索落地页触发过记录）。
+     */
+    public function search_history()
+    {
+        if ($GLOBALS['config']['app']['search'] != '1') {
+            return json(['code' => 999, 'msg' => lang('suggest_close')]);
+        }
+        $uid = intval($GLOBALS['user']['user_id'] ?? 0);
+        if ($uid <= 0) {
+            return json(['code' => 1001, 'msg' => 'not logged in', 'list' => []]);
+        }
+        $limit = isset($this->_param['limit']) ? intval($this->_param['limit']) : 15;
+        $list = SearchService::userHistory($uid, $limit);
+        return json(['code' => 1, 'list' => $list]);
+    }
+
+    /**
+     * 清空登录用户搜索历史。
+     */
+    public function search_history_clear()
+    {
+        if ($GLOBALS['config']['app']['search'] != '1') {
+            return json(['code' => 999, 'msg' => lang('suggest_close')]);
+        }
+        $uid = intval($GLOBALS['user']['user_id'] ?? 0);
+        if ($uid <= 0) {
+            return json(['code' => 1001, 'msg' => 'not logged in']);
+        }
+        $ok = SearchService::clearUserHistory($uid);
+        return json(['code' => $ok ? 1 : 1002, 'msg' => $ok ? lang('ok') : 'clear failed']);
     }
 
     public function desktop()

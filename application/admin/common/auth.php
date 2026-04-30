@@ -108,9 +108,45 @@ return array (
       215 =>
       array (
         'show' => 1,
+
         'name' => lang('menu/configaisearch'),
         'controller' => 'system',
         'action' => 'configaisearch',
+      ),
+      216 =>
+      array (
+        'show' => 1,
+        'name' => lang('menu/meilisearch'),
+        'controller' => 'meilisearch',
+        'action' => 'index',
+      ),
+      2151 =>
+      array (
+        'show' => 0,
+        'name' => '--'.lang('menu/meilisearch_save'),
+        'controller' => 'meilisearch',
+        'action' => 'save',
+      ),
+      2152 =>
+      array (
+        'show' => 0,
+        'name' => '--'.lang('menu/meilisearch_status'),
+        'controller' => 'meilisearch',
+        'action' => 'status',
+      ),
+      2153 =>
+      array (
+        'show' => 0,
+        'name' => '--'.lang('menu/meilisearch_selfcheck'),
+        'controller' => 'meilisearch',
+        'action' => 'selfcheck',
+      ),
+      2154 =>
+      array (
+        'show' => 0,
+        'name' => '--'.lang('menu/meilisearch_sync'),
+        'controller' => 'meilisearch',
+        'action' => 'sync',
       ),
       22 => 
       array (

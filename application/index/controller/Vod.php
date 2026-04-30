@@ -1,6 +1,7 @@
 <?php
 namespace app\index\controller;
 use think\Controller;
+use app\common\util\SearchService;
 
 class Vod extends Base
 {
@@ -39,6 +40,7 @@ class Vod extends Base
     {
         $param = mac_param_url();
         $this->check_search($param);
+        SearchService::logFromParam(1, $param);
         $this->label_search($param);
         return $this->label_fetch('vod/search');
     }
@@ -61,6 +63,7 @@ class Vod extends Base
         $param = mac_param_url();
         $this->check_ajax();
         $this->check_search($param,1);
+        SearchService::logFromParam(1, $param);
         $this->label_search($param);
         return $this->label_fetch('vod/ajax_search');
     }

@@ -39,6 +39,7 @@ class Topic extends Base {
             $where = json_decode($where,true);
         }
         $limit_str = ($limit * ($page-1) + $start) .",".$limit;
+        $total = 0;
         if($totalshow==1) {
             $total = $this->where($where)->count();
         }

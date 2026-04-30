@@ -123,6 +123,11 @@ class AiChatService
         $queries = array_values(array_unique(array_filter(array_map('trim', $queries))));
         $queries = array_slice($queries, 0, 6);
 
+        $fromMeili = $this->buildAiChatRankedRowsByMeilisearch($mid, $queries, $fetchLimit);
+        if ($fromMeili !== null) {
+            return $this->applySemanticEmbeddingRerank($question, $fromMeili, $mid);
+        }
+
         $bucket = [];
         foreach ($queries as $idx => $query) {
             $weight = max(0.35, 1.0 - ($idx * 0.18));
@@ -183,6 +188,92 @@ class AiChatService
         });
         $rows = array_slice($rows, 0, max(1, intval($fetchLimit)));
         return $this->applySemanticEmbeddingRerank($question, $rows, $mid);
+    }
+
+    private function buildAiChatRankedRowsByMeilisearch($mid, array $queries, $fetchLimit)
+    {
+        if (!MeilisearchService::enabled() || empty($queries)) {
+            return null;
+        }
+        $kind = '';
+        if ((int)$mid === 1) {
+            $kind = 'vod';
+        } elseif ((int)$mid === 2) {
+            $kind = 'art';
+        } else {
+            return null;
+        }
+        $fetchLimit = max(1, (int)$fetchLimit);
+        $idScore = [];
+        foreach ($queries as $idx => $query) {
+            $query = trim((string)$query);
+            if ($query === '') {
+                continue;
+            }
+            $weight = max(0.35, 1.0 - ($idx * 0.18));
+            $sr = MeilisearchService::search(
+                $query,
+                'kind = "' . $kind . '" AND recycle = 0 AND status = 1',
+                max(16, $fetchLimit),
+                0
+            );
+            if (empty($sr['ok']) || empty($sr['hits']) || !is_array($sr['hits'])) {
+                continue;
+            }
+            foreach ($sr['hits'] as $pos => $hit) {
+                if (empty($hit['id']) || !is_string($hit['id'])) {
+                    continue;
+                }
+                if (!preg_match('/^' . preg_quote($kind, '/') . '_(\d+)$/', $hit['id'], $m)) {
+                    continue;
+                }
+                $id = (int)$m[1];
+                $score = $weight * (1.2 - min(1.0, $pos * 0.04));
+                if (!isset($idScore[$id]) || $score > $idScore[$id]) {
+                    $idScore[$id] = $score;
+                }
+            }
+        }
+        if (empty($idScore)) {
+            return null;
+        }
+        $ids = array_keys($idScore);
+        $cfg = $this->getMidConfig($mid);
+        if (empty($cfg)) {
+            return null;
+        }
+        $rows = Db::name($cfg['table'])
+            ->where($cfg['status'], 1)
+            ->where($cfg['id'], 'in', implode(',', $ids))
+            ->field($cfg['id'].' as id,'.$cfg['name'].' as name,'.$cfg['en'].' as en,'.$cfg['pic'].' as pic,'.$cfg['actor'].' as actor,'.$cfg['hits'].' as hits')
+            ->select();
+        if (!is_array($rows)) {
+            return null;
+        }
+        $out = [];
+        foreach ($rows as $row) {
+            $id = (int)$row['id'];
+            if (!isset($idScore[$id])) {
+                continue;
+            }
+            $row['score'] = (float)$idScore[$id] + min(log(1 + max(0, intval($row['hits']))), 10) * 0.06;
+            $out[] = $row;
+        }
+        if (empty($out)) {
+            return null;
+        }
+        usort($out, function ($a, $b) {
+            if ($a['score'] === $b['score']) {
+                $ha = intval($a['hits']);
+                $hb = intval($b['hits']);
+                if ($ha === $hb) {
+                    return intval($b['id']) <=> intval($a['id']);
+                }
+                return $hb <=> $ha;
+            }
+            return ($b['score'] > $a['score']) ? 1 : -1;
+        });
+        return array_slice($out, 0, $fetchLimit);
     }
 
     private function applySemanticEmbeddingRerank($question, array $rows, $mid)

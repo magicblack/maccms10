@@ -884,19 +884,62 @@
         },
         'GetHot': {
             'Init': function () {
-                MAC.Ajax(maccms.base_url + '/index.php/ajax/suggest?mid=1&wd=1&limit=20', 'get', 'json', '', function (r) {
-                    let words = r.list.map(item => item.name)
-                    let hot_html = ''
-                    words.forEach((item, index) => {
-                        hot_html += `<li class='hot_item ${index < 3 ? 'a' : 'b'}'  data-url=${r.url} data-key=${item}>
+                MAC.Ajax(maccms.base_url + '/index.php/ajax/search_hot?limit=20&days=30', 'get', 'json', '', function (r) {
+                    var words = [];
+                    if (r && r.code === 1 && r.data) {
+                        if (Array.isArray(r.data.hot)) {
+                            r.data.hot.forEach(function (item) {
+                                if (item && item.word) {
+                                    words.push(String(item.word));
+                                }
+                            });
+                        }
+                        if (Array.isArray(r.data.config_hot)) {
+                            r.data.config_hot.forEach(function (item) {
+                                if (item && item.word) {
+                                    words.push(String(item.word));
+                                }
+                            });
+                        }
+                    }
+                    words = words.filter(function (w, idx) {
+                        return w && words.indexOf(w) === idx;
+                    }).slice(0, 20);
+                    if (!words.length && typeof maccms !== 'undefined' && typeof maccms.search_hot === 'string') {
+                        words = maccms.search_hot
+                            .split(/[,\uff0c|\n\r]+/)
+                            .map(function (item) {
+                                return String(item).trim();
+                            })
+                            .filter(function (w, idx, arr) {
+                                return w && arr.indexOf(w) === idx;
+                            })
+                            .slice(0, 20);
+                    }
+                    if (!words.length) {
+                        return;
+                    }
+                    var escHtml = function (str) {
+                        return String(str)
+                            .replace(/&/g, '&amp;')
+                            .replace(/</g, '&lt;')
+                            .replace(/>/g, '&gt;')
+                            .replace(/"/g, '&quot;')
+                            .replace(/'/g, '&#39;');
+                    };
+                    var hotUrl = maccms.base_url + '/index.php/vod/search.html?wd=mac_wd';
+                    var hot_html = '';
+                    words.forEach(function (item, index) {
+                        var safeWord = escHtml(item);
+                        hot_html += `<li class='hot_item ${index < 3 ? 'a' : 'b'}' data-url="${hotUrl}" data-key="${safeWord}">
                             <span class="s1">${index + 1}</span>
-                            <span class="s2 search_key">${item}</span>
-                        </li>`
-                    })
-                    $('.hot_keys').append(hot_html)
-                    $('.hot_item').click(function (e) {
+                            <span class="s2 search_key">${safeWord}</span>
+                        </li>`;
+                    });
+                    $('.hot_keys').html(hot_html);
+                    $('.hot_item').off('click').on('click', function () {
                         location.href = $(this).attr('data-url').replace('mac_wd', encodeURIComponent($(this).attr('data-key')));
-                    })
+                    });
                 });
             }
         },
@@ -907,8 +950,8 @@
                         inputClass: "mac_input",
                         resultsClass: "mac_results",
                         loadingClass: "mac_loading",
-                        width: 175, scrollHeight: 300, minChars: 1, matchSubset: 0, selectFirst: false,
-                        cacheLength: 10, multiple: false, matchContains: false, autoFill: false,
+                        width: 175, scrollHeight: 300, minChars: 1, delay: 350, matchSubset: 0, selectFirst: false,
+                        cacheLength: 80, multiple: false, matchContains: false, autoFill: false,
                         dataType: "json",
                         parse: function (r) {
                             if (r.code == 1) {

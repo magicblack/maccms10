@@ -13,6 +13,17 @@ class Init
         $GLOBALS['mctheme'] = config('mctheme') ?: ['theme' => []];
 
         $config = config('maccms');
+        if (!isset($config['meilisearch']) || !is_array($config['meilisearch'])) {
+            $config['meilisearch'] = [
+                'enabled' => '0',
+                'host' => 'http://127.0.0.1:7700',
+                'api_key' => '',
+                'index_uid' => 'maccms_contents',
+                'timeout' => '8',
+                'sync_on_save' => '1',
+                'search_only_wd' => '1',
+            ];
+        }
         $domain = config('domain');
 
         $isMobile = 0;

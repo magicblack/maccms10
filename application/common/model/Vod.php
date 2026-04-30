@@ -3,6 +3,9 @@ namespace app\common\model;
 use think\Db;
 use think\Cache;
 use app\common\util\Pinyin;
+use app\common\util\MeilisearchService;
+use app\common\util\MeilisearchListBridge;
+use app\common\util\MeilisearchSync;
 use app\common\validate\Vod as VodValidate;
 
 class Vod extends Base {
@@ -58,6 +61,7 @@ class Vod extends Base {
         }
 
         $limit_str = ($limit * ($page-1) + $start) .",".$limit;
+        $total = 0;
         if($totalshow==1) {
             $total = $this->where($where)->where($where2)->count();
         }
@@ -594,19 +598,48 @@ class Vod extends Base {
             $order = 'desc';
         }
         $order= 'vod_'.$by .' ' . $order;
+        $meili = null;
+        if (!$use_rand && MeilisearchService::enabled()) {
+            $meili = MeilisearchListBridge::applyForVod(
+                $where,
+                (string)$wd,
+                (string)$name,
+                (string)$tag,
+                (string)$class,
+                (string)$actor,
+                (string)$director,
+                $page,
+                $num,
+                $start,
+                $order
+            );
+            if ($meili !== null) {
+                $where = $meili['where'];
+                $order = $meili['order'];
+            }
+        }
         $where_cache = $where;
         if($use_rand){
             unset($where_cache['vod_id']);
             $where_cache['order'] = 'rnd';
         }
+        $order_cache_key = ($meili !== null) ? 'meilisearch_relevance' : $order;
 
-        $cach_name = $GLOBALS['config']['app']['cache_flag']. '_' .md5('vod_listcache_'.http_build_query($where_cache).'_'.$order.'_'.$page.'_'.$num.'_'.$start.'_'.$pageurl);
+        $cach_name = $GLOBALS['config']['app']['cache_flag']. '_' .md5('vod_listcache_'.http_build_query($where_cache).'_'.$order_cache_key.'_'.$page.'_'.$num.'_'.$start.'_'.$pageurl);
         $res = Cache::get($cach_name);
         if(empty($cachetime)){
             $cachetime = $GLOBALS['config']['app']['cache_time'];
         }
         if($GLOBALS['config']['app']['cache_core']==0 || empty($res)) {
-            $res = $this->listData($where, $order, $page, $num, $start,$field,1, $totalshow);
+            if ($meili !== null) {
+                $res = $this->listData($where, $order, $page, $num, $start, $field, 1, 0);
+                if ($totalshow == 1) {
+                    $res['total'] = $meili['total'];
+                    $res['pagecount'] = $num > 0 ? (int)ceil($meili['total'] / $num) : 0;
+                }
+            } else {
+                $res = $this->listData($where, $order, $page, $num, $start,$field,1, $totalshow);
+            }
             if($GLOBALS['config']['app']['cache_core']==1) {
                 Cache::set($cach_name, $res, $cachetime);
             }
@@ -799,6 +832,12 @@ class Vod extends Base {
             return ['code'=>1002,'msg'=>lang('save_err').'：'.$this->getError() ];
         }
 
+        $ixVodId = $seoObjId > 0 ? $seoObjId : intval($data['vod_id'] ?? 0);
+        if ($ixVodId <= 0) {
+            $ixVodId = intval($this->getLastInsID());
+        }
+        MeilisearchSync::afterVodSave($ixVodId);
+
         return ['code'=>1,'msg'=>lang('save_ok')];
     }
 
@@ -855,6 +894,7 @@ class Vod extends Base {
         $where = $this->mergeRecycleWhere($where);
         $path = './';
         foreach($list['list'] as $k=>$v){
+            MeilisearchSync::deleteVod(intval($v['vod_id']));
             $pic = $path.$v['vod_pic'];
             if(file_exists($pic) && (substr($pic,0,8) == "./upload") || count( explode("./",$pic) ) ==1){
                 unlink($pic);

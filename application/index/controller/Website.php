@@ -1,6 +1,7 @@
 <?php
 namespace app\index\controller;
 use think\Controller;
+use app\common\util\SearchService;
 
 class Website extends Base
 {
@@ -39,6 +40,7 @@ class Website extends Base
     {
         $param = mac_param_url();
         $this->check_search($param);
+        SearchService::logFromParam(11, $param);
         $this->label_search($param);
         return $this->label_fetch('website/search');
     }
@@ -48,6 +50,7 @@ class Website extends Base
         $param = mac_param_url();
         $this->check_ajax();
         $this->check_search($param,1);
+        SearchService::logFromParam(11, $param);
         $this->label_search($param);
         return $this->label_fetch('website/ajax_search');
     }

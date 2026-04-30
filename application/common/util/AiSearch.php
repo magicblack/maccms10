@@ -6,6 +6,8 @@ use think\Log;
 
 class AiSearch
 {
+    private const DEFAULT_INTERNAL_RESULT_LIMIT = 8;
+
     public static function buildForSearch($module, array $param = [])
     {
         $cfg = self::getConfig();
@@ -63,6 +65,7 @@ class AiSearch
             'rate_limit_window' => '60',
             'rate_limit_max' => '20',
             'max_question_chars' => '800',
+            'internal_result_limit' => (string)self::DEFAULT_INTERNAL_RESULT_LIMIT,
             'module' => [
                 'vod' => '1',
                 'art' => '1',
@@ -233,6 +236,10 @@ class AiSearch
 
     private static function queryVodResources($kw)
     {
+        $fromMeili = self::queryVodResourcesByMeilisearch($kw);
+        if ($fromMeili !== null) {
+            return $fromMeili;
+        }
         $rows = Db::name('Vod')
             ->field('vod_id,vod_name,vod_pic')
             ->where('vod_status', 1)
@@ -254,6 +261,10 @@ class AiSearch
 
     private static function queryArtResources($kw)
     {
+        $fromMeili = self::queryArtResourcesByMeilisearch($kw);
+        if ($fromMeili !== null) {
+            return $fromMeili;
+        }
         $rows = Db::name('Art')
             ->field('art_id,art_name,art_pic')
             ->where('art_status', 1)
@@ -271,6 +282,127 @@ class AiSearch
             ];
         }
         return $result;
+    }
+
+    private static function queryVodResourcesByMeilisearch($kw)
+    {
+        $wd = self::extractKeywordFromLike($kw);
+        if ($wd === '' || !MeilisearchService::enabled()) {
+            return null;
+        }
+        $limit = self::getInternalResultLimit();
+        $sr = MeilisearchService::search($wd, 'kind = "vod" AND recycle = 0 AND status = 1', $limit, 0);
+        if (empty($sr['ok']) || empty($sr['hits']) || !is_array($sr['hits'])) {
+            return null;
+        }
+        $ids = [];
+        foreach ($sr['hits'] as $hit) {
+            if (!empty($hit['id']) && is_string($hit['id']) && preg_match('/^vod_(\d+)$/', $hit['id'], $m)) {
+                $ids[] = (int)$m[1];
+            }
+        }
+        $ids = array_values(array_unique(array_filter($ids)));
+        if (empty($ids)) {
+            return null;
+        }
+        $rows = Db::name('Vod')
+            ->field('vod_id,vod_name,vod_pic')
+            ->where('vod_status', 1)
+            ->where('vod_recycle_time', 0)
+            ->where('vod_id', 'in', implode(',', $ids))
+            ->select();
+        if (!is_array($rows)) {
+            return null;
+        }
+        $map = [];
+        foreach ($rows as $row) {
+            $map[(int)$row['vod_id']] = $row;
+        }
+        $result = [];
+        foreach ($ids as $id) {
+            if (empty($map[$id])) {
+                continue;
+            }
+            $row = $map[$id];
+            $result[] = [
+                'title' => (string)$row['vod_name'],
+                'url' => mac_url_vod_detail($row),
+                'pic' => (string)$row['vod_pic'],
+                'type' => 'vod',
+            ];
+        }
+        return $result;
+    }
+
+    private static function queryArtResourcesByMeilisearch($kw)
+    {
+        $wd = self::extractKeywordFromLike($kw);
+        if ($wd === '' || !MeilisearchService::enabled()) {
+            return null;
+        }
+        $limit = self::getInternalResultLimit();
+        $sr = MeilisearchService::search($wd, 'kind = "art" AND recycle = 0 AND status = 1', $limit, 0);
+        if (empty($sr['ok']) || empty($sr['hits']) || !is_array($sr['hits'])) {
+            return null;
+        }
+        $ids = [];
+        foreach ($sr['hits'] as $hit) {
+            if (!empty($hit['id']) && is_string($hit['id']) && preg_match('/^art_(\d+)$/', $hit['id'], $m)) {
+                $ids[] = (int)$m[1];
+            }
+        }
+        $ids = array_values(array_unique(array_filter($ids)));
+        if (empty($ids)) {
+            return null;
+        }
+        $rows = Db::name('Art')
+            ->field('art_id,art_name,art_pic')
+            ->where('art_status', 1)
+            ->where('art_recycle_time', 0)
+            ->where('art_id', 'in', implode(',', $ids))
+            ->select();
+        if (!is_array($rows)) {
+            return null;
+        }
+        $map = [];
+        foreach ($rows as $row) {
+            $map[(int)$row['art_id']] = $row;
+        }
+        $result = [];
+        foreach ($ids as $id) {
+            if (empty($map[$id])) {
+                continue;
+            }
+            $row = $map[$id];
+            $result[] = [
+                'title' => (string)$row['art_name'],
+                'url' => mac_url_art_detail($row),
+                'pic' => (string)$row['art_pic'],
+                'type' => 'art',
+            ];
+        }
+        return $result;
+    }
+
+    private static function extractKeywordFromLike($kw)
+    {
+        $wd = trim((string)$kw);
+        if ($wd === '') {
+            return '';
+        }
+        if (substr($wd, 0, 1) === '%') {
+            $wd = substr($wd, 1);
+        }
+        if (substr($wd, -1) === '%') {
+            $wd = substr($wd, 0, -1);
+        }
+        return str_replace(['\\%', '\\_'], ['%', '_'], $wd);
+    }
+
+    private static function getInternalResultLimit()
+    {
+        $cfg = self::getConfig();
+        return max(1, intval($cfg['internal_result_limit']));
     }
 
     private static function queryTopicResources($kw)
