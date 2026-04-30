@@ -5,23 +5,29 @@
     <div class="showpic" style="display:none;"><img class="showpic_img" width="120" height="160"
             referrerPolicy="no-referrer"></div>
 
-    <form class="layui-form layui-form-pane" action="">
-        <input type="hidden" name="__token__" value="{$Request.token}" />
+    <form id="form_config_main" class="layui-form layui-form-pane" method="post" action=""
+        style="position:absolute;width:0;height:0;overflow:hidden;clip:rect(0,0,0,0);">
+        <input type="hidden" name="__token__" value="{$Request.token}" form="form_config_main" />
+        <input type="text" name="site[new_version]" value="{$config['site']['new_version']}" class="layui-input" hidden
+            autocomplete="off" form="form_config_main">
+    </form>
 
-        <div class="layui-tab" lay-filter="tb1">
+    <div class="layui-tab" lay-filter="tb1">
             <ul class="layui-tab-title">
                 <li class="layui-this" lay-id="config_1">{:lang('admin/system/config/base')}</li>
                 <li lay-id="config_2">{:lang('admin/system/config/performance')}</li>
                 <li lay-id="config_3">{:lang('admin/system/config/parameters')}</li>
                 <li lay-id="config_4">{:lang('admin/system/config/backstage')}</li>
+                <li lay-id="config_seo">{:lang('menu/configseo')}</li>
+                <li lay-id="config_aiseo">{:lang('menu/configaiseo')}</li>
             </ul>
             <div class="layui-tab-content">
-                <div class="layui-tab-item layui-show" id="movementTable">
+                <div class="layui-tab-item layui-show layui-form layui-form-pane" id="movementTable">
                     <div class="layui-form-item">
                         <label class="layui-form-label">{:lang('admin/system/config/site_name')}：</label>
                         <div class="layui-input-block">
                             <input type="text" name="site[site_name]" placeholder=""
-                                value="{$config['site']['site_name']}" class="layui-input">
+                                value="{$config['site']['site_name']}" class="layui-input" form="form_config_main">
                         </div>
                     </div>
                     <div class="layui-form-item">
@@ -29,7 +35,7 @@
                         <div class="layui-input-block">
                             <input type="text" name="site[site_url]"
                                 placeholder="{:lang('admin/system/config/site_url_tip')}"
-                                value="{$config['site']['site_url']}" class="layui-input">
+                                value="{$config['site']['site_url']}" class="layui-input" form="form_config_main">
                         </div>
                     </div>
                     <div class="layui-form-item">
@@ -37,21 +43,21 @@
                         <div class="layui-input-block">
                             <input type="text" name="site[site_wapurl]"
                                 placeholder="{:lang('admin/system/config/site_wapurl_tip')}"
-                                value="{$config['site']['site_wapurl']}" class="layui-input">
+                                value="{$config['site']['site_wapurl']}" class="layui-input" form="form_config_main">
                         </div>
                     </div>
                     <div class="layui-form-item">
                         <label class="layui-form-label">{:lang('admin/system/config/site_keywords')}：</label>
                         <div class="layui-input-block">
                             <input type="text" name="site[site_keywords]" placeholder=""
-                                value="{$config['site']['site_keywords']}" class="layui-input">
+                                value="{$config['site']['site_keywords']}" class="layui-input" form="form_config_main">
                         </div>
                     </div>
                     <div class="layui-form-item">
                         <label class="layui-form-label">{:lang('admin/system/config/site_description')}：</label>
                         <div class="layui-input-block">
                             <input type="text" name="site[site_description]" placeholder=""
-                                value="{$config['site']['site_description']}" class="layui-input">
+                                value="{$config['site']['site_description']}" class="layui-input" form="form_config_main">
                         </div>
                     </div>
 
@@ -59,21 +65,21 @@
                         <label class="layui-form-label">{:lang('admin/system/config/site_icp')}：</label>
                         <div class="layui-input-block">
                             <input type="text" name="site[site_icp]" placeholder=""
-                                value="{$config['site']['site_icp']}" class="layui-input">
+                                value="{$config['site']['site_icp']}" class="layui-input" form="form_config_main">
                         </div>
                     </div>
                     <div class="layui-form-item">
                         <label class="layui-form-label">{:lang('admin/system/config/site_qq')}：</label>
                         <div class="layui-input-block">
                             <input type="text" name="site[site_qq]" placeholder="" value="{$config['site']['site_qq']}"
-                                class="layui-input">
+                                class="layui-input" form="form_config_main">
                         </div>
                     </div>
                     <div class="layui-form-item">
                         <label class="layui-form-label">{:lang('admin/system/config/site_email')}：</label>
                         <div class="layui-input-block">
                             <input type="text" name="site[site_email]" placeholder=""
-                                value="{$config['site']['site_email']}" class="layui-input">
+                                value="{$config['site']['site_email']}" class="layui-input" form="form_config_main">
                         </div>
                     </div>
 
@@ -82,7 +88,7 @@
                         <div class="layui-input-block">
                             <input type="text" name="site[install_dir]"
                                 placeholder="{:lang('admin/system/config/install_dir_tip')}"
-                                value="{$config['site']['install_dir']}" class="layui-input">
+                                value="{$config['site']['install_dir']}" class="layui-input" form="form_config_main">
                         </div>
                     </div>
 
@@ -91,7 +97,7 @@
                         <div class="layui-input-inline w600">
                             <input type="text" name="site[site_logo]"
                                 placeholder="{:lang('admin/system/config/site_logo_tip')}"
-                                value="{$config['site']['site_logo']}" class="layui-input upload-input">
+                                value="{$config['site']['site_logo']}" class="layui-input upload-input" form="form_config_main">
                         </div>
                         <div class="layui-input-inline ">
                             <button type="button" class="layui-btn layui-upload"
@@ -104,7 +110,7 @@
                         <div class="layui-input-inline w600">
                             <input type="text" name="site[site_waplogo]"
                                 placeholder="{:lang('admin/system/config/site_logo_tip')}"
-                                value="{$config['site']['site_waplogo']}" class="layui-input upload-input">
+                                value="{$config['site']['site_waplogo']}" class="layui-input upload-input" form="form_config_main">
                         </div>
                         <div class="layui-input-inline ">
                             <button type="button" class="layui-btn layui-upload"
@@ -115,7 +121,7 @@
                     <div class="layui-form-item">
                         <label class="layui-form-label">{:lang('admin/system/config/site_banner')}：</label>
                         <div class="layui-input-block">
-                            <input type="hidden" name="site[site_banner]" id="hidden_site_banner" value="{$config['site']['site_banner']}">
+                            <input type="hidden" name="site[site_banner]" id="hidden_site_banner" value="{$config['site']['site_banner']}" form="form_config_main">
                             <div id="banner-inputs-container"></div>
                         </div>
                     </div>
@@ -129,7 +135,7 @@
                     <div class="layui-form-item">
                         <label class="layui-form-label">{:lang('admin/system/config/site_app_launch_image')}：</label>
                         <div class="layui-input-inline w600">
-                            <input type="text" name="site[site_app_launch_image]" placeholder="" value="{$config['site']['site_app_launch_image']}" class="layui-input upload-input">
+                            <input type="text" name="site[site_app_launch_image]" placeholder="" value="{$config['site']['site_app_launch_image']}" class="layui-input upload-input" form="form_config_main">
                         </div>
                         <div class="layui-input-inline ">
                             <button type="button" class="layui-btn layui-upload" lay-data="{data:{thumb:0,thumb_class:''}}" id="upload_app_launch_image">{:lang('upload_pic')}</button>
@@ -140,7 +146,7 @@
                     <div class="layui-form-item">
                         <label class="layui-form-label">{:lang('admin/system/config/template_dir')}：</label>
                         <div class="layui-input-inline">
-                            <select class="w150" name="site[template_dir]">
+                            <select class="w150" name="site[template_dir]" form="form_config_main">
                                 {volist name="templates" id="vo"}
                                 <option value="{$vo}" {if condition="$config['site']['template_dir'] eq $vo" }selected
                                     {/if}>{$vo}</option>
@@ -150,7 +156,7 @@
                         <label class="layui-form-label">{:lang('admin/system/config/html_dir')}：</label>
                         <div class="layui-input-inline">
                             <input type="text" name="site[html_dir]" placeholder=""
-                                value="{$config['site']['html_dir']}" class="layui-input w150">
+                                value="{$config['site']['html_dir']}" class="layui-input w150" form="form_config_main">
                         </div>
                     </div>
 
@@ -158,10 +164,10 @@
                         <label class="layui-form-label">{:lang('admin/system/config/site_polyfill')}：</label>
                         <div class="layui-input-inline w300">
                             <input type="radio" name="site[site_polyfill]" value="0" title="{:lang('close')}" {if
-                                condition="!isset($config['site']['site_polyfill']) or $config['site']['site_polyfill'] eq 0" }checked {/if}>
+                                condition="!isset($config['site']['site_polyfill']) or $config['site']['site_polyfill'] eq 0" }checked {/if} form="form_config_main">
                             <input type="radio" name="site[site_polyfill]" value="1" title="{:lang('open')}" {if
                                 condition="$config['site']['site_polyfill'] eq 1"
-                                }checked {/if}>
+                                }checked {/if} form="form_config_main">
                         </div>
                         <div class="layui-form-mid layui-word-aux">{:lang('admin/system/config/site_polyfill_tip')}
                         </div>
@@ -171,20 +177,20 @@
                         <label class="layui-form-label">{:lang('admin/system/config/mob_status')}：</label>
                         <div class="layui-input-inline w300">
                             <input type="radio" name="site[mob_status]" value="0" title="{:lang('close')}" {if
-                                condition="$config['site']['mob_status'] neq 1" }checked {/if}>
+                                condition="$config['site']['mob_status'] neq 1" }checked {/if} form="form_config_main">
                             <input type="radio" name="site[mob_status]" value="1"
                                 title="{:lang('admin/system/config/mob_multiple')}" {if
-                                condition="$config['site']['mob_status'] eq 1" }checked {/if}>
+                                condition="$config['site']['mob_status'] eq 1" }checked {/if} form="form_config_main">
                             <input type="radio" name="site[mob_status]" value="2"
                                 title="{:lang('admin/system/config/mob_one')}" {if
-                                condition="$config['site']['mob_status'] eq 2" }checked {/if}>
+                                condition="$config['site']['mob_status'] eq 2" }checked {/if} form="form_config_main">
                         </div>
                         <div class="layui-form-mid layui-word-aux">{:lang('admin/system/config/mob_status_tip')}</div>
                     </div>
                     <div class="layui-form-item">
                         <label class="layui-form-label">{:lang('admin/system/config/mob_template_dir')}：</label>
                         <div class="layui-input-inline">
-                            <select class="w150" name="site[mob_template_dir]">
+                            <select class="w150" name="site[mob_template_dir]" form="form_config_main">
                                 {volist name="templates" id="vo"}
                                 <option value="{$vo}" {if condition="$config['site']['mob_template_dir'] eq $vo"
                                     }selected {/if}>{$vo}</option>
@@ -194,30 +200,30 @@
                         <label class="layui-form-label">{:lang('admin/system/config/html_dir')}：</label>
                         <div class="layui-input-inline">
                             <input type="text" name="site[mob_html_dir]" placeholder=""
-                                value="{$config['site']['mob_html_dir']}" class="layui-input w150">
+                                value="{$config['site']['mob_html_dir']}" class="layui-input w150" form="form_config_main">
                         </div>
                     </div>
                     <div class="layui-form-item">
                         <label class="layui-form-label">{:lang('admin/system/config/site_tj')}：</label>
                         <div class="layui-input-block">
                             <textarea name="site[site_tj]" class="layui-textarea"
-                                placeholder="">{$config['site']['site_tj']}</textarea>
+                                placeholder="" form="form_config_main">{$config['site']['site_tj']}</textarea>
                         </div>
                     </div>
                     <div class="layui-form-item">
                         <label class="layui-form-label">{:lang('admin/system/config/site_status')}：</label>
                         <div class="layui-input-block">
                             <input type="radio" name="site[site_status]" value="0" title="{:lang('close')}" {if
-                                condition="$config['site']['site_status'] eq 0" }checked {/if}>
+                                condition="$config['site']['site_status'] eq 0" }checked {/if} form="form_config_main">
                             <input type="radio" name="site[site_status]" value="1" title="{:lang('open')}" {if
-                                condition="$config['site']['site_status'] eq 1" }checked {/if}>
+                                condition="$config['site']['site_status'] eq 1" }checked {/if} form="form_config_main">
                         </div>
                     </div>
                     <div class="layui-form-item">
                         <label class="layui-form-label">{:lang('admin/system/config/site_close_tip')}：</label>
                         <div class="layui-input-block">
                             <textarea name="site[site_close_tip]" class="layui-textarea"
-                                placeholder="">{$config['site']['site_close_tip']}</textarea>
+                                placeholder="" form="form_config_main">{$config['site']['site_close_tip']}</textarea>
                         </div>
                     </div>
 
@@ -225,23 +231,30 @@
                         <label class="layui-form-label">{:lang('admin/system/config/mainland_ip_limit')}：</label>
                         <div class="layui-input-inline w350">
                             <input type="radio" name="site[mainland_ip_limit]" value="0" title="{:lang('close')}" {if
-                                condition="$config['site']['mainland_ip_limit'] eq 0 or !isset($config['site']['mainland_ip_limit'])" }checked {/if}>
+                                condition="$config['site']['mainland_ip_limit'] eq 0 or !isset($config['site']['mainland_ip_limit'])" }checked {/if} form="form_config_main">
                             <input type="radio" name="site[mainland_ip_limit]" value="1" title="{:lang('admin/system/config/mainland_ip_only_allow')}" {if
-                                condition="$config['site']['mainland_ip_limit'] eq 1" }checked {/if}>
+                                condition="$config['site']['mainland_ip_limit'] eq 1" }checked {/if} form="form_config_main">
                             <input type="radio" name="site[mainland_ip_limit]" value="2" title="{:lang('admin/system/config/mainland_ip_not_allow')}" {if
-                                condition="$config['site']['mainland_ip_limit'] eq 2" }checked {/if}>
+                                condition="$config['site']['mainland_ip_limit'] eq 2" }checked {/if} form="form_config_main">
                         </div>
                         <div class="layui-form-mid layui-word-aux">{:lang('admin/system/config/mainland_ip_limit_tip')}</div>
                     </div>
 
-                    
+                <div class="layui-form-item center main-config-save">
+                    <div class="layui-input-block">
+                        <button type="submit" class="layui-btn" lay-submit="" form="form_config_main"
+                            lay-filter="formSubmit">{:lang('btn_save')}</button>
+                        <button class="layui-btn layui-btn-primary" type="reset" form="form_config_main">{:lang('btn_reset')}</button>
+                    </div>
                 </div>
 
-                <div class="layui-tab-item" id="movementTable">
+                </div>
+
+                <div class="layui-tab-item layui-form layui-form-pane" id="movementTable">
                     <div class="layui-form-item">
                         <label class="layui-form-label">{:lang('admin/system/config/pathinfo_depr')}：</label>
                         <div class="layui-input-inline w150">
-                            <select class="w150" name="app[pathinfo_depr]">
+                            <select class="w150" name="app[pathinfo_depr]" form="form_config_main">
                                 <option value="/" {if condition="$config['app']['pathinfo_depr'] eq '/'" }selected
                                     {/if}>{:lang('admin/system/config/xg')}</option>
                                 <option value="-" {if condition="$config['app']['pathinfo_depr'] eq '-'" }selected
@@ -257,7 +270,7 @@
                     <div class="layui-form-item">
                         <label class="layui-form-label">{:lang('admin/system/config/suffix')}：</label>
                         <div class="layui-input-inline">
-                            <select style="width:150px;" name="app[suffix]">
+                            <select style="width:150px;" name="app[suffix]" form="form_config_main">
                                 <option value="html" {if condition="$config['app']['suffix'] eq 'html'" }selected {/if}>html</option>
                                 <option value="htm" {if condition="$config['app']['suffix'] eq 'htm'" }selected {/if}>htm</option>
                             </select>
@@ -268,9 +281,9 @@
                         <label class="layui-form-label">{:lang('admin/system/config/popedom_filter')}：</label>
                         <div class="layui-input-inline">
                             <input type="radio" name="app[popedom_filter]" value="0" title="{:lang('close')}" {if
-                                condition="$config['app']['popedom_filter'] neq 1" }checked {/if}>
+                                condition="$config['app']['popedom_filter'] neq 1" }checked {/if} form="form_config_main">
                             <input type="radio" name="app[popedom_filter]" value="1" title="{:lang('open')}" {if
-                                condition="$config['app']['popedom_filter'] eq 1" }checked {/if}>
+                                condition="$config['app']['popedom_filter'] eq 1" }checked {/if} form="form_config_main">
                         </div>
                         <div class="layui-form-mid layui-word-aux">{:lang('admin/system/config/popedom_filter_tip')}
                         </div>
@@ -283,19 +296,19 @@
                             <input type="radio" name="app[cache_type]" lay-filter="cache_type" value="file" title="file"
                                 {if
                                 condition="$config['app']['cache_type'] eq '0' || $config['app']['cache_type'] eq 'file' "
-                                }checked {/if}>
+                                }checked {/if} form="form_config_main">
                             <input type="radio" name="app[cache_type]" lay-filter="cache_type" value="memcache"
                                 title="memcache" {if
                                 condition="$config['app']['cache_type'] eq '1' || $config['app']['cache_type'] eq 'memcache'"
-                                }checked {/if}>
+                                }checked {/if} form="form_config_main">
                             <input type="radio" name="app[cache_type]" lay-filter="cache_type" value="redis"
                                 title="redis" {if
                                 condition="$config['app']['cache_type'] eq '2' || $config['app']['cache_type'] eq 'redis'"
-                                }checked {/if}>
+                                }checked {/if} form="form_config_main">
                             <input type="radio" name="app[cache_type]" lay-filter="cache_type" value="memcached"
                                 title="memcached" {if
                                 condition="$config['app']['cache_type'] eq '3' || $config['app']['cache_type'] eq 'memcached'"
-                                }checked {/if}>
+                                }checked {/if} form="form_config_main">
                         </div>
                     </div>
 
@@ -306,31 +319,31 @@
                         <div class="layui-input-inline w150">
                             <input type="text" name="app[cache_host]"
                                 placeholder="{:lang('admin/system/config/cache_host_tip')}"
-                                value="{$config['app']['cache_host']}" class="layui-input">
+                                value="{$config['app']['cache_host']}" class="layui-input" form="form_config_main">
                         </div>
                         <label class="layui-form-label">{:lang('admin/system/config/cache_port')}：</label>
                         <div class="layui-input-inline w150">
                             <input type="text" name="app[cache_port]"
                                 placeholder="{:lang('admin/system/config/cache_port_tip')}"
-                                value="{$config['app']['cache_port']}" class="layui-input">
+                                value="{$config['app']['cache_port']}" class="layui-input" form="form_config_main">
                         </div>
                         <label class="layui-form-label">{:lang('admin/system/config/cache_username')}：</label>
                         <div class="layui-input-inline">
                             <input type="text" name="app[cache_username]"
                                 placeholder="{:lang('admin/system/config/cache_username_tip')}"
-                                value="{$config['app']['cache_username']}" class="layui-input">
+                                value="{$config['app']['cache_username']}" class="layui-input" form="form_config_main">
                         </div>
                         <label class="layui-form-label">{:lang('admin/system/config/cache_password')}：</label>
                         <div class="layui-input-inline">
                             <input type="text" name="app[cache_password]"
                                 placeholder="{:lang('admin/system/config/cache_password_tip')}"
-                                value="{$config['app']['cache_password']}" class="layui-input">
+                                value="{$config['app']['cache_password']}" class="layui-input" form="form_config_main">
                         </div>
                         <label class="layui-form-label">DB：</label>
                         <div class="layui-input-inline w150">
                             <input type="text" name="app[cache_db]"
                                 placeholder="Redis数据库索引(默认0)"
-                                value="{$config['app']['cache_db']|default='0'}" class="layui-input">
+                                value="{$config['app']['cache_db']|default='0'}" class="layui-input" form="form_config_main">
                         </div>
                         <button type="button" class="layui-btn layui-btn-normal"
                             onclick="test_cache()">{:lang('admin/system/config/cache_test')}</button>
@@ -341,7 +354,7 @@
                         <div class="layui-input-inline">
                             <input type="text" name="app[cache_flag]"
                                 placeholder="{:lang('admin/system/config/cache_flag_auto')}"
-                                value="{$config['app']['cache_flag']}" class="layui-input w150">
+                                value="{$config['app']['cache_flag']}" class="layui-input w150" form="form_config_main">
                         </div>
                         <div class="layui-form-mid layui-word-aux">{:lang('admin/system/config/cache_flag_tip')}</div>
                     </div>
@@ -350,16 +363,16 @@
                         <label class="layui-form-label">{:lang('admin/system/config/cache_core')}：</label>
                         <div class="layui-input-block">
                             <input type="radio" name="app[cache_core]" value="0" title="{:lang('close')}" {if
-                                condition="$config['app']['cache_core'] neq 1" }checked {/if}>
+                                condition="$config['app']['cache_core'] neq 1" }checked {/if} form="form_config_main">
                             <input type="radio" name="app[cache_core]" value="1" title="{:lang('open')}" {if
-                                condition="$config['app']['cache_core'] eq 1" }checked {/if}>
+                                condition="$config['app']['cache_core'] eq 1" }checked {/if} form="form_config_main">
                         </div>
                     </div>
                     <div class="layui-form-item">
                         <label class="layui-form-label">{:lang('admin/system/config/cache_time')}：</label>
                         <div class="layui-input-inline">
                             <input type="text" name="app[cache_time]" placeholder=""
-                                value="{$config['app']['cache_time']}" class="layui-input w150">
+                                value="{$config['app']['cache_time']}" class="layui-input w150" form="form_config_main">
                         </div>
                         <div class="layui-form-mid layui-word-aux">{:lang('admin/system/config/cache_time_tip')}</div>
                     </div>
@@ -368,16 +381,16 @@
                         <label class="layui-form-label">{:lang('admin/system/config/cache_page')}：</label>
                         <div class="layui-input-block">
                             <input type="radio" name="app[cache_page]" value="0" title="{:lang('close')}" {if
-                                condition="$config['app']['cache_page'] neq 1" }checked {/if}>
+                                condition="$config['app']['cache_page'] neq 1" }checked {/if} form="form_config_main">
                             <input type="radio" name="app[cache_page]" value="1" title="{:lang('open')}" {if
-                                condition="$config['app']['cache_page'] eq 1" }checked {/if}>
+                                condition="$config['app']['cache_page'] eq 1" }checked {/if} form="form_config_main">
                         </div>
                     </div>
                     <div class="layui-form-item">
                         <label class="layui-form-label">{:lang('admin/system/config/cache_time_page')}：</label>
                         <div class="layui-input-inline">
                             <input type="text" name="app[cache_time_page]" placeholder=""
-                                value="{$config['app']['cache_time_page']}" class="layui-input w150">
+                                value="{$config['app']['cache_time_page']}" class="layui-input w150" form="form_config_main">
                         </div>
                         <div class="layui-form-mid layui-word-aux">{:lang('admin/system/config/cache_time_tip')}</div>
                     </div>
@@ -386,18 +399,18 @@
                         <label class="layui-form-label">{:lang('admin/system/config/compress')}：</label>
                         <div class="layui-input-block">
                             <input type="radio" name="app[compress]" value="0" title="{:lang('close')}" {if
-                                condition="$config['app']['compress'] neq 1" }checked {/if}>
+                                condition="$config['app']['compress'] neq 1" }checked {/if} form="form_config_main">
                             <input type="radio" name="app[compress]" value="1" title="{:lang('open')}" {if
-                                condition="$config['app']['compress'] eq 1" }checked {/if}>
+                                condition="$config['app']['compress'] eq 1" }checked {/if} form="form_config_main">
                         </div>
                     </div>
                     <div class="layui-form-item layui-hide">
                         <label class="layui-form-label">{:lang('admin/system/config/input_type')}：</label>
                         <div class="layui-input-inline w600">
                             <input type="radio" name="app[input_type]" value="1" title="{:lang('get+post')}" {if
-                                condition="$config['app']['input_type'] neq 0" }checked {/if}>
+                                condition="$config['app']['input_type'] neq 0" }checked {/if} form="form_config_main">
                             <input type="radio" name="app[input_type]" value="0" title="{:lang('get')}" {if
-                                condition="$config['app']['input_type'] eq 0" }checked {/if}>
+                                condition="$config['app']['input_type'] eq 0" }checked {/if} form="form_config_main">
                         </div>
                         <div class="layui-form-mid layui-word-aux">{:lang('admin/system/config/input_type_tip')}</div>
                     </div>
@@ -405,9 +418,9 @@
                         <label class="layui-form-label">{:lang('admin/system/config/ajax_page')}：</label>
                         <div class="layui-input-inline w600">
                             <input type="radio" name="app[ajax_page]" value="0" title="{:lang('close')}" {if
-                                condition="$config['app']['ajax_page'] neq 1" }checked {/if}>
+                                condition="$config['app']['ajax_page'] neq 1" }checked {/if} form="form_config_main">
                             <input type="radio" name="app[ajax_page]" value="1" title="{:lang('open')}" {if
-                                condition="$config['app']['ajax_page'] eq 1" }checked {/if}>
+                                condition="$config['app']['ajax_page'] eq 1" }checked {/if} form="form_config_main">
                         </div>
                         <div class="layui-form-mid layui-word-aux">{:lang('admin/system/config/ajax_page_tip')}</div>
                     </div>
@@ -416,13 +429,13 @@
                         <div class="layui-input-inline w600">
                             <input type="radio" name="app[wall_filter]" value="0" title="{:lang('close')}" {if
                                 condition="$config['app']['wall_filter'] neq 1 && $config['app']['wall_filter'] neq 2"
-                                }checked {/if}>
+                                }checked {/if} form="form_config_main">
                             <input type="radio" name="app[wall_filter]" value="1"
                                 title="{:lang('admin/system/config/wall_unicode')}" {if
-                                condition="$config['app']['wall_filter'] eq 1" }checked {/if}>
+                                condition="$config['app']['wall_filter'] eq 1" }checked {/if} form="form_config_main">
                             <input type="radio" name="app[wall_filter]" value="2"
                                 title="{:lang('admin/system/config/wall_blank')}" {if
-                                condition="$config['app']['wall_filter'] eq 2" }checked {/if}>
+                                condition="$config['app']['wall_filter'] eq 2" }checked {/if} form="form_config_main">
                         </div>
                         <div class="layui-form-mid layui-word-aux">{:lang('admin/system/config/wall_filter_tip')}</div>
                     </div>
@@ -430,43 +443,43 @@
                         <label class="layui-form-label">{:lang('admin/system/config/show')}：</label>
                         <div class="layui-input-block">
                             <input type="radio" name="app[show]" value="0" title="{:lang('close')}" {if
-                                condition="$config['app']['show'] neq 1" }checked {/if}>
+                                condition="$config['app']['show'] neq 1" }checked {/if} form="form_config_main">
                             <input type="radio" name="app[show]" value="1" title="{:lang('open')}" {if
-                                condition="$config['app']['show'] eq 1" }checked {/if}>
+                                condition="$config['app']['show'] eq 1" }checked {/if} form="form_config_main">
                         </div>
                     </div>
                     <div class="layui-form-item">
                         <label class="layui-form-label">{:lang('admin/system/config/show_verify')}：</label>
                         <div class="layui-input-block">
                             <input type="radio" name="app[show_verify]" value="0" title="{:lang('close')}" {if
-                                condition="$config['app']['show_verify'] neq 1" }checked {/if}>
+                                condition="$config['app']['show_verify'] neq 1" }checked {/if} form="form_config_main">
                             <input type="radio" name="app[show_verify]" value="1" title="{:lang('open')}" {if
-                                condition="$config['app']['show_verify'] eq 1" }checked {/if}>
+                                condition="$config['app']['show_verify'] eq 1" }checked {/if} form="form_config_main">
                         </div>
                     </div>
                     <div class="layui-form-item">
                         <label class="layui-form-label">{:lang('admin/system/config/search')}：</label>
                         <div class="layui-input-block">
                             <input type="radio" name="app[search]" value="0" title="{:lang('close')}" {if
-                                condition="$config['app']['search'] neq 1" }checked {/if}>
+                                condition="$config['app']['search'] neq 1" }checked {/if} form="form_config_main">
                             <input type="radio" name="app[search]" value="1" title="{:lang('open')}" {if
-                                condition="$config['app']['search'] eq 1" }checked {/if}>
+                                condition="$config['app']['search'] eq 1" }checked {/if} form="form_config_main">
                         </div>
                     </div>
                     <div class="layui-form-item">
                         <label class="layui-form-label">{:lang('admin/system/config/search_verify')}：</label>
                         <div class="layui-input-block">
                             <input type="radio" name="app[search_verify]" value="0" title="{:lang('close')}" {if
-                                condition="$config['app']['search_verify'] neq 1" }checked {/if}>
+                                condition="$config['app']['search_verify'] neq 1" }checked {/if} form="form_config_main">
                             <input type="radio" name="app[search_verify]" value="1" title="{:lang('open')}" {if
-                                condition="$config['app']['search_verify'] eq 1" }checked {/if}>
+                                condition="$config['app']['search_verify'] eq 1" }checked {/if} form="form_config_main">
                         </div>
                     </div>
                     <div class="layui-form-item">
                         <label class="layui-form-label">{:lang('admin/system/config/search_len')}：</label>
                         <div class="layui-input-inline">
                             <input type="text" name="app[search_len]" placeholder=""
-                                value="{$config['app']['search_len']}" class="layui-input w150">
+                                value="{$config['app']['search_len']}" class="layui-input w150" form="form_config_main">
                         </div>
                         <div class="layui-form-mid layui-word-aux">{:lang('admin/system/config/search_len_tip')}</div>
                     </div>
@@ -474,7 +487,7 @@
                         <label class="layui-form-label">{:lang('admin/system/config/search_timespan')}：</label>
                         <div class="layui-input-inline">
                             <input type="text" name="app[search_timespan]" placeholder=""
-                                value="{$config['app']['search_timespan']}" class="layui-input w150">
+                                value="{$config['app']['search_timespan']}" class="layui-input w150" form="form_config_main">
                         </div>
                         <div class="layui-form-mid layui-word-aux">{:lang('admin/system/config/search_timespan_tip')}
                         </div>
@@ -484,24 +497,24 @@
                         <label class="layui-form-label">{:lang('admin/system/config/search_vod_rule')}：</label>
                         <div class="layui-input-inline w600">
                             <input type="checkbox" lay-skin="primary" name="app[search_vod_rule][]" value="vod_name"
-                                title="{:lang('name')}" checked disabled>
+                                title="{:lang('name')}" checked disabled form="form_config_main">
                             <input type="checkbox" lay-skin="primary" name="app[search_vod_rule][]" value="vod_en"
                                 title="{:lang('en')}" {if
-                                condition="strpos($config['app']['search_vod_rule'],'vod_en') !==false" }checked {/if}>
+                                condition="strpos($config['app']['search_vod_rule'],'vod_en') !==false" }checked {/if} form="form_config_main">
                             <input type="checkbox" lay-skin="primary" name="app[search_vod_rule][]" value="vod_sub"
                                 title="{:lang('sub')}" {if
-                                condition="strpos($config['app']['search_vod_rule'],'vod_sub') !==false" }checked {/if}>
+                                condition="strpos($config['app']['search_vod_rule'],'vod_sub') !==false" }checked {/if} form="form_config_main">
                             <input type="checkbox" lay-skin="primary" name="app[search_vod_rule][]" value="vod_tag"
                                 title="tag" {if condition="strpos($config['app']['search_vod_rule'],'vod_tag') !==false"
-                                }checked {/if}>
+                                }checked {/if} form="form_config_main">
                             <input type="checkbox" lay-skin="primary" name="app[search_vod_rule][]" value="vod_actor"
                                 title="{:lang('actor')}" {if
                                 condition="strpos($config['app']['search_vod_rule'],'vod_actor') !==false" }checked
-                                {/if}>
+                                {/if} form="form_config_main">
                             <input type="checkbox" lay-skin="primary" name="app[search_vod_rule][]" value="vod_director"
                                 title="{:lang('director')}" {if
                                 condition="strpos($config['app']['search_vod_rule'],'vod_director') !==false" }checked
-                                {/if}>
+                                {/if} form="form_config_main">
                         </div>
                         <div class="layui-form-mid layui-word-aux">{:lang('admin/system/config/search_rule_tip')}</div>
                     </div>
@@ -510,16 +523,16 @@
                         <label class="layui-form-label">{:lang('admin/system/config/search_art_rule')}：</label>
                         <div class="layui-input-inline w600">
                             <input type="checkbox" lay-skin="primary" name="app[search_art_rule][]" value="art_name"
-                                title="{:lang('name')}" checked disabled>
+                                title="{:lang('name')}" checked disabled form="form_config_main">
                             <input type="checkbox" lay-skin="primary" name="app[search_art_rule][]" value="art_en"
                                 title="{:lang('en')}" {if
-                                condition="strpos($config['app']['search_art_rule'],'art_en') !==false" }checked {/if}>
+                                condition="strpos($config['app']['search_art_rule'],'art_en') !==false" }checked {/if} form="form_config_main">
                             <input type="checkbox" lay-skin="primary" name="app[search_art_rule][]" value="art_sub"
                                 title="{:lang('sub')}" {if
-                                condition="strpos($config['app']['search_art_rule'],'art_sub') !==false" }checked {/if}>
+                                condition="strpos($config['app']['search_art_rule'],'art_sub') !==false" }checked {/if} form="form_config_main">
                             <input type="checkbox" lay-skin="primary" name="app[search_art_rule][]" value="art_tag"
                                 title="tag" {if condition="strpos($config['app']['search_art_rule'],'art_tag') !==false"
-                                }checked {/if}>
+                                }checked {/if} form="form_config_main">
                         </div>
                         <div class="layui-form-mid layui-word-aux">{:lang('admin/system/config/search_rule_tip')}</div>
                     </div>
@@ -530,11 +543,11 @@
                             <input type="checkbox" lay-skin="primary" name="app[vod_search_optimise][]" value="frontend"
                                 title="{:lang('admin/system/config/vod_search_optimise/frontend')}" {if
                                 condition="strpos($config['app']['vod_search_optimise'],'frontend') !==false" }checked
-                                {/if}>
+                                {/if} form="form_config_main">
                             <input type="checkbox" lay-skin="primary" name="app[vod_search_optimise][]" value="collect"
                                 title="{:lang('admin/system/config/vod_search_optimise/collect')}" {if
                                 condition="strpos($config['app']['vod_search_optimise'],'collect') !==false" }checked
-                                {/if}>
+                                {/if} form="form_config_main">
                         </div>
                         <div class="layui-form-mid layui-word-aux">
                             {:lang('admin/system/config/vod_search_optimise_tip')}</div>
@@ -544,7 +557,7 @@
                             class="layui-form-label">{:lang('admin/system/config/vod_search_optimise_cache_minutes')}：</label>
                         <div class="layui-input-inline">
                             <input type="text" name="app[vod_search_optimise_cache_minutes]" placeholder=""
-                                value="{$config['app']['vod_search_optimise_cache_minutes']}" class="layui-input w150">
+                                value="{$config['app']['vod_search_optimise_cache_minutes']}" class="layui-input w150" form="form_config_main">
                         </div>
                         <div class="layui-form-mid layui-word-aux">
                             {:lang('admin/system/config/vod_search_optimise_cache_minutes_tip')}</div>
@@ -554,35 +567,35 @@
                         <label class="layui-form-label">{:lang('admin/system/config/copyright_status')}：</label>
                         <div class="layui-input-block">
                             <input type="radio" name="app[copyright_status]" value="0" title="{:lang('close')}" {if
-                                condition="$config['app']['copyright_status'] eq 0" }checked {/if}>
+                                condition="$config['app']['copyright_status'] eq 0" }checked {/if} form="form_config_main">
                             <input type="radio" name="app[copyright_status]" value="1"
                                 title="{:lang('admin/system/config/copyright_msg')}" {if
-                                condition="$config['app']['copyright_status'] eq 1" }checked {/if}>
+                                condition="$config['app']['copyright_status'] eq 1" }checked {/if} form="form_config_main">
                             <input type="radio" name="app[copyright_status]" value="2"
                                 title="{:lang('admin/system/config/copyright_jump_detail')}" {if
-                                condition="$config['app']['copyright_status'] eq 2" }checked {/if}>
+                                condition="$config['app']['copyright_status'] eq 2" }checked {/if} form="form_config_main">
                             <input type="radio" name="app[copyright_status]" value="3"
                                 title="{:lang('admin/system/config/copyright_jump_play')}" {if
-                                condition="$config['app']['copyright_status'] eq 3" }checked {/if}>
+                                condition="$config['app']['copyright_status'] eq 3" }checked {/if} form="form_config_main">
                             <input type="radio" name="app[copyright_status]" value="4"
                                 title="{:lang('admin/system/config/copyright_jump_iframe')}" {if
-                                condition="$config['app']['copyright_status'] eq 4" }checked {/if}>
+                                condition="$config['app']['copyright_status'] eq 4" }checked {/if} form="form_config_main">
                         </div>
                     </div>
                     <div class="layui-form-item">
                         <label class="layui-form-label">{:lang('admin/system/config/copyright_notice')}：</label>
                         <div class="layui-input-inline w500">
                             <input type="text" name="app[copyright_notice]" placeholder=""
-                                value="{$config['app']['copyright_notice']}" class="layui-input">
+                                value="{$config['app']['copyright_notice']}" class="layui-input" form="form_config_main">
                         </div>
                     </div>
                     <div class="layui-form-item">
                         <label class="layui-form-label">{:lang('admin/system/config/browser_junmp')}：</label>
                         <div class="layui-input-inline">
                             <input type="radio" name="app[browser_junmp]" value="0" title="{:lang('close')}" {if
-                                condition="$config['app']['browser_junmp'] eq 0" }checked {/if}>
+                                condition="$config['app']['browser_junmp'] eq 0" }checked {/if} form="form_config_main">
                             <input type="radio" name="app[browser_junmp]" value="1" title="{:lang('open')}" {if
-                                condition="$config['app']['browser_junmp'] eq 1" }checked {/if}>
+                                condition="$config['app']['browser_junmp'] eq 1" }checked {/if} form="form_config_main">
                         </div>
                         <div class="layui-form-mid layui-word-aux">{:lang('admin/system/config/browser_junmp_tip')}
                         </div>
@@ -591,28 +604,36 @@
                         <label class="layui-form-label">{:lang('admin/system/config/404')}：</label>
                         <div class="layui-input-inline">
                             <input type="text" name="app[page_404]" placeholder="" value="{$config['app']['page_404']}"
-                                class="layui-input w150">
+                                class="layui-input w150" form="form_config_main">
                         </div>
                         <div class="layui-form-mid layui-word-aux">{:lang('admin/system/config/404_tip')}</div>
                     </div>
+
+                <div class="layui-form-item center main-config-save">
+                    <div class="layui-input-block">
+                        <button type="submit" class="layui-btn" lay-submit="" form="form_config_main"
+                            lay-filter="formSubmit">{:lang('btn_save')}</button>
+                        <button class="layui-btn layui-btn-primary" type="reset" form="form_config_main">{:lang('btn_reset')}</button>
+                    </div>
+                </div>
                 </div>
 
-                <div class="layui-tab-item" id="movementTable">
+                <div class="layui-tab-item layui-form layui-form-pane" id="movementTable">
                     <div class="layui-form-item">
                         <label class="layui-form-label">{:lang('admin/system/config/player_sort')}：</label>
                         <div class="layui-input-inline">
                             <input type="radio" name="app[player_sort]" value="0" title="{:lang('add')}" {if
-                                condition="$config['app']['player_sort'] eq 0" }checked {/if}>
+                                condition="$config['app']['player_sort'] eq 0" }checked {/if} form="form_config_main">
                             <input type="radio" name="app[player_sort]" value="1"
                                 title="{:lang('admin/system/config/global')}" {if
-                                condition="$config['app']['player_sort'] eq 1" }checked {/if}>
+                                condition="$config['app']['player_sort'] eq 1" }checked {/if} form="form_config_main">
                         </div>
                         <div class="layui-form-mid layui-word-aux">{:lang('admin/system/config/player_sort_tip')}</div>
                     </div>
                     <div class="layui-form-item">
                         <label class="layui-form-label">{:lang('admin/system/config/encrypt')}：</label>
                         <div class="layui-input-inline">
-                            <select style="width:150px;" name="app[encrypt]">
+                            <select style="width:150px;" name="app[encrypt]" form="form_config_main">
                                 <option value="0">{:lang('admin/system/config/encrypt_not')}</option>
                                 <option value="1" {if condition="$config['app']['encrypt'] eq 1" }selected {/if}>escape
                                 </option>
@@ -626,7 +647,7 @@
                         <label class="layui-form-label">{:lang('admin/system/config/search_hot')}：</label>
                         <div class="layui-input-block">
                             <input type="text" name="app[search_hot]" placeholder="{:lang('multi_separate_tip')}"
-                                value="{$config['app']['search_hot']}" class="layui-input">
+                                value="{$config['app']['search_hot']}" class="layui-input" form="form_config_main">
                         </div>
                     </div>
 
@@ -634,7 +655,7 @@
                         <label class="layui-form-label">{:lang('admin/system/config/art_extend_class')}：</label>
                         <div class="layui-input-block">
                             <input type="text" name="app[art_extend_class]" placeholder=""
-                                value="{$config['app']['art_extend_class']}" class="layui-input">
+                                value="{$config['app']['art_extend_class']}" class="layui-input" form="form_config_main">
                         </div>
                     </div>
 
@@ -642,7 +663,7 @@
                         <label class="layui-form-label">{:lang('admin/system/config/vod_extend_class')}：</label>
                         <div class="layui-input-block">
                             <input type="text" name="app[vod_extend_class]" placeholder=""
-                                value="{$config['app']['vod_extend_class']}" class="layui-input">
+                                value="{$config['app']['vod_extend_class']}" class="layui-input" form="form_config_main">
                         </div>
                     </div>
 
@@ -650,7 +671,7 @@
                         <label class="layui-form-label">{:lang('admin/system/config/vod_extend_state')}：</label>
                         <div class="layui-input-block">
                             <input type="text" name="app[vod_extend_state]" placeholder=""
-                                value="{$config['app']['vod_extend_state']}" class="layui-input">
+                                value="{$config['app']['vod_extend_state']}" class="layui-input" form="form_config_main">
                         </div>
                     </div>
 
@@ -658,7 +679,7 @@
                         <label class="layui-form-label">{:lang('admin/system/config/vod_extend_version')}：</label>
                         <div class="layui-input-block">
                             <input type="text" name="app[vod_extend_version]" placeholder=""
-                                value="{$config['app']['vod_extend_version']}" class="layui-input">
+                                value="{$config['app']['vod_extend_version']}" class="layui-input" form="form_config_main">
                         </div>
                     </div>
 
@@ -666,28 +687,28 @@
                         <label class="layui-form-label">{:lang('admin/system/config/vod_extend_area')}：</label>
                         <div class="layui-input-block">
                             <input type="text" name="app[vod_extend_area]" placeholder=""
-                                value="{$config['app']['vod_extend_area']}" class="layui-input">
+                                value="{$config['app']['vod_extend_area']}" class="layui-input" form="form_config_main">
                         </div>
                     </div>
                     <div class="layui-form-item">
                         <label class="layui-form-label">{:lang('admin/system/config/vod_extend_lang')}：</label>
                         <div class="layui-input-block">
                             <input type="text" name="app[vod_extend_lang]" placeholder=""
-                                value="{$config['app']['vod_extend_lang']}" class="layui-input">
+                                value="{$config['app']['vod_extend_lang']}" class="layui-input" form="form_config_main">
                         </div>
                     </div>
                     <div class="layui-form-item">
                         <label class="layui-form-label">{:lang('admin/system/config/vod_extend_year')}：</label>
                         <div class="layui-input-block">
                             <input type="text" name="app[vod_extend_year]" placeholder=""
-                                value="{$config['app']['vod_extend_year']}" class="layui-input">
+                                value="{$config['app']['vod_extend_year']}" class="layui-input" form="form_config_main">
                         </div>
                     </div>
                     <div class="layui-form-item">
                         <label class="layui-form-label">{:lang('admin/system/config/vod_extend_weekday')}：</label>
                         <div class="layui-input-block">
                             <input type="text" name="app[vod_extend_weekday]" placeholder=""
-                                value="{$config['app']['vod_extend_weekday']}" class="layui-input">
+                                value="{$config['app']['vod_extend_weekday']}" class="layui-input" form="form_config_main">
                         </div>
                     </div>
 
@@ -695,7 +716,7 @@
                         <label class="layui-form-label">{:lang('admin/system/config/actor_extend_area')}：</label>
                         <div class="layui-input-block">
                             <input type="text" name="app[actor_extend_area]" placeholder=""
-                                value="{$config['app']['actor_extend_area']}" class="layui-input">
+                                value="{$config['app']['actor_extend_area']}" class="layui-input" form="form_config_main">
                         </div>
                     </div>
 
@@ -703,25 +724,33 @@
                         <label class="layui-form-label">{:lang('admin/system/config/filter_words')}：</label>
                         <div class="layui-input-block">
                             <textarea name="app[filter_words]" class="layui-textarea"
-                                placeholder="{:lang('admin/system/config/filter_words_tip')}">{$config['app']['filter_words']}</textarea>
+                                placeholder="{:lang('admin/system/config/filter_words_tip')}" form="form_config_main">{$config['app']['filter_words']}</textarea>
                         </div>
                     </div>
                     <div class="layui-form-item">
                         <label class="layui-form-label">{:lang('admin/system/config/extra_var')}：</label>
                         <div class="layui-input-block">
                             <textarea name="app[extra_var]" class="layui-textarea"
-                                placeholder="{:lang('admin/system/config/extra_var_tip')}">{$config['app']['extra_var']}</textarea>
+                                placeholder="{:lang('admin/system/config/extra_var_tip')}" form="form_config_main">{$config['app']['extra_var']}</textarea>
                         </div>
                     </div>
+
+                <div class="layui-form-item center main-config-save">
+                    <div class="layui-input-block">
+                        <button type="submit" class="layui-btn" lay-submit="" form="form_config_main"
+                            lay-filter="formSubmit">{:lang('btn_save')}</button>
+                        <button class="layui-btn layui-btn-primary" type="reset" form="form_config_main">{:lang('btn_reset')}</button>
+                    </div>
+                </div>
                 </div>
 
 
-                <div class="layui-tab-item" id="movementTable">
+                <div class="layui-tab-item layui-form layui-form-pane" id="movementTable">
                     <div class="layui-form-item">
                         <label class="layui-form-label">{:lang('admin/system/config/collect_timespan')}：</label>
                         <div class="layui-input-inline">
                             <input type="text" name="app[collect_timespan]" placeholder=""
-                                value="{$config['app']['collect_timespan']}" class="layui-input w150">
+                                value="{$config['app']['collect_timespan']}" class="layui-input w150" form="form_config_main">
                         </div>
                         <div class="layui-form-mid layui-word-aux">{:lang('admin/system/config/collect_timespan_tip')}
                         </div>
@@ -733,7 +762,7 @@
                         <div class="layui-input-block">
                             <input type="text" name="app[pagesize]"
                                 placeholder="{:lang('admin/system/config/pagesize_tip')}"
-                                value="{$config['app']['pagesize']}" class="layui-input w150">
+                                value="{$config['app']['pagesize']}" class="layui-input w150" form="form_config_main">
                         </div>
                     </div>
                     <div class="layui-form-item">
@@ -741,7 +770,7 @@
                         <div class="layui-input-block">
                             <input type="text" name="app[makesize]"
                                 placeholder="{:lang('admin/system/config/makesize_tip')}"
-                                value="{$config['app']['makesize']}" class="layui-input w150">
+                                value="{$config['app']['makesize']}" class="layui-input w150" form="form_config_main">
                         </div>
                     </div>
 
@@ -749,16 +778,16 @@
                         <label class="layui-form-label">{:lang('admin/system/config/admin_login_verify')}：</label>
                         <div class="layui-input-block">
                             <input type="radio" name="app[admin_login_verify]" value="0" title="{:lang('close')}" {if
-                                condition="$config['app']['admin_login_verify'] eq '0'" }checked {/if}>
+                                condition="$config['app']['admin_login_verify'] eq '0'" }checked {/if} form="form_config_main">
                             <input type="radio" name="app[admin_login_verify]" value="1" title="{:lang('open')}" {if
-                                condition="$config['app']['admin_login_verify'] neq '0'" }checked {/if}>
+                                condition="$config['app']['admin_login_verify'] neq '0'" }checked {/if} form="form_config_main">
                         </div>
                     </div>
 
                     <div class="layui-form-item">
                         <label class="layui-form-label">{:lang('admin/system/config/editor')}：</label>
                         <div class="layui-input-inline">
-                            <select style="width:150px;" name="app[editor]">
+                            <select style="width:150px;" name="app[editor]" form="form_config_main">
                                 {volist name="$editors['ext_list']" id="vo"}
                                 <option value="{$key}" {if condition="$config['app']['editor'] eq $key" }selected {/if}>{$vo}</option>
                                 {/volist}
@@ -769,38 +798,61 @@
                     <div class="layui-form-item">
                         <label class="layui-form-label">{:lang('admin/system/config/lang')}：</label>
                         <div class="layui-input-inline">
-                            <select class="w150" name="app[lang]">
+                            <select class="w150" name="app[lang]" form="form_config_main">
                                 {volist name="langs" id="vo"}
                                 <option value="{$vo}" {if condition="$config['app']['lang'] eq $vo" }selected {/if}>{$vo}</option>
                                 {/volist}
                             </select>
                         </div>
                     </div>
+
+                <div class="layui-form-item center main-config-save">
+                    <div class="layui-input-block">
+                        <button type="submit" class="layui-btn" lay-submit="" form="form_config_main"
+                            lay-filter="formSubmit">{:lang('btn_save')}</button>
+                        <button class="layui-btn layui-btn-primary" type="reset" form="form_config_main">{:lang('btn_reset')}</button>
+                    </div>
+                </div>
                 </div>
 
-                <div class="layui-form-item center">
-                    <div class="layui-input-block">
-                        <button type="submit" class="layui-btn" lay-submit=""
-                            lay-filter="formSubmit">{:lang('btn_save')}</button>
-                        <button class="layui-btn layui-btn-primary" type="reset">{:lang('btn_reset')}</button>
-                    </div>
+                <div class="layui-tab-item" id="config_tab_seo">
+                    <form class="layui-form layui-form-pane" method="post" action="{$form_action_configseo|default=''}">
+                        <input type="hidden" name="__token__" value="{$Request.token}" />
+                        {include file="application/admin/view_new/system/config_embed_seo.html" /}
+                        <div class="layui-form-item center">
+                            <div class="layui-input-block">
+                                <button type="submit" class="layui-btn" lay-submit="" lay-filter="formSubmit">{:lang('btn_save')}</button>
+                                <button class="layui-btn layui-btn-primary" type="reset">{:lang('btn_reset')}</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="layui-tab-item" id="config_tab_aiseo">
+                    <form class="layui-form layui-form-pane" method="post" action="{$form_action_configaiseo|default=''}">
+                        <input type="hidden" name="__token__" value="{$Request.token}" />
+                        {include file="application/admin/view_new/system/config_embed_aiseo.html" /}
+                        <div class="layui-form-item center">
+                            <div class="layui-input-block">
+                                <button type="submit" class="layui-btn" lay-submit="" lay-filter="formSubmit">{:lang('btn_save')}</button>
+                                <button class="layui-btn layui-btn-primary" type="reset">{:lang('btn_reset')}</button>
+                            </div>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
-        <input type="text" name="site[new_version]" placeholder=""
-                                value="{$config['site']['new_version']}" class="layui-input" hidden>
-    </form>
 </div>
 
 {include file="../../../application/admin/view_new/public/foot" /}
 <script type="text/javascript" src="__STATIC__/js/jquery.cookie.js"></script>
 <script type="text/javascript">
-    layui.use(['form', 'upload', 'layer'], function () {
+    layui.use(['element', 'form', 'upload', 'layer'], function () {
         // 操作对象
         var element = layui.element
             , form = layui.form
             , layer = layui.layer
             , upload = layui.upload;
+        var mergeTab = {:json_encode(isset($config_merge_tab) ? $config_merge_tab : '')};
 
         form.on('radio(cache_type)', function (data) {
             $('.row_cache_server').hide();
@@ -811,10 +863,25 @@
 
         element.on('tab(tb1)', function () {
             $.cookie('config_tab', this.getAttribute('lay-id'));
+            form.render();
         });
 
-        if ($.cookie('config_tab') != null) {
+        element.on('tab(tb_seo)', function () {
+            $.cookie('config_seo_inner_tab', this.getAttribute('lay-id'));
+        });
+
+        if (mergeTab === 'seo') {
+            element.tabChange('tb1', 'config_seo');
+        } else if (mergeTab === 'aiseo') {
+            element.tabChange('tb1', 'config_aiseo');
+        } else if ($.cookie('config_tab') != null) {
             element.tabChange('tb1', $.cookie('config_tab'));
+        }
+
+        if ($.cookie('config_seo_inner_tab') != null) {
+            setTimeout(function () {
+                element.tabChange('tb_seo', $.cookie('config_seo_inner_tab'));
+            }, 0);
         }
 
         upload.render({

@@ -1,9 +1,4 @@
-{include file="../../../application/admin/view_new/public/head" /}
-
-<div class="page-container">
-    <form class="layui-form layui-form-pane" action="">
-        <input type="hidden" name="__token__" value="{$Request.token}" />
-        <div class="layui-tab maccms-inner-tab-vertical" lay-filter="tb1">
+        <div class="layui-tab maccms-inner-tab-vertical" lay-filter="tb_configurl">
             <ul class="layui-tab-title">
                 <li class="layui-this" lay-id="configurl_1">{:lang('admin/system/configurl/view')}</li>
                 <li class="" lay-id="configurl_2">{:lang('admin/system/configurl/html')}</li>
@@ -612,48 +607,3 @@
                 </div>
             </div>
         </div>
-        <div class="layui-form-item center">
-            <div class="layui-input-block">
-                <button type="submit" class="layui-btn" lay-submit=""
-                    lay-filter="formSubmit">{:lang('btn_save')}</button>
-                <button class="layui-btn layui-btn-primary" type="reset">{:lang('btn_reset')}</button>
-            </div>
-        </div>
-    </form>
-</div>
-
-{include file="../../../application/admin/view_new/public/foot" /}
-
-<script type="text/javascript" src="__STATIC__/js/jquery.cookie.js"></script>
-<script type="text/javascript">
-    layui.use(['element', 'form', 'layer'], function () {
-        var element = layui.element
-            , form = layui.form
-            , layer = layui.layer;
-
-        form.on('select(select_path)', function (data) {
-            $(this).parent().parent().parent().parent().find('input').val(data.value);
-        });
-
-        element.on('tab(tb1)', function () {
-            $.cookie('configurl_tab', this.getAttribute('lay-id'));
-        });
-
-        if ($.cookie('configurl_tab') != null) {
-            element.tabChange('tb1', $.cookie('configurl_tab'));
-        }
-
-    });
-
-    function sethtmldir(id, value) {
-        alert(id + '----' + value);
-        if (value) {
-            $("input[name='" + id + "']").val(value);
-        }
-    }
-
-</script>
-
-</body>
-
-</html>

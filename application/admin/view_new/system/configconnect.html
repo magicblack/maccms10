@@ -1,15 +1,16 @@
 {include file="../../../application/admin/view_new/public/head" /}
 
 <div class="page-container">
+    <div class="layui-tab" lay-filter="tb_conn">
+        <ul class="layui-tab-title">
+            <li class="layui-this" lay-id="conn_oauth">{:lang('menu/configconnect')}</li>
+            <li lay-id="conn_weixin">{:lang('menu/configweixin')}</li>
+            <li lay-id="conn_pay">{:lang('menu/configpay')}</li>
+        </ul>
+        <div class="layui-tab-content">
+            <div class="layui-tab-item layui-show" id="config_tab_connect">
     <form class="layui-form layui-form-pane" action="">
         <input type="hidden" name="__token__" value="{$Request.token}" />
-        <div class="layui-tab">
-            <ul class="layui-tab-title">
-                <li class="layui-this">{:lang('admin/system/configconnect/title')}</li>
-            </ul>
-            <div class="layui-tab-content">
-                <div class="layui-tab-item layui-show" id="movementTable">
-
                     <blockquote class="layui-elem-quote layui-quote-nm">
                         {:lang('admin/system/configconnect/tip')}
                     </blockquote>
@@ -78,11 +79,6 @@
                         </div>
                     </div>
 
-
-                </div>
-            </div>
-
-        </div>
         <div class="layui-form-item center">
             <div class="layui-input-block">
                 <button type="submit" class="layui-btn" lay-submit=""
@@ -91,11 +87,49 @@
             </div>
         </div>
     </form>
+            </div>
+            <div class="layui-tab-item" id="config_tab_weixin">
+                <form class="layui-form layui-form-pane" method="post" action="{$form_action_configweixin|default=''}">
+                    <input type="hidden" name="__token__" value="{$Request.token}" />
+                    {include file="application/admin/view_new/system/config_embed_weixin.html" /}
+                </form>
+            </div>
+            <div class="layui-tab-item" id="config_tab_pay">
+                <form class="layui-form layui-form-pane" method="post" action="{$form_action_configpay|default=''}">
+                    <input type="hidden" name="__token__" value="{$Request.token}" />
+                    {include file="application/admin/view_new/system/config_embed_pay.html" /}
+                </form>
+            </div>
+        </div>
+    </div>
 </div>
 
 {include file="../../../application/admin/view_new/public/foot" /}
+<script type="text/javascript" src="__STATIC__/js/jquery.cookie.js"></script>
 <script type="text/javascript">
+    layui.use(['element', 'form', 'layer'], function () {
+        var element = layui.element, form = layui.form, layer = layui.layer;
+        var mergeTab = {:json_encode(isset($config_merge_tab) ? $config_merge_tab : '')};
+        element.on('tab(tb_conn)', function () {
+            $.cookie('config_conn_tab', this.getAttribute('lay-id'));
+        });
+        if (mergeTab === 'weixin') {
+            element.tabChange('tb_conn', 'conn_weixin');
+        } else if (mergeTab === 'pay') {
+            element.tabChange('tb_conn', 'conn_pay');
+        } else if ($.cookie('config_conn_tab') != null) {
+            element.tabChange('tb_conn', $.cookie('config_conn_tab'));
+        }
 
+        element.on('tab(tb_pay)', function () {
+            $.cookie('configpay_tab', this.getAttribute('lay-id'));
+        });
+        if ($.cookie('configpay_tab') != null) {
+            setTimeout(function () {
+                element.tabChange('tb_pay', $.cookie('configpay_tab'));
+            }, 0);
+        }
+    });
 </script>
 
 </body>

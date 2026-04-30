@@ -9,9 +9,17 @@
     }
 </style>
 <div class="page-container">
+    <div class="layui-tab" lay-filter="tb_access">
+        <ul class="layui-tab-title">
+            <li class="layui-this" lay-id="acc_collect">{:lang('menu/configcollect')}</li>
+            <li lay-id="acc_if">{:lang('menu/configinterface')}</li>
+            <li lay-id="acc_api">{:lang('menu/configapi')}</li>
+        </ul>
+        <div class="layui-tab-content">
+            <div class="layui-tab-item layui-show" id="config_tab_collect">
     <form class="layui-form layui-form-pane" action="">
         <input type="hidden" name="__token__" value="{$Request.token}" />
-        <div class="layui-tab" lay-filter="tb1">
+        <div class="layui-tab maccms-inner-tab-vertical" lay-filter="tb1">
             <ul class="layui-tab-title">
                 <li class="layui-this" lay-id="configcollect_1">{:lang('admin/system/configcollect/vod')}</li>
                 <li lay-id="configcollect_2">{:lang('admin/system/configcollect/art')}</li>
@@ -1037,6 +1045,21 @@
             </div>
         </div>
     </form>
+            </div>
+            <div class="layui-tab-item" id="config_tab_if">
+                <form class="layui-form layui-form-pane" method="post" action="{$form_action_configinterface|default=''}">
+                    <input type="hidden" name="__token__" value="{$Request.token}" />
+                    {include file="application/admin/view_new/system/config_embed_interface.html" /}
+                </form>
+            </div>
+            <div class="layui-tab-item" id="config_tab_api">
+                <form class="layui-form layui-form-pane" method="post" action="{$form_action_configapi|default=''}">
+                    <input type="hidden" name="__token__" value="{$Request.token}" />
+                    {include file="application/admin/view_new/system/config_embed_api.html" /}
+                </form>
+            </div>
+        </div>
+    </div>
 </div>
 
 {include file="../../../application/admin/view_new/public/foot" /}
@@ -1046,14 +1069,37 @@
         var element = layui.element
             , form = layui.form
             , layer = layui.layer;
-
+        var mergeTab = {:json_encode(isset($config_merge_tab) ? $config_merge_tab : '')};
 
         element.on('tab(tb1)', function () {
             $.cookie('configcollect_tab', this.getAttribute('lay-id'));
         });
 
+        element.on('tab(tb_access)', function () {
+            $.cookie('config_access_tab', this.getAttribute('lay-id'));
+        });
+
+        if (mergeTab === 'interface') {
+            element.tabChange('tb_access', 'acc_if');
+        } else if (mergeTab === 'api') {
+            element.tabChange('tb_access', 'acc_api');
+        } else if ($.cookie('config_access_tab') != null) {
+            element.tabChange('tb_access', $.cookie('config_access_tab'));
+        }
+
         if ($.cookie('configcollect_tab') != null) {
-            element.tabChange('tb1', $.cookie('configcollect_tab'));
+            setTimeout(function () {
+                element.tabChange('tb1', $.cookie('configcollect_tab'));
+            }, 0);
+        }
+
+        element.on('tab(tb_api)', function () {
+            $.cookie('configapi_tab', this.getAttribute('lay-id'));
+        });
+        if ($.cookie('configapi_tab') != null) {
+            setTimeout(function () {
+                element.tabChange('tb_api', $.cookie('configapi_tab'));
+            }, 0);
         }
 
     });

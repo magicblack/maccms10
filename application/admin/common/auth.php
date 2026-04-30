@@ -72,7 +72,7 @@ return array (
       ),
       210 => 
       array (
-        'show' => 1,
+        'show' => 0,
         'name' => lang('menu/configseo'),
         'controller' => 'system',
         'action' => 'configseo',
@@ -86,7 +86,7 @@ return array (
       ),
       212 => 
       array (
-        'show' => 1,
+        'show' => 0,
         'name' => lang('menu/configcomment'),
         'controller' => 'system',
         'action' => 'configcomment',
@@ -100,7 +100,7 @@ return array (
       ),
       214 =>
       array (
-        'show' => 1,
+        'show' => 0,
         'name' => lang('menu/configaiseo'),
         'controller' => 'system',
         'action' => 'configaiseo',
@@ -114,14 +114,14 @@ return array (
       ),
       22 => 
       array (
-        'show' => 1,
+        'show' => 0,
         'name' => lang('menu/configurl'),
         'controller' => 'system',
         'action' => 'configurl',
       ),
       23 => 
       array (
-        'show' => 1,
+        'show' => 0,
         'name' => lang('menu/configplay'),
         'controller' => 'system',
         'action' => 'configplay',
@@ -135,14 +135,14 @@ return array (
       ),
       25 => 
       array (
-        'show' => 1,
+        'show' => 0,
         'name' => lang('menu/configinterface'),
         'controller' => 'system',
         'action' => 'configinterface',
       ),
       26 => 
       array (
-        'show' => 1,
+        'show' => 0,
         'name' => lang('menu/configapi'),
         'controller' => 'system',
         'action' => 'configapi',
@@ -156,14 +156,14 @@ return array (
       ),
       28 => 
       array (
-        'show' => 1,
+        'show' => 0,
         'name' => lang('menu/configpay'),
         'controller' => 'system',
         'action' => 'configpay',
       ),
       29 => 
       array (
-        'show' => 1,
+        'show' => 0,
         'name' => lang('menu/configweixin'),
         'controller' => 'system',
         'action' => 'configweixin',

@@ -237,12 +237,14 @@ layui.define(['element', 'form'], function (exports) {
 
         if ($(this).attr('data-form')) {
             _form = $($(this).attr('data-form'));
+        } else if ($(this).attr('form')) {
+            _form = $('#' + $(this).attr('form'));
         } else {
             _form = $(this).parents('form');
         }
 
         var $form = _form;
-        var $button = $form.find('[lay-submit]');
+        var $button = (that.attr('form') || that.attr('data-form')) ? that : $form.find('[lay-submit]');
 
         $button.prop('disabled', true);
 
@@ -253,10 +255,14 @@ layui.define(['element', 'form'], function (exports) {
             }
         }
         layer.msg('数据提交中...', { time: 500000 });
+        var _formNode = $form[0];
+        var _formData = (_formNode && _formNode.nodeName === 'FORM' && _formNode.elements)
+            ? $(_formNode.elements).serialize()
+            : $form.serialize();
         $.ajax({
             type: "POST",
             url: $form.attr('action'),
-            data: $form.serialize(),
+            data: _formData,
             success: function (res) {
                 var msg = '<span class="success_layer_icon"></span>' + res.msg;
                 if (res.code == 1) {

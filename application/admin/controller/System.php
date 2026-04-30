@@ -73,6 +73,22 @@ class System extends Base
                 return $this->error($validate->getError());
             }
             unset($config['__token__']);
+            $invalidSubmitMsg = '提交数据不完整，请刷新页面后重试';
+            if (
+                !isset($config['site']) || !is_array($config['site']) ||
+                !isset($config['app']) || !is_array($config['app'])
+            ) {
+                return $this->error($invalidSubmitMsg);
+            }
+            $requiredSiteKeys = ['site_name', 'site_url', 'template_dir', 'mob_template_dir'];
+            foreach ($requiredSiteKeys as $requiredKey) {
+                if (!isset($config['site'][$requiredKey]) || trim((string)$config['site'][$requiredKey]) === '') {
+                    return $this->error($invalidSubmitMsg);
+                }
+            }
+            if (!isset($config['app']['pathinfo_depr']) || trim((string)$config['app']['pathinfo_depr']) === '') {
+                return $this->error($invalidSubmitMsg);
+            }
 
 
             $ads_dir='ads';
@@ -160,6 +176,27 @@ class System extends Base
             $config['app']['input_type'] = 1;
         }
         $config['app']['vod_search_optimise_cache_minutes'] = model('VodSearch')->getResultCacheMinutes($config);
+        if (!isset($config['ai_seo']) || !is_array($config['ai_seo'])) {
+            $config['ai_seo'] = [
+                'enabled' => '0',
+                'auto_generate' => '1',
+                'template_inject' => '1',
+                'provider' => 'openai',
+                'model' => 'gpt-4o-mini',
+                'api_base' => 'https://api.openai.com/v1',
+                'api_key' => '',
+                'timeout' => '20',
+            ];
+        }
+        $apiKey = isset($config['ai_seo']['api_key']) ? trim((string) $config['ai_seo']['api_key']) : '';
+        $this->assign('ai_seo_key_saved', $apiKey !== '' ? 1 : 0);
+        $this->assign('ai_seo_key_tail', $apiKey !== '' ? substr($apiKey, -6) : '');
+
+        $this->assign('form_action_configseo', (string) url('configseo'));
+        $this->assign('form_action_configaiseo', (string) url('configaiseo'));
+        $tab = (string) input('tab', '');
+        $allowTab = ['', 'seo', 'aiseo'];
+        $this->assign('config_merge_tab', in_array($tab, $allowTab, true) ? $tab : '');
         $this->assign('config', $config);
         $this->assign('title', lang('admin/system/config/title'));
         return $this->fetch('admin@system/config');
@@ -248,9 +285,7 @@ class System extends Base
             return $this->success(lang('save_ok'));
         }
 
-        $this->assign('config', config('maccms'));
-        $this->assign('title', lang('admin/system/configurl/title'));
-        return $this->fetch('admin@system/configurl');
+        return $this->redirect( url('configupload', ['tab' => 'url']) );
     }
 
     public function configuser()
@@ -312,6 +347,10 @@ class System extends Base
         $group_list = \think\Db::name('group')->select();
         $this->assign('group_list', $group_list);
         
+        $this->assign('form_action_configcomment', (string) url('configcomment'));
+        $tab = (string) input('tab', '');
+        $allowTab = ['', 'comment'];
+        $this->assign('config_merge_tab', in_array($tab, $allowTab, true) ? $tab : '');
         $this->assign('config', $config);
         $this->assign('title', lang('admin/system/configuser/title'));
         return $this->fetch('admin@system/configuser');
@@ -322,6 +361,15 @@ class System extends Base
         $phar_status = file_exists(ROOT_PATH . 'extend/aws/src/Aws/aws.phar');
         if (Request()->isPost()){
             $config = input('','','htmlentities');
+            $invalidSubmitMsg = '提交数据不完整，请刷新页面后重试';
+            if (
+                !isset($config['upload']) || !is_array($config['upload']) ||
+                !isset($config['upload']['mode']) || trim((string)$config['upload']['mode']) === '' ||
+                !isset($config['upload']['protocol']) || trim((string)$config['upload']['protocol']) === '' ||
+                !isset($config['upload']['keep_local'])
+            ) {
+                return $this->error($invalidSubmitMsg);
+            }
             if($config['upload']['mode'] == 'S3' && $phar_status == false){
                 return $this->error(lang('save_err'));
             }
@@ -354,6 +402,26 @@ class System extends Base
         $extends = mac_extends_list('upload');
         $this->assign('extends',$extends);
 
+        $fp = './static/js/playerconfig.js';
+        if (!file_exists($fp)) {
+            $fp .= '.bak';
+        }
+        $fc = file_exists($fp) ? @file_get_contents($fp) : '';
+        $play = [];
+        if ($fc) {
+            $jsb = trim(mac_get_body($fc, '//参数开始', '//参数结束'));
+            if (strlen($jsb) > 17) {
+                $jsb = substr($jsb, 16, strlen($jsb) - 17);
+                $play = (array) json_decode($jsb, true);
+            }
+        }
+        $this->assign('play', $play);
+
+        $this->assign('form_action_configurl', (string) url('configurl'));
+        $this->assign('form_action_configplay', (string) url('configplay'));
+        $tab = (string) input('tab', '');
+        $allowTab = ['', 'url', 'play'];
+        $this->assign('config_merge_tab', in_array($tab, $allowTab, true) ? $tab : '');
         $this->assign('title', lang('admin/system/configupload/title'));
         return $this->fetch('admin@system/configupload');
     }
@@ -362,6 +430,14 @@ class System extends Base
     {
         if (Request()->isPost()) {
             $config = input('','','htmlentities');
+            $invalidSubmitMsg = '提交数据不完整，请刷新页面后重试';
+            // 评论留言独立表单只提交 gbook / comment，不包含会员配置 user[*]
+            if (
+                !isset($config['gbook']) || !is_array($config['gbook']) ||
+                !isset($config['comment']) || !is_array($config['comment'])
+            ) {
+                return $this->error($invalidSubmitMsg);
+            }
 
             $validate = \think\Loader::validate('Token');
             if(!$validate->check($config)){
@@ -382,9 +458,7 @@ class System extends Base
             return $this->success(lang('save_ok'));
         }
 
-        $this->assign('config', config('maccms'));
-        $this->assign('title', lang('admin/system/configcomment/title'));
-        return $this->fetch('admin@system/configcomment');
+        return $this->redirect( url('configuser', ['tab' => 'comment']) );
     }
 
     public function configweixin()
@@ -410,9 +484,7 @@ class System extends Base
             return $this->success(lang('save_ok'));
         }
 
-        $this->assign('config', config('maccms'));
-        $this->assign('title', lang('admin/system/configweixin/title'));
-        return $this->fetch('admin@system/configweixin');
+        return $this->redirect( url('configconnect', ['tab' => 'weixin']) );
     }
 
     public function configpay()
@@ -438,14 +510,7 @@ class System extends Base
             return $this->success(lang('save_ok'));
         }
 
-        $this->assign('http_type',$GLOBALS['http_type']);
-        $this->assign('config', config('maccms'));
-
-        $extends = mac_extends_list('pay');
-        $this->assign('extends',$extends);
-
-        $this->assign('title', lang('admin/system/configpay/title'));
-        return $this->fetch('admin@system/configpay');
+        return $this->redirect( url('configconnect', ['tab' => 'pay']) );
     }
 
     public function configconnect()
@@ -472,6 +537,14 @@ class System extends Base
         }
 
         $this->assign('config', config('maccms'));
+        $this->assign('http_type', $GLOBALS['http_type']);
+        $extends = mac_extends_list('pay');
+        $this->assign('extends', $extends);
+        $this->assign('form_action_configweixin', (string) url('configweixin'));
+        $this->assign('form_action_configpay', (string) url('configpay'));
+        $tab = (string) input('tab', '');
+        $allowTab = ['', 'weixin', 'pay'];
+        $this->assign('config_merge_tab', in_array($tab, $allowTab, true) ? $tab : '');
         $this->assign('title', lang('admin/system/configconnect/title'));
         return $this->fetch('admin@system/configconnect');
     }
@@ -567,29 +640,8 @@ class System extends Base
             }
             return $this->success(lang('save_ok'));
         }
-        $config = config('maccms');
-        if(!isset($config['api']['publicapi'])){
-            $config['api']['publicapi'] = [
-                'status' => '0',
-                'charge' => '0',
-                'auth' => '',
-            ];
-        }
-        if(!isset($config['api']['manga'])){
-            $config['api']['manga'] = [
-                'status' => '0',
-                'charge' => '0',
-                'pagesize' => '20',
-                'imgurl' => '',
-                'typefilter' => '',
-                'datafilter' => 'manga_status=1',
-                'cachetime' => '',
-                'auth' => '',
-            ];
-        }
-        $this->assign('config',$config );
-        $this->assign('title', lang('admin/system/configapi/title'));
-        return $this->fetch('admin@system/configapi');
+
+        return $this->redirect( url('configcollect', ['tab' => 'api']) );
     }
 
     public function configinterface()
@@ -625,9 +677,7 @@ class System extends Base
             return $this->success(lang('save_ok'));
         }
 
-        $this->assign('config', config('maccms'));
-        $this->assign('title', lang('admin/system/configinterface/title'));
-        return $this->fetch('admin@system/configinterface');
+        return $this->redirect( url('configcollect', ['tab' => 'interface']) );
     }
 
     public function configcollect()
@@ -727,7 +777,32 @@ class System extends Base
         }
 
 
-        $this->assign('config', config('maccms'));
+        $config = config('maccms');
+        if (!isset($config['api']['publicapi'])) {
+            $config['api']['publicapi'] = [
+                'status' => '0',
+                'charge' => '0',
+                'auth' => '',
+            ];
+        }
+        if (!isset($config['api']['manga'])) {
+            $config['api']['manga'] = [
+                'status' => '0',
+                'charge' => '0',
+                'pagesize' => '20',
+                'imgurl' => '',
+                'typefilter' => '',
+                'datafilter' => 'manga_status=1',
+                'cachetime' => '',
+                'auth' => '',
+            ];
+        }
+        $this->assign('form_action_configinterface', (string) url('configinterface'));
+        $this->assign('form_action_configapi', (string) url('configapi'));
+        $tab = (string) input('tab', '');
+        $allowTab = ['', 'api', 'interface'];
+        $this->assign('config_merge_tab', in_array($tab, $allowTab, true) ? $tab : '');
+        $this->assign('config', $config);
         $this->assign('title', lang('admin/system/configcollect/title'));
         return $this->fetch('admin@system/configcollect');
     }
@@ -767,18 +842,7 @@ class System extends Base
             return $this->success(lang('save_ok'));
         }
 
-        $fp = './static/js/playerconfig.js';
-        if (!file_exists($fp)) {
-            $fp .= '.bak';
-        }
-        $fc = file_get_contents($fp);
-        $jsb = trim(mac_get_body($fc, '//参数开始', '//参数结束'));
-        $jsb = substr($jsb, 16, strlen($jsb) - 17);
-
-        $play = json_decode($jsb, true);
-        $this->assign('play', $play);
-        $this->assign('title', lang('admin/system/configplay/title'));
-        return $this->fetch('admin@system/configplay');
+        return $this->redirect( url('configupload', ['tab' => 'play']) );
     }
 
     public function configseo()
@@ -803,9 +867,7 @@ class System extends Base
             return $this->success(lang('save_ok'));
         }
 
-        $this->assign('config', config('maccms'));
-        $this->assign('title', lang('admin/system/configseo/title'));
-        return $this->fetch('admin@system/configseo');
+        return $this->redirect( url('config', ['tab' => 'seo']) );
     }
 
     public function configaiseo()
@@ -862,25 +924,7 @@ class System extends Base
             return $this->success(lang('save_ok'));
         }
 
-        $config = config('maccms');
-        if (!isset($config['ai_seo']) || !is_array($config['ai_seo'])) {
-            $config['ai_seo'] = [
-                'enabled' => '0',
-                'auto_generate' => '1',
-                'template_inject' => '1',
-                'provider' => 'openai',
-                'model' => 'gpt-4o-mini',
-                'api_base' => 'https://api.openai.com/v1',
-                'api_key' => '',
-                'timeout' => '20',
-            ];
-        }
-        $apiKey = isset($config['ai_seo']['api_key']) ? trim((string)$config['ai_seo']['api_key']) : '';
-        $this->assign('ai_seo_key_saved', $apiKey !== '' ? 1 : 0);
-        $this->assign('ai_seo_key_tail', $apiKey !== '' ? substr($apiKey, -6) : '');
-        $this->assign('config', $config);
-        $this->assign('title', lang('admin/system/configaiseo/title'));
-        return $this->fetch('admin@system/configaiseo');
+        return $this->redirect( url('config', ['tab' => 'aiseo']) );
     }
 
     public function configaisearch()

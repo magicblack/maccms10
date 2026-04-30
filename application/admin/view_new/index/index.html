@@ -6,8 +6,10 @@
         height: 100%;
     }
 
-    .layui-tab-content {
+    #top_tabs_box .layui-tab-content {
         top: 60px;
+        left: 0;
+        right: 0;
         position: absolute;
         bottom: 0;
         width: 100%;
@@ -15,7 +17,7 @@
         background: #f9fafb;
     }
 
-    .layui-tab-item {
+    #top_tabs_box .layui-tab-item {
         height: 100%;
     }
 
@@ -120,6 +122,39 @@
     .language-select-wrap--plain .layui-form-select dl {
         border-radius: 8px;
         box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+    }
+
+    /* 覆盖 admin_style.css 中 #top_tabs_box{height:60px}：否则主内容区在相对定位下有效高度为 0，iframe 不显示；同时让主区占满 .layui-body */
+    #switchBody {
+        display: flex;
+        flex-direction: column;
+        min-height: 0;
+    }
+
+    #top_tabs_box {
+        position: relative;
+        flex: 1 1 auto;
+        min-height: 0;
+        height: 100% !important;
+        max-height: none;
+        overflow: visible;
+    }
+
+    /* 供脚本 #page-next/#page-prev 的 offset 使用；不占用顶栏版式 */
+    #J_refresh,
+    #page-prev,
+    #page-next {
+        position: fixed;
+        left: -9999px;
+        top: 0;
+        width: 1px;
+        height: 1px;
+        overflow: hidden;
+        margin: 0;
+        padding: 0;
+        border: 0;
+        pointer-events: none;
+        opacity: 0;
     }
 </style>
 <div class="layui-layout layui-layout-admin w-full">
@@ -255,6 +290,9 @@
     <div class="site-mobile-shade"></div>
     <div class="layui-body" id="switchBody">
         <div class="layui-tab mag0" id="top_tabs_box" lay-filter="macTab" lay-allowClose="true">
+            <div class="tab-go-refresh" id="J_refresh" title=""></div>
+            <div class="tab-go-left" id="page-prev" title=""></div>
+            <div class="tab-go-right" id="page-next" title=""></div>
             <ul class="layui-tab-title" id="B_history">
                 <li lay-id="111" class="layui-this">{:lang('admin/index/index/menu_welcome')}</li>
             </ul>
@@ -456,8 +494,12 @@
                     // var updateContentRegex = /var update_content = \[((?:.|\n)*?)\].join\('<br>\');/g;
                     var updateContentMatch = response.match(/var update_content\s*=\s*\[(.*?)\]\.join\('<br>'\);/s);
                     console.log("updateContentMatch", updateContentMatch)
-                    if (updateContentMatch){
-                        eval(updateContentMatch[0])
+                    if (updateContentMatch) {
+                        try {
+                            eval(updateContentMatch[0]);
+                        } catch (e) {
+                            console.error('update content eval failed', e);
+                        }
                     }
 
                     // 使用正则表达式提取new_v

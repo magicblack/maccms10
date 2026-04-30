@@ -1,23 +1,4 @@
-{include file="../../../application/admin/view_new/public/head" /}
-
-<div class="page-container">
-
-    <div class="showpic" style="display:none;"><img class="showpic_img" width="120" height="160"
-            referrerPolicy="no-referrer"></div>
-
-    <form id="form_config_upload" class="layui-form layui-form-pane" method="post" action=""
-        style="position:absolute;width:0;height:0;overflow:hidden;clip:rect(0,0,0,0);">
-        <input type="hidden" name="__token__" value="{$Request.token}" form="form_config_upload" />
-    </form>
-
-    <div class="layui-tab" lay-filter="tb_upload">
-        <ul class="layui-tab-title">
-            <li class="layui-this" lay-id="up_upload">{:lang('admin/system/configupload/title')}</li>
-            <li lay-id="up_url">{:lang('menu/configurl')}</li>
-            <li lay-id="up_play">{:lang('menu/configplay')}</li>
-        </ul>
-        <div class="layui-tab-content">
-            <div class="layui-tab-item layui-show layui-form layui-form-pane" id="movementTable">
+                <div class="layui-tab-item layui-show" id="movementTable">
 
                     <blockquote class="layui-elem-quote layui-quote-nm">
                         {:lang('admin/system/configupload/tip')}{:sys_get_temp_dir()}<br>
@@ -35,7 +16,7 @@
                         <label class="layui-form-label">{:lang('admin/system/configupload/img_key')}：</label>
                         <div class="layui-input-inline w500">
                             <input type="text" name="upload[img_key]" placeholder=""
-                                value="{$config['upload']['img_key']}" class="layui-input" form="form_config_upload">
+                                value="{$config['upload']['img_key']}" class="layui-input">
                         </div>
                         <div class="layui-form-mid layui-word-aux">{:lang('admin/system/configupload/img_key_tip')}
                         </div>
@@ -44,7 +25,7 @@
                         <label class="layui-form-label">{:lang('admin/system/configupload/img_api')}：</label>
                         <div class="layui-input-inline w500">
                             <input type="text" name="upload[img_api]" placeholder=""
-                                value="{$config['upload']['img_api']}" class="layui-input" form="form_config_upload">
+                                value="{$config['upload']['img_api']}" class="layui-input">
                         </div>
                         <div class="layui-form-mid layui-word-aux">{:lang('admin/system/configupload/img_api_tip')}
                         </div>
@@ -53,9 +34,9 @@
                         <label class="layui-form-label">{:lang('pic_thumb')}：</label>
                         <div class="layui-input-inline">
                             <input type="radio" name="upload[thumb]" value="0" title="{:lang('close')}" {if
-                                condition="$config['upload']['thumb'] neq 1" }checked {/if} form="form_config_upload">
+                                condition="$config['upload']['thumb'] neq 1" }checked {/if}>
                             <input type="radio" name="upload[thumb]" value="1" title="{:lang('open')}" {if
-                                condition="$config['upload']['thumb'] eq 1" }checked {/if} form="form_config_upload">
+                                condition="$config['upload']['thumb'] eq 1" }checked {/if}>
                         </div>
                         <div class="layui-form-mid layui-word-aux">{:lang('admin/system/configupload/thumb_tip')}</div>
                     </div>
@@ -63,7 +44,7 @@
                         <label class="layui-form-label">{:lang('admin/system/configupload/thumb_size')}：</label>
                         <div class="layui-input-inline">
                             <input type="text" name="upload[thumb_size]" placeholder=""
-                                value="{$config['upload']['thumb_size']}" class="layui-input w150" form="form_config_upload">
+                                value="{$config['upload']['thumb_size']}" class="layui-input w150">
                         </div>
                         <div class="layui-form-mid layui-word-aux">{:lang('admin/system/configupload/thumb_size_tip')}
                         </div>
@@ -71,7 +52,7 @@
                     <div class="layui-form-item">
                         <label class="layui-form-label">{:lang('admin/system/configupload/thumb_type')}：</label>
                         <div class="layui-input-inline">
-                            <select class="w150" name="upload[thumb_type]" form="form_config_upload">
+                            <select class="w150" name="upload[thumb_type]">
                                 <option value="1" {if condition="$config['upload']['thumb_type'] eq 1" }selected {/if}>{:lang('admin/system/configupload/thumb_type1')}</option>
                                 <option value="2" {if condition="$config['upload']['thumb_type'] eq 2" }selected {/if}>{:lang('admin/system/configupload/thumb_type2')}</option>
                                 <option value="3" {if condition="$config['upload']['thumb_type'] eq 3" }selected {/if}>{:lang('admin/system/configupload/thumb_type3')}</option>
@@ -86,15 +67,15 @@
                         <label class="layui-form-label">{:lang('admin/system/configupload/watermark')}：</label>
                         <div class="layui-input-inline">
                             <input type="radio" name="upload[watermark]" value="0" title="{:lang('close')}" {if
-                                condition="$config['upload']['watermark'] neq 1" }checked {/if} form="form_config_upload">
+                                condition="$config['upload']['watermark'] neq 1" }checked {/if}>
                             <input type="radio" name="upload[watermark]" value="1" title="{:lang('open')}" {if
-                                condition="$config['upload']['watermark'] eq 1" }checked {/if} form="form_config_upload">
+                                condition="$config['upload']['watermark'] eq 1" }checked {/if}>
                         </div>
                     </div>
                     <div class="layui-form-item">
                         <label class="layui-form-label">{:lang('admin/system/configupload/watermark_location')}：</label>
                         <div class="layui-input-inline">
-                            <select class="w150" name="upload[watermark_location]" form="form_config_upload">
+                            <select class="w150" name="upload[watermark_location]">
 
                                 <option value="1" {if condition="$config['upload']['watermark_location'] eq 1" }selected
                                     {/if}>{:lang('admin/system/configupload/watermark_location1')}</option>
@@ -124,7 +105,7 @@
                         <label class="layui-form-label">{:lang('admin/system/configupload/watermark_content')}：</label>
                         <div class="layui-input-inline">
                             <input type="text" name="upload[watermark_content]" placeholder=""
-                                value="{$config['upload']['watermark_content']}" class="layui-input w150" form="form_config_upload">
+                                value="{$config['upload']['watermark_content']}" class="layui-input w150">
                         </div>
                     </div>
                     <div class="layui-form-item">
@@ -132,7 +113,7 @@
                         <div class="layui-input-inline">
                             <input type="text" name="upload[watermark_size]"
                                 placeholder="{:lang('admin/system/configupload/watermark_size_tip')}"
-                                value="{$config['upload']['watermark_size']}" class="layui-input w150" form="form_config_upload">
+                                value="{$config['upload']['watermark_size']}" class="layui-input w150">
                         </div>
                     </div>
                     <div class="layui-form-item">
@@ -140,14 +121,14 @@
                         <div class="layui-input-inline">
                             <input type="text" name="upload[watermark_color]"
                                 placeholder="{:lang('admin/system/configupload/watermark_color_tip')}"
-                                value="{$config['upload']['watermark_color']}" class="layui-input w150" form="form_config_upload">
+                                value="{$config['upload']['watermark_color']}" class="layui-input w150">
                         </div>
                     </div>
 
                     <div class="layui-form-item">
                         <label class="layui-form-label">{:lang('admin/system/configupload/protocol')}：</label>
                         <div class="layui-input-inline">
-                            <select class="w150" name="upload[protocol]" lay-filter="upload[protocol]" form="form_config_upload">
+                            <select class="w150" name="upload[protocol]" lay-filter="upload[protocol]">
                                 <option value="http" {if condition="$config['upload']['protocol'] eq 'http'" }selected
                                     {/if}>http</option>
                                 <option value="https" {if condition="$config['upload']['protocol'] eq 'https'" }selected
@@ -161,7 +142,7 @@
                     <div class="layui-form-item">
                         <label class="layui-form-label">{:lang('admin/system/configupload/mode')}：</label>
                         <div class="layui-input-inline">
-                            <select class="w150" name="upload[mode]" lay-filter="upload[mode]" form="form_config_upload">
+                            <select class="w150" name="upload[mode]" lay-filter="upload[mode]">
                                 <option value="local" {if condition="$config['upload']['mode'] eq 'local'" }selected
                                     {/if}>{:lang('admin/system/configupload/mode_local')}</option>
                                 <option value="remote" {if condition="$config['upload']['mode'] eq 'remote'" }selected
@@ -177,9 +158,9 @@
                         <label class="layui-form-label">{:lang('admin/system/configupload/keep_local')}：</label>
                         <div class="layui-input-inline">
                             <input type="radio" name="upload[keep_local]" value="0" title="{:lang('close')}" {if
-                                condition="$config['upload']['keep_local'] neq 1" }checked {/if} form="form_config_upload">
+                                condition="$config['upload']['keep_local'] neq 1" }checked {/if}>
                             <input type="radio" name="upload[keep_local]" value="1" title="{:lang('open')}" {if
-                                condition="$config['upload']['keep_local'] eq 1" }checked {/if} form="form_config_upload">
+                                condition="$config['upload']['keep_local'] eq 1" }checked {/if}>
                         </div>
                         <div class="layui-form-mid layui-word-aux">{:lang('admin/system/configupload/keep_local_tip')}
                         </div>
@@ -191,124 +172,10 @@
                         <div class="layui-input-block">
                             <input type="text" name="upload[remoteurl]"
                                 placeholder="{:lang('admin/system/configupload/remoteurl_tip')}"
-                                value="{$config['upload']['remoteurl']}" class="layui-input w500" form="form_config_upload">
+                                value="{$config['upload']['remoteurl']}" class="layui-input w500">
                         </div>
                     </div>
 
                     {$extends['ext_html']}
 
-            <div class="layui-form-item center main-config-save">
-                <div class="layui-input-block">
-                    <button type="submit" class="layui-btn" lay-submit="" form="form_config_upload"
-                        lay-filter="formSubmit">{:lang('btn_save')}</button>
-                    <button class="layui-btn layui-btn-primary" type="reset" form="form_config_upload">{:lang('btn_reset')}</button>
                 </div>
-            </div>
-
-            </div>
-
-            <div class="layui-tab-item" id="config_tab_url">
-                <form class="layui-form layui-form-pane" method="post" action="{$form_action_configurl|default=''}">
-                    <input type="hidden" name="__token__" value="{$Request.token}" />
-                    {include file="application/admin/view_new/system/config_embed_url.html" /}
-                    <div class="layui-form-item center">
-                        <div class="layui-input-block">
-                            <button type="submit" class="layui-btn" lay-submit="" lay-filter="formSubmit">{:lang('btn_save')}</button>
-                            <button class="layui-btn layui-btn-primary" type="reset">{:lang('btn_reset')}</button>
-                        </div>
-                    </div>
-                </form>
-            </div>
-
-            <div class="layui-tab-item" id="config_tab_play">
-                <form class="layui-form layui-form-pane" method="post" action="{$form_action_configplay|default=''}">
-                    <input type="hidden" name="__token__" value="{$Request.token}" />
-                    {include file="application/admin/view_new/system/config_embed_play_fields.html" /}
-                    <div class="layui-form-item center">
-                        <div class="layui-input-block">
-                            <button type="submit" class="layui-btn" lay-submit="" lay-filter="formSubmit">{:lang('btn_save')}</button>
-                            <button type="button" class="layui-btn layui-btn-normal" id="btnDef">{:lang('default_val')}</button>
-                            <button class="layui-btn layui-btn-primary" type="reset">{:lang('btn_reset')}</button>
-                        </div>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
-
-{include file="../../../application/admin/view_new/public/foot" /}
-<script type="text/javascript" src="__STATIC__/js/jquery.cookie.js"></script>
-<script type="text/javascript">
-    function setColor(v) {
-        switch (v) {
-            case 2:
-                v = "EFF4F7,000000,666666,E4E4E4,000000,FF0000,FF0000,DBEBFE,458CE4,DBEBFE,FFFFFF,458CE4,DBEBFE,DBEBFE,fcfcfc";
-                break;
-            case 3:
-                v = "D8CFDF,000000,666666,E4E4E4,000000,FF0000,FF0000,D8CFDF,926C92,BEAFC9,FFFFFF,926C92,BEAFC9,BEAFC9,fcfcfc";
-                break;
-            case 4:
-                v = "D7E7B6,000000,666666,E4E4E4,000000,FF0000,FF0000,9EC14C,A3C656,BAD480,FFFFFF,A3C656,BAD480,BAD480,fcfcfc";
-                break;
-            default:
-                v = "000000,F6F6F6,F6F6F6,333333,666666,FFFFF,FF0000,2c2c2c,ffffff,a3a3a3,2c2c2c,adadad,adadad,48486c,fcfcfc";
-                break;
-        }
-        $("#mac_colors").val(v);
-    }
-    layui.use(['element', 'form', 'layer'], function () {
-        var form = layui.form
-            , layer = layui.layer
-            , element = layui.element;
-        var mergeTab = {:json_encode(isset($config_merge_tab) ? $config_merge_tab : '')};
-
-        form.on('select(upload[mode])', function (data) {
-            $('.upload_mode').hide();
-            $('.mode_' + data.value).show();
-        });
-
-        element.on('tab(tb_upload)', function () {
-            $.cookie('config_upload_tab', this.getAttribute('lay-id'));
-            form.render();
-        });
-
-        element.on('tab(tb_configurl)', function () {
-            $.cookie('config_url_inner_tab', this.getAttribute('lay-id'));
-            form.render();
-        });
-
-        if (mergeTab === 'url') {
-            element.tabChange('tb_upload', 'up_url');
-        } else if (mergeTab === 'play') {
-            element.tabChange('tb_upload', 'up_play');
-        } else if ($.cookie('config_upload_tab') != null) {
-            element.tabChange('tb_upload', $.cookie('config_upload_tab'));
-        }
-
-        if ($.cookie('config_url_inner_tab') != null) {
-            setTimeout(function () {
-                element.tabChange('tb_configurl', $.cookie('config_url_inner_tab'));
-            }, 0);
-        }
-
-        $('#btnDef').click(function () {
-            $('input[name="play[width]"]').val('100%');
-            $('input[name="play[height]"]').val('100%');
-            $('input[name="play[widthmob]"]').val('100%');
-            $('input[name="play[heightmob]"]').val('100%');
-            $('input[name="play[widthpop]"]').val('600');
-            $('input[name="play[heightpop]"]').val('500');
-            $('input[name="play[second]"]').val('5');
-            $('input[name="play[prestrain]"]').val('//union.maccms.la/html/prestrain.html');
-            $('input[name="play[buffer]"]').val('//union.maccms.la/html/loading.html');
-            $('input[name="play[parse]"]').val('');
-        });
-    });
-
-
-</script>
-
-</body>
-
-</html>

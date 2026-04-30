@@ -243,7 +243,8 @@ body {
     overflow: inherit !important;
 }
 
-.page-container .layui-tab-content {
+/* 仅最外层 Tab 内容区加内边距，避免嵌套 .layui-tab（如 maccms-inner-tab-vertical）被重复套一层 */
+.page-container > .layui-tab > .layui-tab-content {
     padding: 15px 30px 0 30px;
 }
 
@@ -1382,4 +1383,153 @@ body {
     padding: 0 6px !important;
     font-size: 12px !important;
     box-sizing: border-box !important;
+}
+
+/* ========== 内层竖向 Tab：系统配置多子项，避免双横条堆叠 ========== */
+.maccms-inner-tab-vertical {
+    display: flex;
+    flex-direction: row;
+    align-items: stretch;
+    gap: 0;
+    min-height: 360px;
+    background: #fff;
+    border: 1px solid #E6E7EB;
+    border-radius: 8px;
+    overflow: hidden;
+    margin-top: 0;
+    box-sizing: border-box;
+}
+
+.maccms-inner-tab-vertical .layui-tab-title {
+    width: 188px;
+    flex-shrink: 0;
+    display: block;
+    height: auto;
+    margin: 0;
+    border: 0;
+    border-right: 1px solid #E6E7EB;
+    background: #F9FAFB;
+    padding: 10px 0 14px 0;
+    position: relative;
+    top: auto;
+    left: auto;
+    overflow: auto;
+    max-height: 72vh;
+    box-sizing: border-box;
+}
+
+.maccms-inner-tab-vertical .layui-tab-title li {
+    display: block;
+    float: none;
+    line-height: 1.45;
+    margin: 3px 8px;
+    border: 0;
+    border-radius: 6px;
+    min-height: 40px;
+    padding: 9px 10px;
+    text-align: left;
+    white-space: normal;
+    box-sizing: border-box;
+    cursor: pointer;
+}
+
+.maccms-inner-tab-vertical .layui-tab-title .layui-this {
+    color: #fff;
+    /* 与 layui 默认主按钮 .layui-btn（#40CC92）一致 */
+    background: #40CC92;
+    font-weight: 500;
+}
+
+.maccms-inner-tab-vertical .layui-tab-title .layui-this:after {
+    display: none;
+}
+
+.maccms-inner-tab-vertical .layui-tab-title li:focus-visible {
+    outline: 2px solid #40CC92;
+    outline-offset: 2px;
+}
+
+.maccms-inner-tab-vertical .layui-tab-content {
+    flex: 1;
+    min-width: 0;
+    position: relative;
+    top: auto;
+    left: auto;
+    bottom: auto;
+    margin: 0;
+    border: 0;
+    background: #fff;
+    padding: 12px 20px 20px 20px;
+    overflow: auto;
+    max-height: 72vh;
+    box-sizing: border-box;
+}
+
+.maccms-inner-tab-vertical .layui-tab-item {
+    height: auto;
+    padding-top: 0;
+}
+
+@media (max-width: 992px) {
+    .maccms-inner-tab-vertical {
+        flex-direction: column;
+        min-height: 0;
+    }
+
+    .maccms-inner-tab-vertical .layui-tab-title {
+        width: 100%;
+        max-height: none;
+        border-right: 0;
+        border-bottom: 1px solid #E6E7EB;
+        white-space: nowrap;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        padding: 6px 4px 10px 4px;
+    }
+
+    .maccms-inner-tab-vertical .layui-tab-title li {
+        display: inline-block;
+        vertical-align: top;
+        width: auto;
+        min-width: 96px;
+        max-width: 220px;
+        margin: 3px 4px;
+    }
+
+    .maccms-inner-tab-vertical .layui-tab-content {
+        max-height: none;
+        padding: 12px 12px 16px 12px;
+    }
+}
+
+/* 与 .page-container .layui-tab-content 配合时，消减嵌套内边距“双边距”感 */
+.page-container .layui-tab .layui-tab-item:has(> form .maccms-inner-tab-vertical),
+.page-container .layui-tab .layui-tab-item:has(> .maccms-inner-tab-vertical) {
+    margin-left: -22px;
+    margin-right: -22px;
+    padding-left: 10px;
+    padding-right: 10px;
+    padding-top: 2px;
+    box-sizing: border-box;
+}
+
+/* 采集参数合并页：外层 Tab 内容区不要左右内边距；内层竖向卡片区不再做负边距补位 */
+.page-container > .layui-tab[lay-filter="tb_access"] > .layui-tab-content {
+    padding-left: 0;
+    padding-right: 0;
+}
+
+.page-container .layui-tab[lay-filter="tb_access"] .layui-tab-item:has(> form .maccms-inner-tab-vertical) {
+    margin-left: 0;
+    margin-right: 0;
+    padding-left: 0;
+    padding-right: 0;
+    padding-top: 2px;
+    box-sizing: border-box;
+}
+
+/* 该页主按钮与竖向导航选中色统一（避免局部仍用旧色） */
+.page-container .layui-tab[lay-filter="tb_access"] .maccms-inner-tab-vertical + .layui-form-item.center .layui-btn[type="submit"] {
+    background-color: #40CC92;
+    border-color: #40CC92;
 }
