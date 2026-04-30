@@ -56,6 +56,15 @@
 				 </div>
 				 <h3 class="down_tips_text" data-lang="string_down_bnxz">因特殊原因，该片不提供下载</h3>
 			</div>
+			{elseif condition="$popedom.code gt 1"}
+			<div class="pannel clearfix">
+				 <div class="pannel_head clearfix">
+				      <h3 class="title" data-lang="string_down_xzlb">下载列表</h3>
+				 </div>
+				 <div style="padding:20px;text-align:center;">
+				 	{include file="widget/popedom_upgrade_gate"}
+				 </div>
+			</div>
 			{else}
 			 
 				<script src="{$maccms.path}template/default/asset/js/vod-down.js?v=202604161"></script>

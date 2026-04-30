@@ -625,9 +625,15 @@ polyfill;
 
             if($pe==0 && $popedom['code']>1 && empty($popedom["trysee"])){
                 $info['player_info']['flag'] = $flag;
+
+                // 下载页面：清空下载列表
+                if ($flag == 'down') {
+                    $info['vod_down_list'] = [];
+                }
+
                 $this->assign('obj',$info);
 
-                // 不再跳转确认页，直接进入播放页，由模板内的权限引导进行购买/充值
+                // 不再跳转确认页，直接进入播放页/下载页，由模板内的权限引导进行购买/充值
                 $vod_popedom_locked = true;
             }
         }
