@@ -76,6 +76,21 @@ class User extends Base
             $data['user_end_time'] = strtotime($data['user_end_time']);
         }
 
+        // 选择VIP会员组（group_id > 2）时，包时截止时间必须大于当前时间
+        $check_group_id = isset($data['group_id']) ? $data['group_id'] : 0;
+        // 支持多组逗号分隔，取最大值判断
+        $max_group_id = 0;
+        if (!empty($check_group_id)) {
+            $group_ids_arr = explode(',', $check_group_id);
+            $max_group_id = max(array_map('intval', $group_ids_arr));
+        }
+        if ($max_group_id > 2) {
+            $end_time_val = isset($data['user_end_time']) ? intval($data['user_end_time']) : 0;
+            if ($end_time_val <= time()) {
+                return ['code' => 1001, 'msg' => lang('model/user/vip_end_time_must_future')];
+            }
+        }
+
         if (!empty($data['user_id'])) {
             if (!$validate->scene('edit')->check($data)) {
                 return ['code' => 1001, 'msg' => lang('param_err').'：' . $validate->getError()];
@@ -96,6 +111,14 @@ class User extends Base
 
             $data['user_pwd'] = md5($data['user_pwd']);
             $res = $this->insert($data);
+            // 新增用户后自动生成邀请码
+            if ($res !== false) {
+                $nid = $this->getLastInsID();
+                if ($nid > 0) {
+                    $invite_code = $this->generateUniqueInviteCode($nid);
+                    $this->where('user_id', $nid)->update(['user_invite_code' => $invite_code]);
+                }
+            }
         }
         if (false === $res) {
             return ['code' => 1003, 'msg' => '' . $this->getError()];
@@ -630,7 +653,9 @@ class User extends Base
     public function expire()
     {
         $where=[];
-        $where['user_end_time'] = ['elt',time()];
+        // 只处理VIP会员组（group_id > 2）且 user_end_time 已过期（排除 user_end_time=0 的普通用户）
+        $where['group_id'] = ['gt', 2];
+        $where['user_end_time'] = ['between', [1, time()]];
 
         $update=[];
         $update['group_id'] = '2';

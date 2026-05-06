@@ -685,6 +685,7 @@ https://www.baidu.com/123.jpg
   'model/user/reg_ok_logged_in' => '註冊成功並已登入',
   'model/user/order_not_member_upgrade' => '不是會員升級訂單',
   'model/user/upgrade_param_invalid' => '升級參數無效',
+  'model/user/vip_end_time_must_future' => '選擇VIP會員組時，包時截止時間必須大於當前時間',
   'api/please_login_first' => '未登入，請先登入',
   'api/user_not_found' => '用戶不存在',
   'api/user_name_pwd_empty' => '用戶名和密碼不能為空',

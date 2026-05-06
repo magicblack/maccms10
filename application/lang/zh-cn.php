@@ -742,6 +742,7 @@ https://www.baidu.com/123.jpg
     'model/user/reg_ok_logged_in'=>'注册成功并已登录',
     'model/user/order_not_member_upgrade'=>'不是会员升级订单',
     'model/user/upgrade_param_invalid'=>'升级参数无效',
+    'model/user/vip_end_time_must_future'=>'选择VIP会员组时，包时截止时间必须大于当前时间',
     'api/please_login_first'=>'未登录，请先登录',
     'api/user_not_found'=>'用户不存在',
     'api/user_name_pwd_empty'=>'用户名和密码不能为空',

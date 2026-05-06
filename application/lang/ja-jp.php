@@ -685,6 +685,7 @@ https://www.baidu.com/123.jpg
   'model/user/reg_ok_logged_in' => '登録に成功し、ログインしました',
   'model/user/order_not_member_upgrade' => '会員アップグレード注文ではありません',
   'model/user/upgrade_param_invalid' => 'アップグレードのパラメータが無効です',
+  'model/user/vip_end_time_must_future' => 'VIP会員グループを選択する場合、有効期限は現在時刻より後でなければなりません',
   'api/please_login_first' => '未ログインです。先にログインしてください',
   'api/user_not_found' => 'ユーザーが存在しません',
   'api/user_name_pwd_empty' => 'ユーザー名とパスワードは空にできません',

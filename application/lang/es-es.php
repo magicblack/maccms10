@@ -685,6 +685,7 @@ https://www.baidu.com/123.jpg
   'model/user/reg_ok_logged_in' => 'Registro correcto, ya ha iniciado sesión',
   'model/user/order_not_member_upgrade' => 'No es un pedido de mejora de membresía',
   'model/user/upgrade_param_invalid' => 'Parámetros de mejora no válidos',
+  'model/user/vip_end_time_must_future' => 'Al seleccionar un grupo VIP, la fecha de vencimiento debe ser posterior a la hora actual',
   'api/please_login_first' => 'No ha iniciado sesión, inicie sesión primero',
   'api/user_not_found' => 'El usuario no existe',
   'api/user_name_pwd_empty' => 'El nombre de usuario y la contraseña no pueden estar vacíos',

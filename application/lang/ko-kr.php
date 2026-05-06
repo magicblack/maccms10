@@ -685,6 +685,7 @@ https://www.baidu.com/123.jpg
   'model/user/reg_ok_logged_in' => '가입에 성공했으며 로그인되었습니다',
   'model/user/order_not_member_upgrade' => '회원 업그레이드 주문이 아닙니다',
   'model/user/upgrade_param_invalid' => '업그레이드 매개변수가 잘못되었습니다',
+  'model/user/vip_end_time_must_future' => 'VIP 회원 그룹을 선택할 때 만료 시간은 현재 시간보다 이후여야 합니다',
   'api/please_login_first' => '로그인되지 않았습니다. 먼저 로그인하세요',
   'api/user_not_found' => '사용자가 존재하지 않습니다',
   'api/user_name_pwd_empty' => '사용자 이름과 비밀번호는 비울 수 없습니다',
