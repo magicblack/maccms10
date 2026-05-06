@@ -1,5 +1,6 @@
 <?php
 namespace app\api\controller;
+use app\common\util\ExternalSyncRunner;
 use think\Controller;
 use app\common\util\AnalyticsAggregator;
 
@@ -108,5 +109,17 @@ class Timming extends Base
         if (isset($res['msg'])) {
             mac_echo('[analytics] ' . $res['msg']);
         }
+    }
+
+    protected function extsync($param)
+    {
+        @parse_str($param, $output);
+        $provider = isset($output['provider']) ? trim((string)$output['provider']) : '';
+        $cfg = config('maccms');
+        $extCfg = isset($cfg['ai_search']['external_sources']) && is_array($cfg['ai_search']['external_sources'])
+            ? $cfg['ai_search']['external_sources']
+            : [];
+        $runner = new ExternalSyncRunner();
+        $runner->runDueJobs($extCfg, $provider);
     }
 }

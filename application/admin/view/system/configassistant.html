@@ -1,0 +1,121 @@
+{include file="../../../application/admin/view/public/head" /}
+<style>
+    /* Default layui-form-pane labels are ~110px and clip long English titles */
+    .layui-form-pane .layui-form-label {
+        width: 220px;
+        white-space: normal;
+        line-height: 1.35;
+        height: auto;
+        padding-top: 9px;
+        padding-bottom: 9px;
+        overflow: visible;
+        text-overflow: clip;
+    }
+
+    .layui-form-pane .layui-input-block {
+        margin-left: 220px;
+    }
+</style>
+
+<div class="page-container">
+    <form class="layui-form layui-form-pane" action="">
+        <input type="hidden" name="__token__" value="{$Request.token}" />
+
+        <blockquote class="layui-elem-quote layui-quote-nm">
+            {:lang('admin/system/configassistant/tip')}
+        </blockquote>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">{:lang('admin/system/configaisearch/assistant_enabled')}：</label>
+            <div class="layui-input-block">
+                <input type="radio" name="admin_assistant[enabled]" value="1" title="{:lang('open')}" {if condition="$config['admin_assistant']['enabled'] eq '1'"}checked{/if}>
+                <input type="radio" name="admin_assistant[enabled]" value="0" title="{:lang('close')}" {if condition="$config['admin_assistant']['enabled'] neq '1'"}checked{/if}>
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">{:lang('admin/system/configassistant/access_scope')}：</label>
+            <div class="layui-input-block">
+                <input type="radio" name="admin_assistant[access_scope]" value="all" title="{:lang('admin/system/configassistant/access_all_admins')}" {if condition="$config['admin_assistant']['access_scope'] neq 'super'"}checked{/if}>
+                <input type="radio" name="admin_assistant[access_scope]" value="super" title="{:lang('admin/system/configassistant/access_super_admin')}" {if condition="$config['admin_assistant']['access_scope'] eq 'super'"}checked{/if}>
+            </div>
+            <div class="layui-form-mid layui-word-aux">{:lang('admin/system/configassistant/access_scope_tip')}</div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">{:lang('admin/system/configaisearch/assistant_use_ai_key')}：</label>
+            <div class="layui-input-block">
+                <input type="radio" name="admin_assistant[use_ai_search_credentials]" value="1" title="{:lang('open')}" {if condition="$config['admin_assistant']['use_ai_search_credentials'] eq '1'"}checked{/if}>
+                <input type="radio" name="admin_assistant[use_ai_search_credentials]" value="0" title="{:lang('close')}" {if condition="$config['admin_assistant']['use_ai_search_credentials'] neq '1'"}checked{/if}>
+            </div>
+            <div class="layui-form-mid layui-word-aux">{:lang('admin/system/configaisearch/assistant_use_ai_key_tip')}</div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">{:lang('admin/system/configassistant/provider')}：</label>
+            <div class="layui-input-inline w300">
+                <input type="text" name="admin_assistant[provider]" value="{$config['admin_assistant']['provider']|default='openai'}" class="layui-input" placeholder="openai">
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">{:lang('admin/system/configaisearch/assistant_model')}：</label>
+            <div class="layui-input-inline w300">
+                <input type="text" name="admin_assistant[model]" value="{$config['admin_assistant']['model']|default=''}" class="layui-input" placeholder="gpt-4o-mini">
+            </div>
+            <label class="layui-form-label">{:lang('admin/system/configaisearch/assistant_api_base')}：</label>
+            <div class="layui-input-inline w300">
+                <input type="text" name="admin_assistant[api_base]" value="{$config['admin_assistant']['api_base']|default=''}" class="layui-input" placeholder="https://api.openai.com/v1">
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">{:lang('admin/system/configaisearch/assistant_api_key')}：</label>
+            <div class="layui-input-block">
+                <input type="password" name="admin_assistant[api_key]" value="" autocomplete="new-password" class="layui-input" placeholder="{:lang('admin/system/configaisearch/api_key_tip')}">
+                {if condition="$admin_assistant_key_saved eq 1"}
+                <div class="layui-form-mid layui-word-aux">{:lang('admin/system/configaisearch/api_key_saved_tip')} (****{$admin_assistant_key_tail})</div>
+                {/if}
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">{:lang('admin/system/configaisearch/assistant_timeout')}：</label>
+            <div class="layui-input-inline w120">
+                <input type="number" name="admin_assistant[timeout]" value="{$config['admin_assistant']['timeout']|default='45'}" class="layui-input" min="8">
+            </div>
+            <label class="layui-form-label">{:lang('admin/system/configaisearch/assistant_max_tokens')}：</label>
+            <div class="layui-input-inline w120">
+                <input type="number" name="admin_assistant[max_tokens]" value="{$config['admin_assistant']['max_tokens']|default='1200'}" class="layui-input" min="256" max="4096">
+            </div>
+            <label class="layui-form-label">{:lang('admin/system/configaisearch/assistant_rate')}：</label>
+            <div class="layui-input-inline w120">
+                <input type="number" name="admin_assistant[rate_per_minute]" value="{$config['admin_assistant']['rate_per_minute']|default='20'}" class="layui-input" min="1" max="120">
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">{:lang('admin/system/configaisearch/assistant_retrieve')}：</label>
+            <div class="layui-input-inline w120">
+                <input type="number" name="admin_assistant[retrieve_chunks]" value="{$config['admin_assistant']['retrieve_chunks']|default='8'}" class="layui-input" min="1" max="12">
+            </div>
+            <label class="layui-form-label">{:lang('admin/system/configaisearch/assistant_env')}：</label>
+            <div class="layui-input-inline w200">
+                <input type="radio" name="admin_assistant[include_env_snapshot]" value="1" title="{:lang('open')}" {if condition="$config['admin_assistant']['include_env_snapshot'] eq '1'"}checked{/if}>
+                <input type="radio" name="admin_assistant[include_env_snapshot]" value="0" title="{:lang('close')}" {if condition="$config['admin_assistant']['include_env_snapshot'] neq '1'"}checked{/if}>
+            </div>
+            <div class="layui-form-mid layui-word-aux">{:lang('admin/system/configaisearch/assistant_env_tip')}</div>
+        </div>
+
+        <div class="layui-form-item center">
+            <div class="layui-input-block">
+                <button type="submit" class="layui-btn" lay-submit="" lay-filter="formSubmit">{:lang('btn_save')}</button>
+                <button class="layui-btn layui-btn-warm" type="reset">{:lang('btn_reset')}</button>
+            </div>
+        </div>
+    </form>
+</div>
+
+{include file="../../../application/admin/view/public/foot" /}
+</body>
+</html>

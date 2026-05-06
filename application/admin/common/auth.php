@@ -120,6 +120,13 @@ return array (
         'controller' => 'meilisearch',
         'action' => 'index',
       ),
+      217 =>
+      array (
+        'show' => 1,
+        'name' => lang('menu/configassistant'),
+        'controller' => 'system',
+        'action' => 'configassistant',
+      ),
       2151 =>
       array (
         'show' => 0,

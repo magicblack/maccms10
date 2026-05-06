@@ -69,6 +69,7 @@ class AiSearch
             'module' => [
                 'vod' => '1',
                 'art' => '1',
+                'manga' => '1',
                 'topic' => '0',
                 'actor' => '0',
                 'role' => '0',
@@ -82,6 +83,7 @@ class AiSearch
         $cfg['module'] = array_merge([
             'vod' => '1',
             'art' => '1',
+            'manga' => '1',
             'topic' => '0',
             'actor' => '0',
             'role' => '0',
@@ -191,6 +193,9 @@ class AiSearch
         if ($module === 'art') {
             return self::queryArtResources($kw);
         }
+        if ($module === 'manga') {
+            return self::queryMangaResources($kw);
+        }
         if ($module === 'topic') {
             return self::queryTopicResources($kw);
         }
@@ -211,27 +216,9 @@ class AiSearch
 
     private static function buildExternalResources($cfg, $wd)
     {
-        if ((string)$cfg['external_enabled'] !== '1') {
-            return [];
-        }
-        $maxLinks = max(1, intval($cfg['external_max_links']));
-        $domains = array_filter(array_map('trim', explode(',', (string)$cfg['external_domains'])));
-        $domains = array_values(array_unique($domains));
-        $domains = array_slice($domains, 0, $maxLinks);
-        $query = rawurlencode($wd);
-        $out = [];
-        foreach ($domains as $domain) {
-            $domain = preg_replace('/[^a-z0-9\.\-]/i', '', strtolower($domain));
-            if ($domain === '') {
-                continue;
-            }
-            $out[] = [
-                'title' => 'Search "' . $wd . '" on ' . $domain,
-                'url' => 'https://www.google.com/search?q=' . $query . '+site%3A' . rawurlencode($domain),
-                'domain' => $domain,
-            ];
-        }
-        return $out;
+        // Legacy helper used to emit Google site: links titled "Search \"…\" on domain".
+        // Those are low-value in the AI chat UI; real externals come from federation (TMDB, etc.).
+        return [];
     }
 
     private static function queryVodResources($kw)
@@ -379,6 +366,27 @@ class AiSearch
                 'url' => mac_url_art_detail($row),
                 'pic' => (string)$row['art_pic'],
                 'type' => 'art',
+            ];
+        }
+        return $result;
+    }
+
+    private static function queryMangaResources($kw)
+    {
+        $rows = Db::name('Manga')
+            ->field('manga_id,manga_name,manga_en,manga_pic,manga_author')
+            ->where('manga_status', 1)
+            ->where('manga_name|manga_sub|manga_tag|manga_blurb|manga_author', 'like', $kw)
+            ->order('manga_hits desc,manga_id desc')
+            ->limit(8)
+            ->select();
+        $result = [];
+        foreach ($rows as $row) {
+            $result[] = [
+                'title' => (string)$row['manga_name'],
+                'url' => mac_url_manga_detail($row),
+                'pic' => (string)$row['manga_pic'],
+                'type' => 'manga',
             ];
         }
         return $result;

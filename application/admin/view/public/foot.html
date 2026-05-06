@@ -1,1 +1,138 @@
 <script type="text/javascript" src="__STATIC__/js/admin_common.js?{$MAC_VERSION}"></script>
+<script type="text/javascript">
+(function () {
+    if (window.self !== window.top) {
+        return;
+    }
+    var LANG = {
+        title: "{:addslashes(lang('admin/assistant/title'))}",
+        open: "{:addslashes(lang('admin/assistant/open'))}",
+        placeholder: "{:addslashes(lang('admin/assistant/placeholder'))}",
+        send: "{:addslashes(lang('admin/assistant/send'))}",
+        thinking: "{:addslashes(lang('admin/assistant/thinking'))}",
+        close: "{:addslashes(lang('admin/assistant/close'))}",
+        roleUser: "{:addslashes(lang('admin/assistant/role_user'))}",
+        roleAssistant: "{:addslashes(lang('admin/assistant/role_assistant'))}",
+        disabled: "{:addslashes(lang('admin/assistant/disabled_hint'))}"
+    };
+    var chatUrl = "{:url('assistant/chat')}";
+    var pingUrl = "{:url('assistant/ping')}";
+    var fab = document.createElement('button');
+    fab.type = 'button';
+    fab.id = 'mac-admin-assistant-fab';
+    fab.title = LANG.open;
+    fab.textContent = '?';
+    fab.setAttribute('aria-label', LANG.open);
+    fab.style.cssText = 'position:fixed;z-index:19991015;right:18px;bottom:88px;width:44px;height:44px;border-radius:50%;border:none;cursor:pointer;background:#16a34a;color:#fff;font-size:20px;font-weight:bold;box-shadow:0 4px 14px rgba(0,0,0,.2);';
+    document.body.appendChild(fab);
+
+    var panel = null;
+    var history = [];
+    var pinged = false;
+
+    function esc(s) {
+        var d = document.createElement('div');
+        d.textContent = s;
+        return d.innerHTML;
+    }
+
+    function renderMsg(role, html) {
+        var wrap = document.createElement('div');
+        wrap.style.marginBottom = '10px';
+        wrap.style.lineHeight = '1.45';
+        var tag = role === 'user' ? LANG.roleUser : LANG.roleAssistant;
+        var bg = role === 'user' ? '#e0f2fe' : '#f4f4f5';
+        wrap.innerHTML = '<div style="font-size:11px;color:#71717a;margin-bottom:2px;">' + tag + '</div><div style="background:' + bg + ';padding:8px 10px;border-radius:8px;white-space:pre-wrap;word-break:break-word;">' + html + '</div>';
+        return wrap;
+    }
+
+    function openPanel() {
+        if (panel) {
+            panel.style.display = 'flex';
+            return;
+        }
+        panel = document.createElement('div');
+        panel.id = 'mac-admin-assistant-panel';
+        panel.style.cssText = 'position:fixed;z-index:19991016;right:18px;bottom:140px;width:min(420px,92vw);height:min(520px,70vh);background:#fff;border-radius:12px;box-shadow:0 8px 32px rgba(0,0,0,.18);display:flex;flex-direction:column;overflow:hidden;border:1px solid #e4e4e7;';
+        panel.innerHTML = '<div style="padding:10px 12px;background:#18181b;color:#fafafa;font-size:14px;display:flex;justify-content:space-between;align-items:center;"><span>' + esc(LANG.title) + '</span><button type="button" id="mac-asst-close" style="background:transparent;border:none;color:#fff;cursor:pointer;font-size:18px;line-height:1;">×</button></div><div id="mac-asst-msgs" style="flex:1;overflow:auto;padding:12px;background:#fafafa;"></div><div style="padding:8px;border-top:1px solid #e4e4e7;display:flex;gap:6px;"><input id="mac-asst-input" type="text" style="flex:1;border:1px solid #d4d4d8;border-radius:8px;padding:8px 10px;" placeholder="' + esc(LANG.placeholder) + '" /><button type="button" id="mac-asst-send" style="background:#16a34a;color:#fff;border:none;border-radius:8px;padding:0 14px;cursor:pointer;">' + esc(LANG.send) + '</button></div>';
+        document.body.appendChild(panel);
+        document.getElementById('mac-asst-close').onclick = function () { panel.style.display = 'none'; };
+        document.getElementById('mac-asst-send').onclick = sendChat;
+        document.getElementById('mac-asst-input').addEventListener('keydown', function (e) {
+            if (e.key === 'Enter') { sendChat(); }
+        });
+    }
+
+    function appendThinking() {
+        var box = document.getElementById('mac-asst-msgs');
+        var id = 'mac-asst-temp-' + Date.now();
+        var el = document.createElement('div');
+        el.id = id;
+        el.style.cssText = 'color:#71717a;font-size:12px;padding:6px 0;';
+        el.textContent = LANG.thinking;
+        box.appendChild(el);
+        box.scrollTop = box.scrollHeight;
+        return id;
+    }
+
+    function removeEl(id) {
+        var n = document.getElementById(id);
+        if (n) n.parentNode.removeChild(n);
+    }
+
+    function sendChat() {
+        openPanel();
+        var inp = document.getElementById('mac-asst-input');
+        var box = document.getElementById('mac-asst-msgs');
+        if (!inp || !box) return;
+        var text = (inp.value || '').trim();
+        if (!text) return;
+        inp.value = '';
+        box.appendChild(renderMsg('user', esc(text)));
+        history.push({ role: 'user', content: text });
+        var tid = appendThinking();
+        fetch(chatUrl, {
+            method: 'POST',
+            credentials: 'same-origin',
+            headers: { 'Content-Type': 'application/json', 'X-Requested-With': 'XMLHttpRequest' },
+            body: JSON.stringify({ message: text, history: history.slice(0, -1) })
+        }).then(function (r) { return r.json(); }).then(function (data) {
+            removeEl(tid);
+            if (!data || data.code !== 1) {
+                var msg = (data && data.msg) ? data.msg : 'Error';
+                box.appendChild(renderMsg('assistant', esc(msg)));
+                return;
+            }
+            var html = esc(data.reply || '');
+            box.appendChild(renderMsg('assistant', html));
+            history.push({ role: 'assistant', content: data.reply || '' });
+            if (history.length > 20) history = history.slice(-20);
+            box.scrollTop = box.scrollHeight;
+        }).catch(function () {
+            removeEl(tid);
+            box.appendChild(renderMsg('assistant', esc('Network error')));
+        });
+    }
+
+    fab.onclick = function () {
+        openPanel();
+        if (!pinged) {
+            pinged = true;
+            fetch(pingUrl, { credentials: 'same-origin' }).then(function (r) { return r.json(); }).then(function (d) {
+                if (!d || d.enabled !== 1) {
+                    var box = document.getElementById('mac-asst-msgs');
+                    if (box && !box.querySelector('.mac-asst-disabled-note')) {
+                        var note = document.createElement('div');
+                        note.className = 'mac-asst-disabled-note';
+                        note.style.cssText = 'font-size:12px;color:#b45309;background:#fffbeb;padding:8px;border-radius:8px;margin-bottom:8px;';
+                        note.textContent = LANG.disabled;
+                        box.insertBefore(note, box.firstChild);
+                    }
+                }
+            }).catch(function () {});
+        }
+        var inp = document.getElementById('mac-asst-input');
+        if (inp) inp.focus();
+    };
+})();
+</script>

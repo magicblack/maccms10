@@ -252,6 +252,9 @@ layui.define(['element', 'form'], function(exports) {
             url: _form.attr('action'),
             data: _form.serialize(),
             success: function(res) {
+                if (res.data && res.data.__token__) {
+                    _form.find('input[name="__token__"]').val(res.data.__token__);
+                }
                 layer.msg(res.msg, {time:800},function() {
                     if (res.code == 1) {
 

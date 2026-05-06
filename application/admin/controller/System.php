@@ -1,5 +1,6 @@
 <?php
 namespace app\admin\controller;
+use app\common\util\ExternalSyncRunner;
 use http\Cookie;
 use think\Db;
 use think\Config;
@@ -70,7 +71,9 @@ class System extends Base
             $config = input('','','htmlentities');
             $validate = \think\Loader::validate('Token');
             if(!$validate->check($config)){
-                return $this->error($validate->getError());
+                $err = $validate->getError();
+                $msg = is_scalar($err) ? (string)$err : lang('param_err');
+                return $this->ajaxErrorWithFreshToken($msg);
             }
             unset($config['__token__']);
             $invalidSubmitMsg = '提交数据不完整，请刷新页面后重试';
@@ -146,7 +149,7 @@ class System extends Base
 
             $res = mac_arr2file(APP_PATH . 'extra/maccms.php', $config_new);
             if ($res === false) {
-                return $this->error(lang('save_err'));
+                return $this->ajaxErrorWithFreshToken(lang('save_err'));
             }
             return $this->success(lang('save_ok'));
         }
@@ -210,7 +213,9 @@ class System extends Base
 
             $validate = \think\Loader::validate('Token');
             if(!$validate->check($config)){
-                return $this->error($validate->getError());
+                $err = $validate->getError();
+                $msg = is_scalar($err) ? (string)$err : lang('param_err');
+                return $this->ajaxErrorWithFreshToken($msg);
             }
             unset($config['__token__']);
 
@@ -295,7 +300,9 @@ class System extends Base
 
             $validate = \think\Loader::validate('Token');
             if(!$validate->check($config)){
-                return $this->error($validate->getError());
+                $err = $validate->getError();
+                $msg = is_scalar($err) ? (string)$err : lang('param_err');
+                return $this->ajaxErrorWithFreshToken($msg);
             }
             unset($config['__token__']);
 
@@ -320,7 +327,7 @@ class System extends Base
 
             $res = mac_arr2file(APP_PATH . 'extra/maccms.php', $config_new);
             if ($res === false) {
-                return $this->error(lang('save_err'));
+                return $this->ajaxErrorWithFreshToken(lang('save_err'));
             }
             return $this->success(lang('save_ok'));
         }
@@ -371,12 +378,14 @@ class System extends Base
                 return $this->error($invalidSubmitMsg);
             }
             if($config['upload']['mode'] == 'S3' && $phar_status == false){
-                return $this->error(lang('save_err'));
+                return $this->ajaxErrorWithFreshToken(lang('save_err'));
             }
 
             $validate = \think\Loader::validate('Token');
             if(!$validate->check($config)){
-                return $this->error($validate->getError());
+                $err = $validate->getError();
+                $msg = is_scalar($err) ? (string)$err : lang('param_err');
+                return $this->ajaxErrorWithFreshToken($msg);
             }
             unset($config['__token__']);
 
@@ -387,7 +396,7 @@ class System extends Base
 
             $res = mac_arr2file(APP_PATH . 'extra/maccms.php', $config_new);
             if ($res === false) {
-                return $this->error(lang('save_err'));
+                return $this->ajaxErrorWithFreshToken(lang('save_err'));
             }
             return $this->success(lang('save_ok'));
         }
@@ -441,7 +450,9 @@ class System extends Base
 
             $validate = \think\Loader::validate('Token');
             if(!$validate->check($config)){
-                return $this->error($validate->getError());
+                $err = $validate->getError();
+                $msg = is_scalar($err) ? (string)$err : lang('param_err');
+                return $this->ajaxErrorWithFreshToken($msg);
             }
             unset($config['__token__']);
 
@@ -453,7 +464,7 @@ class System extends Base
 
             $res = mac_arr2file(APP_PATH . 'extra/maccms.php', $config_new);
             if ($res === false) {
-                return $this->error(lang('save_err'));
+                return $this->ajaxErrorWithFreshToken(lang('save_err'));
             }
             return $this->success(lang('save_ok'));
         }
@@ -468,7 +479,9 @@ class System extends Base
 
             $validate = \think\Loader::validate('Token');
             if(!$validate->check($config)){
-                return $this->error($validate->getError());
+                $err = $validate->getError();
+                $msg = is_scalar($err) ? (string)$err : lang('param_err');
+                return $this->ajaxErrorWithFreshToken($msg);
             }
             unset($config['__token__']);
 
@@ -479,7 +492,7 @@ class System extends Base
 
             $res = mac_arr2file(APP_PATH . 'extra/maccms.php', $config_new);
             if ($res === false) {
-                return $this->error(lang('save_err'));
+                return $this->ajaxErrorWithFreshToken(lang('save_err'));
             }
             return $this->success(lang('save_ok'));
         }
@@ -494,7 +507,9 @@ class System extends Base
 
             $validate = \think\Loader::validate('Token');
             if(!$validate->check($config)){
-                return $this->error($validate->getError());
+                $err = $validate->getError();
+                $msg = is_scalar($err) ? (string)$err : lang('param_err');
+                return $this->ajaxErrorWithFreshToken($msg);
             }
             unset($config['__token__']);
 
@@ -505,7 +520,7 @@ class System extends Base
 
             $res = mac_arr2file(APP_PATH . 'extra/maccms.php', $config_new);
             if ($res === false) {
-                return $this->error(lang('save_err'));
+                return $this->ajaxErrorWithFreshToken(lang('save_err'));
             }
             return $this->success(lang('save_ok'));
         }
@@ -520,7 +535,9 @@ class System extends Base
 
             $validate = \think\Loader::validate('Token');
             if(!$validate->check($config)){
-                return $this->error($validate->getError());
+                $err = $validate->getError();
+                $msg = is_scalar($err) ? (string)$err : lang('param_err');
+                return $this->ajaxErrorWithFreshToken($msg);
             }
             unset($config['__token__']);
 
@@ -531,7 +548,7 @@ class System extends Base
 
             $res = mac_arr2file(APP_PATH . 'extra/maccms.php', $config_new);
             if ($res === false) {
-                return $this->error(lang('save_err'));
+                return $this->ajaxErrorWithFreshToken(lang('save_err'));
             }
             return $this->success(lang('save_ok'));
         }
@@ -556,7 +573,9 @@ class System extends Base
 
             $validate = \think\Loader::validate('Token');
             if(!$validate->check($config)){
-                return $this->error($validate->getError());
+                $err = $validate->getError();
+                $msg = is_scalar($err) ? (string)$err : lang('param_err');
+                return $this->ajaxErrorWithFreshToken($msg);
             }
             unset($config['__token__']);
 
@@ -567,7 +586,7 @@ class System extends Base
 
             $res = mac_arr2file(APP_PATH . 'extra/maccms.php', $config_new);
             if ($res === false) {
-                return $this->error(lang('save_err'));
+                return $this->ajaxErrorWithFreshToken(lang('save_err'));
             }
             return $this->success(lang('save_ok'));
         }
@@ -587,7 +606,9 @@ class System extends Base
 
             $validate = \think\Loader::validate('Token');
             if(!$validate->check($config)){
-                return $this->error($validate->getError());
+                $err = $validate->getError();
+                $msg = is_scalar($err) ? (string)$err : lang('param_err');
+                return $this->ajaxErrorWithFreshToken($msg);
             }
             unset($config['__token__']);
 
@@ -599,7 +620,7 @@ class System extends Base
 
             $res = mac_arr2file(APP_PATH . 'extra/maccms.php', $config_new);
             if ($res === false) {
-                return $this->error(lang('save_err'));
+                return $this->ajaxErrorWithFreshToken(lang('save_err'));
             }
             return $this->success(lang('save_ok'));
         }
@@ -619,7 +640,9 @@ class System extends Base
 
             $validate = \think\Loader::validate('Token');
             if(!$validate->check($config)){
-                return $this->error($validate->getError());
+                $err = $validate->getError();
+                $msg = is_scalar($err) ? (string)$err : lang('param_err');
+                return $this->ajaxErrorWithFreshToken($msg);
             }
             unset($config['__token__']);
 
@@ -636,7 +659,7 @@ class System extends Base
 
             $res = mac_arr2file(APP_PATH . 'extra/maccms.php', $config_new);
             if ($res === false) {
-                return $this->error(lang('save_err'));
+                return $this->ajaxErrorWithFreshToken(lang('save_err'));
             }
             return $this->success(lang('save_ok'));
         }
@@ -651,7 +674,9 @@ class System extends Base
 
             $validate = \think\Loader::validate('Token');
             if(!$validate->check($config)){
-                return $this->error($validate->getError());
+                $err = $validate->getError();
+                $msg = is_scalar($err) ? (string)$err : lang('param_err');
+                return $this->ajaxErrorWithFreshToken($msg);
             }
             unset($config['__token__']);
 
@@ -668,7 +693,7 @@ class System extends Base
 
             $res = mac_arr2file(APP_PATH . 'extra/maccms.php', $config_new);
             if ($res === false) {
-                return $this->error(lang('save_err'));
+                return $this->ajaxErrorWithFreshToken(lang('save_err'));
             }
 
             //保存缓存
@@ -686,7 +711,9 @@ class System extends Base
             $config = input('','','htmlentities');
             $validate = \think\Loader::validate('Token');
             if(!$validate->check($config)){
-                return $this->error($validate->getError());
+                $err = $validate->getError();
+                $msg = is_scalar($err) ? (string)$err : lang('param_err');
+                return $this->ajaxErrorWithFreshToken($msg);
             }
             unset($config['__token__']);
 
@@ -771,7 +798,7 @@ class System extends Base
 
             $res = mac_arr2file(APP_PATH . 'extra/maccms.php', $config_new);
             if ($res === false) {
-                return $this->error(lang('save_err'));
+                return $this->ajaxErrorWithFreshToken(lang('save_err'));
             }
             return $this->success(lang('save_ok'));
         }
@@ -814,7 +841,9 @@ class System extends Base
 
             $validate = \think\Loader::validate('Token');
             if(!$validate->check($config)){
-                return $this->error($validate->getError());
+                $err = $validate->getError();
+                $msg = is_scalar($err) ? (string)$err : lang('param_err');
+                return $this->ajaxErrorWithFreshToken($msg);
             }
             unset($config['__token__']);
 
@@ -824,7 +853,7 @@ class System extends Base
 
             $res = mac_arr2file(APP_PATH . 'extra/maccms.php', $config_new);
             if ($res === false) {
-                return $this->error(lang('save_err'));
+                return $this->ajaxErrorWithFreshToken(lang('save_err'));
             }
 
             $path = './static/js/playerconfig.js';
@@ -837,7 +866,7 @@ class System extends Base
             $fc = str_replace($jsb, "\r\n" . $content . "\r\n", $fc);
             $res = @fwrite(fopen('./static/js/playerconfig.js', 'wb'), $fc);
             if ($res === false) {
-                return $this->error(lang('save_err'));
+                return $this->ajaxErrorWithFreshToken(lang('save_err'));
             }
             return $this->success(lang('save_ok'));
         }
@@ -852,7 +881,9 @@ class System extends Base
 
             $validate = \think\Loader::validate('Token');
             if(!$validate->check($config)){
-                return $this->error($validate->getError());
+                $err = $validate->getError();
+                $msg = is_scalar($err) ? (string)$err : lang('param_err');
+                return $this->ajaxErrorWithFreshToken($msg);
             }
             unset($config['__token__']);
 
@@ -862,7 +893,7 @@ class System extends Base
 
             $res = mac_arr2file(APP_PATH . 'extra/maccms.php', $config_new);
             if ($res === false) {
-                return $this->error(lang('save_err'));
+                return $this->ajaxErrorWithFreshToken(lang('save_err'));
             }
             return $this->success(lang('save_ok'));
         }
@@ -876,7 +907,9 @@ class System extends Base
             $post = input('post.', '', 'htmlentities');
             $validate = \think\Loader::validate('Token');
             if (!$validate->check($post)) {
-                return $this->error($validate->getError());
+                $err = $validate->getError();
+                $msg = is_scalar($err) ? (string)$err : lang('param_err');
+                return $this->ajaxErrorWithFreshToken($msg);
             }
             unset($post['__token__']);
 
@@ -919,7 +952,7 @@ class System extends Base
 
             $res = mac_arr2file(APP_PATH . 'extra/maccms.php', $config_new);
             if ($res === false) {
-                return $this->error(lang('save_err'));
+                return $this->ajaxErrorWithFreshToken(lang('save_err'));
             }
             return $this->success(lang('save_ok'));
         }
@@ -933,7 +966,9 @@ class System extends Base
             $post = input('post.', '', 'htmlentities');
             $validate = \think\Loader::validate('Token');
             if (!$validate->check($post)) {
-                return $this->error($validate->getError());
+                $err = $validate->getError();
+                $msg = is_scalar($err) ? (string)$err : lang('param_err');
+                return $this->ajaxErrorWithFreshToken($msg);
             }
             unset($post['__token__']);
 
@@ -945,10 +980,19 @@ class System extends Base
             };
 
             $module = isset($ai['module']) && is_array($ai['module']) ? $ai['module'] : [];
+            $ext = isset($ai['external_sources']) && is_array($ai['external_sources']) ? $ai['external_sources'] : [];
+            $tmdb = isset($ext['sources']['tmdb']) && is_array($ext['sources']['tmdb']) ? $ext['sources']['tmdb'] : [];
+            $douban = isset($ext['sources']['douban']) && is_array($ext['sources']['douban']) ? $ext['sources']['douban'] : [];
+            $imdb = isset($ext['sources']['imdb']) && is_array($ext['sources']['imdb']) ? $ext['sources']['imdb'] : [];
             $row = [
                 'enabled' => isset($ai['enabled']) && (string)$ai['enabled'] === '1' ? '1' : '0',
                 'provider' => $sanitize(isset($ai['provider']) ? $ai['provider'] : 'openai'),
                 'model' => $sanitize(isset($ai['model']) ? $ai['model'] : 'gpt-4o-mini'),
+                'response_language' => (function () use ($ai) {
+                    $lang = strtolower(trim((string)(isset($ai['response_language']) ? $ai['response_language'] : 'auto')));
+                    $allow = ['auto', 'zh', 'en', 'ja', 'ko', 'fr', 'es', 'de', 'pt'];
+                    return in_array($lang, $allow, true) ? $lang : 'auto';
+                })(),
                 'api_base' => $sanitize(isset($ai['api_base']) ? $ai['api_base'] : 'https://api.openai.com/v1'),
                 'timeout' => (string)max(3, intval(isset($ai['timeout']) ? $ai['timeout'] : 12)),
                 'max_terms' => (string)max(1, intval(isset($ai['max_terms']) ? $ai['max_terms'] : 4)),
@@ -977,12 +1021,46 @@ class System extends Base
                 'module' => [
                     'vod' => isset($module['vod']) && (string)$module['vod'] === '1' ? '1' : '0',
                     'art' => isset($module['art']) && (string)$module['art'] === '1' ? '1' : '0',
+                    'manga' => isset($module['manga']) && (string)$module['manga'] === '1' ? '1' : '0',
                     'topic' => isset($module['topic']) && (string)$module['topic'] === '1' ? '1' : '0',
                     'actor' => isset($module['actor']) && (string)$module['actor'] === '1' ? '1' : '0',
                     'role' => isset($module['role']) && (string)$module['role'] === '1' ? '1' : '0',
                     'plot' => isset($module['plot']) && (string)$module['plot'] === '1' ? '1' : '0',
                     'website' => isset($module['website']) && (string)$module['website'] === '1' ? '1' : '0',
                 ],
+                'external_sources' => [
+                    'enabled' => isset($ext['enabled']) && (string)$ext['enabled'] === '1' ? '1' : '0',
+                    'use_live' => isset($ext['use_live']) && (string)$ext['use_live'] === '1' ? '1' : '0',
+                    'use_cache' => isset($ext['use_cache']) && (string)$ext['use_cache'] === '1' ? '1' : '0',
+                    'cache_ttl' => (string)max(60, intval(isset($ext['cache_ttl']) ? $ext['cache_ttl'] : 21600)),
+                    'merge_limit' => (string)max(1, min(12, intval(isset($ext['merge_limit']) ? $ext['merge_limit'] : 4))),
+                    'sync_interval' => (string)max(300, intval(isset($ext['sync_interval']) ? $ext['sync_interval'] : 21600)),
+                    'sources' => [
+                        'tmdb' => [
+                            'enabled' => isset($tmdb['enabled']) && (string)$tmdb['enabled'] === '1' ? '1' : '0',
+                            'base_url' => $sanitize(isset($tmdb['base_url']) ? $tmdb['base_url'] : 'https://api.themoviedb.org/3'),
+                            'image_base_url' => $sanitize(isset($tmdb['image_base_url']) ? $tmdb['image_base_url'] : 'https://image.tmdb.org/t/p/w500'),
+                            'language' => $sanitize(isset($tmdb['language']) ? $tmdb['language'] : 'zh-CN'),
+                            'region' => $sanitize(isset($tmdb['region']) ? $tmdb['region'] : 'CN'),
+                        ],
+                        'douban' => [
+                            'enabled' => isset($douban['enabled']) && (string)$douban['enabled'] === '1' ? '1' : '0',
+                            'search_url' => $sanitize(isset($douban['search_url']) ? $douban['search_url'] : 'https://movie.douban.com/j/subject_suggest?q=__query__'),
+                            'recent_url' => $sanitize(isset($douban['recent_url']) ? $douban['recent_url'] : 'https://movie.douban.com/j/search_subjects?type=movie&tag=%E7%83%AD%E9%97%A8&page_limit=__limit__&page_start=0'),
+                            'referer' => $sanitize(isset($douban['referer']) ? $douban['referer'] : 'https://movie.douban.com/'),
+                            'user_agent' => $sanitize(isset($douban['user_agent']) ? $douban['user_agent'] : 'Mozilla/5.0'),
+                        ],
+                        'imdb' => [
+                            'enabled' => isset($imdb['enabled']) && (string)$imdb['enabled'] === '1' ? '1' : '0',
+                            'search_url' => $sanitize(isset($imdb['search_url']) ? $imdb['search_url'] : 'https://v3.sg.media-imdb.com/suggestion/__prefix__/__query__.json'),
+                            'recent_seed_query' => $sanitize(isset($imdb['recent_seed_query']) ? $imdb['recent_seed_query'] : 'popular'),
+                            'user_agent' => $sanitize(isset($imdb['user_agent']) ? $imdb['user_agent'] : 'Mozilla/5.0'),
+                        ],
+                    ],
+                ],
+                'anilist_enabled' => isset($ai['anilist_enabled']) && (string)$ai['anilist_enabled'] === '1' ? '1' : '0',
+                'google_books_enabled' => isset($ai['google_books_enabled']) && (string)$ai['google_books_enabled'] === '1' ? '1' : '0',
+                'catalog_per_source' => (string)max(1, min(8, intval(isset($ai['catalog_per_source']) ? $ai['catalog_per_source'] : 3))),
             ];
             if ($row['api_base'] === '') {
                 $row['api_base'] = 'https://api.openai.com/v1';
@@ -1003,13 +1081,69 @@ class System extends Base
                     $row['api_key'] = isset($config_old['ai_search']['api_key']) ? $config_old['ai_search']['api_key'] : '';
                 }
             }
+            $newTmdbKey = isset($tmdb['api_key']) ? trim((string)$tmdb['api_key']) : '';
+            if ($newTmdbKey !== '') {
+                $row['external_sources']['sources']['tmdb']['api_key'] = $newTmdbKey;
+            } else {
+                $cfgFile = APP_PATH . 'extra/maccms.php';
+                $latest = is_file($cfgFile) ? include $cfgFile : [];
+                $oldTmdbKey = '';
+                if (isset($latest['ai_search']['external_sources']['sources']['tmdb']['api_key'])) {
+                    $oldTmdbKey = (string)$latest['ai_search']['external_sources']['sources']['tmdb']['api_key'];
+                } elseif (isset($config_old['ai_search']['external_sources']['sources']['tmdb']['api_key'])) {
+                    $oldTmdbKey = (string)$config_old['ai_search']['external_sources']['sources']['tmdb']['api_key'];
+                }
+                $row['external_sources']['sources']['tmdb']['api_key'] = $oldTmdbKey;
+            }
+            $newDoubanKey = isset($douban['api_key']) ? trim((string)$douban['api_key']) : '';
+            if ($newDoubanKey !== '') {
+                $row['external_sources']['sources']['douban']['api_key'] = $newDoubanKey;
+            } else {
+                $cfgFile = APP_PATH . 'extra/maccms.php';
+                $latest = is_file($cfgFile) ? include $cfgFile : [];
+                $oldDoubanKey = '';
+                if (isset($latest['ai_search']['external_sources']['sources']['douban']['api_key'])) {
+                    $oldDoubanKey = (string)$latest['ai_search']['external_sources']['sources']['douban']['api_key'];
+                } elseif (isset($config_old['ai_search']['external_sources']['sources']['douban']['api_key'])) {
+                    $oldDoubanKey = (string)$config_old['ai_search']['external_sources']['sources']['douban']['api_key'];
+                }
+                $row['external_sources']['sources']['douban']['api_key'] = $oldDoubanKey;
+            }
+            $newImdbKey = isset($imdb['api_key']) ? trim((string)$imdb['api_key']) : '';
+            if ($newImdbKey !== '') {
+                $row['external_sources']['sources']['imdb']['api_key'] = $newImdbKey;
+            } else {
+                $cfgFile = APP_PATH . 'extra/maccms.php';
+                $latest = is_file($cfgFile) ? include $cfgFile : [];
+                $oldImdbKey = '';
+                if (isset($latest['ai_search']['external_sources']['sources']['imdb']['api_key'])) {
+                    $oldImdbKey = (string)$latest['ai_search']['external_sources']['sources']['imdb']['api_key'];
+                } elseif (isset($config_old['ai_search']['external_sources']['sources']['imdb']['api_key'])) {
+                    $oldImdbKey = (string)$config_old['ai_search']['external_sources']['sources']['imdb']['api_key'];
+                }
+                $row['external_sources']['sources']['imdb']['api_key'] = $oldImdbKey;
+            }
+            $newGoogleBooksKey = isset($ai['google_books_api_key']) ? trim((string)$ai['google_books_api_key']) : '';
+            if ($newGoogleBooksKey !== '') {
+                $row['google_books_api_key'] = $newGoogleBooksKey;
+            } else {
+                $cfgFile = APP_PATH . 'extra/maccms.php';
+                $latest = is_file($cfgFile) ? include $cfgFile : [];
+                $oldGb = '';
+                if (isset($latest['ai_search']['google_books_api_key']) && $latest['ai_search']['google_books_api_key'] !== '') {
+                    $oldGb = (string)$latest['ai_search']['google_books_api_key'];
+                } elseif (isset($config_old['ai_search']['google_books_api_key'])) {
+                    $oldGb = (string)$config_old['ai_search']['google_books_api_key'];
+                }
+                $row['google_books_api_key'] = $oldGb;
+            }
 
             $config_new = $config_old;
             $config_new['ai_search'] = $row;
 
             $res = mac_arr2file(APP_PATH . 'extra/maccms.php', $config_new);
             if ($res === false) {
-                return $this->error(lang('save_err'));
+                return $this->ajaxErrorWithFreshToken(lang('save_err'));
             }
             return $this->success(lang('save_ok'));
         }
@@ -1020,6 +1154,7 @@ class System extends Base
                 'enabled' => '0',
                 'provider' => 'openai',
                 'model' => 'gpt-4o-mini',
+                'response_language' => 'auto',
                 'api_base' => 'https://api.openai.com/v1',
                 'api_key' => '',
                 'timeout' => '12',
@@ -1040,33 +1175,266 @@ class System extends Base
                 'module' => [
                     'vod' => '1',
                     'art' => '1',
+                    'manga' => '1',
                     'topic' => '0',
                     'actor' => '0',
                     'role' => '0',
                     'plot' => '0',
                     'website' => '0',
                 ],
+                'external_sources' => [
+                    'enabled' => '0',
+                    'use_live' => '1',
+                    'use_cache' => '1',
+                    'cache_ttl' => '21600',
+                    'merge_limit' => '4',
+                    'sync_interval' => '21600',
+                    'sources' => [
+                        'tmdb' => [
+                            'enabled' => '0',
+                            'api_key' => '',
+                            'base_url' => 'https://api.themoviedb.org/3',
+                            'image_base_url' => 'https://image.tmdb.org/t/p/w500',
+                            'language' => 'zh-CN',
+                            'region' => 'CN',
+                        ],
+                        'douban' => [
+                            'enabled' => '0',
+                            'api_key' => '',
+                            'search_url' => 'https://movie.douban.com/j/subject_suggest?q=__query__',
+                            'recent_url' => 'https://movie.douban.com/j/search_subjects?type=movie&tag=%E7%83%AD%E9%97%A8&page_limit=__limit__&page_start=0',
+                            'referer' => 'https://movie.douban.com/',
+                            'user_agent' => 'Mozilla/5.0',
+                        ],
+                        'imdb' => [
+                            'enabled' => '0',
+                            'api_key' => '',
+                            'search_url' => 'https://v3.sg.media-imdb.com/suggestion/__prefix__/__query__.json',
+                            'recent_seed_query' => 'popular',
+                            'user_agent' => 'Mozilla/5.0',
+                        ],
+                    ],
+                ],
+                'anilist_enabled' => '0',
+                'google_books_enabled' => '0',
+                'google_books_api_key' => '',
+                'catalog_per_source' => '3',
             ];
         }
 
         $aiSearchFill = [
+            'response_language' => 'auto',
             'rate_limit_enabled' => '1',
             'rate_limit_window' => '60',
             'rate_limit_max' => '20',
             'max_question_chars' => '800',
+            'anilist_enabled' => '0',
+            'google_books_enabled' => '0',
+            'google_books_api_key' => '',
+            'catalog_per_source' => '3',
         ];
         foreach ($aiSearchFill as $k => $v) {
             if (!isset($config['ai_search'][$k])) {
                 $config['ai_search'][$k] = $v;
             }
         }
+        if (!isset($config['ai_search']['module']) || !is_array($config['ai_search']['module'])) {
+            $config['ai_search']['module'] = [];
+        }
+        $config['ai_search']['module'] = array_merge([
+            'vod' => '1',
+            'art' => '1',
+            'manga' => '1',
+            'topic' => '0',
+            'actor' => '0',
+            'role' => '0',
+            'plot' => '0',
+            'website' => '0',
+        ], $config['ai_search']['module']);
+        if (!isset($config['ai_search']['external_sources']) || !is_array($config['ai_search']['external_sources'])) {
+            $config['ai_search']['external_sources'] = [];
+        }
+        $config['ai_search']['external_sources'] = array_merge([
+            'enabled' => '0',
+            'use_live' => '1',
+            'use_cache' => '1',
+            'cache_ttl' => '21600',
+            'merge_limit' => '4',
+            'sync_interval' => '21600',
+            'sources' => [],
+        ], $config['ai_search']['external_sources']);
+        if (!isset($config['ai_search']['external_sources']['sources']['tmdb']) || !is_array($config['ai_search']['external_sources']['sources']['tmdb'])) {
+            $config['ai_search']['external_sources']['sources']['tmdb'] = [];
+        }
+        $config['ai_search']['external_sources']['sources']['tmdb'] = array_merge([
+            'enabled' => '0',
+            'api_key' => '',
+            'base_url' => 'https://api.themoviedb.org/3',
+            'image_base_url' => 'https://image.tmdb.org/t/p/w500',
+            'language' => 'zh-CN',
+            'region' => 'CN',
+        ], $config['ai_search']['external_sources']['sources']['tmdb']);
+        if (!isset($config['ai_search']['external_sources']['sources']['douban']) || !is_array($config['ai_search']['external_sources']['sources']['douban'])) {
+            $config['ai_search']['external_sources']['sources']['douban'] = [];
+        }
+        $config['ai_search']['external_sources']['sources']['douban'] = array_merge([
+            'enabled' => '0',
+            'api_key' => '',
+            'search_url' => 'https://movie.douban.com/j/subject_suggest?q=__query__',
+            'recent_url' => 'https://movie.douban.com/j/search_subjects?type=movie&tag=%E7%83%AD%E9%97%A8&page_limit=__limit__&page_start=0',
+            'referer' => 'https://movie.douban.com/',
+            'user_agent' => 'Mozilla/5.0',
+        ], $config['ai_search']['external_sources']['sources']['douban']);
+        if (!isset($config['ai_search']['external_sources']['sources']['imdb']) || !is_array($config['ai_search']['external_sources']['sources']['imdb'])) {
+            $config['ai_search']['external_sources']['sources']['imdb'] = [];
+        }
+        $config['ai_search']['external_sources']['sources']['imdb'] = array_merge([
+            'enabled' => '0',
+            'api_key' => '',
+            'search_url' => 'https://v3.sg.media-imdb.com/suggestion/__prefix__/__query__.json',
+            'recent_seed_query' => 'popular',
+            'user_agent' => 'Mozilla/5.0',
+        ], $config['ai_search']['external_sources']['sources']['imdb']);
 
         $apiKey = isset($config['ai_search']['api_key']) ? trim((string)$config['ai_search']['api_key']) : '';
         $this->assign('ai_search_key_saved', $apiKey !== '' ? 1 : 0);
         $this->assign('ai_search_key_tail', $apiKey !== '' ? substr($apiKey, -6) : '');
+        $tmdbApiKey = trim((string)$config['ai_search']['external_sources']['sources']['tmdb']['api_key']);
+        $this->assign('tmdb_key_saved', $tmdbApiKey !== '' ? 1 : 0);
+        $this->assign('tmdb_key_tail', $tmdbApiKey !== '' ? substr($tmdbApiKey, -6) : '');
+        $doubanApiKey = trim((string)$config['ai_search']['external_sources']['sources']['douban']['api_key']);
+        $this->assign('douban_key_saved', $doubanApiKey !== '' ? 1 : 0);
+        $this->assign('douban_key_tail', $doubanApiKey !== '' ? substr($doubanApiKey, -6) : '');
+        $imdbApiKey = trim((string)$config['ai_search']['external_sources']['sources']['imdb']['api_key']);
+        $this->assign('imdb_key_saved', $imdbApiKey !== '' ? 1 : 0);
+        $this->assign('imdb_key_tail', $imdbApiKey !== '' ? substr($imdbApiKey, -6) : '');
+        $gbKey = isset($config['ai_search']['google_books_api_key']) ? trim((string)$config['ai_search']['google_books_api_key']) : '';
+        $this->assign('google_books_key_saved', $gbKey !== '' ? 1 : 0);
+        $this->assign('google_books_key_tail', $gbKey !== '' ? substr($gbKey, -6) : '');
+
         $this->assign('config', $config);
         $this->assign('title', lang('admin/system/configaisearch/title'));
         return $this->fetch('admin@system/configaisearch');
+    }
+
+    public function configassistant()
+    {
+        if (Request()->isPost()) {
+            $post = input('post.', '', 'htmlentities');
+            $validate = \think\Loader::validate('Token');
+            if (!$validate->check($post)) {
+                $err = $validate->getError();
+                $msg = is_scalar($err) ? (string)$err : lang('param_err');
+                return $this->ajaxErrorWithFreshToken($msg);
+            }
+            unset($post['__token__']);
+
+            $config_old = config('maccms');
+            $as = isset($post['admin_assistant']) && is_array($post['admin_assistant']) ? $post['admin_assistant'] : [];
+            $sanitize = function ($v) {
+                return trim(strip_tags((string)$v));
+            };
+            $assistantRow = [
+                'enabled' => isset($as['enabled']) && (string)$as['enabled'] === '1' ? '1' : '0',
+                'access_scope' => (function () use ($as) {
+                    $scope = isset($as['access_scope']) ? strtolower(trim((string)$as['access_scope'])) : 'all';
+                    return in_array($scope, ['all', 'super'], true) ? $scope : 'all';
+                })(),
+                'use_ai_search_credentials' => isset($as['use_ai_search_credentials']) && (string)$as['use_ai_search_credentials'] === '1' ? '1' : '0',
+                'provider' => $sanitize(isset($as['provider']) ? $as['provider'] : 'openai'),
+                'model' => $sanitize(isset($as['model']) ? $as['model'] : ''),
+                'api_base' => $sanitize(isset($as['api_base']) ? $as['api_base'] : ''),
+                'timeout' => (string)max(8, intval(isset($as['timeout']) ? $as['timeout'] : 45)),
+                'max_tokens' => (string)max(256, min(4096, intval(isset($as['max_tokens']) ? $as['max_tokens'] : 1200))),
+                'include_env_snapshot' => isset($as['include_env_snapshot']) && (string)$as['include_env_snapshot'] === '1' ? '1' : '0',
+                'rate_per_minute' => (string)max(1, min(120, intval(isset($as['rate_per_minute']) ? $as['rate_per_minute'] : 20))),
+                'retrieve_chunks' => (string)max(1, min(12, intval(isset($as['retrieve_chunks']) ? $as['retrieve_chunks'] : 8))),
+            ];
+            $newAsKey = isset($as['api_key']) ? trim((string)$as['api_key']) : '';
+            if ($newAsKey !== '') {
+                $assistantRow['api_key'] = $newAsKey;
+            } else {
+                $cfgFile = APP_PATH . 'extra/maccms.php';
+                $latest = is_file($cfgFile) ? include $cfgFile : [];
+                if (isset($latest['admin_assistant']['api_key']) && $latest['admin_assistant']['api_key'] !== '') {
+                    $assistantRow['api_key'] = (string)$latest['admin_assistant']['api_key'];
+                } else {
+                    $assistantRow['api_key'] = isset($config_old['admin_assistant']['api_key']) ? $config_old['admin_assistant']['api_key'] : '';
+                }
+            }
+
+            $config_new = $config_old;
+            $config_new['admin_assistant'] = $assistantRow;
+            $res = mac_arr2file(APP_PATH . 'extra/maccms.php', $config_new);
+            if ($res === false) {
+                return $this->ajaxErrorWithFreshToken(lang('save_err'));
+            }
+            return $this->success(lang('save_ok'));
+        }
+
+        $config = config('maccms');
+        if (!isset($config['admin_assistant']) || !is_array($config['admin_assistant'])) {
+            $config['admin_assistant'] = [];
+        }
+        $config['admin_assistant'] = array_merge([
+            'enabled' => '0',
+            'access_scope' => 'all',
+            'use_ai_search_credentials' => '1',
+            'provider' => 'openai',
+            'model' => '',
+            'api_base' => '',
+            'api_key' => '',
+            'timeout' => '45',
+            'max_tokens' => '1200',
+            'include_env_snapshot' => '1',
+            'rate_per_minute' => '20',
+            'retrieve_chunks' => '8',
+        ], $config['admin_assistant']);
+        $asKey = isset($config['admin_assistant']['api_key']) ? trim((string)$config['admin_assistant']['api_key']) : '';
+        $this->assign('admin_assistant_key_saved', $asKey !== '' ? 1 : 0);
+        $this->assign('admin_assistant_key_tail', $asKey !== '' ? substr($asKey, -6) : '');
+        $this->assign('config', $config);
+        $this->assign('title', lang('admin/system/configassistant/title'));
+        return $this->fetch('admin@system/configassistant');
+    }
+
+    public function aisearchsync()
+    {
+        $post = input('post.', '', 'htmlentities');
+        $token = isset($post['__token__']) ? (string)$post['__token__'] : '';
+        $sessionToken = (string)session('__token__');
+        if ($token === '' || $sessionToken === '' || !$this->safeHashEquals($sessionToken, $token)) {
+            $fresh = \think\Request::instance()->token('__token__');
+            return json(['code' => 1001, 'msg' => lang('token_err'), 'data' => ['__token__' => $fresh]]);
+        }
+        $provider = isset($post['provider']) ? trim((string)$post['provider']) : '';
+        $config = config('maccms');
+        $extCfg = isset($config['ai_search']['external_sources']) && is_array($config['ai_search']['external_sources'])
+            ? $config['ai_search']['external_sources']
+            : [];
+        if ((string)(isset($extCfg['enabled']) ? $extCfg['enabled'] : '0') !== '1') {
+            return json(['code' => 1002, 'msg' => lang('admin/system/configaisearch/ext_sync_disabled')]);
+        }
+        $runner = new ExternalSyncRunner();
+        $result = $runner->runDueJobs($extCfg, $provider);
+        return json(['code' => 1, 'msg' => lang('admin/system/configaisearch/ext_sync_ok'), 'data' => $result]);
+    }
+
+    private function safeHashEquals($knownString, $userString)
+    {
+        if (function_exists('hash_equals')) {
+            return hash_equals((string)$knownString, (string)$userString);
+        }
+        $a = (string)$knownString;
+        $b = (string)$userString;
+        if (strlen($a) !== strlen($b)) {
+            return false;
+        }
+        $res = 0;
+        for ($i = 0; $i < strlen($a); $i++) {
+            $res |= ord($a[$i]) ^ ord($b[$i]);
+        }
+        return $res === 0;
     }
 
     public function configlang(){
@@ -1078,7 +1446,7 @@ class System extends Base
         $config['app']['lang'] = $param['lang'];
         $res = mac_arr2file(APP_PATH . 'extra/maccms.php', $config);
         if ($res === false) {
-            return $this->error(lang('save_err'));
+            return $this->ajaxErrorWithFreshToken(lang('save_err'));
         }
         return json(['code' => 1, 'msg' => 'ok']);
     }
@@ -1095,9 +1463,18 @@ class System extends Base
         }
         $res = mac_arr2file(APP_PATH . 'extra/maccms.php', $config);
         if ($res === false) {
-            return $this->error(lang('save_err'));
+            return $this->ajaxErrorWithFreshToken(lang('save_err'));
         }
         return json(['code' => 1, 'msg' => 'ok']);
+    }
+
+    /**
+     * AJAX form error with a new __token__ (ThinkPHP deletes the session token when validation runs).
+     */
+    private function ajaxErrorWithFreshToken($msg)
+    {
+        $t = \think\Request::instance()->token('__token__');
+        return $this->error($msg, null, ['__token__' => $t]);
     }
 
 }

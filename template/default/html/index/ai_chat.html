@@ -101,16 +101,16 @@ body {
   position: relative;
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 14px;
 }
 
 /* 聊天气泡通用样式 */
 .chat-bubble {
-  max-width: 85%;
-  padding: 8px 12px;
+  max-width: 92%;
+  padding: 10px 14px;
   border-radius: 12px;
   font-size: 14px;
-  line-height: 1.5;
+  line-height: 1.65;
 }
 
 /* 用户气泡（右侧） */
@@ -142,19 +142,21 @@ body {
 
 .card-list .card {
   flex-shrink: 0;
-  width: 100px;
+  width: 132px;
 }
 
 .card-list .card img {
   width: 100%;
-  height: 140px;
+  height: 188px;
   object-fit: cover;
-  border-radius: 6px;
+  border-radius: 8px;
+  background: #f4f4f4;
 }
 
 .card-list .card .name {
-  font-size: 13px;
-  margin-top: 4px;
+  font-size: 14px;
+  margin-top: 6px;
+  font-weight: 600;
   color: #333;
   white-space: nowrap;
   overflow: hidden;
@@ -162,7 +164,7 @@ body {
 }
 
 .card-list .card .actor {
-  font-size: 11px;
+  font-size: 12px;
   color: #999;
   white-space: nowrap;
   overflow: hidden;
@@ -178,10 +180,11 @@ body {
 }
 
 .related-links {
-  margin-top: 8px;
-  padding: 8px 10px;
+  margin-top: 10px;
+  padding: 10px 12px;
   background: #fff;
   border-radius: 8px;
+  border: 1px solid #f0f0f0;
 }
 
 .related-links .title {
@@ -193,10 +196,50 @@ body {
 .related-links a {
   display: block;
   color: #007aff;
-  font-size: 13px;
+  font-size: 14px;
   text-decoration: none;
-  margin-bottom: 4px;
+  margin-bottom: 3px;
   word-break: break-all;
+}
+
+.related-link-item {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 10px;
+  padding-bottom: 8px;
+  border-bottom: 1px dashed #f0f0f0;
+}
+
+.related-link-item:last-child {
+  border-bottom: none;
+  margin-bottom: 0;
+  padding-bottom: 0;
+}
+
+.related-link-item .thumb {
+  width: 72px;
+  height: 102px;
+  flex-shrink: 0;
+  border-radius: 6px;
+  object-fit: cover;
+  background: #f2f2f2;
+}
+
+.related-link-item .meta {
+  min-width: 0;
+}
+
+.related-link-item .meta .snippet {
+  color: #666;
+  font-size: 13px;
+  line-height: 1.5;
+  margin-top: 4px;
+}
+
+.related-link-item .meta .provider {
+  color: #999;
+  font-size: 12px;
+  margin-top: 4px;
 }
 
 .enriched-answer {
@@ -412,8 +455,17 @@ var I18N = {
   searchFail: "{:lang('index/ai_chat_search_fail')}",
   noAnswer: "{:lang('index/ai_chat_no_answer')}",
   contentRecommend: "{:lang('index/ai_chat_tag_default')}",
-  invalidResponse: "{:lang('index/ai_chat_invalid_response')}"
+  invalidResponse: "{:lang('index/ai_chat_invalid_response')}",
+  externalDescHost: "{:lang('index/ai_chat_external_desc_host')}"
 };
+var DEFAULT_THUMB =
+  'data:image/svg+xml;utf8,' +
+  encodeURIComponent(
+    '<svg xmlns="http://www.w3.org/2000/svg" width="72" height="102">' +
+      '<rect width="100%" height="100%" fill="#f1f3f5"/>' +
+      '<text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" fill="#9aa0a6" font-size="11">No Image</text>' +
+    '</svg>'
+  );
 
 const msgInput = document.getElementById('msgInput');
 const sendBtn = document.getElementById('sendBtn');
@@ -426,6 +478,21 @@ function delay(ms) {
   return new Promise(function (resolve) {
     setTimeout(resolve, ms);
   });
+}
+
+/** Only allow http/https links from API data — blocks javascript:, data:, etc. (XSS). */
+function sanitizeHttpUrl(raw) {
+  var s = String(raw || '').trim();
+  if (!/^https?:\/\//i.test(s)) {
+    return '#';
+  }
+  try {
+    var u = new URL(s);
+    if (u.protocol === 'http:' || u.protocol === 'https:') {
+      return u.href;
+    }
+  } catch (e) {}
+  return '#';
 }
 
 function streamText(el, text, speed) {
@@ -451,9 +518,13 @@ function streamText(el, text, speed) {
 function buildCardElement(card) {
   var cardEl = document.createElement('div');
   cardEl.className = 'card';
-  var href = card.url && card.url.length > 0 ? card.url : 'javascript:void(0);';
+  var href = sanitizeHttpUrl(card.url);
   var a = document.createElement('a');
   a.href = href;
+  if (href === '#') {
+    a.removeAttribute('href');
+    a.style.cursor = 'default';
+  }
   var img = document.createElement('img');
   img.src = card.img || '';
   img.alt = card.name || '';
@@ -519,6 +590,15 @@ function streamTypingBlock(aiBubble, text, speed) {
   });
 }
 
+function hostFromUrl(u) {
+  try {
+    var h = new URL(String(u || '').trim()).hostname || '';
+    return h.replace(/^www\./i, '');
+  } catch (e) {
+    return '';
+  }
+}
+
 async function streamRelatedLinks(aiBubble, links) {
   if (!Array.isArray(links) || links.length === 0) {
     return;
@@ -558,12 +638,48 @@ async function streamRelatedLinks(aiBubble, links) {
     await streamText(sub, label, 18);
     for (var j = 0; j < arr.length; j++) {
       var item = arr[j];
+      var row = document.createElement('div');
+      row.className = 'related-link-item';
+      var img = document.createElement('img');
+      img.className = 'thumb';
+      img.src = item.img || DEFAULT_THUMB;
+      img.alt = item.title || '';
+      img.onerror = function () {
+        this.onerror = null;
+        this.src = DEFAULT_THUMB;
+      };
+      row.appendChild(img);
+      var meta = document.createElement('div');
+      meta.className = 'meta';
       var a = document.createElement('a');
-      a.href = item.url;
-      a.target = '_blank';
-      a.rel = 'noopener noreferrer';
-      a.textContent = item.title || item.url;
-      wrap.appendChild(a);
+      var safeUrl = sanitizeHttpUrl(item.url);
+      a.href = safeUrl;
+      if (safeUrl !== '#') {
+        a.target = '_blank';
+        a.rel = 'noopener noreferrer';
+      } else {
+        a.removeAttribute('href');
+        a.style.cursor = 'default';
+      }
+      a.textContent = item.title || String(item.url || '').trim() || '—';
+      meta.appendChild(a);
+      var desc = '';
+      if (item.source === 'external') {
+        desc =
+          (item.snippet && String(item.snippet).trim()) ||
+          (hostFromUrl(item.url) ? I18N.externalDescHost.replace('{host}', hostFromUrl(item.url)) : '');
+      } else if (item.snippet) {
+        desc = String(item.snippet).trim();
+      }
+      if (desc) {
+        var sn = document.createElement('div');
+        sn.className = 'snippet';
+        sn.textContent = desc;
+        meta.appendChild(sn);
+      }
+      // Hide provider/source indexes and extra resource-index links in UI.
+      row.appendChild(meta);
+      wrap.appendChild(row);
       contentWrap.scrollTop = contentWrap.scrollHeight;
       await delay(90);
     }
@@ -665,6 +781,9 @@ async function sendMessage() {
     }
 
     await streamCards(aiBubble, data.cards);
+    if (Array.isArray(data.external_cards) && data.external_cards.length > 0) {
+      await streamCards(aiBubble, data.external_cards);
+    }
     await streamTypingBlock(aiBubble, data.content || I18N.noAnswer, 18);
     await streamRelatedLinks(aiBubble, data.related_links || []);
     await streamEnrichedAnswer(aiBubble, data.enriched_answer || '');

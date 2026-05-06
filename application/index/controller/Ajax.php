@@ -998,7 +998,7 @@ class Ajax extends Base
             ]);
         }
 
-        if (!in_array($mid, [0,1,2,3,8,9,11,12], true)) {
+        if (!in_array($mid, [0,1,2,3,8,9,11,12,13], true)) {
             $mid = 0;
         }
         if ($limit < 1) {

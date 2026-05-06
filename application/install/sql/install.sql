@@ -1357,3 +1357,124 @@ CREATE TABLE `mac_sign_milestone_log` (
   KEY `user_id` (`user_id`),
   KEY `milestone_id` (`milestone_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COMMENT='签到里程碑领取记录表';
+-- Table structure for mac_ext_provider
+-- ----------------------------
+DROP TABLE IF EXISTS `mac_ext_provider`;
+CREATE TABLE `mac_ext_provider` (
+  `provider_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `provider_code` varchar(32) NOT NULL DEFAULT '',
+  `provider_name` varchar(80) NOT NULL DEFAULT '',
+  `provider_enabled` tinyint(1) unsigned NOT NULL DEFAULT '1',
+  `provider_type` varchar(32) NOT NULL DEFAULT 'api',
+  `provider_conf` mediumtext NOT NULL,
+  `provider_time_add` int(10) unsigned NOT NULL DEFAULT '0',
+  `provider_time_update` int(10) unsigned NOT NULL DEFAULT '0',
+  PRIMARY KEY (`provider_id`),
+  UNIQUE KEY `provider_code` (`provider_code`),
+  KEY `provider_enabled` (`provider_enabled`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='External source provider config';
+
+-- ----------------------------
+-- Table structure for mac_ext_source_item
+-- ----------------------------
+DROP TABLE IF EXISTS `mac_ext_source_item`;
+CREATE TABLE `mac_ext_source_item` (
+  `item_id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `provider_code` varchar(32) NOT NULL DEFAULT '',
+  `item_key` varchar(128) NOT NULL DEFAULT '',
+  `item_mid` tinyint(3) unsigned NOT NULL DEFAULT '0',
+  `item_title` varchar(255) NOT NULL DEFAULT '',
+  `item_subtitle` varchar(255) NOT NULL DEFAULT '',
+  `item_snippet` varchar(500) NOT NULL DEFAULT '',
+  `item_url` varchar(500) NOT NULL DEFAULT '',
+  `item_cover` varchar(500) NOT NULL DEFAULT '',
+  `item_score` decimal(8,4) NOT NULL DEFAULT '0.0000',
+  `item_release_date` varchar(20) NOT NULL DEFAULT '',
+  `item_payload` mediumtext NOT NULL,
+  `item_time_add` int(10) unsigned NOT NULL DEFAULT '0',
+  `item_time_update` int(10) unsigned NOT NULL DEFAULT '0',
+  PRIMARY KEY (`item_id`),
+  UNIQUE KEY `uk_provider_item` (`provider_code`,`item_key`),
+  KEY `idx_mid_score` (`item_mid`,`item_score`),
+  KEY `idx_title` (`item_title`),
+  KEY `idx_time_update` (`item_time_update`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='External source normalized items';
+
+-- ----------------------------
+-- Table structure for mac_ext_source_map
+-- ----------------------------
+DROP TABLE IF EXISTS `mac_ext_source_map`;
+CREATE TABLE `mac_ext_source_map` (
+  `map_id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `provider_code` varchar(32) NOT NULL DEFAULT '',
+  `item_key` varchar(128) NOT NULL DEFAULT '',
+  `cms_mid` tinyint(3) unsigned NOT NULL DEFAULT '0',
+  `cms_id` int(10) unsigned NOT NULL DEFAULT '0',
+  `map_confidence` decimal(8,4) NOT NULL DEFAULT '0.0000',
+  `map_time_add` int(10) unsigned NOT NULL DEFAULT '0',
+  `map_time_update` int(10) unsigned NOT NULL DEFAULT '0',
+  PRIMARY KEY (`map_id`),
+  UNIQUE KEY `uk_map` (`provider_code`,`item_key`,`cms_mid`,`cms_id`),
+  KEY `idx_cms_obj` (`cms_mid`,`cms_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='External source to CMS mapping';
+
+-- ----------------------------
+-- Table structure for mac_ext_search_cache
+-- ----------------------------
+DROP TABLE IF EXISTS `mac_ext_search_cache`;
+CREATE TABLE `mac_ext_search_cache` (
+  `cache_id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `cache_key` char(40) NOT NULL DEFAULT '',
+  `query_word` varchar(255) NOT NULL DEFAULT '',
+  `query_mid` tinyint(3) unsigned NOT NULL DEFAULT '0',
+  `provider_code` varchar(32) NOT NULL DEFAULT '',
+  `result_total` int(10) unsigned NOT NULL DEFAULT '0',
+  `result_payload` mediumtext NOT NULL,
+  `expire_time` int(10) unsigned NOT NULL DEFAULT '0',
+  `cache_time_add` int(10) unsigned NOT NULL DEFAULT '0',
+  `cache_time_update` int(10) unsigned NOT NULL DEFAULT '0',
+  PRIMARY KEY (`cache_id`),
+  UNIQUE KEY `uk_cache_key` (`cache_key`),
+  KEY `idx_query` (`query_word`,`query_mid`),
+  KEY `idx_expire` (`expire_time`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='External search cache';
+
+-- ----------------------------
+-- Table structure for mac_ext_sync_job
+-- ----------------------------
+DROP TABLE IF EXISTS `mac_ext_sync_job`;
+CREATE TABLE `mac_ext_sync_job` (
+  `job_id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `provider_code` varchar(32) NOT NULL DEFAULT '',
+  `job_type` varchar(32) NOT NULL DEFAULT 'feed_recent',
+  `job_status` tinyint(3) unsigned NOT NULL DEFAULT '1',
+  `job_param` varchar(1000) NOT NULL DEFAULT '',
+  `job_last_run` int(10) unsigned NOT NULL DEFAULT '0',
+  `job_next_run` int(10) unsigned NOT NULL DEFAULT '0',
+  `job_interval` int(10) unsigned NOT NULL DEFAULT '3600',
+  `job_retry` tinyint(3) unsigned NOT NULL DEFAULT '0',
+  `job_time_add` int(10) unsigned NOT NULL DEFAULT '0',
+  `job_time_update` int(10) unsigned NOT NULL DEFAULT '0',
+  PRIMARY KEY (`job_id`),
+  KEY `idx_status_next` (`job_status`,`job_next_run`),
+  KEY `idx_provider` (`provider_code`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='External source sync jobs';
+
+-- ----------------------------
+-- Table structure for mac_ext_sync_log
+-- ----------------------------
+DROP TABLE IF EXISTS `mac_ext_sync_log`;
+CREATE TABLE `mac_ext_sync_log` (
+  `log_id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `job_id` bigint(20) unsigned NOT NULL DEFAULT '0',
+  `provider_code` varchar(32) NOT NULL DEFAULT '',
+  `log_status` tinyint(3) unsigned NOT NULL DEFAULT '1',
+  `log_msg` varchar(1000) NOT NULL DEFAULT '',
+  `log_total` int(10) unsigned NOT NULL DEFAULT '0',
+  `log_success` int(10) unsigned NOT NULL DEFAULT '0',
+  `log_time_add` int(10) unsigned NOT NULL DEFAULT '0',
+  PRIMARY KEY (`log_id`),
+  KEY `idx_provider_time` (`provider_code`,`log_time_add`),
+  KEY `idx_job` (`job_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='External source sync logs';
+

@@ -48,6 +48,24 @@
         </div>
 
         <div class="layui-form-item">
+            <label class="layui-form-label">{:lang('admin/system/configaisearch/response_language')}：</label>
+            <div class="layui-input-inline w300">
+                <select name="ai_search[response_language]">
+                    <option value="auto" {if condition="$config['ai_search']['response_language'] eq 'auto'"}selected{/if}>{:lang('admin/system/configaisearch/lang_auto')}</option>
+                    <option value="zh" {if condition="$config['ai_search']['response_language'] eq 'zh'"}selected{/if}>{:lang('admin/system/configaisearch/lang_zh')}</option>
+                    <option value="en" {if condition="$config['ai_search']['response_language'] eq 'en'"}selected{/if}>{:lang('admin/system/configaisearch/lang_en')}</option>
+                    <option value="ja" {if condition="$config['ai_search']['response_language'] eq 'ja'"}selected{/if}>{:lang('admin/system/configaisearch/lang_ja')}</option>
+                    <option value="ko" {if condition="$config['ai_search']['response_language'] eq 'ko'"}selected{/if}>{:lang('admin/system/configaisearch/lang_ko')}</option>
+                    <option value="fr" {if condition="$config['ai_search']['response_language'] eq 'fr'"}selected{/if}>{:lang('admin/system/configaisearch/lang_fr')}</option>
+                    <option value="es" {if condition="$config['ai_search']['response_language'] eq 'es'"}selected{/if}>{:lang('admin/system/configaisearch/lang_es')}</option>
+                    <option value="de" {if condition="$config['ai_search']['response_language'] eq 'de'"}selected{/if}>{:lang('admin/system/configaisearch/lang_de')}</option>
+                    <option value="pt" {if condition="$config['ai_search']['response_language'] eq 'pt'"}selected{/if}>{:lang('admin/system/configaisearch/lang_pt')}</option>
+                </select>
+            </div>
+            <div class="layui-form-mid layui-word-aux">{:lang('admin/system/configaisearch/response_language_tip')}</div>
+        </div>
+
+        <div class="layui-form-item">
             <label class="layui-form-label">{:lang('admin/system/configaisearch/api_base')}：</label>
             <div class="layui-input-block">
                 <input type="text" name="ai_search[api_base]" value="{$config['ai_search']['api_base']|default=''}" class="layui-input" placeholder="https://api.openai.com/v1">
@@ -84,6 +102,7 @@
             <div class="layui-input-block">
                 <input type="checkbox" name="ai_search[module][vod]" value="1" title="{:lang('vod')}" {if condition="$config['ai_search']['module']['vod'] eq '1'"}checked{/if}>
                 <input type="checkbox" name="ai_search[module][art]" value="1" title="{:lang('art')}" {if condition="$config['ai_search']['module']['art'] eq '1'"}checked{/if}>
+                <input type="checkbox" name="ai_search[module][manga]" value="1" title="{:lang('manga')}" {if condition="$config['ai_search']['module']['manga'] eq '1'"}checked{/if}>
                 <input type="checkbox" name="ai_search[module][topic]" value="1" title="{:lang('topic')}" {if condition="$config['ai_search']['module']['topic'] eq '1'"}checked{/if}>
                 <input type="checkbox" name="ai_search[module][actor]" value="1" title="{:lang('actor')}" {if condition="$config['ai_search']['module']['actor'] eq '1'"}checked{/if}>
                 <input type="checkbox" name="ai_search[module][role]" value="1" title="{:lang('role')}" {if condition="$config['ai_search']['module']['role'] eq '1'"}checked{/if}>
@@ -176,6 +195,224 @@
             </div>
         </div>
 
+        <div class="layui-form-item layui-form-text">
+            <blockquote class="layui-elem-quote layui-quote-nm">{:lang('admin/system/configaisearch/ext_tip')}</blockquote>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">{:lang('admin/system/configaisearch/ext_enabled')}：</label>
+            <div class="layui-input-inline w150">
+                <input type="radio" name="ai_search[external_sources][enabled]" value="1" title="{:lang('open')}" {if condition="$config['ai_search']['external_sources']['enabled'] eq '1'"}checked{/if}>
+                <input type="radio" name="ai_search[external_sources][enabled]" value="0" title="{:lang('close')}" {if condition="$config['ai_search']['external_sources']['enabled'] neq '1'"}checked{/if}>
+            </div>
+            <label class="layui-form-label">{:lang('admin/system/configaisearch/ext_use_live')}：</label>
+            <div class="layui-input-inline w150">
+                <input type="radio" name="ai_search[external_sources][use_live]" value="1" title="{:lang('open')}" {if condition="$config['ai_search']['external_sources']['use_live'] eq '1'"}checked{/if}>
+                <input type="radio" name="ai_search[external_sources][use_live]" value="0" title="{:lang('close')}" {if condition="$config['ai_search']['external_sources']['use_live'] neq '1'"}checked{/if}>
+            </div>
+            <label class="layui-form-label">{:lang('admin/system/configaisearch/ext_use_cache')}：</label>
+            <div class="layui-input-inline w150">
+                <input type="radio" name="ai_search[external_sources][use_cache]" value="1" title="{:lang('open')}" {if condition="$config['ai_search']['external_sources']['use_cache'] eq '1'"}checked{/if}>
+                <input type="radio" name="ai_search[external_sources][use_cache]" value="0" title="{:lang('close')}" {if condition="$config['ai_search']['external_sources']['use_cache'] neq '1'"}checked{/if}>
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">{:lang('admin/system/configaisearch/ext_cache_ttl')}：</label>
+            <div class="layui-input-inline w150">
+                <input type="number" name="ai_search[external_sources][cache_ttl]" value="{$config['ai_search']['external_sources']['cache_ttl']|default='21600'}" class="layui-input" min="60">
+            </div>
+            <label class="layui-form-label">{:lang('admin/system/configaisearch/ext_merge_limit')}：</label>
+            <div class="layui-input-inline w150">
+                <input type="number" name="ai_search[external_sources][merge_limit]" value="{$config['ai_search']['external_sources']['merge_limit']|default='4'}" class="layui-input" min="1" max="12">
+            </div>
+            <label class="layui-form-label">{:lang('admin/system/configaisearch/ext_sync_interval')}：</label>
+            <div class="layui-input-inline w150">
+                <input type="number" name="ai_search[external_sources][sync_interval]" value="{$config['ai_search']['external_sources']['sync_interval']|default='21600'}" class="layui-input" min="300">
+            </div>
+        </div>
+
+        <div class="layui-form-item layui-form-text">
+            <blockquote class="layui-elem-quote layui-quote-nm">TMDB</blockquote>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">{:lang('admin/system/configaisearch/tmdb_enabled')}：</label>
+            <div class="layui-input-inline w150">
+                <input type="radio" name="ai_search[external_sources][sources][tmdb][enabled]" value="1" title="{:lang('open')}" {if condition="$config['ai_search']['external_sources']['sources']['tmdb']['enabled'] eq '1'"}checked{/if}>
+                <input type="radio" name="ai_search[external_sources][sources][tmdb][enabled]" value="0" title="{:lang('close')}" {if condition="$config['ai_search']['external_sources']['sources']['tmdb']['enabled'] neq '1'"}checked{/if}>
+            </div>
+            <label class="layui-form-label">{:lang('admin/system/configaisearch/tmdb_language')}：</label>
+            <div class="layui-input-inline w150">
+                <input type="text" name="ai_search[external_sources][sources][tmdb][language]" value="{$config['ai_search']['external_sources']['sources']['tmdb']['language']|default='zh-CN'}" class="layui-input">
+            </div>
+            <label class="layui-form-label">{:lang('admin/system/configaisearch/tmdb_region')}：</label>
+            <div class="layui-input-inline w150">
+                <input type="text" name="ai_search[external_sources][sources][tmdb][region]" value="{$config['ai_search']['external_sources']['sources']['tmdb']['region']|default='CN'}" class="layui-input">
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">{:lang('admin/system/configaisearch/tmdb_base_url')}：</label>
+            <div class="layui-input-block">
+                <input type="text" name="ai_search[external_sources][sources][tmdb][base_url]" value="{$config['ai_search']['external_sources']['sources']['tmdb']['base_url']|default='https://api.themoviedb.org/3'}" class="layui-input">
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">{:lang('admin/system/configaisearch/tmdb_image_base_url')}：</label>
+            <div class="layui-input-block">
+                <input type="text" name="ai_search[external_sources][sources][tmdb][image_base_url]" value="{$config['ai_search']['external_sources']['sources']['tmdb']['image_base_url']|default='https://image.tmdb.org/t/p/w500'}" class="layui-input">
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">{:lang('admin/system/configaisearch/tmdb_api_key')}：</label>
+            <div class="layui-input-block">
+                <input type="password" name="ai_search[external_sources][sources][tmdb][api_key]" value="" autocomplete="new-password" class="layui-input" placeholder="{:lang('admin/system/configaisearch/api_key_tip')}">
+                {if condition="$tmdb_key_saved eq 1"}
+                <div class="layui-form-mid layui-word-aux">{:lang('admin/system/configaisearch/api_key_saved_tip')} (****{$tmdb_key_tail})</div>
+                {/if}
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">{:lang('admin/system/configaisearch/ext_manual_sync')}：</label>
+            <div class="layui-input-block">
+                <button type="button" class="layui-btn layui-btn-normal" id="ext-sync-now" data-provider="tmdb">{:lang('admin/system/configaisearch/ext_sync_now')}</button>
+            </div>
+        </div>
+
+        <div class="layui-form-item layui-form-text">
+            <blockquote class="layui-elem-quote layui-quote-nm">{:lang('admin/system/configaisearch/unofficial_douban_imdb_warning')}</blockquote>
+        </div>
+
+        <div class="layui-form-item layui-form-text">
+            <blockquote class="layui-elem-quote layui-quote-nm">{:lang('admin/system/configaisearch/douban_section_title')}</blockquote>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">{:lang('admin/system/configaisearch/douban_enabled')}：</label>
+            <div class="layui-input-inline w150">
+                <input type="radio" name="ai_search[external_sources][sources][douban][enabled]" value="1" title="{:lang('open')}" {if condition="$config['ai_search']['external_sources']['sources']['douban']['enabled'] eq '1'"}checked{/if}>
+                <input type="radio" name="ai_search[external_sources][sources][douban][enabled]" value="0" title="{:lang('close')}" {if condition="$config['ai_search']['external_sources']['sources']['douban']['enabled'] neq '1'"}checked{/if}>
+            </div>
+            <label class="layui-form-label">{:lang('admin/system/configaisearch/douban_api_key')}：</label>
+            <div class="layui-input-inline w300">
+                <input type="password" name="ai_search[external_sources][sources][douban][api_key]" value="" autocomplete="new-password" class="layui-input" placeholder="{:lang('admin/system/configaisearch/api_key_tip')}">
+            </div>
+            {if condition="$douban_key_saved eq 1"}
+            <div class="layui-form-mid layui-word-aux">{:lang('admin/system/configaisearch/api_key_saved_tip')} (****{$douban_key_tail})</div>
+            {/if}
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">{:lang('admin/system/configaisearch/douban_search_url')}：</label>
+            <div class="layui-input-block">
+                <input type="text" name="ai_search[external_sources][sources][douban][search_url]" value="{$config['ai_search']['external_sources']['sources']['douban']['search_url']}" class="layui-input" placeholder="https://movie.douban.com/j/subject_suggest?q=__query__">
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">{:lang('admin/system/configaisearch/douban_recent_url')}：</label>
+            <div class="layui-input-block">
+                <input type="text" name="ai_search[external_sources][sources][douban][recent_url]" value="{$config['ai_search']['external_sources']['sources']['douban']['recent_url']}" class="layui-input" placeholder="https://movie.douban.com/j/search_subjects?type=movie&tag=%E7%83%AD%E9%97%A8&page_limit=__limit__&page_start=0">
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">{:lang('admin/system/configaisearch/douban_referer')}：</label>
+            <div class="layui-input-inline w300">
+                <input type="text" name="ai_search[external_sources][sources][douban][referer]" value="{$config['ai_search']['external_sources']['sources']['douban']['referer']|default='https://movie.douban.com/'}" class="layui-input">
+            </div>
+            <label class="layui-form-label">{:lang('admin/system/configaisearch/douban_user_agent')}：</label>
+            <div class="layui-input-inline w300">
+                <input type="text" name="ai_search[external_sources][sources][douban][user_agent]" value="{$config['ai_search']['external_sources']['sources']['douban']['user_agent']|default='Mozilla/5.0'}" class="layui-input">
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">{:lang('admin/system/configaisearch/ext_manual_sync')}：</label>
+            <div class="layui-input-block">
+                <button type="button" class="layui-btn layui-btn-normal ext-sync-now" data-provider="douban">{:lang('admin/system/configaisearch/ext_sync_now_douban')}</button>
+            </div>
+        </div>
+
+        <div class="layui-form-item layui-form-text">
+            <blockquote class="layui-elem-quote layui-quote-nm">{:lang('admin/system/configaisearch/imdb_section_title')}</blockquote>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">{:lang('admin/system/configaisearch/imdb_enabled')}：</label>
+            <div class="layui-input-inline w150">
+                <input type="radio" name="ai_search[external_sources][sources][imdb][enabled]" value="1" title="{:lang('open')}" {if condition="$config['ai_search']['external_sources']['sources']['imdb']['enabled'] eq '1'"}checked{/if}>
+                <input type="radio" name="ai_search[external_sources][sources][imdb][enabled]" value="0" title="{:lang('close')}" {if condition="$config['ai_search']['external_sources']['sources']['imdb']['enabled'] neq '1'"}checked{/if}>
+            </div>
+            <label class="layui-form-label">{:lang('admin/system/configaisearch/imdb_api_key')}：</label>
+            <div class="layui-input-inline w300">
+                <input type="password" name="ai_search[external_sources][sources][imdb][api_key]" value="" autocomplete="new-password" class="layui-input" placeholder="{:lang('admin/system/configaisearch/api_key_tip')}">
+            </div>
+            {if condition="$imdb_key_saved eq 1"}
+            <div class="layui-form-mid layui-word-aux">{:lang('admin/system/configaisearch/api_key_saved_tip')} (****{$imdb_key_tail})</div>
+            {/if}
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">{:lang('admin/system/configaisearch/imdb_search_url')}：</label>
+            <div class="layui-input-block">
+                <input type="text" name="ai_search[external_sources][sources][imdb][search_url]" value="{$config['ai_search']['external_sources']['sources']['imdb']['search_url']}" class="layui-input" placeholder="https://v3.sg.media-imdb.com/suggestion/__prefix__/__query__.json">
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">{:lang('admin/system/configaisearch/imdb_recent_seed_query')}：</label>
+            <div class="layui-input-inline w300">
+                <input type="text" name="ai_search[external_sources][sources][imdb][recent_seed_query]" value="{$config['ai_search']['external_sources']['sources']['imdb']['recent_seed_query']}" class="layui-input" placeholder="popular">
+            </div>
+            <label class="layui-form-label">{:lang('admin/system/configaisearch/imdb_user_agent')}：</label>
+            <div class="layui-input-inline w300">
+                <input type="text" name="ai_search[external_sources][sources][imdb][user_agent]" value="{$config['ai_search']['external_sources']['sources']['imdb']['user_agent']}" class="layui-input">
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">{:lang('admin/system/configaisearch/ext_manual_sync')}：</label>
+            <div class="layui-input-block">
+                <button type="button" class="layui-btn layui-btn-normal ext-sync-now" data-provider="imdb">{:lang('admin/system/configaisearch/ext_sync_now_imdb')}</button>
+            </div>
+        </div>
+
+        <div class="layui-form-item layui-form-text">
+            <blockquote class="layui-elem-quote layui-quote-nm">{:lang('admin/system/configaisearch/catalog_tip')}</blockquote>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">{:lang('admin/system/configaisearch/anilist_enabled')}：</label>
+            <div class="layui-input-inline w150">
+                <input type="radio" name="ai_search[anilist_enabled]" value="1" title="{:lang('open')}" {if condition="$config['ai_search']['anilist_enabled'] eq '1'"}checked{/if}>
+                <input type="radio" name="ai_search[anilist_enabled]" value="0" title="{:lang('close')}" {if condition="$config['ai_search']['anilist_enabled'] neq '1'"}checked{/if}>
+            </div>
+            <label class="layui-form-label">{:lang('admin/system/configaisearch/google_books_enabled')}：</label>
+            <div class="layui-input-inline w150">
+                <input type="radio" name="ai_search[google_books_enabled]" value="1" title="{:lang('open')}" {if condition="$config['ai_search']['google_books_enabled'] eq '1'"}checked{/if}>
+                <input type="radio" name="ai_search[google_books_enabled]" value="0" title="{:lang('close')}" {if condition="$config['ai_search']['google_books_enabled'] neq '1'"}checked{/if}>
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">{:lang('admin/system/configaisearch/google_books_api_key')}：</label>
+            <div class="layui-input-inline w300">
+                <input type="password" name="ai_search[google_books_api_key]" value="" autocomplete="new-password" class="layui-input" placeholder="{:lang('admin/system/configaisearch/api_key_tip')}">
+            </div>
+            {if condition="$google_books_key_saved eq 1"}
+            <div class="layui-form-mid layui-word-aux">{:lang('admin/system/configaisearch/api_key_saved_tip')} (****{$google_books_key_tail})</div>
+            {/if}
+            <label class="layui-form-label">{:lang('admin/system/configaisearch/catalog_per_source')}：</label>
+            <div class="layui-input-inline w150">
+                <input type="number" name="ai_search[catalog_per_source]" value="{$config['ai_search']['catalog_per_source']|default='3'}" class="layui-input" min="1" max="8">
+            </div>
+        </div>
+
         <div class="layui-form-item center">
             <div class="layui-input-block">
                 <button type="submit" class="layui-btn" lay-submit="" lay-filter="formSubmit">{:lang('btn_save')}</button>
@@ -186,5 +423,31 @@
 </div>
 
 {include file="../../../application/admin/view_new/public/foot" /}
+<script type="text/javascript">
+layui.use(['layer'], function () {
+    var layer = layui.layer;
+    var $ = layui.jquery;
+    $('#ext-sync-now, .ext-sync-now').on('click', function () {
+        var token = $('input[name="__token__"]').val();
+        var provider = $(this).data('provider');
+        layer.msg("{:lang('wait_submit')}", {time: 300000});
+        $.ajax({
+            url: "{:url('system/aisearchsync')}",
+            type: "post",
+            dataType: "json",
+            data: {__token__: token, provider: provider},
+            error: function () {
+                layer.msg("{:lang('admin/system/configaisearch/ext_sync_err')}", {time: 2000});
+            },
+            success: function (r) {
+                if (r.data && r.data.__token__) {
+                    $('input[name="__token__"]').val(r.data.__token__);
+                }
+                layer.msg(r.msg, {time: 3000});
+            }
+        });
+    });
+});
+</script>
 </body>
 </html>

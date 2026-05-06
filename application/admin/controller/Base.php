@@ -58,6 +58,17 @@ class Base extends All
             return true;
         }
 
+        if ($c === 'assistant' && in_array($a, ['chat', 'ping'], true)) {
+            $assistantCfg = config('maccms.admin_assistant');
+            $scope = is_array($assistantCfg) && isset($assistantCfg['access_scope'])
+                ? strtolower(trim((string)$assistantCfg['access_scope']))
+                : 'all';
+            if ($scope === 'super' && (string)$this->_admin['admin_id'] !== '1') {
+                return false;
+            }
+            return true;
+        }
+
         $auths = $this->_admin['admin_auth'] . ',index/index,index/welcome,index/logout,';
         $cur = ','.$c.'/'.$a.',';
         if($this->_admin['admin_id'] =='1'){
