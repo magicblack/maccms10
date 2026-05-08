@@ -98,7 +98,8 @@ class Base extends All
             echo $this->error(lang('search_close'));
             exit;
         }
-        if($param['page']==1 && mac_get_time_span("last_searchtime") < $GLOBALS['config']['app']['search_timespan']){
+        $page = isset($param['page']) ? (int)$param['page'] : 1;
+        if ($page === 1 && mac_get_time_span("last_searchtime") < $GLOBALS['config']['app']['search_timespan']) {
             echo $this->error(lang('search_frequently')."".$GLOBALS['config']['app']['search_timespan']."".lang('seconds'));
             exit;
         }

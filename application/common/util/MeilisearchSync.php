@@ -121,8 +121,156 @@ class MeilisearchSync
         MeilisearchService::deleteDocument('manga_' . (int)$mangaId);
     }
 
+    public static function afterTopicSave($topicId)
+    {
+        if (!MeilisearchService::enabled() || !MeilisearchService::syncOnSave()) {
+            return;
+        }
+        $topicId = (int)$topicId;
+        if ($topicId <= 0) {
+            return;
+        }
+        try {
+            $row = Db::name('Topic')->where('topic_id', $topicId)->find();
+            if (empty($row)) {
+                MeilisearchService::deleteDocument('topic_' . $topicId);
+                return;
+            }
+            $row = is_array($row) ? $row : $row->toArray();
+            if ((int)($row['topic_status'] ?? 0) !== 1) {
+                MeilisearchService::deleteDocument('topic_' . $topicId);
+                return;
+            }
+            $doc = MeilisearchDocuments::fromTopicRow($row);
+            if ($doc) {
+                MeilisearchService::ensureIndex();
+                MeilisearchService::addDocuments([$doc]);
+            }
+        } catch (\Throwable $e) {
+        }
+    }
+
+    public static function afterActorSave($actorId)
+    {
+        if (!MeilisearchService::enabled() || !MeilisearchService::syncOnSave()) {
+            return;
+        }
+        $actorId = (int)$actorId;
+        if ($actorId <= 0) {
+            return;
+        }
+        try {
+            $row = Db::name('Actor')->where('actor_id', $actorId)->find();
+            if (empty($row)) {
+                MeilisearchService::deleteDocument('actor_' . $actorId);
+                return;
+            }
+            $row = is_array($row) ? $row : $row->toArray();
+            if ((int)($row['actor_status'] ?? 0) !== 1) {
+                MeilisearchService::deleteDocument('actor_' . $actorId);
+                return;
+            }
+            $doc = MeilisearchDocuments::fromActorRow($row);
+            if ($doc) {
+                MeilisearchService::ensureIndex();
+                MeilisearchService::addDocuments([$doc]);
+            }
+        } catch (\Throwable $e) {
+        }
+    }
+
+    public static function afterRoleSave($roleId)
+    {
+        if (!MeilisearchService::enabled() || !MeilisearchService::syncOnSave()) {
+            return;
+        }
+        $roleId = (int)$roleId;
+        if ($roleId <= 0) {
+            return;
+        }
+        try {
+            $row = Db::name('Role')->where('role_id', $roleId)->find();
+            if (empty($row)) {
+                MeilisearchService::deleteDocument('role_' . $roleId);
+                return;
+            }
+            $row = is_array($row) ? $row : $row->toArray();
+            if ((int)($row['role_status'] ?? 0) !== 1) {
+                MeilisearchService::deleteDocument('role_' . $roleId);
+                return;
+            }
+            $doc = MeilisearchDocuments::fromRoleRow($row);
+            if ($doc) {
+                MeilisearchService::ensureIndex();
+                MeilisearchService::addDocuments([$doc]);
+            }
+        } catch (\Throwable $e) {
+        }
+    }
+
+    public static function afterWebsiteSave($websiteId)
+    {
+        if (!MeilisearchService::enabled() || !MeilisearchService::syncOnSave()) {
+            return;
+        }
+        $websiteId = (int)$websiteId;
+        if ($websiteId <= 0) {
+            return;
+        }
+        try {
+            $row = Db::name('Website')->where('website_id', $websiteId)->find();
+            if (empty($row)) {
+                MeilisearchService::deleteDocument('website_' . $websiteId);
+                return;
+            }
+            $row = is_array($row) ? $row : $row->toArray();
+            if ((int)($row['website_status'] ?? 0) !== 1) {
+                MeilisearchService::deleteDocument('website_' . $websiteId);
+                return;
+            }
+            $doc = MeilisearchDocuments::fromWebsiteRow($row);
+            if ($doc) {
+                MeilisearchService::ensureIndex();
+                MeilisearchService::addDocuments([$doc]);
+            }
+        } catch (\Throwable $e) {
+        }
+    }
+
+    public static function deleteTopic($topicId)
+    {
+        if (!MeilisearchService::enabled()) {
+            return;
+        }
+        MeilisearchService::deleteDocument('topic_' . (int)$topicId);
+    }
+
+    public static function deleteActor($actorId)
+    {
+        if (!MeilisearchService::enabled()) {
+            return;
+        }
+        MeilisearchService::deleteDocument('actor_' . (int)$actorId);
+    }
+
+    public static function deleteRole($roleId)
+    {
+        if (!MeilisearchService::enabled()) {
+            return;
+        }
+        MeilisearchService::deleteDocument('role_' . (int)$roleId);
+    }
+
+    public static function deleteWebsite($websiteId)
+    {
+        if (!MeilisearchService::enabled()) {
+            return;
+        }
+        MeilisearchService::deleteDocument('website_' . (int)$websiteId);
+    }
+
     /**
-     * @return array{ok:bool,msg:string,vod?:int,art?:int,manga?:int}
+     * @return array{ok:bool,msg:string,vod?:int,art?:int,manga?:int,topic?:int,actor?:int,role?:int,website?:int}
      */
     public static function fullReindex($batch = 400)
     {
@@ -146,8 +294,30 @@ class MeilisearchSync
         $mangaN = self::reindexTable('Manga', 'manga_id', function ($row) {
             return MeilisearchDocuments::fromMangaRow($row);
         }, $batch);
+        $topicN = self::reindexTable('Topic', 'topic_id', function ($row) {
+            return MeilisearchDocuments::fromTopicRow($row);
+        }, $batch);
+        $actorN = self::reindexTable('Actor', 'actor_id', function ($row) {
+            return MeilisearchDocuments::fromActorRow($row);
+        }, $batch);
+        $roleN = self::reindexTable('Role', 'role_id', function ($row) {
+            return MeilisearchDocuments::fromRoleRow($row);
+        }, $batch);
+        $websiteN = self::reindexTable('Website', 'website_id', function ($row) {
+            return MeilisearchDocuments::fromWebsiteRow($row);
+        }, $batch);
 
-        return ['ok' => true, 'msg' => 'ok', 'vod' => $vodN, 'art' => $artN, 'manga' => $mangaN];
+        return [
+            'ok' => true,
+            'msg' => 'ok',
+            'vod' => $vodN,
+            'art' => $artN,
+            'manga' => $mangaN,
+            'topic' => $topicN,
+            'actor' => $actorN,
+            'role' => $roleN,
+            'website' => $websiteN,
+        ];
     }
 
     private static function reindexTable($name, $pk, callable $map, $batch)
@@ -177,6 +347,22 @@ class MeilisearchSync
                     }
                 } elseif ($name === 'Manga') {
                     if ((int)($row['manga_status'] ?? 0) !== 1 || !empty($row['manga_recycle_time'])) {
+                        continue;
+                    }
+                } elseif ($name === 'Topic') {
+                    if ((int)($row['topic_status'] ?? 0) !== 1) {
+                        continue;
+                    }
+                } elseif ($name === 'Actor') {
+                    if ((int)($row['actor_status'] ?? 0) !== 1) {
+                        continue;
+                    }
+                } elseif ($name === 'Role') {
+                    if ((int)($row['role_status'] ?? 0) !== 1) {
+                        continue;
+                    }
+                } elseif ($name === 'Website') {
+                    if ((int)($row['website_status'] ?? 0) !== 1) {
                         continue;
                     }
                 }

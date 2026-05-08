@@ -8,6 +8,88 @@ class AiSearch
 {
     private const DEFAULT_INTERNAL_RESULT_LIMIT = 8;
 
+    /**
+     * Meili 内联资源：表名、主键、展示字段、详情 URL；与 Meilisearch 文档 id 前缀一致。
+     * return_null_when_empty：true 时无任何 DB 命中返回 null（走 MySQL 回退）；vod/art/manga 保持原样返回数组（可为空）。
+     *
+     * @var array<string, array<string, mixed>>
+     */
+    private static $meiliResourceMeta = [
+        'vod' => [
+            'table' => 'Vod',
+            'pk' => 'vod_id',
+            'status' => 'vod_status',
+            'recycle' => 'vod_recycle_time',
+            'fields' => 'vod_id,vod_name,vod_pic',
+            'title_key' => 'vod_name',
+            'pic_key' => 'vod_pic',
+            'return_null_when_empty' => false,
+        ],
+        'art' => [
+            'table' => 'Art',
+            'pk' => 'art_id',
+            'status' => 'art_status',
+            'recycle' => 'art_recycle_time',
+            'fields' => 'art_id,art_name,art_pic',
+            'title_key' => 'art_name',
+            'pic_key' => 'art_pic',
+            'return_null_when_empty' => false,
+        ],
+        'manga' => [
+            'table' => 'Manga',
+            'pk' => 'manga_id',
+            'status' => 'manga_status',
+            'recycle' => 'manga_recycle_time',
+            'fields' => 'manga_id,manga_name,manga_pic',
+            'title_key' => 'manga_name',
+            'pic_key' => 'manga_pic',
+            'return_null_when_empty' => false,
+        ],
+        'topic' => [
+            'table' => 'Topic',
+            'pk' => 'topic_id',
+            'status' => 'topic_status',
+            'recycle' => null,
+            'fields' => 'topic_id,topic_name,topic_pic',
+            'title_key' => 'topic_name',
+            'pic_key' => 'topic_pic',
+            'return_null_when_empty' => true,
+        ],
+        'actor' => [
+            'table' => 'Actor',
+            'pk' => 'actor_id',
+            'status' => 'actor_status',
+            'recycle' => null,
+            'fields' => 'actor_id,actor_name,actor_pic',
+            'title_key' => 'actor_name',
+            'pic_key' => 'actor_pic',
+            'return_null_when_empty' => true,
+        ],
+        'role' => [
+            'table' => 'Role',
+            'pk' => 'role_id',
+            'status' => 'role_status',
+            'recycle' => null,
+            'fields' => 'role_id,role_name,role_pic',
+            'title_key' => 'role_name',
+            'pic_key' => 'role_pic',
+            'return_null_when_empty' => true,
+        ],
+        'website' => [
+            'table' => 'Website',
+            'pk' => 'website_id',
+            'status' => 'website_status',
+            'recycle' => null,
+            'fields' => 'website_id,website_name,website_pic',
+            'title_key' => 'website_name',
+            'pic_key' => 'website_pic',
+            'return_null_when_empty' => true,
+        ],
+    ];
+
+    /** @var array<string, array> 单次请求内相同 module+wd 只构建一次，避免 AI 聊天等场景重复 expand / Meili */
+    private static $buildForSearchMemo = [];
+
     public static function buildForSearch($module, array $param = [])
     {
         $cfg = self::getConfig();
@@ -22,13 +104,17 @@ class AiSearch
         if (mb_strlen($wd, 'UTF-8') < intval($cfg['min_query_len'])) {
             return self::emptyPayload($wd);
         }
+        $memoKey = $module . "\x1e" . mb_strtolower($wd, 'UTF-8');
+        if (isset(self::$buildForSearchMemo[$memoKey])) {
+            return self::$buildForSearchMemo[$memoKey];
+        }
 
         $expansion = self::expandTerms($cfg, $module, $wd);
         $queryMerged = self::mergeQuery($wd, $expansion);
-        $internal = self::buildInternalResources($wd, $module);
+        $internal = self::buildInternalResources($wd, $module, $queryMerged);
         $external = self::buildExternalResources($cfg, $wd);
 
-        return [
+        $out = [
             'enabled' => true,
             'query_original' => $wd,
             'query_merged' => $queryMerged,
@@ -36,6 +122,9 @@ class AiSearch
             'internal_resources' => $internal,
             'external_resources' => $external,
         ];
+        self::$buildForSearchMemo[$memoKey] = $out;
+
+        return $out;
     }
 
     private static function getConfig()
@@ -106,7 +195,7 @@ class AiSearch
         return [
             'enabled' => false,
             'query_original' => $wd,
-            'query_merged' => $wd,
+            'query_merged' => (string)$wd,
             'expanded_terms' => [],
             'internal_resources' => [],
             'external_resources' => [],
@@ -184,32 +273,33 @@ class AiSearch
         return array_slice($out, 0, $maxTerms);
     }
 
-    private static function buildInternalResources($wd, $module)
+    private static function buildInternalResources($wd, $module, $queryMerged = null)
     {
         $kw = '%' . addcslashes($wd, '%_') . '%';
+        $meiliQ = trim((string)($queryMerged !== null && $queryMerged !== '' ? $queryMerged : $wd));
         if ($module === 'vod') {
-            return self::queryVodResources($kw);
+            return self::queryVodResources($kw, $meiliQ);
         }
         if ($module === 'art') {
-            return self::queryArtResources($kw);
+            return self::queryArtResources($kw, $meiliQ);
         }
         if ($module === 'manga') {
-            return self::queryMangaResources($kw);
+            return self::queryMangaResources($kw, $meiliQ);
         }
         if ($module === 'topic') {
-            return self::queryTopicResources($kw);
+            return self::queryTopicResources($kw, $meiliQ);
         }
         if ($module === 'actor') {
-            return self::queryActorResources($kw);
+            return self::queryActorResources($kw, $meiliQ);
         }
         if ($module === 'role') {
-            return self::queryRoleResources($kw);
+            return self::queryRoleResources($kw, $meiliQ);
         }
         if ($module === 'website') {
-            return self::queryWebsiteResources($kw);
+            return self::queryWebsiteResources($kw, $meiliQ);
         }
         if ($module === 'plot') {
-            return self::queryPlotResources($kw);
+            return self::queryPlotResources($kw, $meiliQ);
         }
         return [];
     }
@@ -221,9 +311,9 @@ class AiSearch
         return [];
     }
 
-    private static function queryVodResources($kw)
+    private static function queryVodResources($kw, $meiliQuery = null)
     {
-        $fromMeili = self::queryVodResourcesByMeilisearch($kw);
+        $fromMeili = self::queryResourcesByMeilisearch('vod', $meiliQuery !== null && $meiliQuery !== '' ? $meiliQuery : $kw);
         if ($fromMeili !== null) {
             return $fromMeili;
         }
@@ -246,9 +336,9 @@ class AiSearch
         return $result;
     }
 
-    private static function queryArtResources($kw)
+    private static function queryArtResources($kw, $meiliQuery = null)
     {
-        $fromMeili = self::queryArtResourcesByMeilisearch($kw);
+        $fromMeili = self::queryResourcesByMeilisearch('art', $meiliQuery !== null && $meiliQuery !== '' ? $meiliQuery : $kw);
         if ($fromMeili !== null) {
             return $fromMeili;
         }
@@ -271,20 +361,39 @@ class AiSearch
         return $result;
     }
 
-    private static function queryVodResourcesByMeilisearch($kw)
+    /**
+     * Meilisearch 内联资源：统一 filter、解析 id、DB 回填、构造 title/url/pic/type。
+     *
+     * @param string      $kind          与 Meilisearch 文档 id 前缀一致：vod|art|manga|topic|actor|role|website
+     * @param string      $kw            LIKE 包壳或明文（经 extractKeywordFromLike）
+     * @param string|null $typeOverride  返回项的 type；null 则等于 $kind（如 plot 走 vod 数据但 type=plot）
+     *
+     * @return array<int, array{title:string,url:string,pic:string,type:string}>|null
+     */
+    private static function queryResourcesByMeilisearch($kind, $kw, $typeOverride = null)
     {
+        $k = strtolower((string)$kind);
+        if (!isset(self::$meiliResourceMeta[$k])) {
+            return null;
+        }
+        $meta = self::$meiliResourceMeta[$k];
         $wd = self::extractKeywordFromLike($kw);
         if ($wd === '' || !MeilisearchService::enabled()) {
             return null;
         }
         $limit = self::getInternalResultLimit();
-        $sr = MeilisearchService::search($wd, 'kind = "vod" AND recycle = 0 AND status = 1', $limit, 0);
+        $filter = MeilisearchService::filterPublishedKind($k);
+        if ($filter === '') {
+            return null;
+        }
+        $sr = MeilisearchService::search($wd, $filter, $limit, 0);
         if (empty($sr['ok']) || empty($sr['hits']) || !is_array($sr['hits'])) {
             return null;
         }
+        $re = '/^' . preg_quote($k, '/') . '_(\d+)$/';
         $ids = [];
         foreach ($sr['hits'] as $hit) {
-            if (!empty($hit['id']) && is_string($hit['id']) && preg_match('/^vod_(\d+)$/', $hit['id'], $m)) {
+            if (!empty($hit['id']) && is_string($hit['id']) && preg_match($re, $hit['id'], $m)) {
                 $ids[] = (int)$m[1];
             }
         }
@@ -292,19 +401,34 @@ class AiSearch
         if (empty($ids)) {
             return null;
         }
-        $rows = Db::name('Vod')
-            ->field('vod_id,vod_name,vod_pic')
-            ->where('vod_status', 1)
-            ->where('vod_recycle_time', 0)
-            ->where('vod_id', 'in', implode(',', $ids))
-            ->select();
+        $table = $meta['table'];
+        $pk = $meta['pk'];
+        $st = $meta['status'];
+        $rc = isset($meta['recycle']) ? $meta['recycle'] : null;
+        $fields = $meta['fields'];
+        try {
+            $q = Db::name($table)->field($fields)->where($st, 1)->where($pk, 'in', implode(',', $ids));
+            if ($rc !== null && $rc !== '') {
+                $q->where($rc, 0);
+            }
+            $rows = $q->select();
+        } catch (\Throwable $e) {
+            if ($rc !== null && $rc !== '') {
+                $rows = Db::name($table)->field($fields)->where($st, 1)->where($pk, 'in', implode(',', $ids))->select();
+            } else {
+                return null;
+            }
+        }
         if (!is_array($rows)) {
             return null;
         }
         $map = [];
         foreach ($rows as $row) {
-            $map[(int)$row['vod_id']] = $row;
+            $map[(int)$row[$pk]] = $row;
         }
+        $typeItem = ($typeOverride !== null && $typeOverride !== '') ? (string)$typeOverride : $k;
+        $titleKey = $meta['title_key'];
+        $picKey = $meta['pic_key'];
         $result = [];
         foreach ($ids as $id) {
             if (empty($map[$id])) {
@@ -312,67 +436,51 @@ class AiSearch
             }
             $row = $map[$id];
             $result[] = [
-                'title' => (string)$row['vod_name'],
-                'url' => mac_url_vod_detail($row),
-                'pic' => (string)$row['vod_pic'],
-                'type' => 'vod',
+                'title' => (string)$row[$titleKey],
+                'url' => self::resourceDetailUrl($k, $row),
+                'pic' => (string)$row[$picKey],
+                'type' => $typeItem,
             ];
         }
+        if (!empty($meta['return_null_when_empty']) && $result === []) {
+            return null;
+        }
+
         return $result;
     }
 
-    private static function queryArtResourcesByMeilisearch($kw)
+    /**
+     * @param string               $kind Meilisearch / 表逻辑 kind（非 type 覆盖值）
+     * @param array<string, mixed> $row
+     */
+    private static function resourceDetailUrl($kind, array $row)
     {
-        $wd = self::extractKeywordFromLike($kw);
-        if ($wd === '' || !MeilisearchService::enabled()) {
-            return null;
+        switch ($kind) {
+            case 'vod':
+                return mac_url_vod_detail($row);
+            case 'art':
+                return mac_url_art_detail($row);
+            case 'manga':
+                return mac_url_manga_detail($row);
+            case 'topic':
+                return mac_url_topic_detail($row);
+            case 'actor':
+                return mac_url_actor_detail($row);
+            case 'role':
+                return mac_url_role_detail($row);
+            case 'website':
+                return mac_url_website_detail($row);
+            default:
+                return '';
         }
-        $limit = self::getInternalResultLimit();
-        $sr = MeilisearchService::search($wd, 'kind = "art" AND recycle = 0 AND status = 1', $limit, 0);
-        if (empty($sr['ok']) || empty($sr['hits']) || !is_array($sr['hits'])) {
-            return null;
-        }
-        $ids = [];
-        foreach ($sr['hits'] as $hit) {
-            if (!empty($hit['id']) && is_string($hit['id']) && preg_match('/^art_(\d+)$/', $hit['id'], $m)) {
-                $ids[] = (int)$m[1];
-            }
-        }
-        $ids = array_values(array_unique(array_filter($ids)));
-        if (empty($ids)) {
-            return null;
-        }
-        $rows = Db::name('Art')
-            ->field('art_id,art_name,art_pic')
-            ->where('art_status', 1)
-            ->where('art_recycle_time', 0)
-            ->where('art_id', 'in', implode(',', $ids))
-            ->select();
-        if (!is_array($rows)) {
-            return null;
-        }
-        $map = [];
-        foreach ($rows as $row) {
-            $map[(int)$row['art_id']] = $row;
-        }
-        $result = [];
-        foreach ($ids as $id) {
-            if (empty($map[$id])) {
-                continue;
-            }
-            $row = $map[$id];
-            $result[] = [
-                'title' => (string)$row['art_name'],
-                'url' => mac_url_art_detail($row),
-                'pic' => (string)$row['art_pic'],
-                'type' => 'art',
-            ];
-        }
-        return $result;
     }
 
-    private static function queryMangaResources($kw)
+    private static function queryMangaResources($kw, $meiliQuery = null)
     {
+        $fromMeili = self::queryResourcesByMeilisearch('manga', $meiliQuery !== null && $meiliQuery !== '' ? $meiliQuery : $kw);
+        if ($fromMeili !== null) {
+            return $fromMeili;
+        }
         $rows = Db::name('Manga')
             ->field('manga_id,manga_name,manga_en,manga_pic,manga_author')
             ->where('manga_status', 1)
@@ -413,8 +521,12 @@ class AiSearch
         return max(1, intval($cfg['internal_result_limit']));
     }
 
-    private static function queryTopicResources($kw)
+    private static function queryTopicResources($kw, $meiliQuery = null)
     {
+        $fromMeili = self::queryResourcesByMeilisearch('topic', $meiliQuery !== null && $meiliQuery !== '' ? $meiliQuery : $kw);
+        if ($fromMeili !== null) {
+            return $fromMeili;
+        }
         $rows = Db::name('Topic')
             ->field('topic_id,topic_name,topic_en,topic_pic')
             ->where('topic_status', 1)
@@ -434,8 +546,12 @@ class AiSearch
         return $result;
     }
 
-    private static function queryActorResources($kw)
+    private static function queryActorResources($kw, $meiliQuery = null)
     {
+        $fromMeili = self::queryResourcesByMeilisearch('actor', $meiliQuery !== null && $meiliQuery !== '' ? $meiliQuery : $kw);
+        if ($fromMeili !== null) {
+            return $fromMeili;
+        }
         $rows = Db::name('Actor')
             ->field('actor_id,actor_name,actor_en,actor_pic')
             ->where('actor_status', 1)
@@ -455,8 +571,12 @@ class AiSearch
         return $result;
     }
 
-    private static function queryRoleResources($kw)
+    private static function queryRoleResources($kw, $meiliQuery = null)
     {
+        $fromMeili = self::queryResourcesByMeilisearch('role', $meiliQuery !== null && $meiliQuery !== '' ? $meiliQuery : $kw);
+        if ($fromMeili !== null) {
+            return $fromMeili;
+        }
         $rows = Db::name('Role')
             ->field('role_id,role_name,role_en,role_pic')
             ->where('role_status', 1)
@@ -476,8 +596,12 @@ class AiSearch
         return $result;
     }
 
-    private static function queryWebsiteResources($kw)
+    private static function queryWebsiteResources($kw, $meiliQuery = null)
     {
+        $fromMeili = self::queryResourcesByMeilisearch('website', $meiliQuery !== null && $meiliQuery !== '' ? $meiliQuery : $kw);
+        if ($fromMeili !== null) {
+            return $fromMeili;
+        }
         $rows = Db::name('Website')
             ->field('website_id,website_name,website_en,website_pic')
             ->where('website_status', 1)
@@ -497,8 +621,13 @@ class AiSearch
         return $result;
     }
 
-    private static function queryPlotResources($kw)
+    private static function queryPlotResources($kw, $meiliQuery = null)
     {
+        $meiliPass = ($meiliQuery !== null && trim((string)$meiliQuery) !== '') ? trim((string)$meiliQuery) : $kw;
+        $fromMeili = self::queryResourcesByMeilisearch('vod', $meiliPass, 'plot');
+        if ($fromMeili !== null) {
+            return $fromMeili;
+        }
         $rows = Db::name('Vod')
             ->field('vod_id,vod_name,vod_pic')
             ->where('vod_status', 1)

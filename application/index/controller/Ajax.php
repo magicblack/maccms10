@@ -3,6 +3,8 @@ namespace app\index\controller;
 
 use app\common\util\AiChatRateLimit;
 use app\common\util\AiChatService;
+use app\common\util\ApiMeilisearchSuggest;
+use app\common\util\MeilisearchService;
 use app\common\util\SearchService;
 use think\Cache;
 
@@ -156,9 +158,10 @@ class Ajax extends Base
 
         $orderMode = isset($appCfg['search_suggest_order']) ? $appCfg['search_suggest_order'] : 'popular';
         $cacheSec = max(30, intval(isset($appCfg['search_suggest_cache_sec']) ? $appCfg['search_suggest_cache_sec'] : 180));
-        $cacheKey = 'search:suggest:v2:' . md5($mid . '|' . mb_strtolower($wd, 'UTF-8') . '|' . $limit . '|' . $orderMode);
+        $msOn = MeilisearchService::enabled() ? '1' : '0';
+        $cacheKey = 'search:suggest:v3:' . md5($mid . '|' . mb_strtolower($wd, 'UTF-8') . '|' . $limit . '|' . $orderMode . '|' . $msOn);
         $debounceSec = max(1, intval(isset($appCfg['search_suggest_debounce_sec']) ? $appCfg['search_suggest_debounce_sec'] : 1));
-        $ipDebounceKey = 'search:suggest:debounce:' . md5($ip . '|' . $mid . '|' . mb_strtolower($wd, 'UTF-8') . '|' . $limit);
+        $ipDebounceKey = 'search:suggest:debounce:' . md5($ip . '|' . $mid . '|' . mb_strtolower($wd, 'UTF-8') . '|' . $limit . '|' . $msOn);
         $cached = Cache::get($cacheKey);
         if (is_array($cached)) {
             $cached['url'] = $url;
@@ -170,21 +173,7 @@ class Ajax extends Base
             return json($debounced);
         }
 
-        $where = [];
-        $where[$pre.'_name|'.$pre.'_en'] = ['like','%'.$wd.'%'];
-        $order = SearchService::suggestOrder($pre, $orderMode);
-        $field = $pre.'_id as id,'.$pre.'_name as name,'.$pre.'_en as en,'.$pre.'_pic as pic';
-
-        if ($pre === 'topic') {
-            $res = model('Topic')->listData($where, $order, 1, $limit, 0, $field, 0);
-        } else {
-            $res = model($pre)->listData($where, $order, 1, $limit, 0, $field, 0, 0);
-        }
-        if($res['code']==1) {
-            foreach ($res['list'] as $k => $v) {
-                $res['list'][$k]['pic'] = mac_url_img($v['pic']);
-            }
-        }
+        $res = ApiMeilisearchSuggest::ajaxSuggestResult($pre, $wd, $limit, $orderMode);
         $res['url'] = $url;
         Cache::set($cacheKey, $res, $cacheSec);
         Cache::set($ipDebounceKey, $res, $debounceSec);

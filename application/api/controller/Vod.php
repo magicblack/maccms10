@@ -7,7 +7,6 @@ use think\Cache;
 use think\Db;
 use think\Request;
 use think\Validate;
-
 class Vod extends Base
 {
     use PublicApi;
@@ -778,30 +777,7 @@ class Vod extends Base
      */
     public function suggest(Request $request)
     {
-        if ($GLOBALS['config']['app']['search'] != '1') return json(['code' => 999, 'msg' => lang('suggest_close')]);
-        $param = $request->param();
-        $wd = trim($param['wd'] ?? '');
-        if (empty($wd)) return json(['code' => 1001, 'msg' => '参数错误']);
-        $limit = max(1, min(20, intval($param['limit'] ?? 10)));
-        $where = ['vod_name|vod_en' => ['like', '%' . $wd . '%']];
-        // 需 type / type_1 / vod_time 等以正确生成伪静态详情链接；返回时再精简字段
-        $field = 'vod_id,vod_name,vod_en,vod_pic,vod_time,type_id,type_id_1';
-        $res = model('Vod')->listData($where, 'vod_id desc', 1, $limit, 0, $field, 1, 1);
-        if ($res['code'] == 1 && !empty($res['list'])) {
-            $out = [];
-            foreach ($res['list'] as $v) {
-                $out[] = [
-                    'id'      => (int)($v['vod_id'] ?? 0),
-                    'name'    => (string)($v['vod_name'] ?? ''),
-                    'en'      => (string)($v['vod_en'] ?? ''),
-                    'pic'     => mac_url_img($v['vod_pic'] ?? ''),
-                    'vod_link'=> mac_url_vod_detail($v),
-                ];
-            }
-            $res['list'] = $out;
-        }
-        $res['url'] = mac_url_search(['wd' => urlencode($wd)], 'vod');
-        return json($res);
+        return $this->jsonSuggestByKind($request, 'vod');
     }
 
     /**

@@ -7,6 +7,9 @@ namespace app\common\util;
  */
 class MeilisearchService
 {
+    /** @var array<string, array{ok:bool,hits:array,estimatedTotalHits:int}> 单次请求内相同参数去重，避免列表与 AI 联想等对 Meili 重复打网 */
+    private static $searchMemo = [];
+
     public static function cfg()
     {
         $c = $GLOBALS['config']['meilisearch'] ?? [];
@@ -53,6 +56,19 @@ class MeilisearchService
         return !isset($c['sync_on_save']) || (string)$c['sync_on_save'] !== '0';
     }
 
+    /**
+     * 已发布内容统一过滤（与索引文档字段 kind / recycle / status 一致）。
+     * 供 AI 搜索、AI 聊天、内部联想等与 Meilisearch 共用。
+     */
+    public static function filterPublishedKind($kind)
+    {
+        $k = strtolower((string)$kind);
+        if (!in_array($k, ['vod', 'art', 'manga', 'topic', 'actor', 'role', 'website'], true)) {
+            return '';
+        }
+        return 'kind = "' . $k . '" AND recycle = 0 AND status = 1';
+    }
+
     public static function health()
     {
         if (!self::enabled()) {
@@ -96,7 +112,7 @@ class MeilisearchService
             ],
             'filterableAttributes' => [
                 'kind', 'type_id', 'type_id_1', 'recycle', 'status', 'level', 'group_id', 'isend', 'plot',
-                'year', 'area', 'lang', 'state', 'version',
+                'year', 'area', 'lang', 'state', 'version', 'rid',
             ],
             'sortableAttributes' => ['hits_month', 'ts'],
             // 排序策略：相关度优先，其次热度（月点击），最后时间（更新时间）。
@@ -152,6 +168,11 @@ class MeilisearchService
         if (!self::enabled()) {
             return ['ok' => false, 'hits' => [], 'estimatedTotalHits' => 0];
         }
+        $memoKey = md5((string)$q . "\x1e" . (string)$filter . "\x1e" . (int)$limit . "\x1e" . (int)$offset, true);
+        $memoKey = 'ms1:' . base64_encode($memoKey);
+        if (isset(self::$searchMemo[$memoKey])) {
+            return self::$searchMemo[$memoKey];
+        }
         $uid = rawurlencode(self::indexUid());
         $baseBody = [
             'limit' => max(1, min(1000, (int)$limit)),
@@ -196,13 +217,22 @@ class MeilisearchService
             $hits = isset($r['data']['hits']) && is_array($r['data']['hits']) ? $r['data']['hits'] : [];
             $est = isset($r['data']['estimatedTotalHits']) ? (int)$r['data']['estimatedTotalHits'] : count($hits);
             if (!empty($hits) || $queryText === $lastQuery) {
-                return ['ok' => true, 'hits' => $hits, 'estimatedTotalHits' => $est];
+                $out = ['ok' => true, 'hits' => $hits, 'estimatedTotalHits' => $est];
+                self::$searchMemo[$memoKey] = $out;
+
+                return $out;
             }
         }
 
         if ($lastFailed !== null) {
-            return ['ok' => false, 'hits' => [], 'estimatedTotalHits' => 0];
+            $out = ['ok' => false, 'hits' => [], 'estimatedTotalHits' => 0];
+            self::$searchMemo[$memoKey] = $out;
+
+            return $out;
         }
-        return ['ok' => true, 'hits' => [], 'estimatedTotalHits' => 0];
+        $out = ['ok' => true, 'hits' => [], 'estimatedTotalHits' => 0];
+        self::$searchMemo[$memoKey] = $out;
+
+        return $out;
     }
 }

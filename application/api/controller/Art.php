@@ -472,4 +472,13 @@ class Art extends Base
         ]);
     }
 
+    /**
+     * 搜索建议/自动完成（与列表同一套 Meili + 已发布/回收过滤）
+     * api.php/art/suggest?wd=关键词&limit=10
+     */
+    public function suggest(Request $request)
+    {
+        return $this->jsonSuggestByKind($request, 'art');
+    }
+
 }

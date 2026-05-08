@@ -3,6 +3,9 @@ namespace app\common\model;
 use think\Db;
 use think\Cache;
 use app\common\util\Pinyin;
+use app\common\util\MeilisearchService;
+use app\common\util\MeilisearchListBridge;
+use app\common\util\MeilisearchSync;
 
 class Website extends Base {
     // 设置数据表（不含前缀）
@@ -385,6 +388,7 @@ class Website extends Base {
         if(!empty($class)) {
             $where['website_class'] = ['like',mac_like_arr($class),'OR'];
         }
+        $randi = null;
         if($by=='rnd'){
             $data_count = $this->countData($where);
             $page_total = floor($data_count / $lp['num']) + 1;
@@ -404,13 +408,6 @@ class Website extends Base {
             $order = 'desc';
         }
 
-        $where_cache = $where;
-        if(!empty($randi)){
-            unset($where_cache['website_id']);
-            $where_cache['order'] = 'rnd';
-        }
-
-
         if($by=='in' && !empty($name) ){
             $order = ' find_in_set(website_name, \''.$name.'\'  ) ';
         }
@@ -421,13 +418,46 @@ class Website extends Base {
             $order= 'website_'.$by .' ' . $order;
         }
 
-        $cach_name = $GLOBALS['config']['app']['cache_flag']. '_' .md5('website_listcache_'.http_build_query($where_cache).'_'.$order.'_'.$page.'_'.$num.'_'.$start.'_'.$pageurl);
+        $meili = null;
+        if (empty($randi) && MeilisearchService::enabled()) {
+            $meili = MeilisearchListBridge::applyForWebsite(
+                $where,
+                (string)$wd,
+                (string)$name,
+                (string)$tag,
+                (string)$class,
+                $page,
+                $num,
+                $start,
+                $order
+            );
+            if ($meili !== null) {
+                $where = $meili['where'];
+                $order = $meili['order'];
+            }
+        }
+        $where_cache = $where;
+        if(!empty($randi)){
+            unset($where_cache['website_id']);
+            $where_cache['order'] = 'rnd';
+        }
+        $order_cache_key = ($meili !== null) ? 'meilisearch_relevance' : $order;
+
+        $cach_name = $GLOBALS['config']['app']['cache_flag']. '_' .md5('website_listcache_'.http_build_query($where_cache).'_'.$order_cache_key.'_'.$page.'_'.$num.'_'.$start.'_'.$pageurl);
         $res = Cache::get($cach_name);
         if(empty($cachetime)){
             $cachetime = $GLOBALS['config']['app']['cache_time'];
         }
         if($GLOBALS['config']['app']['cache_core']==0 || empty($res)) {
-            $res = $this->listData($where,$order,$page,$num,$start,'*',1,$totalshow);
+            if ($meili !== null) {
+                $res = $this->listData($where, $order, $page, $num, $start, '*', 1, 0);
+                if ($totalshow == 1) {
+                    $res['total'] = $meili['total'];
+                    $res['pagecount'] = $num > 0 ? (int)ceil($meili['total'] / $num) : 0;
+                }
+            } else {
+                $res = $this->listData($where,$order,$page,$num,$start,'*',1,$totalshow);
+            }
             if($GLOBALS['config']['app']['cache_core']==1){
                 Cache::set($cach_name, $res, $cachetime);
             }
@@ -546,6 +576,9 @@ class Website extends Base {
         if(false === $res){
             return ['code'=>1002,'msg'=>lang('save_err').'：'.$this->getError() ];
         }
+        $ixWebsiteId = !empty($data['website_id']) ? intval($data['website_id']) : intval($this->getLastInsID());
+        MeilisearchSync::afterWebsiteSave($ixWebsiteId);
+
         return ['code'=>1,'msg'=>lang('save_ok')];
     }
 
@@ -557,6 +590,7 @@ class Website extends Base {
         }
         $path = './';
         foreach($list['list'] as $k=>$v){
+            MeilisearchSync::deleteWebsite(intval($v['website_id']));
             $pic = $path.$v['website_pic'];
             if(file_exists($pic) && (substr($pic,0,8) == "./upload") || count( explode("./",$pic) ) ==1){
                 unlink($pic);

@@ -11,6 +11,9 @@ class VodSearch extends Base {
     public $maxIdCount = 1000;
     private $updateTopCount = 50000;
 
+    /** @var array<string, int[]> 单次 PHP 请求内按 search_key 去重，避免采集等循环对同一词重复 LIKE / 写 vod_search */
+    private static $getResultIdListMemo = [];
+
 
     /**
      * 获取结果Id列表
@@ -27,18 +30,41 @@ class VodSearch extends Base {
             $id_list = [];
             $search_word_exploded = explode(',', $search_word);
             foreach ($search_word_exploded as $search_word) {
-                $id_list += $this->getResultIdList($search_word, $search_field);
+                $search_word = trim((string)$search_word);
+                if ($search_word === '') {
+                    continue;
+                }
+                $chunk = $this->getResultIdList($search_word, $search_field);
+                $id_list = array_merge($id_list, is_array($chunk) ? $chunk : []);
             }
-            $id_list = array_unique($id_list);
+            $id_list = array_values(array_unique(array_map('intval', $id_list)));
+
             return $id_list;
         }
         $search_key = md5($search_word . '@' . $search_field);
+        if (isset(self::$getResultIdListMemo[$search_key])) {
+            return self::$getResultIdListMemo[$search_key];
+        }
         $where = ['search_key' => $search_key];
         $search_row = $this->where($where)->field("search_result_ids, search_hit_count")->find();
         if (empty($search_row)) {
             $where_vod = [];
             $where_vod[$search_field] = ['LIKE', '%' . $search_word . '%'];
-            $id_list = Db::name('Vod')->where($where_vod)->order("vod_id ASC")->column("vod_id");
+            // 仅已发布；回收站过滤在 listData 中由 Vod 模型处理，此处不重复 merge 以免依赖 protected API
+            try {
+                $id_list = Db::name('Vod')
+                    ->where('vod_status', 1)
+                    ->where('vod_recycle_time', 0)
+                    ->where($where_vod)
+                    ->order('vod_id ASC')
+                    ->column('vod_id');
+            } catch (\Throwable $e) {
+                $id_list = Db::name('Vod')
+                    ->where('vod_status', 1)
+                    ->where($where_vod)
+                    ->order('vod_id ASC')
+                    ->column('vod_id');
+            }
             $id_list = is_array($id_list) ? $id_list : [];
             $this->insert([
                 'search_key'           => $search_key,
@@ -60,6 +86,8 @@ class VodSearch extends Base {
         }
         $id_list = array_map('intval', $id_list);
         $id_list = empty($id_list) ? [0] : $id_list;
+        self::$getResultIdListMemo[$search_key] = $id_list;
+
         return $id_list;
     }
 
@@ -110,21 +138,61 @@ class VodSearch extends Base {
             }
         }
         $time_now = time();
+        $vid = isset($vod['vod_id']) ? (int)$vod['vod_id'] : 0;
+        if ($vid <= 0) {
+            return;
+        }
         foreach ($list as $row) {
-            foreach (explode('|', $row['search_field']) as $field) {
-                if (!isset($vod[$field]) || strlen($vod[$field]) == 0) {
+            $searchKey = isset($row['search_key']) ? (string)$row['search_key'] : '';
+            if ($searchKey === '' || !preg_match('/^[a-f0-9]{32}$/i', $searchKey)) {
+                continue;
+            }
+            foreach (explode('|', (string)$row['search_field']) as $field) {
+                $field = trim($field);
+                if ($field === '' || !isset($vod[$field]) || $vod[$field] === '' || $vod[$field] === null) {
                     continue;
                 }
-                if (stripos($vod[$field], $row['search_word']) === false) {
+                if (stripos((string)$vod[$field], (string)$row['search_word']) === false) {
                     continue;
                 }
-                Db::execute("UPDATE `" . config('database.prefix') . $this->name . "` SET 
-                    search_update_time='{$time_now}',
-                    search_result_count=search_result_count+1,
-                    search_result_ids=CONCAT(search_result_ids,',','{$vod['vod_id']}')
-                WHERE search_key='{$row['search_key']}'");
+                $this->appendVodIdToSearchCacheRow($searchKey, $vid, $time_now);
             }
         }
+    }
+
+    /**
+     * 向缓存行追加 vod_id；已存在则只刷新 search_update_time，并保证 search_result_count 与 id 列表一致。
+     */
+    private function appendVodIdToSearchCacheRow($searchKey, $vid, $time_now)
+    {
+        $searchKey = (string)$searchKey;
+        $vid = (int)$vid;
+        $time_now = (int)$time_now;
+        if ($searchKey === '' || $vid <= 0) {
+            return;
+        }
+        $raw = Db::name('vod_search')->where('search_key', $searchKey)->value('search_result_ids');
+        $ids = [];
+        foreach (explode(',', (string)$raw) as $p) {
+            $p = (int)trim($p);
+            if ($p > 0) {
+                $ids[$p] = $p;
+            }
+        }
+        if (isset($ids[$vid])) {
+            Db::name('vod_search')->where('search_key', $searchKey)->update([
+                'search_update_time' => $time_now,
+            ]);
+
+            return;
+        }
+        $ids[$vid] = $vid;
+        $ids = array_values($ids);
+        Db::name('vod_search')->where('search_key', $searchKey)->update([
+            'search_update_time'  => $time_now,
+            'search_result_count' => count($ids),
+            'search_result_ids'   => implode(',', $ids),
+        ]);
     }
 
     /**

@@ -10,28 +10,34 @@ class AiChatService
         $responseLang = $this->resolveResponseLanguage($question);
         $moduleMap = [1=>'vod',2=>'art',3=>'topic',8=>'actor',9=>'role',11=>'website',12=>'plot',13=>'manga'];
         $module = ($mid === 0) ? 'mixed' : (isset($moduleMap[$mid]) ? $moduleMap[$mid] : 'mixed');
-        $searchMeta = ['expanded_terms' => [], 'external_resources' => []];
+        $searchMeta = ['expanded_terms' => [], 'external_resources' => [], 'query_merged' => ''];
 
         if ($mid === 0) {
             try {
                 $searchMeta = $this->mergeSearchMetaPayloads(
-                    AiSearch::buildForSearch('vod', ['wd' => $question]),
-                    AiSearch::buildForSearch('art', ['wd' => $question]),
+                    $this->mergeSearchMetaPayloads(
+                        AiSearch::buildForSearch('vod', ['wd' => $question]),
+                        AiSearch::buildForSearch('art', ['wd' => $question])
+                    ),
                     AiSearch::buildForSearch('manga', ['wd' => $question])
                 );
             } catch (\Throwable $e) {
-                $searchMeta = ['expanded_terms' => [], 'external_resources' => []];
+                $searchMeta = ['expanded_terms' => [], 'external_resources' => [], 'query_merged' => ''];
             }
         } elseif ($module !== 'mixed') {
             try {
                 $searchMeta = AiSearch::buildForSearch($module, ['wd' => $question]);
             } catch (\Throwable $e) {
-                $searchMeta = ['expanded_terms' => [], 'external_resources' => []];
+                $searchMeta = ['expanded_terms' => [], 'external_resources' => [], 'query_merged' => ''];
             }
         }
 
         $cards = $this->buildCards($question, $mid, $limit, $searchMeta);
-        $externalFederated = (new ExternalFederationService())->searchAndStore($question, $module, ['limit' => 6]);
+        $extKeyword = trim((string)$question);
+        if (!empty($searchMeta['query_merged']) && trim((string)$searchMeta['query_merged']) !== '') {
+            $extKeyword = trim((string)$searchMeta['query_merged']);
+        }
+        $externalFederated = (new ExternalFederationService())->searchAndStore($extKeyword, $module, ['limit' => 6]);
         $aiSearchResults = $this->requestAiSearchResults($question, $module, $cards, $responseLang);
         $aiCfg = config('maccms.ai_search');
         if (!is_array($aiCfg)) {
@@ -93,7 +99,16 @@ class AiChatService
         if (!empty($b['external_resources']) && is_array($b['external_resources'])) {
             $external = array_merge($external, $b['external_resources']);
         }
-        return ['expanded_terms' => $terms, 'external_resources' => $external];
+
+        $qm = '';
+        foreach ([$a, $b] as $p) {
+            $q = isset($p['query_merged']) ? trim((string)$p['query_merged']) : '';
+            if ($q !== '' && mb_strlen($q, 'UTF-8') > mb_strlen($qm, 'UTF-8')) {
+                $qm = $q;
+            }
+        }
+
+        return ['expanded_terms' => $terms, 'external_resources' => $external, 'query_merged' => $qm];
     }
 
     private function buildCards($question, $mid, $limit, array $searchMeta)
@@ -215,7 +230,21 @@ class AiChatService
             $kind = 'vod';
         } elseif ((int)$mid === 2) {
             $kind = 'art';
+        } elseif ((int)$mid === 13) {
+            $kind = 'manga';
+        } elseif ((int)$mid === 3) {
+            $kind = 'topic';
+        } elseif ((int)$mid === 8) {
+            $kind = 'actor';
+        } elseif ((int)$mid === 9) {
+            $kind = 'role';
+        } elseif ((int)$mid === 11) {
+            $kind = 'website';
         } else {
+            return null;
+        }
+        $filter = MeilisearchService::filterPublishedKind($kind);
+        if ($filter === '') {
             return null;
         }
         $fetchLimit = max(1, (int)$fetchLimit);
@@ -228,7 +257,7 @@ class AiChatService
             $weight = max(0.35, 1.0 - ($idx * 0.18));
             $sr = MeilisearchService::search(
                 $query,
-                'kind = "' . $kind . '" AND recycle = 0 AND status = 1',
+                $filter,
                 max(16, $fetchLimit),
                 0
             );

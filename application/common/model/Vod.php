@@ -444,7 +444,8 @@ class Vod extends Base {
         }
 
         $vod_search = model('VodSearch');
-        $vod_search_enabled = $vod_search->isFrontendEnabled();
+        // Meilisearch 开启时不再走 mac_vod_search 前台 ID 缓存，避免与 Meili 双写、且 _string 会阻断 applyForVod；采集侧仍可用 VodSearch::isCollectEnabled()
+        $vod_search_enabled = $vod_search->isFrontendEnabled() && !MeilisearchService::enabled();
         $max_id_count = $vod_search->maxIdCount;
         if ($vod_search_enabled) {
             // 开启搜索优化，查询并缓存Id
@@ -456,46 +457,46 @@ class Vod extends Base {
                 }
                 $where[$role] = ['like', '%' . $wd . '%'];
                 if (count($search_id_list_tmp = $vod_search->getResultIdList($wd, $role)) <= $max_id_count) {
-                    $search_id_list += $search_id_list_tmp;
+                    $search_id_list = array_merge($search_id_list, $search_id_list_tmp);
                     unset($where[$role]);
                 }
             }
             if(!empty($name)) {
                 $where['vod_name'] = ['like',mac_like_arr($name),'OR'];
                 if (count($search_id_list_tmp = $vod_search->getResultIdList($name, 'vod_name')) <= $max_id_count) {
-                    $search_id_list += $search_id_list_tmp;
+                    $search_id_list = array_merge($search_id_list, $search_id_list_tmp);
                     unset($where['vod_name']);
                 }
             }
             if(!empty($tag)) {
                 $where['vod_tag'] = ['like',mac_like_arr($tag),'OR'];
                 if (count($search_id_list_tmp = $vod_search->getResultIdList($tag, 'vod_tag', true)) <= $max_id_count) {
-                    $search_id_list += $search_id_list_tmp;
+                    $search_id_list = array_merge($search_id_list, $search_id_list_tmp);
                     unset($where['vod_tag']);
                 }
             }
             if(!empty($class)) {
                 $where['vod_class'] = ['like',mac_like_arr($class), 'OR'];
                 if (count($search_id_list_tmp = $vod_search->getResultIdList($class, 'vod_class', true)) <= $max_id_count) {
-                    $search_id_list += $search_id_list_tmp;
+                    $search_id_list = array_merge($search_id_list, $search_id_list_tmp);
                     unset($where['vod_class']);
                 }
             }
             if(!empty($actor)) {
                 $where['vod_actor'] = ['like', mac_like_arr($actor), 'OR'];
                 if (count($search_id_list_tmp = $vod_search->getResultIdList($actor, 'vod_actor', true)) <= $max_id_count) {
-                    $search_id_list += $search_id_list_tmp;
+                    $search_id_list = array_merge($search_id_list, $search_id_list_tmp);
                     unset($where['vod_actor']);
                 }
             }
             if(!empty($director)) {
                 $where['vod_director'] = ['like',mac_like_arr($director),'OR'];
                 if (count($search_id_list_tmp = $vod_search->getResultIdList($director, 'vod_director', true)) <= $max_id_count) {
-                    $search_id_list += $search_id_list_tmp;
+                    $search_id_list = array_merge($search_id_list, $search_id_list_tmp);
                     unset($where['vod_director']);
                 }
             }
-            $search_id_list = array_unique($search_id_list);
+            $search_id_list = array_values(array_unique(array_map('intval', $search_id_list)));
             if (!empty($search_id_list)) {
                 $where['_string'] = "vod_id IN (" . join(',', $search_id_list) . ")";
             }
