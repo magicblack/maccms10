@@ -56,10 +56,10 @@
         {:lang('admin/meilisearch/state_disabled')}
         {elseif condition="!$health.ok"/}
         {:lang('admin/meilisearch/state_down_prefix')}{$cfg.timeout|default='8'}{:lang('admin/meilisearch/state_down_suffix')}
-        {elseif condition="$stats.numberOfDocuments|default=0 eq 0"/}
+        {elseif condition="!isset($stats.numberOfDocuments) || $stats.numberOfDocuments eq 0"/}
         {:lang('admin/meilisearch/state_empty')}
         {else/}
-        {:lang('admin/meilisearch/state_ok_prefix')}{$stats.numberOfDocuments|default=0}{:lang('admin/meilisearch/state_ok_suffix')}
+        {:lang('admin/meilisearch/state_ok_prefix')}{if condition="isset($stats.numberOfDocuments)"}{$stats.numberOfDocuments}{else/}0{/if}{:lang('admin/meilisearch/state_ok_suffix')}
         {/if}
     </blockquote>
     <table class="layui-table">
