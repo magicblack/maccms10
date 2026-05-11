@@ -262,10 +262,6 @@ foreach (['vod', 'art', 'manga'] as $module) {
         $sql .= "\r";
     }
 }
-// 修改group_id字段为varchar(255)
-$sql .= "ALTER TABLE `{$pre}user` MODIFY COLUMN `group_id` varchar(255) NOT NULL DEFAULT '0' COMMENT '会员组ID,多个用逗号分隔';";
-$sql .= "\r";
-
 //新增运营统计数据表
 if(empty($col_list[$pre.'analytics_day_overview'])){
     $sql .= "CREATE TABLE `{$pre}analytics_day_overview` (`stat_date` date NOT NULL COMMENT '统计日（站点时区日历日）',`pv` bigint(20) unsigned NOT NULL DEFAULT '0' COMMENT '页面浏览量',`uv` bigint(20) unsigned NOT NULL DEFAULT '0' COMMENT '独立访客（按 visitor_id/cookie 去重，由任务写入）',`session_cnt` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '会话数',`new_reg` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '新注册用户数',`user_login_dau` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '登录日活（当日有登录行为的用户数）',`user_active_mau` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '月活（自然月内去重活跃，可月末回填或滚动窗口）',`order_paid_cnt` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '已支付订单笔数',`order_paid_amount` decimal(14,2) unsigned NOT NULL DEFAULT '0.00' COMMENT '已支付订单金额',`recharge_amount` decimal(14,2) unsigned NOT NULL DEFAULT '0.00' COMMENT '充值类金额（可与订单拆分或等于 order 中充值类型汇总）',`ad_impression` bigint(20) unsigned NOT NULL DEFAULT '0' COMMENT '广告曝光',`ad_click` bigint(20) unsigned NOT NULL DEFAULT '0' COMMENT '广告点击',`avg_session_duration_sec` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '平均会话时长（秒）',`bounce_rate` decimal(6,2) NOT NULL DEFAULT '0.00' COMMENT '跳出率 0-100（单页会话/总会话）',`retention_d1` decimal(6,2) NOT NULL DEFAULT '0.00' COMMENT '次日留存率 0-100（按 cohort 任务写入）',`retention_d7` decimal(6,2) NOT NULL DEFAULT '0.00' COMMENT '7日留存率',`retention_d30` decimal(6,2) NOT NULL DEFAULT '0.00' COMMENT '30日留存率',`pv_web` bigint(20) unsigned NOT NULL DEFAULT '0' COMMENT 'Web 端 PV',`pv_h5` bigint(20) unsigned NOT NULL DEFAULT '0' COMMENT 'H5 端 PV',`pv_android` bigint(20) unsigned NOT NULL DEFAULT '0' COMMENT 'Android PV',`pv_ios` bigint(20) unsigned NOT NULL DEFAULT '0' COMMENT 'iOS PV',`pv_other` bigint(20) unsigned NOT NULL DEFAULT '0' COMMENT '未知/其它端 PV',`updated_at` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '本条汇总更新时间 UNIX',PRIMARY KEY (`stat_date`)) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='运营统计-全站按日汇总';";
@@ -298,32 +294,40 @@ if(empty($col_list[$pre.'analytics_content_day'])){
 if(empty($col_list[$pre.'analytics_retention_cohort'])){
     $sql .= "CREATE TABLE `{$pre}analytics_retention_cohort` (`cohort_date` date NOT NULL COMMENT 'cohort 基准日（常用：注册日）',`cohort_type` varchar(16) NOT NULL DEFAULT 'register',`return_day` smallint(5) unsigned NOT NULL COMMENT '回访间隔天 0=当日 1=次日',`user_cnt` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '该日仍活跃用户数',`updated_at` int(10) unsigned NOT NULL DEFAULT '0',PRIMARY KEY (`cohort_date`,`cohort_type`,`return_day`),KEY `idx_cohort` (`cohort_date`,`cohort_type`)) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='运营统计-留存 cohort';";
     $sql .="\r";
-$sql .= "ALTER TABLE `mac_user` MODIFY COLUMN `group_id` varchar(255) NOT NULL DEFAULT '0' COMMENT '会员组ID,多个用逗号分隔';";
-$sql .= "\r";
+}
+// 修改 group_id 为 varchar(255)（仅当列仍存在且尚未为 varchar(255)，避免每次升级重复 MODIFY）
+if(!empty($col_list[$pre.'user']['group_id'] ?? null)){
+    $groupIdType = strtolower($col_list[$pre.'user']['group_id']['COLUMN_TYPE'] ?? '');
+    if ($groupIdType !== 'varchar(255)') {
+        $sql .= "ALTER TABLE `{$pre}user` MODIFY COLUMN `group_id` varchar(255) NOT NULL DEFAULT '0' COMMENT '会员组ID,多个用逗号分隔';";
+        $sql .= "\r";
+    }
 }
 // 好友邀请功能 - 添加邀请码相关字段
 if(empty($col_list[$pre.'user']['user_invite_code'])){
-    $sql .= "ALTER TABLE `mac_user` ADD `user_invite_code` varchar(20) NOT NULL DEFAULT '' COMMENT '邀请码' AFTER `user_pid_3`;";
+    $sql .= "ALTER TABLE `{$pre}user` ADD `user_invite_code` varchar(20) NOT NULL DEFAULT '' COMMENT '邀请码' AFTER `user_pid_3`;";
     $sql .= "\r";
 }
 if(empty($col_list[$pre.'user']['user_invite_count'])){
-    $sql .= "ALTER TABLE `mac_user` ADD `user_invite_count` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '邀请人数' AFTER `user_invite_code`;";
+    $sql .= "ALTER TABLE `{$pre}user` ADD `user_invite_count` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '邀请人数' AFTER `user_invite_code`;";
     $sql .= "\r";
 }
 if(empty($col_list[$pre.'user']['user_invite_reward_time'])){
-    $sql .= "ALTER TABLE `mac_user` ADD `user_invite_reward_time` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '最后一次发放奖励时间' AFTER `user_invite_count`;";
+    $sql .= "ALTER TABLE `{$pre}user` ADD `user_invite_reward_time` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '最后一次发放奖励时间' AFTER `user_invite_count`;";
     $sql .= "\r";
 }
 // 邀请奖励档次记录 - 避免重复发放
 if(empty($col_list[$pre.'user']['user_invite_reward_level'])){
-    $sql .= "ALTER TABLE `mac_user` ADD `user_invite_reward_level` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '已发放奖励档次(避免重复发放)' AFTER `user_invite_reward_time`;";
+    $sql .= "ALTER TABLE `{$pre}user` ADD `user_invite_reward_level` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '已发放奖励档次(避免重复发放)' AFTER `user_invite_reward_time`;";
     $sql .= "\r";
 }
 // 邀请码索引 - 避免全表扫描（使用 SHOW INDEX 检查索引是否已存在）
-$index_exists = \think\Db::query("SHOW INDEX FROM `{$pre}user` WHERE Key_name = 'idx_user_invite_code'");
-if(empty($index_exists)){
-    $sql .= "ALTER TABLE `{$pre}user` ADD INDEX `idx_user_invite_code` (`user_invite_code`);";
-    $sql .= "\r";
+if(!empty($col_list[$pre.'user'])){
+    $index_exists = \think\Db::query("SHOW INDEX FROM `{$pre}user` WHERE Key_name = 'idx_user_invite_code'");
+    if(empty($index_exists)){
+        $sql .= "ALTER TABLE `{$pre}user` ADD INDEX `idx_user_invite_code` (`user_invite_code`);";
+        $sql .= "\r";
+    }
 }
 // 任务定义表
 if(empty($col_list[$pre.'task'])){
@@ -419,8 +423,17 @@ if(empty($col_list[$pre.'sign_milestone_log'])){
     $sql .= "\r";
 }
 // 插入预设签到里程碑数据
-$milestone_count = \think\Db::name('sign_milestone')->count();
-if(empty($milestone_count)){
+$milestoneNeedInsert = false;
+if(empty($col_list[$pre.'sign_milestone'])){
+    // 本次升级新建该表，必空，需插预设
+    $milestoneNeedInsert = true;
+}else{
+    $milestone_count = \think\Db::name('sign_milestone')->count();
+    if (empty($milestone_count)) {
+        $milestoneNeedInsert = true;
+    }
+}
+if($milestoneNeedInsert){
     $now = time();
     $sql .= "INSERT INTO `{$pre}sign_milestone` (`milestone_days`,`milestone_points`,`milestone_sort`,`milestone_status`,`milestone_time_add`,`milestone_time`) VALUES ";
     $sql .= "(3,5,1,1,{$now},{$now}),";
@@ -431,9 +444,19 @@ if(empty($milestone_count)){
     $sql .= "(85,100,6,1,{$now},{$now});";
     $sql .= "\r";
 }
+
 // 插入预设任务数据
-$task_count = \think\Db::name('task')->count();
-if(empty($task_count)){
+$taskNeedInsert = false;
+if(empty($col_list[$pre.'task'])){
+    // 本次升级新建该表，必空，需插预设
+    $taskNeedInsert = true;
+}else{
+    $task_count = \think\Db::name('task')->count();
+    if (empty($task_count)) {
+        $taskNeedInsert = true;
+    }
+}
+if($taskNeedInsert){
     $now = time();
     $sql .= "INSERT INTO `{$pre}task` (`task_name`,`task_type`,`task_action`,`task_desc`,`task_points`,`task_target`,`task_sort`,`task_status`,`task_time_add`,`task_time`) VALUES ";
     $sql .= "('每日签到',1,'daily_sign','每天签到获得积分奖励',5,1,1,1,{$now},{$now}),";
@@ -447,6 +470,7 @@ if(empty($task_count)){
     $sql .= "('首次充值',2,'first_pay','完成首次充值',50,1,5,1,{$now},{$now});";
     $sql .= "\r";
 }
+
 // 前台搜索关键词日志（热门词、登录用户历史）
 if (empty($col_list[$pre . 'search_query_log'])) {
     $sql .= "CREATE TABLE `{$pre}search_query_log` (
