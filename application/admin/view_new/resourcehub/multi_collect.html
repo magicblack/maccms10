@@ -1,0 +1,54 @@
+{include file="../../../application/admin/view_new/public/head" /}
+
+<style>
+.multi-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(48%, 1fr)); gap: 10px; }
+.collect-frame { border: 1px solid #e6e6e6; border-radius: 4px; height: 500px; }
+.collect-frame iframe { width: 100%; height: 100%; border: none; }
+.frame-header { background: #f8f8f8; padding: 8px 12px; border-bottom: 1px solid #e6e6e6; font-size: 13px; display: flex; justify-content: space-between; align-items: center; }
+</style>
+
+<div class="page-container p10">
+    <div class="my-toolbar-box" style="margin-bottom:15px;">
+        <a href="{:url('resource_hub/index')}" class="layui-btn layui-btn-primary"><i class="layui-icon">&#xe65c;</i> {:lang('admin/resourcehub/btn_back')}</a>
+        <button class="layui-btn layui-btn-normal" id="addWindow"><i class="layui-icon">&#xe654;</i> {:lang('admin/resourcehub/btn_add_window')}</button>
+        <span style="color:#999;font-size:12px;margin-left:10px;">{:lang('admin/resourcehub/multi_collect_tip')}</span>
+    </div>
+
+    <div class="multi-container" id="multiContainer">
+        <div class="collect-frame">
+            <div class="frame-header">
+                <span>{:lang('admin/resourcehub/collect_window')} 1</span>
+                <button class="layui-btn layui-btn-xs layui-btn-danger btn-close-frame">&times;</button>
+            </div>
+            <iframe src="{:url('collect/index')}"></iframe>
+        </div>
+        <div class="collect-frame">
+            <div class="frame-header">
+                <span>{:lang('admin/resourcehub/collect_window')} 2</span>
+                <button class="layui-btn layui-btn-xs layui-btn-danger btn-close-frame">&times;</button>
+            </div>
+            <iframe src="{:url('collect/index')}"></iframe>
+        </div>
+    </div>
+</div>
+
+{include file="../../../application/admin/view_new/public/foot" /}
+<script>
+layui.use(['layer'], function(){
+    var layer = layui.layer, $ = layui.$;
+    var windowCount = 2;
+    var collectWindowLabel = '{:lang("admin/resourcehub/collect_window")}';
+
+    $('#addWindow').on('click', function(){
+        windowCount++;
+        var html = '<div class="collect-frame"><div class="frame-header"><span>'+collectWindowLabel+' '+windowCount+'</span><button class="layui-btn layui-btn-xs layui-btn-danger btn-close-frame">&times;</button></div><iframe src="{:url(\'collect/index\')}"></iframe></div>';
+        $('#multiContainer').append(html);
+    });
+
+    $(document).on('click', '.btn-close-frame', function(){
+        $(this).closest('.collect-frame').remove();
+    });
+});
+</script>
+</body>
+</html>

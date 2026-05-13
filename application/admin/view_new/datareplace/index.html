@@ -1,0 +1,143 @@
+{include file="../../../application/admin/view_new/public/head" /}
+
+<div class="page-container p10">
+    <div class="my-toolbar-box" style="margin-bottom:15px;">
+        <a href="{:url('resource_hub/index')}" class="layui-btn layui-btn-primary"><i class="layui-icon">&#xe65c;</i> {:lang('admin/resourcehub/btn_back')}</a>
+    </div>
+
+    <div class="layui-card">
+        <div class="layui-card-header">{:lang('admin/datareplace/title')}</div>
+        <div class="layui-card-body">
+            <form class="layui-form" style="max-width:600px;">
+                <div class="layui-form-item">
+                    <label class="layui-form-label">{:lang('admin/datareplace/col_table')}</label>
+                    <div class="layui-input-block">
+                        <select name="table" lay-filter="tableSelect">
+                            <option value="">{:lang('admin/datareplace/please_select')}</option>
+                            <option value="vod">{:lang('admin/datareplace/table_vod')}</option>
+                            <option value="art">{:lang('admin/datareplace/table_art')}</option>
+                            <option value="manga">{:lang('admin/datareplace/table_manga')}</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">{:lang('admin/datareplace/col_field')}</label>
+                    <div class="layui-input-block">
+                        <select name="field" id="fieldSelect" lay-filter="fieldSelect">
+                            <option value="">{:lang('admin/datareplace/select_table_first')}</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">{:lang('admin/datareplace/search_content')}</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="search" class="layui-input" placeholder="{:lang('admin/datareplace/search_placeholder')}">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">{:lang('admin/datareplace/replace_with')}</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="replace" class="layui-input" placeholder="{:lang('admin/datareplace/replace_placeholder')}">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <div class="layui-input-block">
+                        <button type="button" class="layui-btn layui-btn-danger" id="doReplace">{:lang('admin/datareplace/btn_do_replace')}</button>
+                        <span style="color:#FF5722;font-size:12px;margin-left:10px;">⚠️ {:lang('admin/datareplace/warning')}</span>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="layui-card" style="margin-top:15px;">
+        <div class="layui-card-header">{:lang('admin/datareplace/common_scenarios')}</div>
+        <div class="layui-card-body">
+            <table class="layui-table" lay-size="sm">
+                <thead><tr><th>{:lang('admin/datareplace/col_scenario')}</th><th>{:lang('admin/datareplace/col_table')}</th><th>{:lang('admin/datareplace/col_field')}</th><th>{:lang('admin/datareplace/col_action')}</th></tr></thead>
+                <tbody>
+                <tr><td>{:lang('admin/datareplace/scenario_pic_domain')}</td><td>vod</td><td>vod_pic</td><td><button class="layui-btn layui-btn-xs quick-fill" data-table="vod" data-field="vod_pic">{:lang('admin/datareplace/btn_fill')}</button></td></tr>
+                <tr><td>{:lang('admin/datareplace/scenario_play_domain')}</td><td>vod</td><td>vod_play_url</td><td><button class="layui-btn layui-btn-xs quick-fill" data-table="vod" data-field="vod_play_url">{:lang('admin/datareplace/btn_fill')}</button></td></tr>
+                <tr><td>{:lang('admin/datareplace/scenario_play_from')}</td><td>vod</td><td>vod_play_from</td><td><button class="layui-btn layui-btn-xs quick-fill" data-table="vod" data-field="vod_play_from">{:lang('admin/datareplace/btn_fill')}</button></td></tr>
+                <tr><td>{:lang('admin/datareplace/scenario_down_url')}</td><td>vod</td><td>vod_down_url</td><td><button class="layui-btn layui-btn-xs quick-fill" data-table="vod" data-field="vod_down_url">{:lang('admin/datareplace/btn_fill')}</button></td></tr>
+                <tr><td>{:lang('admin/datareplace/scenario_vod_blurb')}</td><td>vod</td><td>vod_blurb</td><td><button class="layui-btn layui-btn-xs quick-fill" data-table="vod" data-field="vod_blurb">{:lang('admin/datareplace/btn_fill')}</button></td></tr>
+                <tr><td>{:lang('admin/datareplace/scenario_art_content')}</td><td>art</td><td>art_content</td><td><button class="layui-btn layui-btn-xs quick-fill" data-table="art" data-field="art_content">{:lang('admin/datareplace/btn_fill')}</button></td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+{include file="../../../application/admin/view_new/public/foot" /}
+<script>
+layui.use(['layer', 'form'], function(){
+    var layer = layui.layer, form = layui.form, $ = layui.$;
+    var LANG = {
+        select_field_first: '{:lang("admin/datareplace/select_field_first")}',
+        fill_params: '{:lang("admin/datareplace/fill_params")}',
+        confirm_replace: '{:lang("admin/datareplace/confirm_replace")}',
+        confirm_title: '{:lang("admin/datareplace/confirm_title")}',
+        table_label: '{:lang("admin/datareplace/table_label")}',
+        field_label: '{:lang("admin/datareplace/field_label")}',
+        search_label: '{:lang("admin/datareplace/search_label")}',
+        replace_label: '{:lang("admin/datareplace/replace_label")}',
+        empty_value: '{:lang("admin/datareplace/empty_value")}'
+    };
+
+    // 选择数据表后加载字段
+    form.on('select(tableSelect)', function(data){
+        if(!data.value){ return; }
+        $.get('{:url("data_replace/getFields")}', {table: data.value}, function(res){
+            if(res.code != 1){ layer.msg(res.msg,{icon:2}); return; }
+            var html = '<option value="">{:lang("admin/datareplace/select_field_first")}</option>';
+            res.data.forEach(function(f){
+                html += '<option value="'+f.field+'">'+f.field+' ('+f.type+')</option>';
+            });
+            $('#fieldSelect').html(html);
+            form.render('select');
+        });
+    });
+
+    // 快速填入
+    $('.quick-fill').on('click', function(){
+        var table = $(this).data('table');
+        var field = $(this).data('field');
+        $('select[name="table"]').val(table);
+        form.render('select');
+        // 触发字段加载
+        $.get('{:url("data_replace/getFields")}', {table: table}, function(res){
+            if(res.code != 1) return;
+            var html = '<option value="">{:lang("admin/datareplace/select_field_first")}</option>';
+            res.data.forEach(function(f){
+                html += '<option value="'+f.field+'" '+(f.field==field?'selected':'')+'>'+f.field+' ('+f.type+')</option>';
+            });
+            $('#fieldSelect').html(html);
+            form.render('select');
+        });
+    });
+
+    // 执行替换
+    $('#doReplace').on('click', function(){
+        var table = $('select[name="table"]').val();
+        var field = $('select[name="field"]').val();
+        var search = $('input[name="search"]').val();
+        var replace = $('input[name="replace"]').val();
+
+        if(!table || !field || search === ''){
+            layer.msg(LANG.fill_params, {icon:0});
+            return;
+        }
+
+        layer.confirm(LANG.confirm_replace+'<br>'+LANG.table_label+': '+table+'<br>'+LANG.field_label+': '+field+'<br>'+LANG.search_label+': '+search+'<br>'+LANG.replace_label+': '+(replace||LANG.empty_value), {icon:3, title:LANG.confirm_title}, function(idx){
+            layer.close(idx);
+            var loading = layer.load(1);
+            $.post('{:url("data_replace/doReplace")}', {table:table, field:field, search:search, replace:replace}, function(res){
+                layer.close(loading);
+                layer.msg(res.msg, {icon: res.code==1?1:2});
+            });
+        });
+    });
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,155 @@
+{include file="../../../application/admin/view_new/public/head" /}
+
+<div class="page-container p10">
+    <div class="my-toolbar-box" style="margin-bottom:15px;">
+        <a href="{:url('resource_hub/index')}" class="layui-btn layui-btn-primary"><i class="layui-icon">&#xe65c;</i> {:lang('admin/resourcehub/btn_back')}</a>
+        <button class="layui-btn layui-btn-normal" id="batchEnable">{:lang('admin/batchplayer/btn_batch_enable')}</button>
+        <button class="layui-btn layui-btn-warm" id="batchDisable">{:lang('admin/batchplayer/btn_batch_disable')}</button>
+        <button class="layui-btn layui-btn-danger" id="batchDelete">{:lang('admin/batchplayer/btn_batch_delete')}</button>
+        <button class="layui-btn" id="batchSetParse">{:lang('admin/batchplayer/btn_batch_parse')}</button>
+        <button class="layui-btn layui-btn-primary" id="replaceFromBtn">{:lang('admin/batchplayer/btn_replace_from')}</button>
+    </div>
+
+    <form class="layui-form">
+        <table class="layui-table" lay-size="sm">
+            <thead>
+            <tr>
+                <th width="30"><input type="checkbox" lay-skin="primary" lay-filter="allChoose"></th>
+                <th width="60">{:lang('status')}</th>
+                <th>{:lang('admin/batchplayer/col_from')}</th>
+                <th>{:lang('admin/batchplayer/col_show')}</th>
+                <th width="80">{:lang('sort')}</th>
+                <th>{:lang('admin/batchplayer/col_parse')}</th>
+                <th width="80">{:lang('admin/batchplayer/col_remark')}</th>
+            </tr>
+            </thead>
+            <tbody>
+            {volist name="vodplayer" id="vo" key="k"}
+            <tr>
+                <td><input type="checkbox" name="froms[]" value="{$k}" lay-skin="primary"></td>
+                <td>
+                    {if condition="$vo['status'] eq '1'"}
+                    <span class="layui-badge layui-bg-green">{:lang('enable')}</span>
+                    {else/}
+                    <span class="layui-badge">{:lang('disable')}</span>
+                    {/if}
+                </td>
+                <td><b>{$k}</b></td>
+                <td>{$vo.show}</td>
+                <td><input type="text" name="sorts[{$k}]" value="{$vo.sort}" class="layui-input" style="width:60px;height:28px;text-align:center;"></td>
+                <td style="font-size:12px;color:#666;word-break:break-all;">{$vo.parse|default='-'}</td>
+                <td style="font-size:12px;">{$vo.tip|default=''}</td>
+            </tr>
+            {/volist}
+            </tbody>
+        </table>
+    </form>
+
+    <div style="margin-top:10px;">
+        <button class="layui-btn" id="saveSort">{:lang('admin/batchplayer/btn_save_sort')}</button>
+    </div>
+</div>
+
+{include file="../../../application/admin/view_new/public/foot" /}
+<script>
+layui.use(['layer', 'form'], function(){
+    var layer = layui.layer, form = layui.form, $ = layui.$;
+    var LANG = {
+        select_player_first: '{:lang("admin/batchplayer/select_player_first")}',
+        confirm_delete: '{:lang("admin/batchplayer/confirm_delete")}',
+        input_parse_url: '{:lang("admin/batchplayer/input_parse_url")}',
+        replace_from_title: '{:lang("admin/batchplayer/replace_from_title")}',
+        old_from: '{:lang("admin/batchplayer/old_from")}',
+        new_from: '{:lang("admin/batchplayer/new_from")}',
+        btn_do_replace: '{:lang("admin/batchplayer/btn_do_replace")}',
+        fill_complete: '{:lang("admin/batchplayer/fill_complete")}',
+        confirm_replace: '{:lang("admin/batchplayer/confirm_replace")}'
+    };
+
+    form.on('checkbox(allChoose)', function(data){
+        $('input[name="froms[]"]').prop('checked', data.elem.checked);
+        form.render('checkbox');
+    });
+
+    function getSelected(){
+        var froms = [];
+        $('input[name="froms[]"]:checked').each(function(){ froms.push($(this).val()); });
+        return froms;
+    }
+
+    $('#batchEnable').on('click', function(){
+        var froms = getSelected();
+        if(!froms.length){ layer.msg(LANG.select_player_first,{icon:0}); return; }
+        $.post('{:url("batch_player/batchStatus")}', {froms:froms, status:1}, function(res){
+            layer.msg(res.msg, {icon:res.code==1?1:2});
+            if(res.code==1) setTimeout(function(){location.reload();},800);
+        });
+    });
+
+    $('#batchDisable').on('click', function(){
+        var froms = getSelected();
+        if(!froms.length){ layer.msg(LANG.select_player_first,{icon:0}); return; }
+        $.post('{:url("batch_player/batchStatus")}', {froms:froms, status:0}, function(res){
+            layer.msg(res.msg, {icon:res.code==1?1:2});
+            if(res.code==1) setTimeout(function(){location.reload();},800);
+        });
+    });
+
+    $('#batchDelete').on('click', function(){
+        var froms = getSelected();
+        if(!froms.length){ layer.msg(LANG.select_player_first,{icon:0}); return; }
+        layer.confirm(LANG.confirm_delete, function(idx){
+            layer.close(idx);
+            $.post('{:url("batch_player/batchDel")}', {froms:froms}, function(res){
+                layer.msg(res.msg, {icon:res.code==1?1:2});
+                if(res.code==1) setTimeout(function(){location.reload();},800);
+            });
+        });
+    });
+
+    $('#batchSetParse').on('click', function(){
+        var froms = getSelected();
+        if(!froms.length){ layer.msg(LANG.select_player_first,{icon:0}); return; }
+        layer.prompt({title:LANG.input_parse_url, formType:0}, function(val, idx){
+            layer.close(idx);
+            $.post('{:url("batch_player/batchParse")}', {froms:froms, parse:val}, function(res){
+                layer.msg(res.msg, {icon:res.code==1?1:2});
+                if(res.code==1) setTimeout(function(){location.reload();},800);
+            });
+        });
+    });
+
+    $('#saveSort').on('click', function(){
+        var sorts = {};
+        $('input[name^="sorts["]').each(function(){
+            var name = $(this).attr('name').match(/sorts\[(.+?)\]/);
+            if(name) sorts[name[1]] = $(this).val();
+        });
+        $.post('{:url("batch_player/batchSort")}', {sorts:sorts}, function(res){
+            layer.msg(res.msg, {icon:res.code==1?1:2});
+        });
+    });
+
+    $('#replaceFromBtn').on('click', function(){
+        layer.open({
+            type:1, title:LANG.replace_from_title, area:['450px','250px'],
+            content:'<div style="padding:20px;"><div class="layui-form-item"><label class="layui-form-label">'+LANG.old_from+'</label><div class="layui-input-block"><input type="text" id="old_from" class="layui-input" placeholder="例如: ckm3u8"></div></div><div class="layui-form-item"><label class="layui-form-label">'+LANG.new_from+'</label><div class="layui-input-block"><input type="text" id="new_from" class="layui-input" placeholder="例如: m3u8"></div></div><div style="text-align:center;"><button class="layui-btn" id="doReplace">'+LANG.btn_do_replace+'</button></div></div>',
+            success:function(layero){
+                layero.find('#doReplace').on('click', function(){
+                    var old_from = layero.find('#old_from').val();
+                    var new_from = layero.find('#new_from').val();
+                    if(!old_from || !new_from){ layer.msg(LANG.fill_complete,{icon:0}); return; }
+                    layer.confirm(LANG.confirm_replace, function(idx2){
+                        layer.close(idx2);
+                        $.post('{:url("batch_player/replaceFrom")}', {old_from:old_from, new_from:new_from}, function(res){
+                            layer.msg(res.msg, {icon:res.code==1?1:2});
+                        });
+                    });
+                });
+            }
+        });
+    });
+});
+</script>
+</body>
+</html>

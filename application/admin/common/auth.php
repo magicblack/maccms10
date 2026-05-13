@@ -1542,6 +1542,62 @@ return array (
         'controller' => 'cj',
         'action' => 'import',
       ),
+      95 => 
+      array (
+        'show' => 1,
+        'name' => lang('admin/resourcehub/title'),
+        'controller' => 'resource_hub',
+        'action' => 'index',
+      ),
+      9501 => 
+      array (
+        'show' => 0,
+        'name' => lang('admin/resourcehub/multi_collect_menu'),
+        'controller' => 'resource_hub',
+        'action' => 'multi_collect',
+      ),
+      9502 => 
+      array (
+        'show' => 0,
+        'name' => lang('admin/resourcehub/poster_menu'),
+        'controller' => 'resource_hub',
+        'action' => 'poster',
+      ),
+      96 => 
+      array (
+        'show' => 0,
+        'name' => lang('admin/batchplayer/title'),
+        'controller' => 'batch_player',
+        'action' => 'index',
+      ),
+      9601 => 
+      array (
+        'show' => 0,
+        'name' => lang('admin/batchplayer/batch_status_menu'),
+        'controller' => 'batch_player',
+        'action' => 'batchStatus',
+      ),
+      9602 => 
+      array (
+        'show' => 0,
+        'name' => lang('admin/batchplayer/batch_del_menu'),
+        'controller' => 'batch_player',
+        'action' => 'batchDel',
+      ),
+      97 => 
+      array (
+        'show' => 0,
+        'name' => lang('admin/datareplace/title'),
+        'controller' => 'data_replace',
+        'action' => 'index',
+      ),
+      9701 => 
+      array (
+        'show' => 0,
+        'name' => lang('admin/datareplace/do_replace_menu'),
+        'controller' => 'data_replace',
+        'action' => 'doReplace',
+      ),
     ),
   ),
   10 => 

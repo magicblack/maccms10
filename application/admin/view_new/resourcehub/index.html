@@ -1,0 +1,227 @@
+{include file="../../../application/admin/view_new/public/head" /}
+
+<style>
+.resource-zone { margin-bottom: 20px; background: #fff; border-radius: 8px; padding: 15px; box-shadow: 0 1px 4px rgba(0,0,0,.08); }
+.resource-zone h3 { font-size: 16px; color: #333; margin-bottom: 12px; padding-bottom: 8px; border-bottom: 2px solid #1E9FFF; display: inline-block; }
+.resource-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 12px; }
+.resource-card { border: 1px solid #e6e6e6; border-radius: 6px; padding: 12px; transition: all .2s; }
+.resource-card:hover { border-color: #1E9FFF; box-shadow: 0 2px 8px rgba(30,159,255,.15); }
+.resource-card .name { font-weight: bold; font-size: 14px; color: #333; margin-bottom: 4px; }
+.resource-card .url { font-size: 12px; color: #999; word-break: break-all; margin-bottom: 8px; }
+.resource-card .desc { font-size: 12px; color: #666; margin-bottom: 8px; }
+.resource-card .actions { display: flex; gap: 6px; flex-wrap: wrap; }
+.resource-card .actions .layui-btn { height: 28px; line-height: 28px; padding: 0 10px; font-size: 12px; }
+.add-site-box { border: 2px dashed #ddd; border-radius: 6px; padding: 20px; text-align: center; cursor: pointer; transition: all .2s; min-height: 120px; display:flex; flex-direction:column; align-items:center; justify-content:center; }
+.add-site-box:hover { border-color: #1E9FFF; background: #f8fcff; }
+.toolbar-top { margin-bottom: 15px; display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+.status-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 4px; }
+.status-dot.online { background: #5FB878; }
+.status-dot.offline { background: #FF5722; }
+.status-dot.unknown { background: #FFB800; }
+</style>
+
+<div class="page-container p10">
+
+    {if condition="$cloud_error"}
+    <div class="layui-anim layui-anim-upbit" style="background:#FFF3E0;border:1px solid #FFB74D;border-radius:6px;padding:12px 18px;margin-bottom:15px;color:#E65100;">
+        <i class="layui-icon" style="font-size:18px;">&#xe60b;</i>
+        <span style="margin-left:6px;">{:lang('admin/resourcehub/cloud_fetch_fail')}</span>
+    </div>
+    {/if}
+
+    <div class="toolbar-top">
+        <div class="layui-btn-group">
+            <a href="{:url('resource_hub/poster')}" class="layui-btn layui-btn-primary"><i class="layui-icon">&#xe60d;</i> {:lang('admin/resourcehub/btn_poster')}</a>
+            <a href="{:url('resource_hub/multiCollect')}" class="layui-btn layui-btn-primary"><i class="layui-icon">&#xe857;</i> {:lang('admin/resourcehub/btn_multi_collect')}</a>
+            <a href="{:url('data_replace/index')}" class="layui-btn layui-btn-primary"><i class="layui-icon">&#xe642;</i> {:lang('admin/resourcehub/btn_data_replace')}</a>
+            <a href="{:url('batch_player/index')}" class="layui-btn layui-btn-primary"><i class="layui-icon">&#xe6ed;</i> {:lang('admin/resourcehub/btn_batch_player')}</a>
+            <button type="button" class="layui-btn layui-btn-warm" id="btnCleanDupTypes"><i class="layui-icon">&#xe640;</i> {:lang('admin/resourcehub/btn_clean_dup_types')}</button>
+        </div>
+    </div>
+
+    {volist name="sites" id="zone" key="zone_key"}
+    <div class="resource-zone">
+        <h3>{$zone.title}</h3>
+        <div class="resource-grid">
+            {volist name="$zone['sites']" id="site" key="site_idx"}
+            <div class="resource-card" data-url="{$site.url}" data-type="{$site.type}" data-mid="{$site.mid}" data-name="{$site.name}">
+                <div class="name">
+                    <span class="status-dot unknown" id="status_{$zone_key}_{$site_idx}"></span>
+                    {$site.name}
+                </div>
+                <div class="url">{$site.url}</div>
+                <div class="desc">{$site.desc}</div>
+                <div class="actions">
+                    <button class="layui-btn layui-btn-xs layui-btn-normal btn-check" data-url="{$site.url}" data-status-id="status_{$zone_key}_{$site_idx}">{:lang('admin/resourcehub/btn_check')}</button>
+                    <button class="layui-btn layui-btn-xs btn-quick-collect" data-url="{$site.url}" data-type="{$site.type}" data-mid="{$site.mid}" data-name="{$site.name}">{:lang('admin/resourcehub/btn_enter')}</button>
+                    <button class="layui-btn layui-btn-xs layui-btn-warm btn-sync-type" data-url="{$site.url}" data-type="{$site.type}">{:lang('admin/resourcehub/btn_sync_type')}</button>
+                    <button class="layui-btn layui-btn-xs layui-btn-danger btn-auto-bindplayer" data-url="{$site.url}" data-type="{$site.type}" data-name="{$site.name}">{:lang('admin/resourcehub/btn_auto_config')}</button>
+                    <button class="layui-btn layui-btn-xs layui-btn-primary btn-add-collect" data-url="{$site.url}" data-type="{$site.type}" data-mid="{$site.mid}" data-name="{$site.name}">{:lang('admin/resourcehub/btn_add_collect')}</button>
+                    <button class="layui-btn layui-btn-xs layui-btn-primary btn-add-timming" data-url="{$site.url}" data-type="{$site.type}" data-mid="{$site.mid}" data-name="{$site.name}">{:lang('admin/resourcehub/btn_add_timming')}</button>
+                    {if condition="$zone_key eq 'custom'"}
+                    <button class="layui-btn layui-btn-xs layui-btn-danger btn-del-custom" data-index="{$site_idx-1}">{:lang('admin/resourcehub/confirm_delete')}</button>
+                    {/if}
+                </div>
+            </div>
+            {/volist}
+
+            {if condition="$zone_key eq 'custom'"}
+            <div class="add-site-box" id="addCustomSite">
+                <i class="layui-icon" style="font-size:30px;color:#999;">&#xe654;</i>
+                <p style="color:#999;margin-top:5px;">{:lang('admin/resourcehub/btn_add_custom')}</p>
+            </div>
+            {/if}
+        </div>
+    </div>
+    {/volist}
+</div>
+
+{include file="../../../application/admin/view_new/public/foot" /}
+<script type="text/javascript">
+var RH_URLS = {
+    check: '{:url("resource_hub/check")}',
+    quickCollect: '{:url("resource_hub/quickCollect")}',
+    getTypes: '{:url("resource_hub/getTypes")}',
+    syncTypes: '{:url("resource_hub/syncTypes")}',
+    autoBind: '{:url("resource_hub/autoBind")}',
+    autoPlayer: '{:url("resource_hub/autoPlayer")}',
+    addToCollect: '{:url("resource_hub/addToCollect")}',
+    addTimming: '{:url("resource_hub/addTimming")}',
+    addCustomSite: '{:url("resource_hub/addCustomSite")}',
+    delCustomSite: '{:url("resource_hub/delCustomSite")}',
+    cleanDupTypes: '{:url("resource_hub/cleanDuplicateTypes")}',
+    previewDupTypes: '{:url("resource_hub/previewDuplicateTypes")}'
+};
+var RH_LANG = {
+    checking: '{:lang("admin/resourcehub/checking")}',
+    btn_check: '{:lang("admin/resourcehub/btn_check")}',
+    no_dup_types: '{:lang("admin/resourcehub/no_dup_types")}',
+    dup_select_hint: '{:lang("admin/resourcehub/dup_select_hint")}',
+    col_keep: '{:lang("admin/resourcehub/col_keep")}',
+    col_ref_count: '{:lang("admin/resourcehub/col_ref_count")}',
+    col_child_count: '{:lang("admin/resourcehub/col_child_count")}',
+    col_maintained: '{:lang("admin/resourcehub/col_maintained")}',
+    type_group: '{:lang("admin/resourcehub/type_group")}',
+    dup_preview_title: '{:lang("admin/resourcehub/dup_preview_title")}',
+    btn_confirm_clean: '{:lang("admin/resourcehub/btn_confirm_clean")}',
+    no_items_to_clean: '{:lang("admin/resourcehub/no_items_to_clean")}',
+    confirm_delete_dup: '{:lang("admin/resourcehub/confirm_delete_dup")}',
+    btn_select_all: '{:lang("admin/resourcehub/btn_select_all")}',
+    btn_select_none: '{:lang("admin/resourcehub/btn_select_none")}',
+    type_exists: '{:lang("admin/resourcehub/type_exists")}',
+    btn_confirm_sync: '{:lang("admin/resourcehub/btn_confirm_sync")}',
+    sync_type_title: '{:lang("admin/resourcehub/sync_type_title")}',
+    select_at_least_one: '{:lang("admin/resourcehub/select_at_least_one")}',
+    confirm_auto_config: '{:lang("admin/resourcehub/confirm_auto_config")}',
+    auto_config_result: '{:lang("admin/resourcehub/auto_config_result")}',
+    add_timming_title: '{:lang("admin/resourcehub/add_timming_title")}',
+    collect_range: '{:lang("admin/resourcehub/collect_range")}',
+    hours_2: '{:lang("admin/resourcehub/hours_2")}',
+    hours_12: '{:lang("admin/resourcehub/hours_12")}',
+    hours_24: '{:lang("admin/resourcehub/hours_24")}',
+    hours_48: '{:lang("admin/resourcehub/hours_48")}',
+    hours_week: '{:lang("admin/resourcehub/hours_week")}',
+    hours_all: '{:lang("admin/resourcehub/hours_all")}',
+    btn_confirm_add: '{:lang("admin/resourcehub/btn_confirm_add")}',
+    add_custom_title: '{:lang("admin/resourcehub/add_custom_title")}',
+    site_name: '{:lang("admin/resourcehub/site_name")}',
+    site_url: '{:lang("admin/resourcehub/site_url")}',
+    site_type: '{:lang("admin/resourcehub/site_type")}',
+    site_mid: '{:lang("admin/resourcehub/site_mid")}',
+    site_remark: '{:lang("admin/resourcehub/site_remark")}',
+    fill_complete: '{:lang("admin/resourcehub/fill_complete")}',
+    confirm_delete: '{:lang("admin/resourcehub/confirm_delete")}'
+};
+</script>
+<script type="text/javascript" src="__STATIC__/js/resourcehub.js?v={:time()}"></script>
+<script type="text/javascript">
+layui.use(['jquery','layer'], function(){
+    var $ = layui.jquery, layer = layui.layer;
+
+    // 清理重复分类（两步式：先预览再确认）
+    $('#btnCleanDupTypes').on('click', function(){
+        var loading = layer.load(1);
+        $.get(RH_URLS.previewDupTypes, {}, function(res){
+            layer.close(loading);
+            if(res.code != 1){ layer.msg(res.msg, {icon:2}); return; }
+            if(!res.data || res.data.length == 0){
+                layer.msg(RH_LANG.no_dup_types, {icon:1});
+                return;
+            }
+
+            // 构建预览表格
+            var html = '<div style="padding:15px;max-height:500px;overflow-y:auto;">';
+            html += '<p style="color:#FF5722;margin-bottom:10px;">⚠️ ' + RH_LANG.dup_select_hint + '</p>';
+            html += '<table class="layui-table" lay-size="sm"><thead><tr><th>'+RH_LANG.col_keep+'</th><th>ID</th><th>{:lang("name")}</th><th>'+RH_LANG.col_ref_count+'</th><th>'+RH_LANG.col_child_count+'</th><th>'+RH_LANG.col_maintained+'</th></tr></thead><tbody>';
+
+            var groups = res.data;
+            for(var g=0; g<groups.length; g++){
+                var group = groups[g];
+                html += '<tr style="background:#f8f8f8;"><td colspan="6"><b>'+RH_LANG.type_group+': '+group.type_name+'</b> (pid:'+group.type_pid+', mid:'+group.type_mid+')</td></tr>';
+                for(var i=0; i<group.items.length; i++){
+                    var item = group.items[i];
+                    var isRecommend = (item.type_id == group.recommended_keep);
+                    var checked = isRecommend ? 'checked' : '';
+                    html += '<tr>';
+                    html += '<td><input type="radio" name="keep_'+g+'" value="'+item.type_id+'" '+checked+'></td>';
+                    html += '<td>'+item.type_id+'</td>';
+                    html += '<td>'+item.type_name+(isRecommend?' ★':'')+'</td>';
+                    html += '<td>'+item.vod_count+'</td>';
+                    html += '<td>'+item.child_count+'</td>';
+                    html += '<td>'+(item.maintained?'<span style="color:green;">✓</span>':'')+'</td>';
+                    html += '</tr>';
+                }
+            }
+            html += '</tbody></table></div>';
+
+            layer.open({
+                type: 1, title: RH_LANG.dup_preview_title, area: ['700px', '600px'],
+                content: html,
+                btn: [RH_LANG.btn_confirm_clean, ''],
+                yes: function(index){
+                    // 收集用户选择
+                    var actions = [];
+                    for(var g=0; g<groups.length; g++){
+                        var keepId = parseInt($('input[name="keep_'+g+'"]:checked').val());
+                        if(!keepId) continue;
+                        var deleteIds = [];
+                        for(var i=0; i<groups[g].items.length; i++){
+                            var tid = groups[g].items[i].type_id;
+                            if(tid != keepId) deleteIds.push(tid);
+                        }
+                        if(deleteIds.length > 0){
+                            actions.push({keep_id: keepId, delete_ids: deleteIds});
+                        }
+                    }
+                    if(actions.length == 0){
+                        layer.msg(RH_LANG.no_items_to_clean);
+                        return;
+                    }
+
+                    var totalDel = 0;
+                    actions.forEach(function(a){ totalDel += a.delete_ids.length; });
+
+                    layer.confirm(RH_LANG.confirm_delete_dup.replace('%d', totalDel), {icon:3}, function(idx2){
+                        layer.close(idx2);
+                        layer.close(index);
+                        var loading2 = layer.load(1);
+                        $.ajax({
+                            url: RH_URLS.cleanDupTypes,
+                            type: 'POST',
+                            contentType: 'application/json',
+                            data: JSON.stringify({actions: actions}),
+                            dataType: 'json',
+                            success: function(res2){
+                                layer.close(loading2);
+                                layer.alert(res2.msg, {icon: res2.code==1?1:2});
+                            }
+                        });
+                    });
+                }
+            });
+        }, 'json');
+    });
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,141 @@
+{include file="../../../application/admin/view_new/public/head" /}
+
+<style>
+.poster-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 12px; }
+.poster-item { border: 1px solid #e6e6e6; border-radius: 6px; overflow: hidden; cursor: pointer; transition: all .2s; position: relative; }
+.poster-item:hover { border-color: #1E9FFF; transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,.1); }
+.poster-item.selected { border-color: #1E9FFF; border-width: 2px; }
+.poster-item.selected::after { content: '✓'; position: absolute; top: 5px; right: 5px; background: #1E9FFF; color: #fff; padding: 2px 6px; border-radius: 10px; font-size: 11px; z-index: 2; }
+.poster-item.recommended { border-color: #5FB878; border-width: 2px; }
+.poster-item.recommended .recommend-badge { display: block; }
+.poster-item .recommend-badge { display: none; position: absolute; top: 0; left: 0; background: #5FB878; color: #fff; padding: 2px 8px; font-size: 11px; border-radius: 0 0 6px 0; z-index: 1; }
+.poster-item img { width: 100%; height: 240px; object-fit: cover; }
+.poster-item .info { padding: 8px; }
+.poster-item .info .title { font-size: 13px; color: #333; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.poster-item .info .meta { font-size: 11px; color: #999; margin-top: 3px; }
+.poster-item .info .level-tag { display: inline-block; background: #5FB878; color: #fff; padding: 1px 5px; border-radius: 3px; font-size: 10px; }
+.poster-item .info .level-tag.none { background: #ccc; }
+.filter-tabs { margin-bottom: 15px; }
+.filter-tabs .layui-btn.active { background: #1E9FFF; color: #fff; }
+.poster-stats { margin-left: 15px; font-size: 13px; color: #666; line-height: 38px; }
+.poster-stats b { color: #5FB878; }
+</style>
+
+<div class="page-container p10">
+    <div class="my-toolbar-box" style="margin-bottom:15px;">
+        <a href="{:url('resource_hub/index')}" class="layui-btn layui-btn-primary"><i class="layui-icon">&#xe65c;</i> {:lang('admin/resourcehub/btn_back')}</a>
+        <button class="layui-btn layui-btn-warm" id="setRecommend"><i class="layui-icon">&#xe600;</i> {:lang('admin/resourcehub/btn_set_recommend')}</button>
+        <button class="layui-btn layui-btn-primary" id="cancelRecommend"><i class="layui-icon">&#x1006;</i> {:lang('admin/resourcehub/btn_cancel_recommend')}</button>
+        <button class="layui-btn layui-btn-primary" id="selectAllRecommended">{:lang('admin/resourcehub/btn_select_all_recommended')}</button>
+        <button class="layui-btn layui-btn-primary" id="clearSelection">{:lang('admin/resourcehub/btn_clear_selection')}</button>
+        <span class="poster-stats">{:lang('admin/resourcehub/poster_stats',[$recommended_count,$total])}</span>
+    </div>
+
+    <div class="filter-tabs">
+        <div class="layui-btn-group">
+            <button class="layui-btn layui-btn-sm {if condition="$filter eq 'all' || $filter eq ''"}active{else/}layui-btn-primary{/if}" data-filter="all">{:lang('all')}</button>
+            <button class="layui-btn layui-btn-sm {if condition="$filter eq 'recommended'"}active{else/}layui-btn-primary{/if}" data-filter="recommended">{:lang('admin/resourcehub/filter_recommended')} ({$recommended_count})</button>
+            <button class="layui-btn layui-btn-sm {if condition="$filter eq 'not_recommended'"}active{else/}layui-btn-primary{/if}" data-filter="not_recommended">{:lang('admin/resourcehub/filter_not_recommended')}</button>
+        </div>
+        <span style="color:#999;font-size:12px;margin-left:15px;">💡 {:lang('admin/resourcehub/poster_tip')}</span>
+    </div>
+
+    <div class="poster-grid">
+        {volist name="list" id="vo"}
+        <div class="poster-item {if condition="$vo['vod_level'] > 0"}recommended{/if}" data-id="{$vo.vod_id}" data-level="{$vo.vod_level}">
+            <span class="recommend-badge">{:lang('admin/resourcehub/badge_recommended')}</span>
+            <img src="{$vo.vod_pic}" onerror="this.src='__STATIC__/images/nopic.png'" alt="{$vo.vod_name}">
+            <div class="info">
+                <div class="title" title="{$vo.vod_name}">{$vo.vod_name}</div>
+                <div class="meta">
+                    {:lang('admin/resourcehub/hits')}: {$vo.vod_hits} | 
+                    {if condition="$vo['vod_level'] > 0"}
+                    <span class="level-tag">{:lang('admin/resourcehub/recommend_level')} {$vo.vod_level}</span>
+                    {else/}
+                    <span class="level-tag none">{:lang('admin/resourcehub/filter_not_recommended')}</span>
+                    {/if}
+                </div>
+            </div>
+        </div>
+        {/volist}
+    </div>
+
+    {if condition="$total > $limit"}
+    <div style="margin-top:20px;text-align:center;">
+        <div class="layui-btn-group">
+            {if condition="$page > 1"}
+            <a href="{:url('resource_hub/poster', ['page'=>$page-1, 'filter'=>$filter])}" class="layui-btn layui-btn-sm layui-btn-primary">{:lang('admin/resourcehub/prev_page')}</a>
+            {/if}
+            <button class="layui-btn layui-btn-sm layui-btn-disabled">{:lang('admin/resourcehub/page_num',[$page])}</button>
+            {if condition="$page * $limit < $total"}
+            <a href="{:url('resource_hub/poster', ['page'=>$page+1, 'filter'=>$filter])}" class="layui-btn layui-btn-sm layui-btn-primary">{:lang('admin/resourcehub/next_page')}</a>
+            {/if}
+        </div>
+    </div>
+    {/if}
+</div>
+
+{include file="../../../application/admin/view_new/public/foot" /}
+<script>
+layui.use(['layer'], function(){
+    var layer = layui.layer, $ = layui.$;
+    var LANG = {
+        select_video_first: '{:lang("admin/resourcehub/select_video_first")}',
+        confirm_set_recommend: '{:lang("admin/resourcehub/confirm_set_recommend")}',
+        confirm_cancel_recommend: '{:lang("admin/resourcehub/confirm_cancel_recommend")}',
+        selected_films: '{:lang("admin/resourcehub/selected_films")}'
+    };
+
+    // 选择/取消选择
+    $('.poster-item').on('click', function(){
+        $(this).toggleClass('selected');
+    });
+
+    // 筛选标签
+    $('.filter-tabs .layui-btn').on('click', function(){
+        var filter = $(this).data('filter');
+        window.location.href = '{:url("resource_hub/poster")}?filter=' + filter;
+    });
+
+    // 全选已推荐
+    $('#selectAllRecommended').on('click', function(){
+        $('.poster-item.recommended').addClass('selected');
+        layer.msg(LANG.selected_films.replace('%d', $('.poster-item.recommended').length));
+    });
+
+    // 清除选择
+    $('#clearSelection').on('click', function(){
+        $('.poster-item').removeClass('selected');
+    });
+
+    // 设为推荐
+    $('#setRecommend').on('click', function(){
+        var ids = [];
+        $('.poster-item.selected').each(function(){ ids.push($(this).data('id')); });
+        if(ids.length == 0){ layer.msg(LANG.select_video_first, {icon:0}); return; }
+        layer.confirm(LANG.confirm_set_recommend.replace('%d', ids.length), function(idx){
+            layer.close(idx);
+            $.post('{:url("resource_hub/setRecommend")}', {ids: ids.join(','), level: 9}, function(res){
+                layer.msg(res.msg, {icon: res.code==1?1:2});
+                if(res.code==1) setTimeout(function(){ location.reload(); }, 800);
+            });
+        });
+    });
+
+    // 取消推荐
+    $('#cancelRecommend').on('click', function(){
+        var ids = [];
+        $('.poster-item.selected').each(function(){ ids.push($(this).data('id')); });
+        if(ids.length == 0){ layer.msg(LANG.select_video_first, {icon:0}); return; }
+        layer.confirm(LANG.confirm_cancel_recommend.replace('%d', ids.length), function(idx){
+            layer.close(idx);
+            $.post('{:url("resource_hub/setRecommend")}', {ids: ids.join(','), level: 0}, function(res){
+                layer.msg(res.msg, {icon: res.code==1?1:2});
+                if(res.code==1) setTimeout(function(){ location.reload(); }, 800);
+            });
+        });
+    });
+});
+</script>
+</body>
+</html>

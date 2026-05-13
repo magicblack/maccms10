@@ -772,31 +772,36 @@ class Collect extends Base {
                     $where['vod_name'] = mac_filter_xss($v['vod_name']);
                 }
                 $blend=false;
-                if (strpos($config['inrule'], 'b')!==false) {
+                if (strpos($config['inrule'], 'b')!==false && !empty($v['type_id'])) {
                     $where['type_id'] = $v['type_id'];
                 }
-                if (strpos($config['inrule'], 'c')!==false) {
+                if (strpos($config['inrule'], 'c')!==false && !empty($v['vod_year'])) {
                     $where['vod_year'] = $v['vod_year'];
                 }
-                if (strpos($config['inrule'], 'd')!==false) {
+                if (strpos($config['inrule'], 'd')!==false && !empty($v['vod_area'])) {
                     $where['vod_area'] = $v['vod_area'];
                 }
-                if (strpos($config['inrule'], 'e')!==false) {
+                if (strpos($config['inrule'], 'e')!==false && !empty($v['vod_lang'])) {
                     $where['vod_lang'] = $v['vod_lang'];
                 }
                 $search_actor_id_list = [];
-                if (strpos($config['inrule'], 'f')!==false) {
+                if (strpos($config['inrule'], 'f')!==false && !empty(trim($v['vod_actor']))) {
                     $where['vod_actor'] = ['like', mac_like_arr(mac_filter_xss($v['vod_actor'])), 'OR'];
                     if ($vod_search_enabled) {
                         $search_actor_id_list = $vod_search->getResultIdList(mac_filter_xss($v['vod_actor']), 'vod_actor', true);
                         $search_actor_id_list = empty($search_actor_id_list) ? [0] : $search_actor_id_list;
                     }
                 }
-                if (strpos($config['inrule'], 'g')!==false) {
+                if (strpos($config['inrule'], 'g')!==false && !empty(trim($v['vod_director']))) {
                     $where['vod_director'] = mac_filter_xss($v['vod_director']);
                 }
-                if (strpos($config['inrule'], 'h')!==false) {
+                if (strpos($config['inrule'], 'h')!==false && !empty($v['vod_douban_id'])) {
                     $where['vod_douban_id'] = intval($v['vod_douban_id']);
+                }
+
+                // 安全回退：如果 $where 为空（所有 inrule 字段都为空值），则使用 vod_name 作为判断依据
+                if (empty($where) && !empty($v['vod_name'])) {
+                    $where['vod_name'] = mac_filter_xss($v['vod_name']);
                 }
 
                 if(!empty($where['vod_actor']) && !empty($where['vod_director'])){
