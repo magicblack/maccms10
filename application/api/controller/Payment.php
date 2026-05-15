@@ -47,6 +47,8 @@ class Payment extends Base
             case 'codepay':
             case 'zhapay':
                 return $t($cfg['appid'] ?? '') !== '' && $t($cfg['appkey'] ?? '') !== '';
+            case 'jeepay':
+                return $t($cfg['api_url'] ?? '') !== '' && $t($cfg['mch_no'] ?? '') !== '' && $t($cfg['appid'] ?? '') !== '' && $t($cfg['appkey'] ?? '') !== '';
             default:
                 return $t($cfg['appid'] ?? '') !== '';
         }
@@ -97,6 +99,20 @@ class Payment extends Base
                 ];
                 $pts = [];
                 foreach ($split($cfg['type'] ?? '') as $v) {
+                    $lab = isset($map[$v]) ? $map[$v] : [$v, $v];
+                    $pts[] = ['value' => $v, 'label' => $lab[0], 'label_en' => $lab[1]];
+                }
+                $row['paytypes'] = $pts;
+            } elseif ($key === 'jeepay') {
+                $map = [
+                    'ALI_WAP'    => ['支付宝H5', 'Alipay H5'],
+                    'ALI_QR'     => ['支付宝扫码', 'Alipay QR'],
+                    'WX_H5'      => ['微信H5', 'WeChat H5'],
+                    'WX_NATIVE'  => ['微信扫码', 'WeChat Native'],
+                    'USDT_TRC20' => ['USDT-TRC20', 'USDT-TRC20'],
+                ];
+                $pts = [];
+                foreach ($split($cfg['way_codes'] ?? '') as $v) {
                     $lab = isset($map[$v]) ? $map[$v] : [$v, $v];
                     $pts[] = ['value' => $v, 'label' => $lab[0], 'label_en' => $lab[1]];
                 }
@@ -292,7 +308,10 @@ class Payment extends Base
         }
 
         $pay_config = config('maccms.pay');
-        if (empty($pay_config[$pay_type]['appid'])) {
+        $cfg = (isset($pay_config[$pay_type]) && is_array($pay_config[$pay_type])) ? $pay_config[$pay_type] : [];
+
+        // 使用统一的通道完整性校验
+        if (!self::isPayChannelReady($pay_type, $cfg)) {
             echo lang('index/payment_status');
             exit;
         }
