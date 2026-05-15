@@ -52,6 +52,7 @@
             </div>
             <div class="login-box">
                 <form class="layui-form layui-form-pane" method="post" action="">
+                    <input type="hidden" name="__token__" value="{$Request.token}" />
                     <div class="layui-form-item mt-[20px]">
                         <h3>{:lang('admin/index/login/tip_sys')}</h3>
                     </div>

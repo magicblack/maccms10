@@ -73,7 +73,7 @@ class MeilisearchListBridge
             $nw['vod_id'] = ['eq', -1];
             $order = $currentOrder;
         } else {
-            $nw['vod_id'] = ['in', implode(',', $ids)];
+            $nw['vod_id'] = ['in', $ids];
             $order = Db::raw('FIELD(vod_id,' . implode(',', $ids) . ')');
         }
 
@@ -144,7 +144,7 @@ class MeilisearchListBridge
             $nw['art_id'] = ['eq', -1];
             $order = $currentOrder;
         } else {
-            $nw['art_id'] = ['in', implode(',', $ids)];
+            $nw['art_id'] = ['in', $ids];
             $order = Db::raw('FIELD(art_id,' . implode(',', $ids) . ')');
         }
 
@@ -215,7 +215,7 @@ class MeilisearchListBridge
             $nw['manga_id'] = ['eq', -1];
             $order = $currentOrder;
         } else {
-            $nw['manga_id'] = ['in', implode(',', $ids)];
+            $nw['manga_id'] = ['in', $ids];
             $order = Db::raw('FIELD(manga_id,' . implode(',', $ids) . ')');
         }
 
@@ -286,7 +286,7 @@ class MeilisearchListBridge
             $nw['topic_id'] = ['eq', -1];
             $order = $currentOrder;
         } else {
-            $nw['topic_id'] = ['in', implode(',', $ids)];
+            $nw['topic_id'] = ['in', $ids];
             $order = Db::raw('FIELD(topic_id,' . implode(',', $ids) . ')');
         }
 
@@ -357,7 +357,7 @@ class MeilisearchListBridge
             $nw['actor_id'] = ['eq', -1];
             $order = $currentOrder;
         } else {
-            $nw['actor_id'] = ['in', implode(',', $ids)];
+            $nw['actor_id'] = ['in', $ids];
             $order = Db::raw('FIELD(actor_id,' . implode(',', $ids) . ')');
         }
 
@@ -428,7 +428,7 @@ class MeilisearchListBridge
             $nw['role_id'] = ['eq', -1];
             $order = $currentOrder;
         } else {
-            $nw['role_id'] = ['in', implode(',', $ids)];
+            $nw['role_id'] = ['in', $ids];
             $order = Db::raw('FIELD(role_id,' . implode(',', $ids) . ')');
         }
 
@@ -499,7 +499,7 @@ class MeilisearchListBridge
             $nw['website_id'] = ['eq', -1];
             $order = $currentOrder;
         } else {
-            $nw['website_id'] = ['in', implode(',', $ids)];
+            $nw['website_id'] = ['in', $ids];
             $order = Db::raw('FIELD(website_id,' . implode(',', $ids) . ')');
         }
 
@@ -1224,7 +1224,7 @@ class MeilisearchListBridge
         $rc = $m[3];
         $present = [];
         foreach (array_chunk($ids, 400) as $chunk) {
-            $q = Db::name($table)->where($pk, 'in', implode(',', $chunk))->where($st, 1);
+            $q = Db::name($table)->whereIn($pk, $chunk)->where($st, 1);
             if ($rc !== null && $rc !== '') {
                 $q->where($rc, 0);
             }

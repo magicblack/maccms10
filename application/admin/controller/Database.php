@@ -191,6 +191,12 @@ class Database extends Base
             $table = $ids;
         }
 
+        foreach ($table as $t) {
+            if (!$this->isValidTable($t)) {
+                return $this->error('Table is invalid.');
+            }
+        }
+
         $tables = implode('`,`', $table);
         $res = Db::query("OPTIMIZE TABLE `{$tables}`");
         if ($res) {
@@ -209,6 +215,12 @@ class Database extends Base
             $table[] = $ids;
         } else {
             $table = $ids;
+        }
+
+        foreach ($table as $t) {
+            if (!$this->isValidTable($t)) {
+                return $this->error('Table is invalid.');
+            }
         }
 
         $tables = implode('`,`', $table);
@@ -277,7 +289,7 @@ class Database extends Base
             return $this->error('Table is invalid.');
         }
         if (!empty($table)) {
-            $list = Db::query('SHOW COLUMNS FROM ' . $table);
+            $list = Db::query('SHOW COLUMNS FROM `' . str_replace('`', '``', $table) . '`');
             $this->success(lang('obtain_ok'),null, $list);
         }
         $this->error(lang('param_err'));
@@ -287,26 +299,34 @@ class Database extends Base
     {
         if($this->request->isPost()){
             $param = input();
-            $table = $param['table'];
-            $field = $param['field'];
-            $findstr = $param['findstr'];
-            $tostr = $param['tostr'];
-            $where = $param['where'];
+            $table = isset($param['table']) ? $param['table'] : '';
+            $field = isset($param['field']) ? $param['field'] : '';
+            $findstr = isset($param['findstr']) ? $param['findstr'] : '';
+            $tostr = isset($param['tostr']) ? $param['tostr'] : '';
+            $where = isset($param['where']) ? $param['where'] : '';
 
             $validate = \think\Loader::validate('Token');
             if(!$validate->check($param)){
                 return $this->error($validate->getError());
             }
-            if (!empty($table) && !$this->isValidTable($table)) {
+            if ($table === '' || !$this->isValidTable($table)) {
                 return $this->error('Table is invalid.');
             }
-            if(!empty($field) && !empty($findstr) && !empty($tostr)){
-                $sql = "UPDATE ".$table." set ".$field."=Replace(".$field.",'".$findstr."','".$tostr."') where 1=1 ". $where;
-                Db::execute($sql);
-                return $this->success(lang('run_ok'));
+            if ($field === '' || $findstr === '' || $tostr === '') {
+                return $this->error(lang('param_err'));
             }
-
-            return $this->error(lang('param_err'));
+            if (!$this->isValidField($table, $field)) {
+                return $this->error('Column is invalid.');
+            }
+            $whereSql = $this->sanitizeRepWhereClause($where);
+            if ($whereSql === false) {
+                return $this->error('WHERE clause is invalid.');
+            }
+            $tq = '`' . str_replace('`', '``', $table) . '`';
+            $fq = '`' . str_replace('`', '``', $field) . '`';
+            $sql = 'UPDATE ' . $tq . ' SET ' . $fq . '=REPLACE(' . $fq . ', ?, ?) WHERE 1=1' . $whereSql;
+            Db::execute($sql, [$findstr, $tostr]);
+            return $this->success(lang('run_ok'));
         }
         $list = Db::query("SHOW TABLE STATUS");
         $this->assign('list',$list);
@@ -321,5 +341,59 @@ class Database extends Base
             }
         }
         return false;
+    }
+
+    /**
+     * @param string $table 已通过 isValidTable 校验的表名
+     */
+    private function isValidField($table, $field)
+    {
+        if (!is_string($field) || !preg_match('/^[a-zA-Z0-9_]+$/', $field)) {
+            return false;
+        }
+        $list = Db::query('SHOW COLUMNS FROM `' . str_replace('`', '``', $table) . '`');
+        if (!is_array($list)) {
+            return false;
+        }
+        foreach ($list as $row) {
+            if (!empty($row['Field']) && $row['Field'] === $field) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * 附加 WHERE 仅允许 AND 开头的简单片段；无法安全绑定的表达式一律拒绝。
+     *
+     * @param string $where
+     * @return string|false 返回可拼接到 SQL 的片段（含前导空格），或 false
+     */
+    private function sanitizeRepWhereClause($where)
+    {
+        $where = trim((string)$where);
+        if ($where === '') {
+            return '';
+        }
+        if (strlen($where) > 500) {
+            return false;
+        }
+        $norm = preg_replace('/\s+/', ' ', strtolower($where));
+        $blocked = [
+            ';', '--', '/*', '*/', ' union ', ' select ', ' insert ', ' update ', ' delete ',
+            ' drop ', ' create ', ' alter ', ' grant ', ' revoke ', ' exec ', ' execute ',
+            'sleep(', 'benchmark(', 'load_file', 'outfile', 'dumpfile', ' information_schema',
+            ' xor ', ' or 1', ' or true',
+        ];
+        foreach ($blocked as $b) {
+            if (strpos($norm, $b) !== false) {
+                return false;
+            }
+        }
+        if (strncmp($norm, 'and ', 4) !== 0) {
+            return false;
+        }
+
+        return ' ' . $where;
     }
 }

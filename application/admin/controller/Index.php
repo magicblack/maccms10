@@ -886,7 +886,16 @@ class Index extends Base
     public function rangeDateDailyVisit()
     {
 
-        $range_daily_visit_data = Db::query("select FROM_UNIXTIME(visit_time, '%Y-%c-%d' ) days,count(*) count from (SELECT * from ".config('database.prefix')."visit where visit_time >= " . strtotime($_POST['startDate']) . "&&  visit_time <= " . strtotime($_POST['endDate']) . " ) as temp group by days");
+        $startTs = strtotime(isset($_POST['startDate']) ? $_POST['startDate'] : '');
+        $endTs = strtotime(isset($_POST['endDate']) ? $_POST['endDate'] : '');
+        $startTs = ($startTs !== false) ? (int)$startTs : 0;
+        $endTs = ($endTs !== false) ? (int)$endTs : 0;
+        $visitTable = config('database.prefix') . 'visit';
+        $visitTable = '`' . str_replace('`', '``', $visitTable) . '`';
+        $range_daily_visit_data = Db::query(
+            "select FROM_UNIXTIME(visit_time, '%Y-%c-%d' ) days,count(*) count from (SELECT * from {$visitTable} where visit_time >= ? and visit_time <= ? ) as temp group by days",
+            [$startTs, $endTs]
+        );
         $result = [];
         $range_visit_day = [];
         $range_visit_count = [];

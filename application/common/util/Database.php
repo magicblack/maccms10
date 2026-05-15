@@ -137,7 +137,8 @@ class Database {
             }
 
             //备份数据记录
-            $result = Db::query("SELECT * FROM `{$table}` LIMIT {$start}, 1000");
+            $start = (int)$start;
+            $result = Db::query("SELECT * FROM `{$table}` LIMIT ?, 1000", [$start]);
             foreach ($result as $row) {
                 $row = array_map('addslashes', $row);
                 $one = implode("', '", $row);

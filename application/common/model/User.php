@@ -1,6 +1,7 @@
 <?php
 namespace app\common\model;
 
+use app\common\util\JwtService;
 use think\Db;
 use think\View;
 use app\common\validate\User as UserValidate;
@@ -569,7 +570,7 @@ class User extends Base
         cookie('user_portrait', mac_get_user_portrait($row['user_id']), ['expire' => 2592000]);
     }
 
-    public function login($param)
+    public function login($param, array $options = [])
     {
         $data = [];
         $password_raw = trim($param['user_pwd']);
@@ -640,14 +641,26 @@ class User extends Base
             }
         }
 
-        cookie('user_id', $row['user_id'],['expire'=>2592000] );
-        cookie('user_name', $row['user_name'],['expire'=>2592000] );
-        cookie('group_id', $group[0]['group_id'],['expire'=>2592000] );
-        cookie('group_name', $group[0]['group_name'],['expire'=>2592000] );
-        cookie('user_check', md5($random . '-' .$row['user_name'] . '-' . $row['user_id'] .'-' ),['expire'=>2592000] );
-        cookie('user_portrait', mac_get_user_portrait($row['user_id']),['expire'=>2592000] );
+        $setCookie = !isset($options['set_cookie']) || $options['set_cookie'];
+        if ($setCookie) {
+            cookie('user_id', $row['user_id'],['expire'=>2592000] );
+            cookie('user_name', $row['user_name'],['expire'=>2592000] );
+            cookie('group_id', $group[0]['group_id'],['expire'=>2592000] );
+            cookie('group_name', $group[0]['group_name'],['expire'=>2592000] );
+            cookie('user_check', md5($random . '-' .$row['user_name'] . '-' . $row['user_id'] .'-' ),['expire'=>2592000] );
+            cookie('user_portrait', mac_get_user_portrait($row['user_id']),['expire'=>2592000] );
+        }
 
-        return ['code' => 1, 'msg' => lang('model/user/login_ok')];
+        $out = ['code' => 1, 'msg' => lang('model/user/login_ok')];
+        if (!empty($options['return_meta'])) {
+            $out['meta'] = [
+                'user_id'     => (int)$row['user_id'],
+                'user_name'   => (string)$row['user_name'],
+                'user_random' => (string)$random,
+            ];
+        }
+
+        return $out;
     }
 
     public function expire()
@@ -680,6 +693,30 @@ class User extends Base
 
     public function checkLogin()
     {
+        $jwt = JwtService::bearerFromRequest();
+        if ($jwt !== '' && JwtService::isEnabled()) {
+            $pl = JwtService::decodeAndVerify($jwt);
+            if (!is_array($pl)) {
+                return ['code' => 1003, 'msg' => lang('model/user/not_login')];
+            }
+            $uid = (int)($pl['sub'] ?? 0);
+            $rnd = (string)($pl['rnd'] ?? '');
+            if ($uid < 1 || $rnd === '') {
+                return ['code' => 1003, 'msg' => lang('model/user/not_login')];
+            }
+            $whereJwt = ['user_id' => $uid, 'user_status' => 1];
+            $rowJwt = $this->field('*')->where($whereJwt)->find();
+            if (empty($rowJwt)) {
+                return ['code' => 1002, 'msg' => lang('model/user/not_login')];
+            }
+            $info = $rowJwt->toArray();
+            if (!isset($info['user_random']) || !hash_equals((string)$info['user_random'], $rnd)) {
+                return ['code' => 1003, 'msg' => lang('model/user/not_login')];
+            }
+
+            return $this->finalizeUserLoginPayload($info, $whereJwt);
+        }
+
         $user_id = cookie('user_id');
         $user_name = cookie('user_name');
         $user_check = cookie('user_check');
@@ -707,6 +744,19 @@ class User extends Base
             return ['code' => 1003, 'msg' => lang('model/user/not_login')];
         }
 
+        return $this->finalizeUserLoginPayload($info, $where);
+    }
+
+    /**
+     * 组装已校验用户（Cookie 或 JWT）的会员组与过期处理。
+     *
+     * @param array $info        用户行
+     * @param array $whereUpdate VIP 过期等更新时用于 where()
+     *
+     * @return array
+     */
+    private function finalizeUserLoginPayload(array $info, array $whereUpdate)
+    {
         $group_list = model('Group')->getCache('group_list');
         $group_ids = explode(',', $info['group_id']);
         $user_groups = [];
@@ -743,7 +793,7 @@ class User extends Base
             $update = [];
             $update['group_id'] = 2;
 
-            $res = $this->where($where)->update($update);
+            $res = $this->where($whereUpdate)->update($update);
             if($res === false){
                 return ['code' => 1004, 'msg' => lang('model/user/update_expire_err')];
             }
@@ -753,7 +803,6 @@ class User extends Base
             cookie('group_id', $info['group']['group_id'], ['expire'=>2592000] );
             cookie('group_name', $info['group']['group_name'],['expire'=>2592000] );
         }
-
 
         return ['code' => 1, 'msg' => lang('model/user/haved_login'), 'info' => $info];
     }

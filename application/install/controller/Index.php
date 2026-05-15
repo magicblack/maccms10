@@ -153,13 +153,17 @@ class Index extends Controller
 
             // 不覆盖检测是否已存在数据库
             if (!$cover) {
-                $check = $db_connect->execute('SELECT * FROM information_schema.schemata WHERE schema_name="'.$database.'"');
-                if ($check) {
+                $check = $db_connect->query(
+                    'SELECT SCHEMA_NAME FROM information_schema.schemata WHERE schema_name = ? LIMIT 1',
+                    [$database]
+                );
+                if (!empty($check)) {
                     $this->success(lang('install/database_name_haved'),'');
                 }
             }
             // 创建数据库
-            if (!$db_connect->execute("CREATE DATABASE IF NOT EXISTS `{$database}` DEFAULT CHARACTER SET utf8")) {
+            $dbQuoted = '`' . str_replace('`', '``', $database) . '`';
+            if (!$db_connect->execute("CREATE DATABASE IF NOT EXISTS {$dbQuoted} DEFAULT CHARACTER SET utf8")) {
                 return $this->error($db_connect->getError());
             }
 
@@ -209,6 +213,9 @@ class Index extends Controller
 
         $config_new['interface']['status'] = 0;
         $config_new['interface']['pass'] = mac_get_rndstr(16);
+        if (!isset($config_new['app']['api_jwt_secret']) || strlen(trim((string)$config_new['app']['api_jwt_secret'])) < 32) {
+            $config_new['app']['api_jwt_secret'] = mac_get_rndstr(32);
+        }
         $config_new['site']['install_dir'] = $install_dir;
         
         // 更新程序配置文件

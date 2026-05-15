@@ -11,13 +11,14 @@ class SeoAiResult extends Base
     public function createTableIfNotExists()
     {
         $table = config('database.prefix') . $this->name;
-        $exists = Db::query("SHOW TABLES LIKE '{$table}'");
+        $exists = Db::query('SHOW TABLES LIKE ?', [$table]);
         if (!empty($exists)) {
             return;
         }
 
+        $tq = '`' . str_replace('`', '``', $table) . '`';
         Db::execute(
-            "CREATE TABLE `{$table}` (
+            "CREATE TABLE {$tq} (
                 `seo_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
                 `seo_mid` tinyint(3) unsigned NOT NULL DEFAULT '0',
                 `seo_obj_id` int(10) unsigned NOT NULL DEFAULT '0',
@@ -116,10 +117,11 @@ class SeoAiResult extends Base
         }
 
         $table = config('database.prefix') . $this->name;
-        $cols = Db::query("SHOW COLUMNS FROM `{$table}` LIKE 'seo_obj_uuid'");
+        $tq = '`' . str_replace('`', '``', $table) . '`';
+        $cols = Db::query("SHOW COLUMNS FROM {$tq} LIKE ?", ['seo_obj_uuid']);
         if (empty($cols)) {
-            Db::execute("ALTER TABLE `{$table}` ADD COLUMN `seo_obj_uuid` char(36) NOT NULL DEFAULT '' AFTER `seo_obj_id`");
-            Db::execute("ALTER TABLE `{$table}` ADD UNIQUE KEY `seo_obj_uuid` (`seo_mid`,`seo_obj_uuid`)");
+            Db::execute("ALTER TABLE {$tq} ADD COLUMN `seo_obj_uuid` char(36) NOT NULL DEFAULT '' AFTER `seo_obj_id`");
+            Db::execute("ALTER TABLE {$tq} ADD UNIQUE KEY `seo_obj_uuid` (`seo_mid`,`seo_obj_uuid`)");
         }
         self::$uuidColumnChecked = true;
     }

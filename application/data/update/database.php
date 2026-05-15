@@ -486,3 +486,23 @@ if (empty($col_list[$pre . 'search_query_log'])) {
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='前台搜索关键词日志（热门词/用户历史）';";
     $sql .= "\r";
 }
+// 后台操作审计日志
+if (empty($col_list[$pre . 'admin_audit_log'])) {
+    $sql .= "CREATE TABLE `{$pre}admin_audit_log` (
+  `audit_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `admin_id` int(10) unsigned NOT NULL DEFAULT '0',
+  `admin_name` varchar(60) NOT NULL DEFAULT '',
+  `audit_time` int(10) unsigned NOT NULL DEFAULT '0',
+  `audit_ip` varchar(45) NOT NULL DEFAULT '',
+  `audit_method` varchar(10) NOT NULL DEFAULT '',
+  `audit_route` varchar(128) NOT NULL DEFAULT '',
+  `audit_uri` varchar(2048) NOT NULL DEFAULT '',
+  `audit_http_code` smallint(5) unsigned NOT NULL DEFAULT '0',
+  `audit_payload` mediumtext,
+  PRIMARY KEY (`audit_id`),
+  KEY `idx_admin_time` (`admin_id`,`audit_time`),
+  KEY `idx_time` (`audit_time`),
+  KEY `idx_route` (`audit_route`(64))
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='后台操作审计';";
+    $sql .= "\r";
+}

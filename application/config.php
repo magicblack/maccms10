@@ -212,6 +212,8 @@ return [
         'type'           => '',
         // 是否自动开启 SESSION
         'auto_start'     => true,
+        // PHP 7.3+ Cookie SameSite，减轻跨站请求伪造（需 HTTPS 站点可将 secure 设为 true）
+        'samesite'       => 'Lax',
     ],
 
     // +----------------------------------------------------------------------

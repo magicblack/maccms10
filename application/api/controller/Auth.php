@@ -2,6 +2,7 @@
 
 namespace app\api\controller;
 
+use app\common\util\JwtService;
 use think\Db;
 use think\Request;
 
@@ -345,6 +346,60 @@ class Auth extends Base
             'code' => 1,
             'msg'  => 'ok',
             'info' => $result,
+        ]);
+    }
+
+    /**
+     * 用户名密码换取 JWT（不写入浏览器 Cookie，适合 App/小程序等）。
+     * POST /api.php/auth/jwt
+     * 参数：user_name, user_pwd，若站点开启登录验证码则需 verify
+     * 请求头：Authorization: Bearer 加上 access_token
+     *
+     * @param Request $request
+     * @return \think\response\Json
+     */
+    public function jwt(Request $request)
+    {
+        if (!JwtService::isEnabled()) {
+            return json(['code' => 1004, 'msg' => 'JWT disabled']);
+        }
+        if (!$request->isPost()) {
+            return json(['code' => 1001, 'msg' => 'POST required']);
+        }
+        $param = $request->param();
+        $res = model('User')->login(
+            [
+                'user_name' => isset($param['user_name']) ? $param['user_name'] : '',
+                'user_pwd'  => isset($param['user_pwd']) ? $param['user_pwd'] : '',
+                'verify'    => isset($param['verify']) ? $param['verify'] : '',
+                'openid'    => '',
+                'col'       => '',
+            ],
+            ['set_cookie' => false, 'return_meta' => true]
+        );
+        if (!isset($res['code']) || (int)$res['code'] !== 1) {
+            return json([
+                'code' => isset($res['code']) ? (int)$res['code'] : 1003,
+                'msg'  => isset($res['msg']) ? (string)$res['msg'] : 'login failed',
+            ]);
+        }
+        $meta = isset($res['meta']) && is_array($res['meta']) ? $res['meta'] : null;
+        if ($meta === null || empty($meta['user_id']) || empty($meta['user_random'])) {
+            return json(['code' => 1005, 'msg' => 'Internal error']);
+        }
+        $token = JwtService::encode((int)$meta['user_id'], (string)$meta['user_random']);
+        if ($token === '') {
+            return json(['code' => 1005, 'msg' => 'Token issue failed']);
+        }
+
+        return json([
+            'code' => 1,
+            'msg'  => 'ok',
+            'info' => [
+                'token_type'   => 'Bearer',
+                'access_token' => $token,
+                'expires_in'   => JwtService::getTtl(),
+            ],
         ]);
     }
 }

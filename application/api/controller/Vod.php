@@ -415,7 +415,7 @@ class Vod extends Base
                 $favRows = model('Ulog')->where([
                     'user_id' => $userId,
                     'ulog_type' => 2,
-                    'ulog_rid' => ['in', implode(',', array_unique($vodIds))],
+                    'ulog_rid' => ['in', array_values(array_unique($vodIds))],
                 ])->column('ulog_id', 'ulog_rid');
                 if (is_array($favRows)) {
                     $favMap = $favRows;

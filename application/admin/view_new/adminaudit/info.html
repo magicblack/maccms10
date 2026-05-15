@@ -1,0 +1,27 @@
+{include file="../../../application/admin/view_new/public/head" /}
+<div class="page-container p10">
+    <blockquote class="layui-elem-quote">{:lang('admin/adminaudit/detail')} #{$info.audit_id}</blockquote>
+
+    <table class="layui-table" lay-size="sm">
+        <tbody>
+        <tr><td width="140">{:lang('admin/adminaudit/col_id')}</td><td>{$info.audit_id}</td></tr>
+        <tr><td>{:lang('admin/adminaudit/col_admin')}</td><td>[{$info.admin_id}] {$info.admin_name|mac_filter_xss}</td></tr>
+        <tr><td>{:lang('admin/adminaudit/col_time')}</td><td>{$info.audit_time|mac_day='color'}</td></tr>
+        <tr><td>{:lang('admin/adminaudit/col_ip')}</td><td>{$info.audit_ip|mac_filter_xss}</td></tr>
+        <tr><td>{:lang('admin/adminaudit/col_method')}</td><td>{$info.audit_method|mac_filter_xss}</td></tr>
+        <tr><td>{:lang('admin/adminaudit/col_route')}</td><td>{$info.audit_route|mac_filter_xss}</td></tr>
+        <tr><td>{:lang('admin/adminaudit/col_uri')}</td><td style="word-break:break-all;">{$info.audit_uri|mac_filter_xss}</td></tr>
+        <tr><td>{:lang('admin/adminaudit/col_code')}</td><td>{$info.audit_http_code}</td></tr>
+        <tr><td>{:lang('admin/adminaudit/col_payload')}</td><td>
+            <pre class="layui-code" style="white-space:pre-wrap;word-break:break-all;max-height:480px;overflow:auto;">{$info.audit_payload|mac_filter_xss|default=''}</pre>
+        </td></tr>
+        </tbody>
+    </table>
+
+    <div class="center mgt-20">
+        <a href="javascript:history.back();" class="layui-btn layui-btn-primary">{:lang('return')}</a>
+    </div>
+</div>
+{include file="../../../application/admin/view_new/public/foot" /}
+</body>
+</html>

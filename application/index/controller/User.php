@@ -777,7 +777,7 @@ class User extends Base
         $where['user_id'] = $GLOBALS['user']['user_id'];
         $where['ulog_type'] = $type;
         if ($all != '1') {
-            $where['ulog_id'] = array('in', implode(',', $arr));
+            $where['ulog_id'] = array('in', array_values($arr));
         }
         $return = model('Ulog')->delData($where);
         return json($return);
@@ -830,7 +830,7 @@ class User extends Base
         $where = [];
         $where['user_id'] = $GLOBALS['user']['user_id'];
         if ($all != '1') {
-            $where['plog_id'] = array('in', implode(',', $arr));
+            $where['plog_id'] = array('in', array_values($arr));
         }
         $return = model('Plog')->delData($where);
         return json($return);
@@ -881,7 +881,7 @@ class User extends Base
         $where = [];
         $where['user_id'] = $GLOBALS['user']['user_id'];
         if ($all != '1') {
-            $where['cash_id'] = array('in', implode(',', $arr));
+            $where['cash_id'] = array('in', array_values($arr));
         }
         $return = model('Cash')->delData($where);
         return json($return);

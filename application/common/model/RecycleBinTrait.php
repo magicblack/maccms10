@@ -24,7 +24,7 @@ trait RecycleBinTrait
             return;
         }
         try {
-            $rows = Db::query('SHOW COLUMNS FROM `' . str_replace('`', '``', $table) . '` LIKE \'' . str_replace('\'', '\\\'', $f) . '\'');
+            $rows = Db::query('SHOW COLUMNS FROM `' . str_replace('`', '``', $table) . '` LIKE ?', [$f]);
         } catch (\Exception $e) {
             $done[$table] = true;
             return;

@@ -493,6 +493,159 @@
                         </div>
                     </div>
 
+                    <fieldset class="layui-elem-field layui-field-title" style="margin-top:16px;">
+                        <legend>{:lang('admin/system/config/anti_scrape_title')}</legend>
+                    </fieldset>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:lang('admin/system/config/anti_scrape_api_enabled')}：</label>
+                        <div class="layui-input-block">
+                            <input type="radio" name="app[anti_scrape_api_enabled]" value="0" title="{:lang('close')}" {if
+                                condition="$config['app']['anti_scrape_api_enabled'] neq 1" }checked {/if} form="form_config_main">
+                            <input type="radio" name="app[anti_scrape_api_enabled]" value="1" title="{:lang('open')}" {if
+                                condition="$config['app']['anti_scrape_api_enabled'] eq 1" }checked {/if} form="form_config_main">
+                            <div class="layui-form-mid layui-word-aux">{:lang('admin/system/config/anti_scrape_api_tip')}</div>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:lang('admin/system/config/anti_scrape_api_window')}：</label>
+                        <div class="layui-input-inline w120">
+                            <input type="text" name="app[anti_scrape_api_window_sec]" class="layui-input" form="form_config_main"
+                                value="{$config['app']['anti_scrape_api_window_sec']|default='60'}">
+                        </div>
+                        <label class="layui-form-label" style="width:auto;padding-left:16px;">{:lang('admin/system/config/anti_scrape_api_max')}：</label>
+                        <div class="layui-input-inline w120">
+                            <input type="text" name="app[anti_scrape_api_max]" class="layui-input" form="form_config_main"
+                                value="{$config['app']['anti_scrape_api_max']|default='120'}">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:lang('admin/system/config/anti_scrape_api_search_window')}：</label>
+                        <div class="layui-input-inline w120">
+                            <input type="text" name="app[anti_scrape_api_search_window_sec]" class="layui-input" form="form_config_main"
+                                value="{$config['app']['anti_scrape_api_search_window_sec']|default='60'}">
+                        </div>
+                        <label class="layui-form-label" style="width:auto;padding-left:16px;">{:lang('admin/system/config/anti_scrape_api_search_max')}：</label>
+                        <div class="layui-input-inline w120">
+                            <input type="text" name="app[anti_scrape_api_search_max]" class="layui-input" form="form_config_main"
+                                value="{$config['app']['anti_scrape_api_search_max']|default='30'}">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:lang('admin/system/config/anti_scrape_api_exempt')}：</label>
+                        <div class="layui-input-inline w500">
+                            <input type="text" name="app[anti_scrape_api_exempt]" class="layui-input" form="form_config_main"
+                                value="{$config['app']['anti_scrape_api_exempt']|default='timming/index'|mac_filter_xss}">
+                        </div>
+                        <div class="layui-form-mid layui-word-aux">{:lang('admin/system/config/anti_scrape_api_exempt_tip')}</div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:lang('admin/system/config/anti_scrape_index_enabled')}：</label>
+                        <div class="layui-input-block">
+                            <input type="radio" name="app[anti_scrape_index_enabled]" value="0" title="{:lang('close')}" {if
+                                condition="$config['app']['anti_scrape_index_enabled'] neq 1" }checked {/if} form="form_config_main">
+                            <input type="radio" name="app[anti_scrape_index_enabled]" value="1" title="{:lang('open')}" {if
+                                condition="$config['app']['anti_scrape_index_enabled'] eq 1" }checked {/if} form="form_config_main">
+                            <div class="layui-form-mid layui-word-aux">{:lang('admin/system/config/anti_scrape_index_tip')}</div>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:lang('admin/system/config/anti_scrape_index_window')}：</label>
+                        <div class="layui-input-inline w120">
+                            <input type="text" name="app[anti_scrape_index_window_sec]" class="layui-input" form="form_config_main"
+                                value="{$config['app']['anti_scrape_index_window_sec']|default='60'}">
+                        </div>
+                        <label class="layui-form-label" style="width:auto;padding-left:16px;">{:lang('admin/system/config/anti_scrape_index_max')}：</label>
+                        <div class="layui-input-inline w120">
+                            <input type="text" name="app[anti_scrape_index_max]" class="layui-input" form="form_config_main"
+                                value="{$config['app']['anti_scrape_index_max']|default='90'}">
+                        </div>
+                    </div>
+
+                    <fieldset class="layui-elem-field layui-field-title" style="margin-top:16px;">
+                        <legend>{:lang('admin/system/config/admin_audit_encrypt_title')}</legend>
+                    </fieldset>
+                    {if condition="$audit_crypto_gcm_supported neq 1"}
+                    <blockquote class="layui-elem-quote layui-quote-nm" style="border-color:#FFB800;">
+                        {:lang('admin/system/config/admin_audit_encrypt_gcm_unavailable_tip')}
+                    </blockquote>
+                    <input type="hidden" name="app[admin_audit_encrypt]" value="0" form="form_config_main">
+                    {else/}
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:lang('admin/system/config/admin_audit_encrypt')}：</label>
+                        <div class="layui-input-block">
+                            <input type="radio" name="app[admin_audit_encrypt]" value="0" title="{:lang('close')}" {if
+                                condition="$config['app']['admin_audit_encrypt'] neq 1" }checked {/if} form="form_config_main">
+                            <input type="radio" name="app[admin_audit_encrypt]" value="1" title="{:lang('open')}" {if
+                                condition="$config['app']['admin_audit_encrypt'] eq 1" }checked {/if} form="form_config_main">
+                            <div class="layui-form-mid layui-word-aux">{:lang('admin/system/config/admin_audit_encrypt_tip')}</div>
+                        </div>
+                    </div>
+                    {/if}
+                    {if condition="$audit_crypto_gcm_supported eq 1"}
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:lang('admin/system/config/admin_audit_crypto_secret')}：</label>
+                        <div class="layui-input-inline w400">
+                            <input type="password" name="app[admin_audit_crypto_secret]" autocomplete="new-password"
+                                class="layui-input" value="" placeholder="{:lang('admin/system/config/admin_audit_crypto_secret_placeholder')}" form="form_config_main">
+                        </div>
+                        <div class="layui-form-mid layui-word-aux">{:lang('admin/system/config/admin_audit_crypto_secret_tip')}</div>
+                    </div>
+                    {/if}
+                    {if condition="$audit_crypto_gcm_supported neq 1 && $config['app']['admin_audit_encrypt'] eq 1"}
+                    <blockquote class="layui-elem-quote" style="border-color:#FF5722;">
+                        {:lang('admin/system/config/admin_audit_encrypt_config_invalid')}
+                    </blockquote>
+                    {/if}
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:lang('admin/system/config/admin_audit_extra_redact')}：</label>
+                        <div class="layui-input-block">
+                            <textarea name="app[admin_audit_extra_redact]" class="layui-textarea" rows="2" form="form_config_main"
+                                placeholder="{:lang('admin/system/config/admin_audit_extra_redact_placeholder')}">{$config['app']['admin_audit_extra_redact']|default=''|mac_filter_xss}</textarea>
+                            <div class="layui-form-mid layui-word-aux">{:lang('admin/system/config/admin_audit_extra_redact_tip')}</div>
+                        </div>
+                    </div>
+
+                    <fieldset class="layui-elem-field layui-field-title" style="margin-top:16px;">
+                        <legend>{:lang('admin/system/config/api_jwt_title')}</legend>
+                    </fieldset>
+                    {if condition="$config['app']['api_jwt_enabled'] eq 1 && $api_jwt_secret_strong neq 1"}
+                    <blockquote class="layui-elem-quote layui-quote-nm" style="border-color:#FFB800;">
+                        {:lang('admin/system/config/api_jwt_secret_weak_tip')}
+                    </blockquote>
+                    {/if}
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:lang('admin/system/config/api_jwt_enabled')}：</label>
+                        <div class="layui-input-block">
+                            <input type="radio" name="app[api_jwt_enabled]" value="0" title="{:lang('close')}" {if
+                                condition="$config['app']['api_jwt_enabled'] neq 1" }checked {/if} form="form_config_main">
+                            <input type="radio" name="app[api_jwt_enabled]" value="1" title="{:lang('open')}" {if
+                                condition="$config['app']['api_jwt_enabled'] eq 1" }checked {/if} form="form_config_main">
+                            <div class="layui-form-mid layui-word-aux">{:lang('admin/system/config/api_jwt_enabled_tip')}</div>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:lang('admin/system/config/api_jwt_secret')}：</label>
+                        <div class="layui-input-inline w400">
+                            <input type="password" name="app[api_jwt_secret]" autocomplete="new-password" class="layui-input" value=""
+                                placeholder="{:lang('admin/system/config/api_jwt_secret_placeholder')}" form="form_config_main">
+                        </div>
+                        <div class="layui-form-mid layui-word-aux">{:lang('admin/system/config/api_jwt_secret_tip')}</div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:lang('admin/system/config/api_jwt_ttl')}：</label>
+                        <div class="layui-input-inline w120">
+                            <input type="text" name="app[api_jwt_ttl]" class="layui-input" form="form_config_main"
+                                value="{$config['app']['api_jwt_ttl']|default='7200'}">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:lang('admin/system/config/api_jwt_iss')}：</label>
+                        <div class="layui-input-inline w200">
+                            <input type="text" name="app[api_jwt_iss]" class="layui-input" form="form_config_main"
+                                value="{$config['app']['api_jwt_iss']|default='maccms'|mac_filter_xss}">
+                        </div>
+                    </div>
+
                     <div class="layui-form-item">
                         <label class="layui-form-label">{:lang('admin/system/config/search_vod_rule')}：</label>
                         <div class="layui-input-inline w600">

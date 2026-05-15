@@ -541,6 +541,27 @@ CREATE TABLE `mac_plog` (
 ) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
+-- Table structure for mac_admin_audit_log
+-- ----------------------------
+DROP TABLE IF EXISTS `mac_admin_audit_log`;
+CREATE TABLE `mac_admin_audit_log` (
+  `audit_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `admin_id` int(10) unsigned NOT NULL DEFAULT '0',
+  `admin_name` varchar(60) NOT NULL DEFAULT '',
+  `audit_time` int(10) unsigned NOT NULL DEFAULT '0',
+  `audit_ip` varchar(45) NOT NULL DEFAULT '',
+  `audit_method` varchar(10) NOT NULL DEFAULT '',
+  `audit_route` varchar(128) NOT NULL DEFAULT '',
+  `audit_uri` varchar(2048) NOT NULL DEFAULT '',
+  `audit_http_code` smallint(5) unsigned NOT NULL DEFAULT '0',
+  `audit_payload` mediumtext,
+  PRIMARY KEY (`audit_id`),
+  KEY `idx_admin_time` (`admin_id`,`audit_time`),
+  KEY `idx_time` (`audit_time`),
+  KEY `idx_route` (`audit_route`(64))
+) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+
+-- ----------------------------
 -- Table structure for mac_role
 -- ----------------------------
 DROP TABLE IF EXISTS `mac_role`;

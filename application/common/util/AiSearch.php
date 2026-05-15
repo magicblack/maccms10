@@ -407,14 +407,14 @@ class AiSearch
         $rc = isset($meta['recycle']) ? $meta['recycle'] : null;
         $fields = $meta['fields'];
         try {
-            $q = Db::name($table)->field($fields)->where($st, 1)->where($pk, 'in', implode(',', $ids));
+            $q = Db::name($table)->field($fields)->where($st, 1)->whereIn($pk, $ids);
             if ($rc !== null && $rc !== '') {
                 $q->where($rc, 0);
             }
             $rows = $q->select();
         } catch (\Throwable $e) {
             if ($rc !== null && $rc !== '') {
-                $rows = Db::name($table)->field($fields)->where($st, 1)->where($pk, 'in', implode(',', $ids))->select();
+                $rows = Db::name($table)->field($fields)->where($st, 1)->whereIn($pk, $ids)->select();
             } else {
                 return null;
             }

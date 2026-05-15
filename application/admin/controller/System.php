@@ -1,6 +1,8 @@
 <?php
 namespace app\admin\controller;
 use app\common\util\ExternalSyncRunner;
+use app\common\util\JwtService;
+use app\common\util\SensitiveDataCrypto;
 use http\Cookie;
 use think\Db;
 use think\Config;
@@ -119,6 +121,29 @@ class System extends Base
             $config['app']['vod_search_optimise'] = join('|', !empty($config['app']['vod_search_optimise']) ? (array)$config['app']['vod_search_optimise'] : []);
             $config['app']['vod_search_optimise_cache_minutes'] = (int)$config['app']['vod_search_optimise_cache_minutes'];
 
+            $config_old_maccms = config('maccms');
+            if (!isset($config['app']['admin_audit_crypto_secret']) || trim((string)$config['app']['admin_audit_crypto_secret']) === '') {
+                if (isset($config_old_maccms['app']['admin_audit_crypto_secret'])) {
+                    $config['app']['admin_audit_crypto_secret'] = $config_old_maccms['app']['admin_audit_crypto_secret'];
+                }
+            }
+            if (!empty($config['app']['admin_audit_encrypt']) && (string)$config['app']['admin_audit_encrypt'] === '1'
+                && !SensitiveDataCrypto::supportsAes256Gcm()) {
+                return $this->ajaxErrorWithFreshToken(lang('admin/system/config/admin_audit_encrypt_gcm_required'));
+            }
+
+            if (!isset($config['app']['api_jwt_secret']) || trim((string)$config['app']['api_jwt_secret']) === '') {
+                if (isset($config_old_maccms['app']['api_jwt_secret'])) {
+                    $config['app']['api_jwt_secret'] = $config_old_maccms['app']['api_jwt_secret'];
+                }
+            }
+            if (isset($config['app']['api_jwt_enabled']) && (string)$config['app']['api_jwt_enabled'] === '1') {
+                $jwtSec = isset($config['app']['api_jwt_secret']) ? trim((string)$config['app']['api_jwt_secret']) : '';
+                if (strlen($jwtSec) < 32) {
+                    $config['app']['api_jwt_secret'] = mac_get_rndstr(32);
+                }
+            }
+
             $config['extra'] = [];
             if(!empty($config['app']['extra_var'])){
                 $extra_var = str_replace(array(chr(10),chr(13)), array('','#'),$config['app']['extra_var']);
@@ -200,6 +225,8 @@ class System extends Base
         $tab = (string) input('tab', '');
         $allowTab = ['', 'seo', 'aiseo'];
         $this->assign('config_merge_tab', in_array($tab, $allowTab, true) ? $tab : '');
+        $this->assign('audit_crypto_gcm_supported', SensitiveDataCrypto::supportsAes256Gcm() ? 1 : 0);
+        $this->assign('api_jwt_secret_strong', JwtService::hasStrongSecret() ? 1 : 0);
         $this->assign('config', $config);
         $this->assign('title', lang('admin/system/config/title'));
         return $this->fetch('admin@system/config');

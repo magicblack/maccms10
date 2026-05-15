@@ -234,11 +234,11 @@ class Actor extends Base {
                     }
                 }
                 $type = array_unique($type);
-                $where['type_id'] = ['in', implode(',', $type)];
+                $where['type_id'] = ['in', array_values(array_map('intval', $type))];
             }
         }
         if(!empty($typenot)){
-            $where['type_id'] = ['not in',$typenot];
+            $where['type_id'] = ['not in', array_map('intval', explode(',', $typenot))];
         }
         if(!empty($tid)) {
             $where['type_id|type_id_1'] = ['eq',$tid];

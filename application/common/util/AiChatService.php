@@ -288,7 +288,7 @@ class AiChatService
         }
         $rows = Db::name($cfg['table'])
             ->where($cfg['status'], 1)
-            ->where($cfg['id'], 'in', implode(',', $ids))
+            ->whereIn($cfg['id'], $ids)
             ->field($cfg['id'].' as id,'.$cfg['name'].' as name,'.$cfg['en'].' as en,'.$cfg['pic'].' as pic,'.$cfg['actor'].' as actor,'.$cfg['hits'].' as hits')
             ->select();
         if (!is_array($rows)) {

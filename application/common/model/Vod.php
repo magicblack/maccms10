@@ -377,7 +377,7 @@ class Vod extends Base {
                     }
                 }
                 $type = array_unique($type);
-                $where['type_id'] = ['in', implode(',',$type) ];
+                $where['type_id'] = ['in', array_values(array_map('intval', $type))];
             }
         }
         if(!empty($typenot)){
@@ -386,13 +386,13 @@ class Vod extends Base {
             if(!empty($type) && is_array($type)){
                 $type = array_diff($type, $typenot_arr);
                 if(!empty($type)){
-                    $where['type_id'] = ['in', implode(',', $type)];
+                    $where['type_id'] = ['in', array_values(array_map('intval', $type))];
                 } else {
                     // type 被完全排除后，设置一个永不匹配的条件，避免查询所有视频
                     $where['type_id'] = ['eq', -1];
                 }
             } else {
-                $where['type_id'] = ['not in',$typenot];
+                $where['type_id'] = ['not in', $typenot_arr];
             }
         }
         if(!empty($tid)) {

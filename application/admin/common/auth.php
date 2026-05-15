@@ -120,6 +120,41 @@ return array (
         'controller' => 'meilisearch',
         'action' => 'index',
       ),
+      2151 =>
+      array (
+        'show' => 0,
+        'name' => '--'.lang('menu/meilisearch_save'),
+        'controller' => 'meilisearch',
+        'action' => 'save',
+      ),
+      2152 =>
+      array (
+        'show' => 0,
+        'name' => '--'.lang('menu/meilisearch_status'),
+        'controller' => 'meilisearch',
+        'action' => 'status',
+      ),
+      2153 =>
+      array (
+        'show' => 0,
+        'name' => '--'.lang('menu/meilisearch_selfcheck'),
+        'controller' => 'meilisearch',
+        'action' => 'selfcheck',
+      ),
+      2154 =>
+      array (
+        'show' => 0,
+        'name' => '--'.lang('menu/meilisearch_sync'),
+        'controller' => 'meilisearch',
+        'action' => 'sync',
+      ),
+      22 => 
+      array (
+        'show' => 1,
+        'name' => lang('menu/meilisearch'),
+        'controller' => 'meilisearch',
+        'action' => 'index',
+      ),
       217 =>
       array (
         'show' => 1,
@@ -1243,6 +1278,20 @@ return array (
         'name' => lang('admin/analytics/auth_export'),
         'controller' => 'analytics',
         'action' => 'export',
+      ),
+      672 =>
+      array (
+        'show' => 1,
+        'name' => lang('menu/adminaudit'),
+        'controller' => 'adminaudit',
+        'action' => 'index',
+      ),
+      67201 =>
+      array (
+        'show' => 0,
+        'name' => lang('admin/adminaudit/menu_info'),
+        'controller' => 'adminaudit',
+        'action' => 'info',
       ),
       68 => 
       array (

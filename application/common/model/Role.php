@@ -59,7 +59,7 @@ class Role extends Base {
                 $vod_ids[$v['role_rid']] = $v['role_rid'];
             }
             $where2=[];
-            $where2['vod_id'] = ['in', implode(',',$vod_ids)];
+            $where2['vod_id'] = ['in', array_values(array_map('intval', $vod_ids))];
             $tmp_list = model('Vod')->listData($where2,'vod_id desc',1,999,0);
             //$tmp_list = Db::name('Vod')->field('vod_id,vod_name,vod_en,type_id,type_id_1')->where($where2)->select();
             foreach($tmp_list['list'] as $k=>$v){
