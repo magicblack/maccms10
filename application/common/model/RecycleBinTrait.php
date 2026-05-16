@@ -24,7 +24,8 @@ trait RecycleBinTrait
             return;
         }
         try {
-            $rows = Db::query('SHOW COLUMNS FROM `' . str_replace('`', '``', $table) . '` LIKE ?', [$f]);
+            // MySQL SHOW 语句在 PDO 原生预处理下不支持占位符，必须拼接字面量
+            $rows = Db::query("SHOW COLUMNS FROM `" . str_replace('`', '``', $table) . "` LIKE '" . addslashes($f) . "'");
         } catch (\Exception $e) {
             $done[$table] = true;
             return;

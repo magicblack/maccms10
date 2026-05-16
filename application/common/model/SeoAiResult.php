@@ -11,7 +11,8 @@ class SeoAiResult extends Base
     public function createTableIfNotExists()
     {
         $table = config('database.prefix') . $this->name;
-        $exists = Db::query('SHOW TABLES LIKE ?', [$table]);
+        // MySQL SHOW 语句在 PDO 原生预处理下不支持占位符，必须拼接字面量
+        $exists = Db::query("SHOW TABLES LIKE '" . addslashes($table) . "'");
         if (!empty($exists)) {
             return;
         }
@@ -48,28 +49,34 @@ class SeoAiResult extends Base
         if ($mid < 1 || $objId < 1) {
             return null;
         }
-        $this->ensureUuidColumn();
 
-        $objUuid = $this->buildObjectUuid($mid, $objId);
-        $row = $this->where([
-            'seo_mid' => $mid,
-            'seo_obj_uuid' => $objUuid,
-            'seo_status' => ['in', [1, 2]]
-        ])->find();
-        if (!empty($row)) {
+        try {
+            $this->ensureUuidColumn();
+
+            $objUuid = $this->buildObjectUuid($mid, $objId);
+            $row = $this->where([
+                'seo_mid' => $mid,
+                'seo_obj_uuid' => $objUuid,
+                'seo_status' => ['in', [1, 2]]
+            ])->find();
+            if (!empty($row)) {
+                return $row;
+            }
+
+            // Backward compatibility: old rows keyed by numeric obj_id only.
+            $row = $this->where([
+                'seo_mid' => $mid,
+                'seo_obj_id' => $objId,
+                'seo_status' => ['in', [1, 2]]
+            ])->find();
+            if (!empty($row) && empty($row['seo_obj_uuid'])) {
+                $this->where(['seo_id' => intval($row['seo_id'])])->update(['seo_obj_uuid' => $objUuid]);
+            }
             return $row;
+        } catch (\Exception $e) {
+            trace('SeoAiResult::getByObject ' . $e->getMessage(), 'error');
+            return null;
         }
-
-        // Backward compatibility: old rows keyed by numeric obj_id only.
-        $row = $this->where([
-            'seo_mid' => $mid,
-            'seo_obj_id' => $objId,
-            'seo_status' => ['in', [1, 2]]
-        ])->find();
-        if (!empty($row) && empty($row['seo_obj_uuid'])) {
-            $this->where(['seo_id' => intval($row['seo_id'])])->update(['seo_obj_uuid' => $objUuid]);
-        }
-        return $row;
     }
 
     public function saveByObject($mid, $objId, $data)
@@ -118,7 +125,8 @@ class SeoAiResult extends Base
 
         $table = config('database.prefix') . $this->name;
         $tq = '`' . str_replace('`', '``', $table) . '`';
-        $cols = Db::query("SHOW COLUMNS FROM {$tq} LIKE ?", ['seo_obj_uuid']);
+        // MySQL SHOW 语句在 PDO 原生预处理下不支持占位符，必须拼接字面量
+        $cols = Db::query("SHOW COLUMNS FROM {$tq} LIKE 'seo_obj_uuid'");
         if (empty($cols)) {
             Db::execute("ALTER TABLE {$tq} ADD COLUMN `seo_obj_uuid` char(36) NOT NULL DEFAULT '' AFTER `seo_obj_id`");
             Db::execute("ALTER TABLE {$tq} ADD UNIQUE KEY `seo_obj_uuid` (`seo_mid`,`seo_obj_uuid`)");
