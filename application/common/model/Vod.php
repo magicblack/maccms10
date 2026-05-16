@@ -540,65 +540,53 @@ class Vod extends Base {
                 }
             }
         }
-        // 优化随机视频排序rnd的性能问题
-        // https://github.com/magicblack/maccms10/issues/967
-        $use_rand = false;
-        if($by=='rnd'){
-            $use_rand = true;
-            $algo2_threshold = 2000;
-            $data_count = $this->countData($where);
-            $where_string_addon = "";
-            if ($data_count > $algo2_threshold) {
-                $rows = $this->field("vod_id")->where($where)->select();
-                foreach ($rows as $row) {
-                    $id_list[] = $row['vod_id'];
+        // 随机排序 rnd：按条件 SQL 随机排序并保留当前页码（不再随机跳转分页）
+        // 大表下 ORDER BY RAND() 有性能代价，属语义正确性与性能的取舍
+        $use_rand = ($by == 'rnd');
+        if (!$use_rand) {
+            if (!in_array($by, ['id', 'time', 'time_add', 'score', 'hits', 'hits_day', 'hits_week', 'hits_month', 'up', 'down', 'level', 'rnd'])) {
+                $by = 'time';
+            }
+        }
+        if (!in_array($order, ['asc', 'desc'])) {
+            $order = 'desc';
+        }
+        if ($use_rand) {
+            // 大表优化：候选集超阈值时先用 PK 索引圈一个随机 ID 窗口，再在窗口内 ORDER BY RAND()
+            // 避免 ORDER BY RAND() 对全表逐行计算 RAND() 后再全排序的开销；阈值可由 app.rnd_window_size 配置
+            $rnd_window = isset($GLOBALS['config']['app']['rnd_window_size']) ? (int)$GLOBALS['config']['app']['rnd_window_size'] : 3000;
+            if ($rnd_window > 0 && !isset($where['vod_id']) && $this->countData($where) > $rnd_window) {
+                $where_q = $this->mergeRecycleWhere($where);
+                $where_q_string = '';
+                if (!empty($where_q['_string'])) {
+                    $where_q_string = $where_q['_string'];
+                    unset($where_q['_string']);
                 }
-                if (
-                    !empty($id_list)
-                ) {
-                    $random_count = intval($algo2_threshold / 2);
-                    $specified_list = array_rand($id_list, intval($algo2_threshold / 2));
-                    $random_keys = array_rand($id_list, $random_count);
-                    $specified_list = [];
-
-                    if ($random_count == 1) {
-                        $specified_list[] = $id_list[$random_keys];
-                    } else {
-                        foreach ($random_keys as $key) {
-                            $specified_list[] = $id_list[$key];
-                        }
+                $bounds = $this->where($where_q)->where($where_q_string)
+                    ->field('MIN(vod_id) AS min_id, MAX(vod_id) AS max_id')->find();
+                $min_id = (int)$bounds['min_id'];
+                $max_id = (int)$bounds['max_id'];
+                if ($min_id > 0 && $max_id >= $min_id) {
+                    $rand_start = $min_id < $max_id ? mt_rand($min_id, $max_id) : $min_id;
+                    $window_ids = $this->where($where_q)->where($where_q_string)
+                        ->where('vod_id', '>=', $rand_start)
+                        ->order('vod_id')->limit($rnd_window)
+                        ->column('vod_id');
+                    if (count($window_ids) < $num) {
+                        $more = $this->where($where_q)->where($where_q_string)
+                            ->order('vod_id')->limit($rnd_window)
+                            ->column('vod_id');
+                        $window_ids = array_values(array_unique(array_merge($window_ids, $more)));
                     }
-                    if (!empty($specified_list)) {
-                        $where_string_addon = " AND vod_id IN (" . join(',', $specified_list) . ")";
+                    if (!empty($window_ids)) {
+                        $where['vod_id'] = ['in', $window_ids];
                     }
                 }
             }
-            if (!empty($where_string_addon)) {
-                $where['_string'] .= $where_string_addon;
-                $where['_string'] = trim($where['_string'], " AND ");
-            } else {
-                if ($data_count % $lp['num'] === 0) {
-                    $page_total = floor($data_count / $lp['num']);
-                } else {
-                    $page_total = floor($data_count / $lp['num']) + 1;
-                }
-                if($data_count < $lp['num']){
-                    $lp['num'] = $data_count;
-                }
-                $randi = @mt_rand(1, $page_total);
-                $page = $randi;
-            }
-            $by = 'hits_week';
-            $order = 'desc';
+            $order = ['[rand]' => '[rand]'];
+        } else {
+            $order = 'vod_' . $by . ' ' . $order;
         }
-
-        if(!in_array($by, ['id', 'time','time_add','score','hits','hits_day','hits_week','hits_month','up','down','level','rnd'])) {
-            $by = 'time';
-        }
-        if(!in_array($order, ['asc', 'desc'])) {
-            $order = 'desc';
-        }
-        $order= 'vod_'.$by .' ' . $order;
         $meili = null;
         if (!$use_rand && MeilisearchService::enabled()) {
             $meili = MeilisearchListBridge::applyForVod(
@@ -624,10 +612,10 @@ class Vod extends Base {
             unset($where_cache['vod_id']);
             $where_cache['order'] = 'rnd';
         }
-        $order_cache_key = ($meili !== null) ? 'meilisearch_relevance' : $order;
+        $order_cache_key = ($meili !== null) ? 'meilisearch_relevance' : (is_array($order) ? 'sql_rand' : $order);
 
         $cach_name = $GLOBALS['config']['app']['cache_flag']. '_' .md5('vod_listcache_'.http_build_query($where_cache).'_'.$order_cache_key.'_'.$page.'_'.$num.'_'.$start.'_'.$pageurl);
-        $res = Cache::get($cach_name);
+        $res = $use_rand ? null : Cache::get($cach_name);
         if(empty($cachetime)){
             $cachetime = $GLOBALS['config']['app']['cache_time'];
         }
@@ -641,7 +629,7 @@ class Vod extends Base {
             } else {
                 $res = $this->listData($where, $order, $page, $num, $start,$field,1, $totalshow);
             }
-            if($GLOBALS['config']['app']['cache_core']==1) {
+            if($GLOBALS['config']['app']['cache_core']==1 && !$use_rand) {
                 Cache::set($cach_name, $res, $cachetime);
             }
         }

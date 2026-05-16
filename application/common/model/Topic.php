@@ -228,28 +228,22 @@ class Topic extends Base {
         if(!empty($class)) {
             $where['topic_type'] = ['like', mac_like_arr($class),'OR'];
         }
-        $randi = null;
-        if($by=='rnd'){
-            $data_count = $this->countData($where);
-            $page_total = floor($data_count / $lp['num']) + 1;
-            if($data_count < $lp['num']){
-                $lp['num'] = $data_count;
+        $use_rnd_order = ($by == 'rnd');
+        if (!$use_rnd_order) {
+            if (!in_array($by, ['id', 'time', 'time_add', 'score', 'hits', 'hits_day', 'hits_week', 'hits_month', 'up', 'down', 'level', 'rnd'])) {
+                $by = 'time';
             }
-            $randi = @mt_rand(1, $page_total);
-            $page = $randi;
-            $by = 'hits_week';
+        }
+        if (!in_array($order, ['asc', 'desc'])) {
             $order = 'desc';
         }
-
-        if(!in_array($by, ['id', 'time','time_add','score','hits','hits_day','hits_week','hits_month','up','down','level','rnd'])) {
-            $by = 'time';
+        if ($use_rnd_order) {
+            $order = ['[rand]' => '[rand]'];
+        } else {
+            $order = 'topic_' . $by . ' ' . $order;
         }
-        if(!in_array($order, ['asc', 'desc'])) {
-            $order = 'desc';
-        }
-        $order= 'topic_'.$by .' ' . $order;
         $meili = null;
-        if (empty($randi) && MeilisearchService::enabled()) {
+        if (!$use_rnd_order && MeilisearchService::enabled()) {
             $meili = MeilisearchListBridge::applyForTopic(
                 $where,
                 (string)$wd,
@@ -266,14 +260,14 @@ class Topic extends Base {
             }
         }
         $where_cache = $where;
-        if(!empty($randi)){
+        if ($use_rnd_order) {
             unset($where_cache['topic_id']);
             $where_cache['order'] = 'rnd';
         }
-        $order_cache_key = ($meili !== null) ? 'meilisearch_relevance' : $order;
+        $order_cache_key = ($meili !== null) ? 'meilisearch_relevance' : (is_array($order) ? 'sql_rand' : $order);
 
         $cach_name = $GLOBALS['config']['app']['cache_flag']. '_' .md5('topic_listcache_'.http_build_query($where_cache).'_'.$order_cache_key.'_'.$page.'_'.$num.'_'.$start.'_'.$pageurl);
-        $res = Cache::get($cach_name);
+        $res = $use_rnd_order ? null : Cache::get($cach_name);
         if(empty($cachetime)){
             $cachetime = $GLOBALS['config']['app']['cache_time'];
         }
@@ -287,7 +281,7 @@ class Topic extends Base {
             } else {
                 $res = $this->listData($where,$order,$page,$num,$start,'*',$totalshow);
             }
-            if($GLOBALS['config']['app']['cache_core']==1) {
+            if($GLOBALS['config']['app']['cache_core']==1 && !$use_rnd_order) {
                 Cache::set($cach_name, $res, $cachetime);
             }
         }

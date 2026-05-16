@@ -296,38 +296,29 @@ class Actor extends Base {
         if(!empty($wd)) {
             $where['actor_name|actor_en'] = ['like', '%' . $wd . '%'];
         }
-        $randi = null;
-        if($by=='rnd'){
-            $data_count = $this->countData($where);
-            $page_total = floor($data_count / $lp['num']) + 1;
-            if($data_count < $lp['num']){
-                $lp['num'] = $data_count;
-            }
-            $randi = @mt_rand(1, $page_total);
-            $page = $randi;
-            $by = 'hits_week';
-            $order = 'desc';
-        }
-
-        if(!in_array($by, ['id', 'time','time_add','score','hits','hits_day','hits_week','hits_month','up','down','level','rnd','in'])) {
-            $by = 'time';
-        }
-        if(!in_array($order, ['asc', 'desc'])) {
-            $order = 'desc';
-        }
-
-        if($by=='in' && !empty($name) ){
-            $order = ' find_in_set(actor_name, \''.$name.'\'  ) ';
-        }
-        else{
-            if($by=='in' && empty($name) ){
+        $use_rnd_order = ($by == 'rnd');
+        if (!$use_rnd_order) {
+            if (!in_array($by, ['id', 'time', 'time_add', 'score', 'hits', 'hits_day', 'hits_week', 'hits_month', 'up', 'down', 'level', 'rnd', 'in'])) {
                 $by = 'time';
             }
-            $order= 'actor_'.$by .' ' . $order;
+        }
+        if (!in_array($order, ['asc', 'desc'])) {
+            $order = 'desc';
+        }
+
+        if ($use_rnd_order) {
+            $order = ['[rand]' => '[rand]'];
+        } elseif ($by == 'in' && !empty($name)) {
+            $order = ' find_in_set(actor_name, \'' . $name . '\'  ) ';
+        } else {
+            if ($by == 'in' && empty($name)) {
+                $by = 'time';
+            }
+            $order = 'actor_' . $by . ' ' . $order;
         }
 
         $meili = null;
-        if (empty($randi) && MeilisearchService::enabled()) {
+        if (!$use_rnd_order && MeilisearchService::enabled()) {
             $meili = MeilisearchListBridge::applyForActor(
                 $where,
                 (string)$wd,
@@ -343,14 +334,14 @@ class Actor extends Base {
             }
         }
         $where_cache = $where;
-        if(!empty($randi)){
+        if ($use_rnd_order) {
             unset($where_cache['actor_id']);
             $where_cache['order'] = 'rnd';
         }
-        $order_cache_key = ($meili !== null) ? 'meilisearch_relevance' : $order;
+        $order_cache_key = ($meili !== null) ? 'meilisearch_relevance' : (is_array($order) ? 'sql_rand' : $order);
 
         $cach_name = $GLOBALS['config']['app']['cache_flag']. '_' .md5('actor_listcache_'.http_build_query($where_cache).'_'.$order_cache_key.'_'.$page.'_'.$num.'_'.$start.'_'.$pageurl);
-        $res = Cache::get($cach_name);
+        $res = $use_rnd_order ? null : Cache::get($cach_name);
         if(empty($cachetime)){
             $cachetime = $GLOBALS['config']['app']['cache_time'];
         }
@@ -364,7 +355,7 @@ class Actor extends Base {
             } else {
                 $res = $this->listData($where,$order,$page,$num,$start,'*',1,$totalshow);
             }
-            if($GLOBALS['config']['app']['cache_core']==1){
+            if($GLOBALS['config']['app']['cache_core']==1 && !$use_rnd_order){
                 Cache::set($cach_name, $res, $cachetime);
             }
         }
