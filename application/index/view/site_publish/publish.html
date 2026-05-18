@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="{$publish_html_lang}">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <title>{$publish_page_title}</title>
+    <link rel="stylesheet" href="{$maccms.path}static_new/css/publish-pages.css">
+    <script>window.MAC_PUBLISH_I18N = {$publish_i18n_json};</script>
+    <script src="{$maccms.path}static_new/js/publish-pages.js" defer></script>
+</head>
+<body class="pub-page">
+<div class="pub-screen">
+    <main class="pub-stack">
+        <section class="pub-card" aria-labelledby="pub-title">
+            <div class="pub-brand">
+                <img class="pub-logo" src="{$publish_logo_url}" alt="{:lang('index/publish/logo_alt')}" width="120" height="120" decoding="async">
+            </div>
+            <h1 class="pub-heading" id="pub-title">{:lang('index/publish/title')}</h1>
+            <p class="pub-lead">{:lang('index/publish/bookmark_tip')}</p>
+            <p class="pub-divider">{:lang('index/publish/enter_via_button')}</p>
+
+            {if condition="isset($publish_has_groups) && $publish_has_groups eq 1"}
+                {volist name="publish_groups" id="gv"}
+                    <a class="pub-btn pub-btn--group" href="{$gv.href}">{$gv.title}</a>
+                {/volist}
+            {else /}
+                {volist name="publish_links" id="vo"}
+                    <a class="pub-btn pub-btn--link" href="{$vo.url}">{$vo.name}</a>
+                {/volist}
+            {/if}
+            <a class="pub-btn pub-btn--primary" href="{$publish_enter_href}">{:lang('index/publish/enter_site')}</a>
+            {include file="$publish_inc_permanent" /}
+
+            {include file="$publish_inc_footer" /}
+        </section>
+
+        {include file="$publish_inc_browser_tips" /}
+    </main>
+</div>
+</body>
+</html>

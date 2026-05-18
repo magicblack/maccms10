@@ -1,0 +1,184 @@
+/* 后台「站点配置 → 地址发布页」Tab 专用样式（仅 config.html 引入） */
+
+#configPublishPane.layui-form-pane .layui-form-label {
+    width: 260px;
+    overflow: visible;
+    white-space: normal;
+    text-overflow: clip;
+    height: auto;
+    min-height: 38px;
+    line-height: 20px;
+}
+#configPublishPane.layui-form-pane .layui-input-block {
+    margin-left: 260px;
+}
+#configPublishPane.layui-form-pane .layui-form-item > .layui-form-mid.layui-word-aux {
+    float: none;
+    clear: both;
+    margin-left: 260px;
+    margin-right: 0;
+    width: auto;
+    max-width: none;
+    padding: 6px 0 0 !important;
+    line-height: 1.6;
+    white-space: normal;
+    overflow: visible;
+}
+#configPublishPane.layui-form-pane .layui-input-block > .layui-form-mid.layui-word-aux {
+    float: none;
+    display: block;
+    width: 100%;
+    margin-left: 0;
+    margin-right: 0;
+    box-sizing: border-box;
+    white-space: normal;
+    overflow: visible;
+}
+.page-container > .layui-tab[lay-filter="tb1"] > .layui-tab-title {
+    overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+}
+.page-container > .layui-tab[lay-filter="tb1"] > .layui-tab-title li {
+    overflow: visible;
+    text-overflow: clip;
+    max-width: none;
+}
+
+/* 地址发布页 Tab：增强可读性与分组编辑体验 */
+#configPublishPane {
+    padding: 6px 8px 2px;
+}
+
+#configPublishPane .layui-form-item {
+    margin-bottom: 14px;
+}
+
+#configPublishPane .layui-input,
+#configPublishPane .layui-textarea {
+    border-radius: 6px;
+}
+
+#configPublishPane .layui-row.layui-col-space16 {
+    margin-bottom: 2px;
+}
+
+#configPublishPane .publish-permanent-row {
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: center;
+    gap: 16px;
+}
+
+#configPublishPane .publish-permanent-col {
+    flex: 1 1 0;
+    min-width: 0;
+}
+
+#configPublishPane #publish-groups-container {
+    margin-top: 2px;
+}
+
+#configPublishPane .publish-group-card {
+    margin-bottom: 14px !important;
+    padding: 14px 14px 12px !important;
+    border: 1px solid #e8edf3 !important;
+    border-radius: 10px !important;
+    background: #f9fbfd !important;
+    box-shadow: 0 1px 2px rgba(20, 28, 42, 0.04);
+}
+
+#configPublishPane .publish-group-card > .layui-form-item {
+    margin-bottom: 10px !important;
+}
+
+#configPublishPane .publish-group-card > .layui-word-aux {
+    margin: 12px 0 6px !important;
+    color: #6b7280;
+}
+
+#configPublishPane .publish-group-card .layui-word-aux {
+    font-size: 12px;
+}
+
+#configPublishPane .publish-group-card .layui-input-block {
+    margin-left: 0 !important;
+}
+
+#configPublishPane .publish-group-card .publish-url-row {
+    margin-bottom: 8px !important;
+}
+
+#configPublishPane .publish-group-card .publish-url-row .publish-url-row-inner {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+#configPublishPane .publish-group-card .publish-url-row .publish-url-input-wrap {
+    flex: 1 1 auto;
+    min-width: 0;
+}
+
+#configPublishPane .publish-group-card .publish-url-row .publish-remove-url {
+    flex: 0 0 88px;
+    width: 88px;
+    text-align: center;
+    padding-left: 0;
+    padding-right: 0;
+}
+
+#configPublishPane .publish-group-card > p {
+    margin-top: 10px !important;
+}
+
+#configPublishPane .publish-group-card .publish-add-url,
+#configPublishPane .publish-group-card .publish-remove-group {
+    min-width: 88px;
+    text-align: center;
+}
+
+#configPublishPane #btn-publish-group-add {
+    border-style: dashed;
+}
+
+#configPublishPane .main-config-save {
+    margin-top: 2px;
+    padding-top: 6px;
+    border-top: 1px solid #eff3f7;
+}
+
+@media (max-width: 1200px) {
+    #configPublishPane.layui-form-pane .layui-form-label {
+        width: 210px;
+    }
+    #configPublishPane.layui-form-pane .layui-input-block,
+    #configPublishPane.layui-form-pane .layui-form-item > .layui-form-mid.layui-word-aux {
+        margin-left: 210px;
+    }
+}
+
+@media (max-width: 900px) {
+    #configPublishPane.layui-form-pane .layui-form-label {
+        width: 100%;
+        margin-bottom: 6px;
+    }
+    #configPublishPane.layui-form-pane .layui-input-block,
+    #configPublishPane.layui-form-pane .layui-form-item > .layui-form-mid.layui-word-aux {
+        margin-left: 0;
+    }
+    #configPublishPane .publish-group-card {
+        padding: 12px 10px 10px !important;
+    }
+    #configPublishPane .publish-permanent-row {
+        display: block;
+    }
+    #configPublishPane .publish-permanent-col + .publish-permanent-col {
+        margin-top: 8px;
+    }
+    #configPublishPane .publish-group-card .publish-url-row .publish-remove-url {
+        width: auto;
+        flex: 0 0 auto;
+        min-width: 88px;
+    }
+}

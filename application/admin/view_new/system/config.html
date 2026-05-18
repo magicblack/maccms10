@@ -1,4 +1,5 @@
 {include file="../../../application/admin/view_new/public/head" /}
+<link rel="stylesheet" href="__STATIC__/css/admin_publish_config.css?{$MAC_VERSION}">
 
 <div class="page-container">
 
@@ -15,6 +16,7 @@
     <div class="layui-tab" lay-filter="tb1">
             <ul class="layui-tab-title">
                 <li class="layui-this" lay-id="config_1">{:lang('admin/system/config/base')}</li>
+                <li lay-id="config_publish">{:lang('admin/system/config/tab_publish')}</li>
                 <li lay-id="config_2">{:lang('admin/system/config/performance')}</li>
                 <li lay-id="config_3">{:lang('admin/system/config/parameters')}</li>
                 <li lay-id="config_4">{:lang('admin/system/config/backstage')}</li>
@@ -238,6 +240,51 @@
                                 condition="$config['site']['mainland_ip_limit'] eq 2" }checked {/if} form="form_config_main">
                         </div>
                         <div class="layui-form-mid layui-word-aux">{:lang('admin/system/config/mainland_ip_limit_tip')}</div>
+                    </div>
+
+                <div class="layui-form-item center main-config-save">
+                    <div class="layui-input-block">
+                        <button type="submit" class="layui-btn" lay-submit="" form="form_config_main"
+                            lay-filter="formSubmit">{:lang('btn_save')}</button>
+                        <button class="layui-btn layui-btn-primary" type="reset" form="form_config_main">{:lang('btn_reset')}</button>
+                    </div>
+                </div>
+
+                </div>
+
+                <div class="layui-tab-item layui-form layui-form-pane" id="configPublishPane">
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:lang('admin/system/config/site_publish_status')}：</label>
+                        <div class="layui-input-block">
+                            <input type="radio" name="site[site_publish_status]" value="0" title="{:lang('close')}" {if condition="!isset($config['site']['site_publish_status']) or $config['site']['site_publish_status'] neq 1" }checked {/if} form="form_config_main">
+                            <input type="radio" name="site[site_publish_status]" value="1" title="{:lang('open')}" {if condition="isset($config['site']['site_publish_status']) && $config['site']['site_publish_status'] eq 1" }checked {/if} form="form_config_main">
+                        </div>
+                        <div class="layui-form-mid layui-word-aux">{:lang('admin/system/config/site_publish_status_tip')}</div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:lang('admin/system/config/site_publish_permanent')}：</label>
+                        <div class="layui-input-block">
+                            <div class="publish-permanent-row">
+                                <div class="layui-col-md6 publish-permanent-col">
+                                    <input type="text" name="site[site_publish_permanent_text]" value="{$config['site']['site_publish_permanent_text']|default=''}" class="layui-input" placeholder="{:lang('admin/system/config/site_publish_permanent_text')}" form="form_config_main" autocomplete="off">
+                                </div>
+                                <div class="layui-col-md6 publish-permanent-col">
+                                    <input type="text" name="site[site_publish_permanent_url]" value="{$config['site']['site_publish_permanent_url']|default=''}" class="layui-input" placeholder="{:lang('admin/system/config/site_publish_permanent_url')}" form="form_config_main" autocomplete="off">
+                                </div>
+                            </div>
+                            <div class="layui-form-mid layui-word-aux" style="margin-top:8px;padding-left:0;">{:lang('admin/system/config/site_publish_permanent_tip')}</div>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:lang('admin/system/config/site_publish_groups')}：</label>
+                        <div class="layui-input-block">
+                            <input type="hidden" name="site[publish_groups][__sent]" value="1" form="form_config_main">
+                            <div id="publish-groups-container"></div>
+                            <p style="margin:10px 0;">
+                                <button type="button" class="layui-btn layui-btn-primary layui-btn-sm" id="btn-publish-group-add">{:lang('admin/system/config/site_publish_groups_add_group')}</button>
+                            </p>
+                            <div class="layui-form-mid layui-word-aux" style="margin-top:0;padding-left:0;">{:lang('admin/system/config/site_publish_groups_tip')}</div>
+                        </div>
                     </div>
 
                 <div class="layui-form-item center main-config-save">
@@ -1006,6 +1053,19 @@
             , layer = layui.layer
             , upload = layui.upload;
         var mergeTab = {:json_encode(isset($config_merge_tab) ? $config_merge_tab : '')};
+        var publishGroupsBootstrap = {:json_encode(isset($publish_groups_ui) ? $publish_groups_ui : [], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_HEX_TAG)};
+        var pgLang = {
+            fieldId: {:json_encode(lang('admin/system/config/site_publish_groups_field_id'), JSON_HEX_TAG)},
+            fieldTitle: {:json_encode(lang('admin/system/config/site_publish_groups_field_title'), JSON_HEX_TAG)},
+            fieldHint: {:json_encode(lang('admin/system/config/site_publish_groups_field_hint'), JSON_HEX_TAG)},
+            urls: {:json_encode(lang('admin/system/config/site_publish_groups_urls'), JSON_HEX_TAG)},
+            idAux: {:json_encode(lang('admin/system/config/site_publish_groups_id_hint'), JSON_HEX_TAG)},
+            addUrl: {:json_encode(lang('admin/system/config/site_publish_groups_add_url'), JSON_HEX_TAG)},
+            delUrl: {:json_encode(lang('admin/system/config/site_publish_groups_del_url'), JSON_HEX_TAG)},
+            delGroup: {:json_encode(lang('admin/system/config/site_publish_groups_del_group'), JSON_HEX_TAG)},
+            errMaxGroups: {:json_encode(lang('admin/system/config/site_publish_groups_err_max_groups'), JSON_HEX_TAG)},
+            errMaxUrls: {:json_encode(lang('admin/system/config/site_publish_groups_err_max_urls'), JSON_HEX_TAG)}
+        };
 
         form.on('radio(cache_type)', function (data) {
             $('.row_cache_server').hide();
@@ -1121,6 +1181,118 @@
         }
 
         initBannerInputs();
+
+        // 地址发布页 — 域名组（结构化表单 → 服务端组装 JSON）
+        (function () {
+            var $pgc = $('#publish-groups-container');
+            var publishGroupsNextIndex = 0;
+
+            function appendUrlRow($card, idx, val) {
+                var $row = $('<div class="layui-form-item publish-url-row"></div>');
+                var $in = $('<input type="text" class="layui-input publish-url-input" form="form_config_main" autocomplete="off">');
+                $in.attr('name', 'site[publish_groups][' + idx + '][urls][]');
+                if (val !== undefined && val !== null) {
+                    $in.val(val);
+                }
+                var $inner = $('<div class="publish-url-row-inner"></div>');
+                var $inputWrap = $('<div class="publish-url-input-wrap"></div>');
+                $inputWrap.append($in);
+                $inner.append($inputWrap);
+                $inner.append('<button type="button" class="layui-btn layui-btn-danger layui-btn-sm publish-remove-url">' + pgLang.delUrl + '</button>');
+                $row.append($inner);
+                $card.find('.publish-gr-urls').append($row);
+            }
+
+            function appendPublishGroupCard(idx, data) {
+                data = data || {};
+                var id = data.id || ('group' + (idx + 1));
+                var title = data.title || '';
+                var hint = data.hint || '';
+                var urls = (data.urls && data.urls.length) ? data.urls : [''];
+                var $card = $('<div class="publish-group-card"></div>');
+                $card.attr('data-group-index', idx);
+
+                function labeledRow(aux, $field) {
+                    var $item = $('<div class="layui-form-item" style="margin-bottom:8px;"></div>');
+                    $item.append('<div class="layui-word-aux" style="margin-bottom:4px;">' + aux + '</div>');
+                    var $blk = $('<div class="layui-input-block" style="margin-left:0;"></div>');
+                    $blk.append($field);
+                    $item.append($blk);
+                    return $item;
+                }
+
+                var $id = $('<input type="hidden" class="publish-gr-id" form="form_config_main" autocomplete="off">');
+                $id.attr('name', 'site[publish_groups][' + idx + '][id]');
+                $id.val(id);
+                $card.append($id);
+
+                var $title = $('<input type="text" class="layui-input publish-gr-title" form="form_config_main" autocomplete="off">');
+                $title.attr('name', 'site[publish_groups][' + idx + '][title]');
+                $title.val(title);
+                $card.append(labeledRow(pgLang.fieldTitle, $title));
+
+                var $hint = $('<input type="text" class="layui-input publish-gr-hint" form="form_config_main" autocomplete="off">');
+                $hint.attr('name', 'site[publish_groups][' + idx + '][hint]');
+                $hint.val(hint);
+                $card.append(labeledRow(pgLang.fieldHint, $hint));
+
+                $card.append('<div class="layui-word-aux" style="margin:10px 0 4px;">' + pgLang.urls + '</div>');
+                $card.append('<div class="publish-gr-urls"></div>');
+                for (var ui = 0; ui < urls.length; ui++) {
+                    appendUrlRow($card, idx, urls[ui]);
+                }
+
+                var $btns = $('<p style="margin-top:10px;"></p>');
+                $btns.append('<button type="button" class="layui-btn layui-btn-primary layui-btn-sm publish-add-url">' + pgLang.addUrl + '</button> ');
+                $btns.append('<button type="button" class="layui-btn layui-btn-danger layui-btn-sm publish-remove-group">' + pgLang.delGroup + '</button>');
+                $card.append($btns);
+
+                $pgc.append($card);
+            }
+
+            function initPublishGroupsFromBootstrap() {
+                var list = [];
+                if (Object.prototype.toString.call(publishGroupsBootstrap) === '[object Array]') {
+                    list = publishGroupsBootstrap;
+                }
+                publishGroupsNextIndex = 0;
+                $pgc.empty();
+                for (var i = 0; i < list.length; i++) {
+                    appendPublishGroupCard(publishGroupsNextIndex++, list[i]);
+                }
+            }
+
+            initPublishGroupsFromBootstrap();
+
+            $('#btn-publish-group-add').on('click', function () {
+                if ($pgc.find('.publish-group-card').length >= 20) {
+                    layer.msg(pgLang.errMaxGroups);
+                    return;
+                }
+                appendPublishGroupCard(publishGroupsNextIndex++, null);
+            });
+
+            $pgc.on('click', '.publish-add-url', function (e) {
+                e.preventDefault();
+                var $card = $(this).closest('.publish-group-card');
+                var idx = parseInt($card.attr('data-group-index'), 10);
+                if ($card.find('.publish-url-row').length >= 30) {
+                    layer.msg(pgLang.errMaxUrls);
+                    return;
+                }
+                appendUrlRow($card, idx, '');
+            });
+
+            $pgc.on('click', '.publish-remove-url', function (e) {
+                e.preventDefault();
+                $(this).closest('.publish-url-row').remove();
+            });
+
+            $pgc.on('click', '.publish-remove-group', function (e) {
+                e.preventDefault();
+                $(this).closest('.publish-group-card').remove();
+            });
+        })();
 
         upload.render({
             elem: '#upload_banner'

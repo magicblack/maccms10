@@ -1,0 +1,11 @@
+{if condition="isset($publish_has_permanent) && $publish_has_permanent eq 1"}
+<p class="pub-permanent">
+    <span class="pub-permanent-label">{:lang('index/publish/permanent_prefix')}</span>
+    {if condition="$publish_permanent_url neq ''"}
+    <a class="pub-permanent-link" href="{$publish_permanent_url}" target="_blank" rel="noopener noreferrer">[ {$publish_permanent_text} ]</a>
+    {else /}
+    <span class="pub-permanent-text">[ {$publish_permanent_text} ]</span>
+    {/if}
+    <span class="pub-permanent-label">{:lang('index/publish/permanent_suffix')}</span>
+</p>
+{/if}

@@ -27,6 +27,10 @@ class All extends Controller
         if($tpl == 'index/index' && !empty($GLOBALS['config']['app']['browser_junmp']) && $GLOBALS['config']['app']['browser_junmp'] == 1) {
             return;
         }
+        // 发布页走 Index::fetch_site_publish_view，不经此处 tpl；保留兼容旧 tpl 名
+        if ($tpl == 'index/publish' || $tpl == 'index/publish_group') {
+            return;
+        }
 
         if(defined('ENTRANCE') && ENTRANCE == 'index' && $GLOBALS['config']['app']['cache_page'] ==1  && $GLOBALS['config']['app']['cache_time_page'] ) {
             $cach_name = $_SERVER['HTTP_HOST']. '_'. MAC_MOB . '_'. $GLOBALS['config']['app']['cache_flag']. '_' .$tpl .'_'. http_build_query(mac_param_url());
@@ -48,8 +52,6 @@ class All extends Controller
         if($loadcache==1){
             $this->load_page_cache($tpl,$type);
         }
-
-
         $html = $this->fetch($tpl);
         if($GLOBALS['config']['app']['compress'] == 1){
             $html = mac_compress_html($html);

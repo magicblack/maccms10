@@ -2,8 +2,8 @@
 namespace app\admin\controller;
 use app\common\util\ExternalSyncRunner;
 use app\common\util\JwtService;
+use app\common\util\PublishPage;
 use app\common\util\SensitiveDataCrypto;
-use http\Cookie;
 use think\Db;
 use think\Config;
 use think\Cache;
@@ -158,13 +158,57 @@ class System extends Base
             }
 
             $config['site']['site_tj'] = html_entity_decode($config['site']['site_tj']);
+
+            $config_old = config('maccms');
+            if (!isset($config['site']['site_publish_links']) && isset($config_old['site']['site_publish_links'])) {
+                $opl = $config_old['site']['site_publish_links'];
+                $config['site']['site_publish_links'] = is_scalar($opl) ? (string) $opl : '';
+            }
+
+            $pubStatus = isset($config['site']['site_publish_status']) ? (string) $config['site']['site_publish_status'] : '0';
+            $config['site']['site_publish_status'] = $pubStatus === '1' ? '1' : '0';
+            $permText = isset($config['site']['site_publish_permanent_text']) ? trim((string) $config['site']['site_publish_permanent_text']) : '';
+            $permUrlRaw = isset($config['site']['site_publish_permanent_url']) ? (string) $config['site']['site_publish_permanent_url'] : '';
+            $permUrl = PublishPage::sanitizeUrl($permUrlRaw);
+            if (mb_strlen($permText, 'UTF-8') > 200) {
+                return $this->error(lang('admin/system/config/site_publish_err_perm_text_len'));
+            }
+            $config['site']['site_publish_permanent_text'] = $permText;
+            $config['site']['site_publish_permanent_url'] = $permUrl;
+            foreach (['site_publish_links', 'site_publish_groups'] as $pk) {
+                if (!isset($config['site'][$pk])) {
+                    $config['site'][$pk] = '';
+                } else {
+                    $config['site'][$pk] = is_scalar($config['site'][$pk]) ? (string) $config['site'][$pk] : '';
+                }
+            }
+            $gRaw = '';
+            if (isset($config['site']['publish_groups']) && is_array($config['site']['publish_groups'])) {
+                $pg = $config['site']['publish_groups'];
+                unset($pg['__sent'], $pg['_sent']);
+                $gRaw = PublishPage::buildGroupsJsonFromUiPost($pg);
+                unset($config['site']['publish_groups']);
+            } elseif (isset($config['site']['site_publish_groups'])) {
+                $gRaw = (string) $config['site']['site_publish_groups'];
+            }
+            if (strlen($gRaw) > 120000) {
+                return $this->error(lang('admin/system/config/site_publish_err_groups_len'));
+            }
+            $groupsParsed = PublishPage::parseGroups($gRaw);
+            if ($gRaw !== '' && $gRaw !== '[]' && json_decode($gRaw, true) !== null && count($groupsParsed) < 1) {
+                return $this->error(lang('admin/system/config/site_publish_err_groups_json'));
+            }
+            $config['site']['site_publish_groups'] = $gRaw;
+            $hasGroups = count($groupsParsed) > 0;
+            if ($config['site']['site_publish_status'] === '1' && !$hasGroups) {
+                return $this->error(lang('admin/system/config/site_publish_err_links_or_groups'));
+            }
             $config_new['site'] = $config['site'];
             $config_new['app'] = $config['app'];
             $config_new['extra'] = $config['extra'];
 
-            $config_old = config('maccms');
             $config_new = array_merge($config_old, $config_new);
-
+            unset($config_new['site']['site_publish_home_pc'], $config_new['site']['site_publish_home_wap']);
 
             $tj = $config_new['site']['site_tj'];
             if(strpos($tj,'document.w') ===false){
@@ -199,6 +243,9 @@ class System extends Base
         $this->assign('editors',$editors);
 
         $config = config('maccms');
+        $pubGroupsRaw = isset($config['site']['site_publish_groups']) ? $config['site']['site_publish_groups'] : '';
+        $publish_groups_ui = PublishPage::parseGroups((string) $pubGroupsRaw);
+        $this->assign('publish_groups_ui', $publish_groups_ui);
         // 默认get+post
         if (!isset($config['app']['input_type'])) {
             $config['app']['input_type'] = 1;
@@ -301,6 +348,11 @@ class System extends Base
                     $route[trim($a[0])] = [trim($a[1]), [], $rule];
                 }
             }
+
+            $pattern = isset($route['__pattern__']) ? $route['__pattern__'] : [];
+            unset($route['__pattern__']);
+            $route = PublishPage::mergePublishRoutes($route);
+            $route = ['__pattern__' => $pattern] + $route;
 
             $res = mac_arr2file(APP_PATH . 'route.php', $route);
             if ($res === false) {

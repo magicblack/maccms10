@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="{$publish_html_lang}">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <title>{$publish_page_title}</title>
+    <link rel="stylesheet" href="{$maccms.path}static_new/css/publish-pages.css">
+    <script>window.MAC_PUBLISH_I18N = {$publish_i18n_json};</script>
+    <script src="{$maccms.path}static_new/js/publish-pages.js" defer></script>
+</head>
+<body class="pub-page">
+<div class="pub-screen">
+    <main class="pub-stack">
+        <section class="pub-card pub-wrap--group" aria-labelledby="pub-group-title">
+            <div class="pub-brand">
+                <img class="pub-logo" src="{$publish_logo_url}" alt="{:lang('index/publish_group/logo_alt')}" width="120" height="120" decoding="async">
+            </div>
+            <h1 class="pub-heading" id="pub-group-title">{$publish_group_title}</h1>
+            <p class="pub-hint">{:lang('index/publish_group/bookmark_tip')}</p>
+            <p class="pub-divider">{:lang('index/publish_group/copy_intro')}</p>
+
+            {volist name="publish_group_urls" id="uv"}
+                <div class="pub-url-row">
+                    <span class="pub-url-text">{$uv.url_html}</span>
+                    <button type="button" class="pub-btn pub-copy" data-copy-url="{$uv.url}">{:lang('index/publish_group/copy_button')}</button>
+                </div>
+            {/volist}
+
+            <p class="pub-copy-hint">{:lang('index/publish_group/copy_hint')}</p>
+            {include file="$publish_inc_permanent" /}
+
+            {include file="$publish_inc_footer" /}
+        </section>
+
+        {include file="$publish_inc_browser_tips" /}
+    </main>
+</div>
+</body>
+</html>

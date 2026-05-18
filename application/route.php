@@ -38,6 +38,26 @@ return array (
     'score' => '\\d+',
     'limit' => '\\d+',
   ),
+  'sitehome' =>
+  array (
+    0 => 'index/home',
+    1 =>
+    array (
+    ),
+    2 =>
+    array (
+    ),
+  ),
+  'publish-<id>' =>
+  array (
+    0 => 'index/publish_group',
+    1 =>
+    array (
+    ),
+    2 =>
+    array (
+    ),
+  ),
   'map' => 
   array (
     0 => 'map/index',
