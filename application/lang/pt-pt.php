@@ -1261,7 +1261,7 @@ https://www.baidu.com/123.jpg
                         2. A categoria local está na frente, a categoria coletada está atrás (filme de ação=ação); <br>
                         3. Não deve haver linhas em branco extras; <br>
                         4. O conector de dados de várias páginas, como player de vídeo, observações, endereço, grupo de servidores, paginação de artigos, é $$$ <br>
-                        5. Endereço da interface de entrada Vídeo /api.php/receive/vod; Artigo /api.php/receive/art; Ator /api.php/receive/actor; Papel /api.php/receive/role; Site /api.php/receive/website; <br>',
+                        5. Endereço da interface de entrada Vídeo /api.php/receive/vod; Artigo /api.php/receive/art; Ator /api.php/receive/actor; Papel /api.php/receive/role; Site /api.php/receive/website; Manga /api.php/receive/manga; <br>',
   'admin/system/configinterface/status' => 'Alternar interface',
   'admin/system/configinterface/pass' => 'Senha de login sem login',
   'admin/system/configinterface/pass_tip' => 'Para evitar ataques de força bruta, recomenda-se definir a senha para 16 caracteres ou mais, incluindo letras maiúsculas e minúsculas, números e caracteres especiais, ou modificar o nome do arquivo de entrada api.php',
@@ -1269,6 +1269,7 @@ https://www.baidu.com/123.jpg
   'admin/system/configinterface/art_type' => 'Conversão de categoria de artigo',
   'admin/system/configinterface/actor_type' => 'Conversão de categoria de ator',
   'admin/system/configinterface/website_type' => 'Conversão de categoria de site',
+  'admin/system/configinterface/manga_type' => 'Conversão de categoria de manga',
   'admin/system/configpay/title' => 'Configuração de pagamento online',
   'admin/system/configpay/card' => 'Cartão e senha',
   'admin/system/configpay/config' => 'Configuração de pagamento',

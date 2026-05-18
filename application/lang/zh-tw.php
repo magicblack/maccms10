@@ -1261,7 +1261,7 @@ https://www.baidu.com/123.jpg
                         2.本地分類在前,采集分類在後(動作片=動作);<br>
                         3.不要有多余的空行;<br>
                         4.視頻播放器、備註、地址、服務器組、文章分頁等多頁數據連接符都是$$$<br>
-                        5.入庫接口地址 視頻/api.php/receive/vod；文章/api.php/receive/art； 演員/api.php/receive/actor；角色/api.php/receive/role；網址/api.php/receive/website；<br>',
+                        5.入庫接口地址 視頻/api.php/receive/vod；文章/api.php/receive/art； 演員/api.php/receive/actor；角色/api.php/receive/role；網址/api.php/receive/website；漫畫/api.php/receive/manga；<br>',
   'admin/system/configinterface/status' => '接口開關',
   'admin/system/configinterface/pass' => '入庫免登錄密碼',
   'admin/system/configinterface/pass_tip' => '避免暴力破解密碼建議設置位16位以上包含大小寫字母數字及特殊符號或者修改api.php入口文件名',
@@ -1269,6 +1269,7 @@ https://www.baidu.com/123.jpg
   'admin/system/configinterface/art_type' => '文章分類轉換',
   'admin/system/configinterface/actor_type' => '演員分類轉換',
   'admin/system/configinterface/website_type' => '網址分類轉換',
+  'admin/system/configinterface/manga_type' => '漫畫分類轉換',
   'admin/system/configpay/title' => '在線支付配置',
   'admin/system/configpay/card' => '卡密',
   'admin/system/configpay/config' => '支付配置',

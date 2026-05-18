@@ -1037,6 +1037,7 @@ function mac_interface_type()
         $arttype = str_replace([chr(10),chr(13)],['','#'],$config['arttype']);
         $actortype = str_replace([chr(10),chr(13)],['','#'],$config['actortype']);
         $websitetype = str_replace([chr(10),chr(13)],['','#'],$config['websitetype']);
+        $mangatype = str_replace([chr(10),chr(13)],['','#'],isset($config['mangatype']) ? $config['mangatype'] : '');
 
         $data =[];
         $type_arr = explode('#',$vodtype);
@@ -1063,6 +1064,19 @@ function mac_interface_type()
             $data['websitetype'][$to] = $from;
         }
 
+        if(!empty($mangatype)){
+            $type_arr = explode('#',$mangatype);
+            foreach($type_arr as $k=>$v){
+                if(strpos($v,'=')!==false){
+                    list($from, $to) = explode('=', $v);
+                    $data['mangatype'][$to] = $from;
+                }
+            }
+        }
+        if(empty($data['mangatype'])){
+            $data['mangatype'] = [];
+        }
+
         think\Cache::set($key,$data);
     }
 
@@ -1083,6 +1097,11 @@ function mac_interface_type()
     }
     foreach($data['websitetype'] as $k=>$v){
         $data['websitetype'][$k] = (int)$type_names[$v];
+    }
+    if(!empty($data['mangatype'])){
+        foreach($data['mangatype'] as $k=>$v){
+            $data['mangatype'][$k] = (int)$type_names[$v];
+        }
     }
     return $data;
 }

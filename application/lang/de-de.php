@@ -1259,7 +1259,7 @@ https://www.baidu.com/123.jpg',
                         2.Die lokale Kategorie steht an erster Stelle und die gesammelte Kategorie an letzter Stelle (Actionfilm = Action);<br>
                         3.Keine zusätzlichen Leerzeilen;<br>
                         4.Mehrseitige Datenkonnektoren wie Videoplayer, Notizen, Adresse, Servergruppe, Artikelpaginierung usw. sind alle vorhanden$$$<br>
-                        5.Video zur Adresse der eingehenden Schnittstelle/api.php/receive/vod；Artikel/api.php/receive/art； Schauspieler/api.php/receive/actor；Rolle/api.php/receive/role；URL/api.php/receive/website；<br>',
+                        5.Video zur Adresse der eingehenden Schnittstelle/api.php/receive/vod；Artikel/api.php/receive/art； Schauspieler/api.php/receive/actor；Rolle/api.php/receive/role；URL/api.php/receive/website；Manga/api.php/receive/manga；<br>',
   'admin/system/configinterface/status' => 'Schnittstellenschalter',
   'admin/system/configinterface/pass' => 'Kein Login-Passwort für Lagerhaltung',
   'admin/system/configinterface/pass_tip' => 'Um Brute-Force-Cracking zu vermeiden, wird empfohlen, das Passwort auf mehr als 16 Zeichen festzulegen, einschließlich Groß- und Kleinbuchstaben, Zahlen und Sonderzeichen, oder den api.php-Eintrag zu ändern Dateiname',
@@ -1267,6 +1267,7 @@ https://www.baidu.com/123.jpg',
   'admin/system/configinterface/art_type' => 'Konvertierung der Artikelklassifizierung',
   'admin/system/configinterface/actor_type' => 'Konvertierung der Akteurklassifizierung',
   'admin/system/configinterface/website_type' => 'Konvertierung der Website-Klassifizierung',
+  'admin/system/configinterface/manga_type' => 'Manga-Kategorie-Konvertierung',
   'admin/system/configpay/title' => 'Online-Zahlungskonfiguration',
   'admin/system/configpay/card' => 'Kartenpasswort',
   'admin/system/configpay/config' => 'Zahlungskonfiguration',

@@ -1261,7 +1261,7 @@ https://www.baidu.com/123.jpg
                         2.ローカルカテゴリが前に、収集カテゴリが後（アクション映画=アクション）。<br>
                         3.余分な空行を入れないでください。<br>
                         4.ビデオプレーヤー、備考、アドレス、サーバーグループ、記事のページ付けなどの複数ページのデータ接続文字はすべて$$$です<br>
-                        5.ライブラリインターフェースアドレス ビデオ/api.php/receive/vod；記事/api.php/receive/art； 俳優/api.php/receive/actor；役割/api.php/receive/role；Webサイト/api.php/receive/website；<br>',
+                        5.ライブラリインターフェースアドレス ビデオ/api.php/receive/vod；記事/api.php/receive/art； 俳優/api.php/receive/actor；役割/api.php/receive/role；Webサイト/api.php/receive/website；漫画/api.php/receive/manga；<br>',
   'admin/system/configinterface/status' => 'インターフェーススイッチ',
   'admin/system/configinterface/pass' => 'ライブラリのログインなしパスワード',
   'admin/system/configinterface/pass_tip' => 'ブルートフォース攻撃を防ぐために、パスワードを16桁以上の大文字と小文字、数字、特殊文字を含むように設定するか、api.phpエントリファイル名を変更することをお勧めします',
@@ -1269,6 +1269,7 @@ https://www.baidu.com/123.jpg
   'admin/system/configinterface/art_type' => '記事カテゴリの変換',
   'admin/system/configinterface/actor_type' => '俳優カテゴリの変換',
   'admin/system/configinterface/website_type' => 'Webサイトカテゴリの変換',
+  'admin/system/configinterface/manga_type' => '漫画カテゴリの変換',
   'admin/system/configpay/title' => 'オンライン決済構成',
   'admin/system/configpay/card' => 'カードパスワード',
   'admin/system/configpay/config' => '支払い構成',

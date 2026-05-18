@@ -1261,7 +1261,7 @@ https://www.baidu.com/123.jpg',
                         2. Local categories first, collection categories later (Action Movie=Action);<br>
                         3. No extra blank lines;<br>
                         4. For multiple data connections such as video player, remarks, addresses, server groups, article pagination, etc., use $$$ as the delimiter;<br>
-                        5. Database entry interface addresses: Video /api.php/receive/vod; Article /api.php/receive/art; Actor /api.php/receive/actor; Role /api.php/receive/role; Website /api.php/receive/website;<br>',
+                        5. Database entry interface addresses: Video /api.php/receive/vod; Article /api.php/receive/art; Actor /api.php/receive/actor; Role /api.php/receive/role; Website /api.php/receive/website; Manga /api.php/receive/manga;<br>',
   'admin/system/configinterface/status' => 'Interface Switch',
   'admin/system/configinterface/pass' => 'Database Entry Password',
   'admin/system/configinterface/pass_tip' => 'To prevent brute force password cracking, it is recommended to set a password of at least 16 characters including uppercase, lowercase letters, numbers, and special symbols or modify the api.php entry file name',
@@ -1269,6 +1269,7 @@ https://www.baidu.com/123.jpg',
   'admin/system/configinterface/art_type' => 'Article Category Conversion',
   'admin/system/configinterface/actor_type' => 'Actor Category Conversion',
   'admin/system/configinterface/website_type' => 'Website Category Conversion',
+  'admin/system/configinterface/manga_type' => 'Manga Category Conversion',
   'admin/system/configpay/title' => 'Online Payment Configuration',
   'admin/system/configpay/card' => 'Card Password',
   'admin/system/configpay/config' => 'Payment Configuration',

@@ -1261,7 +1261,7 @@ https://www.baidu.com/123.jpg
                         2. La categoría local va primero, seguida de la categoría de recolección (ej. "Acción"= "动作");<br>
                         3. No debe haber líneas vacías adicionales;<br>
                         4. Los conectores para datos de varias páginas como reproductores de video, notas, direcciones, grupos de servidores y paginación de artículos son $$$<br>
-                        5. Direcciones de interfaz de almacenamiento: Video /api.php/receive/vod; Artículo /api.php/receive/art; Actor /api.php/receive/actor; Rol /api.php/receive/role; Sitio web /api.php/receive/website;',
+                        5. Direcciones de interfaz de almacenamiento: Video /api.php/receive/vod; Artículo /api.php/receive/art; Actor /api.php/receive/actor; Rol /api.php/receive/role; Sitio web /api.php/receive/website; Manga /api.php/receive/manga;',
   'admin/system/configinterface/status' => 'Interruptor de Interfaz',
   'admin/system/configinterface/pass' => 'Contraseña para Almacenamiento sin Inicio de Sesión',
   'admin/system/configinterface/pass_tip' => 'Por seguridad, se recomienda utilizar una contraseña de al menos 16 caracteres que incluya letras mayúsculas, minúsculas, números y caracteres especiales, o cambiar el nombre del archivo de entrada api.php',
@@ -1269,6 +1269,7 @@ https://www.baidu.com/123.jpg
   'admin/system/configinterface/art_type' => 'Conversión de Categoría de Artículo',
   'admin/system/configinterface/actor_type' => 'Conversión de Categoría de Actor',
   'admin/system/configinterface/website_type' => 'Conversión de Categoría de Sitio Web',
+  'admin/system/configinterface/manga_type' => 'Conversión de Categoría de Manga',
   'admin/system/configpay/title' => 'Configuración de Pago en Línea',
   'admin/system/configpay/card' => 'Tarjeta de Pago',
   'admin/system/configpay/config' => 'Configuración de Pago',

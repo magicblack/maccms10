@@ -1260,7 +1260,7 @@ https://www.baidu.com/123.jpg',
                         2. Catégorie locale en premier, catégorie de collecte ensuite (par exemple, "Action" pour "Action片") ;<br>
                         3. Ne pas laisser de lignes vides ;<br>
                         4. Pour les lecteurs vidéo, les remarques, les adresses, les groupes de serveurs, et la pagination des articles, utilisez $$$ comme séparateur de données multi-pages ;<br>
-                        5. Adresses d\'interface d\'entrée en base de données : Vidéo/api.php/receive/vod ; Articles/api.php/receive/art ; Acteurs/api.php/receive/actor ; Rôles/api.php/receive/role ; Sites web/api.php/receive/website ;',
+                        5. Adresses d\'interface d\'entrée en base de données : Vidéo/api.php/receive/vod ; Articles/api.php/receive/art ; Acteurs/api.php/receive/actor ; Rôles/api.php/receive/role ; Sites web/api.php/receive/website ; Manga/api.php/receive/manga ;',
   'admin/system/configinterface/status' => 'Activation de l\'interface',
   'admin/system/configinterface/pass' => 'Mot de passe d\'entrée en base de données sans connexion',
   'admin/system/configinterface/pass_tip' => 'Pour éviter les attaques par force brute, il est recommandé d\'utiliser un mot de passe d\'au moins 16 caractères avec des majuscules, des minuscules, des chiffres et des caractères spéciaux, ou de modifier le nom du fichier d\'entrée api.php',
@@ -1268,6 +1268,7 @@ https://www.baidu.com/123.jpg',
   'admin/system/configinterface/art_type' => 'Conversion des catégories d\'articles',
   'admin/system/configinterface/actor_type' => 'Conversion des catégories d\'acteurs',
   'admin/system/configinterface/website_type' => 'Conversion des catégories de sites web',
+  'admin/system/configinterface/manga_type' => 'Conversion des catégories de manga',
   'admin/system/configpay/title' => 'Configuration des paiements en ligne',
   'admin/system/configpay/card' => 'Cartes prépayées',
   'admin/system/configpay/config' => 'Configuration des paiements',

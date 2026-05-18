@@ -1261,7 +1261,7 @@ https://www.baidu.com/123.jpg
                         2. 로컬 카테고리가 앞에 오고 수집 카테고리가 뒤에 옵니다(액션 영화=액션). <br>
                         3. 불필요한 빈 줄이 없어야 합니다. <br>
                         4. 동영상 플레이어, 메모, 주소, 서버 그룹, 기사 페이지 매김 등 다중 페이지 데이터 연결 기호는 모두 $$$입니다. <br>
-                        5. 데이터베이스 인터페이스 주소 동영상 /api.php/receive/vod; 기사 /api.php/receive/art; 배우 /api.php/receive/actor; 역할 /api.php/receive/role; 웹사이트 /api.php/receive/website; <br>',
+                        5. 데이터베이스 인터페이스 주소 동영상 /api.php/receive/vod; 기사 /api.php/receive/art; 배우 /api.php/receive/actor; 역할 /api.php/receive/role; 웹사이트 /api.php/receive/website; 만화 /api.php/receive/manga; <br>',
   'admin/system/configinterface/status' => '인터페이스 스위치',
   'admin/system/configinterface/pass' => '데이터베이스 로그인 없이 비밀번호 입력',
   'admin/system/configinterface/pass_tip' => '무차별 대입 공격을 방지하기 위해 비밀번호를 대소문자, 숫자 및 특수 문자를 포함하여 16자 이상으로 설정하거나 api.php 엔트리 파일 이름을 수정하는 것이 좋습니다.',
@@ -1269,6 +1269,7 @@ https://www.baidu.com/123.jpg
   'admin/system/configinterface/art_type' => '기사 카테고리 변환',
   'admin/system/configinterface/actor_type' => '배우 카테고리 변환',
   'admin/system/configinterface/website_type' => '웹사이트 카테고리 변환',
+  'admin/system/configinterface/manga_type' => '만화 카테고리 변환',
   'admin/system/configpay/title' => '온라인 결제 구성',
   'admin/system/configpay/card' => '카드 비밀번호',
   'admin/system/configpay/config' => '결제 구성',

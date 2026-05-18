@@ -1389,7 +1389,7 @@ https://www.baidu.com/123.jpg
                         2.本地分类在前,采集分类在后(动作片=动作);<br>
                         3.不要有多余的空行;<br>
                         4.视频播放器、备注、地址、服务器组、文章分页等多页数据连接符都是$$$<br>
-                        5.入库接口地址 视频/api.php/receive/vod；文章/api.php/receive/art； 演员/api.php/receive/actor；角色/api.php/receive/role；网址/api.php/receive/website；<br>',
+                        5.入库接口地址 视频/api.php/receive/vod；文章/api.php/receive/art； 演员/api.php/receive/actor；角色/api.php/receive/role；网址/api.php/receive/website；漫画/api.php/receive/manga；<br>',
     'admin/system/configinterface/status'=>'接口开关',
     'admin/system/configinterface/pass'=>'入库免登录密码',
     'admin/system/configinterface/pass_tip'=>'避免暴力破解密码建议设置位16位以上包含大小写字母数字及特殊符号或者修改api.php入口文件名',
@@ -1397,6 +1397,7 @@ https://www.baidu.com/123.jpg
     'admin/system/configinterface/art_type'=>'文章分类转换',
     'admin/system/configinterface/actor_type'=>'演员分类转换',
     'admin/system/configinterface/website_type'=>'网址分类转换',
+    'admin/system/configinterface/manga_type'=>'漫画分类转换',
     'admin/system/configinterface/title'=>'站外入库配置',
     'admin/system/configinterface/title'=>'站外入库配置',
     'admin/system/configinterface/title'=>'站外入库配置',
