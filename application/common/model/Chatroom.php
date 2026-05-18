@@ -255,7 +255,7 @@ class Chatroom extends Base {
     {
         // 尝试原子 SETNX（仅 Redis 后端）
         try {
-            $handler = \think\Cache::handler();
+            $handler = \think\Cache::init()->handler();
             if ($handler instanceof \Redis) {
                 $ok = $handler->set($cache_key, 1, ['NX', 'EX' => $interval]);
                 return (bool)$ok;

@@ -232,7 +232,7 @@ class Danmaku extends Base {
         $cache_key = 'danmaku_rate_' . $user_id;
         // 尝试原子 SETNX（仅 Redis 后端）
         try {
-            $handler = \think\Cache::handler();
+            $handler = \think\Cache::init()->handler();
             if ($handler instanceof \Redis) {
                 // SET key 1 EX interval NX — 仅当 key 不存在时才设置，原子操作
                 $ok = $handler->set($cache_key, 1, ['NX', 'EX' => $interval]);

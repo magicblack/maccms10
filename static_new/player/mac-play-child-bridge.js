@@ -29,6 +29,7 @@
   var lastTimePost = 0;
   var seenSpawn = {};
   var loadDmAbort = null;
+  var trustedOrigin = null;
 
   function postToParent(payload) {
     try {
@@ -264,18 +265,19 @@
   }
 
   function onMessage(ev) {
-    try {
-      var parentOrigin = '';
-      try {
-        parentOrigin = parent.location.origin;
-      } catch (e) {
-        // 跨域时取不到，回退为只信任 init 消息携带的 apiBase 域名
-        parentOrigin = '';
-      }
-      if (parentOrigin && ev.origin !== parentOrigin) return;
-    } catch (e) {}
     var d = ev.data;
     if (!d || d.source !== MSG_PARENT) return;
+
+    if (!trustedOrigin) {
+      if (d.type !== 'init') return;
+      try {
+        var apiHost = new URL(d.apiBase || '').origin;
+        if (apiHost && apiHost !== ev.origin) return;
+      } catch (e) {}
+      trustedOrigin = ev.origin;
+    } else if (ev.origin !== trustedOrigin) {
+      return;
+    }
     if (d.type === 'init') {
       apiBase = d.apiBase || '';
       vodId = parseInt(d.vodId, 10) || 0;
