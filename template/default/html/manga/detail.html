@@ -53,30 +53,31 @@
                     </div>
                 </div>
 
-                <div class="content-detail-rows js-manga-detail-rows" style="display:none">
-                    <a class="content-detail-row content-detail-row--boxed js-manga-row-latest" href="#">
-                        <span class="cdr-icon cdr-icon--img"><img src="{$maccms.path_tpl}images/content-detail/icon-recent.png" width="22" height="22" alt="" loading="lazy" decoding="async"></span>
-                        <div class="cdr-main">
-                            <div class="cdr-label" data-lang="content_detail_recent_update">最近更新</div>
-                            <div class="cdr-sub js-manga-latest-sub"></div>
-                        </div>
-                        <span class="cdr-right js-manga-latest-date"></span>
-                    </a>
-                </div>
-
-                <section class="content-detail-intro-vod">
-                    <h2 data-lang="string_vod_introduction">剧情介绍</h2>
-                    <div class="content_desc context clearfix">
-                        <span class="js-manga-intro-short"></span>
-                        <a href="javascript:void(0);" class="show_btn" onclick="showdiv(this);"><i class="line_bg"></i><i class="iconfont" aria-hidden="true">&#xe63a;</i><em class="hidden_xs">&nbsp; <span data-lang="string_vod_expand">展开全部</span> </em></a>
-                    </div>
-                    <div class="content_desc full_text clearfix" style="display:none;">
-                        <span class="js-manga-intro-full"></span>
-                        <a href="javascript:void(0);" class="hidden_btn" onclick="hidediv(this);"><i class="iconfont" aria-hidden="true">&#xe628;</i><em class="hidden_xs">&nbsp;<span data-lang="string_vod_pull">收起全部</span></em></a>
-                    </div>
-                </section>
                 </div>
             </div>
+        </div>
+
+        <section class="content-detail-intro-vod content-detail-intro-before-playlist">
+            <h2 data-lang="string_vod_introduction">剧情介绍</h2>
+            <div class="content_desc context clearfix">
+                <span class="js-manga-intro-short"></span>
+                <a href="javascript:void(0);" class="show_btn" onclick="showdiv(this);"><i class="line_bg"></i><i class="iconfont" aria-hidden="true">&#xe63a;</i><em class="hidden_xs">&nbsp; <span data-lang="string_vod_expand">展开全部</span> </em></a>
+            </div>
+            <div class="content_desc full_text clearfix" style="display:none;">
+                <span class="js-manga-intro-full"></span>
+                <a href="javascript:void(0);" class="hidden_btn" onclick="hidediv(this);"><i class="iconfont" aria-hidden="true">&#xe628;</i><em class="hidden_xs">&nbsp;<span data-lang="string_vod_pull">收起全部</span></em></a>
+            </div>
+        </section>
+
+        <div class="content-detail-rows js-manga-detail-rows" style="display:none">
+            <a class="content-detail-row content-detail-row--boxed js-manga-row-latest" href="#">
+                <span class="cdr-icon cdr-icon--img"><img src="{$maccms.path_tpl}images/content-detail/icon-recent.png" width="22" height="22" alt="" loading="lazy" decoding="async"></span>
+                <div class="cdr-main">
+                    <div class="cdr-label" data-lang="content_detail_recent_update">最近更新</div>
+                    <div class="cdr-sub js-manga-latest-sub"></div>
+                </div>
+                <span class="cdr-right js-manga-latest-date"></span>
+            </a>
         </div>
 
         <div class="pannel article_box clearfix" id="manga-toc-panel">

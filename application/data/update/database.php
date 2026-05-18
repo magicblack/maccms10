@@ -295,6 +295,203 @@ if(empty($col_list[$pre.'analytics_retention_cohort'])){
     $sql .= "CREATE TABLE `{$pre}analytics_retention_cohort` (`cohort_date` date NOT NULL COMMENT 'cohort 基准日（常用：注册日）',`cohort_type` varchar(16) NOT NULL DEFAULT 'register',`return_day` smallint(5) unsigned NOT NULL COMMENT '回访间隔天 0=当日 1=次日',`user_cnt` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '该日仍活跃用户数',`updated_at` int(10) unsigned NOT NULL DEFAULT '0',PRIMARY KEY (`cohort_date`,`cohort_type`,`return_day`),KEY `idx_cohort` (`cohort_date`,`cohort_type`)) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='运营统计-留存 cohort';";
     $sql .="\r";
 }
+if (!empty($col_list[$pre.'user']['group_id'])) {
+    $sql .= "ALTER TABLE `{$pre}user` MODIFY COLUMN `group_id` varchar(255) NOT NULL DEFAULT '0' COMMENT '会员组ID,多个用逗号分隔';";
+    $sql .= "\r";
+}
+// 好友邀请功能 - 添加邀请码相关字段
+if(empty($col_list[$pre.'user']['user_invite_code'])){
+    $sql .= "ALTER TABLE `{$pre}user` ADD `user_invite_code` varchar(20) NOT NULL DEFAULT '' COMMENT '邀请码' AFTER `user_pid_3`;";
+    $sql .= "\r";
+}
+if(empty($col_list[$pre.'user']['user_invite_count'])){
+    $sql .= "ALTER TABLE `{$pre}user` ADD `user_invite_count` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '邀请人数' AFTER `user_invite_code`;";
+    $sql .= "\r";
+}
+if(empty($col_list[$pre.'user']['user_invite_reward_time'])){
+    $sql .= "ALTER TABLE `{$pre}user` ADD `user_invite_reward_time` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '最后一次发放奖励时间' AFTER `user_invite_count`;";
+    $sql .= "\r";
+}
+// 邀请奖励档次记录 - 避免重复发放
+if(empty($col_list[$pre.'user']['user_invite_reward_level'])){
+    $sql .= "ALTER TABLE `{$pre}user` ADD `user_invite_reward_level` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '已发放奖励档次(避免重复发放)' AFTER `user_invite_reward_time`;";
+    $sql .= "\r";
+}
+// 邀请码索引 - 避免全表扫描（使用 SHOW INDEX 检查索引是否已存在）
+$index_exists = \think\Db::query("SHOW INDEX FROM `{$pre}user` WHERE Key_name = 'idx_user_invite_code'");
+if(empty($index_exists)){
+    $sql .= "ALTER TABLE `{$pre}user` ADD INDEX `idx_user_invite_code` (`user_invite_code`);";
+    $sql .= "\r";
+}
+// 任务定义表
+if(empty($col_list[$pre.'task'])){
+    $sql .= "CREATE TABLE `{$pre}task` (";
+    $sql .= "`task_id` int(10) unsigned NOT NULL AUTO_INCREMENT,";
+    $sql .= "`task_name` varchar(100) NOT NULL DEFAULT '' COMMENT '任务名称',";
+    $sql .= "`task_type` tinyint(1) unsigned NOT NULL DEFAULT '1' COMMENT '任务类型 1=每日任务 2=新手任务',";
+    $sql .= "`task_action` varchar(50) NOT NULL DEFAULT '' COMMENT '任务动作标识',";
+    $sql .= "`task_icon` varchar(255) NOT NULL DEFAULT '' COMMENT '任务图标',";
+    $sql .= "`task_desc` varchar(255) NOT NULL DEFAULT '' COMMENT '任务描述',";
+    $sql .= "`task_points` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '奖励积分',";
+    $sql .= "`task_target` int(10) unsigned NOT NULL DEFAULT '1' COMMENT '目标次数',";
+    $sql .= "`task_sort` int(10) NOT NULL DEFAULT '0' COMMENT '排序',";
+    $sql .= "`task_status` tinyint(1) unsigned NOT NULL DEFAULT '1' COMMENT '状态 0=禁用 1=启用',";
+    $sql .= "`task_time_add` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '创建时间',";
+    $sql .= "`task_time` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '更新时间',";
+    $sql .= "PRIMARY KEY (`task_id`),";
+    $sql .= "KEY `task_type` (`task_type`),";
+    $sql .= "UNIQUE KEY `task_action` (`task_action`),";
+    $sql .= "KEY `task_status` (`task_status`),";
+    $sql .= "KEY `task_sort` (`task_sort`)";
+    $sql .= ") ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='任务定义表';";
+    $sql .= "\r";
+}
+// 用户任务记录表
+if(empty($col_list[$pre.'task_log'])){
+    $sql .= "CREATE TABLE `{$pre}task_log` (";
+    $sql .= "`log_id` int(10) unsigned NOT NULL AUTO_INCREMENT,";
+    $sql .= "`user_id` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '用户ID',";
+    $sql .= "`task_id` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '任务ID',";
+    $sql .= "`task_action` varchar(50) NOT NULL DEFAULT '' COMMENT '任务动作标识',";
+    $sql .= "`log_progress` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '当前进度',";
+    $sql .= "`log_status` tinyint(1) unsigned NOT NULL DEFAULT '0' COMMENT '状态 0=进行中 1=已完成待领取 2=已领取',";
+    $sql .= "`log_points` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '获得积分',";
+    $sql .= "`log_date` date NOT NULL COMMENT '任务日期',";
+    $sql .= "`log_time` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '记录时间',";
+    $sql .= "`log_claim_time` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '领取奖励时间',";
+    $sql .= "PRIMARY KEY (`log_id`),";
+    $sql .= "UNIQUE KEY `user_task_date` (`user_id`, `task_id`, `log_date`),";
+    $sql .= "KEY `user_id` (`user_id`),";
+    $sql .= "KEY `task_id` (`task_id`),";
+    $sql .= "KEY `log_status` (`log_status`),";
+    $sql .= "KEY `log_date` (`log_date`)";
+    $sql .= ") ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='用户任务记录表';";
+    $sql .= "\r";
+}
+// 签到记录表
+if(empty($col_list[$pre.'sign_log'])){
+    $sql .= "CREATE TABLE `{$pre}sign_log` (";
+    $sql .= "`sign_id` int(10) unsigned NOT NULL AUTO_INCREMENT,";
+    $sql .= "`user_id` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '用户ID',";
+    $sql .= "`sign_date` date NOT NULL COMMENT '签到日期',";
+    $sql .= "`sign_time` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '签到时间戳',";
+    $sql .= "`sign_points` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '获得积分',";
+    $sql .= "`sign_serial_days` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '连续签到天数',";
+    $sql .= "PRIMARY KEY (`sign_id`),";
+    $sql .= "UNIQUE KEY `user_date` (`user_id`, `sign_date`),";
+    $sql .= "KEY `user_id` (`user_id`),";
+    $sql .= "KEY `sign_date` (`sign_date`)";
+    $sql .= ") ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='签到记录表';";
+    $sql .= "\r";
+}
+// 签到里程碑配置表
+if(empty($col_list[$pre.'sign_milestone'])){
+    $sql .= "CREATE TABLE `{$pre}sign_milestone` (";
+    $sql .= "`milestone_id` int(10) unsigned NOT NULL AUTO_INCREMENT,";
+    $sql .= "`milestone_days` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '所需连续签到天数',";
+    $sql .= "`milestone_points` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '奖励积分',";
+    $sql .= "`milestone_sort` int(10) NOT NULL DEFAULT '0' COMMENT '排序',";
+    $sql .= "`milestone_status` tinyint(1) unsigned NOT NULL DEFAULT '1' COMMENT '状态 0=禁用 1=启用',";
+    $sql .= "`milestone_time_add` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '创建时间',";
+    $sql .= "`milestone_time` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '更新时间',";
+    $sql .= "PRIMARY KEY (`milestone_id`),";
+    $sql .= "UNIQUE KEY `milestone_days` (`milestone_days`),";
+    $sql .= "KEY `milestone_status` (`milestone_status`),";
+    $sql .= "KEY `milestone_sort` (`milestone_sort`)";
+    $sql .= ") ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='签到里程碑配置表';";
+    $sql .= "\r";
+}
+// 签到里程碑领取记录表
+if(empty($col_list[$pre.'sign_milestone_log'])){
+    $sql .= "CREATE TABLE `{$pre}sign_milestone_log` (";
+    $sql .= "`log_id` int(10) unsigned NOT NULL AUTO_INCREMENT,";
+    $sql .= "`user_id` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '用户ID',";
+    $sql .= "`milestone_id` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '里程碑ID',";
+    $sql .= "`milestone_days` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '达成天数',";
+    $sql .= "`log_points` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '获得积分',";
+    $sql .= "`log_time` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '领取时间',";
+    $sql .= "PRIMARY KEY (`log_id`),";
+    $sql .= "UNIQUE KEY `user_milestone` (`user_id`, `milestone_id`),";
+    $sql .= "KEY `user_id` (`user_id`)";
+    $sql .= ") ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='签到里程碑领取记录';";
+    $sql .= "\r";
+}
+// 插入预设签到里程碑数据
+$milestone_count = \think\Db::name('sign_milestone')->count();
+if(empty($milestone_count)){
+    $now = time();
+    $sql .= "INSERT INTO `{$pre}sign_milestone` (`milestone_days`,`milestone_points`,`milestone_sort`,`milestone_status`,`milestone_time_add`,`milestone_time`) VALUES ";
+    $sql .= "(3,5,1,1,{$now},{$now}),";
+    $sql .= "(10,10,2,1,{$now},{$now}),";
+    $sql .= "(20,20,3,1,{$now},{$now}),";
+    $sql .= "(35,30,4,1,{$now},{$now}),";
+    $sql .= "(55,50,5,1,{$now},{$now}),";
+    $sql .= "(85,100,6,1,{$now},{$now});";
+    $sql .= "\r";
+}
+// 插入预设任务数据
+$task_count = \think\Db::name('task')->count();
+if(empty($task_count)){
+    $now = time();
+    $sql .= "INSERT INTO `{$pre}task` (`task_name`,`task_type`,`task_action`,`task_desc`,`task_points`,`task_target`,`task_sort`,`task_status`,`task_time_add`,`task_time`) VALUES ";
+    $sql .= "('每日签到',1,'daily_sign','每天签到获得积分奖励',5,1,1,1,{$now},{$now}),";
+    $sql .= "('观看影片',1,'watch_vod','每日观看3部影片',3,3,2,1,{$now},{$now}),";
+    $sql .= "('分享影片',1,'share_vod','每日分享1次影片到社交平台',2,1,3,1,{$now},{$now}),";
+    $sql .= "('发表评论',1,'post_comment','每日发表1条评论',2,1,4,1,{$now},{$now}),";
+    $sql .= "('绑定手机',2,'bind_phone','绑定手机号码',20,1,1,1,{$now},{$now}),";
+    $sql .= "('绑定邮箱',2,'bind_email','绑定电子邮箱',20,1,2,1,{$now},{$now}),";
+    $sql .= "('设置头像',2,'set_portrait','上传个人头像',10,1,3,1,{$now},{$now}),";
+    $sql .= "('完善资料',2,'complete_profile','填写个人昵称等资料',10,1,4,1,{$now},{$now}),";
+    $sql .= "('首次充值',2,'first_pay','完成首次充值',50,1,5,1,{$now},{$now});";
+    $sql .= "\r";
+}
+// 聊天室消息表
+if(empty($col_list[$pre.'chatroom'])){
+    $sql .= "CREATE TABLE `{$pre}chatroom` (";
+    $sql .= "`chat_id` int(10) unsigned NOT NULL AUTO_INCREMENT,";
+    $sql .= "`vod_id` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '影片ID(聊天室房间)',";
+    $sql .= "`user_id` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '用户ID',";
+    $sql .= "`user_name` varchar(30) NOT NULL DEFAULT '' COMMENT '用户昵称',";
+    $sql .= "`chat_content` varchar(500) NOT NULL DEFAULT '' COMMENT '聊天内容',";
+    $sql .= "`chat_ip` int(10) unsigned NOT NULL DEFAULT '0' COMMENT 'IP',";
+    $sql .= "`chat_time` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '发送时间',";
+    $sql .= "`chat_status` tinyint(1) unsigned NOT NULL DEFAULT '1' COMMENT '状态 0=禁用 1=正常',";
+    $sql .= "`chat_report` mediumint(8) unsigned NOT NULL DEFAULT '0' COMMENT '举报次数',";
+    $sql .= "PRIMARY KEY (`chat_id`),";
+    $sql .= "KEY `vod_id` (`vod_id`),";
+    $sql .= "KEY `user_id` (`user_id`),";
+    $sql .= "KEY `chat_time` (`chat_time`),";
+    $sql .= "KEY `chat_status` (`chat_status`),";
+    $sql .= "KEY `vod_chat` (`vod_id`, `chat_id`)";
+    $sql .= ") ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='聊天室消息表';";
+    $sql .= "\r";
+}
+// 弹幕表
+if(empty($col_list[$pre.'danmaku'])){
+    $sql .= "CREATE TABLE `{$pre}danmaku` (";
+    $sql .= "`danmaku_id` int(10) unsigned NOT NULL AUTO_INCREMENT,";
+    $sql .= "`vod_id` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '影片ID',";
+    $sql .= "`vod_sid` tinyint(3) unsigned NOT NULL DEFAULT '0' COMMENT '播放源ID',";
+    $sql .= "`vod_nid` smallint(6) unsigned NOT NULL DEFAULT '0' COMMENT '集数ID',";
+    $sql .= "`user_id` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '用户ID',";
+    $sql .= "`user_name` varchar(30) NOT NULL DEFAULT '' COMMENT '用户昵称',";
+    $sql .= "`danmaku_time` float unsigned NOT NULL DEFAULT '0' COMMENT '弹幕出现的影片时间点(秒)',";
+    $sql .= "`danmaku_type` tinyint(1) unsigned NOT NULL DEFAULT '0' COMMENT '弹幕类型 0=滚动 1=顶部 2=底部',";
+    $sql .= "`danmaku_color` varchar(10) NOT NULL DEFAULT '#FFFFFF' COMMENT '弹幕颜色',";
+    $sql .= "`danmaku_text` varchar(200) NOT NULL DEFAULT '' COMMENT '弹幕内容',";
+    $sql .= "`danmaku_ip` int(10) unsigned NOT NULL DEFAULT '0' COMMENT 'IP',";
+    $sql .= "`danmaku_send_time` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '发送时间戳',";
+    $sql .= "`danmaku_status` tinyint(1) unsigned NOT NULL DEFAULT '1' COMMENT '状态 0=禁用 1=正常',";
+    $sql .= "`danmaku_report` mediumint(8) unsigned NOT NULL DEFAULT '0' COMMENT '举报次数',";
+    $sql .= "PRIMARY KEY (`danmaku_id`),";
+    $sql .= "KEY `vod_id` (`vod_id`),";
+    $sql .= "KEY `vod_episode` (`vod_id`, `vod_sid`, `vod_nid`),";
+    $sql .= "KEY `user_id` (`user_id`),";
+    $sql .= "KEY `danmaku_send_time` (`danmaku_send_time`),";
+    $sql .= "KEY `danmaku_status` (`danmaku_status`)";
+    $sql .= ") ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='弹幕表';";
+    $sql .= "\r";
+}
 // 修改 group_id 为 varchar(255)（仅当列仍存在且尚未为 varchar(255)，避免每次升级重复 MODIFY）
 if(!empty($col_list[$pre.'user']['group_id'] ?? null)){
     $groupIdType = strtolower($col_list[$pre.'user']['group_id']['COLUMN_TYPE'] ?? '');

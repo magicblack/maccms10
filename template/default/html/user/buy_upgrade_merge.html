@@ -25,6 +25,7 @@
 				<a href="{:url('user/index')}" class="btn-left"><i class="iconfont ico-right">&#xe625;</i></a>
 				<span class="mb-title" data-lang="user_zxcz">在线充值</span>
 			</div>
+			<div class="user-buy-upgrade-top">
 			<div class="recharge-balance-row">
 				<img class="recharge-coin-ico" src="{$maccms.path_tpl}/images/recharge/recharge-coin.png" width="24" height="24" alt="" decoding="async" />
 				<p class="recharge-balance-txt">
@@ -35,6 +36,7 @@
 				<button type="button" role="tab" class="user-buy-upgrade-tabs__tab user-buy-upgrade-tabs__tab--recharge" data-mac-buy-upgrade-tab="recharge" data-lang="string_user_tab_recharge">充值</button>
 				<button type="button" role="tab" class="user-buy-upgrade-tabs__tab user-buy-upgrade-tabs__tab--upgrade" data-mac-buy-upgrade-tab="upgrade" data-lang="string_user_tab_upgrade_vip">升级VIP</button>
 			</nav>
+			</div>
 
 			<div class="user-buy-upgrade-panels">
 			<div class="user-buy-upgrade-panel user-buy-upgrade-panel--recharge">
@@ -56,12 +58,12 @@
 									<span class="amount-card__yen">¥</span><span class="amount-card__num">500</span>
 								</div>
 							</div>
-							<p class="user-info-row user-info-row--field recharge-amount-row">
-								<span class="user-info-row__label xiang" data-lang="user_czje">充值的金额</span>
-								<span class="user-info-row__control">
-									<input type="text" maxlength="8" name="price" id="price_input" value="" class="member-input user-info-row__input" placeholder="请输入金额" inputmode="decimal" autocomplete="off">
-								</span>
-							</p>
+							<div class="recharge-amount-block">
+								<label class="recharge-amount-label" for="price_input" data-lang="user_czje">充值的金额</label>
+								<div class="recharge-input-wrap">
+									<input type="text" maxlength="8" name="price" id="price_input" value="" class="recharge-amount-field" placeholder="请输入金额" inputmode="decimal" autocomplete="off">
+								</div>
+							</div>
 							<div class="tips-box recharge-tips">
 								<img class="recharge-tips-ico" src="{$maccms.path_tpl}/images/recharge/recharge-tip-ico.png" width="18" height="18" alt="" decoding="async" />
 								<span id="buy_recharge_tips" data-lang="string_loading">加载中…</span>

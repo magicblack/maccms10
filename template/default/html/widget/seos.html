@@ -11,11 +11,11 @@
 <meta name="keywords" content="{$tplconfig['theme']['seos']['index_key']|mac_default=$maccms.site_keywords}" />
 <meta name="description" content="{$tplconfig['theme']['seos']['index_des']|mac_default=$maccms.site_description}" />
 {elseif $maccms.aid==11}
-<title>{$obj.type_title|mac_default=$obj.type_name|mac_filter_html} - {if condition="$param['page'] gt 1"}第{$param['page']}页{/if} - {$maccms.site_name}</title>
+<title>{$obj.type_title|mac_default=$obj.type_name|mac_filter_html}{if condition="$param['page'] gt 1"} - 第{$param['page']}页{/if} - {$maccms.site_name}</title>
 <meta name="keywords" content="{$obj.type_key|mac_default=$obj.type_name|mac_filter_html},{$maccms.site_name}" />
 <meta name="description" content="{$obj.type_des|mac_default=$maccms.site_description}" />
 {elseif $maccms.aid==12}
-<title>最新{$obj.type_name} - {if condition="$param['page'] gt 1"}第{$param['page']}页{/if} - {$maccms.site_name}</title>
+<title>最新{$obj.type_name}{if condition="$param['page'] gt 1"} - 第{$param['page']}页{/if} - {$maccms.site_name}</title>
 <meta name="keywords" content="{$obj.type_key}" />
 <meta name="description" content="{$obj.type_des}" />
 {elseif $maccms.aid==13}
@@ -73,13 +73,70 @@ $arti_name = !empty($tplconfig['theme']['seos']['arti_name']) ? $tplconfig['them
 $arti_key = !empty($tplconfig['theme']['seos']['arti_key']) ? $tplconfig['theme']['seos']['arti_key'] : $maccms['seo']['art']['key'];
 $arti_des = !empty($tplconfig['theme']['seos']['arti_des']) ? $tplconfig['theme']['seos']['arti_des'] : $maccms['seo']['art']['des'];
 {/php}
-<title>{$arti_name|mac_default=$obj.type_title|mac_filter_html} - {if condition="$param['page'] gt 1"}第{$param['page']}页{/if} - {$maccms.site_name}</title>
+<title>{$arti_name|mac_default=$obj.type_title|mac_filter_html}{if condition="$param['page'] gt 1"} - 第{$param['page']}页{/if} - {$maccms.site_name}</title>
 <meta name="keywords" content="{$arti_key|mac_default=$obj.type_key|mac_filter_html},{$maccms.site_name}" />
 <meta name="description" content="{$arti_des|mac_default=$obj.type_des|mac_filter_html},{$maccms.site_name}" />
 {elseif $maccms.aid==24}
 <title>{$obj.art_name|mac_filter_html|mac_default='404'}_{$tplconfig['theme']['seos']['artd_name']|mac_default=$obj.type.type_name|mac_filter_html} - {$maccms.site_name}</title>
 <meta name="keywords" content="{$obj.art_tag|mac_default=$obj.type.type_name|mac_filter_html},{$tplconfig['theme']['seos']['artd_key']|mac_default='文章详情'},{$maccms.site_name}" />
 <meta name="description" content="{:mac_substring(mac_filter_html((isset($tplconfig['theme']['seos']['artd_des']) ? $tplconfig['theme']['seos']['artd_des'] : '文章详情') . ',' . (isset($obj['art_blurb']) ? $obj['art_blurb'] : '') . ',' . (isset($maccms['site_name']) ? $maccms['site_name'] : '')), 150)}" />
+{elseif $maccms.aid==25}
+{php}
+$__rpage = !empty($param['page']) ? (int) $param['page'] : 1;
+if ($__rpage < 1) {
+    $__rpage = 1;
+}
+$__rlist = (isset($obj['art_page_list']) && is_array($obj['art_page_list'])) ? $obj['art_page_list'] : [];
+$__rtotal = count($__rlist);
+if ($__rtotal < 1) {
+    $__rtotal = 1;
+}
+if ($__rpage > $__rtotal) {
+    $__rpage = $__rtotal;
+}
+$__rinfo = isset($__rlist[$__rpage]) ? $__rlist[$__rpage] : [];
+$__rchapter = !empty($__rinfo['title']) ? (string) $__rinfo['title'] : ('第' . $__rpage . '章');
+$art_read_title = mac_filter_html((isset($obj['art_name']) ? $obj['art_name'] : '')) . ' - ' . mac_filter_html($__rchapter);
+$art_read_kw = mac_substring(
+    mac_filter_html(
+        (isset($obj['art_tag']) ? $obj['art_tag'] : '') . ',' . (isset($obj['type']['type_name']) ? $obj['type']['type_name'] : '') . ',' . (isset($maccms['site_name']) ? $maccms['site_name'] : '')
+    ),
+    200
+);
+$art_read_desc = (isset($obj['art_blurb']) && (string) $obj['art_blurb'] !== '')
+    ? mac_substring(mac_filter_html((string) $obj['art_blurb']), 150)
+    : mac_substring(mac_filter_html('正在阅读《' . (isset($obj['art_name']) ? $obj['art_name'] : '') . '》' . $__rchapter), 150);
+{/php}
+<title>{$art_read_title} - {$maccms.site_name}</title>
+<meta name="keywords" content="{$art_read_kw}" />
+<meta name="description" content="{$art_read_desc}" />
+{elseif $maccms.aid==125}
+{php}
+$__msid = !empty($param['sid']) ? (int) $param['sid'] : 1;
+$__mnid = !empty($param['nid']) ? (int) $param['nid'] : 1;
+if ($__msid < 1) {
+    $__msid = 1;
+}
+if ($__mnid < 1) {
+    $__mnid = 1;
+}
+$__mfrom = (isset($obj['manga_page_list'][$__msid]) && is_array($obj['manga_page_list'][$__msid])) ? $obj['manga_page_list'][$__msid] : [];
+$__mep = (isset($__mfrom['urls'][$__mnid]) && is_array($__mfrom['urls'][$__mnid])) ? $__mfrom['urls'][$__mnid] : [];
+$__mname = !empty($__mep['name']) ? (string) $__mep['name'] : ('第' . $__mnid . '话');
+$manga_play_title = mac_filter_html((isset($obj['manga_name']) ? $obj['manga_name'] : '')) . ' - ' . mac_filter_html($__mname);
+$manga_play_kw = mac_substring(
+    mac_filter_html(
+        (isset($obj['manga_name']) ? $obj['manga_name'] : '') . ',' . (isset($obj['manga_class']) ? $obj['manga_class'] : '') . ',' . (isset($maccms['site_name']) ? $maccms['site_name'] : '')
+    ),
+    200
+);
+$manga_play_desc = (isset($obj['manga_blurb']) && (string) $obj['manga_blurb'] !== '')
+    ? mac_substring(mac_filter_html((string) $obj['manga_blurb']), 150)
+    : mac_substring(mac_filter_html('《' . (isset($obj['manga_name']) ? $obj['manga_name'] : '') . '》' . $__mname), 150);
+{/php}
+<title>{$manga_play_title} - {$maccms.site_name}</title>
+<meta name="keywords" content="{$manga_play_kw}" />
+<meta name="description" content="{$manga_play_desc}" />
 {elseif $maccms.aid==30}
 <title>{$tplconfig['theme']['seos']['topic_name']|mac_default='专题'} - {$maccms.site_name}</title>
 <meta name="keywords" content="{$tplconfig['theme']['seos']['topic_key']|mac_default='专题首页'}" />
@@ -97,7 +154,7 @@ $arti_des = !empty($tplconfig['theme']['seos']['arti_des']) ? $tplconfig['theme'
 <meta name="keywords" content="{$maccms.seo.actor.key}" />
 <meta name="description" content="{$maccms.seo.actor.des}" />
 {elseif $maccms.aid==82}
-<title>明星库-明星档案-高级搜索 - {if condition="$param['page'] gt 1"}第{$param['page']}页{/if} - {$maccms.site_name}</title>
+<title>明星库-明星档案-高级搜索{if condition="$param['page'] gt 1"} - 第{$param['page']}页{/if} - {$maccms.site_name}</title>
 <meta name="keywords" content="明星,娱乐明星,电影明星,电视剧明星,明星大全" />
 <meta name="description" content="为您提供各国男女明星的详细资料、近况以及最新电影，电视剧在线观看。,{$maccms.site_name}" />
 {elseif $maccms.aid==84}
@@ -105,7 +162,7 @@ $arti_des = !empty($tplconfig['theme']['seos']['arti_des']) ? $tplconfig['theme'
 <meta name="keywords" content="{$obj.actor_name}个人资料,{$obj.actor_name}演过的电视剧,{$obj.actor_name}电影全集,{$obj.actor_name}最新电影,{$obj.actor_name}最新电视剧">
 <meta name="description" content="{$maccms.site_name}为你收集了{$obj.actor_name}个人资料包括了{$obj.actor_name}最新演过的电视剧,{$obj.actor_name}电影全集,以及{$obj.actor_name}图片剧照最近动态等信息希望你能喜欢。">
 {elseif $maccms.aid==90}
-<title>{$maccms.seo.role.name} - {if condition="$param['page'] gt 1"}第{$param['page']}页{/if} - {$maccms.site_name}</title>
+<title>{$maccms.seo.role.name}{if condition="$param['page'] gt 1"} - 第{$param['page']}页{/if} - {$maccms.site_name}</title>
 <meta name="keywords" content="{$maccms.seo.role.key}" />
 <meta name="description" content="{$maccms.seo.role.des}" />
 {elseif $maccms.aid==94}
@@ -113,7 +170,7 @@ $arti_des = !empty($tplconfig['theme']['seos']['arti_des']) ? $tplconfig['theme'
 <meta name="keywords" content="{$obj.data.vod_name},{$obj.role_actor}饰{$obj.role_name}" />
 <meta name="description" content="{$maccms.site_name}为你收集了{$obj.data.vod_name},参演角色,{$obj.data.vod_name}的角色{$obj.role_name}扮演者{$obj.role_actor}近期的电影作品，电视剧作品，综艺作品等动态信息。" />
 {elseif $maccms.aid==100}
-<title>{$maccms.seo.plot.name} - {if condition="$param['page'] gt 1"}第{$param['page']}页{/if} - {$maccms.site_name}</title>
+<title>{$maccms.seo.plot.name}{if condition="$param['page'] gt 1"} - 第{$param['page']}页{/if} - {$maccms.site_name}</title>
 <meta name="keywords" content="{$maccms.seo.plot.key}" />
 <meta name="description" content="{$maccms.seo.plot.des}" />
 {elseif $maccms.aid==104}

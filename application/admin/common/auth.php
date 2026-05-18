@@ -492,6 +492,48 @@ return array (
         'controller' => 'comment',
         'action' => 'field',
       ),
+      36 =>
+      array (
+        'show' => 1,
+        'name' => lang('menu/chatroom'),
+        'controller' => 'chatroom',
+        'action' => 'data',
+      ),
+      3610 =>
+      array (
+        'show' => 0,
+        'name' => '--'.lang('del'),
+        'controller' => 'chatroom',
+        'action' => 'del',
+      ),
+      3611 =>
+      array (
+        'show' => 0,
+        'name' => '--'.lang('status'),
+        'controller' => 'chatroom',
+        'action' => 'field',
+      ),
+      37 =>
+      array (
+        'show' => 1,
+        'name' => lang('menu/danmaku'),
+        'controller' => 'danmaku',
+        'action' => 'data',
+      ),
+      3710 =>
+      array (
+        'show' => 0,
+        'name' => '--'.lang('del'),
+        'controller' => 'danmaku',
+        'action' => 'del',
+      ),
+      3711 =>
+      array (
+        'show' => 0,
+        'name' => '--'.lang('status'),
+        'controller' => 'danmaku',
+        'action' => 'field',
+      ),
       39 =>
       array (
         'show' => 1,

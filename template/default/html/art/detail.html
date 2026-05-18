@@ -63,29 +63,6 @@
                       </div>
                   </div>
 
-                      <div class="content-detail-rows js-art-detail-rows" style="display:none">
-                          <a class="content-detail-row content-detail-row--boxed js-art-row-latest" href="#">
-                              <span class="cdr-icon cdr-icon--img"><img src="{$maccms.path_tpl}images/content-detail/icon-recent.png" width="22" height="22" alt="" loading="lazy" decoding="async"></span>
-                              <div class="cdr-main">
-                                  <div class="cdr-label" data-lang="content_detail_recent_update">最近更新</div>
-                                  <div class="cdr-sub js-art-latest-sub"></div>
-                              </div>
-                              <span class="cdr-right js-art-latest-date"></span>
-                          </a>
-                      </div>
-
-                  <section class="content-detail-intro-vod">
-                      <h2 data-lang="string_vod_introduction">剧情介绍</h2>
-                      <div class="content_desc context clearfix">
-                          <span class="js-art-intro-short"></span>
-                          <a href="javascript:void(0);" class="show_btn" onclick="showdiv(this);"><i class="line_bg"></i><i class="iconfont" aria-hidden="true">&#xe63a;</i><em class="hidden_xs">&nbsp; <span data-lang="string_vod_expand">展开全部</span> </em></a>
-                      </div>
-                      <div class="content_desc full_text clearfix" style="display:none;">
-                          <span class="js-art-intro-full"></span>
-                          <a href="javascript:void(0);" class="hidden_btn" onclick="hidediv(this);"><i class="iconfont" aria-hidden="true">&#xe628;</i><em class="hidden_xs">&nbsp;<span data-lang="string_vod_pull">收起全部</span></em></a>
-                      </div>
-                  </section>
-
                   </div>
 
                   {include file="ads/ads_artw"}
@@ -99,9 +76,32 @@
                   </div>
                   </div>
               </div>
+              <section class="content-detail-intro-vod content-detail-intro-before-playlist">
+                  <h2 data-lang="string_vod_introduction">剧情介绍</h2>
+                  <div class="content_desc context clearfix">
+                      <span class="js-art-intro-short"></span>
+                      <a href="javascript:void(0);" class="show_btn" onclick="showdiv(this);"><i class="line_bg"></i><i class="iconfont" aria-hidden="true">&#xe63a;</i><em class="hidden_xs">&nbsp; <span data-lang="string_vod_expand">展开全部</span> </em></a>
+                  </div>
+                  <div class="content_desc full_text clearfix" style="display:none;">
+                      <span class="js-art-intro-full"></span>
+                      <a href="javascript:void(0);" class="hidden_btn" onclick="hidediv(this);"><i class="iconfont" aria-hidden="true">&#xe628;</i><em class="hidden_xs">&nbsp;<span data-lang="string_vod_pull">收起全部</span></em></a>
+                  </div>
+              </section>
+
+              <div class="content-detail-rows js-art-detail-rows" style="display:none">
+                  <a class="content-detail-row content-detail-row--boxed js-art-row-latest" href="#">
+                      <span class="cdr-icon cdr-icon--img"><img src="{$maccms.path_tpl}images/content-detail/icon-recent.png" width="22" height="22" alt="" loading="lazy" decoding="async"></span>
+                      <div class="cdr-main">
+                          <div class="cdr-label" data-lang="content_detail_recent_update">最近更新</div>
+                          <div class="cdr-sub js-art-latest-sub"></div>
+                      </div>
+                      <span class="cdr-right js-art-latest-date"></span>
+                  </a>
+              </div>
+
               <div class="pannel article_box clearfix js-art-playlist-panel" id="art-playlist-panel" style="display:none">
                   <div class="pannel_head pannel_head--vod-playlist content-detail-playlist-head">
-                      <h3 class="title" data-lang="string_vod_playlist">播放列表</h3>
+                      <h3 class="title" data-lang="art_read_toc">目录</h3>
                       <div class="vod-playlist-head-center">
                           <div class="player_infotip player_infotip--marquee js-art-toc-marquee" data-marquee-ready="0">
                               <div class="player_infotip__viewport">
@@ -114,7 +114,7 @@
                       <div class="js-art-toc-content"></div>
                   </div>
               </div>
-              <div class="pannel art_pren_list clearfix js-art-prevnext" style="display:none">
+              <div class="pannel art_pren_list js-art-prevnext" style="display:none">
 				  <a class="art_prev js-art-prev" href="#" style="display:none"><span data-lang="string_art_syp">上一篇</span><div class="art_name_prev"></div></a>
 				  <a class="art_next js-art-next" href="#" style="display:none"><span data-lang="string_art_xyp">下一篇</span><div class="art_name_next"></div></a>
 		      </div>

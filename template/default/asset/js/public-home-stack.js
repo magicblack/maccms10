@@ -443,7 +443,8 @@
             var html = ''
                 + '<div class="mac_confirm_overlay">'
                 + '  <div class="mac_confirm_dialog" role="dialog" aria-modal="true">'
-                + '    <div class="mac_confirm_icon">!</div>'
+                + '    <button type="button" class="mac_confirm_close"><span aria-hidden="true">&times;</span></button>'
+                + '    <div class="mac_confirm_icon" aria-hidden="true">!</div>'
                 + '    <div class="mac_confirm_message"></div>'
                 + '    <div class="mac_confirm_actions">'
                 + '      <button type="button" class="mac_confirm_btn mac_confirm_btn_cancel"></button>'
@@ -473,6 +474,9 @@
             $overlay.find('.mac_confirm_message').text(msg);
             $overlay.find('.mac_confirm_btn_cancel').text(cancelText);
             $overlay.find('.mac_confirm_btn_ok').text(okText);
+            var closeLbl = typeof MAC.GetLang === 'function' ? MAC.GetLang('string_close') : '';
+            if (!closeLbl) closeLbl = window.lang == 1 ? 'Close' : '关闭';
+            $overlay.find('.mac_confirm_close').attr('aria-label', closeLbl).attr('title', closeLbl);
 
             var closed = false;
             function closeWith(result) {
@@ -488,6 +492,7 @@
 
             $overlay.on('click', '.mac_confirm_btn_ok', function () { closeWith(true); });
             $overlay.on('click', '.mac_confirm_btn_cancel', function () { closeWith(false); });
+            $overlay.on('click', '.mac_confirm_close', function () { closeWith(false); });
             $overlay.on('click', function (e) {
                 if (e.target === this) closeWith(false);
             });
@@ -881,63 +886,19 @@
         },
         'GetHot': {
             'Init': function () {
-                MAC.Ajax(maccms.base_url + '/index.php/ajax/search_hot?limit=20&days=30', 'get', 'json', '', function (r) {
-                    var words = [];
-                    if (r && r.code === 1 && r.data) {
-                        if (Array.isArray(r.data.hot)) {
-                            r.data.hot.forEach(function (item) {
-                                if (item && item.word) {
-                                    words.push(String(item.word));
-                                }
-                            });
-                        }
-                        if (Array.isArray(r.data.config_hot)) {
-                            r.data.config_hot.forEach(function (item) {
-                                if (item && item.word) {
-                                    words.push(String(item.word));
-                                }
-                            });
-                        }
-                    }
-                    // 去重并限制条数
-                    words = words.filter(function (w, idx) {
-                        return w && words.indexOf(w) === idx;
-                    }).slice(0, 20);
-                    if (!words.length && typeof maccms !== 'undefined' && typeof maccms.search_hot === 'string') {
-                        words = maccms.search_hot
-                            .split(/[,\uff0c|\n\r]+/)
-                            .map(function (item) {
-                                return String(item).trim();
-                            })
-                            .filter(function (w, idx, arr) {
-                                return w && arr.indexOf(w) === idx;
-                            })
-                            .slice(0, 20);
-                    }
-                    if (!words.length) {
-                        return;
-                    }
-                    var escHtml = function (str) {
-                        return String(str)
-                            .replace(/&/g, '&amp;')
-                            .replace(/</g, '&lt;')
-                            .replace(/>/g, '&gt;')
-                            .replace(/"/g, '&quot;')
-                            .replace(/'/g, '&#39;');
-                    };
-                    var hotUrl = maccms.base_url + '/index.php/vod/search.html?wd=mac_wd';
-                    var hot_html = '';
-                    words.forEach(function (item, index) {
-                        var safeWord = escHtml(item);
-                        hot_html += `<li class='hot_item ${index < 3 ? 'a' : 'b'}' data-url="${hotUrl}" data-key="${safeWord}">
+                MAC.Ajax(maccms.base_url + '/index.php/ajax/suggest?mid=1&wd=1&limit=20', 'get', 'json', '', function (r) {
+                    let words = r.list.map(item => item.name)
+                    let hot_html = ''
+                    words.forEach((item, index) => {
+                        hot_html += `<li class='hot_item ${index < 3 ? 'a' : 'b'}'  data-url=${r.url} data-key=${item}>
                             <span class="s1">${index + 1}</span>
-                            <span class="s2 search_key">${safeWord}</span>
-                        </li>`;
-                    });
-                    $('.hot_keys').html(hot_html);
-                    $('.hot_item').off('click').on('click', function () {
+                            <span class="s2 search_key">${item}</span>
+                        </li>`
+                    })
+                    $('.hot_keys').append(hot_html)
+                    $('.hot_item').click(function (e) {
                         location.href = $(this).attr('data-url').replace('mac_wd', encodeURIComponent($(this).attr('data-key')));
-                    });
+                    })
                 });
             }
         },
@@ -948,8 +909,8 @@
                         inputClass: "mac_input",
                         resultsClass: "mac_results",
                         loadingClass: "mac_loading",
-                        width: 175, scrollHeight: 300, minChars: 1, delay: 350, matchSubset: 0, selectFirst: false,
-                        cacheLength: 80, multiple: false, matchContains: false, autoFill: false,
+                        width: 175, scrollHeight: 300, minChars: 1, matchSubset: 0, selectFirst: false,
+                        cacheLength: 10, multiple: false, matchContains: false, autoFill: false,
                         dataType: "json",
                         parse: function (r) {
                             if (r.code == 1) {
@@ -1567,8 +1528,20 @@
 
                 var needHeadAuthSync = $('.mac_user').length > 0 || $('.mac_head_plays').length > 0;
                 if (!needHeadAuthSync) {
-                    MAC.User.applyAuthMeInfo(null);
-                    window.__authMe = null;
+                    /* 无顶栏会员入口时仍可能已登录（Cookie 存在）；勿强行 IsLogin=0，否则访客定时弹窗等会误触发 MAC.User.Login */
+                    try {
+                        var _cidEarly = MAC.Cookie.Get('user_id');
+                        if (_cidEarly != undefined && String(_cidEarly).trim() !== '') {
+                            MAC.User.hydrateFromCookiesAndRender(isMobile);
+                        } else {
+                            MAC.User.applyAuthMeInfo(null);
+                            window.__authMe = null;
+                            MAC.User.emitAuthMe(null);
+                        }
+                    } catch (eEarlyHead) {
+                        MAC.User.applyAuthMeInfo(null);
+                        window.__authMe = null;
+                    }
                     return;
                 }
                 var cid = MAC.Cookie.Get('user_id');
@@ -1601,7 +1574,36 @@
                     MAC.User.Login();
                 }
             },
-            'Login': function () {
+            /**
+             * 弹窗登录；可选 postLoginUrl：登录成功且更新本地态后整页跳转到该地址（与 .popedom-upgrade-gate 互斥，会员门页优先 reload）。
+             */
+            'openLoginOrNavigate': function (fallbackUrl, postLoginUrl) {
+                try {
+                    if (typeof MAC !== 'undefined' && MAC.User && typeof MAC.User.Login === 'function') {
+                        MAC.User.Login(postLoginUrl);
+                        return;
+                    }
+                } catch (e) {}
+                var u = String(fallbackUrl || '').trim();
+                if (!u) {
+                    return;
+                }
+                if (postLoginUrl != null && String(postLoginUrl).trim() !== '') {
+                    var join = u.indexOf('?') >= 0 ? '&' : '?';
+                    window.location.href = u + join + 'url=' + encodeURIComponent(String(postLoginUrl));
+                } else {
+                    window.location.href = u;
+                }
+            },
+            'Login': function (postLoginUrl) {
+                try {
+                    MAC.User._postLoginRedirect =
+                        postLoginUrl != null && String(postLoginUrl).trim() !== ''
+                            ? String(postLoginUrl).trim()
+                            : '';
+                } catch (e) {
+                    MAC.User._postLoginRedirect = '';
+                }
                 var ac = 'ajax_login';
                 if (MAC.Cookie.Get('user_id') != undefined && MAC.Cookie.Get('user_id') != '') {
                     ac = 'ajax_info';
@@ -1627,6 +1629,7 @@
                                 var mob = MAC.User._lastInitIsMobile;
                                 MAC.User.fetchAuthMe(function (info) {
                                     if (!info || Number(info.is_login) !== 1) {
+                                        MAC.User._postLoginRedirect = '';
                                         MAC.User.hydrateFromCookiesAndRender(mob);
                                         return;
                                     }
@@ -1634,6 +1637,7 @@
                                     MAC.User.emitAuthMe(info);
                                     MAC.User.renderLoggedInChrome(mob);
                                     if (_isNewRegister && _acc && _pwd) {
+                                        MAC.User._postLoginRedirect = '';
                                         if (typeof MAC.showRegSuccess === 'function') {
                                             MAC.showRegSuccess({
                                                 account: _acc,
@@ -1646,7 +1650,15 @@
                                     }
                                     // 播放/阅读等页的会员门为 SSR，无刷新登录后须整页重载才能重新计算权限与播放器
                                     if (typeof document !== 'undefined' && document.querySelector('.popedom-upgrade-gate')) {
+                                        MAC.User._postLoginRedirect = '';
                                         window.location.reload();
+                                        return;
+                                    }
+                                    var _redir = MAC.User._postLoginRedirect;
+                                    MAC.User._postLoginRedirect = '';
+                                    if (_redir) {
+                                        window.location.assign(_redir);
+                                        return;
                                     }
                                 });
                             }
@@ -1880,7 +1892,17 @@
         },
         'Pop': {
             '_cache': {},
+            '_orphanPopTimer': null,
+            '_clearOrphanPopTimer': function () {
+                try {
+                    if (MAC.Pop._orphanPopTimer) {
+                        clearTimeout(MAC.Pop._orphanPopTimer);
+                        MAC.Pop._orphanPopTimer = null;
+                    }
+                } catch (e0) {}
+            },
             'Remove': function () {
+                MAC.Pop._clearOrphanPopTimer();
                 $('.mac_pop_bg').remove();
                 $('.mac_pop').remove();
             },
@@ -2140,6 +2162,7 @@
                 }
             },
             'Show': function ($w, $h, $title, $url, $callback) {
+                MAC.Pop._clearOrphanPopTimer();
                 if ($('.mac_pop_bg').length != 1) {
                     MAC.Pop.Remove();
                 }
@@ -2176,12 +2199,25 @@
                         return;
                     }
                 } catch (e) {}
+                MAC.Pop._orphanPopTimer = setTimeout(function () {
+                    MAC.Pop._orphanPopTimer = null;
+                    try {
+                        var $p = $('.mac_pop');
+                        if ($('.mac_pop_bg').length && $p.length && !$p.is(':visible')) {
+                            MAC.Pop.Remove();
+                        }
+                    } catch (e1) {}
+                }, 45000);
                 MAC.Ajax($url, 'post', 'json', '', function (r) {
+                    MAC.Pop._clearOrphanPopTimer();
                     try { MAC.Pop._cache[$url] = r; } catch (e) {}
                     $(".pop_content").html(r);
-                    $callback(r);
+                    try {
+                        $callback(r);
+                    } catch (eCb) {}
                     $('.mac_pop').fadeIn(120);
                 }, function () {
+                    MAC.Pop._clearOrphanPopTimer();
                     $(".pop_content").html('加载失败，请刷新...');
                     $('.mac_pop').fadeIn(120);
                 });
@@ -2381,7 +2417,8 @@
         },
         'GuestLoginTimer': {
             'LS_KEY': 'mac_guest_login_nudge_ts',
-            'DEFAULT': { 'enabled': true, 'delaySec': 15, 'intervalSec': 0, 'cooldownMin': 0 },
+            /* 默认关闭：避免访客浏览一段时间后自动弹出登录遮罩（易被误认为 bug）。需时在页面写入 window.MAC_GUEST_LOGIN_TIMER = { enabled: true, delaySec: 60 } */
+            'DEFAULT': { 'enabled': false, 'delaySec': 60, 'intervalSec': 0, 'cooldownMin': 30 },
             '_timerIds': [],
             '_initDone': false,
             'readCfg': function () {
@@ -2390,7 +2427,7 @@
                     var w = typeof window !== 'undefined' ? window.MAC_GUEST_LOGIN_TIMER : null;
                     if (w && typeof w === 'object') {
                         return {
-                            'enabled': w.enabled !== false && w.enabled !== '0',
+                            'enabled': w.enabled === true || w.enabled === '1',
                             'delaySec': Math.max(5, Number(w.delaySec) || D.delaySec),
                             'intervalSec': Math.max(0, Number(w.intervalSec) || D.intervalSec),
                             'cooldownMin': Math.max(0, Number(w.cooldownMin) || D.cooldownMin)
@@ -2418,6 +2455,11 @@
                     if (typeof MAC.User.getAuthMe === 'function') {
                         var me = MAC.User.getAuthMe();
                         if (me && Number(me.is_login) === 1) { return false; }
+                    }
+                    /* 顶栏未挂载会员 DOM 时 Init 可能尚未同步 IsLogin；有 user_id Cookie 则不当作访客弹窗 */
+                    if (MAC.Cookie && typeof MAC.Cookie.Get === 'function') {
+                        var cuid = String(MAC.Cookie.Get('user_id') || '').trim();
+                        if (cuid !== '') { return false; }
                     }
                 } catch (e2) { }
                 return true;
@@ -2541,6 +2583,64 @@
         //定时任务初始化
         MAC.Timming();
     });
+
+    /**
+     * 通过 history 返回、或 bfcache 恢复上一页时，整页仍停留在「离开时」的 DOM/内存态，弹窗登录仅更新了 Cookie，顶栏会仍像游客。
+     * 在 back/bfcache 的 pageshow 上重新拉取 auth 并刷新顶栏与会话内 MAC.User。
+     */
+    (function bindAuthMeRehydrateOnPageShow() {
+        window.addEventListener(
+            'pageshow',
+            function (ev) {
+                var fromBf = !!ev.persisted;
+                var isBfNav = false;
+                try {
+                    if (window.performance) {
+                        var pnav = performance.getEntriesByType && performance.getEntriesByType('navigation')[0];
+                        if (pnav && pnav.type === 'back_forward') {
+                            isBfNav = true;
+                        }
+                    }
+                } catch (e0) { }
+                try {
+                    if (window.performance && performance.navigation && performance.navigation.type === 2) {
+                        isBfNav = true;
+                    }
+                } catch (e1) { }
+                if (!fromBf && !isBfNav) {
+                    return;
+                }
+                if (typeof MAC === 'undefined' || !MAC.User || typeof MAC.User.fetchAuthMe !== 'function') {
+                    return;
+                }
+                var mob = false;
+                try {
+                    mob = !!MAC.User._lastInitIsMobile;
+                } catch (e2) {
+                    mob = false;
+                }
+                MAC.User.fetchAuthMe(function (info) {
+                    if (!info || Number(info.is_login) !== 1) {
+                        MAC.User.applyAuthMeInfo(MAC.User.guestAuthInfo());
+                        MAC.User.emitAuthMe(MAC.User.guestAuthInfo());
+                        if (typeof MAC.User.teardownLoggedInChrome === 'function') {
+                            MAC.User.teardownLoggedInChrome();
+                        }
+                        return;
+                    }
+                    MAC.User.applyAuthMeInfo(info);
+                    MAC.User.emitAuthMe(info);
+                    if (typeof MAC.User.renderLoggedInChrome === 'function') {
+                        MAC.User.renderLoggedInChrome(mob);
+                    }
+                    if (typeof MAC.User.syncHeadUserChrome === 'function') {
+                        MAC.User.syncHeadUserChrome();
+                    }
+                });
+            },
+            false
+        );
+    })();
 
 })();
 

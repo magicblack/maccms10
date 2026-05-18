@@ -8,6 +8,9 @@
      data-vpn-url="">
     <div class="mac-site-card-backdrop" data-site-card-act="close"></div>
     <div class="mac-site-card-dialog" role="dialog" aria-modal="true" aria-labelledby="mac_site_card_title">
+        <div class="mac-site-card-head-ico mac-site-card-close" data-site-card-act="close" aria-label="关闭">
+            <img class="mac-site-card-head-img" src="{$maccms.path_tpl}/images/modal/close@2x.png" width="40" height="40" decoding="async" alt="">
+        </div>
         <header class="mac-site-card-header">
             <div class="mac-site-card-header-row">
                 <span class="mac-site-card-head-ico mac-site-card-head-ico--notice" aria-hidden="true">
@@ -16,9 +19,6 @@
                 <h2 id="mac_site_card_title" class="mac-site-card-title">
                     <span class="mac-site-card-name">{$maccms.site_name|default='本站'}</span><span class="mac-site-card-title-gap"> </span><span class="mac-site-card-title-suffix" data-lang="string_site_card_title_suffix">最新公告</span>
                 </h2>
-                <div class="mac-site-card-head-ico mac-site-card-close" data-site-card-act="close" aria-label="关闭">
-                    <img class="mac-site-card-head-img" src="{$maccms.path_tpl}/images/modal/close@2x.png" width="40" height="40" decoding="async" alt="">
-                </div>
             </div>
         </header>
         <div class="mac-site-card-rule" aria-hidden="true"></div>

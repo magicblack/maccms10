@@ -153,8 +153,12 @@
 		var isMobile = window.matchMedia ? window.matchMedia('(max-width: 820px)').matches : ($(window).width() <= 820);
 		if (!isMobile) {
 			var upgradeUrl = "{:url('user/upgrade')}";
-			var loginUrl = "{:url('user/login')}";
-			location.href = loginUrl + '?url=' + encodeURIComponent(upgradeUrl);
+			if (typeof MAC !== 'undefined' && MAC.User && typeof MAC.User.Login === 'function') {
+				MAC.User.Login(upgradeUrl);
+			} else {
+				var loginUrl = "{:url('user/login')}";
+				location.href = loginUrl + '?url=' + encodeURIComponent(upgradeUrl);
+			}
 			return;
 		}
 		if (typeof window.openRechargeModal === 'function') {

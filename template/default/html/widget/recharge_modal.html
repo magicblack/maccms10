@@ -631,9 +631,15 @@
     }
     if (!_config || Number(_config.is_login) !== 1) {
       var loginUrl = url('user/login');
-      var backUrl = encodeURIComponent(window.location.href || '/');
       rcStatusErr(rcGetLang('string_pay_login_first', '请先登录后完成下单支付', 'Please login first'));
-      window.location.href = loginUrl + '?url=' + backUrl;
+      if (typeof MAC !== 'undefined' && MAC.User && typeof MAC.User.openLoginOrNavigate === 'function') {
+        $('#recharge-overlay').removeClass('show');
+        $('body').css('overflow', '');
+        MAC.User.openLoginOrNavigate(loginUrl, window.location.href || '/');
+      } else {
+        var backUrl = encodeURIComponent(window.location.href || '/');
+        window.location.href = loginUrl + (loginUrl.indexOf('?') >= 0 ? '&' : '?') + 'url=' + backUrl;
+      }
       return;
     }
     var $btn = $(this);
@@ -997,6 +1003,18 @@
   $(document).on('click', '#rcCloseBtn', closeModal);
   $(document).on('click', '#recharge-overlay', function(e) {
     if ($(e.target).is('#recharge-overlay')) closeModal();
+  });
+  $(document).on('click', '#rcGoLogin', function(e) {
+    e.preventDefault();
+    var loginU = url('user/login');
+    if (typeof MAC !== 'undefined' && MAC.User && typeof MAC.User.openLoginOrNavigate === 'function') {
+      $('#recharge-overlay').removeClass('show');
+      $('body').css('overflow', '');
+      MAC.User.openLoginOrNavigate(loginU, window.location.href || '/');
+    } else {
+      var backUrl = encodeURIComponent(window.location.href || '/');
+      window.location.href = loginU + (loginU.indexOf('?') >= 0 ? '&' : '?') + 'url=' + backUrl;
+    }
   });
 
   var isMobile = /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent);

@@ -43,6 +43,10 @@ class TplConfig extends Base
             if (!isset($tplconfig['list_cover']) || !is_array($tplconfig['list_cover'])) {
                 $tplconfig['list_cover'] = [];
             }
+            if (!isset($tplconfig['play']) || !is_array($tplconfig['play'])) {
+                $tplconfig['play'] = [];
+            }
+            $tplconfig['play']['chatroom'] = (isset($tplconfig['play']['chatroom']) && (string)$tplconfig['play']['chatroom'] === '0') ? '0' : '1';
             $vodRows = [];
             if (isset($tplconfig['list_cover']['vod']) && is_array($tplconfig['list_cover']['vod'])) {
                 $vodRows = $tplconfig['list_cover']['vod'];

@@ -293,6 +293,17 @@
                         </div>
                     </div>
                     <div class="layui-form-item">
+                        <label class="layui-form-label">漫画积分扣费：</label>
+                        <div class="layui-input-block">
+                            <input type="radio" name="user[manga_points_type]" value="0"
+                                title="按章扣费" {if
+                                condition="$config['user']['manga_points_type'] neq 1" }checked {/if}>
+                            <input type="radio" name="user[manga_points_type]" value="1"
+                                title="按部扣费" {if
+                                condition="$config['user']['manga_points_type'] eq 1" }checked {/if}>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
                         <label class="layui-form-label">{:lang('admin/system/configuser/portrait_status')}：</label>
                         <div class="layui-input-block">
                             <input type="radio" name="user[portrait_status]" value="0" title="{:lang('close')}" {if

@@ -599,10 +599,17 @@ class Ajax extends Base
         if ($tid > 0) $where['type_id'] = $tid;
 
         $order = 'manga_hits desc, manga_id desc';
-        $page = mt_rand(1, max(1, 5));
-        $res = model('Manga')->listData($where, $order, $page, $num, 0, '*', 1);
+        $res = model('Manga')->listData($where, $order, 1, $num, 0, '*', 1);
         if ($res['code'] != 1) {
             return json($res);
+        }
+        $pagecount = max(1, (int)$res['pagecount']);
+        $page = mt_rand(1, min(5, $pagecount));
+        if ($page !== 1) {
+            $res = model('Manga')->listData($where, $order, $page, $num, 0, '*', 1);
+            if ($res['code'] != 1) {
+                return json($res);
+            }
         }
 
         $list = [];
@@ -641,10 +648,17 @@ class Ajax extends Base
         if ($tid > 0) $where['type_id'] = $tid;
 
         $order = 'art_hits desc, art_id desc';
-        $page = mt_rand(1, max(1, 5));
-        $res = model('Art')->listData($where, $order, $page, $num, 0, '*', 1);
+        $res = model('Art')->listData($where, $order, 1, $num, 0, '*', 1);
         if ($res['code'] != 1) {
             return json($res);
+        }
+        $pagecount = max(1, (int)$res['pagecount']);
+        $page = mt_rand(1, min(5, $pagecount));
+        if ($page !== 1) {
+            $res = model('Art')->listData($where, $order, $page, $num, 0, '*', 1);
+            if ($res['code'] != 1) {
+                return json($res);
+            }
         }
 
         $list = [];

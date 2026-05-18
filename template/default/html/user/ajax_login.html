@@ -295,7 +295,12 @@ $__app_dl_logo_dark_src = mac_url_img($__app_dl_logo_dark);
 			success: function (r) {
 				MAC.alert(r.msg);
 				if(r.code==1){
-					location.href="{:url('user/login')}";
+					if (typeof MAC !== 'undefined' && MAC.User && typeof MAC.User.Login === 'function') {
+						try { MAC.Pop.Remove(); } catch (e0) {}
+						setTimeout(function () { MAC.User.Login(); }, 0);
+					} else {
+						location.href="{:url('user/login')}";
+					}
 				}
 			},
 			complete: function () {

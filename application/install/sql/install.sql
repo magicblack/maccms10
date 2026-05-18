@@ -1499,3 +1499,51 @@ CREATE TABLE `mac_ext_sync_log` (
   KEY `idx_job` (`job_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='External source sync logs';
 
+-- ----------------------------
+-- Table structure for mac_chatroom
+-- ----------------------------
+DROP TABLE IF EXISTS `mac_chatroom`;
+CREATE TABLE `mac_chatroom` (
+  `chat_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `vod_id` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '影片ID(聊天室房间)',
+  `user_id` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '用户ID',
+  `user_name` varchar(30) NOT NULL DEFAULT '' COMMENT '用户昵称',
+  `chat_content` varchar(500) NOT NULL DEFAULT '' COMMENT '聊天内容',
+  `chat_ip` int(10) unsigned NOT NULL DEFAULT '0' COMMENT 'IP',
+  `chat_time` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '发送时间',
+  `chat_status` tinyint(1) unsigned NOT NULL DEFAULT '1' COMMENT '状态 0=禁用 1=正常',
+  `chat_report` mediumint(8) unsigned NOT NULL DEFAULT '0' COMMENT '举报次数',
+  PRIMARY KEY (`chat_id`),
+  KEY `vod_id` (`vod_id`),
+  KEY `user_id` (`user_id`),
+  KEY `chat_time` (`chat_time`),
+  KEY `chat_status` (`chat_status`),
+  KEY `vod_chat` (`vod_id`, `chat_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='聊天室消息表';
+
+-- ----------------------------
+-- Table structure for mac_danmaku
+-- ----------------------------
+DROP TABLE IF EXISTS `mac_danmaku`;
+CREATE TABLE `mac_danmaku` (
+  `danmaku_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `vod_id` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '影片ID',
+  `vod_sid` tinyint(3) unsigned NOT NULL DEFAULT '0' COMMENT '播放源ID',
+  `vod_nid` smallint(6) unsigned NOT NULL DEFAULT '0' COMMENT '集数ID',
+  `user_id` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '用户ID',
+  `user_name` varchar(30) NOT NULL DEFAULT '' COMMENT '用户昵称',
+  `danmaku_time` float unsigned NOT NULL DEFAULT '0' COMMENT '弹幕出现的影片时间点(秒)',
+  `danmaku_type` tinyint(1) unsigned NOT NULL DEFAULT '0' COMMENT '弹幕类型 0=滚动 1=顶部 2=底部',
+  `danmaku_color` varchar(10) NOT NULL DEFAULT '#FFFFFF' COMMENT '弹幕颜色',
+  `danmaku_text` varchar(200) NOT NULL DEFAULT '' COMMENT '弹幕内容',
+  `danmaku_ip` int(10) unsigned NOT NULL DEFAULT '0' COMMENT 'IP',
+  `danmaku_send_time` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '发送时间戳',
+  `danmaku_status` tinyint(1) unsigned NOT NULL DEFAULT '1' COMMENT '状态 0=禁用 1=正常',
+  `danmaku_report` mediumint(8) unsigned NOT NULL DEFAULT '0' COMMENT '举报次数',
+  PRIMARY KEY (`danmaku_id`),
+  KEY `vod_id` (`vod_id`),
+  KEY `vod_episode` (`vod_id`, `vod_sid`, `vod_nid`),
+  KEY `user_id` (`user_id`),
+  KEY `danmaku_send_time` (`danmaku_send_time`),
+  KEY `danmaku_status` (`danmaku_status`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='弹幕表';

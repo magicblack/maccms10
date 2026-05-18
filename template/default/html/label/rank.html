@@ -6,21 +6,28 @@
     <meta name="keywords" content="电影排行榜,电视剧排行榜,综艺排行榜,动漫排行榜,热播影视排行榜" />
     <meta name="description" content="本站提供最新最全热播影视排行榜数据" /> 
     {include file="public/include"}
-	<link rel="stylesheet" type="text/css" href="{$maccms.path_tpl}/asset/css/label-rank.css" />
+    <link rel="stylesheet" type="text/css" href="{$maccms.path}template/default/asset/css/index.css?v=202604161" />
+    <link rel="stylesheet" type="text/css" href="{$maccms.path}template/default/asset/css/hlstyle.css?v=202604161" />
+	<link rel="stylesheet" type="text/css" href="{$maccms.path_tpl}/asset/css/label-rank.css?v=202604161" />
 </head>
 
 
 <body id="rankpage">
     {include file="public/th" /}
     {include file="public/head" /}
+    <script type="application/json" id="js-label-rank-types-json">{:json_encode(isset($label_rank_types) ? $label_rank_types : [], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES)}</script>
+    <script type="application/json" id="js-label-rank-config-json">{:json_encode(isset($label_rank_config) ? $label_rank_config : ['vod_num' => 6, 'rank_title_suffix' => '排行榜'], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES)}</script>
+    <template id="js-label-rank-notempty-tpl">{include file="public/notempty"}</template>
     <div class="show-mobile">
         <div id="ui-nav" class="m-nav">
             <a href="javascript:MAC.GoBack()" class="btn-left"><i class="iconfont ico-right">&#xe625;</i></a>
             <span class="mb-title">{$tplconfig.theme.rank.title|default='排行榜'}</span>
         </div>
     </div>
-    <div class="container white_pal ">
+    <div class="member-wrap">
+    <div class="container home-unified white_pal">
         {include file="ads/ads_all"}
+        <div class="home-detail">
         <div class="row">
             <div class="pannel rankpage clearfix">
                 <div class="tabs">
@@ -48,104 +55,57 @@
                     <div class="content">
                         <section>
                             <h2 data-lang="string_zhoub">周榜</h2>
-                            
-                            {maccms:type num="6" ids="'.(!empty($tplconfig['theme']['rank']['id']) ? $tplconfig['theme']['rank']['id'] : 'parent').'" order="asc" by="sort" flag="vod" id="vo"}
-                            <div class="rank_info">
-                                <div class="list_info">
-                                    <div class="pannel_head clearfix">
-                                        <span class="text_muted pull_right"></span>
-                                        <h3 class="title">
-                                            {$vo.type_name}
-                                        </h3>
+                            <div class="box rank_waterfall">
+                                <div class="latest-item js-label-rank-tab-root" id="js-label-rank-week-root" data-tab-key="week">
+                                    <div class="img-list dis show-pc" id="js-label-rank-week-pc-list">
+                                        <p class="label-rank-loading text_muted" style="padding:12px 0;">加载中…</p>
                                     </div>
-                                    <div class="rank-list-block">
-                                        <ul class="part_rows">
-                                            {maccms:vod num="'.((int)($tplconfig['theme']['rank']['num'] ?? 10)).'" type="'.$vo['type_id'].'" order="desc" by="hits_week"}
-                                            {if condition="$key eq 0"}
-                                            {include file="widget/rank_box_week"}
-                                            {else /}
-                                            <li class="part_eone">
-                                                <a href="{:mac_url_vod_detail($vo)}">
-                                                    <span class="part_nums part_num{$key+1}">{$key+1}</span>
-                                                    <span class="text_muted pull_right renqi">{$vo.vod_score} <span data-lang="string_fen">分</span> </span>
-                                                    {$vo.vod_name}
-                                                </a>
-                                            </li>
-                                            {/if}
-                                            {/maccms:vod}
-                                        </ul>
-                                        <div class="rank-page-empty-fallback" aria-hidden="true">{include file="public/notempty"}</div>
+                                    <div class="hu-rank-mobile show-mobile">
+                                        <div class="hu-rank-nav-swiper swiper-container">
+                                            <div class="swiper-wrapper" id="js-label-rank-week-mobile-nav"></div>
+                                        </div>
+                                        <div class="hu-rank-content-swiper swiper-container">
+                                            <div class="swiper-wrapper" id="js-label-rank-week-mobile-content"></div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                            {/maccms:type}
-                            
                         </section>
                         <section>
                             <h2 data-lang="string_yueb">月榜</h2>
-                            
-                            {maccms:type num="6" ids="'.(!empty($tplconfig['theme']['rank']['id']) ? $tplconfig['theme']['rank']['id'] : 'parent').'" order="asc" by="sort" flag="vod" id="vo"}
-                            <div class="rank_info">
-                                <div class="list_info">
-                                    <div class="pannel_head clearfix">
-                                        <span class="text_muted pull_right"></span>
-                                        <h3 class="title">
-                                            {$vo.type_name}
-                                        </h3>
+                            <div class="box rank_waterfall">
+                                <div class="latest-item js-label-rank-tab-root" id="js-label-rank-month-root" data-tab-key="month">
+                                    <div class="img-list dis show-pc" id="js-label-rank-month-pc-list">
+                                        <p class="label-rank-loading text_muted" style="padding:12px 0;">加载中…</p>
                                     </div>
-                                    <div class="rank-list-block">
-                                        <ul class="part_rows">
-                                            {maccms:vod num="'.((int)($tplconfig['theme']['rank']['num'] ?? 10)).'" type="'.$vo['type_id'].'" order="desc" by="hits_month"}
-                                            {if condition="$key eq 0"}
-                                            {include file="widget/rank_box_month"}
-                                            {else /}
-                                            <li class="part_eone">
-                                                <a href="{:mac_url_vod_detail($vo)}">
-                                                    <span class="part_nums part_num{$key+1}">{$key+1}</span><span class="text_muted pull_right renqi">{$vo.vod_score}<span data-lang="string_fen">分</span></span>
-                                                    {$vo.vod_name}</a>
-                                            </li>
-                                            {/if}
-                                            {/maccms:vod}
-                                        </ul>
-                                        <div class="rank-page-empty-fallback" aria-hidden="true">{include file="public/notempty"}</div>
+                                    <div class="hu-rank-mobile show-mobile">
+                                        <div class="hu-rank-nav-swiper swiper-container">
+                                            <div class="swiper-wrapper" id="js-label-rank-month-mobile-nav"></div>
+                                        </div>
+                                        <div class="hu-rank-content-swiper swiper-container">
+                                            <div class="swiper-wrapper" id="js-label-rank-month-mobile-content"></div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                            {/maccms:type}
-                            
                         </section>
                         <section>
                             <h2 data-lang="string_zongb">总榜</h2>
-                            
-                            {maccms:type num="6" ids="'.(!empty($tplconfig['theme']['rank']['id']) ? $tplconfig['theme']['rank']['id'] : 'parent').'" order="asc" by="sort" flag="vod" id="vo"}
-                            <div class="rank_info">
-                                <div class="list_info">
-                                    <div class="pannel_head clearfix">
-                                        <span class="text_muted pull_right"></span>
-                                        <h3 class="title">
-                                            {$vo.type_name}
-                                        </h3>
+                            <div class="box rank_waterfall">
+                                <div class="latest-item js-label-rank-tab-root" id="js-label-rank-all-root" data-tab-key="all">
+                                    <div class="img-list dis show-pc" id="js-label-rank-all-pc-list">
+                                        <p class="label-rank-loading text_muted" style="padding:12px 0;">加载中…</p>
                                     </div>
-                                    <div class="rank-list-block">
-                                        <ul class="part_rows">
-                                            {maccms:vod num="'.((int)($tplconfig['theme']['rank']['num'] ?? 10)).'" type="'.$vo['type_id'].'" order="desc" by="hits"}
-                                            {if condition="$key eq 0"}
-                                            {include file="widget/rank_box_all"}
-                                            {else /}
-                                            <li class="part_eone">
-                                                <a href="{:mac_url_vod_detail($vo)}">
-                                                    <span class="part_nums part_num{$key+1}">{$key+1}</span><span class="text_muted pull_right renqi">{$vo.vod_score}<span data-lang="string_fen">分</span></span>
-                                                    {$vo.vod_name}</a>
-                                            </li>
-                                            {/if}
-                                            {/maccms:vod}
-                                        </ul>
-                                        <div class="rank-page-empty-fallback" aria-hidden="true">{include file="public/notempty"}</div>
+                                    <div class="hu-rank-mobile show-mobile">
+                                        <div class="hu-rank-nav-swiper swiper-container">
+                                            <div class="swiper-wrapper" id="js-label-rank-all-mobile-nav"></div>
+                                        </div>
+                                        <div class="hu-rank-content-swiper swiper-container">
+                                            <div class="swiper-wrapper" id="js-label-rank-all-mobile-content"></div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                            {/maccms:type}
-                            
                         </section>
                     </div>
                 </div>
@@ -153,9 +113,13 @@
         </div>
         
     {include file="public/friendLink"}
+        </div>
     </div>
-    <script src="{$maccms.path_tpl}/asset/js/label-rank.js" defer></script>
+    </div>
     {include file="public/foot"}
+    <script src="{$maccms.path_tpl}/asset/js/mac-catalog-media.js"></script>
+    <script src="{$maccms.path}template/default/asset/js/mac-home-card-render.js?v=202604161"></script>
+    <script src="{$maccms.path_tpl}/asset/js/label-rank.js"></script>
 </body>
 
 </html>

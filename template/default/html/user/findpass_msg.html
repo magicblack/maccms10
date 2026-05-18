@@ -59,7 +59,7 @@
 			<input type="button" data-value="btn_czmm" id="btn_submit" class="btn-brand btn-sub" value="重置密码">
 		</form>
         <div class="reg-ts">
-		<a href="{:url('user/login')}" data-lang="user_zjdengl">直接登录</a>
+		<a href="javascript:;" class="mac_user" data-lang="user_zjdengl">直接登录</a>
 		<a href="{:url('user/findpass')}" data-lang="user_ybbzh">用密保找回</a>{if$_GET['ac']=='phone'}
 		<a href="{:url('user/findpass_msg')}?ac=email" data-lang="user_yyxzh">用邮箱找回</a>{elseif$_GET['ac']=='email'}
 		<a href="{:url('user/findpass_msg')}?ac=phone" data-lang="user_ysjzh">用手机找回</a>{/if}

@@ -8,6 +8,46 @@
 	<style type="text/css">
 	html,body{width:100%;height:100%; padding:0; margin:0;}
 	#playerCnt{width:100%;height:100%;}
+	.dplayer-loading{display: none !important;}
+	/* 放慢 DPlayer 内置弹幕动画（默认横移约 5s / 全屏约 8s） */
+	.dplayer-danmaku .dplayer-danmaku-right.dplayer-danmaku-move {
+		-webkit-animation-duration: 9s !important;
+		animation-duration: 9s !important;
+	}
+	.dplayer:-webkit-full-screen .dplayer-danmaku .dplayer-danmaku-right.dplayer-danmaku-move,
+	.dplayer:fullscreen .dplayer-danmaku .dplayer-danmaku-right.dplayer-danmaku-move {
+		-webkit-animation-duration: 14s !important;
+		animation-duration: 14s !important;
+	}
+	.dplayer-danmaku .dplayer-danmaku-top.dplayer-danmaku-move,
+	.dplayer-danmaku .dplayer-danmaku-bottom.dplayer-danmaku-move,
+	.dplayer:-webkit-full-screen .dplayer-danmaku .dplayer-danmaku-top.dplayer-danmaku-move,
+	.dplayer:-webkit-full-screen .dplayer-danmaku .dplayer-danmaku-bottom.dplayer-danmaku-move,
+	.dplayer:fullscreen .dplayer-danmaku .dplayer-danmaku-top.dplayer-danmaku-move,
+	.dplayer:fullscreen .dplayer-danmaku .dplayer-danmaku-bottom.dplayer-danmaku-move {
+		-webkit-animation-duration: 9s !important;
+		animation-duration: 9s !important;
+	}
+	/* 与父页 play 弹幕/输入统一走 postMessage，隐藏内置发弹幕 UI，避免重复 */
+	.dplayer .dplayer-comment-box,
+	.dplayer .dplayer-comment,
+	.dplayer .dplayer-icon.dplayer-comment-icon,
+	.dplayer-setting-item.dplayer-setting-showdan,
+	.dplayer-setting-item.dplayer-setting-danunlimit {
+		display: none !important;
+	}
+	/* 弹幕字黑色描边，亮底/亮字仍可读 */
+	.dplayer-danmaku .dplayer-danmaku-item {
+		text-shadow:
+			0 1px 0 #000,
+			1px 0 0 #000,
+			-1px 0 0 #000,
+			0 -1px 0 #000,
+			1px 1px 0 #000,
+			-1px -1px 0 #000,
+			1px -1px 0 #000,
+			-1px 1px 0 #000;
+	}
 	</style>
 	<link rel="stylesheet" href="/static/player/dplayer/DPlayer.min.css">
 	<script type="text/javascript" src="/static/player/dplayer/flv.min.js"></script>
@@ -19,46 +59,219 @@
 <body marginwidth="0" marginheight="0">
 <div id="playerCnt"></div>
 <script type="text/javascript">
-    var type='normal';
-    var live=false;
-    if(parent.MacPlayer.PlayUrl.indexOf('.m3u8')>-1){
-        type='hls';
-        live=true;
-    }
-    else if(parent.MacPlayer.PlayUrl.indexOf('magnet:')>-1){
-        type='webtorrent';
-    }
-    else if(parent.MacPlayer.PlayUrl.indexOf('.flv')>-1){
-        type='flv';
-    }
-    else if(parent.MacPlayer.PlayUrl.indexOf('.mpd')>-1){
-        type='dash';
-    }
-
-    var dp = new DPlayer({
-        container: document.getElementById('playerCnt'),
-        autoplay: true,
-        screenshot: false,
-        video: {
-            url: parent.MacPlayer.PlayUrl,
-            live: live,
-            type:type
-        },
-        contextmenu: [
-
-        ]
-    });
-    
-    dp.on('ended',function(){
-　　　　if(parent.MacPlayer.PlayLinkNext!=''){
-            top.location.href = parent.MacPlayer.PlayLinkNext;
-        }
-　　});
-    
-	try{
-		//document.getElementById('playerCnt').style.height = parent.MacPlayer.Height + 'px';
+(function () {
+	'use strict';
+	var type = 'normal';
+	var live = false;
+	if (parent.MacPlayer.PlayUrl.indexOf('.m3u8') > -1) {
+		type = 'hls';
+		live = true;
+	} else if (parent.MacPlayer.PlayUrl.indexOf('magnet:') > -1) {
+		type = 'webtorrent';
+	} else if (parent.MacPlayer.PlayUrl.indexOf('.flv') > -1) {
+		type = 'flv';
+	} else if (parent.MacPlayer.PlayUrl.indexOf('.mpd') > -1) {
+		type = 'dash';
 	}
-	catch(e){}
+
+	var pa = parent.player_aaaa || {};
+	var vid = pa.id != null ? pa.id : 0;
+	var sid = pa.sid != null ? pa.sid : 0;
+	var nid = pa.nid != null ? pa.nid : 0;
+	var dmId = String(vid) + '-' + String(sid) + '-' + String(nid);
+	// jsvar 在站点装在根目录时会把 maccms.path 规范成 ''，此处不能把空路径当成「未配置」
+	var root = '';
+	try {
+		if (parent.maccms) {
+			var p = parent.maccms.path;
+			if (p == null || String(p) === '') {
+				p = parent.maccms.path_assets;
+			}
+			root = String(p != null ? p : '').replace(/\/+$/, '');
+			if (root === '/' || root === '.') {
+				root = '';
+			}
+		}
+	} catch (e0) {}
+	var dmEnabled = !!(dmId && dmId !== '0-0-0');
+
+	var apiBackendMac = null;
+	if (dmEnabled) {
+		apiBackendMac = {
+			read: function (opt) {
+				if (!opt || !opt.url) {
+					if (opt && opt.success) opt.success([]);
+					return;
+				}
+				if (opt.url.indexOf('/v3/?') !== -1 || opt.url.indexOf('/v3?') !== -1) {
+					if (opt.success) opt.success([]);
+					return;
+				}
+				fetch(opt.url, { credentials: 'same-origin' })
+					.then(function (r) {
+						return r.json();
+					})
+					.then(function (a) {
+						var okCode = a && (a.code === 0 || a.code === '0' || Number(a.code) === 0);
+						if (okCode && a.data && Array.isArray(a.data)) {
+							opt.success(
+								a.data.map(function (row) {
+									return {
+										time: row[0],
+										type: row[1],
+										color: row[2],
+										author: row[3],
+										text: row[4],
+									};
+								})
+							);
+						} else if (opt.error) {
+							opt.error(a && a.msg);
+						}
+					})
+					.catch(function () {
+						if (opt.error) opt.error();
+					});
+			},
+			send: function (opt) {
+				var d = opt.data || {};
+				var parts = [
+					'id=' + encodeURIComponent(d.id != null ? String(d.id) : ''),
+					'time=' + encodeURIComponent(String(d.time != null ? d.time : 0)),
+					'text=' + encodeURIComponent(d.text != null ? String(d.text) : ''),
+					'type=' + encodeURIComponent(String(d.type != null ? d.type : 0)),
+					'color=' + encodeURIComponent(d.color != null ? String(d.color) : '#FFFFFF'),
+				];
+				if (d.token) {
+					parts.push('token=' + encodeURIComponent(String(d.token)));
+				}
+				fetch(root + '/api.php/danmaku/dplayer', {
+					method: 'POST',
+					credentials: 'same-origin',
+					headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8' },
+					body: parts.join('&'),
+				})
+					.then(function (r) {
+						return r.json();
+					})
+					.then(function (a) {
+						var ok = a && (a.code === 0 || a.code === '0');
+						try {
+							parent.postMessage(
+								{ source: 'mac-player', type: 'danmaku_sent', ok: !!ok, msg: (a && a.msg) || '' },
+								location.origin
+							);
+						} catch (e1) {}
+						if (ok) {
+							if (opt.success) opt.success(a);
+						} else if (opt.error) {
+							opt.error(a && a.msg);
+						}
+					})
+					.catch(function () {
+						try {
+							parent.postMessage(
+								{ source: 'mac-player', type: 'danmaku_sent', ok: false, msg: 'network' },
+								location.origin
+							);
+						} catch (e2) {}
+						if (opt.error) opt.error();
+					});
+			},
+		};
+	}
+
+	var dpOpts = {
+		container: document.getElementById('playerCnt'),
+		autoplay: true,
+		screenshot: false,
+		video: {
+			url: parent.MacPlayer.PlayUrl,
+			live: live,
+			type: type,
+		},
+		contextmenu: [],
+	};
+	if (dmEnabled) {
+		dpOpts.apiBackend = apiBackendMac;
+		dpOpts.danmaku = {
+			id: dmId,
+			api: root + '/',
+			addition: [root + '/api.php/danmaku/dplayer?id=' + encodeURIComponent(dmId)],
+			unlimited: true,
+		};
+	}
+
+	var dp = new DPlayer(dpOpts);
+
+	dp.on('ended', function () {
+		if (parent.MacPlayer.PlayLinkNext != '') {
+			top.location.href = parent.MacPlayer.PlayLinkNext;
+		}
+	});
+
+	dp.on('waiting', function () {
+		showCustomBuffering();
+	});
+	dp.on('seeking', function () {
+		showCustomBuffering();
+	});
+	dp.on('canplay', function () {
+		hideCustomBuffering();
+	});
+	dp.on('seeked', function () {
+		hideCustomBuffering();
+	});
+	function showCustomBuffering() {
+		if (document.getElementById('customBuffer')) return;
+		var iframe = document.createElement('iframe');
+		iframe.src = parent.MacPlayer.Buffer || '/static/player/loading.html';
+		iframe.style.cssText =
+			'position:absolute;top:0;left:0;width:100%;height:100%;z-index:999;border:none;';
+		iframe.id = 'customBuffer';
+		document.body.appendChild(iframe);
+	}
+	function hideCustomBuffering() {
+		var bufferFrame = document.getElementById('customBuffer');
+		if (bufferFrame) bufferFrame.remove();
+	}
+
+	var MSG_PARENT = 'mac-play-parent';
+	window.addEventListener('message', function (ev) {
+		try {
+			if (ev.origin !== location.origin) return;
+		} catch (e) {
+			return;
+		}
+		var d = ev.data;
+		if (!d || d.source !== MSG_PARENT) return;
+		if (d.type === 'init') {
+			return;
+		}
+		if (d.type === 'danmaku_toggle' && dp.danmaku) {
+			if (d.on !== false) {
+				dp.danmaku.show();
+			} else {
+				dp.danmaku.hide();
+			}
+			return;
+		}
+		if (d.type === 'danmaku_submit' && d.text && dp.danmaku && typeof dp.danmaku.send === 'function') {
+			dp.danmaku.send(
+				{
+					text: String(d.text),
+					color: d.color || '#FFFFFF',
+					type: d.dmType != null ? d.dmType : 0,
+				},
+				function () {}
+			);
+		}
+	});
+
+	try {
+		parent.postMessage({ source: 'mac-player', type: 'ready', player: 'dplayer' }, location.origin);
+	} catch (e3) {}
+})();
 </script>
 </body>
 </html>

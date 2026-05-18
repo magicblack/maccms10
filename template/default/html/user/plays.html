@@ -25,12 +25,16 @@
 			<div class="m-nav">
 				<a href="{:url('user/index')}" class="btn-left"><i class="iconfont ico-right">&#xe625;</i></a>
 				<span class="mb-title" data-lang="user_view_record">观看记录</span>
-				<a href="javascript:;" id="btnClear" class="btn-right"  data-lang="string_qk">清空</a>
+				<a href="javascript:;" id="btnClear" class="btn-right mac-plog-clear" title="">
+					<img class="mac-plog-clear-ico" src="{$maccms.path_tpl}/images/plog/plog-empty.png" width="18" height="18" alt="" decoding="async" />
+					<span data-lang="string_qk">清空</span>
+				</a>
 			</div>
 			<div class="co-right co-right-bg co-right-plays"
 				data-mac-user-ulog
 				data-lazy-placeholder="{:mac_url_img(!empty($tplconfig['theme']['lazy']) ? $maccms['path'].$tplconfig['theme']['lazy'] : $maccms['path_tpl'].'asset/img/load.gif')}"
 				data-api-base="{:rtrim($maccms.path,'/').'/api.php'}"
+				data-ulog-del-ico="{$maccms.path_tpl}/images/plog/plog-del-ico.png"
 				data-ulog-type="4"
 				data-page="plays"
 				data-is-guest="{if condition="isset($obj) and !empty($obj['user_id'])"}0{else/}1{/if}"

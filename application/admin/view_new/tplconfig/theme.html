@@ -958,6 +958,16 @@
                                             {:lang('admin/tpl/config/key10')}：&lt;li&gt;{:lang('admin/tpl/config/key11')}&lt;/li&gt;&lt;li&gt;{:lang('admin/tpl/config/key12')}&lt;/li&gt;，{:lang('admin/tpl/config/key13')}
                                         </div>
                                     </div>
+                                    <div class="layui-form-item">
+                                        <label class="layui-form-label">{:lang('admin/tpl/config/chatroom_switch_title')}</label>
+                                        <div class="layui-input-inline w200">
+                                            <input type="radio" name="theme[play][chatroom]" value="0" title="{:lang('admin/tpl/config/desc44')}" {if
+                                                condition="isset($tplconfig['theme']['play']['chatroom']) && (string)$tplconfig['theme']['play']['chatroom'] eq '0'" }checked {/if}>
+                                            <input type="radio" name="theme[play][chatroom]" value="1" title="{:lang('admin/tpl/config/btn_on')}" {if
+                                                condition="!isset($tplconfig['theme']['play']['chatroom']) || (string)$tplconfig['theme']['play']['chatroom'] eq '1'" }checked {/if}>
+                                        </div>
+                                        <div class="layui-form-mid layui-word-aux">{:lang('admin/tpl/config/chatroom_switch_help')}</div>
+                                    </div>
                                 </div>
                             </fieldset>
                             <fieldset class="layui-elem-field">

@@ -6,6 +6,7 @@
 	<meta http-equiv="X-UA-Compatible" content="IE=11" />
 	<meta content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no" id="viewport" name="viewport">
 	<link rel="stylesheet" href="/static/player/videojs/video-js.min.css">
+	<link rel="stylesheet" href="/static/player/videojs/comment-core-library.min.css">
 	<style type="text/css">
 	html,body{width:100%;height:100%; padding:0; margin:0;}
 	#macVjsLayout{display:flex;flex-direction:column;width:100%;height:100%;box-sizing:border-box;}
@@ -43,6 +44,19 @@
 		.mac-vjs-seekbar{gap:6px;padding:6px;}
 		.mac-vjs-seekbtn{padding:7px 10px;font-size:12px;}
 	}
+	/* 移动端弹幕：覆盖 comment-core 默认 25px，避免手机上过大 */
+	@media (max-width: 768px) {
+		.abp.vjs-mac-danmaku-abp .container .cmt {
+			font-size: 15px !important;
+			padding-top: 1px !important;
+			text-shadow: -0.5px 0 #000, 0 0.5px #000, 0.5px 0 #000, 0 -0.5px #000;
+		}
+	}
+	@media (max-width: 480px) {
+		.abp.vjs-mac-danmaku-abp .container .cmt {
+			font-size: 13px !important;
+		}
+	}
 	.video-js .vjs-big-play-button{
 		top: 50%;
     left: 50%;
@@ -50,6 +64,8 @@
 	}
 	</style>
 	<script type="text/javascript" src="/static/player/videojs/video.min.js"></script>
+	<script type="text/javascript" src="/static/player/videojs/CommentCoreLibrary.min.js"></script>
+	<script type="text/javascript" src="/static/player/videojs/videojs-danmaku.js"></script>
 </head>
 <body marginwidth="0" marginheight="0">
 <div id="macVjsLayout">
@@ -100,9 +116,6 @@ var player = videojs('playerCnt', options, function onPlayerReady() {
 	});
 
 	var bar = document.getElementById('macVjsSeekBar');
-	if (!bar) {
-		return;
-	}
 	var steps = [
 		{ label: '< 10m', delta: -600 },
 		{ label: '< 1m', delta: -60 },
@@ -111,17 +124,23 @@ var player = videojs('playerCnt', options, function onPlayerReady() {
 		{ label: '1m >', delta: 60 },
 		{ label: '10m >', delta: 600 }
 	];
-	for (var i = 0; i < steps.length; i++) {
-		(function (item) {
-			var btn = document.createElement('button');
-			btn.type = 'button';
-			btn.className = 'mac-vjs-seekbtn';
-			btn.textContent = item.label;
-			btn.addEventListener('click', function () {
-				seekBySeconds(p, item.delta);
-			});
-			bar.appendChild(btn);
-		})(steps[i]);
+	if (bar) {
+		for (var i = 0; i < steps.length; i++) {
+			(function (item) {
+				var btn = document.createElement('button');
+				btn.type = 'button';
+				btn.className = 'mac-vjs-seekbtn';
+				btn.textContent = item.label;
+				btn.addEventListener('click', function () {
+					seekBySeconds(p, item.delta);
+				});
+				bar.appendChild(btn);
+			})(steps[i]);
+		}
+	}
+
+	if (typeof p.danmaku === 'function') {
+		p.danmaku();
 	}
 });
 

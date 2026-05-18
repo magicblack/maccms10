@@ -29,7 +29,11 @@
                 <ul class="vodlist vodlist_wi {$type_poster_class}" style="width: auto;"> 
                     {maccms:vod num="36" paging="yes" half="3" type="current" order="desc" by="sort"} {include file="widget/vod_box"} {/maccms:vod}
                 </ul>
-                
+
+                {empty name="$__PAGING__.record_total"}
+                <div class="typeqt-list-empty">{include file="public/notempty"}</div>
+                {/empty}
+
                 {include file="widget/page"}
                 
             </div>

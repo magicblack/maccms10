@@ -779,6 +779,8 @@ function mac_page_param($record_total, $page_size, $page_current, $page_url,$pag
         }
     }
     $page_param['page_num'] = $page_num;
+    $page_param['page_num_min'] = count($page_num) ? min($page_num) : 1;
+    $page_param['page_num_max'] = count($page_num) ? max($page_num) : 1;
     $page_param['page_url'] = $page_url;
 
     return $page_param;
@@ -1386,14 +1388,14 @@ function mac_get_aid($controller,$action='')
     $action=strtolower($action);
     $key = $controller.'/'.$action;
 
-    $arr=['index'=>1,'map'=>2,'rss'=>3,'gbook'=>4,'comment'=>5,'user'=>6,'label'=>7,'vod'=>10,'art'=>20,'topic'=>30,'actor'=>80,'role'=>90,'plot'=>100,'website'=>110];
-    $res = $arr[$controller];
+    $arr=['index'=>1,'map'=>2,'rss'=>3,'gbook'=>4,'comment'=>5,'user'=>6,'label'=>7,'vod'=>10,'art'=>20,'manga'=>120,'topic'=>30,'actor'=>80,'role'=>90,'plot'=>100,'website'=>110];
+    $res = isset($arr[$controller]) ? $arr[$controller] : 0;
 
     // https://github.com/magicblack/maccms10/issues/960
     $arr=[
         'vod/type'=>11,'vod/show'=>12,'vod/search'=>13,'vod/search_hub'=>13,'vod/detail'=>14,'vod/play'=>15,'vod/down'=>16,'vod/role'=>17,'vod/plot'=>18,
-        'art/type'=>21,'art/show'=>22,'art/search'=>23,'art/detail'=>24,
-        'manga/type'=>121,'manga/show'=>122,'manga/search'=>123,'manga/detail'=>124,
+        'art/type'=>21,'art/show'=>22,'art/search'=>23,'art/detail'=>24,'art/read'=>25,
+        'manga/type'=>121,'manga/show'=>122,'manga/search'=>123,'manga/detail'=>124,'manga/play'=>125,
         'topic/search'=>33,'topic/detail'=>34,
         'actor/type'=>81,'actor/show'=>82,'actor/search'=>83,'actor/detail'=>84,
         'role/show'=>92,'role/search'=>93,'role/detail'=>94,

@@ -2,7 +2,10 @@
 <html>
 <head>
     {include file="public/include"}
-    <link rel="stylesheet" type="text/css" href="{$maccms.path_tpl}/asset/css/vod-play.css" />
+    <link rel="stylesheet" type="text/css" href="{$maccms.path_tpl}/asset/css/vod-play.css?v=202604222" />
+    {if condition="($obj.vod_copyright neq 1 || $GLOBALS['config']['app']['copyright_status'] neq 1) && !$obj.vod_lock && $popedom.code elt 1 && ($obj['vod_play_list'][$param['sid']]['player_info']['from'] eq 'dplayer' || $obj['vod_play_list'][$param['sid']]['player_info']['from'] eq 'videojs')"}
+    <link rel="stylesheet" type="text/css" href="{$maccms.path_tpl}/asset/css/vod-play-social.css?v=202604271" />
+    {/if}
 </head>
 <body>
     <noscript>
@@ -50,23 +53,10 @@
                         </div>
 
                         <div class="play_but">
+                            <div class="play-but-bar">
                             <div class="wrapper_fl play-but-wrap" id="playButScroll">
                                 <div class="scroller">
                                     <ul class="play-but-strip clearfix">
-                                        {if condition="$GLOBALS['config']['comment']['status'] eq 1"}
-                                        <li class="play-but-item play-but-item--comment hidden_xs">
-                                            <a class="play_pl" href="#pinglun">
-                                                <i class="iconfont">&#xe632;</i>
-                                                <span data-lang="string_play_pl">评论</span>
-                                            </a>
-                                        </li>
-                                        {/if}
-                                        <!-- <li class="play-but-item play-but-anchor">
-                                            <a href="#bofy">
-                                                <i class="iconfont">&#xe62a;</i>
-                                                <span data-lang="string_play_xl">线路</span>
-                                            </a>
-                                        </li> -->
                                         {if condition="$GLOBALS['config']['gbook']['status'] eq 1"}
                                         <li class="play-but-item">
                                             <a class="report_click" href="javascript:void(0)" onclick="MAC.Gbook.Report('ID:{$obj.vod_id} -【名称：{$obj.vod_name} - {$obj['vod_play_list'][$param['sid']]['urls'][$param['nid']]['name']}】无法观看请检查修复')">
@@ -102,6 +92,73 @@
                                     </ul>
                                 </div>
                             </div>
+                            {if condition="($obj.vod_copyright neq 1 || $GLOBALS['config']['app']['copyright_status'] neq 1) && !$obj.vod_lock && $popedom.code elt 1 && ($obj['vod_play_list'][$param['sid']]['player_info']['from'] eq 'dplayer' || $obj['vod_play_list'][$param['sid']]['player_info']['from'] eq 'videojs')"}
+                            <div class="play-but-social" id="macPlaySocialToolbar">
+                                {php}$play_chatroom_enabled = !isset($tplconfig['theme']['play']['chatroom']) || (string)$tplconfig['theme']['play']['chatroom'] !== '0';{/php}
+                                {if condition="$play_chatroom_enabled"}
+                                <button type="button" class="mac-play-chat-launch" id="macPlayChatOpenPc">
+                                    <span class="mac-play-chat-launch__txt" data-lang="string_play_chat_room">聊天室</span>
+                                    <svg class="mac-play-chat-launch__ico" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.85" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+                                        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+                                    </svg>
+                                </button>
+                                {/if}
+                                <div class="mac-play-dm-toolbar">
+                                    <div class="mac-play-dm-toolbar__track">
+                                        <button type="button" class="mac-play-dm-toolbar__sheet-open" id="macPlayDmSheetOpen">
+                                            <span class="mac-play-dm-toolbar__sheet-open-txt mac-play-dm-toolbar__sheet-open-txt--long" data-lang="string_play_dm_placeholder">输入弹幕内容</span>
+                                            <span class="mac-play-dm-toolbar__sheet-open-txt mac-play-dm-toolbar__sheet-open-txt--short" data-lang="string_play_dm_input_short">输入弹幕</span>
+                                        </button>
+                                        <div class="mac-play-dm-toolbar__field">
+                                            <input type="text" id="macPlayDanmakuInput" class="mac-play-dm-toolbar__input" maxlength="200" autocomplete="off" data-lang-placeholder="string_play_dm_placeholder" placeholder="" />
+                                            <button type="button" class="mac-play-dm-toolbar__submit" id="macPlayDanmakuSubmit" data-lang="string_play_dm_submit">发送</button>
+                                        </div>
+                                        <button type="button" class="mac-play-dm-toggle is-dm-on" data-mac-play-action="toggle-danmaku">
+                                            <img class="mac-play-dm-toggle__pic mac-play-dm-toggle__pic--on" src="{$maccms.path_tpl}/asset/img/vod-play-dm-on@2x.png" width="56" height="56" decoding="async" draggable="false" />
+                                            <img class="mac-play-dm-toggle__pic mac-play-dm-toggle__pic--off" src="{$maccms.path_tpl}/asset/img/vod-play-dm-off@2x.png" width="56" height="56" decoding="async" draggable="false" />
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            {/if}
+                            </div>
+                            {if condition="($obj.vod_copyright neq 1 || $GLOBALS['config']['app']['copyright_status'] neq 1) && !$obj.vod_lock && $popedom.code elt 1 && ($obj['vod_play_list'][$param['sid']]['player_info']['from'] eq 'dplayer' || $obj['vod_play_list'][$param['sid']]['player_info']['from'] eq 'videojs')"}
+                            <script type="application/json" id="vod-play-social-config">{"enabled":true,"chatEnabled":{if condition="$play_chatroom_enabled"}true{else/}false{/if},"apiBase":"{:rtrim($maccms.path,'/').'/api.php'}","vodId":{$obj.vod_id},"sid":{$param.sid},"nid":{$param.nid},"playerFrom":"{$obj['vod_play_list'][$param['sid']]['player_info']['from']}","userId":{if condition="isset($user.user_id)"}{$user.user_id}{else/}0{/if},"loginUrl":"{:url('user/login')}","needLoginHint":"{:lang('chatroom/login_required')}"}</script>
+                            <div class="mac-play-chat-panel" id="macPlayChatPanel">
+                                    <div class="mac-play-chat-panel__head">
+                                        <span class="mac-play-chat-panel__title mac-play-chat-panel__title--pc" data-lang="string_play_chat_title">本片讨论</span>
+                                        <div class="mac-play-chat-panel__tabs" id="macPlaySocialTabBar" role="tablist">
+                                            <button type="button" class="mac-play-chat-panel__tab {if condition='!$play_chatroom_enabled'}is-active{/if}" role="tab" aria-selected="{if condition='!$play_chatroom_enabled'}true{else/}false{/if}" id="macPlaySocialTabDm" data-mac-play-social-tab="dm" data-lang="string_play_dm_sheet_title">发弹幕</button>
+                                            {if condition="$play_chatroom_enabled"}
+                                            <button type="button" class="mac-play-chat-panel__tab is-active" role="tab" aria-selected="true" id="macPlaySocialTabChat" data-mac-play-social-tab="chat" data-lang="string_play_chat_room">聊天室</button>
+                                            {/if}
+                                        </div>
+                                        <button type="button" class="mac-play-chat-panel__close" id="macPlayChatClose">
+                                            <span class="mac-play-chat-panel__close-sr" data-lang="string_close">关闭</span>
+                                            <img class="mac-play-chat-panel__close-img" src="{$maccms.path_tpl}/images/login/popup_close.png" width="22" height="22" alt="" decoding="async" draggable="false" />
+                                        </button>
+                                    </div>
+                                    {if condition="$play_chatroom_enabled"}
+                                    <div class="mac-play-chat-panel__pane mac-play-chat-panel__pane--chat is-active" id="macPlaySocialPaneChat" role="tabpanel" aria-labelledby="macPlaySocialTabChat">
+                                        <div class="mac-play-chat-panel__list" id="macPlayChatList"></div>
+                                        <div class="mac-play-chat-panel__foot">
+                                            <div class="mac-play-chat-panel__footRow">
+                                                <input type="text" id="macPlayChatInput" class="mac-play-chat-panel__input" maxlength="500" autocomplete="off" data-lang-placeholder="string_play_social_say" placeholder="" />
+                                                <button type="button" class="mac-play-chat-panel__send" id="macPlayChatSend" data-lang="string_play_chat_send">发送</button>
+                                            </div>
+                                            <p class="mac-play-dm-panel__err" id="macPlayChatErr" role="alert"></p>
+                                        </div>
+                                    </div>
+                                    {/if}
+                                    <div class="mac-play-chat-panel__pane mac-play-chat-panel__pane--dm {if condition='!$play_chatroom_enabled'}is-active{/if}" id="macPlaySocialPaneDm" role="tabpanel" aria-labelledby="macPlaySocialTabDm">
+                                        <div class="mac-play-chat-panel__dmRow">
+                                            <input type="text" id="macPlayDanmakuDrawerInput" class="mac-play-chat-panel__dmInput" maxlength="200" autocomplete="off" data-lang-placeholder="string_play_social_say" placeholder="" />
+                                            <button type="button" class="mac-play-chat-panel__dmSend" id="macPlayDanmakuDrawerSubmit" data-lang="string_play_dm_submit">发送</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            <div class="mac-play-chat-backdrop" id="macPlayChatBackdrop"></div>
+                            {/if}
                         </div>
                         {include file="ads/ads_icon1" ads_icon1_marquee="1"}
                     </div>
@@ -394,6 +451,9 @@
         </div>
         {include file="widget/recharge_modal" /}
         {include file="public/foot"}
+        {if condition="($obj.vod_copyright neq 1 || $GLOBALS['config']['app']['copyright_status'] neq 1) && !$obj.vod_lock && $popedom.code elt 1 && ($obj['vod_play_list'][$param['sid']]['player_info']['from'] eq 'dplayer' || $obj['vod_play_list'][$param['sid']]['player_info']['from'] eq 'videojs')"}
+        <script defer src="{$maccms.path_tpl}/asset/js/vod-play-social.js?v=202604261830"></script>
+        {/if}
         <script type="text/javascript" src="{$maccms.path_tpl}/asset/js/vod-play-playlist.js"></script>
         <script type="text/javascript" src="{$maccms.path_tpl}/asset/js/vod-play-tagwall.js"></script>
     </div>

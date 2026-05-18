@@ -13,23 +13,21 @@
 <div class="member-wrap">
 <div class="container ">
     {include file="ads/ads_all"}
-    <div class="art_nav_row show-pc">
-        
+    <div class="art_list_row">
+        <div class="art_nav_strip show-pc">
             <div class="art_navlist" id="hl01">
-            <div class="scroller">
-                <ul class="clearfix">
-                    {maccms:type mid="2" order="sort desc" by="sort"}
-                    <li {if condition="($vo.type_id eq $GLOBALS['type_id'] || $vo.type_id eq $GLOBALS['type_pid'])"}class="active"{/if}><a href="{:mac_url_type($vo)}" class="text_muted">{$vo.type_name}</a></li>
-                    {/maccms:type}
-                    {maccms:type ids="current" order="asc" by="sort"}
-                    <li {if condition="($vo.type_id eq $GLOBALS['type_id'] || $vo.type_id eq $GLOBALS['type_pid'])"}class="active"{/if}><a href="{:mac_url_type($vo)}" class="text_muted">{$vo.type_name}</a></li>
-                    {/maccms:type}
-                </ul>
+                <div class="scroller">
+                    <ul class="clearfix">
+                        {maccms:type mid="2" order="sort desc" by="sort"}
+                        <li {if condition="($vo.type_id eq $GLOBALS['type_id'] || $vo.type_id eq $GLOBALS['type_pid'])"}class="active"{/if}><a href="{:mac_url_type($vo)}" class="text_muted">{$vo.type_name}</a></li>
+                        {/maccms:type}
+                        {maccms:type ids="current" order="asc" by="sort"}
+                        <li {if condition="($vo.type_id eq $GLOBALS['type_id'] || $vo.type_id eq $GLOBALS['type_pid'])"}class="active"{/if}><a href="{:mac_url_type($vo)}" class="text_muted">{$vo.type_name}</a></li>
+                        {/maccms:type}
+                    </ul>
+                </div>
             </div>
         </div>
-        
-    </div>
-    <div class="art_list_row">
         {if condition="$obj.type_id neq 17"}
         <div class="pannel">
             <div class="art_banner">

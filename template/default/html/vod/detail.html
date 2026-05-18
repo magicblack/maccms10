@@ -22,41 +22,43 @@
 	<div class="hot_banner ">
 		<div class="detail_list_box">
 			<div class="detail_list">
-				<div class="content_box clearfix">
-					<div class="content_thumb fl">
+				<div class="content_box vod-detail-hero-box">
+					<div class="content_thumb vod-detail-hero__thumb">
 						<a class="vodlist_thumb lazyload" href="javascript:;" title="" data-original="">
 							<span class="mac_badge_top_right"></span>
 							<span class="mac_badge_bottom_right"></span>
 							<span class="play hidden_xs"></span>
 						</a>
 					</div>
-					<div class="content_detail content_top fl">
-						<div class="pannel_head clearfix detail-mobile-head">
-							<h1 class="title js-vod-name">{$obj.vod_name|mac_filter_html}</h1>
-						</div>
-						<div id="detail_rating" class="fn-clear show-mobile detail-rating-mobile-inline"></div>
-					</div>
-					<div class="content_detail content_min fl">
-						<ul>
-							<li class="data js-vod-meta-line"></li>
-							<li class="data js-vod-status-line"></li>
-							<li class="data js-vod-actor-line"></li>
-							<li class="data js-vod-director-line"></li>
-							<li class="desc hidden_xs"><span class="left text_muted" data-lang="string_vod_jj">简介：</span><span class="js-vod-blurb"></span></li>
-						</ul>
-
-						<div class="content_min content_btn">
-							{include file="widget/detail_button"}
-							<div class="playbtn o_share ">
-								<a class="btn btn_share open-share" href="javascript:;"><i class="iconfont">&#xe615;</i>&nbsp; <span
-										data-lang="string_vod_share">分享</span> </a>
-								{include file="widget/share"}
+					<div class="vod-detail-hero__main-col">
+						<div class="content_detail content_top vod-detail-hero__top">
+							<div class="pannel_head clearfix detail-mobile-head">
+								<h1 class="title js-vod-name">{$obj.vod_name|mac_filter_html}</h1>
 							</div>
+							<div id="detail_rating" class="fn-clear show-mobile detail-rating-mobile-inline"></div>
 						</div>
+						<div class="content_detail content_min vod-detail-hero__main">
+							<ul>
+								<li class="data js-vod-meta-line"></li>
+								<li class="data js-vod-status-line"></li>
+								<li class="data js-vod-actor-line"></li>
+								<li class="data js-vod-director-line"></li>
+								<li class="desc hidden_xs"><span class="left text_muted" data-lang="string_vod_jj">简介：</span><span class="js-vod-blurb"></span></li>
+							</ul>
 
+							<div class="content_min content_btn">
+								{include file="widget/detail_button"}
+								<div class="playbtn o_share ">
+									<a class="btn btn_share open-share" href="javascript:;"><i class="iconfont">&#xe615;</i>&nbsp; <span
+											data-lang="string_vod_share">分享</span> </a>
+									{include file="widget/share"}
+								</div>
+							</div>
+
+						</div>
 					</div>
 
-					<div class="content_progress show-pc">
+					<div class="content_progress show-pc vod-detail-hero__progress">
 						<div class="js-vod-rating-pc"></div>
 
 						<div class="progress_item">
@@ -99,7 +101,7 @@
 	<div class="member-wrap">
 		<div class="container ">
 			{include file="ads/ads_all"}
-			<div class="left_row fl">
+			<div class="left_row">
 				<div class="pannel clearfix">
 					<div class="tabs">
 						<input type="radio" id="tab1" name="tab-control" checked>
@@ -130,7 +132,7 @@
 						</div>
 					</div>
 				</div>
-				<div class="pannel clearfix" id="bofy">
+				<div class="pannel" id="bofy">
 					<div class="pannel_head pannel_head--vod-playlist">
 						<h3 class="title" data-lang="string_vod_playlist">播放列表</h3>
 						<div class="vod-playlist-head-center">

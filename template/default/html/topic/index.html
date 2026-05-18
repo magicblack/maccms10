@@ -35,8 +35,11 @@
             <p class="topic-index-error-text"><span data-lang="string_topic_feed_error">加载失败，请稍后重试</span></p>
             <button type="button" class="topic-index-retry-btn" id="topicFeedRetry" data-lang="string_topic_feed_retry">重试</button>
           </div>
-          <div class="topic-index-status topic-index-is-hidden" id="topicFeedEmpty" role="status">
-            <span data-lang="string_topic_feed_empty">暂无专题</span>
+          <div class="topic-index-status topic-index-status--empty topic-index-is-hidden" id="topicFeedEmpty" role="status">
+            <div class="no-data">
+              <div class="nodata-img" aria-hidden="true"></div>
+              <p class="nodata-txt" data-lang="string_topic_feed_empty">暂无专题</p>
+            </div>
           </div>
           <ul class="topic-feed-list" id="topicFeedList" aria-label="专题列表"></ul>
           <div class="topic-index-more-wrap topic-index-is-hidden" id="topicFeedMoreWrap">

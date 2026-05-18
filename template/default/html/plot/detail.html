@@ -88,7 +88,7 @@
 					  <div class="plot_text"><p>{$obj['vod_plot_list'][$param['page']]['detail']}</p></div> 
                   </article>
                
-              <div class="pannel art_pren_list clearfix">
+              <div class="pannel art_pren_list">
                 {if condition="$obj['vod_plot_list'][$param['page'] -1 ]['name'] neq ''"}
 				<a class="art_prev" href="{:mac_url_plot_detail($obj,['page'=>$param['page']-1])}"><span data-lang="string_syj">上一集</span><div class="art_name_prev">{$obj.vod_name}<span data-lang="vod_plot">分集剧情</span> - {$obj['vod_plot_list'][$param['page']-1]['name']}</div></a>
                 {/if}

@@ -8,7 +8,7 @@
 	</li>
 	{if condition="($maccms.aid==24) OR ($maccms.aid==31)"}
 	{else}
-	{if$__PAGING__.page_current>3}
+	{if$__PAGING__.page_current>3 && $__PAGING__.page_num_min>1}
 	<li class="hidden_xs"><a href="{$__PAGING__.page_url|mac_url_page=1}"{if$__PAGING__['page_current']==1} class="btns_disad"{/if}>1</a></li>
 	<li class="hidden_xs"><span class="btns_disad" href="javascript:;">...</span></li>
 	{/if}
@@ -18,7 +18,7 @@
 	{/maccms:foreach}
 	{if condition="($maccms.aid==24) OR ($maccms.aid==31)"}
 	{else}
-	{if$__PAGING__.page_current<($__PAGING__.page_total-2)}
+	{if$__PAGING__.page_num_max<$__PAGING__.page_total}
 	<li class="hidden_xs"><span class="btns_disad" href="javascript:;">...</span></li>
 	<li class="hidden_xs"><a href="{$__PAGING__.page_url|mac_url_page=$__PAGING__.page_total}"{if$__PAGING__['page_current']==$__PAGING__.page_total} class="btns_disad"{/if}>{$__PAGING__.page_total}</a></li>
 	{/if}
