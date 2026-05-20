@@ -16,6 +16,38 @@ API 接口说明 V2（基于当前实现）
 - 与 **四、模块接口** 相同，受后台 **API 公开接口（PublicApi）** 开关约束；未开启时请求可能被拒绝。
 - 视频 **联想** 另受后台 **网站参数 → 搜索** 是否开启约束：关闭时联想接口返回 code=999（与前台关闭搜索一致）。
 
+0) 统一搜索（跨模块）— 独立搜索 API
+- 路径：GET /api.php/search/index
+- 说明：一次请求可同时搜索视频、文章、漫画等所有内容类型，默认搜索全部模块。受后台搜索开关及 PublicApi 约束。
+- 参数：
+  - wd：string 必填，搜索关键字（trim 后不可为空，最长 50 字）
+  - module：string 可选，搜索范围 all|vod|art|manga（默认 all 搜索所有模块）
+  - limit：number 可选，每个模块返回数量，1~50，默认 10
+  - page：number 可选，页码，默认 1
+- 返回：
+  - code=1：info 含 wd, module, page, limit
+    - vod/art/manga 各含 {total, list}
+    - **list 每项字段统一（无前缀）**：
+      {id, name, en, sub, pic, actor, director, remarks, score, area, year, class, tag, blurb, time, hits, link, type_id, type_id_1, type_is_vip_exclusive, module, module_name}
+    - module 值为 "vod"|"art"|"manga"，前端可据此区分内容类型
+    - 各模块不具备的字段以空字符串或 0 填充（如 art 无 actor/director/area/year 则为空）
+  - code=999：站点关闭了搜索功能
+  - code=1001：wd 为空或参数校验失败
+- 典型用途：前台统一搜索页、移动端全站搜索
+
+0.1) 统一搜索联想（自动完成）
+- 路径：GET /api.php/search/suggest
+- 说明：跨模块快速联想，适合搜索框下拉提示。按各模块点击量排序返回。
+- 参数：
+  - wd：string 必填，关键字
+  - limit：number 可选，每个模块返回数量，1~10，默认 5
+- 返回：
+  - code=1：info 含 wd, total, list
+    - list 每项：{id, name, en, pic, link, module, module_name}
+    - module 值：vod|art|manga
+  - code=999：搜索关闭
+  - code=1001：wd 为空
+
 1) 视频 — 搜索联想（自动完成）
 - 路径：GET /api.php/vod/suggest
 - 参数：

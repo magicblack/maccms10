@@ -9,7 +9,7 @@
 <body>     	
 	{include file="public/th" /}
     {include file="public/head"}
-	<div class="member-wrap">
+	<div class="member-wrap" id="vodSearchPage" data-api-base="{:rtrim($maccms.path,'/').'/api.php'}" data-search-wd="{:htmlspecialchars(isset($param['wd']) ? $param['wd'] : '', ENT_QUOTES, 'UTF-8')}" data-search-by="{:htmlspecialchars(isset($param['by']) ? $param['by'] : 'time', ENT_QUOTES, 'UTF-8')}" data-search-page="{:htmlspecialchars(isset($param['page']) ? $param['page'] : '1', ENT_QUOTES, 'UTF-8')}">
     <div class="container ">
         {include file="ads/ads_all"}
         <div class="left_row fl">        	
@@ -45,36 +45,15 @@
 
 					
 				<ul class="vodlist clearfix">
-			        {php}$count=1;{/php}
-			        {maccms:vod num="36" paging="yes" half="3" pageurl="vod/search" order="desc" by="time"}
-                    {php}$count++;{/php}																
-					{include file="widget/search_box"}					
-					{/maccms:vod}
 				</ul>		
-					
-				<script>
-					let uls=$('.vodlist').children().length;
-					if(uls>0){
-						$('.wrapper_fl').show();
-					}else{
-						$('.wrapper_fl').hide();
-					}
-				</script>
+				<div id="vodSearchPagination"></div>
 				
-				{include file="widget/page"}
-				
-				{empty name="$__PAGING__.record_total"}
-	            <div class="search_tips">
-					<span>
-						<span data-lang="string_search_bq">很抱歉，暂无相关视频！如需提醒管理员添加该视频请点击</span>
-						&nbsp;&nbsp;<a href="javascript:void(0)" class="report_click" onclick="MAC.Gbook.Noinfo('请管理员添加《{$param.wd}》，谢谢！')"><i class="iconfont">&#xe632;</i>&nbsp; <span data-lang="string_search_ly"> 留言</span></a>&nbsp; <span data-lang="string_search_xx"> ，谢谢！</span></span>
-					<span data-lang="string_search_ts">提示（如果搜索词错误也将无法搜到，可尝试简化搜索词）</span>
+	            <div id="vodSearchEmpty" hidden>
+					{include file="public/notempty"}
 				</div>
-	            {/empty}
 			</div>
 			{include file="ads/ads_vodw"} 
-			{empty name="$__PAGING__.record_total"}
-			<div class="pannel clearfix">
+			<div class="pannel clearfix" id="vodSearchFallbackPanel" hidden>
 				<div class="pannel_head clearfix">
 				    <a class="text_muted pull_right" href="{:mac_url('map/index')}">
 						<span data-lang="string_type_more2">更多</span>
@@ -90,7 +69,7 @@
 					{/maccms:vod}
 				</ul>
 			</div>
-            {/empty}	      
+	      
         </div>
         <div class="right_row fr pa_left hidden_xs hidden_mi">
             {include file="ads/ads_vodr"}
@@ -111,25 +90,7 @@
         </div>
     </div>
 </div>
-    <script type="text/javascript">
-        $('.mac_total').html('{$__PAGING__.record_total}');
-
-		var lang=localStorage.getItem('lang');
-		function changeLang(){
-			if(lang==1){
-				let s="MAC.Gbook.Noinfo('Please add by administrator《{$param.wd}》，thank you！')";
-				$('.report_click').attr('onclick',s);
-			}else{
-				let s1="MAC.Gbook.Noinfo('请管理员添加《{$param.wd}》，谢谢！')";
-				$('.report_click').attr('onclick',s1);
-			}
-		}
-		changeLang();
-		$(document).click(function(e){
-			lang=localStorage.getItem('lang');
-			changeLang();
-		});
-    </script>
 	{include file="public/foot"}
+	<script src="{$maccms.path_tpl}/asset/js/vod-search-page.js"></script>
 </body>
 </html>

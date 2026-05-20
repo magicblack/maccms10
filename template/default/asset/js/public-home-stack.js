@@ -1595,6 +1595,7 @@
                     window.location.href = u;
                 }
             },
+            // 未登录但有残留 user_id Cookie 时须用 ajax_login；误用 ajax_info 会塞进整页会员 HTML，弹层无登录框（无 .mac_user 的页常不跑 fetchAuthMe 清 Cookie）。
             'Login': function (postLoginUrl) {
                 try {
                     MAC.User._postLoginRedirect =
@@ -1605,7 +1606,7 @@
                     MAC.User._postLoginRedirect = '';
                 }
                 var ac = 'ajax_login';
-                if (MAC.Cookie.Get('user_id') != undefined && MAC.Cookie.Get('user_id') != '') {
+                if (MAC.User.IsLogin == 1 && MAC.Cookie.Get('user_id') != undefined && MAC.Cookie.Get('user_id') != '') {
                     ac = 'ajax_info';
                 }
                 MAC.Pop.Show(460, 560, '', maccms.base_url + '/index.php/user/' + ac, function (r) {

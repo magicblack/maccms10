@@ -17,7 +17,10 @@ var maccms = {
         'head_b' => mac_url_img(isset($tplconfig['theme']['logo']['bpic']) && $tplconfig['theme']['logo']['bpic'] ? $tplconfig['theme']['logo']['bpic'] : 'template/default/images/la/logo-mobile-black.png'),
         'foot_b' => mac_url_img(isset($tplconfig['theme']['logo']['foot_bpic']) && $tplconfig['theme']['logo']['foot_bpic'] ? $tplconfig['theme']['logo']['foot_bpic'] : 'template/default/images/la/logo_black.png'),
         'foot_w' => mac_url_img(isset($tplconfig['theme']['logo']['foot_wpic']) && $tplconfig['theme']['logo']['foot_wpic'] ? $tplconfig['theme']['logo']['foot_wpic'] : 'template/default/images/la/logo_white.png'),
-    ), JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE)}
+    ), JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE)},
+    "ai_search_enabled": {:json_encode((string)config('maccms.ai_search.enabled') === '1')},
+    "ai_search_hub_url": {:json_encode((string)mac_url('vod/search_hub'), JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE)},
+    "ai_chat_url": {:json_encode((string)mac_url('index/ai_chat'), JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE)}
 };
 var MAC_PATH = maccms.path;
 </script>

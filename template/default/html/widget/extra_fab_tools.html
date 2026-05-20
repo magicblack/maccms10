@@ -1,0 +1,27 @@
+<ul class="extra clearfix extra-fab">
+    <li class="extra-fab-main">
+        <a href="javascript:void(0)" class="extra-toggle" data-title="string_quick_menu" title="快捷菜单">
+            <span class="m_ico"><i class="iconfont" >&#xe640;</i></span>
+        </a>
+        <ul class="extra-fab-menu">
+            <li id="backtop-ico">
+                <a class="backtop" href="javascript:scroll(0,0)" data-title="string_foot_toTop" title="返回顶部"><span class="top_ico"><i class="iconfont" >&#xe628;</i></span></a>
+            </li>
+            {if condition="isset($tplconfig['theme']['contact']['url']) && $tplconfig['theme']['contact']['url'] neq ''"}
+            <li>
+                <a class="extra-fab-service" href="{$tplconfig.theme.contact.url}" target="_blank" rel="noopener noreferrer" data-title="string_user_contact_service" title="联系客服" aria-label="联系客服">
+                    <span class="extra-fab-service__ico"><img src="{$maccms.path_tpl}/asset/img/contact-service.png" width="22" height="22" alt="" decoding="async" /></span>
+                </a>
+            </li>
+            {/if}
+            <li>
+                <a id="black" data-title="string_foot_black" class="mycolor" href="javascript:void(0)" title="暗夜模式">
+                    <span class="m_ico theme_ico"><i class="iconfont" >&#xe656;</i></span>
+                </a>
+                <a id="white" data-title="string_foot_white" class="mycolor hide" href="javascript:void(0)" title="白昼模式">
+                    <span class="m_ico theme_ico"><i class="iconfont">&#xe657;</i></span>
+                </a>
+            </li>
+        </ul>
+    </li>
+</ul>
