@@ -169,7 +169,11 @@ class Meilisearch extends Base
                     'data' => $stats['data'] ?? null,
                     'error' => (string)($stats['error'] ?? ''),
                 ],
-                'opencc' => ['available' => $opencc ? 1 : 0],
+                'opencc' => [
+                    'available' => $opencc ? 1 : 0,
+                    'sample_s2t' => OpenccConverter::s2t('软件'),
+                    'sample_t2s' => OpenccConverter::t2s('軟件'),
+                ],
                 'sample_query' => $sampleQuery,
                 'sample_search' => [
                     'ok' => !empty($sampleSearch['ok']),

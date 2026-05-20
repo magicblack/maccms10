@@ -42,7 +42,10 @@ class Website extends Base
         }
         if(!empty($param['wd'])){
             $param['wd'] = htmlspecialchars(urldecode($param['wd']));
-            $where['website_name'] = ['like','%'.$param['wd'].'%'];
+            $like = mac_search_wd_like($param['wd']);
+            if ($like) {
+                $where['website_name'] = $like;
+            }
         }
 
         if(!empty($param['repeat'])){
@@ -118,7 +121,10 @@ class Website extends Base
             }
             if(!empty($param['wd'])){
                 $param['wd'] = htmlspecialchars(urldecode($param['wd']));
-                $where['website_name'] = ['like','%'.$param['wd'].'%'];
+                $like = mac_search_wd_like($param['wd']);
+                if ($like) {
+                    $where['website_name'] = $like;
+                }
             }
 
 

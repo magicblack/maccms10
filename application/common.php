@@ -1638,6 +1638,29 @@ function mac_like_arr($s)
     return $like_arr;
 }
 
+/**
+ * 后台关键词 LIKE 条件（含 OpenCC 繁简变体）。
+ *
+ * @param string $wd 已过滤的关键词
+ * @return array ['like', '%词%']、['like', ['%词%', ...], 'OR']，或空数组（无有效关键词）
+ */
+function mac_search_wd_like($wd)
+{
+    $wd = trim((string)$wd);
+    if ($wd === '') {
+        return [];
+    }
+    $patterns = \app\common\util\OpenccConverter::likePatterns($wd);
+    if (empty($patterns)) {
+        return ['like', '%' . $wd . '%'];
+    }
+    if (count($patterns) === 1) {
+        return ['like', $patterns[0]];
+    }
+
+    return ['like', $patterns, 'OR'];
+}
+
 function mac_art_list($art_title,$art_note,$art_content)
 {
     $art_title_list = [];

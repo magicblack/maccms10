@@ -21,7 +21,10 @@ class Topic extends Base
         }
         if(!empty($param['wd'])){
             $param['wd'] = htmlspecialchars(urldecode($param['wd']));
-            $where['topic_name'] = ['like','%'.$param['wd'].'%'];
+            $like = mac_search_wd_like($param['wd']);
+            if ($like) {
+                $where['topic_name'] = $like;
+            }
         }
 
         $order='topic_time desc';

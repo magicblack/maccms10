@@ -13,11 +13,15 @@ class OpenccConverter
     private static $cache = [];
     /** @var array<string, mixed> opencc_open 句柄，false 表示该 config 不可用 */
     private static $extOd = [];
+    /** @var bool|null 实测能否完成繁简转换（非仅扩展/命令是否存在） */
+    private static $conversionWorks = null;
 
     /** 跨请求缓存 TTL（秒），简繁映射稳定可设较长 */
     private static $persistTtl = 2592000;
-    /** shell opencc 可用性缓存 TTL（秒） */
+    /** shell opencc 可用性：成功结果缓存 TTL */
     private static $shellAvailableTtl = 86400;
+    /** shell 探测失败缓存 TTL（安装后无需等 24h 才重新检测） */
+    private static $shellUnavailableTtl = 300;
 
     /**
      * 简体 -> 繁体（OpenCC s2t）。
@@ -105,9 +109,14 @@ class OpenccConverter
         if (!extension_loaded('opencc') || !function_exists('opencc_open') || !function_exists('opencc_convert')) {
             return null;
         }
-        $cfgFile = $config . '.json';
         if (!array_key_exists($config, self::$extOd)) {
-            $od = @opencc_open($cfgFile);
+            $od = null;
+            foreach (self::extensionConfigCandidates($config) as $cfgFile) {
+                $od = @opencc_open($cfgFile);
+                if ($od !== false && $od !== null) {
+                    break;
+                }
+            }
             self::$extOd[$config] = ($od !== false && $od !== null) ? $od : false;
         }
         $od = self::$extOd[$config];
@@ -123,15 +132,131 @@ class OpenccConverter
     }
 
     /**
-     * 扩展或 shell 任一可用即视为可用（供后台状态展示）。
+     * @return string[]
+     */
+    private static function extensionConfigCandidates($config)
+    {
+        $config = trim((string)$config);
+        $candidates = [
+            $config . '.json',
+            $config,
+        ];
+        $dir = getenv('OPENCC_CONFIG_DIR');
+        if (is_string($dir) && $dir !== '') {
+            $dir = rtrim($dir, '/\\');
+            $candidates[] = $dir . DIRECTORY_SEPARATOR . $config . '.json';
+            $candidates[] = $dir . DIRECTORY_SEPARATOR . $config;
+        }
+
+        return array_values(array_unique($candidates));
+    }
+
+    /**
+     * 扩展或 shell 能完成实测转换即视为可用（供后台状态展示与索引/搜索）。
      */
     public static function available()
     {
-        if (extension_loaded('opencc') && function_exists('opencc_open') && function_exists('opencc_convert')) {
-            return true;
+        return self::conversionWorks();
+    }
+
+    /**
+     * 搜索用词变体：原词、去空白、小写（英文）、OpenCC 繁简形式。
+     *
+     * @return string[]
+     */
+    public static function searchVariants($text)
+    {
+        $text = trim((string)$text);
+        if ($text === '') {
+            return [];
+        }
+        $variants = [$text];
+        $compact = preg_replace('/\s+/u', '', $text);
+        if (is_string($compact) && $compact !== '' && $compact !== $text) {
+            $variants[] = $compact;
+        }
+        $lower = strtolower($text);
+        if ($lower !== '' && $lower !== $text && !in_array($lower, $variants, true)) {
+            $variants[] = $lower;
+        }
+        if (self::conversionWorks()) {
+            foreach (['t2s', 's2t'] as $cfg) {
+                $converted = self::convert($text, $cfg);
+                if ($converted !== '' && $converted !== $text && !in_array($converted, $variants, true)) {
+                    $variants[] = $converted;
+                }
+            }
         }
 
-        return self::isShellAvailable();
+        return array_values(array_unique($variants));
+    }
+
+    /**
+     * 后台 MySQL LIKE 用的 %关键词% 列表（含繁简变体）。
+     *
+     * @return string[]
+     */
+    public static function likePatterns($text)
+    {
+        $patterns = [];
+        foreach (self::searchVariants($text) as $v) {
+            $patterns[] = '%' . $v . '%';
+        }
+
+        return array_values(array_unique($patterns));
+    }
+
+    /**
+     * 实测 OpenCC 能否完成简繁转换（避免“已装扩展但 opencc_open 失败”误报可用）。
+     */
+    public static function conversionWorks()
+    {
+        if (self::$conversionWorks !== null) {
+            return self::$conversionWorks;
+        }
+        $persistKey = 'opencc:conversion_works';
+        if (class_exists('\think\Cache', false)) {
+            try {
+                $cached = \think\Cache::get($persistKey);
+                if ($cached === 1 || $cached === '1' || $cached === true) {
+                    self::$conversionWorks = true;
+
+                    return true;
+                }
+                if ($cached === 0 || $cached === '0' || $cached === false) {
+                    self::$conversionWorks = false;
+
+                    return false;
+                }
+            } catch (\Throwable $e) {
+                // 未初始化缓存时忽略
+            }
+        }
+        $sample = '软件';
+        $expect = '軟件';
+        $works = false;
+        $ext = self::convertWithExtension($sample, 's2t');
+        if (is_string($ext) && $ext === $expect) {
+            $works = true;
+        } elseif (self::isShellAvailable()) {
+            $shell = self::execOpencc($sample, 's2t');
+            if (is_string($shell) && $shell === $expect) {
+                $works = true;
+            }
+        }
+        self::$conversionWorks = $works;
+        if (class_exists('\think\Cache', false)) {
+            try {
+                \think\Cache::set(
+                    $persistKey,
+                    $works ? 1 : 0,
+                    $works ? self::$shellAvailableTtl : self::$shellUnavailableTtl
+                );
+            } catch (\Throwable $e) {
+            }
+        }
+
+        return $works;
     }
 
     private static function isShellAvailable()
@@ -160,7 +285,7 @@ class OpenccConverter
             self::$shellAvailable = false;
             if (class_exists('\think\Cache', false)) {
                 try {
-                    \think\Cache::set($persistKey, 0, self::$shellAvailableTtl);
+                    \think\Cache::set($persistKey, 0, self::$shellUnavailableTtl);
                 } catch (\Throwable $e) {
                 }
             }
@@ -175,7 +300,11 @@ class OpenccConverter
         }
         if (class_exists('\think\Cache', false)) {
             try {
-                \think\Cache::set($persistKey, self::$shellAvailable ? 1 : 0, self::$shellAvailableTtl);
+                \think\Cache::set(
+                    $persistKey,
+                    self::$shellAvailable ? 1 : 0,
+                    self::$shellAvailable ? self::$shellAvailableTtl : self::$shellUnavailableTtl
+                );
             } catch (\Throwable $e) {
             }
         }
@@ -197,12 +326,22 @@ class OpenccConverter
                 return null;
             }
             file_put_contents($tmpIn, $text);
-            $cmd = 'opencc -c ' . escapeshellarg($config . '.json') . ' -i ' . escapeshellarg($tmpIn) . ' -o ' . escapeshellarg($tmpOut) . ' 2>&1';
-            @shell_exec($cmd);
-            $out = @file_get_contents($tmpOut);
+            $out = null;
+            foreach ([$config . '.json', $config] as $cfgName) {
+                $cmd = 'opencc -c ' . escapeshellarg($cfgName)
+                    . ' -i ' . escapeshellarg($tmpIn)
+                    . ' -o ' . escapeshellarg($tmpOut) . ' 2>&1';
+                @shell_exec($cmd);
+                $chunk = @file_get_contents($tmpOut);
+                if (is_string($chunk) && trim($chunk) !== '') {
+                    $out = trim($chunk);
+                    break;
+                }
+            }
             @unlink($tmpIn);
             @unlink($tmpOut);
-            return is_string($out) ? trim($out) : null;
+
+            return is_string($out) ? $out : null;
         } catch (\Throwable $e) {
             return null;
         }

@@ -39,7 +39,10 @@ class Actor extends Base
         }
         if(!empty($param['wd'])){
             $param['wd'] = htmlspecialchars(urldecode($param['wd']));
-            $where['actor_name'] = ['like','%'.$param['wd'].'%'];
+            $like = mac_search_wd_like($param['wd']);
+            if ($like) {
+                $where['actor_name'] = $like;
+            }
         }
 
         $order='actor_time desc';

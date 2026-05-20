@@ -92,7 +92,10 @@ class Vod extends Base
         if(!empty($param['wd'])){
             $param['wd'] = urldecode($param['wd']);
             $param['wd'] = mac_filter_xss($param['wd']);
-            $where['vod_name|vod_actor|vod_sub'] = ['like','%'.$param['wd'].'%'];
+            $like = mac_search_wd_like($param['wd']);
+            if ($like) {
+                $where['vod_name|vod_actor|vod_sub'] = $like;
+            }
         }
         if(!empty($param['player'])){
             if($param['player']=='no'){
@@ -456,7 +459,10 @@ class Vod extends Base
         }
         if (!empty($param['wd'])) {
             $param['wd'] = htmlspecialchars(urldecode($param['wd']));
-            $where['vod_name'] = ['like', '%' . $param['wd'] . '%'];
+            $like = mac_search_wd_like($param['wd']);
+            if ($like) {
+                $where['vod_name'] = $like;
+            }
         }
         if (!empty($param['weekday'])) {
             $where['vod_weekday'] = ['like', '%' . $param['weekday'] . '%'];

@@ -184,18 +184,11 @@ class MeilisearchService
             $baseBody['filter'] = $filter;
         }
 
-        // 文档侧已写入 title_t2s/title_s2t 等（MeilisearchDocuments），searchableAttributes 含这些字段，
-        // 单次 q 即可跨简繁匹配，无需在搜索路径调用 OpenCC。
-        $queries = [(string)$q];
-        $compact = preg_replace('/\s+/u', '', (string)$q);
-        if (is_string($compact) && $compact !== '' && $compact !== (string)$q) {
-            $queries[] = $compact;
+        // 索引侧 title_t2s/title_s2t + 查询侧 OpenCC 变体，双端保证繁简互通。
+        $queries = OpenccConverter::searchVariants((string)$q);
+        if (empty($queries)) {
+            $queries = [(string)$q];
         }
-        $lower = strtolower((string)$q);
-        if ($lower !== '' && !in_array($lower, $queries, true)) {
-            $queries[] = $lower;
-        }
-        $queries = array_values(array_unique($queries));
 
         $searchPath = '/indexes/' . $uid . '/search';
         $jobs = [];
