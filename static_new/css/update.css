@@ -1,21 +1,60 @@
+/* 弹窗容器：layer 内 flex 链，让 update_list 占满剩余高度 */
+.layui-layer.skin_updae_from {
+  display: flex;
+  flex-direction: column;
+}
+
+.layui-layer.skin_updae_from .layui-layer-content {
+  flex: 1;
+  min-height: 0;
+  overflow: hidden !important;
+}
+
+.updae_from,
+.updae_from a {
+  font-family: PingFangSC, PingFang SC, -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif;
+}
+
 .updae_from {
   width: 100%;
   height: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
   background: linear-gradient(180deg, #C1FAE2 0%, #FFFFFF 10%);
   border-radius: 8px;
   position: relative;
 }
 
+.updae_from a {
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 22px;
+  color: #4B5563;
+  text-decoration: none;
+}
+
+.updae_from a:hover {
+  opacity: 0.85;
+}
+
+.updae_from a.j-iframe {
+  color: #53D19C;
+}
+
 .update_content {
   position: relative;
   z-index: 2;
+  flex: 1;
+  min-height: 0;
   display: flex;
   flex-direction: column;
   padding: 30px;
+  overflow: hidden;
 }
 
 .update_title {
-  font-family: PingFangSC, PingFang SC;
+  flex-shrink: 0;
   font-weight: 500;
   font-size: 20px;
   color: #1F2937;
@@ -25,9 +64,20 @@
   margin-bottom: 44px;
 }
 
+.update_content > .flex-col {
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin: 20px 0;
+}
+
 .update_list {
+  flex: 1 1 auto;
+  min-height: 0;
   margin-top: 20px;
-  font-family: PingFangSC, PingFang SC;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
   font-weight: 400;
   font-size: 16px;
   color: #4B5563;
@@ -36,8 +86,31 @@
   font-style: normal;
 }
 
+.update_list::-webkit-scrollbar {
+  width: 6px;
+}
+
+.update_list::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.update_list::-webkit-scrollbar-thumb {
+  background: rgba(75, 85, 99, 0.25);
+  border-radius: 3px;
+}
+
+.update_list::-webkit-scrollbar-thumb:hover {
+  background: rgba(75, 85, 99, 0.4);
+}
+
 .group_link {
+  flex-shrink: 0;
   margin: 5px 0;
+}
+
+/* 独立页 update.html 无 layer 固定高度时的兜底 */
+body > .updae_from .update_list {
+  max-height: min(40vh, 280px);
 }
 
 .update_bg {
