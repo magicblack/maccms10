@@ -270,6 +270,10 @@
                     <div class="layui-input-inline ">
                         <button type="button" class="layui-btn layui-upload" lay-data="{data:{thumb:1,thumb_class:'upload-thumb'}}" id="upload1">{:lang('upload_pic')}</button>
                     </div>
+                    <div class="layui-input-inline">
+                        <button type="button" class="layui-btn layui-btn-warm" id="btn_ai_cover_generate" {if condition="empty($info.vod_id)"}disabled{/if}>{:lang('admin/ai_cover/btn_generate')}</button>
+                        <button type="button" class="layui-btn layui-btn-primary" id="btn_ai_cover_revert" {if condition="empty($vod_ai_cover_can_revert)"}disabled{/if}>{:lang('admin/ai_cover/btn_revert')}</button>
+                    </div>
                 </div>
                     <div class="layui-form-item">
                         <label class="layui-form-label">{:lang('pic_thumb')}：</label>
@@ -278,6 +282,13 @@
                         </div>
                         <div class="layui-input-inline ">
                             <button type="button" class="layui-btn layui-upload" lay-data="{data:{thumb:0,thumb_class:'upload-thumb'}}" id="upload2">{:lang('upload_pic')}</button>
+                        </div>
+                    </div>
+                    <div class="layui-form-item layui-form-text">
+                        <label class="layui-form-label">{:lang('admin/ai_cover/extra_prompt_label')}</label>
+                        <div class="layui-input-block">
+                            <textarea id="ai_cover_extra_prompt" name="ai_cover_extra_prompt" class="layui-textarea" rows="2" placeholder="{:lang('admin/ai_cover/extra_prompt_placeholder')}"></textarea>
+                            <div class="layui-word-aux">{:lang('admin/ai_cover/extra_prompt_tip')}</div>
                         </div>
                     </div>
                     <div class="layui-form-item">
@@ -573,6 +584,62 @@
             s.onload = bootAiSeo;
             document.head.appendChild(s);
         }
+
+        var AI_COVER_LANG = {
+            generating: "{:lang('admin/ai_cover/msg_generating')}",
+            save_first: "{:lang('admin/ai_cover/msg_save_first')}",
+            done: "{:lang('admin/ai_cover/msg_done')}",
+            fail: "{:lang('admin/ai_cover/msg_fail')}",
+            request_fail: "{:lang('admin/ai_cover/msg_request_fail')}",
+            revert_ok: "{:lang('admin/ai_cover/msg_revert_ok')}",
+            revert_fail: "{:lang('admin/ai_cover/msg_revert_fail')}"
+        };
+        $('#btn_ai_cover_generate').on('click', function () {
+            var vid = $('input[name="vod_id"]').val();
+            if (!vid) {
+                layer.msg(AI_COVER_LANG.save_first);
+                return;
+            }
+            layer.load(2, { shade: 0.25, time: 300000 });
+            $.post("{:url('vod/aiCoverGenerate')}", { id: vid, extra_prompt: $('#ai_cover_extra_prompt').val() }, function (r) {
+                layer.closeAll('loading');
+                if (r && r.code == 1 && r.data) {
+                    if (r.data.vod_pic) {
+                        $('#vod_pic').val(r.data.vod_pic);
+                    }
+                    if (r.data.vod_pic_thumb) {
+                        $('#vod_pic_thumb').val(r.data.vod_pic_thumb);
+                    }
+                    $('#btn_ai_cover_revert').prop('disabled', false);
+                    layer.msg(AI_COVER_LANG.done);
+                } else {
+                    layer.msg((r && r.msg) ? r.msg : AI_COVER_LANG.fail);
+                }
+            }, 'json').fail(function () {
+                layer.closeAll('loading');
+                layer.msg(AI_COVER_LANG.request_fail);
+            });
+        });
+        $('#btn_ai_cover_revert').on('click', function () {
+            var vid = $('input[name="vod_id"]').val();
+            if (!vid) {
+                return;
+            }
+            layer.load(2, { shade: 0.25, time: 120000 });
+            $.post("{:url('vod/aiCoverRevert')}", { id: vid }, function (r) {
+                layer.closeAll('loading');
+                if (r && r.code == 1 && r.data && r.data.vod_pic) {
+                    $('#vod_pic').val(r.data.vod_pic);
+                    $('#btn_ai_cover_revert').prop('disabled', true);
+                    layer.msg(AI_COVER_LANG.revert_ok);
+                } else {
+                    layer.msg((r && r.msg) ? r.msg : AI_COVER_LANG.revert_fail);
+                }
+            }, 'json').fail(function () {
+                layer.closeAll('loading');
+                layer.msg(AI_COVER_LANG.request_fail);
+            });
+        });
 
         $(document).on("click", ".extend", function(){
             $id = $(this).attr('data-id');

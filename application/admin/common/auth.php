@@ -105,6 +105,13 @@ return array (
         'controller' => 'system',
         'action' => 'configaiseo',
       ),
+      2141 =>
+      array (
+        'show' => 0,
+        'name' => lang('menu/configaicover'),
+        'controller' => 'system',
+        'action' => 'configaicover',
+      ),
       215 =>
       array (
         'show' => 1,

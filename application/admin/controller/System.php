@@ -267,10 +267,28 @@ class System extends Base
         $this->assign('ai_seo_key_saved', $apiKey !== '' ? 1 : 0);
         $this->assign('ai_seo_key_tail', $apiKey !== '' ? substr($apiKey, -6) : '');
 
+        if (!isset($config['ai_cover']) || !is_array($config['ai_cover'])) {
+            $config['ai_cover'] = [
+                'enabled' => '0',
+                'provider' => 'openai',
+                'model' => 'gpt-image-1',
+                'api_base' => 'https://api.openai.com/v1',
+                'api_key' => '',
+                'timeout' => '120',
+                'size' => '1024x1536',
+                'quality' => 'medium',
+                'prompt_suffix' => '',
+            ];
+        }
+        $coverKey = isset($config['ai_cover']['api_key']) ? trim((string) $config['ai_cover']['api_key']) : '';
+        $this->assign('ai_cover_key_saved', $coverKey !== '' ? 1 : 0);
+        $this->assign('ai_cover_key_tail', $coverKey !== '' ? substr($coverKey, -6) : '');
+
         $this->assign('form_action_configseo', (string) url('configseo'));
         $this->assign('form_action_configaiseo', (string) url('configaiseo'));
+        $this->assign('form_action_configaicover', (string) url('configaicover'));
         $tab = (string) input('tab', '');
-        $allowTab = ['', 'seo', 'aiseo'];
+        $allowTab = ['', 'seo', 'aiseo', 'aicover'];
         $this->assign('config_merge_tab', in_array($tab, $allowTab, true) ? $tab : '');
         $this->assign('audit_crypto_gcm_supported', SensitiveDataCrypto::supportsAes256Gcm() ? 1 : 0);
         $this->assign('api_jwt_secret_strong', JwtService::hasStrongSecret() ? 1 : 0);
@@ -1037,6 +1055,81 @@ class System extends Base
         }
 
         return $this->redirect( url('config', ['tab' => 'aiseo']) );
+    }
+
+    public function configaicover()
+    {
+        if (Request()->isPost()) {
+            $post = input('post.', '', 'htmlentities');
+            $validate = \think\Loader::validate('Token');
+            if (!$validate->check($post)) {
+                $err = $validate->getError();
+                $msg = is_scalar($err) ? (string) $err : lang('param_err');
+                return $this->ajaxErrorWithFreshToken($msg);
+            }
+            unset($post['__token__']);
+
+            $config_old = config('maccms');
+            $ai = isset($post['ai_cover']) && is_array($post['ai_cover']) ? $post['ai_cover'] : [];
+
+            $sanitize = function ($v) {
+                return trim(strip_tags((string) $v));
+            };
+
+            $size = strtolower($sanitize(isset($ai['size']) ? $ai['size'] : '1024x1536'));
+            $allowedSizes = ['1024x1024', '1024x1536', '1536x1024', '1024x1792', '1792x1024', '512x512', '256x256', 'auto'];
+            if (!in_array($size, $allowedSizes, true)) {
+                $size = '1024x1536';
+            }
+            if ($size === '1024x1792') {
+                $size = '1024x1536';
+            }
+            if ($size === '1792x1024') {
+                $size = '1536x1024';
+            }
+            $q = strtolower($sanitize(isset($ai['quality']) ? $ai['quality'] : 'medium'));
+            if (!in_array($q, ['hd', 'standard', 'low', 'medium', 'high', 'auto'], true)) {
+                $q = 'medium';
+            }
+
+            $row = [
+                'enabled' => isset($ai['enabled']) && (string) $ai['enabled'] === '1' ? '1' : '0',
+                'provider' => 'openai',
+                'model' => $sanitize(isset($ai['model']) ? $ai['model'] : 'gpt-image-1'),
+                'api_base' => $sanitize(isset($ai['api_base']) ? $ai['api_base'] : 'https://api.openai.com/v1'),
+                'timeout' => (string) max(30, intval(isset($ai['timeout']) ? $ai['timeout'] : 120)),
+                'size' => $size,
+                'quality' => $q,
+                'prompt_suffix' => $sanitize(isset($ai['prompt_suffix']) ? $ai['prompt_suffix'] : ''),
+            ];
+            if ($row['api_base'] === '') {
+                $row['api_base'] = 'https://api.openai.com/v1';
+            }
+
+            $newKey = isset($ai['api_key']) ? trim((string) $ai['api_key']) : '';
+            if ($newKey !== '') {
+                $row['api_key'] = $newKey;
+            } else {
+                $cfgFile = APP_PATH . 'extra/maccms.php';
+                $latest = is_file($cfgFile) ? include $cfgFile : [];
+                if (isset($latest['ai_cover']['api_key']) && $latest['ai_cover']['api_key'] !== '') {
+                    $row['api_key'] = (string) $latest['ai_cover']['api_key'];
+                } else {
+                    $row['api_key'] = isset($config_old['ai_cover']['api_key']) ? $config_old['ai_cover']['api_key'] : '';
+                }
+            }
+
+            $config_new = $config_old;
+            $config_new['ai_cover'] = $row;
+
+            $res = mac_arr2file(APP_PATH . 'extra/maccms.php', $config_new);
+            if ($res === false) {
+                return $this->ajaxErrorWithFreshToken(lang('save_err'));
+            }
+            return $this->success(lang('save_ok'));
+        }
+
+        return $this->redirect(url('config', ['tab' => 'aicover']));
     }
 
     public function configaisearch()

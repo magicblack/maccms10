@@ -530,6 +530,7 @@ class Vod extends Base
             }
         }
         $this->assign('seo_ai_status', $seoAiStatus);
+        $this->assign('vod_ai_cover_can_revert', !empty($info['vod_pic_original']));
 
         //分类
         $type_tree = model('Type')->getCache('type_tree');
@@ -578,6 +579,56 @@ class Vod extends Base
             return json(['code' => 0, 'msg' => isset($res['msg']) ? $res['msg'] : lang('save_err'), 'data' => []]);
         }
         return json(['code' => 1, 'msg' => lang('save_ok'), 'data' => isset($res['data']) ? $res['data'] : []]);
+    }
+
+    public function aiCoverGenerate()
+    {
+        if (!Request()->isPost()) {
+            return json(['code' => 0, 'msg' => lang('illegal_request'), 'data' => []]);
+        }
+        $id = intval(input('post.id'));
+        if ($id <= 0) {
+            return json(['code' => 0, 'msg' => lang('param_err'), 'data' => []]);
+        }
+        $adminId = intval($this->_admin['admin_id'] ?? 0);
+        if (!\app\common\util\VodAiCover::consumeGenerateRateLimit($adminId)) {
+            return json(['code' => 0, 'msg' => lang('admin/ai_cover/msg_rate_limit'), 'data' => []]);
+        }
+        $extraPrompt = input('post.extra_prompt', '', '');
+        if (!is_string($extraPrompt)) {
+            $extraPrompt = '';
+        }
+        try {
+            $res = \app\common\util\VodAiCover::generateByVodId($id, $extraPrompt);
+        } catch (\Exception $e) {
+            \think\Log::error('AI cover generate failed (vod_id=' . $id . '): ' . $e->getMessage());
+            return json(['code' => 0, 'msg' => $e->getMessage(), 'data' => []]);
+        }
+        if (empty($res['code']) || intval($res['code']) !== 1) {
+            return json(['code' => 0, 'msg' => isset($res['msg']) ? $res['msg'] : lang('save_err'), 'data' => isset($res['data']) ? $res['data'] : []]);
+        }
+        return json(['code' => 1, 'msg' => isset($res['msg']) ? $res['msg'] : lang('save_ok'), 'data' => isset($res['data']) ? $res['data'] : []]);
+    }
+
+    public function aiCoverRevert()
+    {
+        if (!Request()->isPost()) {
+            return json(['code' => 0, 'msg' => lang('illegal_request'), 'data' => []]);
+        }
+        $id = intval(input('post.id'));
+        if ($id <= 0) {
+            return json(['code' => 0, 'msg' => lang('param_err'), 'data' => []]);
+        }
+        try {
+            $res = \app\common\util\VodAiCover::revertByVodId($id);
+        } catch (\Exception $e) {
+            \think\Log::error('AI cover revert failed (vod_id=' . $id . '): ' . $e->getMessage());
+            return json(['code' => 0, 'msg' => $e->getMessage(), 'data' => []]);
+        }
+        if (empty($res['code']) || intval($res['code']) !== 1) {
+            return json(['code' => 0, 'msg' => isset($res['msg']) ? $res['msg'] : lang('save_err'), 'data' => isset($res['data']) ? $res['data'] : []]);
+        }
+        return json(['code' => 1, 'msg' => isset($res['msg']) ? $res['msg'] : lang('save_ok'), 'data' => isset($res['data']) ? $res['data'] : []]);
     }
 
     public function iplot()

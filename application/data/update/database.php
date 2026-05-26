@@ -553,3 +553,9 @@ if (empty($col_list[$pre . 'admin_audit_log'])) {
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='后台操作审计';";
     $sql .= "\r";
 }
+
+// AI 封面：备份原海报字段（与 install.sql 一致；存量库通过升级脚本一次性补齐）
+if (!empty($col_list[$pre . 'vod']) && empty($col_list[$pre . 'vod']['vod_pic_original'])) {
+    $sql .= "ALTER TABLE `{$pre}vod` ADD `vod_pic_original` varchar(1024) NOT NULL DEFAULT '' COMMENT 'AI封面前备份原海报' AFTER `vod_pic_slide`;";
+    $sql .= "\r";
+}

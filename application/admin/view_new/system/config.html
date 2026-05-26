@@ -22,6 +22,7 @@
                 <li lay-id="config_4">{:lang('admin/system/config/backstage')}</li>
                 <li lay-id="config_seo">{:lang('menu/configseo')}</li>
                 <li lay-id="config_aiseo">{:lang('menu/configaiseo')}</li>
+                <li lay-id="config_aicover">{:lang('menu/configaicover')}</li>
             </ul>
             <div class="layui-tab-content">
                 <div class="layui-tab-item layui-show layui-form layui-form-pane" id="movementTable">
@@ -1039,6 +1040,18 @@
                         </div>
                     </form>
                 </div>
+                <div class="layui-tab-item" id="config_tab_aicover">
+                    <form class="layui-form layui-form-pane" method="post" action="{$form_action_configaicover|default=''}">
+                        <input type="hidden" name="__token__" value="{$Request.token}" />
+                        {include file="application/admin/view_new/system/config_embed_aicover.html" /}
+                        <div class="layui-form-item center">
+                            <div class="layui-input-block">
+                                <button type="submit" class="layui-btn" lay-submit="" lay-filter="formSubmit">{:lang('btn_save')}</button>
+                                <button class="layui-btn layui-btn-primary" type="reset">{:lang('btn_reset')}</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
             </div>
         </div>
 </div>
@@ -1087,6 +1100,8 @@
             element.tabChange('tb1', 'config_seo');
         } else if (mergeTab === 'aiseo') {
             element.tabChange('tb1', 'config_aiseo');
+        } else if (mergeTab === 'aicover') {
+            element.tabChange('tb1', 'config_aicover');
         } else if ($.cookie('config_tab') != null) {
             element.tabChange('tb1', $.cookie('config_tab'));
         }

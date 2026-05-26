@@ -33,6 +33,7 @@ class Vod extends Validate
             'vod_pic'            => 1024,
             'vod_pic_thumb'      => 1024,
             'vod_pic_slide'      => 1024,
+            'vod_pic_original'   => 1024,
             'vod_pic_screenshot' => 65535,
             'vod_actor'          => 255,
             'vod_director'       => 255,

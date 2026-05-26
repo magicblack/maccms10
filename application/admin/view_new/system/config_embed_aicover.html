@@ -1,0 +1,81 @@
+        <blockquote class="layui-elem-quote layui-quote-nm">
+            {:lang('admin/system/configaicover/tip')}
+        </blockquote>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">{:lang('admin/system/configaicover/enabled')}：</label>
+            <div class="layui-input-block">
+                <input type="radio" name="ai_cover[enabled]" value="1" title="{:lang('open')}" {if condition="$config['ai_cover']['enabled'] eq '1'"}checked{/if}>
+                <input type="radio" name="ai_cover[enabled]" value="0" title="{:lang('close')}" {if condition="$config['ai_cover']['enabled'] neq '1'"}checked{/if}>
+            </div>
+        </div>
+
+        <div class="layui-form-item layui-form-text">
+            <label class="layui-form-label">{:lang('admin/system/configaicover/general_extra_prompt')}：</label>
+            <div class="layui-input-block">
+                <textarea name="ai_cover[prompt_suffix]" class="layui-textarea" rows="3" placeholder="{:lang('admin/system/configaicover/general_extra_prompt_placeholder')}">{$config['ai_cover']['prompt_suffix']|default=''}</textarea>
+                <div class="layui-word-aux">{:lang('admin/system/configaicover/general_extra_prompt_tip')}</div>
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">{:lang('admin/system/configaicover/provider')}：</label>
+            <div class="layui-input-block">
+                <select name="ai_cover[provider]" class="layui-input" style="max-width:280px;">
+                    <option value="openai" selected>OpenAI</option>
+                </select>
+                <div class="layui-word-aux">{:lang('admin/system/configaicover/provider_fixed_tip')}</div>
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">{:lang('admin/system/configaicover/model')}：</label>
+            <div class="layui-input-block">
+                <input type="text" name="ai_cover[model]" value="{$config['ai_cover']['model']|default='gpt-image-1'}" class="layui-input" placeholder="gpt-image-1">
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">{:lang('admin/system/configaicover/api_base')}：</label>
+            <div class="layui-input-block">
+                <input type="text" name="ai_cover[api_base]" value="{$config['ai_cover']['api_base']|default=''}" class="layui-input" placeholder="https://api.openai.com/v1">
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">{:lang('admin/system/configaicover/api_key')}：</label>
+            <div class="layui-input-block">
+                <input type="password" name="ai_cover[api_key]" value="" autocomplete="new-password" class="layui-input" placeholder="{:lang('admin/system/configaicover/api_key_tip')}">
+                {if condition="$ai_cover_key_saved eq 1"}
+                <div class="layui-form-mid layui-word-aux">{:lang('admin/system/configaicover/api_key_saved_tip')} (****{$ai_cover_key_tail})</div>
+                {/if}
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">{:lang('admin/system/configaicover/timeout')}：</label>
+            <div class="layui-input-inline w150">
+                <input type="number" name="ai_cover[timeout]" value="{$config['ai_cover']['timeout']|default='120'}" class="layui-input" min="30">
+            </div>
+            <div class="layui-form-mid layui-word-aux">{:lang('admin/system/configaicover/timeout_tip')}</div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">{:lang('admin/system/configaicover/size')}：</label>
+            <div class="layui-input-inline w200">
+                <input type="text" name="ai_cover[size]" value="{$config['ai_cover']['size']|default='1024x1536'}" class="layui-input" placeholder="1024x1536">
+            </div>
+            <div class="layui-form-mid layui-word-aux">{:lang('admin/system/configaicover/size_tip')}</div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">{:lang('admin/system/configaicover/quality')}：</label>
+            <div class="layui-input-inline w200">
+                <select name="ai_cover[quality]">
+                    <option value="low" {if condition="$config['ai_cover']['quality'] eq 'low'"}selected{/if}>{:lang('admin/system/configaicover/quality_low')}</option>
+                    <option value="medium" {if condition="$config['ai_cover']['quality'] eq 'medium' || $config['ai_cover']['quality'] eq 'standard' || $config['ai_cover']['quality'] eq ''"}selected{/if}>{:lang('admin/system/configaicover/quality_medium')}</option>
+                    <option value="high" {if condition="$config['ai_cover']['quality'] eq 'high' || $config['ai_cover']['quality'] eq 'hd'"}selected{/if}>{:lang('admin/system/configaicover/quality_high')}</option>
+                    <option value="auto" {if condition="$config['ai_cover']['quality'] eq 'auto'"}selected{/if}>{:lang('admin/system/configaicover/quality_auto')}</option>
+                </select>
+            </div>
+        </div>
