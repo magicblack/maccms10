@@ -67,6 +67,7 @@
           <span class="all-menu-label" data-lang="string_rank">排行榜</span>
         </a>
       </li>
+      {if condition="isset($tplconfig['theme']['topic']['hbtn']) && $tplconfig['theme']['topic']['hbtn'] eq '1'"}
       <li class="all-menu-item{if condition="$maccms.mid eq 3"} active{/if}">
         <a class="all-menu-row" href="{:mac_url('topic/index')}" title="专题">
           <span class="all-menu-ico">
@@ -75,6 +76,7 @@
           <span class="all-menu-label" data-lang="string_topic">专题</span>
         </a>
       </li>
+      {/if}
       <li class="all-menu-item{if condition="$maccms.aid eq 4"} active{/if}">
         <a class="all-menu-row" href="{:mac_url('gbook/index')}" title="留言">
           <span class="all-menu-ico">

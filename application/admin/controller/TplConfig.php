@@ -96,6 +96,22 @@ class TplConfig extends Base
             if (isset($tplconfig['topic']['hbtn'])) {
                 $tplconfig['topic']['hbtn'] = ((string) $tplconfig['topic']['hbtn'] === '1') ? '1' : '0';
             }
+            if (isset($tplconfig['links']['btn'])) {
+                $tplconfig['links']['btn'] = ((string) $tplconfig['links']['btn'] === '1') ? '1' : '0';
+            }
+            if (isset($tplconfig['nav']) && is_array($tplconfig['nav'])) {
+                if (isset($tplconfig['nav']['id'])) {
+                    $navIds = preg_replace('/\s+/', '', (string) $tplconfig['nav']['id']);
+                    $navIds = trim($navIds, ',');
+                    $tplconfig['nav']['id'] = $navIds;
+                }
+                $tplconfig['nav']['zdybtn'] = (isset($tplconfig['nav']['zdybtn']) && (string) $tplconfig['nav']['zdybtn'] === '1') ? '1' : '0';
+                foreach (['zdybtn1', 'zdybtn2', 'zdybtn3', 'zdybtn4'] as $zdyKey) {
+                    if (isset($tplconfig['nav'][$zdyKey])) {
+                        $tplconfig['nav'][$zdyKey] = ((string) $tplconfig['nav'][$zdyKey] === '1') ? '1' : '0';
+                    }
+                }
+            }
             unset($tplconfig['topic']['hnum']);
             unset($tplconfig['topic']['htitle']);
             $topicCellsIn = isset($tplconfig['topic']['cells']) && is_array($tplconfig['topic']['cells'])
