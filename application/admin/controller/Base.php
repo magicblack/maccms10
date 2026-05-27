@@ -17,11 +17,13 @@ class Base extends All
     {
         parent::__construct();
 
-        // 校验Update.php文件完整性
-        $update_file = APP_PATH . 'admin/controller/Update.php';
-        $expected_hash = config('version.update_hash');
-        if (!empty($expected_hash) && is_file($update_file) && md5_file($update_file) !== $expected_hash) {
-            exit(lang('admin/update/core_file_error'));
+        // 校验Update.php文件完整性；放行 Update 控制器自身，避免 hash 失配时升级 UI 也被锁死
+        if ($this->_cl != 'Update') {
+            $update_file = APP_PATH . 'admin/controller/Update.php';
+            $expected_hash = config('version.update_hash');
+            if (!empty($expected_hash) && is_file($update_file) && md5_file($update_file) !== $expected_hash) {
+                exit(lang('admin/update/core_file_error'));
+            }
         }
 
         //判断用户登录状态
