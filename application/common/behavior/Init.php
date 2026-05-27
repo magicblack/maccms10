@@ -91,7 +91,7 @@ class Init
             }
         }
         if(intval($config['app']['search_len'])<1){
-            $config['app']['search_len'] = 10;
+            $config['app']['search_len'] = 50;
         }
         config('url_route_on',$config['rewrite']['route_status']);
         if(empty($config['app']['pathinfo_depr'])){

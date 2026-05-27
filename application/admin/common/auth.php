@@ -120,13 +120,7 @@ return array (
         'controller' => 'system',
         'action' => 'configaisearch',
       ),
-      216 =>
-      array (
-        'show' => 1,
-        'name' => lang('menu/meilisearch'),
-        'controller' => 'meilisearch',
-        'action' => 'index',
-      ),
+      
       2151 =>
       array (
         'show' => 0,
@@ -155,7 +149,14 @@ return array (
         'controller' => 'meilisearch',
         'action' => 'sync',
       ),
-      22 => 
+      2155 =>
+      array (
+        'show' => 0,
+        'name' => '--'.lang('menu/meilisearch_setup'),
+        'controller' => 'meilisearch',
+        'action' => 'setup',
+      ),
+      216 => 
       array (
         'show' => 1,
         'name' => lang('menu/meilisearch'),
@@ -169,34 +170,7 @@ return array (
         'controller' => 'system',
         'action' => 'configassistant',
       ),
-      2151 =>
-      array (
-        'show' => 0,
-        'name' => '--'.lang('menu/meilisearch_save'),
-        'controller' => 'meilisearch',
-        'action' => 'save',
-      ),
-      2152 =>
-      array (
-        'show' => 0,
-        'name' => '--'.lang('menu/meilisearch_status'),
-        'controller' => 'meilisearch',
-        'action' => 'status',
-      ),
-      2153 =>
-      array (
-        'show' => 0,
-        'name' => '--'.lang('menu/meilisearch_selfcheck'),
-        'controller' => 'meilisearch',
-        'action' => 'selfcheck',
-      ),
-      2154 =>
-      array (
-        'show' => 0,
-        'name' => '--'.lang('menu/meilisearch_sync'),
-        'controller' => 'meilisearch',
-        'action' => 'sync',
-      ),
+
       22 => 
       array (
         'show' => 0,

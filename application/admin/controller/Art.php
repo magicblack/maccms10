@@ -43,7 +43,10 @@ class Art extends Base
         if(!empty($param['wd'])){
             $param['wd'] = urldecode($param['wd']);
             $param['wd'] = mac_filter_xss($param['wd']);
-            $where['art_name'] = mac_search_wd_like($param['wd']);
+            $like = mac_search_wd_like($param['wd']);
+            if ($like) {
+                $where['art_name'] = $like;
+            }
         }
         if (!empty($param['recycle'])) {
             $where['art_recycle_time'] = ['>', 0];
@@ -223,7 +226,10 @@ class Art extends Base
         }
         if (!empty($param['wd'])) {
             $param['wd'] = htmlspecialchars(urldecode($param['wd']));
-            $where['art_name'] = mac_search_wd_like($param['wd']);
+            $like = mac_search_wd_like($param['wd']);
+            if ($like) {
+                $where['art_name'] = $like;
+            }
         }
         if (!empty($param['recycle'])) {
             $where['art_recycle_time'] = ['>', 0];

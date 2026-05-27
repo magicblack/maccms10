@@ -58,6 +58,8 @@
         {:lang('admin/meilisearch/state_down_prefix')}{$cfg.timeout|default='8'}{:lang('admin/meilisearch/state_down_suffix')}
         {elseif condition="!isset($stats.numberOfDocuments) || $stats.numberOfDocuments eq 0"/}
         {:lang('admin/meilisearch/state_empty')}
+        {elseif condition="!$settings_check.ok"/}
+        {:lang('admin/meilisearch/state_settings_bad')}
         {else/}
         {:lang('admin/meilisearch/state_ok_prefix')}{if condition="isset($stats.numberOfDocuments)"}{$stats.numberOfDocuments}{else/}0{/if}{:lang('admin/meilisearch/state_ok_suffix')}
         {/if}
@@ -80,20 +82,36 @@
                 {/if}
             </td>
         </tr>
+        <tr>
+            <td>{:lang('admin/meilisearch/index_settings')}</td>
+            <td>
+                {if condition="$cfg.enabled neq '1' || !$health.ok"}
+                {:lang('admin/meilisearch/index_settings_skip')}
+                {elseif condition="$settings_check.ok"/}
+                {:lang('admin/meilisearch/index_settings_ok')}
+                {else/}
+                {:lang('admin/meilisearch/index_settings_bad')}
+                {/if}
+            </td>
+        </tr>
     </table>
     <p>
+        <button type="button" class="layui-btn layui-btn-danger" id="btnMeiliSetup">{:lang('admin/meilisearch/setup')}</button>
         <a class="layui-btn layui-btn-normal" href="{:url('meilisearch/sync')}">{:lang('admin/meilisearch/full_sync')}</a>
         <button type="button" class="layui-btn layui-btn-warm" id="btnMeiliSelfcheck">{:lang('admin/meilisearch/selfcheck')}</button>
-        <span class="layui-word-aux">{:lang('admin/meilisearch/full_sync_hint_extended')}</span>
+        <span class="layui-word-aux">{:lang('admin/meilisearch/setup_hint')}</span>
     </p>
+    <pre id="meiliSetupResult" style="display:none; margin-top:10px; padding:12px; background:#0f172a; color:#e2e8f0; border-radius:6px; overflow:auto; max-height:420px;"></pre>
     <pre id="meiliSelfcheckResult" style="display:none; margin-top:10px; padding:12px; background:#0f172a; color:#e2e8f0; border-radius:6px; overflow:auto; max-height:420px;"></pre>
 </div>
 <script>
     (function () {
         var saveBtn = document.getElementById('btnMeiliSave');
+        var setupBtn = document.getElementById('btnMeiliSetup');
         var btn = document.getElementById('btnMeiliSelfcheck');
+        var setupBox = document.getElementById('meiliSetupResult');
         var box = document.getElementById('meiliSelfcheckResult');
-        if (!btn || !box || !saveBtn) {
+        if (!btn || !box || !saveBtn || !setupBtn || !setupBox) {
             return;
         }
         saveBtn.addEventListener('click', function () {
@@ -109,6 +127,36 @@
                 layer.msg("{:lang('save_err')}");
             }).always(function () {
                 saveBtn.disabled = false;
+            });
+        });
+        setupBtn.addEventListener('click', function () {
+            layer.confirm("{:lang('admin/meilisearch/setup_confirm_text')}", {
+                title: "{:lang('admin/meilisearch/setup_confirm_title')}",
+                area: ['520px', '220px']
+            }, function (idx) {
+                layer.close(idx);
+                var url = "{:url('meilisearch/setup')}";
+                setupBtn.disabled = true;
+                setupBtn.innerText = "{:lang('admin/meilisearch/setup_running')}";
+                $.post(url, {}, function (res) {
+                    setupBox.style.display = 'block';
+                    setupBox.textContent = JSON.stringify(res || {}, null, 2);
+                    var ok = res && parseInt(res.code, 10) === 1;
+                    layer.msg(ok ? "{:lang('admin/meilisearch/setup_ok')}" : ((res && res.msg) || "{:lang('admin/meilisearch/setup_failed')}"));
+                    if (ok) {
+                        setTimeout(function () { location.reload(); }, 800);
+                    }
+                }, 'json').fail(function (xhr) {
+                    setupBox.style.display = 'block';
+                    setupBox.textContent = JSON.stringify({
+                        code: 0,
+                        msg: "{:lang('admin/meilisearch/request_failed')}",
+                        status: xhr && xhr.status ? xhr.status : 0
+                    }, null, 2);
+                }).always(function () {
+                    setupBtn.disabled = false;
+                    setupBtn.innerText = "{:lang('admin/meilisearch/setup')}";
+                });
             });
         });
         btn.addEventListener('click', function () {

@@ -53,6 +53,16 @@ class Meilisearch extends Base
         $this->assign('health', $h);
         $this->assign('stats', $stats);
         $this->assign('opencc_available', OpenccConverter::available());
+        $settingsCheck = ['ok' => true, 'filterableAttributes' => [], 'searchableAttributes' => []];
+        if ((string)$cfg['enabled'] === '1' && !empty($h['ok'])) {
+            $gs = MeilisearchService::getSettings();
+            if (!empty($gs['ok']) && is_array($gs['data'])) {
+                $settingsCheck = MeilisearchService::verifyIndexSettings($gs['data']);
+            } else {
+                $settingsCheck = ['ok' => false, 'filterableAttributes' => [], 'searchableAttributes' => [], 'missing_filterable' => ['kind', 'recycle', 'status'], 'missing_searchable' => ['title', 'title_t2s', 'title_s2t']];
+            }
+        }
+        $this->assign('settings_check', $settingsCheck);
         $this->assign('cfg', $cfg);
         $this->assign('meili_key_saved', trim((string)$cfg['api_key']) !== '' ? 1 : 0);
         $this->assign('meili_key_tail', trim((string)$cfg['api_key']) !== '' ? substr((string)$cfg['api_key'], -6) : '');
@@ -129,7 +139,13 @@ class Meilisearch extends Base
 
         $stats = ['ok' => false, 'status' => 0, 'data' => null];
         $sampleSearch = ['ok' => false, 'status' => 0, 'data' => null];
+        $settingsCheck = ['ok' => false, 'filterableAttributes' => [], 'searchableAttributes' => []];
+        $filteredSearch = ['ok' => false, 'status' => 0, 'data' => null];
         if ($enabled) {
+            $gs = MeilisearchService::getSettings();
+            if (!empty($gs['ok']) && is_array($gs['data'])) {
+                $settingsCheck = MeilisearchService::verifyIndexSettings($gs['data']);
+            }
             $uid = rawurlencode(MeilisearchService::indexUid());
             $stats = MeilisearchHttp::request(
                 MeilisearchService::host(),
@@ -149,6 +165,12 @@ class Meilisearch extends Base
                 MeilisearchService::timeout(),
                 MeilisearchService::sslVerify()
             );
+            $filteredSearch = MeilisearchService::search(
+                $sampleQuery,
+                MeilisearchService::filterPublishedKind('vod'),
+                5,
+                0
+            );
         }
 
         return json([
@@ -163,6 +185,7 @@ class Meilisearch extends Base
                     'ssl_verify' => isset($cfg['ssl_verify']) && (string)$cfg['ssl_verify'] === '0' ? 0 : 1,
                 ],
                 'health' => $health,
+                'settings_check' => $settingsCheck,
                 'index_stats' => [
                     'ok' => !empty($stats['ok']),
                     'status' => (int)($stats['status'] ?? 0),
@@ -181,7 +204,32 @@ class Meilisearch extends Base
                     'data' => $sampleSearch['data'] ?? null,
                     'error' => (string)($sampleSearch['error'] ?? ''),
                 ],
+                'filtered_search' => [
+                    'ok' => !empty($filteredSearch['ok']),
+                    'filter' => MeilisearchService::filterPublishedKind('vod'),
+                    'estimatedTotalHits' => (int)($filteredSearch['estimatedTotalHits'] ?? 0),
+                    'hits' => $filteredSearch['hits'] ?? [],
+                ],
             ],
+        ]);
+    }
+
+    /**
+     * 一键初始化索引：建索引 + PATCH filterable/searchable 等 settings（无需全量同步）。
+     */
+    public function setup()
+    {
+        if (!request()->isPost() && !request()->isAjax()) {
+            return json(['code' => 0, 'msg' => lang('param_err')]);
+        }
+        if (!MeilisearchService::enabled()) {
+            return json(['code' => 0, 'msg' => lang('admin/meilisearch/setup_disabled')]);
+        }
+        $r = MeilisearchService::bootstrapIndex();
+        return json([
+            'code' => !empty($r['ok']) ? 1 : 0,
+            'msg' => !empty($r['ok']) ? lang('admin/meilisearch/setup_ok') : ((string)($r['msg'] ?? lang('admin/meilisearch/setup_failed'))),
+            'data' => $r,
         ]);
     }
 

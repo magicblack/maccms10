@@ -92,16 +92,20 @@ class MeilisearchService
             'uid' => self::indexUid(),
             'primaryKey' => 'id',
         ], self::timeout(), self::sslVerify());
+        if (!empty($create['ok'])) {
+            self::updateSettings();
+        }
         return ['ok' => !empty($create['ok']), 'created' => true, 'response' => $create['data'] ?? null];
     }
 
-    public static function updateSettings()
+    /**
+     * 索引 settings PATCH 请求体（searchable / filterable / sortable 等）。
+     *
+     * @return array<string, mixed>
+     */
+    public static function indexSettingsPayload()
     {
-        if (!self::enabled()) {
-            return ['ok' => false];
-        }
-        $uid = rawurlencode(self::indexUid());
-        $body = [
+        return [
             'searchableAttributes' => [
                 'title', 'subtitle', 'en', 'extra', 'tags', 'class_text',
                 'title_py', 'title_initials', 'subtitle_py', 'subtitle_initials',
@@ -115,7 +119,6 @@ class MeilisearchService
                 'year', 'area', 'lang', 'state', 'version', 'rid',
             ],
             'sortableAttributes' => ['hits_month', 'ts'],
-            // 排序策略：相关度优先，其次热度（月点击），最后时间（更新时间）。
             'rankingRules' => [
                 'words',
                 'typo',
@@ -135,6 +138,148 @@ class MeilisearchService
                 'disableOnAttributes' => [],
             ],
         ];
+    }
+
+    public static function getSettings()
+    {
+        if (!self::enabled()) {
+            return ['ok' => false, 'data' => null];
+        }
+        $uid = rawurlencode(self::indexUid());
+        $r = MeilisearchHttp::request(
+            self::host(),
+            'GET',
+            '/indexes/' . $uid . '/settings',
+            self::apiKey(),
+            null,
+            self::timeout(),
+            self::sslVerify()
+        );
+
+        return ['ok' => !empty($r['ok']), 'status' => $r['status'] ?? 0, 'data' => $r['data'] ?? null, 'error' => (string)($r['error'] ?? '')];
+    }
+
+    /**
+     * @param array<string, mixed> $settings GET /settings 响应
+     * @return array{ok:bool,missing_filterable:array,missing_searchable:array,filterableAttributes:array,searchableAttributes:array}
+     */
+    public static function verifyIndexSettings(array $settings)
+    {
+        $requiredFilter = ['kind', 'recycle', 'status'];
+        $requiredSearch = ['title', 'title_t2s', 'title_s2t'];
+        $filter = is_array($settings['filterableAttributes'] ?? null) ? $settings['filterableAttributes'] : [];
+        $search = is_array($settings['searchableAttributes'] ?? null) ? $settings['searchableAttributes'] : [];
+        $missingFilter = array_values(array_diff($requiredFilter, $filter));
+        $missingSearch = array_values(array_diff($requiredSearch, $search));
+
+        return [
+            'ok' => empty($missingFilter) && empty($missingSearch),
+            'missing_filterable' => $missingFilter,
+            'missing_searchable' => $missingSearch,
+            'filterableAttributes' => $filter,
+            'searchableAttributes' => $search,
+        ];
+    }
+
+    /**
+     * 等待 Meilisearch 异步任务完成（settings PATCH 等）。
+     *
+     * @return array{ok:bool,status:string,skipped?:bool,data?:mixed}
+     */
+    public static function waitForTask($taskUid, $maxWaitSec = 30)
+    {
+        $taskUid = (int)$taskUid;
+        if ($taskUid <= 0) {
+            return ['ok' => true, 'status' => 'skipped', 'skipped' => true];
+        }
+        $deadline = time() + max(1, (int)$maxWaitSec);
+        $last = null;
+        while (time() <= $deadline) {
+            $r = MeilisearchHttp::request(
+                self::host(),
+                'GET',
+                '/tasks/' . $taskUid,
+                self::apiKey(),
+                null,
+                self::timeout(),
+                self::sslVerify()
+            );
+            $last = $r;
+            if (empty($r['ok']) || !is_array($r['data'] ?? null)) {
+                break;
+            }
+            $status = (string)($r['data']['status'] ?? '');
+            if ($status === 'succeeded') {
+                return ['ok' => true, 'status' => $status, 'data' => $r['data']];
+            }
+            if ($status === 'failed' || $status === 'canceled') {
+                return ['ok' => false, 'status' => $status, 'data' => $r['data']];
+            }
+            usleep(200000);
+        }
+
+        return ['ok' => false, 'status' => 'timeout', 'data' => is_array($last) ? ($last['data'] ?? null) : null];
+    }
+
+    /**
+     * 一键初始化：建索引 + PATCH settings + 等待任务 + 校验 filterable/searchable。
+     *
+     * @param array{wait_sec?:int,filter_test?:bool} $options
+     * @return array{ok:bool,msg:string,steps:array}
+     */
+    public static function bootstrapIndex(array $options = [])
+    {
+        if (!self::enabled()) {
+            return ['ok' => false, 'msg' => 'disabled', 'steps' => []];
+        }
+        $waitSec = max(5, min(120, (int)($options['wait_sec'] ?? 30)));
+        $runFilterTest = !isset($options['filter_test']) || $options['filter_test'];
+        $steps = [];
+
+        $steps['ensure_index'] = self::ensureIndex();
+        if (empty($steps['ensure_index']['ok'])) {
+            return ['ok' => false, 'msg' => 'ensure index failed', 'steps' => $steps];
+        }
+
+        $steps['update_settings'] = self::updateSettings();
+        if (empty($steps['update_settings']['ok'])) {
+            return ['ok' => false, 'msg' => 'update settings failed', 'steps' => $steps];
+        }
+
+        $taskUid = 0;
+        $patchData = $steps['update_settings']['data'] ?? null;
+        if (is_array($patchData) && isset($patchData['taskUid'])) {
+            $taskUid = (int)$patchData['taskUid'];
+        }
+        $steps['wait_task'] = self::waitForTask($taskUid, $waitSec);
+        if (empty($steps['wait_task']['ok'])) {
+            return ['ok' => false, 'msg' => 'settings task failed or timeout', 'steps' => $steps];
+        }
+
+        $steps['get_settings'] = self::getSettings();
+        if (empty($steps['get_settings']['ok'])) {
+            return ['ok' => false, 'msg' => 'get settings failed', 'steps' => $steps];
+        }
+
+        $steps['verify_settings'] = self::verifyIndexSettings(is_array($steps['get_settings']['data']) ? $steps['get_settings']['data'] : []);
+        if (empty($steps['verify_settings']['ok'])) {
+            return ['ok' => false, 'msg' => 'settings verification failed', 'steps' => $steps];
+        }
+
+        if ($runFilterTest) {
+            $steps['filter_search_test'] = self::search('软件', self::filterPublishedKind('vod'), 1, 0);
+        }
+
+        return ['ok' => true, 'msg' => 'ok', 'steps' => $steps];
+    }
+
+    public static function updateSettings()
+    {
+        if (!self::enabled()) {
+            return ['ok' => false];
+        }
+        $uid = rawurlencode(self::indexUid());
+        $body = self::indexSettingsPayload();
         $r = MeilisearchHttp::request(self::host(), 'PATCH', '/indexes/' . $uid . '/settings', self::apiKey(), $body, self::timeout(), self::sslVerify());
         return ['ok' => !empty($r['ok']), 'data' => $r['data'] ?? null];
     }

@@ -279,11 +279,10 @@ class MeilisearchSync
         }
         @set_time_limit(0);
         $batch = max(50, min(1000, (int)$batch));
-        $en = MeilisearchService::ensureIndex();
-        if (empty($en['ok'])) {
-            return ['ok' => false, 'msg' => 'ensure index failed'];
+        $boot = MeilisearchService::bootstrapIndex();
+        if (empty($boot['ok'])) {
+            return ['ok' => false, 'msg' => $boot['msg'] ?? 'bootstrap index failed', 'steps' => $boot['steps'] ?? []];
         }
-        MeilisearchService::updateSettings();
 
         $vodN = self::reindexTable('Vod', 'vod_id', function ($row) {
             return MeilisearchDocuments::fromVodRow($row);
