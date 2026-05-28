@@ -144,9 +144,147 @@ class TplConfig extends Base
         }
 
         $tplconfig = isset($GLOBALS['mctheme']) ? $GLOBALS['mctheme'] : (config('mctheme') ?: ['theme' => []]);
+        $type_tree = model('Type')->getCache('type_tree');
+        if (!is_array($type_tree)) {
+            $type_tree = [];
+        }
         $this->assign('tplconfig', $tplconfig);
+        $this->assign('type_tree', $type_tree);
+        $this->assign('theme_type_options', $this->buildThemeTypeOptions($type_tree));
+        $this->assign('theme_type_index', $this->buildThemeTypeIndex($type_tree));
+        $this->assignThemeUxI18n();
         $this->assign('title', lang('menu/theme/config'));
         return $this->fetch('admin@tplconfig/theme');
+    }
+
+    /**
+     * 主题配置页分类选择器：按 type_mid 分组的选项（1=视频 2=文章 12=漫画，all=全部）
+     */
+    protected function buildThemeTypeOptions(array $type_tree)
+    {
+        $midLabels = [
+            1 => lang('vod'),
+            2 => lang('art'),
+            12 => lang('admin/tpl/config/type_mid_manga'),
+        ];
+        $groups = ['1' => [], '2' => [], '12' => [], 'all' => []];
+        $push = function ($row, $depth = 0) use (&$groups, $midLabels) {
+            $id = isset($row['type_id']) ? (string) $row['type_id'] : '';
+            if ($id === '') {
+                return;
+            }
+            $mid = isset($row['type_mid']) ? (int) $row['type_mid'] : 0;
+            $name = isset($row['type_name']) ? (string) $row['type_name'] : '';
+            $label = preg_replace('/^—\s*/u', '', $name);
+            $item = [
+                'id' => $id,
+                'name' => $name,
+                'label' => $label,
+                'depth' => $depth,
+            ];
+            if (isset($groups[(string) $mid])) {
+                $groups[(string) $mid][] = $item;
+            }
+            $prefix = isset($midLabels[$mid]) ? '[' . $midLabels[$mid] . '] ' : '';
+            $groups['all'][] = [
+                'id' => $id,
+                'name' => $prefix . $name,
+                'label' => $prefix . $label,
+                'depth' => $depth,
+                'mid' => $mid,
+            ];
+        };
+        foreach ($type_tree as $vo) {
+            if (!is_array($vo)) {
+                continue;
+            }
+            $push($vo, 0);
+            if (!empty($vo['child']) && is_array($vo['child'])) {
+                foreach ($vo['child'] as $ch) {
+                    if (!is_array($ch)) {
+                        continue;
+                    }
+                    $chRow = $ch;
+                    if (!isset($chRow['type_mid']) && isset($vo['type_mid'])) {
+                        $chRow['type_mid'] = $vo['type_mid'];
+                    }
+                    $chRow['type_name'] = '— ' . (isset($ch['type_name']) ? (string) $ch['type_name'] : '');
+                    $push($chRow, 1);
+                }
+            }
+        }
+        return $groups;
+    }
+
+    /**
+     * 主题配置页 JS 文案（分类选择器、排序等）
+     */
+    protected function assignThemeUxI18n()
+    {
+        $this->assign('theme_ux_i18n_json', json_encode([
+            'midLabels' => [
+                '1' => lang('vod'),
+                '2' => lang('art'),
+                '12' => lang('admin/tpl/config/type_mid_manga'),
+            ],
+            'midTabs' => [
+                ['id' => 'all', 'title' => lang('all')],
+                ['id' => '1', 'title' => lang('vod')],
+                ['id' => '2', 'title' => lang('art')],
+                ['id' => '12', 'title' => lang('admin/tpl/config/type_mid_manga')],
+            ],
+            'pickType' => lang('admin/tpl/config/type_picker_btn'),
+            'pickNavMulti' => lang('admin/tpl/config/type_picker_nav_multi'),
+            'pickMulti' => lang('admin/tpl/config/type_picker_multi'),
+            'selectedCount' => lang('admin/tpl/config/type_picker_selected_count'),
+            'removeType' => lang('admin/tpl/config/type_picker_remove'),
+            'noneSelectedHint' => lang('admin/tpl/config/type_picker_none_hint'),
+            'selectedHead' => lang('admin/tpl/config/type_picker_selected_head'),
+            'idInvalid' => lang('admin/tpl/config/type_picker_id_invalid'),
+            'emptyMulti' => lang('admin/tpl/config/type_picker_empty_multi'),
+            'emptySingle' => lang('admin/tpl/config/type_picker_empty_single'),
+            'closeEsc' => lang('admin/tpl/config/type_picker_close_esc'),
+            'close' => lang('admin/tpl/config/type_picker_close'),
+            'searchPh' => lang('admin/tpl/config/type_picker_search_ph'),
+            'dragSort' => lang('admin/tpl/config/type_picker_drag_sort'),
+            'clearAll' => lang('admin/tpl/config/type_picker_clear_all'),
+            'unbind' => lang('admin/tpl/config/type_picker_unbind'),
+            'confirm' => lang('admin/tpl/config/type_picker_confirm'),
+            'reset' => lang('admin/tpl/config/type_picker_reset'),
+            'multiMeta' => lang('admin/tpl/config/type_picker_multi_meta'),
+            'singleMeta' => lang('admin/tpl/config/type_picker_single_meta'),
+            'hotvodTabLabel' => lang('admin/tpl/config/hotvod_tab_label'),
+        ], JSON_UNESCAPED_UNICODE | JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP));
+    }
+
+    /**
+     * type_id => {id, name, mid}，供前端回显 Tab 与失效 ID
+     */
+    protected function buildThemeTypeIndex(array $type_tree)
+    {
+        $index = [];
+        $walk = function ($row) use (&$index, &$walk) {
+            if (!is_array($row) || !isset($row['type_id'])) {
+                return;
+            }
+            $id = (string) $row['type_id'];
+            $index[$id] = [
+                'id' => $id,
+                'name' => isset($row['type_name']) ? (string) $row['type_name'] : '',
+                'mid' => isset($row['type_mid']) ? (int) $row['type_mid'] : 0,
+            ];
+            if (!empty($row['child']) && is_array($row['child'])) {
+                foreach ($row['child'] as $ch) {
+                    if (is_array($ch)) {
+                        $walk($ch);
+                    }
+                }
+            }
+        };
+        foreach ($type_tree as $vo) {
+            $walk($vo);
+        }
+        return $index;
     }
 
     /**

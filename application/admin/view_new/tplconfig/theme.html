@@ -1,9 +1,20 @@
 {include file="../../../application/admin/view/public/head" /}
+<link rel="stylesheet" href="__STATIC__/css/theme_config_ux.css?{$MAC_VERSION}">
 
 <?php $mctheme = (is_file(ROOT_PATH . 'template/default/info.ini')) ? parse_ini_file(ROOT_PATH . 'template/default/info.ini') : []; ?>
 <?php $hlbg = (is_file(ROOT_PATH . 'template/default/asset/admin/hlbg.jpg')) ? ROOT_PATH . 'template/default/asset/admin/hlbg.jpg' : ''; ?>
+<?php
+$hotvod_tabs_default = [
+    ['id' => '26', 'name' => '电影', 'icon_l' => 'template/default/images/la/home-icon1.png', 'icon_b' => 'template/default/images/black/home-icon1.png'],
+    ['id' => '27', 'name' => '电视剧', 'icon_l' => 'template/default/images/la/home-icon2.png', 'icon_b' => 'template/default/images/black/home-icon2.png'],
+    ['id' => '57', 'name' => '短剧', 'icon_l' => 'template/default/images/la/home-icon3.png', 'icon_b' => 'template/default/images/black/home-icon3.png'],
+    ['id' => '20', 'name' => '动漫', 'icon_l' => 'template/default/images/la/home-icon4.png', 'icon_b' => 'template/default/images/black/home-icon4.png'],
+];
+$hotvod_tabs_list = (!empty($tplconfig['theme']['hotvod']['tabs']) && is_array($tplconfig['theme']['hotvod']['tabs']))
+    ? $tplconfig['theme']['hotvod']['tabs'] : $hotvod_tabs_default;
+?>
 
-<div class="page-container">
+<div class="page-container theme-config-ux">
     <div class="showpic" style="display:none;"><img class="showpic_img" width="auto" height="100"></div>
 
     <form class="layui-form" method="post" action="">
@@ -265,20 +276,26 @@
                                                 style="margin-left:0;padding-left:0;">配置首页“最新”模块的分类、名称和图标（最多 4 条）</div>
                                         </div>
                                     </div>
-                                    <div id="home-module-list">
-                                        <div class="layui-form-item home-module-item">
-                                            <label class="layui-form-label">模块1</label>
-                                            <div class="layui-input-inline w120">
-                                                <input type="text" name="theme[type][hom][0][id]"
-                                                    placeholder="分类ID 如 26"
-                                                    value="{$tplconfig['theme']['type']['hom'][0]['id']|default='26'}"
-                                                    class="layui-input">
+                                    <div class="theme-list-panel">
+                                        <div class="theme-list-head">
+                                            <span class="theme-list-head-title">首页模块列表</span>
+                                            <span class="theme-list-head-hint">左侧握把拖动排序 · 点击「选择分类」绑定</span>
+                                        </div>
+                                        <div class="theme-list-columns theme-list-columns--wide">
+                                            <span></span><span>分类</span><span>名称</span><span>浅色图标</span><span>深色图标</span><span></span>
+                                        </div>
+                                    <div id="home-module-list" class="js-sortable-list">
+                                        <div class="layui-form-item home-module-item js-sortable-item">
+                                            <label class="layui-form-label"> 模块1</label>
+                                            <div class="layui-input-inline type-picker-field w200">
+                                                <input type="hidden" class="type-picker-value" name="theme[type][hom][0][id]" value="{$tplconfig['theme']['type']['hom'][0]['id']|default='26'}">
+                                                <button type="button" class="js-type-picker-btn type-picker-trigger" aria-label="{:lang('admin/tpl/config/type_picker_btn')}"><span class="type-picker-text">{:lang('admin/tpl/config/type_picker_btn')}</span><span class="type-picker-chevron" aria-hidden="true"></span></button>
                                             </div>
                                             <div class="layui-input-inline w160">
                                                 <input type="text" name="theme[type][hom][0][name]"
                                                     placeholder="名称 如 电影"
                                                     value="{$tplconfig['theme']['type']['hom'][0]['name']|default='电影'}"
-                                                    class="layui-input">
+                                                    class="layui-input js-type-name-field">
                                             </div>
                                             <div class="layui-input-inline w220">
                                                 <input type="text" name="theme[type][hom][0][icon_l]"
@@ -310,19 +327,17 @@
                                             </div>
                                             <div class="layui-form-mid layui-word-aux">用于浅色/深色主题下的电影模块图标</div>
                                         </div>
-                                        <div class="layui-form-item home-module-item">
-                                            <label class="layui-form-label">模块2</label>
-                                            <div class="layui-input-inline w120">
-                                                <input type="text" name="theme[type][hom][1][id]"
-                                                    placeholder="分类ID 如 27"
-                                                    value="{$tplconfig['theme']['type']['hom'][1]['id']|default='27'}"
-                                                    class="layui-input">
+                                        <div class="layui-form-item home-module-item js-sortable-item">
+                                            <label class="layui-form-label"> 模块2</label>
+                                            <div class="layui-input-inline type-picker-field w200">
+                                                <input type="hidden" class="type-picker-value" name="theme[type][hom][1][id]" value="{$tplconfig['theme']['type']['hom'][1]['id']|default='27'}">
+                                                <button type="button" class="js-type-picker-btn type-picker-trigger" aria-label="{:lang('admin/tpl/config/type_picker_btn')}"><span class="type-picker-text">{:lang('admin/tpl/config/type_picker_btn')}</span><span class="type-picker-chevron" aria-hidden="true"></span></button>
                                             </div>
                                             <div class="layui-input-inline w160">
                                                 <input type="text" name="theme[type][hom][1][name]"
                                                     placeholder="名称 如 电视剧"
                                                     value="{$tplconfig['theme']['type']['hom'][1]['name']|default='电视剧'}"
-                                                    class="layui-input">
+                                                    class="layui-input js-type-name-field">
                                             </div>
                                             <div class="layui-input-inline w220">
                                                 <input type="text" name="theme[type][hom][1][icon_l]"
@@ -354,19 +369,17 @@
                                             </div>
                                             <div class="layui-form-mid layui-word-aux">用于浅色/深色主题下的电视剧模块图标</div>
                                         </div>
-                                        <div class="layui-form-item home-module-item">
-                                            <label class="layui-form-label">模块3</label>
-                                            <div class="layui-input-inline w120">
-                                                <input type="text" name="theme[type][hom][2][id]"
-                                                    placeholder="分类ID 如 57"
-                                                    value="{$tplconfig['theme']['type']['hom'][2]['id']|default='57'}"
-                                                    class="layui-input">
+                                        <div class="layui-form-item home-module-item js-sortable-item">
+                                            <label class="layui-form-label"> 模块3</label>
+                                            <div class="layui-input-inline type-picker-field w200">
+                                                <input type="hidden" class="type-picker-value" name="theme[type][hom][2][id]" value="{$tplconfig['theme']['type']['hom'][2]['id']|default='57'}">
+                                                <button type="button" class="js-type-picker-btn type-picker-trigger" aria-label="{:lang('admin/tpl/config/type_picker_btn')}"><span class="type-picker-text">{:lang('admin/tpl/config/type_picker_btn')}</span><span class="type-picker-chevron" aria-hidden="true"></span></button>
                                             </div>
                                             <div class="layui-input-inline w160">
                                                 <input type="text" name="theme[type][hom][2][name]"
                                                     placeholder="名称 如 短剧"
                                                     value="{$tplconfig['theme']['type']['hom'][2]['name']|default='短剧'}"
-                                                    class="layui-input">
+                                                    class="layui-input js-type-name-field">
                                             </div>
                                             <div class="layui-input-inline w220">
                                                 <input type="text" name="theme[type][hom][2][icon_l]"
@@ -398,19 +411,17 @@
                                             </div>
                                             <div class="layui-form-mid layui-word-aux">用于浅色/深色主题下的短剧模块图标</div>
                                         </div>
-                                        <div class="layui-form-item home-module-item">
-                                            <label class="layui-form-label">模块4</label>
-                                            <div class="layui-input-inline w120">
-                                                <input type="text" name="theme[type][hom][3][id]"
-                                                    placeholder="分类ID 如 20"
-                                                    value="{$tplconfig['theme']['type']['hom'][3]['id']|default='20'}"
-                                                    class="layui-input">
+                                        <div class="layui-form-item home-module-item js-sortable-item">
+                                            <label class="layui-form-label"> 模块4</label>
+                                            <div class="layui-input-inline type-picker-field w200">
+                                                <input type="hidden" class="type-picker-value" name="theme[type][hom][3][id]" value="{$tplconfig['theme']['type']['hom'][3]['id']|default='20'}">
+                                                <button type="button" class="js-type-picker-btn type-picker-trigger" aria-label="{:lang('admin/tpl/config/type_picker_btn')}"><span class="type-picker-text">{:lang('admin/tpl/config/type_picker_btn')}</span><span class="type-picker-chevron" aria-hidden="true"></span></button>
                                             </div>
                                             <div class="layui-input-inline w160">
                                                 <input type="text" name="theme[type][hom][3][name]"
                                                     placeholder="名称 如 动漫"
                                                     value="{$tplconfig['theme']['type']['hom'][3]['name']|default='动漫'}"
-                                                    class="layui-input">
+                                                    class="layui-input js-type-name-field">
                                             </div>
                                             <div class="layui-input-inline w220">
                                                 <input type="text" name="theme[type][hom][3][icon_l]"
@@ -442,6 +453,7 @@
                                             </div>
                                             <div class="layui-form-mid layui-word-aux">用于浅色/深色主题下的动漫模块图标</div>
                                         </div>
+                                    </div>
                                     </div>
                                     <div class="layui-form-item">
                                         <label class="layui-form-label"></label>
@@ -486,69 +498,41 @@
                                         </div>
                                         <div class="layui-form-mid layui-word-aux">对应左上角标题 `{$tplconfig.theme.hotvod.title}`</div>
                                     </div>
-                                    <div class="layui-form-item">
-                                        <label class="layui-form-label">Tab2（latest2）</label>
-                                        <div class="layui-input-inline w100">
-                                            <input type="text" name="theme[hotvod][tabs][0][id]" placeholder="分类ID 26" value="{$tplconfig['theme']['hotvod']['tabs'][0]['id']|default='26'}" class="layui-input">
+                                    <div class="theme-list-panel">
+                                        <div class="theme-list-head">
+                                            <span class="theme-list-head-title">热门推荐 Tab</span>
+                                            <span class="theme-list-head-hint">拖动左侧握把调整前台 Tab 顺序</span>
                                         </div>
-                                        <div class="layui-input-inline w120">
-                                            <input type="text" name="theme[hotvod][tabs][0][name]" placeholder="标签名" value="{$tplconfig['theme']['hotvod']['tabs'][0]['name']|default='电影'}" class="layui-input">
+                                    <div id="hotvod-tabs-list" class="js-sortable-list">
+                                        {volist name="hotvod_tabs_list" id="hvt" key="hk"}
+                                        <div class="layui-form-item hotvod-tab-item js-sortable-item">
+                                            <label class="layui-form-label"> Tab{$hk+1}</label>
+                                            <div class="layui-input-inline type-picker-field w200">
+                                                <input type="hidden" class="type-picker-value" name="theme[hotvod][tabs][{$hk-1}][id]" value="{$hvt.id}">
+                                                <button type="button" class="js-type-picker-btn type-picker-trigger" aria-label="{:lang('admin/tpl/config/type_picker_btn')}"><span class="type-picker-text">{:lang('admin/tpl/config/type_picker_btn')}</span><span class="type-picker-chevron" aria-hidden="true"></span></button>
+                                            </div>
+                                            <div class="layui-input-inline w120">
+                                                <input type="text" name="theme[hotvod][tabs][{$hk-1}][name]" placeholder="标签名" value="{$hvt.name|default=''}" class="layui-input js-type-name-field">
+                                            </div>
+                                            <div class="layui-input-inline w220">
+                                                <input type="text" name="theme[hotvod][tabs][{$hk-1}][icon_l]" placeholder="浅色图标路径" value="{$hvt.icon_l|default=''}" class="layui-input">
+                                            </div>
+                                            <div class="layui-input-inline w220">
+                                                <input type="text" name="theme[hotvod][tabs][{$hk-1}][icon_b]" placeholder="深色图标路径" value="{$hvt.icon_b|default=''}" class="layui-input">
+                                            </div>
+                                            <div class="layui-input-inline w90">
+                                                <button type="button" class="layui-btn layui-btn-danger layui-btn-sm hotvod-tab-remove">删除</button>
+                                            </div>
                                         </div>
-                                        <div class="layui-input-inline w220">
-                                            <input type="text" name="theme[hotvod][tabs][0][icon_l]" placeholder="浅色图标路径" value="{$tplconfig['theme']['hotvod']['tabs'][0]['icon_l']|default='template/default/images/la/home-icon1.png'}" class="layui-input">
-                                        </div>
-                                        <div class="layui-input-inline w220">
-                                            <input type="text" name="theme[hotvod][tabs][0][icon_b]" placeholder="深色图标路径" value="{$tplconfig['theme']['hotvod']['tabs'][0]['icon_b']|default='template/default/images/black/home-icon1.png'}" class="layui-input">
-                                        </div>
-                                        <div class="layui-form-mid layui-word-aux">热门推荐第 2 个 Tab</div>
+                                        {/volist}
+                                    </div>
                                     </div>
                                     <div class="layui-form-item">
-                                        <label class="layui-form-label">Tab3（latest3）</label>
-                                        <div class="layui-input-inline w100">
-                                            <input type="text" name="theme[hotvod][tabs][1][id]" placeholder="分类ID 27" value="{$tplconfig['theme']['hotvod']['tabs'][1]['id']|default='27'}" class="layui-input">
-                                        </div>
+                                        <label class="layui-form-label"></label>
                                         <div class="layui-input-inline w120">
-                                            <input type="text" name="theme[hotvod][tabs][1][name]" placeholder="标签名" value="{$tplconfig['theme']['hotvod']['tabs'][1]['name']|default='电视剧'}" class="layui-input">
+                                            <button type="button" class="layui-btn layui-btn-sm" id="hotvod-tab-add">新增 Tab</button>
                                         </div>
-                                        <div class="layui-input-inline w220">
-                                            <input type="text" name="theme[hotvod][tabs][1][icon_l]" placeholder="浅色图标路径" value="{$tplconfig['theme']['hotvod']['tabs'][1]['icon_l']|default='template/default/images/la/home-icon2.png'}" class="layui-input">
-                                        </div>
-                                        <div class="layui-input-inline w220">
-                                            <input type="text" name="theme[hotvod][tabs][1][icon_b]" placeholder="深色图标路径" value="{$tplconfig['theme']['hotvod']['tabs'][1]['icon_b']|default='template/default/images/black/home-icon2.png'}" class="layui-input">
-                                        </div>
-                                        <div class="layui-form-mid layui-word-aux">热门推荐第 3 个 Tab</div>
-                                    </div>
-                                    <div class="layui-form-item">
-                                        <label class="layui-form-label">Tab4（latest4）</label>
-                                        <div class="layui-input-inline w100">
-                                            <input type="text" name="theme[hotvod][tabs][2][id]" placeholder="分类ID 57" value="{$tplconfig['theme']['hotvod']['tabs'][2]['id']|default='57'}" class="layui-input">
-                                        </div>
-                                        <div class="layui-input-inline w120">
-                                            <input type="text" name="theme[hotvod][tabs][2][name]" placeholder="标签名" value="{$tplconfig['theme']['hotvod']['tabs'][2]['name']|default='短剧'}" class="layui-input">
-                                        </div>
-                                        <div class="layui-input-inline w220">
-                                            <input type="text" name="theme[hotvod][tabs][2][icon_l]" placeholder="浅色图标路径" value="{$tplconfig['theme']['hotvod']['tabs'][2]['icon_l']|default='template/default/images/la/home-icon3.png'}" class="layui-input">
-                                        </div>
-                                        <div class="layui-input-inline w220">
-                                            <input type="text" name="theme[hotvod][tabs][2][icon_b]" placeholder="深色图标路径" value="{$tplconfig['theme']['hotvod']['tabs'][2]['icon_b']|default='template/default/images/black/home-icon3.png'}" class="layui-input">
-                                        </div>
-                                        <div class="layui-form-mid layui-word-aux">热门推荐第 4 个 Tab</div>
-                                    </div>
-                                    <div class="layui-form-item">
-                                        <label class="layui-form-label">Tab5（latest5）</label>
-                                        <div class="layui-input-inline w100">
-                                            <input type="text" name="theme[hotvod][tabs][3][id]" placeholder="分类ID 20" value="{$tplconfig['theme']['hotvod']['tabs'][3]['id']|default='20'}" class="layui-input">
-                                        </div>
-                                        <div class="layui-input-inline w120">
-                                            <input type="text" name="theme[hotvod][tabs][3][name]" placeholder="标签名" value="{$tplconfig['theme']['hotvod']['tabs'][3]['name']|default='动漫'}" class="layui-input">
-                                        </div>
-                                        <div class="layui-input-inline w220">
-                                            <input type="text" name="theme[hotvod][tabs][3][icon_l]" placeholder="浅色图标路径" value="{$tplconfig['theme']['hotvod']['tabs'][3]['icon_l']|default='template/default/images/la/home-icon4.png'}" class="layui-input">
-                                        </div>
-                                        <div class="layui-input-inline w220">
-                                            <input type="text" name="theme[hotvod][tabs][3][icon_b]" placeholder="深色图标路径" value="{$tplconfig['theme']['hotvod']['tabs'][3]['icon_b']|default='template/default/images/black/home-icon4.png'}" class="layui-input">
-                                        </div>
-                                        <div class="layui-form-mid layui-word-aux">热门推荐第 5 个 Tab</div>
+                                        <div class="layui-form-mid layui-word-aux">最多 8 条，至少保留 1 条；Tab 顺序对应前台热门推荐展示顺序。</div>
                                     </div>
                                 </div>
                             </fieldset>
@@ -788,10 +772,11 @@
                                     </div>
                                     <div class="layui-form-item">
                                         <label class="layui-form-label">{:lang('admin/tpl/config/tip1')}</label>
-                                        <div class="layui-input-inline w200">
-                                            <input type="text" name="theme[rank][hid]"
-                                                placeholder="{:lang('admin/tpl/config/tip2')}"
-                                                value="{$tplconfig['theme']['rank']['hid']}" class="layui-input">
+                                        <div class="layui-input-inline w320">
+                                            <div class="type-picker-field type-picker-field--multi" data-picker-mode="multiple">
+                                                <input type="hidden" class="type-picker-value" name="theme[rank][hid]" value="{$tplconfig['theme']['rank']['hid']}">
+                                                <button type="button" class="js-type-picker-btn type-picker-trigger" aria-label="{:lang('admin/tpl/config/type_picker_btn')}"><span class="type-picker-text">{:lang('admin/tpl/config/type_picker_btn')}</span><span class="type-picker-chevron" aria-hidden="true"></span></button>
+                                            </div>
                                         </div>
                                         <div class="layui-form-mid layui-word-aux">{:lang('admin/tpl/config/tip3')}
                                         </div>
@@ -1033,14 +1018,14 @@
                                                 {:lang('admin/tpl/config/key32')}</blockquote>
                                         </div>
                                     </div>
-                                    <div class="layui-form-item">
+                                    <div class="layui-form-item theme-nav-picker-row">
                                         <label class="layui-form-label">{:lang('admin/tpl/config/key34')}</label>
-                                        <div class="layui-input-inline w200">
-                                            <input type="text" name="theme[nav][id]"
-                                                placeholder="{:lang('admin/tpl/config/key37')}"
-                                                value="{$tplconfig['theme']['nav']['id']}" class="layui-input">
-                                        </div>
-                                        <div class="layui-form-mid layui-word-aux">{:lang('admin/tpl/config/key35')}
+                                        <div class="layui-input-block theme-nav-picker-block">
+                                            <div class="type-picker-field type-picker-field--inline type-picker-field--multi" data-picker-mode="multiple">
+                                                <input type="hidden" class="type-picker-value" name="theme[nav][id]" value="{$tplconfig['theme']['nav']['id']}">
+                                                <button type="button" class="js-type-picker-btn type-picker-trigger" aria-label="{:lang('admin/tpl/config/type_picker_btn')}"><span class="type-picker-text">{:lang('admin/tpl/config/type_picker_btn')}</span><span class="type-picker-chevron" aria-hidden="true"></span></button>
+                                            </div>
+                                            <p class="theme-nav-picker-hint layui-word-aux">{:lang('admin/tpl/config/key35')}</p>
                                         </div>
                                     </div>
                                     <div class="layui-form-item">
@@ -1172,28 +1157,43 @@
                                             <div class="layui-form-mid layui-word-aux allmenu-tip">{:lang('admin/tpl/config/allmenu_tip')}</div>
                                         </div>
                                     </div>
-                                    <div id="allmenu-list">
+                                    <div class="theme-list-panel">
+                                        <div class="theme-list-head">
+                                            <span class="theme-list-head-title">全部分类导航</span>
+                                            <span class="theme-list-head-hint">最多 20 条 · 拖动排序</span>
+                                        </div>
+                                        <div class="theme-list-columns">
+                                            <span></span><span>分类</span><span>名称</span><span>图标</span>
+                                        </div>
+                                    <div id="allmenu-list" class="js-sortable-list">
                                         {if condition="!empty($tplconfig['theme']['allmenu']) && is_array($tplconfig['theme']['allmenu'])"}
                                         {volist name="tplconfig.theme.allmenu" id="am" key="ak"}
-                                        <div class="layui-form-item allmenu-item">
-                                            <label class="layui-form-label">分类{$ak}</label>
-                                            <div class="layui-input-inline w90"><input type="text" name="theme[allmenu][{$ak-1}][id]" placeholder="分类ID" value="{$am.id|default=''}" class="layui-input"></div>
-                                            <div class="layui-input-inline w120"><input type="text" name="theme[allmenu][{$ak-1}][name]" placeholder="名称" value="{$am.name|default=''}" class="layui-input"></div>
+                                        <div class="layui-form-item allmenu-item js-sortable-item">
+                                            <label class="layui-form-label"> 分类{$ak}</label>
+                                            <div class="layui-input-inline type-picker-field w200">
+                                                <input type="hidden" class="type-picker-value" name="theme[allmenu][{$ak-1}][id]" value="{$am.id}">
+                                                <button type="button" class="js-type-picker-btn type-picker-trigger" aria-label="{:lang('admin/tpl/config/type_picker_btn')}"><span class="type-picker-text">{:lang('admin/tpl/config/type_picker_btn')}</span><span class="type-picker-chevron" aria-hidden="true"></span></button>
+                                            </div>
+                                            <div class="layui-input-inline w120"><input type="text" name="theme[allmenu][{$ak-1}][name]" placeholder="名称" value="{$am.name|default=''}" class="layui-input js-type-name-field"></div>
                                             <div class="layui-input-inline w220"><input type="text" name="theme[allmenu][{$ak-1}][icon]" placeholder="图标" value="{$am.icon|default=''}" class="layui-input upload-input"></div>
                                             <div class="layui-input-inline w100"><button type="button" class="layui-btn layui-btn-primary layui-btn-md layui-upload" lay-data="{data:{thumb:0,thumb_class:'theme[allmenu][{$ak-1}][icon]'}}">{:lang('admin/tpl/config/desc12')}</button></div>
                                             <div class="layui-input-inline w90"><button type="button" class="layui-btn layui-btn-danger layui-btn-sm allmenu-remove">删除</button></div>
                                         </div>
                                         {/volist}
                                         {else /}
-                                        <div class="layui-form-item allmenu-item">
-                                            <label class="layui-form-label">分类1</label>
-                                            <div class="layui-input-inline w90"><input type="text" name="theme[allmenu][0][id]" placeholder="分类ID" value="26" class="layui-input"></div>
-                                            <div class="layui-input-inline w120"><input type="text" name="theme[allmenu][0][name]" placeholder="名称" value="电影" class="layui-input"></div>
+                                        <div class="layui-form-item allmenu-item js-sortable-item">
+                                            <label class="layui-form-label"> 分类1</label>
+                                            <div class="layui-input-inline type-picker-field w200">
+                                                <input type="hidden" class="type-picker-value" name="theme[allmenu][0][id]" value="26">
+                                                <button type="button" class="js-type-picker-btn type-picker-trigger" aria-label="{:lang('admin/tpl/config/type_picker_btn')}"><span class="type-picker-text">{:lang('admin/tpl/config/type_picker_btn')}</span><span class="type-picker-chevron" aria-hidden="true"></span></button>
+                                            </div>
+                                            <div class="layui-input-inline w120"><input type="text" name="theme[allmenu][0][name]" placeholder="名称" value="电影" class="layui-input js-type-name-field"></div>
                                             <div class="layui-input-inline w220"><input type="text" name="theme[allmenu][0][icon]" placeholder="图标" value="template/default/images/nav/nav1.png" class="layui-input upload-input"></div>
                                             <div class="layui-input-inline w100"><button type="button" class="layui-btn layui-btn-primary layui-btn-md layui-upload" lay-data="{data:{thumb:0,thumb_class:'theme[allmenu][0][icon]'}}">{:lang('admin/tpl/config/desc12')}</button></div>
                                             <div class="layui-input-inline w90"><button type="button" class="layui-btn layui-btn-danger layui-btn-sm allmenu-remove">删除</button></div>
                                         </div>
                                         {/if}
+                                    </div>
                                     </div>
                                     <div class="layui-form-item allmenu-actions">
                                         <label class="layui-form-label"></label>
@@ -1216,19 +1216,23 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div id="bnav-list">
-                                        <div class="bnav-item">
+                                    <div class="theme-list-panel">
+                                        <div class="theme-list-head">
+                                            <span class="theme-list-head-title">底部导航入口</span>
+                                            <span class="theme-list-head-hint">最多 4 条 · 拖动整块卡片排序</span>
+                                        </div>
+                                    <div id="bnav-list" class="js-sortable-list">
+                                        <div class="bnav-item js-sortable-item">
                                             <div class="layui-form-item">
-                                                <label class="layui-form-label">导航1</label>
-                                                <div class="layui-input-inline w90">
-                                                    <input type="text" name="theme[bnav][0][id]" placeholder="分类ID"
-                                                        value="{$tplconfig['theme']['bnav'][0]['id']|default='26'}"
-                                                        class="layui-input">
-                                                </div>
+                                                <label class="layui-form-label"> 导航1</label>
+                                                <div class="layui-input-inline type-picker-field w200">
+                                                <input type="hidden" class="type-picker-value" name="theme[bnav][0][id]" value="{$tplconfig['theme']['bnav'][0]['id']|default='26'}">
+                                                <button type="button" class="js-type-picker-btn type-picker-trigger" aria-label="{:lang('admin/tpl/config/type_picker_btn')}"><span class="type-picker-text">{:lang('admin/tpl/config/type_picker_btn')}</span><span class="type-picker-chevron" aria-hidden="true"></span></button>
+                                            </div>
                                                 <div class="layui-input-inline w120">
                                                     <input type="text" name="theme[bnav][0][name]" placeholder="名称 如 电影"
                                                         value="{$tplconfig['theme']['bnav'][0]['name']|default='电影'}"
-                                                        class="layui-input">
+                                                        class="layui-input js-type-name-field">
                                                 </div>
                                                 <div class="layui-input-inline w220">
                                                     <input type="text" name="theme[bnav][0][link]"
@@ -1298,18 +1302,17 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="bnav-item">
+                                        <div class="bnav-item js-sortable-item">
                                             <div class="layui-form-item">
-                                                <label class="layui-form-label">导航2</label>
-                                                <div class="layui-input-inline w90">
-                                                    <input type="text" name="theme[bnav][1][id]" placeholder="分类ID"
-                                                        value="{$tplconfig['theme']['bnav'][1]['id']|default='57'}"
-                                                        class="layui-input">
-                                                </div>
+                                                <label class="layui-form-label"> 导航2</label>
+                                                <div class="layui-input-inline type-picker-field w200">
+                                                <input type="hidden" class="type-picker-value" name="theme[bnav][1][id]" value="{$tplconfig['theme']['bnav'][1]['id']|default='57'}">
+                                                <button type="button" class="js-type-picker-btn type-picker-trigger" aria-label="{:lang('admin/tpl/config/type_picker_btn')}"><span class="type-picker-text">{:lang('admin/tpl/config/type_picker_btn')}</span><span class="type-picker-chevron" aria-hidden="true"></span></button>
+                                            </div>
                                                 <div class="layui-input-inline w120">
                                                     <input type="text" name="theme[bnav][1][name]" placeholder="名称 如 短片"
                                                         value="{$tplconfig['theme']['bnav'][1]['name']|default='短片'}"
-                                                        class="layui-input">
+                                                        class="layui-input js-type-name-field">
                                                 </div>
                                                 <div class="layui-input-inline w220">
                                                     <input type="text" name="theme[bnav][1][link]"
@@ -1379,18 +1382,17 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="bnav-item">
+                                        <div class="bnav-item js-sortable-item">
                                             <div class="layui-form-item">
-                                                <label class="layui-form-label">导航3</label>
-                                                <div class="layui-input-inline w90">
-                                                    <input type="text" name="theme[bnav][2][id]" placeholder="分类ID"
-                                                        value="{$tplconfig['theme']['bnav'][2]['id']|default='0'}"
-                                                        class="layui-input">
-                                                </div>
+                                                <label class="layui-form-label"> 导航3</label>
+                                                <div class="layui-input-inline type-picker-field w200">
+                                                <input type="hidden" class="type-picker-value" name="theme[bnav][2][id]" value="{$tplconfig['theme']['bnav'][2]['id']|default='0'}">
+                                                <button type="button" class="js-type-picker-btn type-picker-trigger" aria-label="{:lang('admin/tpl/config/type_picker_btn')}"><span class="type-picker-text">{:lang('admin/tpl/config/type_picker_btn')}</span><span class="type-picker-chevron" aria-hidden="true"></span></button>
+                                            </div>
                                                 <div class="layui-input-inline w120">
                                                     <input type="text" name="theme[bnav][2][name]" placeholder="名称 如 小说"
                                                         value="{$tplconfig['theme']['bnav'][2]['name']|default='小说'}"
-                                                        class="layui-input">
+                                                        class="layui-input js-type-name-field">
                                                 </div>
                                                 <div class="layui-input-inline w220">
                                                     <input type="text" name="theme[bnav][2][link]"
@@ -1460,18 +1462,17 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="bnav-item">
+                                        <div class="bnav-item js-sortable-item">
                                             <div class="layui-form-item">
-                                                <label class="layui-form-label">导航4</label>
-                                                <div class="layui-input-inline w90">
-                                                    <input type="text" name="theme[bnav][3][id]" placeholder="分类ID"
-                                                        value="{$tplconfig['theme']['bnav'][3]['id']|default='0'}"
-                                                        class="layui-input">
-                                                </div>
+                                                <label class="layui-form-label"> 导航4</label>
+                                                <div class="layui-input-inline type-picker-field w200">
+                                                <input type="hidden" class="type-picker-value" name="theme[bnav][3][id]" value="{$tplconfig['theme']['bnav'][3]['id']|default='0'}">
+                                                <button type="button" class="js-type-picker-btn type-picker-trigger" aria-label="{:lang('admin/tpl/config/type_picker_btn')}"><span class="type-picker-text">{:lang('admin/tpl/config/type_picker_btn')}</span><span class="type-picker-chevron" aria-hidden="true"></span></button>
+                                            </div>
                                                 <div class="layui-input-inline w120">
                                                     <input type="text" name="theme[bnav][3][name]" placeholder="名称 如 漫画"
                                                         value="{$tplconfig['theme']['bnav'][3]['name']|default='漫画'}"
-                                                        class="layui-input">
+                                                        class="layui-input js-type-name-field">
                                                 </div>
                                                 <div class="layui-input-inline w220">
                                                     <input type="text" name="theme[bnav][3][link]"
@@ -1541,15 +1542,17 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="layui-form-item" style="margin-top:10px;">
-                                            <label class="layui-form-label"></label>
-                                            <div class="layui-input-block">
-                                                <button type="button" class="layui-btn layui-btn-normal layui-btn-sm"
-                                                    id="bnav-add">新增导航</button>
-                                                <span class="layui-form-mid layui-word-aux">最多 4 条；删除后会自动重新编号</span>
-                                            </div>
+                                    </div>
+                                    </div>
+                                    <div class="layui-form-item" style="margin-top:10px;">
+                                        <label class="layui-form-label"></label>
+                                        <div class="layui-input-block">
+                                            <button type="button" class="layui-btn layui-btn-normal layui-btn-sm"
+                                                id="bnav-add">新增导航</button>
+                                            <span class="layui-form-mid layui-word-aux">最多 4 条；删除后会自动重新编号</span>
                                         </div>
                                     </div>
+                                </div>
                             </fieldset>
                         </div>
                         <div class="layui-tab-item">
@@ -1590,12 +1593,23 @@
                                         </div>
                                         <div class="layui-form-mid layui-word-aux">用于小说/资讯分类页与相关列表模块。</div>
                                     </div>
-                                    <div id="vod-list-cover-list">
+                                    <div class="theme-list-panel">
+                                        <div class="theme-list-head">
+                                            <span class="theme-list-head-title">视频分类封面方向</span>
+                                            <span class="theme-list-head-hint">按分类单独设置竖版/横版</span>
+                                        </div>
+                                        <div class="theme-list-columns theme-list-columns--compact">
+                                            <span></span><span>分类</span><span>封面方向</span><span></span>
+                                        </div>
+                                    <div id="vod-list-cover-list" class="js-sortable-list">
                                         {if condition="!empty($tplconfig['theme']['list_cover']['vod']) && is_array($tplconfig['theme']['list_cover']['vod'])"}
                                         {volist name="tplconfig.theme.list_cover.vod" id="lc" key="lk"}
-                                        <div class="layui-form-item vod-list-cover-item">
-                                            <label class="layui-form-label">分类{$lk}</label>
-                                            <div class="layui-input-inline w90"><input type="text" name="theme[list_cover][vod][{$lk-1}][id]" placeholder="分类ID" value="{$lc.id|default=''}" class="layui-input"></div>
+                                        <div class="layui-form-item vod-list-cover-item js-sortable-item">
+                                            <label class="layui-form-label"> 分类{$lk}</label>
+                                            <div class="layui-input-inline type-picker-field w200">
+                                                <input type="hidden" class="type-picker-value" name="theme[list_cover][vod][{$lk-1}][id]" value="{$lc.id}">
+                                                <button type="button" class="js-type-picker-btn type-picker-trigger" aria-label="{:lang('admin/tpl/config/type_picker_btn')}"><span class="type-picker-text">{:lang('admin/tpl/config/type_picker_btn')}</span><span class="type-picker-chevron" aria-hidden="true"></span></button>
+                                            </div>
                                             <div class="layui-input-inline w130">
                                                 <select name="theme[list_cover][vod][{$lk-1}][cover]" class="layui-input">
                                                     <option value="v" {if condition="empty($lc.cover) || $lc.cover neq 'h'"}selected{/if}>竖版封面</option>
@@ -1606,9 +1620,12 @@
                                         </div>
                                         {/volist}
                                         {else /}
-                                        <div class="layui-form-item vod-list-cover-item">
-                                            <label class="layui-form-label">分类1</label>
-                                            <div class="layui-input-inline w90"><input type="text" name="theme[list_cover][vod][0][id]" placeholder="分类ID" value="" class="layui-input"></div>
+                                        <div class="layui-form-item vod-list-cover-item js-sortable-item">
+                                            <label class="layui-form-label"> 分类1</label>
+                                            <div class="layui-input-inline type-picker-field w200">
+                                                <input type="hidden" class="type-picker-value" name="theme[list_cover][vod][0][id]" value="">
+                                                <button type="button" class="js-type-picker-btn type-picker-trigger" aria-label="{:lang('admin/tpl/config/type_picker_btn')}"><span class="type-picker-text">{:lang('admin/tpl/config/type_picker_btn')}</span><span class="type-picker-chevron" aria-hidden="true"></span></button>
+                                            </div>
                                             <div class="layui-input-inline w130">
                                                 <select name="theme[list_cover][vod][0][cover]" class="layui-input">
                                                     <option value="v" selected>竖版封面</option>
@@ -1618,6 +1635,7 @@
                                             <div class="layui-input-inline w90"><button type="button" class="layui-btn layui-btn-danger layui-btn-sm vod-list-cover-remove">删除</button></div>
                                         </div>
                                         {/if}
+                                    </div>
                                     </div>
                                     <div class="layui-form-item vod-list-cover-actions">
                                         <label class="layui-form-label"></label>
@@ -1665,10 +1683,11 @@
                                     </div>
                                     <div class="layui-form-item">
                                         <label class="layui-form-label">{:lang('admin/tpl/config/key34')}</label>
-                                        <div class="layui-input-inline w200">
-                                            <input type="text" name="theme[rank][id]"
-                                                placeholder="{:lang('admin/tpl/config/tip2')}"
-                                                value="{$tplconfig['theme']['rank']['id']}" class="layui-input">
+                                        <div class="layui-input-inline w320">
+                                            <div class="type-picker-field type-picker-field--multi" data-picker-mode="multiple">
+                                                <input type="hidden" class="type-picker-value" name="theme[rank][id]" value="{$tplconfig['theme']['rank']['id']}">
+                                                <button type="button" class="js-type-picker-btn type-picker-trigger" aria-label="{:lang('admin/tpl/config/type_picker_btn')}"><span class="type-picker-text">{:lang('admin/tpl/config/type_picker_btn')}</span><span class="type-picker-chevron" aria-hidden="true"></span></button>
+                                            </div>
                                         </div>
                                         <div class="layui-form-mid layui-word-aux">{:lang('admin/tpl/config/content13')}
                                         </div>
@@ -2649,13 +2668,37 @@
 </div>
 {include file="../../../application/admin/view/public/foot" /}
 <script type="text/javascript">
-    window.onload = function () {
-        layui.use(['form', 'upload', 'layer'], function () {
+    window.MAC_THEME_TYPE_OPTIONS = {:json_encode(isset($theme_type_options) ? $theme_type_options : [], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES)};
+    window.MAC_THEME_TYPE_INDEX = {:json_encode(isset($theme_type_index) ? $theme_type_index : [], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES)};
+    window.MAC_THEME_UX_I18N = {$theme_ux_i18n_json};
+</script>
+<script type="text/javascript" src="__STATIC__/js/theme_config_ux.js?{$MAC_VERSION}"></script>
+<script type="text/javascript">
+    layui.use(['form', 'upload', 'layer'], function () {
             // 操作对象
             var form = layui.form
                 , layer = layui.layer
                 , upload = layui.upload
                 , $ = layui.$ || window.jQuery;
+            var ux = window.MacThemeConfigUx;
+            if (ux) {
+                ux.bindTypePickerEvents(layer);
+            }
+            function syncPickerNamesInItem($item, pattern, replacement) {
+                $item.find('.type-picker-value').each(function () {
+                    var $inp = $(this);
+                    var name = $inp.attr('name');
+                    if (!name) { return; }
+                    $inp.attr('name', name.replace(pattern, replacement));
+                });
+            }
+            function afterListMutation($scope) {
+                if (ux) {
+                    ux.initTypePickerLabels($scope || $(document));
+                    ux.refreshSortableGrips($scope || $(document));
+                }
+                form.render('select');
+            }
 
             form.on('radio(cache_type)', function (data) {
                 $('.row_cache_server').hide();
@@ -2705,13 +2748,20 @@
                 var $items = $('#home-module-list .home-module-item');
                 $items.each(function (index) {
                     var $item = $(this);
-                    $item.find('.layui-form-label').text('模块' + (index + 1));
-                    $item.find('input,select').each(function () {
+                    $item.find('.layui-form-label').first().text('模块' + (index + 1));
+                    $item.find('input,select,textarea').each(function () {
                         var $inp = $(this);
                         var name = $inp.attr('name');
                         if (!name) { return; }
                         name = name.replace(/theme\[type]\[hom]\[\d+]/, 'theme[type][hom][' + index + ']');
                         $inp.attr('name', name);
+                    });
+                    syncPickerNamesInItem($item, /theme\[type]\[hom]\[\d+]/, 'theme[type][hom][' + index + ']');
+                    $item.find('[lay-data]').each(function () {
+                        var ld = $(this).attr('lay-data');
+                        if (ld && ld.indexOf('theme[type][hom][') > -1) {
+                            $(this).attr('lay-data', ld.replace(/theme\[type]\[hom]\[\d+]/g, 'theme[type][hom][' + index + ']'));
+                        }
                     });
                 });
             }
@@ -2723,6 +2773,7 @@
                 }
                 $(this).closest('.home-module-item').remove();
                 rebuildHomeModuleNames();
+                afterListMutation($('#home-module-list'));
             });
             $('#home-module-add').on('click', function () {
                 var $list = $('#home-module-list');
@@ -2738,9 +2789,48 @@
                 });
                 $list.append($clone);
                 rebuildHomeModuleNames();
+                afterListMutation($clone);
             });
             // 初始重排一次，防止因配置不完整导致索引不一致
             rebuildHomeModuleNames();
+
+            function rebuildHotvodTabNames() {
+                var $items = $('#hotvod-tabs-list .hotvod-tab-item');
+                var tabLabelFn = (ux && typeof ux.hotvodTabLabel === 'function')
+                    ? function (i) { return ux.hotvodTabLabel(i); }
+                    : function (i) { return 'Tab' + (i + 2); };
+                $items.each(function (index) {
+                    var $item = $(this);
+                    $item.find('.layui-form-label').first().text(tabLabelFn(index));
+                    $item.find('input,select,textarea').each(function () {
+                        var $inp = $(this);
+                        var name = $inp.attr('name');
+                        if (!name) { return; }
+                        name = name.replace(/theme\[hotvod\]\[tabs\]\[\d+]/, 'theme[hotvod][tabs][' + index + ']');
+                        $inp.attr('name', name);
+                    });
+                    syncPickerNamesInItem($item, /theme\[hotvod\]\[tabs\]\[\d+]/, 'theme[hotvod][tabs][' + index + ']');
+                });
+            }
+            $('#hotvod-tabs-list').on('click', '.hotvod-tab-remove', function () {
+                var $items = $('#hotvod-tabs-list .hotvod-tab-item');
+                if ($items.length <= 1) { layer.msg('至少保留 1 条'); return; }
+                $(this).closest('.hotvod-tab-item').remove();
+                rebuildHotvodTabNames();
+                afterListMutation($('#hotvod-tabs-list'));
+            });
+            $('#hotvod-tab-add').on('click', function () {
+                var $list = $('#hotvod-tabs-list');
+                var $items = $list.find('.hotvod-tab-item');
+                if ($items.length >= 8) { layer.msg('最多只能添加 8 条'); return; }
+                var $clone = $items.last().clone(false);
+                $clone.find('input').val('');
+                $clone.find('.layui-form-select').remove();
+                $list.append($clone);
+                rebuildHotvodTabNames();
+                afterListMutation($clone);
+            });
+            rebuildHotvodTabNames();
 
             // 分类列表封面方向（theme[list_cover]）
             function rerenderVodListCoverSelects() {
@@ -2754,7 +2844,7 @@
                 $items.each(function (index) {
                     var $item = $(this);
                     $item.find('.layui-form-label').first().text('分类' + (index + 1));
-                    $item.find('input,select').each(function () {
+                    $item.find('input,select,textarea').each(function () {
                         var $el = $(this);
                         var name = $el.attr('name');
                         if (name) {
@@ -2762,6 +2852,7 @@
                             $el.attr('name', name);
                         }
                     });
+                    syncPickerNamesInItem($item, /theme\[list_cover]\[vod]\[\d+]/, 'theme[list_cover][vod][' + index + ']');
                 });
             }
             $('#vod-list-cover-list').on('click', '.vod-list-cover-remove', function () {
@@ -2770,19 +2861,21 @@
                 $(this).closest('.vod-list-cover-item').remove();
                 rebuildVodListCoverNames();
                 rerenderVodListCoverSelects();
+                afterListMutation($('#vod-list-cover-list'));
             });
-            var vodListCoverTpl = '<div class="layui-form-item vod-list-cover-item"><label class="layui-form-label">分类</label><div class="layui-input-inline w90"><input type="text" name="theme[list_cover][vod][0][id]" placeholder="分类ID" value="" class="layui-input"></div><div class="layui-input-inline w130"><select name="theme[list_cover][vod][0][cover]" class="layui-input"><option value="v" selected>竖版封面</option><option value="h">横版封面</option></select></div><div class="layui-input-inline w90"><button type="button" class="layui-btn layui-btn-danger layui-btn-sm vod-list-cover-remove">删除</button></div></div>';
             $('#vod-list-cover-add').on('click', function () {
                 var $list = $('#vod-list-cover-list'); var $items = $list.find('.vod-list-cover-item');
                 if ($items.length >= 40) { layer.msg('最多只能添加 40 条'); return; }
-                var $clone = $items.length ? $items.last().clone(false) : $(vodListCoverTpl);
-                if ($items.length) { $clone.find('input').val(''); $clone.find('select').val('v'); }
-                // 克隆会带上 Layui 生成的 .layui-form-select，需去掉后再 form.render 才有样式且可点
+                if (!$items.length) { layer.msg('请刷新页面后重试'); return; }
+                var $clone = $items.last().clone(false);
+                $clone.find('input').val('');
+                $clone.find('select').val('v');
                 $clone.find('.layui-form-select').remove();
                 $clone.find('select').removeClass('layui-hide').css({ display: '', visibility: '' });
                 $list.append($clone);
                 rebuildVodListCoverNames();
                 rerenderVodListCoverSelects();
+                afterListMutation($clone);
             });
             rebuildVodListCoverNames();
 
@@ -2793,7 +2886,7 @@
                 $items.each(function (index) {
                     var $item = $(this);
                     $item.find('.layui-form-label').first().text('分类' + (index + 1));
-                    $item.find('input,button.layui-upload').each(function () {
+                    $item.find('input,button.layui-upload,select,textarea').each(function () {
                         var $el = $(this);
                         var name = $el.attr('name');
                         if (name) {
@@ -2806,6 +2899,7 @@
                             $el.attr('lay-data', layData);
                         }
                     });
+                    syncPickerNamesInItem($item, /theme\[allmenu]\[\d+]/, 'theme[allmenu][' + index + ']');
                 });
             }
             $('#allmenu-list').on('click', '.allmenu-remove', function () {
@@ -2813,16 +2907,19 @@
                 if ($items.length <= 1) { layer.msg('至少保留 1 条'); return; }
                 $(this).closest('.allmenu-item').remove();
                 rebuildAllmenuNames();
+                afterListMutation($('#allmenu-list'));
             });
-            var allmenuTpl = '<div class="layui-form-item allmenu-item"><label class="layui-form-label">分类</label><div class="layui-input-inline w90"><input type="text" name="theme[allmenu][0][id]" placeholder="分类ID" value="" class="layui-input"></div><div class="layui-input-inline w120"><input type="text" name="theme[allmenu][0][name]" placeholder="名称" value="" class="layui-input"></div><div class="layui-input-inline w220"><input type="text" name="theme[allmenu][0][icon]" placeholder="图标" value="" class="layui-input upload-input"></div><div class="layui-input-inline w100"><button type="button" class="layui-btn layui-btn-primary layui-btn-md layui-upload" lay-data="{data:{thumb:0,thumb_class:\'theme[allmenu][0][icon]\'}}">选择文件</button></div><div class="layui-input-inline w90"><button type="button" class="layui-btn layui-btn-danger layui-btn-sm allmenu-remove">删除</button></div></div>';
             $('#allmenu-add').on('click', function () {
                 var $list = $('#allmenu-list'); var $items = $list.find('.allmenu-item');
                 if ($items.length >= 20) { layer.msg('最多只能添加 20 条'); return; }
-                var $clone = $items.length ? $items.last().clone(false) : $(allmenuTpl);
-                if ($items.length) { $clone.find('input').each(function () { $(this).val(''); }); }
+                if (!$items.length) { layer.msg('请刷新页面后重试'); return; }
+                var $clone = $items.last().clone(false);
+                $clone.find('input').each(function () { $(this).val(''); });
+                $clone.find('.layui-form-select').remove();
                 $list.append($clone);
                 rebuildAllmenuNames();
                 initUploadFor($clone);
+                afterListMutation($clone);
             });
             rebuildAllmenuNames();
 
@@ -2831,8 +2928,9 @@
                 var $items = $('#bnav-list .bnav-item');
                 $items.each(function (index) {
                     var $item = $(this);
-                    $item.find('.layui-form-label').first().text('导航' + (index + 1));
-                    $item.find('input,button.layui-upload').each(function () {
+                    $item.find('.layui-form-item').first().find('.layui-form-label').first()
+                        .text('导航' + (index + 1));
+                    $item.find('input,button.layui-upload,select,textarea').each(function () {
                         var $el = $(this);
                         var name = $el.attr('name');
                         if (name) {
@@ -2845,6 +2943,7 @@
                             $el.attr('lay-data', layData);
                         }
                     });
+                    syncPickerNamesInItem($item, /theme\[bnav]\[\d+]/, 'theme[bnav][' + index + ']');
                 });
             }
             function initUploadFor($scope) {
@@ -2877,12 +2976,15 @@
             $('#bnav-list').on('click', '.bnav-remove', function () {
                 $(this).closest('.bnav-item').remove();
                 rebuildBnavNames();
+                afterListMutation($('#bnav-list'));
             });
-            var bnavTpl = '<div class="bnav-item">'
+            var themeUxI18n = window.MAC_THEME_UX_I18N || {};
+            var pickTypeLabel = themeUxI18n.pickType || '选择分类';
+            var bnavTpl = '<div class="bnav-item js-sortable-item">'
                 + '<div class="layui-form-item">'
                 + '<label class="layui-form-label">导航</label>'
-                + '<div class="layui-input-inline w90"><input type="text" name="theme[bnav][0][id]" placeholder="分类ID" value="" class="layui-input"></div>'
-                + '<div class="layui-input-inline w120"><input type="text" name="theme[bnav][0][name]" placeholder="名称" value="" class="layui-input"></div>'
+                + '<div class="layui-input-inline w200"><div class="type-picker-field"><input type="hidden" class="type-picker-value" name="theme[bnav][0][id]" value=""><button type="button" class="js-type-picker-btn type-picker-trigger" aria-label="' + pickTypeLabel + '"><span class="type-picker-text">' + pickTypeLabel + '</span><span class="type-picker-chevron" aria-hidden="true"></span></button></div></div>'
+                + '<div class="layui-input-inline w120"><input type="text" name="theme[bnav][0][name]" placeholder="名称" value="" class="layui-input js-type-name-field"></div>'
                 + '<div class="layui-input-inline w220"><input type="text" name="theme[bnav][0][link]" placeholder="跳转地址" value="" class="layui-input"></div>'
                 + '<div class="layui-input-inline w90" style="text-align:right;"><button type="button" class="layui-btn layui-btn-danger layui-btn-sm bnav-remove">删除</button></div>'
                 + '</div>'
@@ -2905,9 +3007,11 @@
                     $clone = $items.last().clone(false);
                     $clone.find('input').each(function () { $(this).val(''); });
                 }
+                $clone.find('.layui-form-select').remove();
                 $list.append($clone);
                 rebuildBnavNames();
                 initUploadFor($clone);
+                afterListMutation($clone);
             });
             rebuildBnavNames();
 
@@ -3107,8 +3211,32 @@
             });
             adRenderAllSlots();
 
-        });
-    };
+            if (ux) {
+                ux.initTypePickerLabels($(document));
+                ux.initSortableList($('#home-module-list'), function () {
+                    rebuildHomeModuleNames();
+                    afterListMutation($('#home-module-list'));
+                }, form);
+                ux.initSortableList($('#hotvod-tabs-list'), function () {
+                    rebuildHotvodTabNames();
+                    afterListMutation($('#hotvod-tabs-list'));
+                }, form);
+                ux.initSortableList($('#allmenu-list'), function () {
+                    rebuildAllmenuNames();
+                    afterListMutation($('#allmenu-list'));
+                }, form);
+                ux.initSortableList($('#bnav-list'), function () {
+                    rebuildBnavNames();
+                    afterListMutation($('#bnav-list'));
+                }, form);
+                ux.initSortableList($('#vod-list-cover-list'), function () {
+                    rebuildVodListCoverNames();
+                    rerenderVodListCoverSelects();
+                    afterListMutation($('#vod-list-cover-list'));
+                }, form);
+            }
+
+    });
 </script>
 </body>
 
