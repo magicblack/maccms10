@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+    {include file="public/include"}
+    <link rel="stylesheet" type="text/css" href="{$maccms.path_tpl}/asset/css/live-play.css?v=202604169" />
+    <link rel="stylesheet" type="text/css" href="{$maccms.path}static_new/player/dplayer/DPlayer.min.css" />
+</head>
+<body id="livePlayPage" class="live-play-body">
+    {include file="public/th" /}
+    {assign name="isSingleRow" value="1"}
+    {include file="public/head" /}
+    <div id="live_play_page" class="live-play" data-live-id="{$live_id|default=0}" data-play-url-pattern="{:mac_url('live/play',['id'=>'__ID__'])}">
+        <main class="live-play__layout">
+            <section class="live-play__main" aria-label="直播播放器">
+                <div class="live-play__player-wrap embed-responsive embed-responsive-16by9">
+                    <div id="live_dplayer_cnt" class="live-play__dplayer embed-responsive-item"></div>
+                    <div class="live-play__player-fail mac-hide" role="alert">
+                        <p data-lang="live/load_fail_refresh">如加载失败请刷新</p>
+                        <button type="button" class="live-play__btn live-play__btn--primary js-live-refresh" data-lang="string_play_sx">刷新</button>
+                    </div>
+                </div>
+            </section>
+            <aside class="live-play__sidebar" aria-label="选台与线路">
+                <header class="live-play__meta">
+                    <h1 class="live-play__title"></h1>
+                    <div class="live-play__lines-bar">
+                        <span class="live-play__lines-label" data-lang="live/play_lines">播放线路</span>
+                        <button type="button" class="live-play__refresh-hint js-live-refresh">
+                            <img class="live-play__refresh-hint-icon" src="{$maccms.path_tpl}/asset/img/live-tis-ic@2x.png" alt="" width="14" height="14" decoding="async" />
+                            <span class="live-play__refresh-hint-text" data-lang="live/refresh_hint">如加载失败请刷新</span>
+                        </button>
+                    </div>
+                    <div class="live-play__lines" role="group" aria-label="播放线路"></div>
+                </header>
+                <div class="live-play__picker">
+                    <h2 class="live-play__picker-title" data-lang="live/picker_title">选台器</h2>
+                    <div class="live-play__tabs" role="tablist"></div>
+                    <ul class="live-play__channel-list" role="list"></ul>
+                </div>
+            </aside>
+        </main>
+        <script type="text/javascript" src="{$maccms.path}static_new/player/dplayer/flv.min.js"></script>
+        <script type="text/javascript" src="{$maccms.path}static_new/player/dplayer/hls.min.js"></script>
+        <script type="text/javascript" src="{$maccms.path}static_new/player/dplayer/dash.all.min.js"></script>
+        <script type="text/javascript" src="{$maccms.path}static_new/player/dplayer/webtorrent.min.js"></script>
+        <script type="text/javascript" src="{$maccms.path}static_new/player/dplayer/DPlayer.min.js"></script>
+        <script type="text/javascript" src="{$maccms.path_tpl}/asset/js/live-play.js?v=202604169"></script>
+    </div>
+    {include file="public/foot"}
+</body>
+</html>

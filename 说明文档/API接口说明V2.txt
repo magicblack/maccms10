@@ -891,3 +891,36 @@ API 接口说明 V2（基于当前实现）
   - GET（含 echostr 参数）：微信服务器验证（valid）
   - POST：接收微信用户消息并自动回复（responseMsg）
 
+八、直播模块接口
+
+26) Live（直播）
+  说明：受 PublicApi 开关约束。提供直播频道分类、频道列表及频道详情功能。数据表为 mac_live（频道）与 mac_live_category（分类）。
+
+- 获取直播分类列表：GET /api.php/live/get_category
+  - 参数：无
+  - 返回：{code:1, msg:'获取成功', list:[{cate_id, cate_name, cate_en, cate_pic, cate_sort, cate_status, cate_time_add, cate_time}, ...]}
+  - 说明：仅返回 cate_status=1（启用）的分类，按 cate_sort asc, cate_id asc 排序
+
+- 获取直播频道列表：GET /api.php/live/get_list
+  - 参数：
+    - cate_id：number(0..MAX) 可选，分类ID筛选
+    - offset：number(0..MAX) 可选，分页偏移，默认0
+    - limit：number(1..500) 可选，每页条数，默认20
+    - orderby：string 可选，排序方式，默认 sort，可选: sort,hits,hits_day,hits_week,time,id
+    - name：string(<=100) 可选，频道名称模糊搜索（like）
+    - level：number(0..9) 可选，推荐等级筛选（>=该值）
+  - 返回：{code:1, msg:'获取成功', page, pagecount, limit, total, list:[...]}
+  - list 每条字段：live_id, cate_id, live_name, live_sub, live_en, live_pic, live_play_from, live_status, live_lock, live_sort, live_level, live_hits, live_hits_day, live_hits_week, live_hits_month, live_time_add, live_time, live_time_hits, live_blurb, live_content, **cate_name**（附加分类名称）, **live_url_list**（解析后的播放地址数组）
+  - live_url_list 结构：[{name:'HD', url:'http://...'}, {name:'SD', url:'http://...'}]
+    - 注意：原始 live_url 字段不返回，已解析为 live_url_list
+  - 说明：仅返回 live_status=1（启用）的频道
+
+- 获取直播频道详情：GET /api.php/live/get_detail
+  - 参数：
+    - live_id：number 必填(1..MAX)，频道ID
+  - 返回：{code:1, msg:'获取成功', info:{live_id, cate_id, live_name, live_sub, live_en, live_pic, live_play_from, live_status, live_lock, live_sort, live_level, live_hits, live_hits_day, live_hits_week, live_hits_month, live_time_add, live_time, live_time_hits, live_blurb, live_content, **cate_name**, **live_url_list**}}
+  - 说明：
+    - 仅返回 live_status=1 的频道；不存在或已禁用返回 code=1002
+    - 请求时自动增加点击量（live_hits、live_hits_day、live_hits_week、live_hits_month 各+1，并更新 live_time_hits）
+    - live_url_list 格式与列表接口一致
+

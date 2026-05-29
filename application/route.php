@@ -508,4 +508,24 @@ return array (
     array (
     ),
   ),
+  'liveshow' => 
+  array (
+    0 => 'live/show',
+    1 => 
+    array (
+    ),
+    2 => 
+    array (
+    ),
+  ),
+  'liveplay/<id>' => 
+  array (
+    0 => 'live/play',
+    1 => 
+    array (
+    ),
+    2 => 
+    array (
+    ),
+  ),
 );

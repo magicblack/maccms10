@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+    {include file="public/include"}
+    <link rel="stylesheet" type="text/css" href="{$maccms.path_tpl}/asset/css/live-show.css?v=202604171" />
+</head>
+<body id="liveShowPage" class="live-show-body">
+    {include file="public/th" /}
+    {include file="public/head" /}
+    <div id="live_show_page" class="live-show" data-page-size="48" data-play-url-pattern="{:mac_url('live/play',['id'=>'__ID__'])}">
+        <main class="live-show__main">
+            <div class="member-wrap">
+                <div class="container">
+                    {include file="ads/ads_all"}
+                    <header class="live-show__head">
+                        <h1 class="live-show__title" data-lang="live/show_title">直播</h1>
+                        <div class="live-show__tabs" role="tablist" aria-label="直播分类"></div>
+                    </header>
+                    <div class="live-show__panel" data-state="loading">
+                        <div class="live-show__status live-show__loading" role="status" aria-live="polite">
+                            <span class="live-show__spinner" aria-hidden="true"></span>
+                            <span data-lang="string_loading">加载中…</span>
+                        </div>
+                        <div class="live-show__status live-show__error live-show__is-hidden" role="alert">
+                            <p class="live-show__error-text" data-lang="string_load_err">加载失败，请稍后重试</p>
+                            <button type="button" class="live-show__retry-btn js-live-show-retry" data-lang="string_topic_feed_retry">重试</button>
+                        </div>
+                        <div class="live-show__status live-show__empty live-show__is-hidden">
+                            <div class="no-data">
+                                <div class="nodata-img"></div>
+                                <p class="nodata-txt" data-lang="live/empty">暂无直播频道</p>
+                            </div>
+                        </div>
+                        <ul class="live-show__grid live-show__is-hidden" role="list"></ul>
+                    </div>
+                </div>
+            </div>
+        </main>
+        <script type="text/javascript" src="{$maccms.path_tpl}/asset/js/live-show.js?v=202604171"></script>
+    </div>
+    {include file="public/foot"}
+</body>
+</html>

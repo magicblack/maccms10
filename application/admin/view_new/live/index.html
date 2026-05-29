@@ -1,0 +1,105 @@
+{include file="../../../application/admin/view_new/public/head" /}
+<div class="page-container p10">
+
+    <div class="my-toolbar-box">
+        <div class="mb10">
+            <form class="layui-form " method="post" action="{:url('index')}">
+                <div class="layui-input-inline">
+                    <select name="cate_id">
+                        <option value="">{:lang('admin/live/all_cate')}</option>
+                        {volist name="cate_list" id="cate"}
+                        <option value="{$cate.cate_id}" {if condition="isset($param['cate_id']) && $param['cate_id'] eq $cate['cate_id']"}selected{/if}>{$cate.cate_name}</option>
+                        {/volist}
+                    </select>
+                </div>
+                <div class="layui-input-inline">
+                    <select name="status">
+                        <option value="">{:lang('admin/live/all_status')}</option>
+                        <option value="1" {if condition="isset($param['status']) && $param['status'] eq '1'"}selected{/if}>{:lang('enable')}</option>
+                        <option value="0" {if condition="isset($param['status']) && $param['status'] eq '0'"}selected{/if}>{:lang('disable')}</option>
+                    </select>
+                </div>
+                <div class="layui-input-inline">
+                    <input type="text" autocomplete="off" placeholder="{:lang('wd')}" class="layui-input" name="wd" value="{$param['wd']|mac_filter_xss}">
+                </div>
+                <button class="layui-btn mgl-20 j-search">{:lang('btn_search')}</button>
+            </form>
+        </div>
+
+        <div class="flex gap-5 overflow-x-auto overflow-y-hidden">
+            <a data-href="{:url('info')}" class="layui-btn layui-btn-primary j-iframe"><i class="layui-icon">&#xe654;</i>{:lang('add')}</a>
+            <a data-href="{:url('del')}" class="layui-btn layui-btn-primary j-page-btns confirm"><i class="layui-icon">&#xe640;</i>{:lang('del')}</a>
+            <a data-href="{:url('field')}" data-extra="col=live_status&val=1" class="layui-btn layui-btn-primary j-page-btns confirm"><i class="layui-icon">&#xe618;</i>{:lang('enable')}</a>
+            <a data-href="{:url('field')}" data-extra="col=live_status&val=0" class="layui-btn layui-btn-primary j-page-btns confirm"><i class="layui-icon">&#x1006;</i>{:lang('disable')}</a>
+        </div>
+    </div>
+
+    <form class="layui-form " method="post" id="pageListForm">
+        <table class="layui-table" lay-size="sm">
+            <thead>
+            <tr>
+                <th width="25"><input type="checkbox" lay-skin="primary" lay-filter="allChoose"></th>
+                <th width="60">{:lang('id')}</th>
+                <th width="80">{:lang('sort')}</th>
+                <th width="120">{:lang('admin/live/cate')}</th>
+                <th>{:lang('name')}</th>
+                <th width="80">{:lang('admin/live/play_from')}</th>
+                <th width="80">{:lang('hits')}</th>
+                <th width="80">{:lang('status')}</th>
+                <th width="230">{:lang('opt')}</th>
+            </tr>
+            </thead>
+            <tbody>
+            {volist name="list" id="vo"}
+            <tr>
+                <td><input type="checkbox" name="ids[]" value="{$vo.live_id}" class="layui-checkbox checkbox-ids" lay-skin="primary"></td>
+                <td>{$vo.live_id}</td>
+                <td>{$vo.live_sort}</td>
+                <td>
+                    {volist name="cate_list" id="cate"}
+                    {if condition="$vo['cate_id'] eq $cate['cate_id']"}{$cate.cate_name}{/if}
+                    {/volist}
+                </td>
+                <td><a class="j-iframe" data-href="{:url('info?id='.$vo['live_id'])}" href="javascript:;">{$vo.live_name}</a></td>
+                <td>{$vo.live_play_from}</td>
+                <td>{$vo.live_hits}</td>
+                <td>
+                    {if condition="$vo['live_status'] eq 1"}
+                    <a class="layui-badge layui-bg-green j-ajax" data-href="{:url('field?ids='.$vo['live_id'].'&col=live_status&val=0')}" href="javascript:;">{:lang('enable')}</a>
+                    {else/}
+                    <a class="layui-badge j-ajax" data-href="{:url('field?ids='.$vo['live_id'].'&col=live_status&val=1')}" href="javascript:;">{:lang('disable')}</a>
+                    {/if}
+                </td>
+                <td>
+                    <a class="layui-badge-rim j-iframe" data-href="{:url('info?id='.$vo['live_id'])}" href="javascript:;" title="{:lang('edit')}">{:lang('edit')}</a>
+                    <a class="layui-badge-rim j-tr-del" data-href="{:url('del?ids='.$vo['live_id'])}" href="javascript:;" title="{:lang('del')}">{:lang('del')}</a>
+                </td>
+            </tr>
+            {/volist}
+            </tbody>
+        </table>
+        <div id="pages" class="center"></div>
+    </form>
+</div>
+{include file="../../../application/admin/view_new/public/foot" /}
+
+<script type="text/javascript">
+    var curUrl = "{:url('live/index',$param)}";
+    layui.use(['laypage', 'layer'], function () {
+        var laypage = layui.laypage, layer = layui.layer;
+        laypage.render({
+            elem: 'pages',
+            count: {$total},
+            limit: {$limit},
+            curr: {$page},
+            layout: ['count', 'prev', 'page', 'next', 'limit', 'skip'],
+            jump: function (obj, first) {
+                if (!first) {
+                    location.href = curUrl.replace('%7Bpage%7D', obj.curr).replace('%7Blimit%7D', obj.limit);
+                }
+            }
+        });
+    });
+</script>
+</body>
+</html>

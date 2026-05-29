@@ -1548,3 +1548,88 @@ CREATE TABLE `mac_danmaku` (
   KEY `danmaku_send_time` (`danmaku_send_time`),
   KEY `danmaku_status` (`danmaku_status`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='弹幕表';
+
+-- ----------------------------
+-- Table structure for mac_live_category
+-- ----------------------------
+DROP TABLE IF EXISTS `mac_live_category`;
+CREATE TABLE `mac_live_category` (
+  `cate_id` int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT '分类ID',
+  `cate_name` varchar(100) NOT NULL DEFAULT '' COMMENT '分类名称',
+  `cate_en` varchar(100) NOT NULL DEFAULT '' COMMENT '分类英文名',
+  `cate_pic` varchar(1024) NOT NULL DEFAULT '' COMMENT '分类图片',
+  `cate_sort` smallint(5) unsigned NOT NULL DEFAULT '0' COMMENT '排序',
+  `cate_status` tinyint(1) unsigned NOT NULL DEFAULT '1' COMMENT '状态 0禁用 1启用',
+  `cate_time_add` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '添加时间',
+  `cate_time` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '更新时间',
+  PRIMARY KEY (`cate_id`),
+  KEY `cate_sort` (`cate_sort`),
+  KEY `cate_status` (`cate_status`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COMMENT='直播分类表';
+
+-- ----------------------------
+-- Default data for mac_live_category
+-- ----------------------------
+INSERT INTO `mac_live_category` (`cate_name`,`cate_en`,`cate_sort`,`cate_status`,`cate_time_add`,`cate_time`) VALUES
+('央视频道','cctv',0,1,0,0),
+('卫视频道','wstv',1,1,0,0),
+('地方频道','local',2,1,0,0),
+('港澳台','hktw',3,1,0,0);
+
+-- ----------------------------
+-- Table structure for mac_live
+-- ----------------------------
+DROP TABLE IF EXISTS `mac_live`;
+CREATE TABLE `mac_live` (
+  `live_id` int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT '直播ID',
+  `cate_id` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '分类ID',
+  `live_name` varchar(255) NOT NULL DEFAULT '' COMMENT '频道名称',
+  `live_sub` varchar(255) NOT NULL DEFAULT '' COMMENT '频道副标题',
+  `live_en` varchar(255) NOT NULL DEFAULT '' COMMENT '频道英文名',
+  `live_pic` varchar(1024) NOT NULL DEFAULT '' COMMENT '频道图片/LOGO',
+  `live_url` text COMMENT '播放地址,多线路用#分隔,格式:清晰度名$地址',
+  `live_play_from` varchar(255) NOT NULL DEFAULT 'hls' COMMENT '播放来源/协议 hls/flv/rtmp',
+  `live_status` tinyint(1) unsigned NOT NULL DEFAULT '1' COMMENT '状态 0禁用 1启用',
+  `live_lock` tinyint(1) unsigned NOT NULL DEFAULT '0' COMMENT '锁定 0否 1是',
+  `live_sort` smallint(5) unsigned NOT NULL DEFAULT '0' COMMENT '排序',
+  `live_level` tinyint(1) unsigned NOT NULL DEFAULT '0' COMMENT '推荐等级',
+  `live_hits` mediumint(8) unsigned NOT NULL DEFAULT '0' COMMENT '总点击',
+  `live_hits_day` mediumint(8) unsigned NOT NULL DEFAULT '0' COMMENT '日点击',
+  `live_hits_week` mediumint(8) unsigned NOT NULL DEFAULT '0' COMMENT '周点击',
+  `live_hits_month` mediumint(8) unsigned NOT NULL DEFAULT '0' COMMENT '月点击',
+  `live_time_add` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '添加时间',
+  `live_time` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '更新时间',
+  `live_time_hits` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '最近点击时间',
+  `live_blurb` varchar(255) NOT NULL DEFAULT '' COMMENT '简要描述',
+  `live_content` text COMMENT '频道介绍',
+  PRIMARY KEY (`live_id`),
+  KEY `cate_id` (`cate_id`),
+  KEY `live_name` (`live_name`(100)),
+  KEY `live_status` (`live_status`),
+  KEY `live_sort` (`live_sort`),
+  KEY `live_level` (`live_level`),
+  KEY `live_hits` (`live_hits`),
+  KEY `live_time` (`live_time`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COMMENT='直播频道表';
+
+-- ----------------------------
+-- Default data for mac_live (CCTV 默认信号源,管理员可在后台调整)
+-- ----------------------------
+INSERT INTO `mac_live` (`cate_id`,`live_name`,`live_en`,`live_url`,`live_play_from`,`live_status`,`live_sort`,`live_time_add`,`live_time`,`live_blurb`) VALUES
+(1,'CCTV-1 综合','cctv1','HD$https://pili-live-hls.cntv.myqcloud.com/live/cctv1hd.m3u8','hls',1,120,0,0,'CCTV-1 综合频道 中央电视台官方直播'),
+(1,'CCTV-2 财经','cctv2','HD$https://pili-live-hls.cntv.myqcloud.com/live/cctv2hd.m3u8','hls',1,119,0,0,'CCTV-2 财经频道 中央电视台官方直播'),
+(1,'CCTV-3 综艺','cctv3','HD$https://pili-live-hls.cntv.myqcloud.com/live/cctv3hd.m3u8','hls',1,118,0,0,'CCTV-3 综艺频道 中央电视台官方直播'),
+(1,'CCTV-4 中文国际','cctv4','HD$https://pili-live-hls.cntv.myqcloud.com/live/cctv4hd.m3u8','hls',1,117,0,0,'CCTV-4 中文国际频道 中央电视台官方直播'),
+(1,'CCTV-5 体育','cctv5','HD$https://pili-live-hls.cntv.myqcloud.com/live/cctv5hd.m3u8','hls',1,116,0,0,'CCTV-5 体育频道 中央电视台官方直播'),
+(1,'CCTV-5+ 体育赛事','cctv5p','HD$https://pili-live-hls.cntv.myqcloud.com/live/cctv5phd.m3u8','hls',1,115,0,0,'CCTV-5+ 体育赛事频道 中央电视台官方直播'),
+(1,'CCTV-6 电影','cctv6','HD$https://pili-live-hls.cntv.myqcloud.com/live/cctv6hd.m3u8','hls',1,114,0,0,'CCTV-6 电影频道 中央电视台官方直播'),
+(1,'CCTV-7 国防军事','cctv7','HD$https://pili-live-hls.cntv.myqcloud.com/live/cctv7hd.m3u8','hls',1,113,0,0,'CCTV-7 国防军事频道 中央电视台官方直播'),
+(1,'CCTV-8 电视剧','cctv8','HD$https://pili-live-hls.cntv.myqcloud.com/live/cctv8hd.m3u8','hls',1,112,0,0,'CCTV-8 电视剧频道 中央电视台官方直播'),
+(1,'CCTV-9 纪录','cctv9','HD$https://pili-live-hls.cntv.myqcloud.com/live/cctv9hd.m3u8','hls',1,111,0,0,'CCTV-9 纪录频道 中央电视台官方直播'),
+(1,'CCTV-10 科教','cctv10','HD$https://pili-live-hls.cntv.myqcloud.com/live/cctv10hd.m3u8','hls',1,110,0,0,'CCTV-10 科教频道 中央电视台官方直播'),
+(1,'CCTV-11 戏曲','cctv11','HD$https://pili-live-hls.cntv.myqcloud.com/live/cctv11hd.m3u8','hls',1,109,0,0,'CCTV-11 戏曲频道 中央电视台官方直播'),
+(1,'CCTV-12 社会与法','cctv12','HD$https://pili-live-hls.cntv.myqcloud.com/live/cctv12hd.m3u8','hls',1,108,0,0,'CCTV-12 社会与法频道 中央电视台官方直播'),
+(1,'CCTV-13 新闻','cctv13','HD$https://pili-live-hls.cntv.myqcloud.com/live/cctv13hd.m3u8','hls',1,107,0,0,'CCTV-13 新闻频道 中央电视台官方直播'),
+(1,'CCTV-14 少儿','cctv14','HD$https://pili-live-hls.cntv.myqcloud.com/live/cctv14hd.m3u8','hls',1,106,0,0,'CCTV-14 少儿频道 中央电视台官方直播'),
+(1,'CCTV-15 音乐','cctv15','HD$https://pili-live-hls.cntv.myqcloud.com/live/cctv15hd.m3u8','hls',1,105,0,0,'CCTV-15 音乐频道 中央电视台官方直播'),
+(1,'CCTV-17 农业农村','cctv17','HD$https://pili-live-hls.cntv.myqcloud.com/live/cctv17hd.m3u8','hls',1,104,0,0,'CCTV-17 农业农村频道 中央电视台官方直播');

@@ -553,9 +553,93 @@ if (empty($col_list[$pre . 'admin_audit_log'])) {
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='后台操作审计';";
     $sql .= "\r";
 }
-
 // AI 封面：备份原海报字段（与 install.sql 一致；存量库通过升级脚本一次性补齐）
 if (!empty($col_list[$pre . 'vod']) && empty($col_list[$pre . 'vod']['vod_pic_original'])) {
     $sql .= "ALTER TABLE `{$pre}vod` ADD `vod_pic_original` varchar(1024) NOT NULL DEFAULT '' COMMENT 'AI封面前备份原海报' AFTER `vod_pic_slide`;";
+    $sql .= "\r";
+}
+// 直播分类表
+if(empty($col_list[$pre.'live_category'])){
+    $sql .= "CREATE TABLE `{$pre}live_category` (";
+    $sql .= "`cate_id` int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT '分类ID',";
+    $sql .= "`cate_name` varchar(100) NOT NULL DEFAULT '' COMMENT '分类名称',";
+    $sql .= "`cate_en` varchar(100) NOT NULL DEFAULT '' COMMENT '分类英文名',";
+    $sql .= "`cate_pic` varchar(1024) NOT NULL DEFAULT '' COMMENT '分类图片',";
+    $sql .= "`cate_sort` smallint(5) unsigned NOT NULL DEFAULT '0' COMMENT '排序',";
+    $sql .= "`cate_status` tinyint(1) unsigned NOT NULL DEFAULT '1' COMMENT '状态 0禁用 1启用',";
+    $sql .= "`cate_time_add` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '添加时间',";
+    $sql .= "`cate_time` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '更新时间',";
+    $sql .= "PRIMARY KEY (`cate_id`),";
+    $sql .= "KEY `cate_sort` (`cate_sort`),";
+    $sql .= "KEY `cate_status` (`cate_status`)";
+    $sql .= ") ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='直播分类表';";
+    $sql .= "\r";
+}
+// 直播频道表
+if(empty($col_list[$pre.'live'])){
+    $sql .= "CREATE TABLE `{$pre}live` (";
+    $sql .= "`live_id` int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT '直播ID',";
+    $sql .= "`cate_id` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '分类ID',";
+    $sql .= "`live_name` varchar(255) NOT NULL DEFAULT '' COMMENT '频道名称',";
+    $sql .= "`live_sub` varchar(255) NOT NULL DEFAULT '' COMMENT '频道副标题',";
+    $sql .= "`live_en` varchar(255) NOT NULL DEFAULT '' COMMENT '频道英文名',";
+    $sql .= "`live_pic` varchar(1024) NOT NULL DEFAULT '' COMMENT '频道图片/LOGO',";
+    $sql .= "`live_url` text COMMENT '播放地址',";
+    $sql .= "`live_play_from` varchar(255) NOT NULL DEFAULT 'hls' COMMENT '播放来源/协议',";
+    $sql .= "`live_status` tinyint(1) unsigned NOT NULL DEFAULT '1' COMMENT '状态 0禁用 1启用',";
+    $sql .= "`live_lock` tinyint(1) unsigned NOT NULL DEFAULT '0' COMMENT '锁定 0否 1是',";
+    $sql .= "`live_sort` smallint(5) unsigned NOT NULL DEFAULT '0' COMMENT '排序',";
+    $sql .= "`live_level` tinyint(1) unsigned NOT NULL DEFAULT '0' COMMENT '推荐等级',";
+    $sql .= "`live_hits` mediumint(8) unsigned NOT NULL DEFAULT '0' COMMENT '总点击',";
+    $sql .= "`live_hits_day` mediumint(8) unsigned NOT NULL DEFAULT '0' COMMENT '日点击',";
+    $sql .= "`live_hits_week` mediumint(8) unsigned NOT NULL DEFAULT '0' COMMENT '周点击',";
+    $sql .= "`live_hits_month` mediumint(8) unsigned NOT NULL DEFAULT '0' COMMENT '月点击',";
+    $sql .= "`live_time_add` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '添加时间',";
+    $sql .= "`live_time` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '更新时间',";
+    $sql .= "`live_time_hits` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '最近点击时间',";
+    $sql .= "`live_blurb` varchar(255) NOT NULL DEFAULT '' COMMENT '简要描述',";
+    $sql .= "`live_content` text COMMENT '频道介绍',";
+    $sql .= "PRIMARY KEY (`live_id`),";
+    $sql .= "KEY `cate_id` (`cate_id`),";
+    $sql .= "KEY `live_name` (`live_name`(100)),";
+    $sql .= "KEY `live_status` (`live_status`),";
+    $sql .= "KEY `live_sort` (`live_sort`),";
+    $sql .= "KEY `live_level` (`live_level`),";
+    $sql .= "KEY `live_hits` (`live_hits`),";
+    $sql .= "KEY `live_time` (`live_time`)";
+    $sql .= ") ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='直播频道表';";
+    $sql .= "\r";
+}
+// 插入预设直播分类数据
+$live_cate_count = \think\Db::name('live_category')->count();
+if(empty($live_cate_count)){
+    $sql .= "INSERT INTO `{$pre}live_category` (`cate_name`,`cate_en`,`cate_sort`,`cate_status`,`cate_time_add`,`cate_time`) VALUES ";
+    $sql .= "('央视频道','cctv',0,1,0,0),";
+    $sql .= "('卫视频道','wstv',1,1,0,0),";
+    $sql .= "('地方频道','local',2,1,0,0),";
+    $sql .= "('港澳台','hktw',3,1,0,0);";
+    $sql .= "\r";
+}
+// 插入预设直播数据(CCTV)
+$live_count = \think\Db::name('live')->count();
+if(empty($live_count)){
+    $sql .= "INSERT INTO `{$pre}live` (`cate_id`,`live_name`,`live_en`,`live_url`,`live_play_from`,`live_status`,`live_sort`,`live_time_add`,`live_time`,`live_blurb`) VALUES ";
+    $sql .= "(1,'CCTV-1 综合','cctv1','HD\$https://pili-live-hls.cntv.myqcloud.com/live/cctv1hd.m3u8','hls',1,120,0,0,'CCTV-1 综合频道 中央电视台官方直播'),";
+    $sql .= "(1,'CCTV-2 财经','cctv2','HD\$https://pili-live-hls.cntv.myqcloud.com/live/cctv2hd.m3u8','hls',1,119,0,0,'CCTV-2 财经频道 中央电视台官方直播'),";
+    $sql .= "(1,'CCTV-3 综艺','cctv3','HD\$https://pili-live-hls.cntv.myqcloud.com/live/cctv3hd.m3u8','hls',1,118,0,0,'CCTV-3 综艺频道 中央电视台官方直播'),";
+    $sql .= "(1,'CCTV-4 中文国际','cctv4','HD\$https://pili-live-hls.cntv.myqcloud.com/live/cctv4hd.m3u8','hls',1,117,0,0,'CCTV-4 中文国际频道 中央电视台官方直播'),";
+    $sql .= "(1,'CCTV-5 体育','cctv5','HD\$https://pili-live-hls.cntv.myqcloud.com/live/cctv5hd.m3u8','hls',1,116,0,0,'CCTV-5 体育频道 中央电视台官方直播'),";
+    $sql .= "(1,'CCTV-5+ 体育赛事','cctv5p','HD\$https://pili-live-hls.cntv.myqcloud.com/live/cctv5phd.m3u8','hls',1,115,0,0,'CCTV-5+ 体育赛事频道 中央电视台官方直播'),";
+    $sql .= "(1,'CCTV-6 电影','cctv6','HD\$https://pili-live-hls.cntv.myqcloud.com/live/cctv6hd.m3u8','hls',1,114,0,0,'CCTV-6 电影频道 中央电视台官方直播'),";
+    $sql .= "(1,'CCTV-7 国防军事','cctv7','HD\$https://pili-live-hls.cntv.myqcloud.com/live/cctv7hd.m3u8','hls',1,113,0,0,'CCTV-7 国防军事频道 中央电视台官方直播'),";
+    $sql .= "(1,'CCTV-8 电视剧','cctv8','HD\$https://pili-live-hls.cntv.myqcloud.com/live/cctv8hd.m3u8','hls',1,112,0,0,'CCTV-8 电视剧频道 中央电视台官方直播'),";
+    $sql .= "(1,'CCTV-9 纪录','cctv9','HD\$https://pili-live-hls.cntv.myqcloud.com/live/cctv9hd.m3u8','hls',1,111,0,0,'CCTV-9 纪录频道 中央电视台官方直播'),";
+    $sql .= "(1,'CCTV-10 科教','cctv10','HD\$https://pili-live-hls.cntv.myqcloud.com/live/cctv10hd.m3u8','hls',1,110,0,0,'CCTV-10 科教频道 中央电视台官方直播'),";
+    $sql .= "(1,'CCTV-11 戏曲','cctv11','HD\$https://pili-live-hls.cntv.myqcloud.com/live/cctv11hd.m3u8','hls',1,109,0,0,'CCTV-11 戏曲频道 中央电视台官方直播'),";
+    $sql .= "(1,'CCTV-12 社会与法','cctv12','HD\$https://pili-live-hls.cntv.myqcloud.com/live/cctv12hd.m3u8','hls',1,108,0,0,'CCTV-12 社会与法频道 中央电视台官方直播'),";
+    $sql .= "(1,'CCTV-13 新闻','cctv13','HD\$https://pili-live-hls.cntv.myqcloud.com/live/cctv13hd.m3u8','hls',1,107,0,0,'CCTV-13 新闻频道 中央电视台官方直播'),";
+    $sql .= "(1,'CCTV-14 少儿','cctv14','HD\$https://pili-live-hls.cntv.myqcloud.com/live/cctv14hd.m3u8','hls',1,106,0,0,'CCTV-14 少儿频道 中央电视台官方直播'),";
+    $sql .= "(1,'CCTV-15 音乐','cctv15','HD\$https://pili-live-hls.cntv.myqcloud.com/live/cctv15hd.m3u8','hls',1,105,0,0,'CCTV-15 音乐频道 中央电视台官方直播'),";
+    $sql .= "(1,'CCTV-17 农业农村','cctv17','HD\$https://pili-live-hls.cntv.myqcloud.com/live/cctv17hd.m3u8','hls',1,104,0,0,'CCTV-17 农业农村频道 中央电视台官方直播');";
     $sql .= "\r";
 }

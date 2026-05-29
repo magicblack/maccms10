@@ -1860,4 +1860,61 @@ return array (
       ),
     ),
   ),
+  14 =>
+  array (
+    'name' => lang('menu/live'),
+    'icon' => 'xe62b',
+    'sub' =>
+    array (
+      141 =>
+      array (
+        'show' => 1,
+        'name' => lang('menu/live_list'),
+        'controller' => 'live',
+        'action' => 'index',
+      ),
+      142 =>
+      array (
+        'show' => 1,
+        'name' => lang('menu/live_category'),
+        'controller' => 'live',
+        'action' => 'category',
+      ),
+      1401 =>
+      array (
+        'show' => 0,
+        'name' => '--直播频道添加/编辑',
+        'controller' => 'live',
+        'action' => 'info',
+      ),
+      1402 =>
+      array (
+        'show' => 0,
+        'name' => '--直播频道删除',
+        'controller' => 'live',
+        'action' => 'del',
+      ),
+      1403 =>
+      array (
+        'show' => 0,
+        'name' => '--直播频道字段更新',
+        'controller' => 'live',
+        'action' => 'field',
+      ),
+      1404 =>
+      array (
+        'show' => 0,
+        'name' => '--直播分类添加/编辑',
+        'controller' => 'live',
+        'action' => 'category_info',
+      ),
+      1405 =>
+      array (
+        'show' => 0,
+        'name' => '--直播分类删除',
+        'controller' => 'live',
+        'action' => 'category_del',
+      ),
+    ),
+  ),
 );

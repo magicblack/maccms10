@@ -19,6 +19,9 @@
                         </li>
                         {/maccms:type}
                         {/if}
+                        <li data-sid="live" {if condition="$maccms.aid eq 131 || $maccms.aid eq 132"}class="active"{/if}>
+                            <a href="{:mac_url('live/show')}" title="直播" data-lang="live/show_title">直播</a>
+                        </li>
                         {if condition="isset($tplconfig['theme']['topic']['hbtn']) && $tplconfig['theme']['topic']['hbtn'] eq '1'"}
                         <li data-sid="6" {if condition="$maccms.aid eq 30" }class="active" {/if}>
                             <a href="{:mac_url('topic/index')}" title="专题" data-lang="string_topic">专题</a>
@@ -57,6 +60,7 @@
                             {/if}
                             {/maccms:type}
                             {/if}
+                            <a href="{:mac_url('live/show')}" class="top_nav_overlay_item" title="直播"><span data-lang="live/show_title">直播</span></a>
                             {if condition="isset($tplconfig['theme']['topic']['hbtn']) && $tplconfig['theme']['topic']['hbtn'] eq '1'"}
                             <a href="{:mac_url('topic/index')}" class="top_nav_overlay_item" title="专题"><span data-lang="string_topic">专题</span></a>
                             {/if}

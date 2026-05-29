@@ -14,7 +14,7 @@
         .home-unified .home-skeleton-line{height:12px;margin-top:8px}
         .home-unified .home-skeleton-line.w220{width:220px}.home-unified .home-skeleton-line.w200{width:200px}.home-unified .home-skeleton-line.w180{width:180px}.home-unified .home-skeleton-line.w160{width:160px}.home-unified .home-skeleton-line.w140{width:140px}.home-unified .home-skeleton-line.w90{width:90%}.home-unified .home-skeleton-line.w70{width:70%}
     </style>
-    <link rel="stylesheet" type="text/css" href="{$maccms.path}template/default/asset/css/index.css">
+    <link rel="stylesheet" type="text/css" href="{$maccms.path}template/default/asset/css/index.css?v=202604169">
     <link rel="stylesheet" type="text/css" href="{$maccms.path_tpl}/asset/css/home-topic-tangram-preview.css">
     <script src="{$maccms.path}template/default/asset/js/jquery-adaptive.js?v=202604161"></script>
 </head>
@@ -191,7 +191,36 @@
             </div>
             {/if}
 
-            
+            {if condition="$index_live_hbtn eq 1"}
+            <div class="box latest-tab-box mac-poster--v">
+                <div class="title home-unified-section-head hu-section-head">
+                    <img class="laset_new_img hl_icon_light" src="{$maccms.path}template/default/images/la/home_ic_Live_nor_2x.png" alt="">
+                    <img class="laset_new_img hl_icon_black" src="{$maccms.path}template/default/images/black/home_ic_Live_nor_2x.png" alt="">
+                    <h2><span data-lang="live/show_title">{$index_live_htitle}</span></h2>
+                    <a class="pc_more" href="{:mac_url('live/show')}"><span data-lang="string_type_more2">更多</span> <i class="iconfont more_i">&#xe623;</i></a>
+                </div>
+                <div class="latest-item cbox_list">
+                    <ul class="img-list dis vodlist home-unified-vlist hu-vlist js-home-lazy-section"
+                        id="js-home-live-list"
+                        data-section="home-live"
+                        data-api-action="live/get_list"
+                        data-num="{$index_live_hnum|default='6'}"
+                        data-start="0">
+                        <li class="home-skeleton-card"><div class="thumb"></div><div class="home-skeleton-line w90"></div><div class="home-skeleton-line w70"></div></li>
+                        <li class="home-skeleton-card"><div class="thumb"></div><div class="home-skeleton-line w90"></div><div class="home-skeleton-line w70"></div></li>
+                        <li class="home-skeleton-card"><div class="thumb"></div><div class="home-skeleton-line w90"></div><div class="home-skeleton-line w70"></div></li>
+                        <li class="home-skeleton-card"><div class="thumb"></div><div class="home-skeleton-line w90"></div><div class="home-skeleton-line w70"></div></li>
+                        <li class="home-skeleton-card"><div class="thumb"></div><div class="home-skeleton-line w90"></div><div class="home-skeleton-line w70"></div></li>
+                        <li class="home-skeleton-card"><div class="thumb"></div><div class="home-skeleton-line w90"></div><div class="home-skeleton-line w70"></div></li>
+                    </ul>
+                    <div class="home-refresh-wrap">
+                        <button type="button" class="home-refresh-btn" data-target="#js-home-live-list">
+                            <i class="iconfont" aria-hidden="true">&#xe62a;</i><span>换一换</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            {/if}
 
             {if condition="!empty($tplconfig['theme']['rank']['hbtn']) && $tplconfig['theme']['rank']['hbtn'] eq 1"}
             <div class="box rank_waterfall">
@@ -243,7 +272,7 @@
 <div id="js-home-notempty-tpl" class="fn-hide" aria-hidden="true">{include file="public/notempty"}</div>
 <script src="{$maccms.path_tpl}/asset/js/mac-catalog-media.js"></script>
 <script src="{$maccms.path}template/default/asset/js/mac-home-card-render.js?v=202604161"></script>
-<script src="{$maccms.path}template/default/asset/js/index-home-parts.js?v=202604161"></script>
+<script src="{$maccms.path}template/default/asset/js/index-home-parts.js?v=202604169"></script>
 {include file="public/foot"}
 </body>
 </html>

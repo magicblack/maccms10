@@ -67,6 +67,14 @@
           <span class="all-menu-label" data-lang="string_rank">排行榜</span>
         </a>
       </li>
+      <li class="all-menu-item{if condition="$maccms.aid eq 131 || $maccms.aid eq 132"} active{/if}">
+        <a class="all-menu-row" href="{:mac_url('live/show')}" title="直播">
+          <span class="all-menu-ico">
+            <img class="size-46" src="{$maccms.path}template/default/images/nav/live_ic@2x.png" alt="">
+          </span>
+          <span class="all-menu-label" data-lang="live/show_title">直播</span>
+        </a>
+      </li>
       {if condition="isset($tplconfig['theme']['topic']['hbtn']) && $tplconfig['theme']['topic']['hbtn'] eq '1'"}
       <li class="all-menu-item{if condition="$maccms.mid eq 3"} active{/if}">
         <a class="all-menu-row" href="{:mac_url('topic/index')}" title="专题">

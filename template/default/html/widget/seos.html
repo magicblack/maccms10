@@ -10,6 +10,14 @@
 <title>最近更新 - {$maccms.site_name}</title>
 <meta name="keywords" content="{$tplconfig['theme']['seos']['index_key']|mac_default=$maccms.site_keywords}" />
 <meta name="description" content="{$tplconfig['theme']['seos']['index_des']|mac_default=$maccms.site_description}" />
+{elseif $maccms.aid==131}
+<title>直播 - {$maccms.site_name}</title>
+<meta name="keywords" content="直播,电视直播,{$maccms.site_keywords}" />
+<meta name="description" content="{$maccms.site_description}" />
+{elseif $maccms.aid==132}
+<title>直播播放 - {$maccms.site_name}</title>
+<meta name="keywords" content="直播,{$maccms.site_keywords}" />
+<meta name="description" content="{$maccms.site_description}" />
 {elseif $maccms.aid==11}
 <title>{$obj.type_title|mac_default=$obj.type_name|mac_filter_html}{if condition="$param['page'] gt 1"} - 第{$param['page']}页{/if} - {$maccms.site_name}</title>
 <meta name="keywords" content="{$obj.type_key|mac_default=$obj.type_name|mac_filter_html},{$maccms.site_name}" />

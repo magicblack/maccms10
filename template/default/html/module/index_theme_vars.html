@@ -54,6 +54,13 @@ $index_art_list_mobile = (string) ($index_art_hnum_int * 2);
 $index_art_cover = mac_tpl_art_cover();
 $index_art_poster_class = ($index_art_cover === 'h') ? 'mac-poster--h' : 'mac-poster--v';
 
+$liveTheme = $theme['live'] ?? [];
+$index_live_hbtn = (!isset($liveTheme['hbtn']) || (string) ($liveTheme['hbtn'] ?? '1') !== '0') ? 1 : 0;
+$index_live_htitle = (isset($liveTheme['htitle']) && trim((string) $liveTheme['htitle']) !== '')
+    ? trim((string) $liveTheme['htitle']) : lang('menu/live');
+$index_live_hnum_int = (isset($liveTheme['hnum']) && (string) $liveTheme['hnum'] === '12') ? 12 : 6;
+$index_live_hnum = (string) $index_live_hnum_int;
+
 $typeModel = model('Type');
 
 if (!isset($art_type_array) || !is_array($art_type_array)) {

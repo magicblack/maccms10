@@ -1,0 +1,70 @@
+{include file="../../../application/admin/view_new/public/head" /}
+
+<div class="page-container p10">
+    <form class="layui-form layui-form-pane" method="post" action="">
+        <input id="cate_id" name="cate_id" type="hidden" value="{$info.cate_id}">
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">{:lang('name')}：</label>
+            <div class="layui-input-block">
+                <input type="text" class="layui-input" value="{$info.cate_name}" lay-verify="cate_name" placeholder="" id="cate_name" name="cate_name">
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">{:lang('admin/live/cate_en')}：</label>
+            <div class="layui-input-inline">
+                <input type="text" class="layui-input" value="{$info.cate_en}" placeholder="" id="cate_en" name="cate_en">
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">{:lang('admin/live/cate_pic')}：</label>
+            <div class="layui-input-block">
+                <input type="text" class="layui-input" value="{$info.cate_pic}" placeholder="" id="cate_pic" name="cate_pic">
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">{:lang('sort')}：</label>
+            <div class="layui-input-inline w100">
+                <input type="text" class="layui-input" value="{$info.cate_sort|default='0'}" placeholder="" id="cate_sort" name="cate_sort">
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">{:lang('status')}：</label>
+            <div class="layui-input-inline">
+                <select name="cate_status">
+                    <option value="1" {if condition="$info['cate_status'] eq 1"}selected{/if}>{:lang('enable')}</option>
+                    <option value="0" {if condition="$info['cate_status'] eq 0"}selected{/if}>{:lang('disable')}</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="layui-form-item center">
+            <div class="layui-input-block">
+                <button type="submit" class="layui-btn" lay-submit="" lay-filter="formSubmit" data-child="true">{:lang('btn_save')}</button>
+                <button class="layui-btn layui-btn-primary" type="reset">{:lang('btn_reset')}</button>
+            </div>
+        </div>
+    </form>
+</div>
+
+{include file="../../../application/admin/view_new/public/foot" /}
+
+<script type="text/javascript">
+    layui.use(['form', 'layer'], function () {
+        var form = layui.form, layer = layui.layer, $ = layui.jquery;
+        form.verify({
+            cate_name: function (value) {
+                if (value == "") {
+                    return "{:lang('name_empty')}";
+                }
+            }
+        });
+    });
+</script>
+
+</body>
+</html>

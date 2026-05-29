@@ -1407,7 +1407,7 @@ function mac_get_aid($controller,$action='')
     $action=strtolower($action);
     $key = $controller.'/'.$action;
 
-    $arr=['index'=>1,'map'=>2,'rss'=>3,'gbook'=>4,'comment'=>5,'user'=>6,'label'=>7,'vod'=>10,'art'=>20,'manga'=>120,'topic'=>30,'actor'=>80,'role'=>90,'plot'=>100,'website'=>110];
+    $arr=['index'=>1,'map'=>2,'rss'=>3,'gbook'=>4,'comment'=>5,'user'=>6,'label'=>7,'vod'=>10,'art'=>20,'manga'=>120,'topic'=>30,'actor'=>80,'role'=>90,'plot'=>100,'website'=>110,'live'=>130];
     $res = isset($arr[$controller]) ? $arr[$controller] : 0;
 
     // https://github.com/magicblack/maccms10/issues/960
@@ -1420,6 +1420,7 @@ function mac_get_aid($controller,$action='')
         'role/show'=>92,'role/search'=>93,'role/detail'=>94,
         'plot/search'=>103,'plot/detail'=>104,
         'website/type'=>111,'website/show'=>112,'website/search'=>113,'website/detail'=>114,
+        'live/show'=>131,'live/play'=>132,
     ];
     if(!empty($arr[$key])){
         $res= $arr[$key];
