@@ -263,7 +263,19 @@ class User extends Base
             ]);
         }
 
-        $result = Db::table('mac_user')->where(['user_id' => $param['id']])->find();
+        $userId = (int)$param['id'];
+        $result = Db::name('User')
+            ->field(model('User')->publicApiDetailFields())
+            ->where(['user_id' => $userId, 'user_status' => 1])
+            ->find();
+        if (empty($result)) {
+            return json([
+                'code' => 1002,
+                'msg'  => lang('api/user_not_found'),
+            ]);
+        }
+        $result['user_portrait'] = mac_get_user_portrait($userId);
+        $result = model('User')->stripSensitiveFields($result);
 
         // 返回
         return json([

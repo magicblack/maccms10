@@ -23,6 +23,48 @@ class User extends Base
     public $_guest_group = 1;
     public $_def_group = 2;
 
+    /** 禁止通过前台 / 公开 API 输出的用户字段（含会话伪造所需 user_random） */
+    private static $sensitiveFields = [
+        'user_pwd',
+        'user_random',
+        'user_answer',
+        'user_question',
+        'user_reg_ip',
+        'user_login_ip',
+        'user_last_login_ip',
+        'user_openid_qq',
+        'user_openid_weixin',
+    ];
+
+    /**
+     * 公开 API 用户详情允许返回的字段（白名单）。
+     *
+     * @return string
+     */
+    public function publicApiDetailFields()
+    {
+        return 'user_id,user_name,user_nick_name,user_phone,user_qq,user_email,group_id,user_points,user_exp,user_integral,user_invite_code,user_invite_count,user_reg_time,user_status';
+    }
+
+    /**
+     * 剥离会话/凭证相关字段，避免公开接口泄露后可伪造 user_check / JWT。
+     *
+     * @param array|null $row
+     *
+     * @return array|null
+     */
+    public function stripSensitiveFields($row)
+    {
+        if (!is_array($row)) {
+            return $row;
+        }
+        foreach (self::$sensitiveFields as $key) {
+            unset($row[$key]);
+        }
+
+        return $row;
+    }
+
     public function countData($where)
     {
         $total = $this->where($where)->count();
@@ -63,6 +105,7 @@ class User extends Base
 
 
         $info['user_pwd'] = '';
+        $info = $this->stripSensitiveFields($info);
         return ['code' => 1, 'msg' =>lang('obtain_ok'), 'info' => $info];
     }
 
@@ -442,8 +485,10 @@ class User extends Base
             $this->_setLoginCookie($row, $random);
 
             $info = $this->where('user_id', $row['user_id'])->find();
-            if ($info) { $info = $info->toArray(); }
-            $info['user_pwd'] = '';
+            if ($info) {
+                $info = $info->toArray();
+            }
+            $info = $this->stripSensitiveFields($info);
 
             return ['code' => 1, 'msg' => lang('model/user/login_ok'), 'action' => 'login', 'info' => $info];
         }
@@ -541,7 +586,7 @@ class User extends Base
         if ($row) {
             $this->_setLoginCookie($row, $random);
             $info = $row->toArray();
-            $info['user_pwd'] = '';
+            $info = $this->stripSensitiveFields($info);
             return ['code' => 1, 'msg' => lang('model/user/reg_ok_logged_in'), 'action' => 'register', 'info' => $info];
         }
 
