@@ -41,7 +41,7 @@
                             </span>
                         </li>
                         {volist name="index_hotvod_tabs" id="ht" key="hidx"}
-                        <li id="latest{$hidx+2}" data-tab="{$hidx+2}" onmouseover="setTab('latest',this.getAttribute('data-tab'),8);"><span><img class="laset_new_img hl_icon_light" src="{:mac_url_img($ht.icon_l)}" alt=""><img class="laset_new_img hl_icon_black" src="{:mac_url_img($ht.icon_b)}" alt=""><span style="margin: 0;"><span data-lang="string_hot_dy">热门</span> {$ht.name}</span></span></li>
+                        <li id="latest{$hidx+1}" data-tab="{$hidx+1}" onmouseover="setTab('latest',this.getAttribute('data-tab'),8);"><span><img class="laset_new_img hl_icon_light" src="{:mac_url_img($ht.icon_l)}" alt=""><img class="laset_new_img hl_icon_black" src="{:mac_url_img($ht.icon_b)}" alt=""><span style="margin: 0;"><span data-lang="string_hot_dy">热门</span> {$ht.name}</span></span></li>
                         {/volist}
                     </ul>
                 </div>
@@ -61,7 +61,7 @@
                         </ul>
                     </div>
                     {volist name="index_hotvod_tabs" id="ht" key="hidx"}
-                    <div id="con_latest_{$hidx+2}" class="latest-item movie-latest fn-hide"></div>
+                    <div id="con_latest_{$hidx+1}" class="latest-item movie-latest fn-hide"></div>
                     {/volist}
                     {if condition="$index_manga_hbtn eq 1"}
                     <div id="con_latest_6" class="latest-item movie-latest fn-hide {$index_manga_poster_class}"></div>
