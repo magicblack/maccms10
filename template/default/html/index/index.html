@@ -29,7 +29,7 @@
         {include file="ads/ads_icon1" ads_icon1_marquee="0"}
 
         <div class="home-detail">
-            {if condition="empty($tplconfig['theme']['hotvod']['btn']) || $tplconfig['theme']['hotvod']['btn'] eq 1"}
+            {if condition="!isset($tplconfig['theme']['hotvod']['btn']) || $tplconfig['theme']['hotvod']['btn'] neq '0'"}
             <div class="layout fn-clear box show-pc" id="latest-focus" data-hot-tab-url="{:mac_url('ajax/home_hot_tab')}">
                 <div class="latest-tab-nav">
                     <ul class="fn-clear nav-list">
