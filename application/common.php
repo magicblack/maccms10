@@ -1652,6 +1652,9 @@ function mac_search_wd_like($wd)
         return [];
     }
     $patterns = \app\common\util\OpenccConverter::likePatterns($wd);
+    if (count($patterns) > 4) {
+        $patterns = array_slice($patterns, 0, 4);
+    }
     if (empty($patterns)) {
         return ['like', '%' . $wd . '%'];
     }

@@ -22,6 +22,61 @@ class OpenccConverter
     private static $shellAvailableTtl = 86400;
     /** shell 探测失败缓存 TTL（安装后无需等 24h 才重新检测） */
     private static $shellUnavailableTtl = 300;
+    /** shell 单次命令最长等待（秒），避免 opencc 卡死拖垮后台搜索 */
+    private static $shellExecTimeout = 3;
+
+    /**
+     * 是否含汉字（简繁转换仅对汉字有意义；纯英文/番号不必 fork opencc）。
+     */
+    private static function containsHan($text)
+    {
+        return is_string($text) && $text !== '' && preg_match('/\p{Han}/u', $text) === 1;
+    }
+
+    /**
+     * 带超时的 shell 执行，避免 shell_exec 无上限阻塞。
+     *
+     * @return string|null
+     */
+    private static function shellExecLimited($cmd, $timeoutSec = null)
+    {
+        $timeoutSec = max(1, (int)($timeoutSec ?? self::$shellExecTimeout));
+        if (!function_exists('proc_open')) {
+            return null;
+        }
+        $descriptors = [
+            0 => ['pipe', 'r'],
+            1 => ['pipe', 'w'],
+            2 => ['pipe', 'w'],
+        ];
+        $proc = @proc_open($cmd, $descriptors, $pipes, null, null, ['bypass_shell' => false]);
+        if (!is_resource($proc)) {
+            return null;
+        }
+        @fclose($pipes[0]);
+        stream_set_blocking($pipes[1], false);
+        stream_set_blocking($pipes[2], false);
+        $stdout = '';
+        $deadline = microtime(true) + $timeoutSec;
+        while (true) {
+            $stdout .= (string)stream_get_contents($pipes[1]);
+            $status = proc_get_status($proc);
+            if (!$status['running']) {
+                break;
+            }
+            if (microtime(true) >= $deadline) {
+                @proc_terminate($proc);
+                break;
+            }
+            usleep(50000);
+        }
+        $stdout .= (string)stream_get_contents($pipes[1]);
+        @fclose($pipes[1]);
+        @fclose($pipes[2]);
+        @proc_close($proc);
+
+        return $stdout !== '' ? $stdout : null;
+    }
 
     /**
      * 简体 -> 繁体（OpenCC s2t）。
@@ -179,7 +234,7 @@ class OpenccConverter
         if ($lower !== '' && $lower !== $text && !in_array($lower, $variants, true)) {
             $variants[] = $lower;
         }
-        if (self::conversionWorks()) {
+        if (self::containsHan($text) && self::conversionWorks()) {
             foreach (['t2s', 's2t'] as $cfg) {
                 $converted = self::convert($text, $cfg);
                 if ($converted !== '' && $converted !== $text && !in_array($converted, $variants, true)) {
@@ -293,7 +348,10 @@ class OpenccConverter
             return false;
         }
         try {
-            $ret = @shell_exec('opencc -V 2>&1');
+            $ret = self::shellExecLimited('opencc -V 2>&1', 2);
+            if ($ret === null && function_exists('shell_exec')) {
+                $ret = @shell_exec('opencc -V 2>&1');
+            }
             self::$shellAvailable = is_string($ret) && trim($ret) !== '';
         } catch (\Throwable $e) {
             self::$shellAvailable = false;
@@ -331,7 +389,7 @@ class OpenccConverter
                 $cmd = 'opencc -c ' . escapeshellarg($cfgName)
                     . ' -i ' . escapeshellarg($tmpIn)
                     . ' -o ' . escapeshellarg($tmpOut) . ' 2>&1';
-                @shell_exec($cmd);
+                self::shellExecLimited($cmd, self::$shellExecTimeout);
                 $chunk = @file_get_contents($tmpOut);
                 if (is_string($chunk) && trim($chunk) !== '') {
                     $out = trim($chunk);

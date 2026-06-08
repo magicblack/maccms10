@@ -90,6 +90,7 @@ class Vod extends Base
             $where['vod_weekday'] = ['like','%'.$param['weekday'].'%'];
         }
         if(!empty($param['wd'])){
+            @set_time_limit(120);
             $param['wd'] = urldecode($param['wd']);
             $param['wd'] = mac_filter_xss($param['wd']);
             $like = mac_search_wd_like($param['wd']);
