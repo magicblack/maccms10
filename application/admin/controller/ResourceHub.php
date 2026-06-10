@@ -918,15 +918,22 @@ MacPlayer.Show();
             return json(['code' => 0, 'msg' => lang('admin/resourcehub/timming_exists')]);
         }
 
+        // 注意：定时任务结构需与 api/Timming 控制器对齐
+        //   file  -> 调度时要调用的方法名（如 collect/make/cj 等）
+        //   param -> 传给该方法的查询字符串（parse_str 解析）
+        // 早期版本误用 type/url 字段，导致 api/Timming 中 $v['file'] 为空
         $timming_list[$task_name] = [
-            'name' => $task_name,
+            'id' => $task_name,
             'status' => '1',
-            'weeks' => '0,1,2,3,4,5,6',
-            'hours' => '0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23',
-            'type' => 'collect',
-            'url' => url('collect/api') . '?' . $collect_url,
-            'desc' => '自动采集 - ' . $name,
+            'name' => $task_name,
+            'des' => '自动采集 - ' . $name,
+            'file' => 'collect',
+            'param' => $collect_url,
+            'weeks' => '1,2,3,4,5,6,0',
+            'hours' => '00,01,02,03,04,05,06,07,08,09,10,11,12,13,14,15,16,17,18,19,20,21,22,23',
+            'runtime' => 0,
         ];
+
 
         $res = mac_arr2file(APP_PATH . 'extra/timming.php', $timming_list);
         if ($res === false) {
