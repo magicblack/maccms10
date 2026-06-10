@@ -106,7 +106,15 @@ layui.define(['element', 'form'], function (exports) {
         window.localStorage.setItem("adminNavTag", $(this).attr('href'));
     });
     if (window.localStorage.getItem("adminNavTag")) {
-        $('#switchNav a[href="' + window.localStorage.getItem("adminNavTag") + '"]').parent('dd').addClass('layui-this').parents('li').addClass('layui-nav-itemed').siblings('li').removeClass('layui-nav-itemed');
+        var $saved = $('#switchNav a[href="' + window.localStorage.getItem("adminNavTag") + '"]');
+        if ($saved.length) {
+            $saved.closest('.side-panel__item').addClass('is-active').siblings().removeClass('is-active');
+            var panelId = $saved.closest('.side-panel').data('panel');
+            if (panelId) {
+                $('.side-panel').attr('hidden', true).filter('[data-panel="' + panelId + '"]').removeAttr('hidden');
+                $('#mainNav .main-nav-item[data-i="' + panelId + '"]').addClass('is-active').siblings().removeClass('is-active');
+            }
+        }
     }
     if (typeof (LAYUI_OFFSET) == 'undefined') {
         layer.config({ offset: '60px' });
@@ -139,12 +147,6 @@ layui.define(['element', 'form'], function (exports) {
             $('#switchBody,.footer').animate({ left: '200px' }, 100);
             $('#switchNav .fold-mark').removeClass('fold-mark');
         }
-    });
-
-    /* 导航菜单切换 */
-    $('.main-nav a').click(function () {
-        var that = $(this), i = $(this).attr('data-i');
-        $('.layui-nav-tree').hide().eq(i - 1).show();
     });
 
     /* 操作提示 */

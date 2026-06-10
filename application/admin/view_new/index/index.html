@@ -1,709 +1,660 @@
 {include file="../../../application/admin/view_new/public/head" /}
 <link rel="stylesheet" href="__STATIC__/css/update.css">
-<style type="text/css">
-    .hs-iframe {
-        width: 100%;
-        height: 100%;
-    }
-
-    #top_tabs_box .layui-tab-content {
-        top: 60px;
-        left: 0;
-        right: 0;
-        position: absolute;
-        bottom: 0;
-        width: 100%;
-        padding: 20px 20px 0 20px;
-        background: #f9fafb;
-    }
-
-    #top_tabs_box .layui-tab-item {
-        height: 100%;
-    }
-
-
-    .layui-tab-title .layui-this:after {
-        border: none;
-    }
-
-
-    .footer {
-        position: fixed;
-        left: 0;
-        bottom: 0;
-        z-index: 998;
-    }
-
-    .footer .text-footer {
-        width: 100%;
-        background: #fff;
-        color: rgba(96, 101, 118, 1);
-        font-size: 12px;
-    }
-
-    .bottom-nav-toolbar {
-        display: flex;
-        align-items: center;
-        gap: 4px;
-        height: 60px;
-    }
-
-    .bottom-nav-lang-item {
-        display: flex;
-        flex-shrink: 0;
-        align-items: center;
-        align-self: center;
-    }
-
-    .language-select-wrap.language-select-wrap--plain.layui-input-inline {
-        width: 88px;
-        margin-right: 0 !important;
-    }
-
-    .language-select-wrap .layui-form-select {
-        margin-top: 0;
-        margin-bottom: 0;
-    }
-
-    .language-select-wrap--plain {
-        position: relative;
-    }
-
-    .language-select-wrap--plain .language-select-icon {
-        position: absolute;
-        left: 0;
-        top: 50%;
-        z-index: 2;
-        width: 20px;
-        height: 20px;
-        margin-top: -10px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: #40CC92;
-        pointer-events: none;
-    }
-
-    .language-select-wrap--plain .language-select-icon img {
-        width: 20px;
-        height: 20px;
-        display: block;
-        object-fit: contain;
-    }
-
-    .language-select-wrap--plain .layui-form-select .layui-input {
-        box-sizing: border-box;
-        width: 100%;
-        height: 32px;
-        line-height: 32px;
-        padding-left: 24px;
-        padding-right: 0;
-        font-size: 13px;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-        border: none !important;
-        background: transparent !important;
-        box-shadow: none !important;
-        border-radius: 0;
-        color: #606576;
-        cursor: pointer;
-    }
-
-    .language-select-wrap--plain .layui-form-select:hover .layui-input,
-    .language-select-wrap--plain .layui-form-selected .layui-input {
-        color: #40CC92;
-    }
-
-    .language-select-wrap--plain .layui-form-select .layui-edge {
-        display: none;
-    }
-
-    .language-select-wrap--plain .layui-form-select dl {
-        border-radius: 8px;
-        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
-    }
-
-    /* 覆盖 admin_style.css 中 #top_tabs_box{height:60px}：否则主内容区在相对定位下有效高度为 0，iframe 不显示；同时让主区占满 .layui-body */
-    #switchBody {
-        display: flex;
-        flex-direction: column;
-        min-height: 0;
-    }
-
-    #top_tabs_box {
-        position: relative;
-        flex: 1 1 auto;
-        min-height: 0;
-        height: 100% !important;
-        max-height: none;
-        overflow: visible;
-    }
-
-    /* 供脚本 #page-next/#page-prev 的 offset 使用；不占用顶栏版式 */
-    #J_refresh,
-    #page-prev,
-    #page-next {
-        position: fixed;
-        left: -9999px;
-        top: 0;
-        width: 1px;
-        height: 1px;
-        overflow: hidden;
-        margin: 0;
-        padding: 0;
-        border: 0;
-        pointer-events: none;
-        opacity: 0;
-    }
-</style>
-<div class="layui-layout layui-layout-admin w-full">
-    <div class="layui-header maccmsTop max-sm:!hidden">
-        <div class="fl maccms-header-logo">
-            <img class="header-logo-img" src="__STATIC__/images/logo@2x.png" alt="" />
-            {:lang('admin/index/index/name')}
+<link rel="stylesheet" href="__STATIC__/css/admin_index_shell.css?{$MAC_VERSION}">
+<div id="adminShell" class="admin-shell admin-shell--light">
+    <!-- 移动端顶栏 -->
+    <header class="admin-mobile-header">
+        <button type="button" class="admin-mobile-menu" id="mobileMenuBtn" title="{:lang('admin/index/index/menu_switch')}" aria-label="{:lang('admin/index/index/menu_switch')}" aria-expanded="false">
+            <i class="layui-icon layui-icon-spread-left"></i>
+        </button>
+        <div class="admin-mobile-brand">
+            <img src="__STATIC__/images/logo@2x.png" alt="" width="24" height="24" decoding="async" />
+            <span class="admin-mobile-brand__text">{:lang('admin/index/index/name')}</span>
         </div>
-    </div>
-    <div class="layui-header header-top px-2">
-        <div class="top-logo flex gap-2 items-center mr-auto">
-            <img class="size-12" src="__STATIC__/images/logo@2x.png" alt="" />
-            {:lang('admin/index/index/name')}
+        <div class="admin-mobile-actions">
+            <a href="javascript:;" class="admin-mobile-action admin-mobile-action--update" id="update-notification-mobile" style="display: none;" onclick="showUpdateDialog()" title="有新版本可用" aria-label="有新版本可用">
+                <i class="layui-icon layui-icon-refresh-1"></i>
+            </a>
+            <a href="__ROOT__/" class="admin-mobile-action" target="_blank" title="{:lang('admin/index/index/menu_index')}" aria-label="{:lang('admin/index/index/menu_index')}">
+                <i class="layui-icon layui-icon-home"></i>
+            </a>
+            <a href="{:url('index/clear')}" class="admin-mobile-action j-ajax" refresh="yes" title="{:lang('admin/index/index/menu_cache_clear')}" aria-label="{:lang('admin/index/index/menu_cache_clear')}">
+                <i class="layui-icon layui-icon-delete"></i>
+            </a>
         </div>
-        <ul class="layout-right" lay-filter="">
-            <li class="nav-item" id="update-notification" style="display: none;">
-                <a href="javascript:;" onclick="showUpdateDialog()" title="有新版本可用">
-                    <i class="layui-icon layui-icon-refresh-1"></i>
-                    <span>更新</span>
-                </a>
-            </li>
-            <li class="nav-item">
-                <a href="__ROOT__/" target="_blank"><i class="layui-icon layui-icon-home"></i></a>
-            </li>
-            <li class="nav-item ">
-                <a href="{:url('index/clear')}" class="j-ajax " refresh="yes">
-                    <i class="layui-icon layui-icon-delete size-16"></i>
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="site-tree-mobile" href="javascript:;" id="admin_name">
-                    <i class="layui-icon"></i>
-                </a>
-            </li>
-        </ul>
+    </header>
 
-    </div>
-    <div class="layui-side" id="switchNav">
-        <div class="layui-side-scroll navBar" id="navBar">
+    <!-- 桌面端顶栏 -->
+    <header class="admin-header admin-header--desktop">
+        <div class="admin-header__logo">
+            <img src="__STATIC__/images/logo@2x.png" alt="" />
+            <span class="admin-header__brand">{:lang('admin/index/index/name')}</span>
+        </div>
+        <div class="admin-header__center">
+            <nav class="admin-header__nav" id="mainNav" aria-label="主模块">
+                {volist name="menus" id="v" key="k"}
+                <a href="javascript:;" class="main-nav-item{eq name="k" value="1"} is-active{/eq}" data-i="{$k}">{$v['name']}</a>
+                {/volist}
+            </nav>
+        </div>
+        <div class="admin-header__tools">
+            <a href="javascript:;" class="admin-chip admin-chip--update" id="update-notification" style="display: none;" onclick="showUpdateDialog()" title="有新版本可用">
+                <i class="layui-icon layui-icon-refresh-2"></i>
+                <span>更新</span>
+            </a>
+            <div class="layui-form language-select-wrap language-select-wrap--plain" id="languageSelectWrap">
+                <label for="languageSelect" class="layui-hide">{:lang('install/select_lang')}</label>
+                <select id="languageSelect" name="app[lang]" lay-filter="lang">
+                    {volist name="langs" id="vo"}
+                    <option value="{$vo}" {if condition="$config['app']['lang'] eq $vo"} selected {/if}>{$vo}</option>
+                    {/volist}
+                </select>
+            </div>
+            <div class="admin-dropdown" data-dropdown>
+                <button type="button" class="admin-tool-btn admin-dropdown__trigger" title="{:lang('opt')}">
+                    <svg class="admin-tool-icon" width="20" height="20" viewBox="0 0 20 20" aria-hidden="true"><g fill="currentColor"><rect x="2" y="9" width="3" height="3" rx="1.5"/><rect x="8" y="9" width="3" height="3" rx="1.5"/><rect x="14" y="9" width="3" height="3" rx="1.5"/></g></svg>
+                </button>
+                <div class="admin-dropdown__menu">
+                    <a href="{:url('index/clear')}" class="j-ajax" refresh="yes">{:lang('admin/index/index/menu_cache_clear')}</a>
+                    <a href="javascript:void(0);" id="lockScreen">{:lang('admin/index/index/menu_lock')}</a>
+                    <a href="{:url('index/logout')}">{:lang('admin/index/index/menu_logout')}</a>
+                </div>
+            </div>
+            <a href="__ROOT__/" class="admin-tool-btn" target="_blank" title="{:lang('admin/index/index/menu_index')}">
+                <svg class="admin-tool-icon" width="20" height="20" viewBox="0 0 20 20" aria-hidden="true"><g stroke="currentColor" stroke-width="2" fill="none" stroke-linejoin="round"><path d="M10 1.3L17.8 6.5V16.7H2.2V6.5z"/><path d="M7 16.7v-5a3 3 0 016 0v5" stroke-linecap="round"/></g></svg>
+            </a>
+            <a href="javascript:void(0);" class="admin-tool-btn" onclick="chanage_version()" title="{:lang('admin/index/index/old_version')}">
+                <svg class="admin-tool-icon" width="20" height="20" viewBox="0 0 20 20" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
+                    <g fill="none" fill-rule="evenodd" stroke="none" stroke-width="1">
+                        <g transform="translate(0, 0)">
+                            <rect fill="currentColor" opacity="0" width="20" height="20"></rect>
+                            <path fill="currentColor" fill-rule="nonzero" d="M18.4424065,7.27519736 C18.4284666,7.23333945 18.4145268,7.19148155 18.3866471,7.14962365 C18.3448276,7.06590784 18.3030081,6.9682394 18.2751284,6.87057096 L18.2611886,6.85661832 C18.1914894,6.67523407 18.1078503,6.49384983 17.9963316,6.31246558 C17.703595,5.76831283 16.7975055,4.87534423 15.2641233,4.84743896 C14.4695525,4.86139159 13.3683052,5.08463374 12.6713133,6.14503396 C12.6294938,6.2008445 12.6016141,6.25665504 12.5737344,6.29851294 L9.40939105,12.9678722 L6.34262656,6.31246558 C6.13352898,5.85202864 5.57593544,5.64273912 5.11592076,5.86598127 C4.65590609,6.07527079 4.44680851,6.63337617 4.65590609,7.09381311 L7.88994864,14.0701303 L7.90388848,14.084083 C8.32208364,14.8654305 8.85179751,15.2700569 9.50696992,15.2700569 C10.1203228,15.2421516 10.622157,14.8375252 10.9845928,14.0422251 L14.2325752,7.17752891 C14.2325752,7.16357628 14.246515,7.16357628 14.246515,7.14962365 C14.3301541,7.0100973 14.5392517,6.68918671 15.2780631,6.68918671 L15.2920029,6.68918671 C16.0447542,6.70313934 16.3653705,7.12171838 16.40719,7.19148155 C16.4211299,7.21938682 16.4350697,7.26124472 16.4629494,7.27519736 C16.4908291,7.31705526 16.5326486,7.42867634 16.5744681,7.52634478 C16.6162876,7.63796585 16.672047,7.76353956 16.7278063,7.88911327 C17.0066031,8.76812925 17.1599413,9.63319258 17.1599413,10.4703507 C17.1599413,12.5492932 16.4350697,14.3212778 14.9574468,15.8700202 C13.382245,17.3769047 11.6118855,18.1163943 9.52090976,18.1163943 C7.37417461,18.1163943 5.60381511,17.3908574 4.11225238,15.8839728 C2.57887014,14.4189462 1.85399853,12.633009 1.85399853,10.4843033 C1.85399853,8.33559758 2.57887014,6.563613 4.09831255,5.04277584 C5.24137931,3.84284927 6.74688188,3.08940701 8.43360235,2.89407013 C9.24211299,2.82430696 9.57666911,2.82430696 10.5106383,2.89407013 C10.622157,2.90802276 11.5840059,3.04754911 12.3925165,3.34055443 C12.6294938,3.42427024 12.8804109,3.41031761 13.1034483,3.31264916 C13.3264857,3.20102809 13.5077036,3.03359648 13.5774028,2.79640169 L13.5913426,2.75454379 L13.5913426,2.74059115 C13.6610418,2.517349 13.647102,2.28015421 13.5495231,2.0708647 C13.4380044,1.84762254 13.2707263,1.68019093 13.0337491,1.59647512 C12.0440205,1.23370663 10.8312546,1.05232238 10.6360968,1.05232238 C9.60454879,0.982559207 9.18635363,0.982559207 8.25238445,1.05232238 C6.09170946,1.31742243 4.19589142,2.25224894 2.76008804,3.75913347 C0.89214967,5.62878649 0,7.83330274 0,10.4982559 C0,13.1632091 0.906089508,15.3677254 2.77402788,17.2234257 C4.61408657,19.0651735 6.87234043,20 9.49303008,20 C12.0440205,20 14.3022744,19.0651735 16.239912,17.2234257 C18.0660308,15.3119148 19,13.051588 19,10.4982559 C18.9860602,9.45180833 18.8048423,8.36350285 18.4424065,7.27519736 Z"></path>
+                        </g>
+                    </g>
+                </svg>
+            </a>
+        </div>
+    </header>
+
+    <!-- PC：侧栏分界线悬浮收缩钮 -->
+    <button type="button" class="admin-rail-toggle admin-rail-toggle--float" id="railToggle" title="{:lang('admin/index/index/menu_switch')}" aria-label="{:lang('admin/index/index/menu_switch')}" aria-expanded="true">
+        <i class="layui-icon layui-icon-shrink-right"></i>
+    </button>
+
+    <!-- 左侧二级菜单 -->
+    <aside class="admin-side" id="switchNav">
+        <div class="admin-side__mobile-head">
+            <span class="admin-side__mobile-title">菜单</span>
+            <button type="button" class="admin-side__mobile-close" id="mobileNavClose" aria-label="{:lang('close')}">
+                <span class="tab-close__glyph" aria-hidden="true">×</span>
+            </button>
+        </div>
+        <nav class="admin-side__mobile-modules" id="mobileMainNav" aria-label="主模块">
             {volist name="menus" id="v" key="k"}
-            <ul class="layui-nav layui-nav-tree">
-                <!-- layui-nav-itemed-->
-                <li class="layui-nav-item">
-                    <a class="nav-row" href="javascript:;">
-                        <img class="nav-icon" src="__STATIC__/images/nav/left_ic_{$k}_nor@2x.png" alt="" srcset="" />
-                        {$v['name']}
-                        <i class=" maccms-icon macCms-a-zu1679"></i>
+            <a href="javascript:;" class="mobile-module-item{eq name="k" value="1"} is-active{/eq}" data-i="{$k}">{$v['name']}</a>
+            {/volist}
+        </nav>
+        <nav id="navBar" class="admin-side__nav" aria-label="子菜单">
+            {volist name="menus" id="v" key="k"}
+            <ul class="side-panel" data-panel="{$k}"{neq name="k" value="1"} hidden{/neq}>
+                {volist name="v['sub']" id="vv" key="kk"}
+                {if condition="($vv['url'] !=='###')"}
+                <li class="side-panel__item">
+                    <a class="admin-nav-item" data-id="{$key}{$kk}" href="{$vv['url']}" title="{$vv['name']}">
+                        <span class="admin-nav-item__glyph" aria-hidden="true"></span>
+                        <i class="{$vv['icon']}"></i>
+                        <span class="admin-nav-item__label">{$vv['name']}</span>
                     </a>
-
-                    <dl class="layui-nav-child">
-                        {volist name="v['sub']" id="vv" key="kk"}
-                        <dd>
-                            {if condition="($vv['url'] !=='###')"}
-                            <a class="admin-nav-item" data-id="{$key}{$kk}" href="{$vv['url']}">
-                                <i class="{$vv['icon']}"></i> {$vv['name']}
-                            </a>
-                            {else}
-                            <!--                            <hr class="layui-bg-gray"/>-->
-                            {/if}
-                        </dd>
-                        {/volist}
-                    </dl>
                 </li>
+                {/if}
+                {/volist}
             </ul>
             {/volist}
-            <ul class="layui-nav layui-nav-tree md:hidden">
-                <li class="layui-nav-item">
-                    <a class="nav-row" href="javascript:;" onclick="chanage_version()">
-                        <svg class="nav-icon" width="20px" height="20px" viewBox="0 0 20 20" version="1.1"
-                            xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-                            <g id="页面-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-                                <g id="超级控制台_首页_1122" transform="translate(-1880.000000, -21.000000)">
-                                    <g id="top_ic_old" transform="translate(1880.000000, 21.000000)">
-                                        <rect id="矩形" fill="currentColor" opacity="0" x="0" y="0" width="20"
-                                            height="20"></rect>
-                                        <path
-                                            d="M18.4424065,7.27519736 C18.4284666,7.23333945 18.4145268,7.19148155 18.3866471,7.14962365 C18.3448276,7.06590784 18.3030081,6.9682394 18.2751284,6.87057096 L18.2611886,6.85661832 C18.1914894,6.67523407 18.1078503,6.49384983 17.9963316,6.31246558 C17.703595,5.76831283 16.7975055,4.87534423 15.2641233,4.84743896 C14.4695525,4.86139159 13.3683052,5.08463374 12.6713133,6.14503396 C12.6294938,6.2008445 12.6016141,6.25665504 12.5737344,6.29851294 L9.40939105,12.9678722 L6.34262656,6.31246558 C6.13352898,5.85202864 5.57593544,5.64273912 5.11592076,5.86598127 C4.65590609,6.07527079 4.44680851,6.63337617 4.65590609,7.09381311 L7.88994864,14.0701303 L7.90388848,14.084083 C8.32208364,14.8654305 8.85179751,15.2700569 9.50696992,15.2700569 C10.1203228,15.2421516 10.622157,14.8375252 10.9845928,14.0422251 L14.2325752,7.17752891 C14.2325752,7.16357628 14.246515,7.16357628 14.246515,7.14962365 C14.3301541,7.0100973 14.5392517,6.68918671 15.2780631,6.68918671 L15.2920029,6.68918671 C16.0447542,6.70313934 16.3653705,7.12171838 16.40719,7.19148155 C16.4211299,7.21938682 16.4350697,7.26124472 16.4629494,7.27519736 C16.4908291,7.31705526 16.5326486,7.42867634 16.5744681,7.52634478 C16.6162876,7.63796585 16.672047,7.76353956 16.7278063,7.88911327 C17.0066031,8.76812925 17.1599413,9.63319258 17.1599413,10.4703507 C17.1599413,12.5492932 16.4350697,14.3212778 14.9574468,15.8700202 C13.382245,17.3769047 11.6118855,18.1163943 9.52090976,18.1163943 C7.37417461,18.1163943 5.60381511,17.3908574 4.11225238,15.8839728 C2.57887014,14.4189462 1.85399853,12.633009 1.85399853,10.4843033 C1.85399853,8.33559758 2.57887014,6.563613 4.09831255,5.04277584 C5.24137931,3.84284927 6.74688188,3.08940701 8.43360235,2.89407013 C9.24211299,2.82430696 9.57666911,2.82430696 10.5106383,2.89407013 C10.622157,2.90802276 11.5840059,3.04754911 12.3925165,3.34055443 C12.6294938,3.42427024 12.8804109,3.41031761 13.1034483,3.31264916 C13.3264857,3.20102809 13.5077036,3.03359648 13.5774028,2.79640169 L13.5913426,2.75454379 L13.5913426,2.74059115 C13.6610418,2.517349 13.647102,2.28015421 13.5495231,2.0708647 C13.4380044,1.84762254 13.2707263,1.68019093 13.0337491,1.59647512 C12.0440205,1.23370663 10.8312546,1.05232238 10.6360968,1.05232238 C9.60454879,0.982559207 9.18635363,0.982559207 8.25238445,1.05232238 C6.09170946,1.31742243 4.19589142,2.25224894 2.76008804,3.75913347 C0.89214967,5.62878649 0,7.83330274 0,10.4982559 C0,13.1632091 0.906089508,15.3677254 2.77402788,17.2234257 C4.61408657,19.0651735 6.87234043,20 9.49303008,20 C12.0440205,20 14.3022744,19.0651735 16.239912,17.2234257 C18.0660308,15.3119148 19,13.051588 19,10.4982559 C18.9860602,9.45180833 18.8048423,8.36350285 18.4424065,7.27519736 Z"
-                                            id="路径" fill="currentColor" fill-rule="nonzero"></path>
-                                    </g>
-                                </g>
-                            </g>
-                        </svg>
-                        切换旧版本
-                    </a>
-                </li>
-            </ul>
-            <ul class="layui-nav layui-nav-tree md:hidden">
-                <li class="layui-nav-item">
-                    <a class="nav-row" href="javascript:;">
-                        <svg class="nav-icon" width="20px" height="20px" viewBox="0 0 20 20" version="1.1"
-                            xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-                            <defs>
-                                <rect id="path-1" x="0" y="0" width="20" height="20"></rect>
-                            </defs>
-                            <g id="页面-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-                                <g id="超级控制台_首页_1122" transform="translate(-1787.000000, -188.000000)">
-                                    <g id="编组-9" transform="translate(1787.000000, 188.000000)">
-                                        <g id="Clipped"
-                                            transform="translate(10.000000, 10.000000) scale(1, -1) translate(-10.000000, -10.000000) ">
-                                            <mask id="mask-2" fill="white">
-                                                <use xlink:href="#path-1"></use>
-                                            </mask>
-                                            <g id="align-right"></g>
-                                            <g id="编组" mask="url(#mask-2)" fill="currentColor">
-                                                <g transform="translate(2.173913, 8.847826)" id="矩形">
-                                                    <rect x="0" y="0" width="3" height="3" rx="1.5"></rect>
-                                                    <rect x="6" y="0" width="3" height="3" rx="1.5"></rect>
-                                                    <rect x="12" y="0" width="3" height="3" rx="1.5"></rect>
-                                                </g>
-                                            </g>
-                                        </g>
-                                    </g>
-                                </g>
-                            </g>
-                        </svg>
-                        操作
-                        <i class=" maccms-icon macCms-a-zu1679"></i>
-                    </a>
-                    <dl class="layui-nav-child">
-                        <dd>
-                            <a href="{:url('index/clear')}" class="j-ajax"
-                                refresh="yes">{:lang('admin/index/index/menu_cache_clear')}</a>
-                        </dd>
-                        <dd><a href="javascript:void(0);" id="lockScreen">{:lang('admin/index/index/menu_lock')}</a>
-                        </dd>
-                        <dd><a href="{:url('index/logout')}">{:lang('admin/index/index/menu_logout')}</a></dd>
-                    </dl>
-                </li>
-            </ul>
-        </div>
-    </div>
+        </nav>
+    </aside>
 
     <div class="site-mobile-shade"></div>
-    <div class="layui-body" id="switchBody">
-        <div class="layui-tab mag0" id="top_tabs_box" lay-filter="macTab" lay-allowClose="true">
-            <div class="tab-go-refresh" id="J_refresh" title=""></div>
-            <div class="tab-go-left" id="page-prev" title=""></div>
-            <div class="tab-go-right" id="page-next" title=""></div>
-            <ul class="layui-tab-title" id="B_history">
-                <li lay-id="111" class="layui-this">{:lang('admin/index/index/menu_welcome')}</li>
-            </ul>
-            <div class="bottom-nav">
-                <ul class="layui-nav layui-layout-right layui-form bottom-nav-toolbar" lay-filter="demo">
-                    <li class="nav-item" id="update-notification"  style="display: none;">
-                        <a href="javascript:;" onclick="showUpdateDialog()" title="有新版本可用">
-                            <i class="layui-icon layui-icon-refresh-2"></i>
-                            <span>更新</span>
-                        </a>
-                    </li>
-                    <li class="layui-nav-item" >
-                        <a href="javascript:;">{:lang('admin/index/index/menu_opt')}</a>
-                        <dl class="layui-nav-child">
-                            <dd><a href="javascript:;" class="closePageAll">&nbsp;{:lang('admin/index/index/menu_close_all')}</a></dd>
-                            <dd><a href="javascript:;" class="closePageOther">&nbsp;{:lang('admin/index/index/menu_close_other')}</a></dd>
-                        </dl>
-                    </li>
-                    <li class="nav-item bottom-nav-lang-item">
-                        <div class="layui-input-inline language-select-wrap language-select-wrap--plain">
-                            <span class="language-select-icon" title="{:lang('install/select_lang')}"
-                                aria-hidden="true">
-                                <img src="__STATIC__/images/nav/nav_ic_language@2x.png" width="20" height="20" alt=""
-                                    decoding="async" />
-                            </span>
-                            <label for="languageSelect" class="layui-hide">{:lang('install/select_lang')}</label>
-                            <select id="languageSelect" name="app[lang]" lay-filter="lang">
-                                <option value="">{:lang('install/select_lang')}</option>
-                                {volist name="langs" id="vo"}
-                                <option value="{$vo}" {if condition="$config['app']['lang'] eq $vo" } selected {/if}>{$vo}</option>
-                                {/volist}
-                            </select>
+
+    <!-- 主内容区 -->
+    <main class="admin-body" id="switchBody">
+        <div class="admin-workspace" id="top_tabs_box">
+            <div class="admin-workspace__head">
+                <div class="admin-tabs__strip">
+                    <button type="button" class="admin-tabs__edge" id="tabScrollPrev" title="向左滚动" aria-label="向左滚动标签">
+                        <i class="layui-icon layui-icon-zuozuo"></i>
+                    </button>
+                    <div class="admin-tabs__viewport" id="tabViewport">
+                        <ul class="admin-tabs__bar" id="B_history" role="tablist">
+                            <li lay-id="111" class="is-active is-pinned" role="tab" aria-selected="true">
+                                <span class="admin-tabs__label">{:lang('admin/index/index/menu_welcome')}</span>
+                            </li>
+                        </ul>
+                    </div>
+                    <button type="button" class="admin-tabs__edge" id="tabScrollNext" title="向右滚动" aria-label="向右滚动标签">
+                        <i class="layui-icon layui-icon-youyou"></i>
+                    </button>
+                </div>
+                <div class="admin-tabs__toolbar">
+                    <button type="button" class="admin-tabs__tool" id="J_refresh" title="刷新当前页" aria-label="刷新当前页">
+                        <i class="layui-icon layui-icon-refresh"></i>
+                    </button>
+                    <div class="admin-dropdown admin-tabs__more" data-dropdown>
+                        <button type="button" class="admin-tabs__tool admin-dropdown__trigger" title="{:lang('admin/index/index/menu_opt')}" aria-label="{:lang('admin/index/index/menu_opt')}">
+                            <i class="layui-icon layui-icon-more"></i>
+                        </button>
+                        <div class="admin-dropdown__menu admin-tabs__more-menu">
+                            <a href="javascript:;" class="closePageOther">{:lang('admin/index/index/menu_close_other')}</a>
+                            <a href="javascript:;" class="closePageAll">{:lang('admin/index/index/menu_close_all')}</a>
                         </div>
-                    </li>
-                    <li class="layui-nav-item flex-shrink-0">
-                        <a href="javascript:void(0);" class="hover:!text-[#40CC92] cursor-pointer !px-[10px]"
-                            title="{:lang('opt')}">
-                            <svg width="20px" height="20px" viewBox="0 0 20 20" version="1.1"
-                                xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-                                <defs>
-                                    <rect id="path-1" x="0" y="0" width="20" height="20"></rect>
-                                </defs>
-                                <g id="页面-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-                                    <g id="超级控制台_首页_1122" transform="translate(-1787.000000, -188.000000)">
-                                        <g id="编组-9" transform="translate(1787.000000, 188.000000)">
-                                            <g id="Clipped"
-                                                transform="translate(10.000000, 10.000000) scale(1, -1) translate(-10.000000, -10.000000) ">
-                                                <mask id="mask-2" fill="white">
-                                                    <use xlink:href="#path-1"></use>
-                                                </mask>
-                                                <g id="align-right"></g>
-                                                <g id="编组" mask="url(#mask-2)" fill="currentColor">
-                                                    <g transform="translate(2.173913, 8.847826)" id="矩形">
-                                                        <rect x="0" y="0" width="3" height="3" rx="1.5"></rect>
-                                                        <rect x="6" y="0" width="3" height="3" rx="1.5"></rect>
-                                                        <rect x="12" y="0" width="3" height="3" rx="1.5"></rect>
-                                                    </g>
-                                                </g>
-                                            </g>
-                                        </g>
-                                    </g>
-                                </g>
-                            </svg>
-                        </a>
-                        <dl class="layui-nav-child !top-[28px] !rounded-[10px]">
-                            <dd><a href="{:url('index/clear')}" class="j-ajax"
-                                    refresh="yes">{:lang('admin/index/index/menu_cache_clear')}</a>
-                            </dd>
-                            <dd><a href="javascript:void(0);" id="lockScreen">{:lang('admin/index/index/menu_lock')}</a>
-                            </dd>
-                            <dd><a href="{:url('index/logout')}">{:lang('admin/index/index/menu_logout')}</a></dd>
-                        </dl>
-                    </li>
-                    <li class="layui-nav-item flex-shrink-0">
-                        <a href="__ROOT__/" class="hover:!text-[#40CC92] cursor-pointer !px-[10px]" target="_blank"
-                            title="{:lang('admin/index/index/menu_index')}">
-                            <svg width="20px" height="20px" viewBox="0 0 20 20" version="1.1"
-                                xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-                                <defs>
-                                    <rect id="path-1" x="0" y="0" width="20" height="20"></rect>
-                                </defs>
-                                <g id="页面-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-                                    <g id="超级控制台_首页_1122" transform="translate(-1840.000000, -21.000000)">
-                                        <g id="Clipped" transform="translate(1840.000000, 21.000000)">
-                                            <mask id="mask-2" fill="white">
-                                                <use xlink:href="#path-1"></use>
-                                            </mask>
-                                            <g id="home"></g>
-                                            <g id="编组" mask="url(#mask-2)" stroke="currentColor" stroke-linejoin="round"
-                                                stroke-width="2">
-                                                <g transform="translate(2.000000, 1.304348)" id="Vector">
-                                                    <path
-                                                        d="M8,0 L14.8247512,5.22983652 C15.5655919,5.79754594 16,6.67772393 16,7.61107213 L16,15.6956522 L16,15.6956522 C16,16.1565217 16.0478261,16.8521739 15.726087,17.1826087 C15.3956522,17.5043478 14.9608696,17.6956522 14.5,17.6956522 L1.73913043,17.9347826 C1.26956522,17.9347826 0.834782609,17.7434783 0.504347826,17.4217391 C0.182608696,17.0913043 0,16.6565217 0,16.1956522 L0,7.61107213 C1.1883661e-15,6.67772393 0.434408137,5.79754594 1.1752488,5.22983652 L8,0 L8,0 Z">
-                                                    </path>
-                                                    <path
-                                                        d="M4.99250848,17.6745991 L4.99250848,12.6745991 C4.99250848,11.0177448 6.33565423,9.67459908 7.99250848,9.67459908 C9.64936273,9.67459908 10.9925085,11.0177448 10.9925085,12.6745991 L10.9925085,17.6745991 L10.9925085,17.6745991"
-                                                        stroke-linecap="round"></path>
-                                                </g>
-                                            </g>
-                                        </g>
-                                    </g>
-                                </g>
-                            </svg>
-                        </a>
-                    </li>
-                    <li class="layui-nav-item flex-shrink-0 cursor-pointer">
-                        <a href="javascript:void;" class="hover:!text-[#40CC92] cursor-pointer !px-[10px]"
-                            onclick="chanage_version()" title="{:lang('admin/index/index/old_version')}">
-                            <svg width="20px" height="20px" viewBox="0 0 20 20" version="1.1"
-                                xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-                                <g id="页面-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-                                    <g id="超级控制台_首页_1122" transform="translate(-1880.000000, -21.000000)">
-                                        <g id="top_ic_old" transform="translate(1880.000000, 21.000000)">
-                                            <rect id="矩形" fill="currentColor" opacity="0" x="0" y="0" width="20"
-                                                height="20"></rect>
-                                            <path
-                                                d="M18.4424065,7.27519736 C18.4284666,7.23333945 18.4145268,7.19148155 18.3866471,7.14962365 C18.3448276,7.06590784 18.3030081,6.9682394 18.2751284,6.87057096 L18.2611886,6.85661832 C18.1914894,6.67523407 18.1078503,6.49384983 17.9963316,6.31246558 C17.703595,5.76831283 16.7975055,4.87534423 15.2641233,4.84743896 C14.4695525,4.86139159 13.3683052,5.08463374 12.6713133,6.14503396 C12.6294938,6.2008445 12.6016141,6.25665504 12.5737344,6.29851294 L9.40939105,12.9678722 L6.34262656,6.31246558 C6.13352898,5.85202864 5.57593544,5.64273912 5.11592076,5.86598127 C4.65590609,6.07527079 4.44680851,6.63337617 4.65590609,7.09381311 L7.88994864,14.0701303 L7.90388848,14.084083 C8.32208364,14.8654305 8.85179751,15.2700569 9.50696992,15.2700569 C10.1203228,15.2421516 10.622157,14.8375252 10.9845928,14.0422251 L14.2325752,7.17752891 C14.2325752,7.16357628 14.246515,7.16357628 14.246515,7.14962365 C14.3301541,7.0100973 14.5392517,6.68918671 15.2780631,6.68918671 L15.2920029,6.68918671 C16.0447542,6.70313934 16.3653705,7.12171838 16.40719,7.19148155 C16.4211299,7.21938682 16.4350697,7.26124472 16.4629494,7.27519736 C16.4908291,7.31705526 16.5326486,7.42867634 16.5744681,7.52634478 C16.6162876,7.63796585 16.672047,7.76353956 16.7278063,7.88911327 C17.0066031,8.76812925 17.1599413,9.63319258 17.1599413,10.4703507 C17.1599413,12.5492932 16.4350697,14.3212778 14.9574468,15.8700202 C13.382245,17.3769047 11.6118855,18.1163943 9.52090976,18.1163943 C7.37417461,18.1163943 5.60381511,17.3908574 4.11225238,15.8839728 C2.57887014,14.4189462 1.85399853,12.633009 1.85399853,10.4843033 C1.85399853,8.33559758 2.57887014,6.563613 4.09831255,5.04277584 C5.24137931,3.84284927 6.74688188,3.08940701 8.43360235,2.89407013 C9.24211299,2.82430696 9.57666911,2.82430696 10.5106383,2.89407013 C10.622157,2.90802276 11.5840059,3.04754911 12.3925165,3.34055443 C12.6294938,3.42427024 12.8804109,3.41031761 13.1034483,3.31264916 C13.3264857,3.20102809 13.5077036,3.03359648 13.5774028,2.79640169 L13.5913426,2.75454379 L13.5913426,2.74059115 C13.6610418,2.517349 13.647102,2.28015421 13.5495231,2.0708647 C13.4380044,1.84762254 13.2707263,1.68019093 13.0337491,1.59647512 C12.0440205,1.23370663 10.8312546,1.05232238 10.6360968,1.05232238 C9.60454879,0.982559207 9.18635363,0.982559207 8.25238445,1.05232238 C6.09170946,1.31742243 4.19589142,2.25224894 2.76008804,3.75913347 C0.89214967,5.62878649 0,7.83330274 0,10.4982559 C0,13.1632091 0.906089508,15.3677254 2.77402788,17.2234257 C4.61408657,19.0651735 6.87234043,20 9.49303008,20 C12.0440205,20 14.3022744,19.0651735 16.239912,17.2234257 C18.0660308,15.3119148 19,13.051588 19,10.4982559 C18.9860602,9.45180833 18.8048423,8.36350285 18.4424065,7.27519736 Z"
-                                                id="路径" fill="currentColor" fill-rule="nonzero"></path>
-                                        </g>
-                                    </g>
-                                </g>
-                            </svg>
-                        </a>
-                    </li>
-                    <li class="layui-nav-item flex-shrink-0">
-                        <a>{$ip_location}</a>
-                    </li>
-                </ul>
+                    </div>
+                </div>
             </div>
-            <div class="layui-tab-content max-md:!px-0 max-md:!pt-3">
-                <div class="layui-tab-item layui-show">
-                    <iframe lay-id="111" src="{:url('index/welcome')}" width="100%" height="100%" frameborder="0"
-                        scrolling="yes" class="hs-iframe"></iframe>
+            <div class="admin-tab-ctx" id="tabContextMenu" hidden>
+                <button type="button" class="admin-tab-ctx__item" data-action="refresh">刷新</button>
+                <button type="button" class="admin-tab-ctx__item" data-action="close">{:lang('close')}</button>
+                <button type="button" class="admin-tab-ctx__item" data-action="closeOther">{:lang('admin/index/index/menu_close_other')}</button>
+                <button type="button" class="admin-tab-ctx__item" data-action="closeAll">{:lang('admin/index/index/menu_close_all')}</button>
+            </div>
+            <div class="admin-workspace__body admin-tabs__content">
+                <div class="admin-tabs__pane is-active" data-tab-id="111">
+                    <iframe lay-id="111" src="{:url('index/welcome')}" class="hs-iframe" scrolling="yes"></iframe>
                 </div>
             </div>
         </div>
-    </div>
-    <div class="layui-footer footer center">
-        <div class="text-footer">{:lang('maccms_copyright')}</div>
-    </div>
+    </main>
+
+    <footer class="admin-footer">
+        {:lang('maccms_copyright')}
+    </footer>
 </div>
 
 {include file="../../../application/admin/view_new/public/foot" /}
 <!--请在下方写此页面业务相关的脚本-->
 <script>
+    var RAIL_COLLAPSED_KEY = 'adminRailCollapsed';
+    var railCollapsedSaved = localStorage.getItem(RAIL_COLLAPSED_KEY);
     window.localStorage.clear();
+    if (railCollapsedSaved === '1') {
+        localStorage.setItem(RAIL_COLLAPSED_KEY, '1');
+    }
     var LAYUI_OFFSET = 60;
 
-    $('#admin_name').click(function () {
-        $('body').toggleClass('drawer-body-right');
-    })
+    function initNavItemGlyphs() {
+        $('.admin-nav-item').each(function () {
+            var $link = $(this);
+            var $glyph = $link.find('.admin-nav-item__glyph');
+            if (!$glyph.length) return;
+            var label = $.trim($link.find('.admin-nav-item__label').text());
+            var match = label.match(/[\u4e00-\u9fa5A-Za-z0-9]/);
+            var glyph = match ? match[0] : (label.charAt(0) || '·');
+            $glyph.text(glyph);
+        });
+    }
+
+    $(function () {
+        initNavItemGlyphs();
+    });
+
+    (function () {
+        var $shell = $('#adminShell');
+        var $toggle = $('#railToggle');
+        if (!$shell.length || !$toggle.length) return;
+
+        function syncRailToggle(collapsed) {
+            var $icon = $toggle.find('.layui-icon');
+            $icon.removeClass('layui-icon-shrink-right layui-icon-spread-left')
+                .addClass(collapsed ? 'layui-icon-spread-left' : 'layui-icon-shrink-right');
+            $toggle.attr('aria-expanded', collapsed ? 'false' : 'true');
+        }
+
+        if (localStorage.getItem(RAIL_COLLAPSED_KEY) === '1') {
+            $shell.addClass('admin-shell--rail-collapsed');
+            syncRailToggle(true);
+        }
+
+        $toggle.on('click', function () {
+            var collapsed = $shell.toggleClass('admin-shell--rail-collapsed').hasClass('admin-shell--rail-collapsed');
+            localStorage.setItem(RAIL_COLLAPSED_KEY, collapsed ? '1' : '0');
+            syncRailToggle(collapsed);
+        });
+    })();
 </script>
 <script>
     var MAC_VERSION='{$version.code}',PHP_VERSION='{php}echo PHP_VERSION{/php}',THINK_VERSION='{php}echo THINK_VERSION{/php}';MAC_LANG='{$mac_lang}';
 </script>
 <script type="text/javascript">
-    (function () {
-            var ADMIN_LANG_LABEL_MAP = {
-                'zh-cn': '简体中文',
-                'zh-tw': '繁體中文',
-                'en-us': 'English',
-                'ja-jp': '日本語',
-                'ko-kr': '한국어',
-                'fr-fr': 'Français',
-                'de-de': 'Deutsch',
-                'es-es': 'Español',
-                'pt-pt': 'Português'
-            };
-            function adminLangLabel(code) {
-                if (!code) {
-                    return '';
-                }
-                if (ADMIN_LANG_LABEL_MAP[code]) {
-                    return ADMIN_LANG_LABEL_MAP[code];
-                }
-                return code.split('-').map(function (p) {
-                    return p.toUpperCase();
-                }).join(' · ');
-            }
-            $('#languageSelect option').each(function () {
-                var $opt = $(this), v = $opt.attr('value');
-                if (v !== '') {
-                    $opt.text(adminLangLabel(v));
-                }
-            });
-        })();
-    var layer;
-    layui.use(['element', 'layer', 'form'], function () {
-        var $ = layui.jquery, element = layui.element, form = layui.form;
-        layer = layui.layer;
-        console.log("MAC_VERSION", MAC_VERSION)
-        if (typeof (MAC_VERSION) != 'undefined' && typeof (PHP_VERSION) != 'undefined' && typeof (THINK_VERSION) != 'undefined') {
-            $.ajax({
-                url: `https://update.maccms.la/v10/?c=check&v=${MAC_VERSION}&p=${PHP_VERSION}&tp=${THINK_VERSION}&t=${Math.random()}`,
-                type: 'GET',
-                dataType: 'text', // 确保返回的数据被视为纯文本
-                success: function (response) {
-                    // 使用正则表达式提取update_content
-                    // var updateContentRegex = /var update_content = \[((?:.|\n)*?)\].join\('<br>\');/g;
-                    var updateContentMatch = response.match(/var update_content\s*=\s*\[(.*?)\]\.join\('<br>'\);/s);
-                    console.log("updateContentMatch", updateContentMatch)
-                    if (updateContentMatch) {
-                        try {
-                            eval(updateContentMatch[0]);
-                        } catch (e) {
-                            console.error('update content eval failed', e);
-                        }
-                    }
+    window.ADMIN_LANG_META = {
+        'zh-cn': { label: '简体中文', flag: '🇨🇳' },
+        'zh-tw': { label: '繁體中文', flag: '🇨🇳' },
+        'en-us': { label: 'English', flag: '🇺🇸' },
+        'ja-jp': { label: '日本語', flag: '🇯🇵' },
+        'ko-kr': { label: '한국어', flag: '🇰🇷' },
+        'fr-fr': { label: 'Français', flag: '🇫🇷' },
+        'de-de': { label: 'Deutsch', flag: '🇩🇪' },
+        'es-es': { label: 'Español', flag: '🇪🇸' },
+        'pt-pt': { label: 'Português', flag: '🇵🇹' }
+    };
 
-                    // 使用正则表达式提取new_v
-                    var newVRegex = /var new_v = '(.*?)';/;
-                    var newVMatch = response.match(newVRegex);
-                    var newV = newVMatch ? newVMatch[1] : '未找到new_v';
-                    if (newV > MAC_VERSION) {
-                        // 存储更新信息到全局变量，供showUpdateDialog函数使用
-                        window.updateInfo = {
-                            newV: newV,
-                            update_content: update_content,
-                            package: 'maccms10_update'
-                        };
-                        // 显示更新按钮而不是直接弹窗（在两个位置都显示）
-                        $('.layout-right #update-notification').show().addClass('show');
-                        $('.bottom-nav #update-notification').show().addClass('show');
-                    }
-                },
-                error: function (xhr, status, error) {
-                    console.error('AJAX请求失败:', error);
-                }
-            });
-        }
-        // layer.msg('提示信息', { time: 180000 });
-        element.init('nav', 'demo');
-        form.render('select', { render: true });
-        form.on('select(lang)', function (data) {
-            if (data.value != '') {
-                // location.href = "{:url('index')}?lang=" + (data.value);
-                $.ajax({
-                    url: "{:url('system/configlang')}",
-                    type: "post",
-                    dataType: "json",
-                    data: { 'lang': data.value },
-                    beforeSend: function () {
+    function adminLangMeta(code) {
+        if (!code) return { label: '', flag: '🌐' };
+        if (window.ADMIN_LANG_META[code]) return window.ADMIN_LANG_META[code];
+        return {
+            label: code.split('-').map(function (p) { return p.toUpperCase(); }).join(' · '),
+            flag: '🌐'
+        };
+    }
 
-                    },
-                    error: function (r) {
-                        layer.msg("configedit error", { time: 1800 });
-                    },
-                    success: function (r) {
-                        layer.msg(r.msg, { time: 1800 });
-                    },
-                    complete: function () {
-                        location.reload();
-                    }
-                });
-            }
+    function fixLanguageSelectEdge($layuiSelect) {
+        var $edge = $layuiSelect.find('.layui-edge');
+        if (!$edge.length) return;
+        $edge.removeClass('maccms-icon macCms-a-zu1679').addClass('layui-icon layui-icon-xiangxia');
+    }
+
+    function adminLangOptionHtml(code) {
+        var meta = adminLangMeta(code);
+        return '<span class="lang-option"><span class="lang-option__flag" aria-hidden="true">' + meta.flag + '</span><span class="lang-option__text">' + meta.label + '</span></span>';
+    }
+
+    function decorateLanguageSelect() {
+        var $wrap = $('#languageSelectWrap');
+        var $layuiSelect = $wrap.find('.layui-form-select');
+        if (!$layuiSelect.length) return;
+
+        fixLanguageSelectEdge($layuiSelect);
+        $layuiSelect.find('dd.layui-select-tips').remove();
+
+        $layuiSelect.find('dd[lay-value]').each(function () {
+            var val = $(this).attr('lay-value');
+            if (!val) return;
+            $(this).html(adminLangOptionHtml(val));
         });
 
-        // 获取窗口宽度
-        var windowWidth = $(window).width();
-        // 设置一个阈值，例如 768px，根据实际需要调整
-        var mobileThreshold = 768;
-        // 判断是否为移动端
-        if (windowWidth < mobileThreshold) {
-            // 在移动端执行的代码
-            $('.layui-tab-content').height($(window).height() - 195);
-        } else {
-            // 在非移动端执行的代码
-            $('.layui-tab-content').height($(window).height() - 130);
+        var current = $('#languageSelect').val();
+        var meta = adminLangMeta(current);
+        var $input = $layuiSelect.find('.layui-input');
+        $input.html('<span class="lang-trigger"><span class="lang-trigger__flag" aria-hidden="true">' + meta.flag + '</span><span class="lang-trigger__text">' + meta.label + '</span></span>');
+    }
+
+    (function () {
+        $('#languageSelect option').each(function () {
+            var v = $(this).attr('value');
+            if (v) $(this).text(adminLangMeta(v).label);
+        });
+    })();
+    var layer;
+    layui.use(['layer', 'form'], function () {
+        layer = layui.layer;
+        var $ = layui.jquery, form = layui.form;
+        var TAB_CLOSE_LABEL = "{:addslashes(lang('close'))}";
+
+        /* ── 顶栏 / 移动端一级菜单切换 ── */
+        function switchMainModule(i, $trigger) {
+            if ($trigger && $trigger.length) {
+                $trigger.addClass('is-active').siblings().removeClass('is-active');
+            }
+            $('#mainNav .main-nav-item[data-i="' + i + '"]').addClass('is-active').siblings().removeClass('is-active');
+            $('#mobileMainNav .mobile-module-item[data-i="' + i + '"]').addClass('is-active').siblings().removeClass('is-active');
+            $('.side-panel').attr('hidden', true).filter('[data-panel="' + i + '"]').removeAttr('hidden');
         }
-        var tab = {
+
+        $('#mainNav .main-nav-item').on('click', function () {
+            switchMainModule($(this).data('i'), $(this));
+        });
+
+        $('#mobileMainNav .mobile-module-item').on('click', function () {
+            switchMainModule($(this).data('i'), $(this));
+        });
+
+        /* ── 下拉菜单 ── */
+        $(document).on('click', '[data-dropdown] .admin-dropdown__trigger', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+            var $drop = $(this).closest('[data-dropdown]');
+            $('[data-dropdown]').not($drop).removeClass('is-open');
+            $drop.toggleClass('is-open');
+        });
+        $(document).on('click', function () {
+            $('[data-dropdown]').removeClass('is-open');
+        });
+
+        /* ── 语言切换（Layui 自定义下拉 + 国旗） ── */
+        form.render('select', '.language-select-wrap--plain');
+        decorateLanguageSelect();
+        $('#languageSelectWrap').on('click', '.layui-form-select .layui-input, .layui-form-select .layui-edge', function () {
+            window.setTimeout(decorateLanguageSelect, 0);
+        });
+        form.on('select(lang)', function (data) {
+            if (!data.value) return;
+            $.ajax({
+                url: "{:url('system/configlang')}",
+                type: 'post',
+                dataType: 'json',
+                data: { lang: data.value },
+                error: function () {
+                    layer.msg('configedit error', { time: 1800 });
+                },
+                success: function (r) {
+                    layer.msg(r.msg, { time: 1800 });
+                },
+                complete: function () {
+                    location.reload();
+                }
+            });
+        });
+
+        /* ── 标签页管理（Ant Design 风格 · 不依赖 layui element） ── */
+        var WELCOME_TAB_ID = '111';
+        var $tabViewport = $('#tabViewport');
+        var $tabCtxMenu = $('#tabContextMenu');
+        var ctxTabId = null;
+
+        function scrollTabIntoView($li) {
+            var vp = $tabViewport[0];
+            if (!vp || !$li || !$li.length) return;
+            var li = $li[0];
+            var vpRect = vp.getBoundingClientRect();
+            var liRect = li.getBoundingClientRect();
+            if (liRect.left < vpRect.left) {
+                vp.scrollLeft -= (vpRect.left - liRect.left + 12);
+            } else if (liRect.right > vpRect.right) {
+                vp.scrollLeft += (liRect.right - vpRect.right + 12);
+            }
+        }
+
+        function updateTabScrollEdges() {
+            var vp = $tabViewport[0];
+            if (!vp) return;
+            var max = vp.scrollWidth - vp.clientWidth;
+            $('#tabScrollPrev').prop('disabled', vp.scrollLeft <= 1);
+            $('#tabScrollNext').prop('disabled', max <= 1 || vp.scrollLeft >= max - 1);
+        }
+
+        function hideTabContextMenu() {
+            if (!$tabCtxMenu.hasClass('is-open')) return;
+            $tabCtxMenu.attr('hidden', true).removeClass('is-open');
+            ctxTabId = null;
+        }
+
+        function bindIframeTabCtxDismiss($iframe) {
+            if (!$iframe || !$iframe.length) return;
+            $iframe.off('load.tabCtxDismiss').on('load.tabCtxDismiss', function () {
+                try {
+                    var doc = this.contentDocument || this.contentWindow.document;
+                    $(doc).off('mousedown.tabCtxDismiss').on('mousedown.tabCtxDismiss', function () {
+                        hideTabContextMenu();
+                    });
+                } catch (err) {}
+            });
+            if ($iframe[0].contentDocument) {
+                $iframe.triggerHandler('load.tabCtxDismiss');
+            }
+        }
+
+        function syncTabContextMenuState(id) {
+            var isPinned = id === WELCOME_TAB_ID;
+            $tabCtxMenu.find('[data-action="close"]').prop('disabled', isPinned);
+        }
+
+        function refreshTab(id) {
+            var iframe = $('iframe[lay-id="' + id + '"]')[0];
+            if (iframe && iframe.contentWindow) {
+                iframe.contentWindow.location.reload(true);
+            }
+        }
+
+        function closeOtherTabs(keepId) {
+            if ($('#B_history li').length <= 1) {
+                layer.msg("{:lang('admin/index/index/menu_close_empty')}");
+                return;
+            }
+            $('#B_history li').each(function () {
+                var dataId = $(this).attr('lay-id');
+                if (dataId && dataId !== WELCOME_TAB_ID && dataId !== keepId) {
+                    MacTab.del(dataId);
+                    $('.admin-nav-item[data-id="' + dataId + '"]').closest('.side-panel__item').removeClass('is-active');
+                }
+            });
+            MacTab.change(keepId);
+            syncSideFromTabId(keepId);
+        }
+
+        function closeAllTabs() {
+            if ($('#B_history li').length <= 1) {
+                layer.msg("{:lang('admin/index/index/menu_close_empty')}");
+                return;
+            }
+            $('#B_history li').each(function () {
+                var dataId = $(this).attr('lay-id');
+                if (dataId && dataId !== WELCOME_TAB_ID) {
+                    MacTab.del(dataId);
+                }
+            });
+            $('.side-panel__item').removeClass('is-active');
+        }
+
+        var MacTab = {
+            change: function (id) {
+                var $li = $('#B_history li[lay-id="' + id + '"]');
+                $li.addClass('is-active').attr('aria-selected', 'true').siblings().removeClass('is-active').attr('aria-selected', 'false');
+                $('.admin-tabs__pane[data-tab-id="' + id + '"]').addClass('is-active').siblings().removeClass('is-active');
+                scrollTabIntoView($li);
+                updateTabScrollEdges();
+            },
             add: function (title, url, id) {
-                element.tabAdd('macTab', {
-                    title: title,
-                    content: '<iframe width="100%" height="100%" lay-id="' + id + '" frameborder="0" src="' + url + '" scrolling="yes" class="x-iframe"></iframe>',
-                    id: id
-                });
-            }, change: function (id) {
-                element.tabChange('macTab', id);
+                var safeTitle = $.trim(title);
+                var $bar = $('#B_history');
+                var closeBtn = id !== WELCOME_TAB_ID
+                    ? '<button type="button" class="tab-close" title="' + TAB_CLOSE_LABEL + '" aria-label="' + TAB_CLOSE_LABEL + '"><span class="tab-close__glyph" aria-hidden="true">×</span></button>'
+                    : '';
+                $bar.append(
+                    '<li lay-id="' + id + '" role="tab" aria-selected="false">' +
+                    '<span class="admin-tabs__label">' + safeTitle + '</span>' + closeBtn + '</li>'
+                );
+                $('.admin-workspace__body, .admin-tabs__content').first().append(
+                    '<div class="admin-tabs__pane" data-tab-id="' + id + '">' +
+                    '<iframe lay-id="' + id + '" src="' + url + '" class="x-iframe" scrolling="yes"></iframe></div>'
+                );
+                bindIframeTabCtxDismiss($('iframe[lay-id="' + id + '"]'));
+                this.change(id);
+            },
+            del: function (id) {
+                if (id === WELCOME_TAB_ID) return;
+                var $tab = $('#B_history li[lay-id="' + id + '"]');
+                var wasActive = $tab.hasClass('is-active');
+                $tab.remove();
+                $('.admin-tabs__pane[data-tab-id="' + id + '"]').remove();
+                $('iframe[lay-id="' + id + '"]').remove();
+                if (wasActive) {
+                    var $first = $('#B_history li').first();
+                    if ($first.length) {
+                        this.change($first.attr('lay-id'));
+                    }
+                }
+                updateTabScrollEdges();
             }
         };
-        $('.admin-nav-item').click(function (event) {
+
+        function setSideActive($link) {
+            $link.closest('.side-panel__item').addClass('is-active').siblings().removeClass('is-active');
+        }
+
+        function syncSideFromTabId(id) {
+            if (!id || id === WELCOME_TAB_ID) {
+                $('.side-panel__item').removeClass('is-active');
+                return;
+            }
+            var $nav = $('.admin-nav-item[data-id="' + id + '"]');
+            if (!$nav.length) return;
+            setSideActive($nav);
+            var panelId = $nav.closest('.side-panel').data('panel');
+            if (panelId) {
+                switchMainModule(panelId);
+            }
+        }
+
+        /* 主内容区由 grid + flex 撑满，无需手动算高度 */
+
+        $('.admin-nav-item').on('click', function (event) {
             var that = $(this);
             var id = that.attr('data-id');
             if ($('iframe[lay-id="' + id + '"]')[0]) {
-                tab.change(id);
+                MacTab.change(id);
+                setSideActive(that);
                 event.stopPropagation();
-                $(this).parent('dd').addClass('layui-this');
-                $("iframe[lay-id='" + id + "']")[0].contentWindow.location.reload(true);//切换后刷新框架
+                $('iframe[lay-id="' + id + '"]')[0].contentWindow.location.reload(true);
                 return false;
             }
-            if ($('iframe').length == 10) {
+            if ($('iframe').length >= 10) {
                 layer.msg("{:lang('admin/index/index/menu_max')}");
                 return false;
             }
-            tab.add(that.text(), that.attr('href'), that.attr('data-id'));
-            tab.change(that.attr('data-id'));
+            MacTab.add($.trim(that.find('.admin-nav-item__label').text() || that.text()), that.attr('href'), id);
+            setSideActive(that);
             event.stopPropagation();
-            $(this).parent('dd').addClass('layui-this');
-            $('body').removeClass('site-mobile');
+            setMobileNavOpen(false);
             return false;
         });
-        $(document).on('click', '.layui-tab-close', function () {
-            $('.layui-nav-child a[data-id="' + $(this).parent('li').attr('lay-id') + '"]').parent('dd').removeClass('layui-this');
+
+        $('#B_history').on('click', 'li', function (e) {
+            if ($(e.target).closest('.tab-close').length) return;
+            var id = $(this).attr('lay-id');
+            MacTab.change(id);
+            syncSideFromTabId(id);
         });
 
+        $(document).on('click', '.tab-close', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+            var id = $(this).closest('li').attr('lay-id');
+            MacTab.del(id);
+            $('.admin-nav-item[data-id="' + id + '"]').closest('.side-panel__item').removeClass('is-active');
+        });
 
-        //显示顶部导航时作位置判断，点击左边菜单、上一tab、下一tab时公用
-        function showTab(li) {
-            if (li.length) {
-                var ul = $('#B_history'),
-                    li_offset = li.offset(),
-                    li_width = li.outerWidth(true),
-                    next_left = $('#page-next').offset().left, //右边按钮的界限位置
-                    prev_right = $('#page-prev').offset().left + $('#page-prev').outerWidth(true); //左边按钮的界限位置
-                if (li_offset.left + li_width > next_left) { //如果将要移动的元素在不可见的右边，则需要移动
-                    var distance = li_offset.left + li_width - next_left; //计算当前父元素的右边距离，算出右移多少像素
-                    ul.animate({
-                        left: '-=' + distance
-                    }, 200, 'swing');
-                } else if (li_offset.left < prev_right) { //如果将要移动的元素在不可见的左边，则需要移动
-                    var distance = prev_right - li_offset.left; //计算当前父元素的左边距离，算出左移多少像素
-                    ul.animate({
-                        left: '+=' + distance
-                    }, 200, 'swing');
-                }
-                li.trigger('click');
+        $('#B_history').on('mousedown', 'li', function (e) {
+            if (e.which !== 2) return;
+            e.preventDefault();
+            var id = $(this).attr('lay-id');
+            if (id === WELCOME_TAB_ID) return;
+            MacTab.del(id);
+            $('.admin-nav-item[data-id="' + id + '"]').closest('.side-panel__item').removeClass('is-active');
+        });
+
+        $('#B_history').on('contextmenu', 'li', function (e) {
+            e.preventDefault();
+            ctxTabId = $(this).attr('lay-id');
+            syncTabContextMenuState(ctxTabId);
+            $tabCtxMenu.css({ left: e.clientX + 'px', top: e.clientY + 'px' }).removeAttr('hidden').addClass('is-open');
+        });
+
+        $tabCtxMenu.on('click', '.admin-tab-ctx__item', function () {
+            if ($(this).prop('disabled')) return;
+            var action = $(this).data('action');
+            var id = ctxTabId || $('#B_history .is-active').attr('lay-id');
+            hideTabContextMenu();
+            if (action === 'refresh') {
+                refreshTab(id);
+            } else if (action === 'close' && id !== WELCOME_TAB_ID) {
+                MacTab.del(id);
+                $('.admin-nav-item[data-id="' + id + '"]').closest('.side-panel__item').removeClass('is-active');
+            } else if (action === 'closeOther') {
+                closeOtherTabs(id);
+            } else if (action === 'closeAll') {
+                closeAllTabs();
             }
+        });
+
+        $('iframe').each(function () {
+            bindIframeTabCtxDismiss($(this));
+        });
+
+        $(document).on('mousedown', function (e) {
+            if (!$tabCtxMenu.hasClass('is-open')) return;
+            if ($(e.target).closest('#tabContextMenu').length) return;
+            hideTabContextMenu();
+        });
+
+        $(window).on('blur', function () {
+            hideTabContextMenu();
+        });
+
+        $('#tabViewport, .admin-tabs__bar').on('scroll', hideTabContextMenu);
+
+        $(document).on('keydown', function (e) {
+            if (e.key === 'Escape') hideTabContextMenu();
+        });
+
+        $('#tabScrollPrev').on('click', function () {
+            var vp = $tabViewport[0];
+            if (vp) vp.scrollLeft -= Math.max(160, vp.clientWidth * 0.6);
+            updateTabScrollEdges();
+        });
+
+        $('#tabScrollNext').on('click', function () {
+            var vp = $tabViewport[0];
+            if (vp) vp.scrollLeft += Math.max(160, vp.clientWidth * 0.6);
+            updateTabScrollEdges();
+        });
+
+        $tabViewport.on('scroll', updateTabScrollEdges);
+        $(window).on('resize', updateTabScrollEdges);
+
+        $('#J_refresh').on('click', function (e) {
+            e.preventDefault();
+            var index = layer.load();
+            refreshTab($('#B_history .is-active').attr('lay-id'));
+            layer.close(index);
+        });
+
+        $('.closePageAll').on('click', function () {
+            closeAllTabs();
+        });
+
+        $('.closePageOther').on('click', function () {
+            closeOtherTabs($('#B_history .is-active').attr('lay-id'));
+        });
+
+        updateTabScrollEdges();
+
+        /* ── 移动端侧栏抽屉 ── */
+        function setMobileNavOpen(open) {
+            $('body').toggleClass('site-mobile', open);
+            var $menuBtn = $('#mobileMenuBtn');
+            $menuBtn.attr('aria-expanded', open ? 'true' : 'false');
+            $menuBtn.find('.layui-icon')
+                .removeClass('layui-icon-spread-left layui-icon-shrink-right')
+                .addClass(open ? 'layui-icon-shrink-right' : 'layui-icon-spread-left');
         }
 
-        //上一个选项卡
-        $('#page-prev').click(function (e) {
-            e.preventDefault();
-            e.stopPropagation();
-            var ul = $('#B_history'),
-                current = ul.find('.layui-this'),
-                li = current.prev('li');
-            showTab(li);
+        $('#mobileMenuBtn').on('click', function () {
+            setMobileNavOpen(!$('body').hasClass('site-mobile'));
+        });
+        $('#mobileNavClose').on('click', function () {
+            setMobileNavOpen(false);
+        });
+        $('.site-mobile-shade').on('click', function () {
+            setMobileNavOpen(false);
         });
 
-
-        //下一个选项卡
-        $('#page-next').click(function (e) {
-            e.preventDefault();
-            e.stopPropagation();
-            var ul = $('#B_history'),
-                current = ul.find('.layui-this'),
-                li = current.next('li');
-            showTab(li);
-        });
-
-        //刷新
-        $('#J_refresh').click(function (e) {
-            e.preventDefault();
-            e.stopPropagation();
-            var index = layer.load();
-            var id = $('#B_history .layui-this').attr('lay-id'),
-                iframe = $("iframe[lay-id='" + id + "']")[0];
-            if (iframe.contentWindow) {
-                iframe.contentWindow.location.reload(true);
-                layer.close(index);
-            }
-        });
-
-        //关闭全部选项卡
-        $(".closePageAll").on("click", function () {
-            if ($("#B_history li").length > 1) {
-                $("#B_history li").each(function () {
-                    data_id = $(this).attr('lay-id');
-                    if (data_id != '' && data_id != '111') {
-                        element.tabDelete("macTab", data_id);
-                        $("iframe[lay-id='" + data_id + "']").remove(); //移除iframe页面
+        /* ── 版本更新检测 ── */
+        if (typeof MAC_VERSION !== 'undefined' && typeof PHP_VERSION !== 'undefined' && typeof THINK_VERSION !== 'undefined') {
+            $.ajax({
+                url: 'https://update.maccms.la/v10/?c=check&v=' + MAC_VERSION + '&p=' + PHP_VERSION + '&tp=' + THINK_VERSION + '&t=' + Math.random(),
+                type: 'GET',
+                dataType: 'text',
+                success: function (response) {
+                    var updateContentMatch = response.match(/var update_content\s*=\s*\[(.*?)\]\.join\('<br>'\);/s);
+                    if (updateContentMatch) {
+                        try { eval(updateContentMatch[0]); } catch (e) { console.error('update content eval failed', e); }
                     }
-                })
-
-            } else {
-                layer.msg("{:lang('admin/index/index/menu_close_empty')}");
-            }
-        });
-        //关闭其他选项卡
-        $(".closePageOther").on("click", function () {
-            if ($("#B_history li").length > 1) {
-                var cid = $('#B_history .layui-this').attr('lay-id');
-                $("#B_history li").each(function () {
-                    data_id = $(this).attr('lay-id');
-                    if (data_id != '' && data_id != '111' && data_id != cid) {
-                        element.tabDelete("macTab", data_id);
-                        $("iframe[lay-id='" + data_id + "']").remove(); //移除iframe页面
+                    var newVMatch = response.match(/var new_v = '(.*?)';/);
+                    var newV = newVMatch ? newVMatch[1] : '';
+                    if (newV > MAC_VERSION) {
+                        window.updateInfo = { newV: newV, update_content: update_content, package: 'maccms10_update' };
+                        $('#update-notification, #update-notification-mobile').show();
                     }
-                })
-
-            } else {
-                layer.msg("{:lang('admin/index/index/menu_close_empty')}");
-            }
-        });
-
-        $('.mob-nav').on("click", function () {
-            $('.site-tree-mobile').click();
-        });
-        //手机设备的简单适配
-        var treeMobile = $('.site-tree-mobile'),
-            shadeMobile = $('.site-mobile-shade')
-        treeMobile.on('click', function () {
-            $('body').toggleClass('site-mobile');
-            $('.Menus-winner').toggleClass('topLevelMenus');//解决top导航
-            $('.Menus-winner').toggleClass('topLevelMenus-winner');//解决top导航
-
-        });
-        shadeMobile.on('click', function () {
-            $('body').removeClass('site-mobile');
-            $('.Menus-winner').addClass('topLevelMenus');//解决top导航
-        });
+                }
+            });
+        }
     });
     $(function () {
         setInterval("checkCache()", 30 * 1000);
