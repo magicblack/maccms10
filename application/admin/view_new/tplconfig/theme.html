@@ -481,27 +481,33 @@ $hotvod_tabs_list = (!empty($tplconfig['theme']['hotvod']['tabs']) && is_array($
                                 </div>
                             </fieldset>
                             <fieldset class="layui-elem-field">
-                                <legend>首页热门推荐（独立配置）</legend>
+                                <legend>{:lang('admin/tpl/config/hotvod_legend')}</legend>
                                 <div class="layui-field-box">
+                                    <div class="layui-form-item">
+                                        <label class="layui-form-label">说明</label>
+                                        <div class="layui-input-block">
+                                            <div class="layui-form-mid layui-word-aux">{:lang('admin/tpl/config/hotvod_tip')}</div>
+                                        </div>
+                                    </div>
                                     <div class="layui-form-item">
                                         <label class="layui-form-label">模块开关</label>
                                         <div class="layui-input-inline w200">
                                             <input type="radio" name="theme[hotvod][btn]" value="0" title="关闭" {if condition="isset($tplconfig['theme']['hotvod']['btn']) && $tplconfig['theme']['hotvod']['btn'] eq '0'"}checked{/if}>
                                             <input type="radio" name="theme[hotvod][btn]" value="1" title="开启" {if condition="!isset($tplconfig['theme']['hotvod']['btn']) || $tplconfig['theme']['hotvod']['btn'] neq '0'"}checked{/if}>
                                         </div>
-                                        <div class="layui-form-mid layui-word-aux">对应首页热门推荐整块显示与隐藏（`index.html` latest 区块）</div>
+                                        <div class="layui-form-mid layui-word-aux">{:lang('admin/tpl/config/hotvod_btn_tip')}</div>
                                     </div>
                                     <div class="layui-form-item">
                                         <label class="layui-form-label">主标题</label>
                                         <div class="layui-input-inline w260">
                                             <input type="text" name="theme[hotvod][title]" placeholder="如：热门推荐" value="{$tplconfig['theme']['hotvod']['title']|default='热门推荐'}" class="layui-input">
                                         </div>
-                                        <div class="layui-form-mid layui-word-aux">对应左上角标题 `{$tplconfig.theme.hotvod.title}`</div>
+                                        <div class="layui-form-mid layui-word-aux">{:lang('admin/tpl/config/hotvod_title_tip')}</div>
                                     </div>
                                     <div class="theme-list-panel">
                                         <div class="theme-list-head">
                                             <span class="theme-list-head-title">热门推荐 Tab</span>
-                                            <span class="theme-list-head-hint">拖动左侧握把调整前台 Tab 顺序</span>
+                                            <span class="theme-list-head-hint">{:lang('admin/tpl/config/hotvod_tabs_head_hint')}</span>
                                         </div>
                                     <div id="hotvod-tabs-list" class="js-sortable-list">
                                         {volist name="hotvod_tabs_list" id="hvt" key="hk"}
@@ -532,7 +538,7 @@ $hotvod_tabs_list = (!empty($tplconfig['theme']['hotvod']['tabs']) && is_array($
                                         <div class="layui-input-inline w120">
                                             <button type="button" class="layui-btn layui-btn-sm" id="hotvod-tab-add">新增 Tab</button>
                                         </div>
-                                        <div class="layui-form-mid layui-word-aux">最多 8 条，至少保留 1 条；Tab 顺序对应前台热门推荐展示顺序。</div>
+                                        <div class="layui-form-mid layui-word-aux">{:lang('admin/tpl/config/hotvod_tabs_tip')}</div>
                                     </div>
                                 </div>
                             </fieldset>
@@ -1653,10 +1659,10 @@ $hotvod_tabs_list = (!empty($tplconfig['theme']['hotvod']['tabs']) && is_array($
                                         <div class="layui-input-inline w200">
                                             <input type="radio" name="theme[rank][btn]" value="0"
                                                 title="{:lang('admin/tpl/config/desc44')}" {if
-                                                condition="$tplconfig['theme']['rank']['btn'] eq 0" }checked {/if}>
+                                                condition="isset($tplconfig['theme']['rank']['btn']) && $tplconfig['theme']['rank']['btn'] eq '0'"}checked{/if}>
                                             <input type="radio" name="theme[rank][btn]" value="1"
                                                 title="{:lang('admin/tpl/config/btn_on')}" {if
-                                                condition="$tplconfig['theme']['rank']['btn'] eq 1" }checked {/if}>
+                                                condition="!isset($tplconfig['theme']['rank']['btn']) || $tplconfig['theme']['rank']['btn'] neq '0'"}checked{/if}>
                                         </div>
                                         <div class="layui-form-mid layui-word-aux">{:lang('admin/tpl/config/content4')}
                                         </div>

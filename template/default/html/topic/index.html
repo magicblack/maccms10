@@ -49,9 +49,11 @@
       </main>
     </div>
 
+    {if condition="isset($tplconfig['theme']['links']['btn']) && $tplconfig['theme']['links']['btn'] eq '1'"}
     <div class="topic-index-friend-wrap">
       {include file="public/friendLink" }
     </div>
+    {/if}
 
 {include file="public/foot"}
 <script type="text/javascript" src="{$maccms.path_tpl}/asset/js/topic-index.js"></script>

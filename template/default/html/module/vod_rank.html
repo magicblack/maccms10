@@ -1,9 +1,11 @@
 <div class="pannel clearfix">
     <div class="pannel_head clearfix">
+        {if condition="!isset($tplconfig['theme']['rank']['btn']) || $tplconfig['theme']['rank']['btn'] neq '0'"}
         <a class="text_muted pull_right" href="{:mac_url('label/rank')}">
             <span data-lang="string_type_more2">更多</span>
             <i class="iconfont more_i">&#xe623;</i>
         </a>
+        {/if}
         <h3 class="title">
             {$obj.type.type_name|mac_default=''}<span data-lang="home_top_tab">排行榜</span>
         </h3>

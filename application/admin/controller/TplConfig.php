@@ -99,6 +99,12 @@ class TplConfig extends Base
             if (isset($tplconfig['links']['btn'])) {
                 $tplconfig['links']['btn'] = ((string) $tplconfig['links']['btn'] === '1') ? '1' : '0';
             }
+            if (isset($tplconfig['rank']['hbtn'])) {
+                $tplconfig['rank']['hbtn'] = ((string) $tplconfig['rank']['hbtn'] === '1') ? '1' : '0';
+            }
+            if (isset($tplconfig['rank']['btn'])) {
+                $tplconfig['rank']['btn'] = ((string) $tplconfig['rank']['btn'] === '1') ? '1' : '0';
+            }
             if (isset($tplconfig['nav']) && is_array($tplconfig['nav'])) {
                 if (isset($tplconfig['nav']['id'])) {
                     $navIds = preg_replace('/\s+/', '', (string) $tplconfig['nav']['id']);

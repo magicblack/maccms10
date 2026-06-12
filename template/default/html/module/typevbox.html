@@ -67,9 +67,11 @@
                             {maccms:vod num="18" paging="no" type="current" order="desc" by="score"}
                             {include file="widget/rank_box_text"}
                             {/maccms:vod}
+                            {if condition="!isset($tplconfig['theme']['rank']['btn']) || $tplconfig['theme']['rank']['btn'] neq '0'"}
                             <li class="part_eone rank-more">
                                 <a class="rank-more-href" href="{:mac_url('label/rank')}" data-lang="string_type_more">更多></a>
                             </li>
+                            {/if}
                         {/if}
 
                     </ul>

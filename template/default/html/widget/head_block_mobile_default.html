@@ -10,6 +10,7 @@
                 <div class="head_logo">{include file="widget/logo" /}</div>
                 <div class="head_user">
                     <ul>
+                        {if condition="!isset($tplconfig['theme']['rank']['btn']) || $tplconfig['theme']['rank']['btn'] neq '0'"}
                         <li class="top_ico">
                             <a class="top_link" href="{:mac_url('label/rank')}" data-title="string_rank" title="{$tplconfig.theme.rank.title|default='排行榜'}">
                                 <span class="head-nav-icon-theme head-nav-icon-theme--lightbg" aria-hidden="true">
@@ -20,6 +21,7 @@
                                 </span>
                             </a>
                         </li>
+                        {/if}
                         <li class="top_ico">
                             <a class="top_link js-save-site-url" href="javascript:;" data-title="string_save_site" title="">
                                 <span class="head-nav-icon-theme head-nav-icon-theme--lightbg" aria-hidden="true">

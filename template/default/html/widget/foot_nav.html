@@ -71,7 +71,7 @@ if (isset($obj) && is_array($obj) && isset($obj['type_id']) && $obj['type_id'] !
     $__cur = (int) $obj['type_id'];
 }
 echo json_encode([
-    'bnav' => isset($tplconfig['theme']['bnav']) && is_array($tplconfig['theme']['bnav']) ? $tplconfig['theme']['bnav'] : [],
+    'bnav' => isset($tplconfig['theme']['bnav']) && is_array($tplconfig['theme']['bnav']) ? array_values($tplconfig['theme']['bnav']) : [],
     'curTypeId' => $__cur,
     'userHref' => mac_url('user/index'),
     'homeHref' => isset($maccms['path']) ? (string) $maccms['path'] : '/',
