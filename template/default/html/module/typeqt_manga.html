@@ -38,7 +38,9 @@
                             <p class="vodlist_title">
                                 <a href="{:mac_url_manga_detail($vo)}" title="{$vo.manga_name}">{$vo.manga_name}</a>
                             </p>
+                            {if condition="!isset($tplconfig['theme']['badge']['cover_sub_btn']) || $tplconfig['theme']['badge']['cover_sub_btn'] neq '0'"}
                             <p class="vodlist_sub">{if condition="$vo.manga_remarks eq ''"}<span data-lang="string_lianzai">连载中</span>{else/}{$vo.manga_remarks}{/if}</p>
+                            {/if}
                         </div>
                     </li>
                     {/maccms:manga}

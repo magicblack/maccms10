@@ -1,0 +1,8 @@
+<div class="detail">
+	<p class="name">{$vo.vod_name}</p>
+	<div class="item item--tags mac-vod-hover-tags" data-mac-vod-hover='{php}echo json_encode(["vod_class"=>isset($vo["vod_class"])?(string)$vo["vod_class"]:"","vod_area"=>isset($vo["vod_area"])?(string)$vo["vod_area"]:"","vod_year"=>isset($vo["vod_year"])?(string)$vo["vod_year"]:"","vod_lang"=>isset($vo["vod_lang"])?(string)$vo["vod_lang"]:"","vod_version"=>isset($vo["vod_version"])?(string)$vo["vod_version"]:"","vod_state"=>isset($vo["vod_state"])?(string)$vo["vod_state"]:""], JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT | JSON_UNESCAPED_UNICODE);{/php}'></div>
+	<div class="item item--actor">
+		<p class="i-left"><span data-lang="string_vod_zy">主演：</span></p>
+		<p class="actor">{if condition="$vo.vod_actor neq ''"}{$vo.vod_actor}{else/}<span data-lang='string_no_have'>暂无</span>{/if}</p>
+	</div>
+</div>

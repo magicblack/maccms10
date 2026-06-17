@@ -12,6 +12,8 @@ var maccms = {
     "lazyImg": {:json_encode(mac_url_img(!empty($tplconfig['theme']['lazy']) ? $maccms['path'].$tplconfig['theme']['lazy'] : $maccms['path_tpl'].'asset/img/load.gif'), JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE)},
     "site_name": {:json_encode(isset($maccms['site_name']) ? (string)$maccms['site_name'] : '', JSON_UNESCAPED_UNICODE)},
     "vodPlaylink": {:json_encode(isset($mac_vod_playlink) && (int)$mac_vod_playlink === 1)},
+    "coverSerialBadge": {:json_encode(!isset($tplconfig['theme']['badge']['serial_btn']) || (string)$tplconfig['theme']['badge']['serial_btn'] !== '0')},
+    "coverSubTitle": {:json_encode(!isset($tplconfig['theme']['badge']['cover_sub_btn']) || (string)$tplconfig['theme']['badge']['cover_sub_btn'] !== '0')},
     "logoLottieUrls": {:json_encode(array(
         'head_w' => mac_url_img(isset($tplconfig['theme']['logo']['wpic']) && $tplconfig['theme']['logo']['wpic'] ? $tplconfig['theme']['logo']['wpic'] : 'template/default/images/la/logo-mobile-white.png'),
         'head_b' => mac_url_img(isset($tplconfig['theme']['logo']['bpic']) && $tplconfig['theme']['logo']['bpic'] ? $tplconfig['theme']['logo']['bpic'] : 'template/default/images/la/logo-mobile-black.png'),

@@ -67,3 +67,12 @@ html.license-locked body::after {
 {$tplconfig.theme.head.text}
 {/if}
 <link href="{$maccms.path}template/default/asset/css/auth-ui.css" rel="stylesheet" type="text/css" />
+{if condition="isset($tplconfig['theme']['badge']['cover_sub_btn']) && $tplconfig['theme']['badge']['cover_sub_btn'] eq '0'"}
+<style>
+html.mac-cover-sub-off .vodlist_item > .vodlist_titbox > .vodlist_sub,
+html.mac-cover-sub-off .vodlist_titbox > .vodlist_sub.vod-show_sub,
+html.mac-cover-sub-off .vodlist_titbox > .vodlist_sub.art-show-film_sub,
+html.mac-cover-sub-off .vodlist_item.zixun > p.actor.show-pc { display: none !important; }
+</style>
+<script>document.documentElement.classList.add('mac-cover-sub-off');</script>
+{/if}

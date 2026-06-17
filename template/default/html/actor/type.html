@@ -61,7 +61,9 @@
 							</a>
 							<div class="vodlist_titbox">									
 								<p class="vodlist_title"><a href="{:mac_url_vod_detail($vo2)}" title="{$vo2.vod_name}">{$vo2.vod_name}</a></p>
+								{if condition="!isset($tplconfig['theme']['badge']['cover_sub_btn']) || $tplconfig['theme']['badge']['cover_sub_btn'] neq '0'"}
 								<p class="vodlist_sub">{if $vo2.vod_sub}{$vo2['vod_sub']}{else}<span data-lang='string_no_have'>暂无</span>{/if}</p>
+								{/if}
 							</div>
 						</li>{/maccms:vod}
 					</ul>{/maccms:actor}

@@ -884,6 +884,9 @@ $hotvod_tabs_list = (!empty($tplconfig['theme']['hotvod']['tabs']) && is_array($
                                                 <option value="3" {if
                                                     condition="$tplconfig['theme']['banner']['style_pc'] eq '3'" }selected
                                                     {/if}>样式三（竖版多项）</option>
+                                                <option value="4" {if
+                                                    condition="$tplconfig['theme']['banner']['style_pc'] eq '4'" }selected
+                                                    {/if}>样式四（横版多项）</option>
                                             </select>
                                         </div>
                                         <div class="layui-form-mid layui-word-aux">PC端首页轮播样式。</div>
@@ -901,6 +904,9 @@ $hotvod_tabs_list = (!empty($tplconfig['theme']['hotvod']['tabs']) && is_array($
                                                 <option value="3" {if
                                                     condition="$tplconfig['theme']['banner']['style_h5'] eq '3'" }selected
                                                     {/if}>样式三（竖版多项）</option>
+                                                <option value="4" {if
+                                                    condition="$tplconfig['theme']['banner']['style_h5'] eq '4'" }selected
+                                                    {/if}>样式四（横版多项）</option>
                                             </select>
                                         </div>
                                         <div class="layui-form-mid layui-word-aux">H5端首页轮播样式。</div>
@@ -1570,6 +1576,22 @@ $hotvod_tabs_list = (!empty($tplconfig['theme']['hotvod']['tabs']) && is_array($
                                         <div class="layui-input-block">
                                             <div class="layui-form-mid layui-word-aux vod-list-cover-tip">视频按分类 ID 设置分类页、筛选列表等处的封面横竖版；子分类会沿父分类链继承。漫画与小说/资讯在下方单独设置；未配置时默认竖版。</div>
                                         </div>
+                                    </div>
+                                    <div class="layui-form-item">
+                                        <label class="layui-form-label">连载角标</label>
+                                        <div class="layui-input-inline w200">
+                                            <input type="radio" name="theme[badge][serial_btn]" value="0" title="关闭" {if condition="isset($tplconfig['theme']['badge']['serial_btn']) && $tplconfig['theme']['badge']['serial_btn'] eq '0'"}checked{/if}>
+                                            <input type="radio" name="theme[badge][serial_btn]" value="1" title="开启" {if condition="!isset($tplconfig['theme']['badge']['serial_btn']) || $tplconfig['theme']['badge']['serial_btn'] neq '0'"}checked{/if}>
+                                        </div>
+                                        <div class="layui-form-mid layui-word-aux">开启后，视频/漫画/小说封面左下角显示「连载中 / 已完结」角标</div>
+                                    </div>
+                                    <div class="layui-form-item">
+                                        <label class="layui-form-label">封面副标题</label>
+                                        <div class="layui-input-inline w200">
+                                            <input type="radio" name="theme[badge][cover_sub_btn]" value="0" title="关闭" {if condition="isset($tplconfig['theme']['badge']['cover_sub_btn']) && $tplconfig['theme']['badge']['cover_sub_btn'] eq '0'"}checked{/if}>
+                                            <input type="radio" name="theme[badge][cover_sub_btn]" value="1" title="开启" {if condition="!isset($tplconfig['theme']['badge']['cover_sub_btn']) || $tplconfig['theme']['badge']['cover_sub_btn'] neq '0'"}checked{/if}>
+                                        </div>
+                                        <div class="layui-form-mid layui-word-aux">关闭后，全站视频/漫画/小说封面卡片标题下方不再显示副标题（如主演、连载备注等）</div>
                                     </div>
                                     {php}
                                     $mangaListCover = isset($tplconfig['theme']['list_cover']['manga'])

@@ -104,7 +104,7 @@ class Vod extends Base
             if (!empty($param['orderby'])) {
                 $order = 'vod_' . $param['orderby'] . " DESC";
             }
-            $field = 'vod_id,vod_en,vod_name,vod_sub,vod_pic,vod_actor,vod_hits,vod_hits_day,vod_hits_week,vod_hits_month,vod_time,vod_remarks,vod_score,vod_area,vod_year,vod_class,vod_blurb,vod_points_play,vod_isend,type_id,type_id_1';
+            $field = 'vod_id,vod_en,vod_name,vod_sub,vod_pic,vod_actor,vod_hits,vod_hits_day,vod_hits_week,vod_hits_month,vod_time,vod_remarks,vod_score,vod_area,vod_year,vod_class,vod_lang,vod_version,vod_state,vod_blurb,vod_points_play,vod_isend,type_id,type_id_1';
 //            $list = model('Vod')->getListByCond($offset, $limit, $where, $order, $field, []);
             $list = model('Vod')->getListByCond($offset, $limit, $where, $order, $field);
 
@@ -396,7 +396,7 @@ class Vod extends Base
         $where['vod_level'] = ['in', $level];
 
         $list = Db::table('mac_vod')
-            ->field('vod_id,vod_name,vod_sub,vod_pic,vod_pic_slide,vod_actor,vod_director,vod_score,vod_content,vod_blurb,vod_remarks,vod_year,vod_area,vod_class,vod_points_play,type_id,type_id_1')
+            ->field('vod_id,vod_name,vod_sub,vod_pic,vod_pic_slide,vod_actor,vod_director,vod_score,vod_content,vod_blurb,vod_remarks,vod_year,vod_area,vod_class,vod_lang,vod_version,vod_state,vod_points_play,type_id,type_id_1')
             ->where($where)
             ->order('vod_time desc')
             ->limit($start, $num)
@@ -490,7 +490,7 @@ class Vod extends Base
         }
 
         $list = Db::table('mac_vod')
-            ->field('vod_id,vod_name,vod_sub,vod_pic,vod_actor,vod_director,vod_score,vod_remarks,vod_year,vod_area,vod_class,vod_blurb,vod_time,vod_hits_month,type_id,type_id_1')
+            ->field('vod_id,vod_name,vod_sub,vod_pic,vod_actor,vod_director,vod_score,vod_remarks,vod_year,vod_area,vod_class,vod_lang,vod_version,vod_state,vod_blurb,vod_time,vod_hits_month,type_id,type_id_1')
             ->where($where)
             ->order('vod_' . $by . ' desc')
             ->limit($start, $num)
@@ -560,7 +560,7 @@ class Vod extends Base
         }
 
         // 仅列表所需字段；去掉 vod_director、vod_trysee 等，减轻行缓冲与 IO
-        $fields = 'vod_id,vod_name,vod_sub,vod_pic,vod_actor,vod_score,vod_remarks,vod_year,vod_area,vod_class,vod_blurb,vod_time,vod_isend,vod_points_play,type_id,type_id_1';
+        $fields = 'vod_id,vod_name,vod_sub,vod_pic,vod_actor,vod_score,vod_remarks,vod_year,vod_area,vod_class,vod_lang,vod_version,vod_state,vod_blurb,vod_time,vod_isend,vod_points_play,type_id,type_id_1';
 
         $list = Db::table('mac_vod')
             ->field($fields)
@@ -640,7 +640,7 @@ class Vod extends Base
         }
 
         $list = Db::table('mac_vod')
-            ->field('vod_id,vod_name,vod_pic,vod_score,vod_remarks,vod_hits,vod_hits_day,vod_hits_week,vod_hits_month,vod_year,vod_area,vod_class,vod_isend,vod_points_play,type_id,type_id_1')
+            ->field('vod_id,vod_name,vod_pic,vod_score,vod_remarks,vod_hits,vod_hits_day,vod_hits_week,vod_hits_month,vod_year,vod_area,vod_class,vod_lang,vod_version,vod_state,vod_isend,vod_points_play,type_id,type_id_1')
             ->where($where)
             ->order('vod_' . $by . ' desc')
             ->limit($start, $num)

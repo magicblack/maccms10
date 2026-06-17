@@ -20,8 +20,8 @@ class TplConfig extends Base
             }
             $stylePc = isset($tplconfig['banner']['style_pc']) ? (string)$tplconfig['banner']['style_pc'] : '1';
             $styleH5 = isset($tplconfig['banner']['style_h5']) ? (string)$tplconfig['banner']['style_h5'] : '1';
-            $tplconfig['banner']['style_pc'] = in_array($stylePc, ['1', '2', '3'], true) ? $stylePc : '1';
-            $tplconfig['banner']['style_h5'] = in_array($styleH5, ['1', '2', '3'], true) ? $styleH5 : '1';
+            $tplconfig['banner']['style_pc'] = in_array($stylePc, ['1', '2', '3', '4'], true) ? $stylePc : '1';
+            $tplconfig['banner']['style_h5'] = in_array($styleH5, ['1', '2', '3', '4'], true) ? $styleH5 : '1';
             if (isset($tplconfig['fnav']['ym']) && is_array($tplconfig['fnav']['ym'])) {
                 $tplconfig['fnav']['ym'] = join('|', $tplconfig['fnav']['ym']);
             }
@@ -99,6 +99,11 @@ class TplConfig extends Base
             if (isset($tplconfig['links']['btn'])) {
                 $tplconfig['links']['btn'] = ((string) $tplconfig['links']['btn'] === '1') ? '1' : '0';
             }
+            if (!isset($tplconfig['badge']) || !is_array($tplconfig['badge'])) {
+                $tplconfig['badge'] = [];
+            }
+            $tplconfig['badge']['serial_btn'] = (isset($tplconfig['badge']['serial_btn']) && (string) $tplconfig['badge']['serial_btn'] === '0') ? '0' : '1';
+            $tplconfig['badge']['cover_sub_btn'] = (isset($tplconfig['badge']['cover_sub_btn']) && (string) $tplconfig['badge']['cover_sub_btn'] === '0') ? '0' : '1';
             if (isset($tplconfig['rank']['hbtn'])) {
                 $tplconfig['rank']['hbtn'] = ((string) $tplconfig['rank']['hbtn'] === '1') ? '1' : '0';
             }

@@ -36,6 +36,7 @@
 					<p class="vodlist_title">
 					<a href="{:mac_url_plot_detail($vo)}" title="{$vo.vod_name}">{$vo.vod_name}</a>
 					</p>
+					{if condition="!isset($tplconfig['theme']['badge']['cover_sub_btn']) || $tplconfig['theme']['badge']['cover_sub_btn'] neq '0'"}
 					<p class="vodlist_sub">
                         {php} if($vo['vod_sub']){
                         echo mac_filter_html(mac_url_create($vo['vod_sub'],'actor'));
@@ -43,6 +44,7 @@
                         <span data-lang='string_no_have'>暂无</span>
                         {php} } {/php}
                     </p>
+					{/if}
 				</div>
 			</li>
 			{/maccms:vod}

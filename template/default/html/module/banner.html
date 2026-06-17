@@ -6,8 +6,8 @@
         var s=document.currentScript,r=s&&s.parentNode;
         if(!r||!r.getAttribute){return;}
         var pc=String(r.getAttribute('data-style-pc')||'1'),h5=String(r.getAttribute('data-style-h5')||'1');
-        if(pc!=='1'&&pc!=='2'&&pc!=='3')pc='1';
-        if(h5!=='1'&&h5!=='2'&&h5!=='3')h5='1';
+        if(pc!=='1'&&pc!=='2'&&pc!=='3'&&pc!=='4')pc='1';
+        if(h5!=='1'&&h5!=='2'&&h5!=='3'&&h5!=='4')h5='1';
         var isM=!1;
         try{isM=window.matchMedia&&window.matchMedia('(max-width:820px)').matches}catch(e){}
         if(!isM)try{isM=document.documentElement.clientWidth<=820}catch(e2){}

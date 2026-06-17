@@ -8,32 +8,15 @@
 		<p class="vodlist_title">
 		<a {if condition="$mac_vod_playlink eq 1"}href="{:mac_url_vod_play($vo,['sid'=>$vo.sid,'nid'=>1])}"{else/}href="{:mac_url_vod_detail($vo)}"{/if} title="{$vo.vod_name}">{$vo.vod_name}</a>
 		</p>
+		{if condition="(!isset($tplconfig['theme']['badge']['cover_sub_btn']) || $tplconfig['theme']['badge']['cover_sub_btn'] neq '0') && !empty($vo['vod_sub'])"}
 		<p class="vodlist_sub">
-			{php} if($vo['vod_sub']){
-			echo mac_filter_html(mac_url_create($vo['vod_sub'],'actor'));
-			}else{ {/php}
-			<span data-lang='string_no_have'>暂无</span>
-			{php} } {/php}
+			{php}echo mac_filter_html(mac_url_create($vo['vod_sub'],'actor'));{/php}
 		</p>
+		{/if}
 	</div>
 	<a class="vod_info vod_info_wrap show-pc" data-num="num_{$key}" {if condition="$mac_vod_playlink eq 1"}href="{:mac_url_vod_play($vo,['sid'=>$vo.sid,'nid'=>1])}"{else/}href="{:mac_url_vod_detail($vo)}"{/if}>
 		<img class="play_img" src="{$maccms.path}template/default/images/la/paly.png" >
-		<div class="detail">
-			<p class="name">{$vo.vod_name}</p>
-			<div class="item">
-				<p class="tag">{$vo.vod_class}</p>
-				<p class="tag">{$vo.vod_area}</p>
-				<p class="tag">{$vo.vod_year}</p>
-			</div>
-			<div class="item">
-				<p class="i-left"><span data-lang="string_vod_zy">主演：</span></p>
-				<p class="actor">{$vo.vod_actor}</p>
-			</div>
-			<div class="item">
-				<p class="i-left"><span data-lang="string_vod_jj">简介：</span></p>
-				<p class="t-right">{$vo.vod_blurb}</p>
-			</div>
-		</div>
+		{include file="widget/vod_info_overlay_detail" /}
 		{php}
         if($GLOBALS['user']['user_id']){
             $user_id = $GLOBALS['user']['user_id'];
