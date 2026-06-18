@@ -1,0 +1,3 @@
+keys/catalog_private.pem
+keys/*.pem
+!../catalog_public.pem

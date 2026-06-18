@@ -24,6 +24,13 @@ class Init
                 'search_only_wd' => '1',
             ];
         }
+        if (!isset($config['template_cloud']) || !is_array($config['template_cloud'])) {
+            $config['template_cloud'] = [
+                'status' => '0',
+                'catalog_url' => 'https://api.maccms.ai/templates/catalog.json',
+                'cache_ttl' => '10800',
+            ];
+        }
         $domain = config('domain');
 
         $isMobile = 0;

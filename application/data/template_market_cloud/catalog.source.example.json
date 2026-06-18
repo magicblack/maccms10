@@ -1,0 +1,15 @@
+{
+  "base_url": "https://cdn.maccms.ai/templates",
+  "items": [
+    {
+      "id": "ai-cinema-v1",
+      "name": "AI影院风",
+      "version": "1.0.0",
+      "dir": "ai_cinema_v1",
+      "desc": "深色影院风格完整主题包，含首页/列表/详情/播放页与静态资源。",
+      "preview": "https://cdn.maccms.ai/templates/ai-cinema-v1/preview.jpg",
+      "tags": ["ai", "dark", "cinema"],
+      "package_file": "packages/ai-cinema-v1/package.zip"
+    }
+  ]
+}

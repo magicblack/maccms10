@@ -1388,6 +1388,34 @@ return array (
         'controller' => 'tpl_config',
         'action' => 'theme',
       ),
+      75 => 
+      array (
+        'show' => 1,
+        'name' => lang('menu/template_market'),
+        'controller' => 'template_market',
+        'action' => 'index',
+      ),
+      7501 => 
+      array (
+        'show' => 0,
+        'name' => lang('admin/template_market/refresh_menu'),
+        'controller' => 'template_market',
+        'action' => 'refresh',
+      ),
+      7502 => 
+      array (
+        'show' => 0,
+        'name' => lang('admin/template_market/install_menu'),
+        'controller' => 'template_market',
+        'action' => 'install',
+      ),
+      7503 => 
+      array (
+        'show' => 0,
+        'name' => lang('admin/template_market/activate_menu'),
+        'controller' => 'template_market',
+        'action' => 'activate',
+      ),
     ),
   ),
   8 => 

@@ -1,0 +1,169 @@
+{include file="../../../application/admin/view_new/public/head" /}
+
+<style>
+.tm-toolbar { margin-bottom: 15px; display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+.tm-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 14px; }
+.tm-card { background: #fff; border: 1px solid #e6e6e6; border-radius: 8px; overflow: hidden; transition: all .2s; }
+.tm-card:hover { border-color: #1E9FFF; box-shadow: 0 2px 10px rgba(30,159,255,.12); }
+.tm-thumb { height: 140px; background: linear-gradient(135deg,#f5f7fa,#e4ecf7); display:flex; align-items:center; justify-content:center; overflow:hidden; }
+.tm-thumb img { width: 100%; height: 100%; object-fit: cover; }
+.tm-thumb .placeholder { color: #999; font-size: 13px; }
+.tm-body { padding: 12px 14px 14px; }
+.tm-title { font-size: 15px; font-weight: bold; color: #333; margin-bottom: 4px; }
+.tm-meta { font-size: 12px; color: #999; margin-bottom: 8px; }
+.tm-desc { font-size: 12px; color: #666; min-height: 36px; margin-bottom: 10px; line-height: 1.5; }
+.tm-tags span { display: inline-block; background: #f0f5ff; color: #1E9FFF; font-size: 11px; padding: 2px 6px; border-radius: 3px; margin: 0 4px 4px 0; }
+.tm-actions { display: flex; gap: 6px; flex-wrap: wrap; }
+.tm-badge { display: inline-block; font-size: 11px; padding: 1px 6px; border-radius: 3px; margin-left: 6px; vertical-align: middle; }
+.tm-badge.active { background: #5FB878; color: #fff; }
+.tm-badge.installed { background: #FFB800; color: #fff; }
+.tm-section { margin-bottom: 22px; }
+.tm-section h3 { font-size: 16px; margin-bottom: 12px; color: #333; border-left: 3px solid #1E9FFF; padding-left: 8px; }
+</style>
+
+<div class="page-container p10">
+
+    {if condition="!$cloud_enabled"}
+    <div class="layui-anim layui-anim-upbit" style="background:#FFF3E0;border:1px solid #FFB74D;border-radius:6px;padding:12px 18px;margin-bottom:15px;color:#E65100;">
+        <i class="layui-icon">&#xe60b;</i>
+        <span style="margin-left:6px;">{:lang('admin/template_market/disabled_tip')}</span>
+    </div>
+    {/if}
+
+    {if condition="$cloud_error"}
+    <div class="layui-anim layui-anim-upbit" style="background:#FFEBEE;border:1px solid #EF9A9A;border-radius:6px;padding:12px 18px;margin-bottom:15px;color:#C62828;">
+        <i class="layui-icon">&#xe60b;</i>
+        <span style="margin-left:6px;">{$cloud_error_msg}</span>
+    </div>
+    {/if}
+
+    <div class="layui-anim layui-anim-upbit" style="background:#FFF8E1;border:1px solid #FFCA28;border-radius:6px;padding:12px 18px;margin-bottom:15px;color:#E65100;line-height:1.6;">
+        <i class="layui-icon" style="font-size:18px;">&#xe702;</i>
+        <span style="margin-left:6px;">{:lang('admin/template_market/risk_banner')}</span>
+    </div>
+
+    <div class="tm-toolbar">
+        <input type="hidden" id="tmToken" name="__token__" value="{$Request.token}" />
+        <button type="button" class="layui-btn layui-btn-normal" id="btnRefresh"><i class="layui-icon">&#xe669;</i> {:lang('admin/template_market/btn_refresh')}</button>
+        <a href="{:url('template/index')}" class="layui-btn layui-btn-primary"><i class="layui-icon">&#xe656;</i> {:lang('menu/template')}</a>
+        <a href="{:url('tpl_config/theme')}" class="layui-btn layui-btn-primary"><i class="layui-icon">&#xe620;</i> {:lang('menu/theme/config')}</a>
+        <span style="color:#999;font-size:12px;">{:lang('admin/template_market/active_tip')}：<b>{$active_dir|default='-'}</b></span>
+    </div>
+
+    <div class="tm-section">
+        <h3>{:lang('admin/template_market/cloud_section')}</h3>
+        <div class="tm-grid">
+            {volist name="items" id="vo"}
+            <div class="tm-card" data-id="{$vo.id}" data-dir="{$vo.dir}">
+                <div class="tm-thumb">
+                    {if condition="!empty($vo.preview)"}
+                    <img src="{$vo.preview}" alt="{$vo.name}" loading="lazy" onerror="this.style.display='none'">
+                    {else/}
+                    <span class="placeholder">{:lang('admin/template_market/no_preview')}</span>
+                    {/if}
+                </div>
+                <div class="tm-body">
+                    <div class="tm-title">
+                        {$vo.name}
+                        {if condition="$vo.active"}<span class="tm-badge active">{:lang('admin/template_market/status_active')}</span>{/if}
+                        {if condition="$vo.installed && !$vo.active"}<span class="tm-badge installed">{:lang('admin/template_market/status_installed')}</span>{/if}
+                    </div>
+                    <div class="tm-meta">{$vo.dir} · v{$vo.version|default='1.0'}</div>
+                    <div class="tm-desc">{$vo.desc|default=''}</div>
+                    {if condition="!empty($vo.tags)"}
+                    <div class="tm-tags">
+                        {volist name="vo.tags" id="tag"}
+                        <span>{$tag}</span>
+                        {/volist}
+                    </div>
+                    {/if}
+                    <div class="tm-actions" style="margin-top:10px;">
+                        {if condition="!$vo.installed"}
+                        <button class="layui-btn layui-btn-xs layui-btn-normal btn-install" data-id="{$vo.id}">{:lang('admin/template_market/btn_install')}</button>
+                        {else/}
+                        {if condition="!$vo.active"}
+                        <button class="layui-btn layui-btn-xs layui-btn-warm btn-activate" data-dir="{$vo.dir}">{:lang('admin/template_market/btn_activate')}</button>
+                        {/if}
+                        <button class="layui-btn layui-btn-xs layui-btn-primary btn-reinstall" data-id="{$vo.id}">{:lang('admin/template_market/btn_reinstall')}</button>
+                        {/if}
+                    </div>
+                </div>
+            </div>
+            {/volist}
+            {empty name="items"}
+            <div style="grid-column:1/-1;color:#999;padding:30px;text-align:center;">{:lang('admin/template_market/empty_catalog')}</div>
+            {/empty}
+        </div>
+    </div>
+
+    <div class="tm-section">
+        <h3>{:lang('admin/template_market/local_section')}</h3>
+        <div class="tm-grid">
+            {volist name="local_templates" id="loc"}
+            <div class="tm-card">
+                <div class="tm-body">
+                    <div class="tm-title">
+                        {$loc.name}
+                        {if condition="$loc.dir eq $active_dir"}<span class="tm-badge active">{:lang('admin/template_market/status_active')}</span>{/if}
+                    </div>
+                    <div class="tm-meta">{$loc.dir} {if condition="$loc.version"}· v{$loc.version}{/if}</div>
+                    <div class="tm-actions" style="margin-top:10px;">
+                        {if condition="$loc.dir neq $active_dir"}
+                        <button class="layui-btn layui-btn-xs layui-btn-warm btn-activate" data-dir="{$loc.dir}">{:lang('admin/template_market/btn_activate')}</button>
+                        {/if}
+                    </div>
+                </div>
+            </div>
+            {/volist}
+        </div>
+    </div>
+</div>
+
+{include file="../../../application/admin/view_new/public/foot" /}
+<script type="text/javascript">
+layui.use(['layer'], function () {
+    var layer = layui.layer;
+
+    function postAction(url, data, okMsg) {
+        var payload = $.extend({__token__: $('#tmToken').val()}, data || {});
+        var load = layer.load(2);
+        $.post(url, payload, function (res) {
+            layer.close(load);
+            if (res.code == 1) {
+                layer.msg(okMsg || res.msg, {icon: 1, time: 1200}, function () {
+                    location.reload();
+                });
+            } else {
+                layer.msg(res.msg || '{:lang("operate_err")}', {icon: 2});
+            }
+        }, 'json').fail(function () {
+            layer.close(load);
+            layer.msg('{:lang("operate_err")}', {icon: 2});
+        });
+    }
+
+    $('#btnRefresh').on('click', function () {
+        postAction('{:url("template_market/refresh")}', {}, '{:lang("admin/template_market/refresh_ok")}');
+    });
+
+    $('.btn-install, .btn-reinstall').on('click', function () {
+        var id = $(this).data('id');
+        var isRe = $(this).hasClass('btn-reinstall');
+        var body = isRe
+            ? '{:lang("admin/template_market/confirm_reinstall")}<br><br><span style="color:#E65100;">{:lang("admin/template_market/risk_install_body")}</span>'
+            : '{:lang("admin/template_market/confirm_install")}<br><br><span style="color:#E65100;">{:lang("admin/template_market/risk_install_body")}</span>';
+        layer.confirm(body, {icon: 0, title: '{:lang("admin/template_market/risk_install_title")}', btn: ['{:lang("admin/template_market/btn_install_confirm")}', '{:lang("admin/template_market/btn_install_cancel")}']}, function (idx) {
+            layer.close(idx);
+            postAction('{:url("template_market/install")}', {id: id});
+        });
+    });
+
+    $('.btn-activate').on('click', function () {
+        var dir = $(this).data('dir');
+        layer.confirm('{:lang("admin/template_market/confirm_activate")}', {icon: 3, title: false}, function (idx) {
+            layer.close(idx);
+            postAction('{:url("template_market/activate")}', {dir: dir});
+        });
+    });
+});
+</script>
