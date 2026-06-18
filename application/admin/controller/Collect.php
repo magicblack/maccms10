@@ -208,12 +208,29 @@ class Collect extends Base
         return $this->fetch('admin@collect/timing');
     }
 
+    /**
+     * 即时读取分类绑定配置（直接读文件，绕过 config 缓存 / 多进程 opcache 旧值）
+     * 避免在保存/清理绑定时基于过期数据写回，覆盖其他进程刚写入的绑定。
+     */
+    private function loadBindConfig()
+    {
+        $file = APP_PATH . 'extra/bind.php';
+        if (is_file($file)) {
+            if (function_exists('opcache_invalidate')) {
+                opcache_invalidate($file, true);
+            }
+            $data = include $file;
+            return is_array($data) ? $data : [];
+        }
+        return [];
+    }
+
     public function clearbind()
     {
         $param = input();
         $config = [];
         if(!empty($param['cjflag'])){
-            $bind_list = config('bind');
+            $bind_list = $this->loadBindConfig();
             foreach($bind_list as $k=>$v){
                 if(strpos($k,$param['cjflag'])===false){
                     $config[$k] = $v;
@@ -236,7 +253,7 @@ class Collect extends Base
         $val = $param['val'];
 
         if(!empty($col)){
-            $config = config('bind');
+            $config = $this->loadBindConfig();
             $config[$col] = intval($val);
             $data = [];
             $data['id'] = $col;

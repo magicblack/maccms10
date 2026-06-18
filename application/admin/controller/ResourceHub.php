@@ -224,6 +224,26 @@ class ResourceHub extends Base
     }
 
     /**
+     * 即时读取分类绑定配置（直接读文件，绕过 config 缓存 / 多进程 opcache 旧值）
+     * 自动绑定属于「写回整个文件」的操作，必须基于磁盘最新内容，
+     * 否则可能用旧的绑定覆盖掉用户手动调整的绑定。
+     * @return array
+     */
+    private function loadBindConfig()
+    {
+        $file = APP_PATH . 'extra/bind.php';
+        if (is_file($file)) {
+            // 清理 opcache，确保读到最新文件内容
+            if (function_exists('opcache_invalidate')) {
+                opcache_invalidate($file, true);
+            }
+            $data = include $file;
+            return is_array($data) ? $data : [];
+        }
+        return [];
+    }
+
+    /**
      * 资源站目录首页
      */
     public function index()
@@ -551,16 +571,15 @@ class ResourceHub extends Base
 
         // 执行绑定
         $cjflag = md5($url);
-        $bind_config = config('bind') ?: [];
-        if (empty($bind_config) || !is_array($bind_config)) {
-            $bind_config = [];
-        }
+        // 即时从磁盘读取最新绑定，避免用旧值覆盖用户手动调整的绑定
+        $bind_config = $this->loadBindConfig();
         $bound = 0;
+        $changed = false;
 
         foreach ($remote_types as $remote_id => $remote_name) {
             $bind_key = $cjflag . '_' . $remote_id;
 
-            // 如果已绑定则跳过
+            // 如果已绑定则跳过（绝不覆盖用户已设定的绑定）
             if (isset($bind_config[$bind_key]) && $bind_config[$bind_key] > 0) {
                 $bound++;
                 continue;
@@ -570,6 +589,7 @@ class ResourceHub extends Base
             if (isset($local_type_map[$remote_name])) {
                 $bind_config[$bind_key] = $local_type_map[$remote_name];
                 $bound++;
+                $changed = true;
                 continue;
             }
 
@@ -577,6 +597,7 @@ class ResourceHub extends Base
             if (isset($custom_rules[$remote_name]) && isset($local_type_map[$custom_rules[$remote_name]])) {
                 $bind_config[$bind_key] = $local_type_map[$custom_rules[$remote_name]];
                 $bound++;
+                $changed = true;
                 continue;
             }
 
@@ -585,14 +606,17 @@ class ResourceHub extends Base
             if ($matched_id > 0) {
                 $bind_config[$bind_key] = $matched_id;
                 $bound++;
+                $changed = true;
                 continue;
             }
         }
 
-        // 保存绑定配置
-        $res = mac_arr2file(APP_PATH . 'extra/bind.php', $bind_config);
-        if ($res === false) {
-            return json(['code' => 0, 'msg' => lang('write_err_config')]);
+        // 仅当确实新增了绑定时才写回文件，避免无意义的整文件覆盖
+        if ($changed) {
+            $res = mac_arr2file(APP_PATH . 'extra/bind.php', $bind_config);
+            if ($res === false) {
+                return json(['code' => 0, 'msg' => lang('write_err_config')]);
+            }
         }
 
         return json([
@@ -1041,18 +1065,19 @@ MacPlayer.Show();
         }
 
         $cjflag = md5($url);
-        $bind_config = config('bind') ?: [];
-        if (empty($bind_config) || !is_array($bind_config)) {
-            $bind_config = [];
-        }
+        // 即时从磁盘读取最新绑定，避免用旧值覆盖用户手动调整的绑定
+        $bind_config = $this->loadBindConfig();
+        $changed = false;
 
         foreach ($remote_types as $remote_id => $remote_name) {
             $bind_key = $cjflag . '_' . $remote_id;
+            // 已绑定的项目绝不覆盖（仅补全未绑定的）
             if (isset($bind_config[$bind_key]) && $bind_config[$bind_key] > 0) continue;
 
             // 精确匹配
             if (isset($local_type_map[$remote_name])) {
                 $bind_config[$bind_key] = $local_type_map[$remote_name];
+                $changed = true;
                 continue;
             }
 
@@ -1060,10 +1085,14 @@ MacPlayer.Show();
             $matched_id = $this->fuzzyMatchType($remote_name, $local_type_list);
             if ($matched_id > 0) {
                 $bind_config[$bind_key] = $matched_id;
+                $changed = true;
             }
         }
 
-        mac_arr2file(APP_PATH . 'extra/bind.php', $bind_config);
+        // 仅当确实新增了绑定时才写回文件，避免无意义的整文件覆盖
+        if ($changed) {
+            mac_arr2file(APP_PATH . 'extra/bind.php', $bind_config);
+        }
     }
 
     /**
