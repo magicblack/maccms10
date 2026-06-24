@@ -5,6 +5,7 @@
     <link rel="stylesheet" type="text/css" href="{$maccms.path_tpl}/asset/css/vod-play.css?v=202604222" />
     {if condition="($obj.vod_copyright neq 1 || $GLOBALS['config']['app']['copyright_status'] neq 1) && !$obj.vod_lock && $popedom.code elt 1 && ($obj['vod_play_list'][$param['sid']]['player_info']['from'] eq 'dplayer' || $obj['vod_play_list'][$param['sid']]['player_info']['from'] eq 'videojs')"}
     <link rel="stylesheet" type="text/css" href="{$maccms.path_tpl}/asset/css/vod-play-social.css?v=202604271" />
+    <link rel="stylesheet" type="text/css" href="{$maccms.path_tpl}/asset/css/vod-play-progress.css?v=202606246" />
     {/if}
 </head>
 <body>
@@ -48,6 +49,7 @@
                                     </ul>
                                 </div>
                             </div>
+                            {include file="module/vod_play_quality_vars" /}
                             {$player_data}{$player_js}
                             {/if}
                         </div>
@@ -124,6 +126,7 @@
                             </div>
                             {if condition="($obj.vod_copyright neq 1 || $GLOBALS['config']['app']['copyright_status'] neq 1) && !$obj.vod_lock && $popedom.code elt 1 && ($obj['vod_play_list'][$param['sid']]['player_info']['from'] eq 'dplayer' || $obj['vod_play_list'][$param['sid']]['player_info']['from'] eq 'videojs')"}
                             <script type="application/json" id="vod-play-social-config">{"enabled":true,"chatEnabled":{if condition="$play_chatroom_enabled"}true{else/}false{/if},"apiBase":"{:rtrim($maccms.path,'/').'/api.php'}","vodId":{$obj.vod_id},"sid":{$param.sid},"nid":{$param.nid},"playerFrom":"{$obj['vod_play_list'][$param['sid']]['player_info']['from']}","userId":{if condition="isset($user.user_id)"}{$user.user_id}{else/}0{/if},"loginUrl":"{:url('user/login')}","needLoginHint":"{:lang('chatroom/login_required')}"}</script>
+                            <script type="application/json" id="vod-play-progress-config">{"enabled":true,"apiBase":"{:rtrim($maccms.path,'/').'/api.php'}","vodId":{$obj.vod_id},"sid":{$param.sid},"nid":{$param.nid},"userId":{if condition="isset($user.user_id)"}{$user.user_id}{else/}0{/if}}</script>
                             <div class="mac-play-chat-panel" id="macPlayChatPanel">
                                     <div class="mac-play-chat-panel__head">
                                         <span class="mac-play-chat-panel__title mac-play-chat-panel__title--pc" data-lang="string_play_chat_title">本片讨论</span>
@@ -453,6 +456,7 @@
         {include file="public/foot"}
         {if condition="($obj.vod_copyright neq 1 || $GLOBALS['config']['app']['copyright_status'] neq 1) && !$obj.vod_lock && $popedom.code elt 1 && ($obj['vod_play_list'][$param['sid']]['player_info']['from'] eq 'dplayer' || $obj['vod_play_list'][$param['sid']]['player_info']['from'] eq 'videojs')"}
         <script defer src="{$maccms.path_tpl}/asset/js/vod-play-social.js?v=202604261830"></script>
+        <script defer src="{$maccms.path_tpl}/asset/js/vod-play-progress.js?v=202606246"></script>
         {/if}
         <script type="text/javascript" src="{$maccms.path_tpl}/asset/js/vod-play-playlist.js"></script>
         <script type="text/javascript" src="{$maccms.path_tpl}/asset/js/vod-play-tagwall.js"></script>

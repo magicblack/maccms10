@@ -13,7 +13,7 @@
 	.mac-vjs-player-slot{flex:1;min-height:0;position:relative;width:100%;}
 	.mac-vjs-player-slot .video-js{width:100%;height:100%;}
 	#playerCnt{width:100%;height:100%;}
-	.mac-vjs-seekbar{
+	.mac-vjs-toolbar{
 		flex-shrink:0;
 		display:flex;
 		flex-wrap:wrap;
@@ -25,7 +25,9 @@
 		background:#2c2c2c;
 		border-top:1px solid #444;
 	}
-	.mac-vjs-seekbtn{
+	.mac-vjs-toolbar + .mac-vjs-toolbar{border-top:none;padding-top:0;}
+	.mac-vjs-seekbtn,
+	.mac-vjs-qualitybtn{
 		margin:0;
 		padding:8px 14px;
 		font-size:13px;
@@ -37,14 +39,27 @@
 		cursor:pointer;
 		-webkit-tap-highlight-color:transparent;
 	}
-	.mac-vjs-seekbtn:hover{background:#ddd;}
-	.mac-vjs-seekbtn:active{background:#cfcfcf;}
-	.mac-vjs-seekbtn:focus{outline:2px solid #6cf;outline-offset:2px;}
-	@media (max-width:480px){
-		.mac-vjs-seekbar{gap:6px;padding:6px;}
-		.mac-vjs-seekbtn{padding:7px 10px;font-size:12px;}
+	.mac-vjs-qualitybtn.is-active{
+		color:#fff;
+		background:#4285f4;
+		border-color:#3367d6;
 	}
-	/* 移动端弹幕：覆盖 comment-core 默认 25px，避免手机上过大 */
+	.mac-vjs-seekbtn:hover,
+	.mac-vjs-qualitybtn:hover{background:#ddd;}
+	.mac-vjs-seekbtn:active,
+	.mac-vjs-qualitybtn:active{background:#cfcfcf;}
+	.mac-vjs-seekbtn:focus,
+	.mac-vjs-qualitybtn:focus{outline:2px solid #6cf;outline-offset:2px;}
+	.mac-vjs-toolbar__label{
+		font-size:12px;
+		color:#bbb;
+		margin-right:2px;
+	}
+	@media (max-width:480px){
+		.mac-vjs-toolbar{gap:6px;padding:6px;}
+		.mac-vjs-seekbtn,
+		.mac-vjs-qualitybtn{padding:7px 10px;font-size:12px;}
+	}
 	@media (max-width: 768px) {
 		.abp.vjs-mac-danmaku-abp .container .cmt {
 			font-size: 15px !important;
@@ -72,82 +87,322 @@
 	<div class="mac-vjs-player-slot">
 		<video id="playerCnt" class="video-js vjs-default-skin" controls preload="none" width="100%" height="100%"></video>
 	</div>
-	<div id="macVjsSeekBar" class="mac-vjs-seekbar" role="toolbar" aria-label="快进快退"></div>
+	<div id="macVjsQualityBar" class="mac-vjs-toolbar" role="toolbar" aria-label="清晰度" style="display:none;"></div>
+	<div id="macVjsSeekBar" class="mac-vjs-toolbar" role="toolbar" aria-label="快进快退"></div>
 </div>
 <script type="text/javascript">
-var type='video/mp4';
+(function () {
+	'use strict';
 
-if(parent.MacPlayer.PlayUrl.indexOf('.m3u8')>-1){
-	type='application/x-mpegURL';
-}
-else if(parent.MacPlayer.PlayUrl.indexOf('.mkv')>-1){
-	type='video/x-matroska';
-}
+	var PLAYBACK_SPEEDS = [0.5, 0.75, 1, 1.25, 1.5, 2];
+	var LS_SPEED_KEY = 'mac_videojs_playback_speed';
+	var LS_QUALITY_KEY = 'mac_videojs_quality_name';
+	var MSG_PARENT = 'mac-play-parent';
 
-var options = {
-sources: [{
-    src: parent.MacPlayer.PlayUrl,
-    type: type
-  }]
-};
-
-function seekBySeconds(p, delta) {
-	var cur = p.currentTime();
-	if (typeof cur !== 'number' || isNaN(cur)) {
-		cur = 0;
+	function detectMime(url) {
+		url = String(url || '');
+		if (url.indexOf('.m3u8') > -1) return 'application/x-mpegURL';
+		if (url.indexOf('.mkv') > -1) return 'video/x-matroska';
+		return 'video/mp4';
 	}
-	var next = cur + delta;
-	var dur = p.duration();
-	if (typeof dur === 'number' && isFinite(dur) && dur > 0) {
-		next = Math.min(dur, Math.max(0, next));
-	} else {
-		next = Math.max(0, next);
+
+	function parseQualityFromUrl(raw) {
+		raw = String(raw || '').trim();
+		if (!raw || raw.indexOf('$') === -1) return null;
+		var sep = raw.indexOf('$$') > -1 ? '$$' : (raw.indexOf('#') > -1 ? '#' : '');
+		if (!sep) return null;
+		var segments = raw.split(sep);
+		var out = [];
+		for (var i = 0; i < segments.length; i++) {
+			var seg = String(segments[i] || '').trim();
+			if (!seg) continue;
+			var pos = seg.indexOf('$');
+			if (pos <= 0) return null;
+			var name = seg.slice(0, pos).trim();
+			var url = seg.slice(pos + 1).trim();
+			if (!name || !url) return null;
+			if (!/^https?:\/\//i.test(url) && url.indexOf('.') === -1 && url.indexOf('magnet:') !== 0) {
+				return null;
+			}
+			out.push({ name: name, url: url });
+		}
+		return out.length >= 2 ? out : null;
 	}
-	p.currentTime(next);
-}
 
-var player = videojs('playerCnt', options, function onPlayerReady() {
-	var p = this;
-	videojs.log('Your player is ready!');
-	p.play();
-
-	p.on('ended', function() {
-		videojs.log('Awww...over so soon?!');
-	});
-
-	var bar = document.getElementById('macVjsSeekBar');
-	var steps = [
-		{ label: '< 10m', delta: -600 },
-		{ label: '< 1m', delta: -60 },
-		{ label: '< 15s', delta: -15 },
-		{ label: '15s >', delta: 15 },
-		{ label: '1m >', delta: 60 },
-		{ label: '10m >', delta: 600 }
-	];
-	if (bar) {
-		for (var i = 0; i < steps.length; i++) {
-			(function (item) {
-				var btn = document.createElement('button');
-				btn.type = 'button';
-				btn.className = 'mac-vjs-seekbtn';
-				btn.textContent = item.label;
-				btn.addEventListener('click', function () {
-					seekBySeconds(p, item.delta);
-				});
-				bar.appendChild(btn);
-			})(steps[i]);
+	function readSavedQualityName() {
+		try {
+			return String(window.localStorage.getItem(LS_QUALITY_KEY) || '').trim();
+		} catch (e) {
+			return '';
 		}
 	}
 
-	if (typeof p.danmaku === 'function') {
-		p.danmaku();
+	function saveQualityName(name) {
+		try {
+			if (name) window.localStorage.setItem(LS_QUALITY_KEY, String(name));
+		} catch (e2) {}
 	}
-});
 
-	try{
-		//document.getElementById('playerCnt').style.height = parent.MacPlayer.Height + 'px';
+	function resolveQualityIndex(items) {
+		var pref = readSavedQualityName();
+		if (pref) {
+			for (var i = 0; i < items.length; i++) {
+				if (items[i].name === pref) return i;
+			}
+		}
+		return 0;
 	}
-	catch(e){}
+
+	function buildVideoConfig(playUrl, pa) {
+		var qualities = pa && pa.qualities && pa.qualities.length >= 2 ? pa.qualities : null;
+		if (!qualities) {
+			qualities = parseQualityFromUrl(playUrl);
+		}
+		if (qualities && qualities.length >= 2) {
+			var idx = resolveQualityIndex(qualities);
+			var picked = qualities[idx];
+			return {
+				url: picked.url,
+				mime: detectMime(picked.url),
+				qualities: qualities,
+				activeIndex: idx,
+			};
+		}
+		return {
+			url: playUrl,
+			mime: detectMime(playUrl),
+			qualities: null,
+			activeIndex: 0,
+		};
+	}
+
+	function readSavedSpeed() {
+		try {
+			var v = parseFloat(window.localStorage.getItem(LS_SPEED_KEY));
+			if (!isNaN(v) && PLAYBACK_SPEEDS.indexOf(v) !== -1) return v;
+		} catch (e) {}
+		return 1;
+	}
+
+	function saveSpeed(rate) {
+		try {
+			window.localStorage.setItem(LS_SPEED_KEY, String(rate));
+		} catch (e) {}
+	}
+
+	function seekBySeconds(p, delta) {
+		var cur = p.currentTime();
+		if (typeof cur !== 'number' || isNaN(cur)) cur = 0;
+		var next = cur + delta;
+		var dur = p.duration();
+		if (typeof dur === 'number' && isFinite(dur) && dur > 0) {
+			next = Math.min(dur, Math.max(0, next));
+		} else {
+			next = Math.max(0, next);
+		}
+		p.currentTime(next);
+	}
+
+	var pa = parent.player_aaaa || {};
+	var playUrl = parent.MacPlayer.PlayUrl;
+	var videoCfg = buildVideoConfig(playUrl, pa);
+
+	var options = {
+		sources: [{ src: videoCfg.url, type: videoCfg.mime }],
+		playbackRates: PLAYBACK_SPEEDS,
+	};
+
+	var player = videojs('playerCnt', options, function onPlayerReady() {
+		var p = this;
+		var lastProgressPost = 0;
+		var pendingSeekPoint = null;
+		var hasUserPlayed = false;
+		var qualityButtons = [];
+
+		function canSeekNow() {
+			return p.readyState() >= 1;
+		}
+
+		function seekToPoint(sec) {
+			sec = Math.max(0, Number(sec) || 0);
+			if (!canSeekNow()) {
+				pendingSeekPoint = sec;
+				return;
+			}
+			pendingSeekPoint = null;
+			p.currentTime(sec);
+		}
+
+		function flushPendingSeek() {
+			if (pendingSeekPoint == null) return;
+			seekToPoint(pendingSeekPoint);
+		}
+
+		p.on('loadedmetadata', flushPendingSeek);
+		p.on('canplay', flushPendingSeek);
+
+		function applySavedSpeed() {
+			var rate = readSavedSpeed();
+			if (rate === 1) return;
+			try {
+				p.playbackRate(rate);
+			} catch (e) {}
+		}
+
+		applySavedSpeed();
+		p.on('ratechange', function () {
+			var r = Number(p.playbackRate()) || 1;
+			if (PLAYBACK_SPEEDS.indexOf(r) !== -1) saveSpeed(r);
+		});
+
+		function postProgress(checkpoint) {
+			var ct = Number(p.currentTime()) || 0;
+			var dur = Number(p.duration());
+			if (!isFinite(dur)) dur = 0;
+			if (!checkpoint) {
+				var now = Date.now();
+				if (now - lastProgressPost < 1500) return;
+				lastProgressPost = now;
+			}
+			try {
+				parent.postMessage(
+					{
+						source: 'mac-player',
+						type: 'progress',
+						point: ct,
+						duration: dur,
+						checkpoint: checkpoint === true,
+					},
+					location.origin
+				);
+			} catch (eProg) {}
+		}
+
+		var lastPauseCheckpointAt = 0;
+
+		function checkpointPause() {
+			var ct = Number(p.currentTime()) || 0;
+			if (!hasUserPlayed && ct < 1) return;
+			var now = Date.now();
+			if (now - lastPauseCheckpointAt < 400) return;
+			lastPauseCheckpointAt = now;
+			postProgress(true);
+		}
+
+		p.on('timeupdate', function () {
+			postProgress(false);
+		});
+		p.on('playing', function () {
+			hasUserPlayed = true;
+			try {
+				parent.postMessage({ source: 'mac-player', type: 'playing' }, location.origin);
+			} catch (ePlaying) {}
+		});
+		p.on('pause', checkpointPause);
+
+		window.addEventListener('message', function (ev) {
+			try {
+				if (ev.origin !== location.origin) return;
+			} catch (eMsg) {
+				return;
+			}
+			var d = ev.data;
+			if (!d || d.source !== MSG_PARENT) return;
+			if (d.type === 'progress_seek') {
+				seekToPoint(Math.max(0, Number(d.point) || 0));
+			}
+		});
+
+		try {
+			parent.postMessage({ source: 'mac-player', type: 'ready', player: 'videojs' }, location.origin);
+		} catch (eReady) {}
+
+		function setActiveQuality(index) {
+			for (var i = 0; i < qualityButtons.length; i++) {
+				if (i === index) {
+					qualityButtons[i].classList.add('is-active');
+				} else {
+					qualityButtons[i].classList.remove('is-active');
+				}
+			}
+		}
+
+		function switchQuality(index) {
+			if (!videoCfg.qualities || !videoCfg.qualities[index]) return;
+			var q = videoCfg.qualities[index];
+			var ct = Number(p.currentTime()) || 0;
+			var wasPaused = p.paused();
+			videoCfg.activeIndex = index;
+			setActiveQuality(index);
+			saveQualityName(q.name);
+			p.src({ src: q.url, type: detectMime(q.url) });
+			p.one('loadedmetadata', function () {
+				if (ct > 0) p.currentTime(ct);
+				if (!wasPaused) {
+					var playPromise = p.play();
+					if (playPromise && typeof playPromise.catch === 'function') {
+						playPromise.catch(function () {});
+					}
+				}
+			});
+		}
+
+		if (videoCfg.qualities && videoCfg.qualities.length >= 2) {
+			var qBar = document.getElementById('macVjsQualityBar');
+			if (qBar) {
+				qBar.style.display = '';
+				var label = document.createElement('span');
+				label.className = 'mac-vjs-toolbar__label';
+				label.textContent = '清晰度';
+				qBar.appendChild(label);
+				for (var qi = 0; qi < videoCfg.qualities.length; qi++) {
+					(function (idx) {
+						var qItem = videoCfg.qualities[idx];
+						var btn = document.createElement('button');
+						btn.type = 'button';
+						btn.className = 'mac-vjs-qualitybtn';
+						btn.textContent = qItem.name;
+						if (idx === videoCfg.activeIndex) btn.classList.add('is-active');
+						btn.addEventListener('click', function () {
+							if (idx === videoCfg.activeIndex) return;
+							switchQuality(idx);
+						});
+						qBar.appendChild(btn);
+						qualityButtons.push(btn);
+					})(qi);
+				}
+			}
+		}
+
+		var bar = document.getElementById('macVjsSeekBar');
+		var steps = [
+			{ label: '< 10m', delta: -600 },
+			{ label: '< 1m', delta: -60 },
+			{ label: '< 15s', delta: -15 },
+			{ label: '15s >', delta: 15 },
+			{ label: '1m >', delta: 60 },
+			{ label: '10m >', delta: 600 },
+		];
+		if (bar) {
+			for (var si = 0; si < steps.length; si++) {
+				(function (item) {
+					var btn = document.createElement('button');
+					btn.type = 'button';
+					btn.className = 'mac-vjs-seekbtn';
+					btn.textContent = item.label;
+					btn.addEventListener('click', function () {
+						seekBySeconds(p, item.delta);
+					});
+					bar.appendChild(btn);
+				})(steps[si]);
+			}
+		}
+
+		if (typeof p.danmaku === 'function') {
+			p.danmaku();
+		}
+	});
+})();
 </script>
 </body>
 </html>

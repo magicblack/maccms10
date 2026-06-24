@@ -440,6 +440,19 @@ API 接口说明 V2（基于当前实现）
   - 需登录；参数：mid、rid、type；可选 sid、nid（与播放集相关）
 - 删除行为日志：POST /api.php/user/del_ulog
   - 需登录；参数：ids 逗号分隔或 ulog_id；或 all=1 且 type=1..5 清空该类
+- 上报播放进度（续播/播放进度记忆）：POST /api.php/ulog/progress
+  - 需登录；参数：vod_id 必填、sid、nid、point（已观看秒数）、duration（总时长秒）
+  - 说明：进度统一记录在 mac_ulog 播放历史记录上（ulog_mid=1, ulog_type=4），新增字段 ulog_point、ulog_duration；同一影片同一集（vod_id+nid）只记一条，换源 sid 仅更新为最后使用的播放源；未登录返回 code=1401，前端改用 localStorage 兜底
+  - 建议前端 timeupdate 每 10~15 秒节流上报一次；point/duration 做容错（负数归零，point 不超过 duration）
+  - 返回：{code:1, msg, info:{vod_id, sid, nid, point, duration}}
+- 读取上次播放进度：GET /api.php/ulog/get_progress
+  - 需登录；参数：vod_id 必填、nid 可选（指定集数；不传则返回该影片最近播放的一集）
+  - 说明：进入播放页调用，用于 seek 及“上次看到 12:34，点击继续”提示
+  - 返回：{code:1, info:{vod_id, sid, nid, point, duration, time}}；无记录时 info=null
+- 登录后合并本地进度：POST /api.php/ulog/merge
+  - 需登录；参数：list（JSON 字符串或数组，每项 vod_id, sid, nid, point, duration）
+  - 说明：库内不存在则新增；已存在仅当本地 point 大于库内 point 才覆盖（跨设备同步）；单次最多处理 50 条
+  - 返回：{code:1, info:{total, success}}
 - 积分日志：GET /api.php/user/get_plog
   - 需登录；参数：page、limit；可选 filter=income|expense
 - 删除积分日志：POST /api.php/user/del_plog

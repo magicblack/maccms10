@@ -533,6 +533,11 @@ if (empty($col_list[$pre . 'search_query_log'])) {
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='前台搜索关键词日志（热门词/用户历史）';";
     $sql .= "\r";
 }
+// 续播/播放进度记忆：mac_ulog 增加已观看秒数与总时长字段（仅当字段不存在时 ALTER，幂等）
+if(!empty($col_list[$pre.'ulog']) && empty($col_list[$pre.'ulog']['ulog_point'])){
+    $sql .= "ALTER TABLE `{$pre}ulog` ADD `ulog_point` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '已观看秒数' AFTER `ulog_points`, ADD `ulog_duration` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '影片总时长(秒)' AFTER `ulog_point`;";
+    $sql .= "\r";
+}
 // 后台操作审计日志
 if (empty($col_list[$pre . 'admin_audit_log'])) {
     $sql .= "CREATE TABLE `{$pre}admin_audit_log` (

@@ -719,6 +719,8 @@ CREATE TABLE `mac_ulog` (
   `ulog_sid` tinyint(3) unsigned NOT NULL DEFAULT '0' ,
   `ulog_nid` smallint(6) unsigned NOT NULL DEFAULT '0' ,
   `ulog_points` smallint(6) unsigned NOT NULL DEFAULT '0' ,
+  `ulog_point` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '已观看秒数' ,
+  `ulog_duration` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '影片总时长(秒)' ,
   `ulog_time` int(10) unsigned NOT NULL DEFAULT '0' ,
   PRIMARY KEY (`ulog_id`),
   KEY `user_id` (`user_id`),

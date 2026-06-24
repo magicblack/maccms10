@@ -1,0 +1,65 @@
+{php}
+/**
+ * default 模板 · 播放页多清晰度（DPlayer quality）
+ * 采集格式：第1集$高清$http://a.m3u8$$标清$http://b.m3u8#第2集$...
+ * 在输出 {$player_data} 前重写 player_aaaa，避免污染 common.php / All.php。
+ */
+$__vq_sid = (int) ($param['sid'] ?? 0);
+$__vq_nid = (int) ($param['nid'] ?? 0);
+$__vq_qualities = null;
+
+if ($__vq_sid > 0 && $__vq_nid > 0 && !empty($obj['vod_play_list'][$__vq_sid]['url'])) {
+    $__vq_one = (string) $obj['vod_play_list'][$__vq_sid]['url'];
+    $__vq_parts = explode('#', $__vq_one);
+    $__vq_val = isset($__vq_parts[$__vq_nid - 1]) ? trim($__vq_parts[$__vq_nid - 1]) : '';
+    if ($__vq_val !== '' && strpos($__vq_val, '$$') !== false) {
+        $__vq_ep = explode('$', $__vq_val, 2);
+        if (count($__vq_ep) >= 2) {
+            $__vq_blob = trim($__vq_ep[1]);
+            if ($__vq_blob !== '' && strpos($__vq_blob, '$$') !== false) {
+                $__vq_out = [];
+                foreach (explode('$$', $__vq_blob) as $__vq_seg) {
+                    $__vq_seg = trim($__vq_seg);
+                    if ($__vq_seg === '') {
+                        continue;
+                    }
+                    $__vq_pos = strpos($__vq_seg, '$');
+                    if ($__vq_pos === false) {
+                        $__vq_out = [];
+                        break;
+                    }
+                    $__vq_name = trim(substr($__vq_seg, 0, $__vq_pos));
+                    $__vq_u = trim(substr($__vq_seg, $__vq_pos + 1));
+                    if ($__vq_name === '' || $__vq_u === '') {
+                        $__vq_out = [];
+                        break;
+                    }
+                    if (substr($__vq_u, 0, 6) === 'upload') {
+                        $__vq_u = MAC_PATH . $__vq_u;
+                    }
+                    $__vq_out[] = ['name' => $__vq_name, 'url' => $__vq_u];
+                }
+                if (count($__vq_out) >= 2) {
+                    $__vq_qualities = $__vq_out;
+                }
+            }
+        }
+    }
+}
+
+if ($__vq_qualities && !empty($obj['player_info']) && !empty($player_data)) {
+    $__vq_pi = $obj['player_info'];
+    $__vq_pi['qualities'] = $__vq_qualities;
+    $__vq_pi['url'] = (string) $__vq_qualities[0]['url'];
+    $__vq_enc = (int) ($GLOBALS['config']['app']['encrypt'] ?? 0);
+    if ($__vq_enc === 1) {
+        $__vq_pi['url'] = mac_escape($__vq_pi['url']);
+    } elseif ($__vq_enc === 2) {
+        $__vq_pi['url'] = base64_encode(mac_escape($__vq_pi['url']));
+    }
+    $player_data = '<script type="text/javascript">var player_aaaa='
+        . json_encode($__vq_pi, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES)
+        . '</script>';
+    $obj['player_info'] = $__vq_pi;
+}
+{/php}
