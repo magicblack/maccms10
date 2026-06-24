@@ -123,6 +123,70 @@
                         </div>
                     </div>
                     <div class="layui-form-item">
+                        <label class="layui-form-label">{:lang('admin/system/configurl/actor_index')}：</label>
+                        <div class="layui-input-inline w200">
+                            <select name="view[actor_index]">
+                                <option value="0" {if condition="$config['view']['actor_index'] eq 0" }selected{/if}>{:lang('admin/system/configurl/dynamic')}</option>
+                                <option value="2" {if condition="$config['view']['actor_index'] eq 2" }selected{/if}>{:lang('admin/system/configurl/static')}</option>
+                            </select>
+                        </div>
+                        <label class="layui-form-label">{:lang('admin/system/configurl/actor_detail')}：</label>
+                        <div class="layui-input-inline w200">
+                            <select name="view[actor_detail]">
+                                <option value="0" {if condition="$config['view']['actor_detail'] eq 0" }selected{/if}>{:lang('admin/system/configurl/dynamic')}</option>
+                                <option value="2" {if condition="$config['view']['actor_detail'] eq 2" }selected{/if}>{:lang('admin/system/configurl/static')}</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:lang('admin/system/configurl/role_index')}：</label>
+                        <div class="layui-input-inline w200">
+                            <select name="view[role_index]">
+                                <option value="0" {if condition="$config['view']['role_index'] eq 0" }selected{/if}>{:lang('admin/system/configurl/dynamic')}</option>
+                                <option value="2" {if condition="$config['view']['role_index'] eq 2" }selected{/if}>{:lang('admin/system/configurl/static')}</option>
+                            </select>
+                        </div>
+                        <label class="layui-form-label">{:lang('admin/system/configurl/role_detail')}：</label>
+                        <div class="layui-input-inline w200">
+                            <select name="view[role_detail]">
+                                <option value="0" {if condition="$config['view']['role_detail'] eq 0" }selected{/if}>{:lang('admin/system/configurl/dynamic')}</option>
+                                <option value="2" {if condition="$config['view']['role_detail'] eq 2" }selected{/if}>{:lang('admin/system/configurl/static')}</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:lang('admin/system/configurl/plot_index')}：</label>
+                        <div class="layui-input-inline w200">
+                            <select name="view[plot_index]">
+                                <option value="0" {if condition="$config['view']['plot_index'] eq 0" }selected{/if}>{:lang('admin/system/configurl/dynamic')}</option>
+                                <option value="2" {if condition="$config['view']['plot_index'] eq 2" }selected{/if}>{:lang('admin/system/configurl/static')}</option>
+                            </select>
+                        </div>
+                        <label class="layui-form-label">{:lang('admin/system/configurl/plot_detail')}：</label>
+                        <div class="layui-input-inline w200">
+                            <select name="view[plot_detail]">
+                                <option value="0" {if condition="$config['view']['plot_detail'] eq 0" }selected{/if}>{:lang('admin/system/configurl/dynamic')}</option>
+                                <option value="2" {if condition="$config['view']['plot_detail'] eq 2" }selected{/if}>{:lang('admin/system/configurl/static')}</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:lang('admin/system/configurl/vod_role')}：</label>
+                        <div class="layui-input-inline w200">
+                            <select name="view[vod_role]">
+                                <option value="0" {if condition="$config['view']['vod_role'] eq 0" }selected{/if}>{:lang('admin/system/configurl/dynamic')}</option>
+                                <option value="2" {if condition="$config['view']['vod_role'] eq 2" }selected{/if}>{:lang('admin/system/configurl/static')}</option>
+                            </select>
+                        </div>
+                        <label class="layui-form-label">{:lang('admin/system/configurl/vod_plot')}：</label>
+                        <div class="layui-input-inline w200">
+                            <select name="view[vod_plot]">
+                                <option value="0" {if condition="$config['view']['vod_plot'] eq 0" }selected{/if}>{:lang('admin/system/configurl/dynamic')}</option>
+                                <option value="2" {if condition="$config['view']['vod_plot'] eq 2" }selected{/if}>{:lang('admin/system/configurl/static')}</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
                         <label class="layui-form-label">{:lang('admin/system/configurl/manga_type')}：</label>
                         <div class="layui-input-inline w200">
                             <select name="view[manga_type]">
@@ -341,6 +405,159 @@
                         <div class="layui-input-inline w600">
                             {:lang('admin/system/configurl/variable')}：{id} {en} {type_id} {type_en} {type_pid}
                             {type_pen} {year} {month} {day} {md5}
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:lang('admin/system/configurl/label')}：</label>
+                        <div class="layui-input-inline w400">
+                            <input type="text" name="path[label]" placeholder=""
+                                value="{$config['path']['label']}" class="layui-input ">
+                        </div>
+                        <div class="layui-input-inline">
+                            <select lay-filter="select_path" onChange="sethtmldir('path[label]',this.value);">
+                                <option>{:lang('admin/system/configurl/structure')}</option>
+                                <option value="label/{file}/index">1.label/file/</option>
+                                <option value="label/{file}">2.label/file.html</option>
+                                <option value="pages/{file}/index">3.pages/file/</option>
+                                <option value="custom/{file}">4.custom/file.html</option>
+                            </select>
+                        </div>
+                        <div class="layui-input-inline w400">
+                            {:lang('admin/system/configurl/variable')}：{file}
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:lang('admin/system/configurl/actor_index')}：</label>
+                        <div class="layui-input-inline w400">
+                            <input type="text" name="path[actor_index]" placeholder=""
+                                value="{$config['path']['actor_index']}" class="layui-input ">
+                        </div>
+                        <div class="layui-input-inline">
+                            <select lay-filter="select_path" onChange="sethtmldir('path[actor_index]',this.value);">
+                                <option>{:lang('admin/system/configurl/structure')}</option>
+                                <option value="actor/index">1.actor/index</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:lang('admin/system/configurl/actor_detail')}：</label>
+                        <div class="layui-input-inline w400">
+                            <input type="text" name="path[actor_detail]" placeholder=""
+                                value="{$config['path']['actor_detail']}" class="layui-input ">
+                        </div>
+                        <div class="layui-input-inline">
+                            <select lay-filter="select_path" onChange="sethtmldir('path[actor_detail]',this.value);">
+                                <option>{:lang('admin/system/configurl/structure')}</option>
+                                <option value="actorhtml/{id}/index">1.actorhtml/id/</option>
+                                <option value="actorhtml/{md5}/index">2.actorhtml/md5/</option>
+                                <option value="actorhtml/{en}/index">3.actorhtml/en/</option>
+                                <option value="actorhtml/{id}">4.actorhtml/id.html</option>
+                            </select>
+                        </div>
+                        <div class="layui-input-inline w400">
+                            {:lang('admin/system/configurl/variable')}：{id} {en} {md5}
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:lang('admin/system/configurl/role_index')}：</label>
+                        <div class="layui-input-inline w400">
+                            <input type="text" name="path[role_index]" placeholder=""
+                                value="{$config['path']['role_index']}" class="layui-input ">
+                        </div>
+                        <div class="layui-input-inline">
+                            <select lay-filter="select_path" onChange="sethtmldir('path[role_index]',this.value);">
+                                <option>{:lang('admin/system/configurl/structure')}</option>
+                                <option value="role/index">1.role/index</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:lang('admin/system/configurl/role_detail')}：</label>
+                        <div class="layui-input-inline w400">
+                            <input type="text" name="path[role_detail]" placeholder=""
+                                value="{$config['path']['role_detail']}" class="layui-input ">
+                        </div>
+                        <div class="layui-input-inline">
+                            <select lay-filter="select_path" onChange="sethtmldir('path[role_detail]',this.value);">
+                                <option>{:lang('admin/system/configurl/structure')}</option>
+                                <option value="rolehtml/{id}/index">1.rolehtml/id/</option>
+                                <option value="rolehtml/{md5}/index">2.rolehtml/md5/</option>
+                                <option value="rolehtml/{en}/index">3.rolehtml/en/</option>
+                                <option value="rolehtml/{id}">4.rolehtml/id.html</option>
+                            </select>
+                        </div>
+                        <div class="layui-input-inline w400">
+                            {:lang('admin/system/configurl/variable')}：{id} {en} {md5}
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:lang('admin/system/configurl/plot_index')}：</label>
+                        <div class="layui-input-inline w400">
+                            <input type="text" name="path[plot_index]" placeholder=""
+                                value="{$config['path']['plot_index']}" class="layui-input ">
+                        </div>
+                        <div class="layui-input-inline">
+                            <select lay-filter="select_path" onChange="sethtmldir('path[plot_index]',this.value);">
+                                <option>{:lang('admin/system/configurl/structure')}</option>
+                                <option value="plot/index">1.plot/index</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:lang('admin/system/configurl/plot_detail')}：</label>
+                        <div class="layui-input-inline w400">
+                            <input type="text" name="path[plot_detail]" placeholder=""
+                                value="{$config['path']['plot_detail']}" class="layui-input ">
+                        </div>
+                        <div class="layui-input-inline">
+                            <select lay-filter="select_path" onChange="sethtmldir('path[plot_detail]',this.value);">
+                                <option>{:lang('admin/system/configurl/structure')}</option>
+                                <option value="plothtml/{id}/index">1.plothtml/id/</option>
+                                <option value="plothtml/{md5}/index">2.plothtml/md5/</option>
+                                <option value="plothtml/{en}/index">3.plothtml/en/</option>
+                                <option value="plothtml/{id}">4.plothtml/id.html</option>
+                            </select>
+                        </div>
+                        <div class="layui-input-inline w600">
+                            {:lang('admin/system/configurl/variable')}：{id} {en} {type_id} {type_en} {md5} {page}
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:lang('admin/system/configurl/vod_role')}：</label>
+                        <div class="layui-input-inline w400">
+                            <input type="text" name="path[vod_role]" placeholder=""
+                                value="{$config['path']['vod_role']}" class="layui-input ">
+                        </div>
+                        <div class="layui-input-inline">
+                            <select lay-filter="select_path" onChange="sethtmldir('path[vod_role]',this.value);">
+                                <option>{:lang('admin/system/configurl/structure')}</option>
+                                <option value="vodrolehtml/{id}/index">1.vodrolehtml/id/</option>
+                                <option value="vodrolehtml/{md5}/index">2.vodrolehtml/md5/</option>
+                                <option value="vodrolehtml/{en}/index">3.vodrolehtml/en/</option>
+                            </select>
+                        </div>
+                        <div class="layui-input-inline w600">
+                            {:lang('admin/system/configurl/variable')}：{id} {en} {type_id} {type_en} {md5}
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:lang('admin/system/configurl/vod_plot')}：</label>
+                        <div class="layui-input-inline w400">
+                            <input type="text" name="path[vod_plot]" placeholder=""
+                                value="{$config['path']['vod_plot']}" class="layui-input ">
+                        </div>
+                        <div class="layui-input-inline">
+                            <select lay-filter="select_path" onChange="sethtmldir('path[vod_plot]',this.value);">
+                                <option>{:lang('admin/system/configurl/structure')}</option>
+                                <option value="vodplothtml/{id}/index">1.vodplothtml/id/</option>
+                                <option value="vodplothtml/{md5}/index">2.vodplothtml/md5/</option>
+                                <option value="vodplothtml/{en}/index">3.vodplothtml/en/</option>
+                            </select>
+                        </div>
+                        <div class="layui-input-inline w600">
+                            {:lang('admin/system/configurl/variable')}：{id} {en} {type_id} {type_en} {md5}
                         </div>
                     </div>
 

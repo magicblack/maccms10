@@ -2216,7 +2216,15 @@ function mac_url($model,$param=[],$info=[])
             break;
         case strpos($model,'label/')!==false:
             if($config['view']['label'] == 2){
-                $path = $model;
+                $file = substr($model, 6);
+                if(strpos($file, '.') !== false){
+                    $file = explode('.', $file)[0];
+                }
+                $path = !empty($config['path']['label']) ? $config['path']['label'] : 'label/{file}/index';
+                if(substr($path, strlen($path) - 1, 1) == '/'){
+                    $path .= 'index';
+                }
+                $path = str_replace('{file}', $file, $path);
             }
             else{
                 $url = url($model,$param);
@@ -3023,6 +3031,15 @@ function mac_url_actor_search($param)
 {
     return mac_url('actor/search',$param);
 }
+function mac_url_label($file)
+{
+    $file = str_replace('\\', '/', (string)$file);
+    if(strpos($file, '.') !== false){
+        $file = explode('.', $file)[0];
+    }
+    return mac_url('label/'.$file);
+}
+
 function mac_url_plot_index($param=[])
 {
     return mac_url('plot/index',['page'=>$param['page']]);

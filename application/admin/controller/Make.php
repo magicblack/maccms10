@@ -117,6 +117,17 @@ class Make extends Base
         $this->assign('label_list',$label_list);
         $this->assign('label_ids',join(',',$label_list));
 
+        $where = [];
+        $where['actor_status'] = ['eq',1];
+        $actor_list = model('Actor')->listData($where,'actor_id desc',1,999);
+        $this->assign('actor_list',$actor_list['list']);
+        $this->assign('actor_ids',join(',',array_keys($actor_list['list'])));
+
+        $where = [];
+        $where['role_status'] = ['eq',1];
+        $role_list = model('Role')->listData($where,'role_id desc',1,999);
+        $this->assign('role_list',$role_list['list']);
+        $this->assign('role_ids',join(',',array_keys($role_list['list'])));
 
         $this->assign('title',lang('admin/make/title'));
         return $this->fetch('admin@make/opt');
@@ -157,6 +168,24 @@ class Make extends Base
         }
         elseif($this->_param['ac'] == 'label'){
             $this->label();
+        }
+        elseif($this->_param['ac'] == 'actor_index'){
+            $this->actor_index();
+        }
+        elseif($this->_param['ac'] == 'actor_info'){
+            $this->actor_info();
+        }
+        elseif($this->_param['ac'] == 'role_index'){
+            $this->role_index();
+        }
+        elseif($this->_param['ac'] == 'role_info'){
+            $this->role_info();
+        }
+        elseif($this->_param['ac'] == 'plot_index'){
+            $this->plot_index();
+        }
+        elseif($this->_param['ac'] == 'plot_info'){
+            $this->plot_info();
         }
     }
 
@@ -861,6 +890,40 @@ class Make extends Base
                         }
                     }
                 }
+                if ($GLOBALS['config']['view']['vod_role'] >= 2) {
+                    $hasRole = Db::name('role')->where('role_rid', $v['vod_id'])->count();
+                    if ($hasRole > 0) {
+                        $GLOBALS['aid'] = mac_get_aid('vod', 'role');
+                        $this->label_maccms();
+                        $this->label_vod_role($v, 2);
+                        $link = mac_url_vod_role($v);
+                        $this->buildHtml($link, './', 'vod/role');
+                        $this->echoLink('role', $link, '', 0);
+                    }
+                }
+                if (!empty($v['vod_plot_total'])) {
+                    if ($GLOBALS['config']['view']['vod_plot'] >= 2) {
+                        $GLOBALS['aid'] = mac_get_aid('vod', 'plot');
+                        $this->label_maccms();
+                        $this->label_vod_detail($v, 2);
+                        $link = mac_url_vod_plot($v);
+                        $this->buildHtml($link, './', 'vod/plot');
+                        $this->echoLink('plot', $link, '', 0);
+                    }
+                    if ($GLOBALS['config']['view']['plot_detail'] >= 2) {
+                        $GLOBALS['aid'] = mac_get_aid('plot', 'detail');
+                        for ($pi = 1; $pi <= $v['vod_plot_total']; $pi++) {
+                            $_REQUEST['page'] = $pi;
+                            $this->label_maccms();
+                            $this->label_vod_detail($v, 2);
+                            $link = mac_url_plot_detail($v, ['page' => $pi]);
+                            $this->buildHtml($link, './', 'plot/detail');
+                            if ($pi == 1) {
+                                $this->echoLink('plot-detail', $link, '', 0);
+                            }
+                        }
+                    }
+                }
                 echo '<br>';
             }
         }
@@ -911,6 +974,10 @@ class Make extends Base
         if(empty($ids)){
             return $this->error(lang('param_err'));
         }
+        if($GLOBALS['config']['view']['label'] < 2){
+            mac_echo(lang('admin/make/view_model_static_err'));
+            exit;
+        }
         $ids = str_replace('\\','/',$ids);
         if( count( explode("./",$ids) ) > 1){
             $this->error(lang('param_err').'2');
@@ -923,21 +990,531 @@ class Make extends Base
         $this->echoLink(lang('admin/make/label_tip',[$data_count]));
         $this->label_maccms();
 
-        $n=1;
         foreach($ids as $a){
             $fullname = explode('.',$a)[0];
-            $file = 'label/'.$a;
             $tpl = 'label/'.$fullname;
+            $link = mac_url_label($fullname);
+            $this->buildHtml($link ,'./', $tpl );
+            $this->echoLink($fullname, $link);
 
-            $this->buildHtml($file ,'./', $tpl );
-            $this->echoLink($file,'/'. $file);
-
-            $n++;
         }
 
         $this->echoLink(lang('admin/make/label_complete'));
         if(ENTRANCE=='admin'){
             mac_jump( url('make/opt') ,3);
+        }
+    }
+
+    public function actor_index()
+    {
+        $start = intval($this->_param['start']);
+        $page_count = intval($this->_param['page_count']);
+        $data_count = intval($this->_param['data_count']);
+
+        $GLOBALS['mid'] = 8;
+        $GLOBALS['aid'] = mac_get_aid('actor');
+
+        if($start<1){
+            $start=1;
+        }
+        $GLOBALS['config']['app']['makesize'] = 1;
+
+        if($GLOBALS['config']['view']['actor_index'] <2){
+            mac_echo(lang('admin/make/view_model_static_err'));
+            exit;
+        }
+
+        if(empty($data_count)){
+            $where = [];
+            $where['actor_status'] = ['eq', 1];
+            $data_count = model('Actor')->countData($where);
+            $html = mac_read_file($GLOBALS['MAC_ROOT_TEMPLATE'] . 'actor/index.html');
+            $labelRule = '{maccms:actor(.*?)num="(.*?)"(.*?)paging="yes"([\s\S]*?)}([\s\S]*?){/maccms:actor}';
+            $labelRule = mac_buildregx($labelRule,"");
+            preg_match_all($labelRule,$html,$arr);
+            $page_size = 20;
+            for($i=0;$i<count($arr[2]);$i++) {
+                $page_size = $arr[2][$i];
+                break;
+            }
+            $page_count = ceil($data_count / $page_size);
+            if($page_count<1){ $page_count=1; }
+            $this->_param['data_count'] = $data_count;
+            $this->_param['page_count'] = $page_count;
+            $this->_param['page_size'] = $page_size;
+        }
+
+        if($start > $page_count){
+            $this->echoLink(lang('admin/make/actorpage_make_complete'));
+            if(ENTRANCE=='admin') {
+                mac_jump(url('make/opt'), 3);
+            }
+            exit;
+        }
+
+        $sec_count = ceil($page_count / $GLOBALS['config']['app']['makesize']);
+        $sec = ceil($start / $GLOBALS['config']['app']['makesize']);
+        $this->echoLink(lang('admin/make/actor_index_tip',[$this->_param['page_count'],$sec_count,$sec]));
+        $this->label_maccms();
+
+        $n=1;
+        for($i=$start;$i<=$page_count;$i++){
+            $_REQUEST['page'] = $i;
+            $this->label_actor();
+            $link = mac_url_actor_index(['page'=>$i]);
+            $this->buildHtml($link,'./','actor/index');
+            $this->echoLink(lang('the').''.$i.''.lang('page'),$link);
+            if($GLOBALS['config']['app']['makesize'] == $n){
+                break;
+            }
+            $n++;
+        }
+
+        if($start + $n - 1 >= $page_count){
+            $this->echoLink(lang('admin/make/actorpage_make_complete'));
+            if(ENTRANCE=='admin') {
+                mac_jump(url('make/opt'), 3);
+            }
+            exit;
+        }
+        $this->_param['start'] = $start + $n;
+        $this->echoLink(lang('server_rest'));
+        $url = url('make/make') .'?'. http_build_query($this->_param);
+        if(ENTRANCE=='admin') {
+            mac_jump($url, 3);
+        }
+    }
+
+    public function actor_info()
+    {
+        $where = [];
+        $where['actor_status'] = ['eq',1];
+        $order = 'actor_time desc';
+        $start = intval($this->_param['start']);
+        $page_count = intval($this->_param['page_count']);
+        $data_count = intval($this->_param['data_count']);
+
+        $GLOBALS['mid'] = 8;
+        $GLOBALS['aid'] = mac_get_aid('actor','detail');
+
+        if($GLOBALS['config']['view']['actor_detail'] <2){
+            mac_echo(lang('admin/make/view_model_static_err'));
+            exit;
+        }
+
+        $ids = $this->_param['actor'];
+        if(!empty($ids)){
+            if(!is_array($ids)){
+                $ids = explode(',',$ids);
+            }
+            $where['actor_id'] = ['in',$ids];
+            $data_count = count($ids);
+            $page_count = 1;
+            $start = 1;
+        }
+        elseif($this->_param['ac2'] =='day'){
+            $where['actor_time'] = ['gt', strtotime(date('Y-m-d'))];
+        }
+        elseif($this->_param['ac2'] =='nomake'){
+            $where['actor_time_make'] = ['exp', Db::raw(' < actor_time')];
+        }
+
+        if($start<1){
+            $start=1;
+        }
+
+        if(empty($data_count)){
+            $data_count = model('Actor')->countData($where);
+            $page_count = ceil($data_count / $GLOBALS['config']['app']['makesize']);
+            $this->_param['data_count'] = $data_count;
+            $this->_param['page_count'] = $page_count;
+        }
+
+        if($start > $page_count){
+            $this->echoLink(lang('admin/make/actor_make_complete'));
+            if(ENTRANCE=='admin'){
+                mac_jump(url('make/opt'), 3);
+            }
+            exit;
+        }
+
+        $this->echoLink(lang('admin/make/actor_tip',[$data_count,$page_count,$GLOBALS['config']['app']['makesize'],$start]));
+        $res = model('Actor')->listData($where, $order, $start, $GLOBALS['config']['app']['makesize']);
+        $update_ids = [];
+        foreach($res['list'] as $v){
+            $_REQUEST['id'] = $v['actor_id'];
+            echo mac_substring($v['actor_name'],100).'&nbsp;';
+            $this->label_maccms();
+            $info = $this->label_actor_detail($v, 2);
+            $link = mac_url_actor_detail($v);
+            $this->buildHtml($link, './', mac_tpl_fetch('actor', $info['actor_tpl'], 'detail'));
+            $this->echoLink('detail', $link, '', 0);
+            $update_ids[] = $v['actor_id'];
+            echo '<br>';
+        }
+
+        if(!empty($update_ids)){
+            Db::name('actor')->where(['actor_id'=>['in',$update_ids]])->update(['actor_time_make'=>time()]);
+        }
+
+        if($start >= $page_count){
+            $this->echoLink(lang('admin/make/actor_make_complete'));
+            if(ENTRANCE=='admin'){
+                mac_jump(url('make/opt'), 3);
+            }
+            exit;
+        }
+        $this->_param['start'] = ++$start;
+        $this->echoLink(lang('server_rest'));
+        $url = url('make/make') .'?'. http_build_query($this->_param);
+        if(ENTRANCE=='admin'){
+            mac_jump($url, 3);
+        }
+    }
+
+    public function role_index()
+    {
+        $start = intval($this->_param['start']);
+        $page_count = intval($this->_param['page_count']);
+        $data_count = intval($this->_param['data_count']);
+
+        $GLOBALS['mid'] = 9;
+        $GLOBALS['aid'] = mac_get_aid('role');
+
+        if($start<1){
+            $start=1;
+        }
+        $GLOBALS['config']['app']['makesize'] = 1;
+
+        if($GLOBALS['config']['view']['role_index'] <2){
+            mac_echo(lang('admin/make/view_model_static_err'));
+            exit;
+        }
+
+        if(empty($data_count)){
+            $where = [];
+            $where['role_status'] = ['eq', 1];
+            $data_count = model('Role')->countData($where);
+            $html = mac_read_file($GLOBALS['MAC_ROOT_TEMPLATE'] . 'role/index.html');
+            $labelRule = '{maccms:vod(.*?)num="(.*?)"(.*?)paging="yes"([\s\S]*?)}([\s\S]*?){/maccms:vod}';
+            $labelRule = mac_buildregx($labelRule,"");
+            preg_match_all($labelRule,$html,$arr);
+            $page_size = 20;
+            for($i=0;$i<count($arr[2]);$i++) {
+                $page_size = $arr[2][$i];
+                break;
+            }
+            $page_count = ceil($data_count / $page_size);
+            if($page_count<1){ $page_count=1; }
+            $this->_param['data_count'] = $data_count;
+            $this->_param['page_count'] = $page_count;
+            $this->_param['page_size'] = $page_size;
+        }
+
+        if($start > $page_count){
+            $this->echoLink(lang('admin/make/rolepage_make_complete'));
+            if(ENTRANCE=='admin') {
+                mac_jump(url('make/opt'), 3);
+            }
+            exit;
+        }
+
+        $sec_count = ceil($page_count / $GLOBALS['config']['app']['makesize']);
+        $sec = ceil($start / $GLOBALS['config']['app']['makesize']);
+        $this->echoLink(lang('admin/make/role_index_tip',[$this->_param['page_count'],$sec_count,$sec]));
+        $this->label_maccms();
+
+        $n=1;
+        for($i=$start;$i<=$page_count;$i++){
+            $_REQUEST['page'] = $i;
+            $this->label_role();
+            $link = mac_url_role_index(['page'=>$i]);
+            $this->buildHtml($link,'./','role/index');
+            $this->echoLink(lang('the').''.$i.''.lang('page'),$link);
+            if($GLOBALS['config']['app']['makesize'] == $n){
+                break;
+            }
+            $n++;
+        }
+
+        if($start + $n - 1 >= $page_count){
+            $this->echoLink(lang('admin/make/rolepage_make_complete'));
+            if(ENTRANCE=='admin') {
+                mac_jump(url('make/opt'), 3);
+            }
+            exit;
+        }
+        $this->_param['start'] = $start + $n;
+        $this->echoLink(lang('server_rest'));
+        $url = url('make/make') .'?'. http_build_query($this->_param);
+        if(ENTRANCE=='admin') {
+            mac_jump($url, 3);
+        }
+    }
+
+    public function role_info()
+    {
+        $where = [];
+        $where['role_status'] = ['eq',1];
+        $order = 'role_time desc';
+        $start = intval($this->_param['start']);
+        $page_count = intval($this->_param['page_count']);
+        $data_count = intval($this->_param['data_count']);
+
+        $GLOBALS['mid'] = 9;
+        $GLOBALS['aid'] = mac_get_aid('role','detail');
+
+        if($GLOBALS['config']['view']['role_detail'] <2){
+            mac_echo(lang('admin/make/view_model_static_err'));
+            exit;
+        }
+
+        $ids = $this->_param['role'];
+        if(!empty($ids)){
+            if(!is_array($ids)){
+                $ids = explode(',',$ids);
+            }
+            $where['role_id'] = ['in',$ids];
+            $data_count = count($ids);
+            $page_count = 1;
+            $start = 1;
+        }
+        elseif($this->_param['ac2'] =='day'){
+            $where['role_time'] = ['gt', strtotime(date('Y-m-d'))];
+        }
+        elseif($this->_param['ac2'] =='nomake'){
+            $where['role_time_make'] = ['exp', Db::raw(' < role_time')];
+        }
+
+        if($start<1){
+            $start=1;
+        }
+
+        if(empty($data_count)){
+            $data_count = model('Role')->countData($where);
+            $page_count = ceil($data_count / $GLOBALS['config']['app']['makesize']);
+            $this->_param['data_count'] = $data_count;
+            $this->_param['page_count'] = $page_count;
+        }
+
+        if($start > $page_count){
+            $this->echoLink(lang('admin/make/role_make_complete'));
+            if(ENTRANCE=='admin'){
+                mac_jump(url('make/opt'), 3);
+            }
+            exit;
+        }
+
+        $this->echoLink(lang('admin/make/role_tip',[$data_count,$page_count,$GLOBALS['config']['app']['makesize'],$start]));
+        $res = model('Role')->listData($where, $order, $start, $GLOBALS['config']['app']['makesize']);
+        $update_ids = [];
+        foreach($res['list'] as $v){
+            $_REQUEST['id'] = $v['role_id'];
+            echo mac_substring($v['role_name'],100).'&nbsp;';
+            $this->label_maccms();
+            $info = $this->label_role_detail($v);
+            $link = mac_url_role_detail($v);
+            $this->buildHtml($link, './', 'role/detail');
+            $this->echoLink('detail', $link, '', 0);
+            $update_ids[] = $v['role_id'];
+            echo '<br>';
+        }
+
+        if(!empty($update_ids)){
+            Db::name('role')->where(['role_id'=>['in',$update_ids]])->update(['role_time_make'=>time()]);
+        }
+
+        if($start >= $page_count){
+            $this->echoLink(lang('admin/make/role_make_complete'));
+            if(ENTRANCE=='admin'){
+                mac_jump(url('make/opt'), 3);
+            }
+            exit;
+        }
+        $this->_param['start'] = ++$start;
+        $this->echoLink(lang('server_rest'));
+        $url = url('make/make') .'?'. http_build_query($this->_param);
+        if(ENTRANCE=='admin'){
+            mac_jump($url, 3);
+        }
+    }
+
+    public function plot_index()
+    {
+        $start = intval($this->_param['start']);
+        $page_count = intval($this->_param['page_count']);
+        $data_count = intval($this->_param['data_count']);
+
+        $GLOBALS['mid'] = 1;
+        $GLOBALS['aid'] = mac_get_aid('plot');
+
+        if($start<1){
+            $start=1;
+        }
+        $GLOBALS['config']['app']['makesize'] = 1;
+
+        if($GLOBALS['config']['view']['plot_index'] <2){
+            mac_echo(lang('admin/make/view_model_static_err'));
+            exit;
+        }
+
+        if(empty($data_count)){
+            $where = [];
+            $where['vod_status'] = ['eq', 1];
+            $where['vod_plot'] = ['eq', 1];
+            $data_count = model('Vod')->countData($where);
+            $html = mac_read_file($GLOBALS['MAC_ROOT_TEMPLATE'] . 'plot/index.html');
+            $labelRule = '{maccms:vod(.*?)num="(.*?)"(.*?)paging="yes"([\s\S]*?)}([\s\S]*?){/maccms:vod}';
+            $labelRule = mac_buildregx($labelRule,"");
+            preg_match_all($labelRule,$html,$arr);
+            $page_size = 30;
+            for($i=0;$i<count($arr[2]);$i++) {
+                $page_size = $arr[2][$i];
+                break;
+            }
+            $page_count = ceil($data_count / $page_size);
+            if($page_count<1){ $page_count=1; }
+            $this->_param['data_count'] = $data_count;
+            $this->_param['page_count'] = $page_count;
+            $this->_param['page_size'] = $page_size;
+        }
+
+        if($start > $page_count){
+            $this->echoLink(lang('admin/make/plotpage_make_complete'));
+            if(ENTRANCE=='admin') {
+                mac_jump(url('make/opt'), 3);
+            }
+            exit;
+        }
+
+        $sec_count = ceil($page_count / $GLOBALS['config']['app']['makesize']);
+        $sec = ceil($start / $GLOBALS['config']['app']['makesize']);
+        $this->echoLink(lang('admin/make/plot_index_tip',[$this->_param['page_count'],$sec_count,$sec]));
+        $this->label_maccms();
+
+        $n=1;
+        for($i=$start;$i<=$page_count;$i++){
+            $_REQUEST['page'] = $i;
+            $link = mac_url_plot_index(['page'=>$i]);
+            $this->buildHtml($link,'./','plot/index');
+            $this->echoLink(lang('the').''.$i.''.lang('page'),$link);
+            if($GLOBALS['config']['app']['makesize'] == $n){
+                break;
+            }
+            $n++;
+        }
+
+        if($start + $n - 1 >= $page_count){
+            $this->echoLink(lang('admin/make/plotpage_make_complete'));
+            if(ENTRANCE=='admin') {
+                mac_jump(url('make/opt'), 3);
+            }
+            exit;
+        }
+        $this->_param['start'] = $start + $n;
+        $this->echoLink(lang('server_rest'));
+        $url = url('make/make') .'?'. http_build_query($this->_param);
+        if(ENTRANCE=='admin') {
+            mac_jump($url, 3);
+        }
+    }
+
+    public function plot_info()
+    {
+        $where = [];
+        $where['vod_status'] = ['eq',1];
+        $where['vod_plot'] = ['eq',1];
+        $order = 'vod_time desc';
+        $start = intval($this->_param['start']);
+        $page_count = intval($this->_param['page_count']);
+        $data_count = intval($this->_param['data_count']);
+
+        if($GLOBALS['config']['view']['plot_detail'] <2 && $GLOBALS['config']['view']['vod_plot'] <2){
+            mac_echo(lang('admin/make/view_model_static_err'));
+            exit;
+        }
+
+        $type_ids = $this->_param['vodtype'];
+        if(!empty($type_ids)){
+            if(!is_array($type_ids)){
+                $type_ids = explode(',',$type_ids);
+            }
+            $where['type_id|type_id_1'] = ['in',$type_ids];
+        }
+        if($this->_param['ac2'] =='day'){
+            $where['vod_time'] = ['gt', strtotime(date('Y-m-d'))];
+        }
+
+        if($start<1){
+            $start=1;
+        }
+
+        if(empty($data_count)){
+            $data_count = model('Vod')->countData($where);
+            $page_count = ceil($data_count / $GLOBALS['config']['app']['makesize']);
+            $this->_param['data_count'] = $data_count;
+            $this->_param['page_count'] = $page_count;
+        }
+
+        if($start > $page_count){
+            $this->echoLink(lang('admin/make/plot_make_complete'));
+            if(ENTRANCE=='admin'){
+                mac_jump(url('make/opt'), 3);
+            }
+            exit;
+        }
+
+        $this->echoLink(lang('admin/make/plot_tip',[$data_count,$page_count,$GLOBALS['config']['app']['makesize'],$start]));
+        $res = model('Vod')->listData($where, $order, $start, $GLOBALS['config']['app']['makesize']);
+        foreach($res['list'] as $v){
+            if(empty($v['vod_plot_name'])){
+                continue;
+            }
+            $v['vod_plot_list'] = mac_plot_list($v['vod_plot_name'], $v['vod_plot_detail']);
+            $v['vod_plot_total'] = count($v['vod_plot_list']);
+            $_REQUEST['id'] = $v['vod_id'];
+            echo $v['vod_name'].'&nbsp;';
+
+            $GLOBALS['type_id'] = $v['type_id'];
+            $GLOBALS['type_pid'] = $v['type']['type_pid'];
+            $GLOBALS['mid'] = 1;
+
+            if ($GLOBALS['config']['view']['vod_plot'] >= 2) {
+                $GLOBALS['aid'] = mac_get_aid('vod', 'plot');
+                $this->label_maccms();
+                $this->label_vod_detail($v, 2);
+                $link = mac_url_vod_plot($v);
+                $this->buildHtml($link, './', 'vod/plot');
+                $this->echoLink('plot', $link, '', 0);
+            }
+            if ($GLOBALS['config']['view']['plot_detail'] >= 2) {
+                $GLOBALS['aid'] = mac_get_aid('plot', 'detail');
+                for ($pi = 1; $pi <= $v['vod_plot_total']; $pi++) {
+                    $_REQUEST['page'] = $pi;
+                    $this->label_maccms();
+                    $this->label_vod_detail($v, 2);
+                    $link = mac_url_plot_detail($v, ['page' => $pi]);
+                    $this->buildHtml($link, './', 'plot/detail');
+                    if ($pi == 1) {
+                        $this->echoLink('plot-detail', $link, '', 0);
+                    }
+                }
+            }
+            echo '<br>';
+        }
+
+        if($start >= $page_count){
+            $this->echoLink(lang('admin/make/plot_make_complete'));
+            if(ENTRANCE=='admin'){
+                mac_jump(url('make/opt'), 3);
+            }
+            exit;
+        }
+        $this->_param['start'] = ++$start;
+        $this->echoLink(lang('server_rest'));
+        $url = url('make/make') .'?'. http_build_query($this->_param);
+        if(ENTRANCE=='admin'){
+            mac_jump($url, 3);
         }
     }
 

@@ -104,6 +104,58 @@
                 </div>
             </div>
             <div class="layui-form-item">
+                <label class="layui-form-label">{:lang('actor')}：</label>
+                <div class="flex  max-md:flex-row-reverse">
+                    <div class="layui-input-inline">
+                        <select name="actor[]" multiple style="width:150px;height:150px;" lay-ignore>
+                            {volist name="$actor_list" id="vo"}
+                            <option value="{$vo.actor_id}">{$vo.actor_name}</option>
+                            {/volist}
+                        </select>
+                    </div>
+                    <div class="layui-input-inline w300">
+                        <div class="layui-btn-container">
+                            <input type="button" value="{:lang('admin/make/select_actor')}" class="layui-btn layui-btn-normal" onclick="post('ac=actor_info');"/>
+                            <input type="button" value="{:lang('admin/make/all_actor')}" class="layui-btn layui-btn-normal" onclick="post('ac=actor_info&actor={$actor_ids}');"/>
+                            <input type="button" value="{:lang('admin/make/today_actor')}" class="layui-btn layui-btn-normal" onclick="post('ac=actor_info&ac2=day');"/>
+                            <input type="button" value="{:lang('admin/make/no_make_actor')}" class="layui-btn layui-btn-normal" onclick="post('ac=actor_info&ac2=nomake');"/>
+                            <input type="button" value="{:lang('admin/make/actor_index')}" class="layui-btn layui-btn-normal" onclick="post('ac=actor_index');"/>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">{:lang('role')}：</label>
+                <div class="flex  max-md:flex-row-reverse">
+                    <div class="layui-input-inline">
+                        <select name="role[]" multiple style="width:150px;height:150px;" lay-ignore>
+                            {volist name="$role_list" id="vo"}
+                            <option value="{$vo.role_id}">{$vo.role_name}</option>
+                            {/volist}
+                        </select>
+                    </div>
+                    <div class="layui-input-inline w300">
+                        <div class="layui-btn-container">
+                            <input type="button" value="{:lang('admin/make/select_role')}" class="layui-btn layui-btn-normal" onclick="post('ac=role_info');"/>
+                            <input type="button" value="{:lang('admin/make/all_role')}" class="layui-btn layui-btn-normal" onclick="post('ac=role_info&role={$role_ids}');"/>
+                            <input type="button" value="{:lang('admin/make/today_role')}" class="layui-btn layui-btn-normal" onclick="post('ac=role_info&ac2=day');"/>
+                            <input type="button" value="{:lang('admin/make/no_make_role')}" class="layui-btn layui-btn-normal" onclick="post('ac=role_info&ac2=nomake');"/>
+                            <input type="button" value="{:lang('admin/make/role_index')}" class="layui-btn layui-btn-normal" onclick="post('ac=role_index');"/>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">{:lang('plot')}：</label>
+                <div class="layui-input-inline w300">
+                    <div class="layui-btn-container">
+                        <input type="button" value="{:lang('admin/make/plot_index')}" class="layui-btn layui-btn-normal" onclick="post('ac=plot_index');"/>
+                        <input type="button" value="{:lang('admin/make/all_plot')}" class="layui-btn layui-btn-normal" onclick="post('ac=plot_info&vodtype={$vod_type_ids}');"/>
+                        <input type="button" value="{:lang('admin/make/today_plot')}" class="layui-btn layui-btn-normal" onclick="post('ac=plot_info&vodtype={$vod_type_ids_today}&ac2=day');"/>
+                    </div>
+                </div>
+            </div>
+            <div class="layui-form-item">
                 <label class="layui-form-label">{:lang('admin/make/label_page')}：</label>
                 <div class="flex  max-md:flex-row-reverse">
                     <div class="layui-input-inline">
