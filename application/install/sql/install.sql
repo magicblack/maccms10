@@ -730,6 +730,28 @@ CREATE TABLE `mac_ulog` (
 ) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 ;
 
 -- ----------------------------
+-- Table structure for mac_vod_play_fail
+-- ----------------------------
+DROP TABLE IF EXISTS `mac_vod_play_fail`;
+CREATE TABLE `mac_vod_play_fail` (
+  `fail_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `vod_id` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '影片ID',
+  `vod_sid` tinyint(3) unsigned NOT NULL DEFAULT '0' COMMENT '线路序号(第几个播放源)',
+  `vod_nid` smallint(6) unsigned NOT NULL DEFAULT '0' COMMENT '集数序号(0=整条线路)',
+  `play_from` varchar(30) NOT NULL DEFAULT '' COMMENT '播放器标识(dplayer/videojs等)',
+  `vod_name` varchar(255) NOT NULL DEFAULT '' COMMENT '影片名称(冗余,便于后台列表显示)',
+  `fail_count` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '累计失败次数',
+  `switch_count` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '成功切换到下一线路次数',
+  `first_fail_time` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '首次失败时间',
+  `last_fail_time` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '最近失败时间',
+  `last_fail_ip` varchar(45) NOT NULL DEFAULT '' COMMENT '最近失败IP',
+  PRIMARY KEY (`fail_id`),
+  UNIQUE KEY `uk_vod_sid_nid` (`vod_id`,`vod_sid`,`vod_nid`),
+  KEY `fail_count` (`fail_count`),
+  KEY `last_fail_time` (`last_fail_time`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COMMENT='视频线路播放失败统计';
+
+-- ----------------------------
 -- Table structure for mac_user
 -- ----------------------------
 DROP TABLE IF EXISTS `mac_user`;

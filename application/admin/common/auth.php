@@ -1052,6 +1052,20 @@ return array (
         'controller' => 'role',
         'action' => 'info',
       ),
+      497 => 
+      array (
+        'show' => 1,
+        'name' => lang('menu/vodplayfail'),
+        'controller' => 'vodplayfail',
+        'action' => 'index',
+      ),
+      4971 => 
+      array (
+        'show' => 0,
+        'name' => '--播放失败统计删除',
+        'controller' => 'vodplayfail',
+        'action' => 'del',
+      ),
     ),
   ),
   12 => 

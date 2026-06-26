@@ -538,6 +538,28 @@ if(!empty($col_list[$pre.'ulog']) && empty($col_list[$pre.'ulog']['ulog_point'])
     $sql .= "ALTER TABLE `{$pre}ulog` ADD `ulog_point` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '已观看秒数' AFTER `ulog_points`, ADD `ulog_duration` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '影片总时长(秒)' AFTER `ulog_point`;";
     $sql .= "\r";
 }
+// 播放失败自动切换线路：视频线路播放失败统计表
+if(empty($col_list[$pre.'vod_play_fail'])){
+    $sql .= "CREATE TABLE `{$pre}vod_play_fail` (";
+    $sql .= "`fail_id` int(10) unsigned NOT NULL AUTO_INCREMENT,";
+    $sql .= "`vod_id` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '影片ID',";
+    $sql .= "`vod_sid` tinyint(3) unsigned NOT NULL DEFAULT '0' COMMENT '线路序号(第几个播放源)',";
+    $sql .= "`vod_nid` smallint(6) unsigned NOT NULL DEFAULT '0' COMMENT '集数序号(0=整条线路)',";
+    $sql .= "`play_from` varchar(30) NOT NULL DEFAULT '' COMMENT '播放器标识(dplayer/videojs等)',";
+    $sql .= "`vod_name` varchar(255) NOT NULL DEFAULT '' COMMENT '影片名称(冗余,便于后台列表显示)',";
+    $sql .= "`fail_count` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '累计失败次数',";
+    $sql .= "`switch_count` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '成功切换到下一线路次数',";
+    $sql .= "`first_fail_time` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '首次失败时间',";
+    $sql .= "`last_fail_time` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '最近失败时间',";
+    $sql .= "`last_fail_ip` varchar(45) NOT NULL DEFAULT '' COMMENT '最近失败IP',";
+    $sql .= "PRIMARY KEY (`fail_id`),";
+    $sql .= "UNIQUE KEY `uk_vod_sid_nid` (`vod_id`,`vod_sid`,`vod_nid`),";
+    $sql .= "KEY `fail_count` (`fail_count`),";
+    $sql .= "KEY `last_fail_time` (`last_fail_time`)";
+    $sql .= ") ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='视频线路播放失败统计';";
+    $sql .= "\r";
+}
+
 // 后台操作审计日志
 if (empty($col_list[$pre . 'admin_audit_log'])) {
     $sql .= "CREATE TABLE `{$pre}admin_audit_log` (

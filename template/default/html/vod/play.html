@@ -6,6 +6,7 @@
     {if condition="($obj.vod_copyright neq 1 || $GLOBALS['config']['app']['copyright_status'] neq 1) && !$obj.vod_lock && $popedom.code elt 1 && ($obj['vod_play_list'][$param['sid']]['player_info']['from'] eq 'dplayer' || $obj['vod_play_list'][$param['sid']]['player_info']['from'] eq 'videojs')"}
     <link rel="stylesheet" type="text/css" href="{$maccms.path_tpl}/asset/css/vod-play-social.css?v=202604271" />
     <link rel="stylesheet" type="text/css" href="{$maccms.path_tpl}/asset/css/vod-play-progress.css?v=202606246" />
+    <link rel="stylesheet" type="text/css" href="{$maccms.path_tpl}/asset/css/vod-play-failover.css?v=202606262" />
     {/if}
 </head>
 <body>
@@ -127,6 +128,7 @@
                             {if condition="($obj.vod_copyright neq 1 || $GLOBALS['config']['app']['copyright_status'] neq 1) && !$obj.vod_lock && $popedom.code elt 1 && ($obj['vod_play_list'][$param['sid']]['player_info']['from'] eq 'dplayer' || $obj['vod_play_list'][$param['sid']]['player_info']['from'] eq 'videojs')"}
                             <script type="application/json" id="vod-play-social-config">{"enabled":true,"chatEnabled":{if condition="$play_chatroom_enabled"}true{else/}false{/if},"apiBase":"{:rtrim($maccms.path,'/').'/api.php'}","vodId":{$obj.vod_id},"sid":{$param.sid},"nid":{$param.nid},"playerFrom":"{$obj['vod_play_list'][$param['sid']]['player_info']['from']}","userId":{if condition="isset($user.user_id)"}{$user.user_id}{else/}0{/if},"loginUrl":"{:url('user/login')}","needLoginHint":"{:lang('chatroom/login_required')}"}</script>
                             <script type="application/json" id="vod-play-progress-config">{"enabled":true,"apiBase":"{:rtrim($maccms.path,'/').'/api.php'}","vodId":{$obj.vod_id},"sid":{$param.sid},"nid":{$param.nid},"userId":{if condition="isset($user.user_id)"}{$user.user_id}{else/}0{/if}}</script>
+                            <script type="application/json" id="vod-play-failover-config">{"enabled":true,"apiBase":"{:rtrim($maccms.path,'/').'/api.php'}","vodId":{$obj.vod_id},"sid":{$param.sid},"nid":{$param.nid},"canplayTimeoutMs":15000,"playFrom":"{$obj['vod_play_list'][$param['sid']]['player_info']['from']}"}</script>
                             <div class="mac-play-chat-panel" id="macPlayChatPanel">
                                     <div class="mac-play-chat-panel__head">
                                         <span class="mac-play-chat-panel__title mac-play-chat-panel__title--pc" data-lang="string_play_chat_title">本片讨论</span>
@@ -284,7 +286,7 @@
                                     <h3 class="title" data-lang="string_play_bflb">播放列表</h3>
                                     <div class="vod-playlist-head-center">
                                         {maccms:foreach name="obj.vod_play_list" id="vh" by="sort"}
-                                        {if condition="$vh.player_info.from==$obj['vod_play_list'][$param['sid']]['player_info']['from']"}
+                                        {if condition="$vh.sid eq $param.sid"}
                                         <div class="player_infotip player_infotip--marquee js-play-page-marquee" data-marquee-ready="0">
                                             <div class="player_infotip__viewport">
                                                 <div class="player_infotip__track">
@@ -315,7 +317,7 @@
                                     <div class="scroller">
                                     <ul class="title_nav">
                                     {maccms:foreach name="obj.vod_play_list" id="vo" by="sort"}
-                                    <li class="tab-play {if$vo.player_info.from==$obj['vod_play_list'][$param['sid']]['player_info']['from']}active{/if}" title="{$vo.player_info.show}"><a {if$vo.player_info.from==$obj['vod_play_list'][$param['sid']]['player_info']['from']}href="javascript:;" class="playnow_info"{else}href="{:mac_url_vod_play($obj,['sid'=>$vo.sid,'nid'=>$param.nid])}"{/if}><i class="iconfont">&#xe62f;</i>&nbsp;{$vo.player_info.show}</a></li>
+                                    <li class="tab-play {if condition="$vo.sid eq $param.sid"}active{/if}" title="{$vo.player_info.show}{if condition="$vo.note neq ''"} · {$vo.note}{/if}"><a {if condition="$vo.sid eq $param.sid"}href="javascript:;" class="playnow_info"{else}href="{:mac_url_vod_play($obj,['sid'=>$vo.sid,'nid'=>$param.nid])}"{/if}><i class="iconfont">&#xe62f;</i>&nbsp;{$vo.player_info.show}{if condition="$vo.note neq ''"} · {$vo.note}{/if}</a></li>
                                     {/maccms:foreach}
                                     </ul>
                                     </div>
@@ -325,7 +327,7 @@
                                 $__vpc = (!empty($vo['urls']) && is_array($vo['urls'])) ? count($vo['urls']) : 0;
                                 $__plcls = ($__vpc > 6) ? ' playlist_notfull--collapsible is-collapsed' : '';
                                 {/php}
-                                <div class="content {if$vo.player_info.from==$obj['vod_play_list'][$param['sid']]['player_info']['from']}show{else}hide{/if}">
+                                <div class="content {if condition="$vo.sid eq $param.sid"}show{else}hide{/if}">
                                     <div id="playlistbox" class="playlist_notfull{$__plcls}">
                                         <ul class="content_playlist list_scroll">
                                             {maccms:foreach name="vo.urls" id="vo2" key="key2"}
@@ -457,6 +459,7 @@
         {if condition="($obj.vod_copyright neq 1 || $GLOBALS['config']['app']['copyright_status'] neq 1) && !$obj.vod_lock && $popedom.code elt 1 && ($obj['vod_play_list'][$param['sid']]['player_info']['from'] eq 'dplayer' || $obj['vod_play_list'][$param['sid']]['player_info']['from'] eq 'videojs')"}
         <script defer src="{$maccms.path_tpl}/asset/js/vod-play-social.js?v=202604261830"></script>
         <script defer src="{$maccms.path_tpl}/asset/js/vod-play-progress.js?v=202606246"></script>
+        <script defer src="{$maccms.path_tpl}/asset/js/vod-play-failover.js?v=202606262"></script>
         {/if}
         <script type="text/javascript" src="{$maccms.path_tpl}/asset/js/vod-play-playlist.js"></script>
         <script type="text/javascript" src="{$maccms.path_tpl}/asset/js/vod-play-tagwall.js"></script>

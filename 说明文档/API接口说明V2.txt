@@ -453,6 +453,17 @@ API 接口说明 V2（基于当前实现）
   - 需登录；参数：list（JSON 字符串或数组，每项 vod_id, sid, nid, point, duration）
   - 说明：库内不存在则新增；已存在仅当本地 point 大于库内 point 才覆盖（跨设备同步）；单次最多处理 50 条
   - 返回：{code:1, info:{total, success}}
+- 上报线路播放失败（播放失败自动切换线路）：POST /api.php/ulog/report_fail
+  - 无需登录；同一(vod_id,sid,nid)在 30 秒内重复上报会被节流忽略，防止刷量
+  - 参数：
+    - vod_id：number 必填，影片ID
+    - sid：number 可选，线路序号（第几个播放源，从0开始），默认0
+    - nid：number 可选，集数序号（从0开始，0=整条线路），默认0
+    - play_from：string 可选，播放器/来源标识（如 dplayer、videojs）
+    - vod_name：string 可选，影片名称（后台列表冗余显示，会做长度截断）
+    - switched：number 可选，是否已成功切换到下一条线路（1=已切换, 0=仅失败未切换），默认0
+  - 说明：前台播放器 onerror 自动切换线路后调用；数据写入 mac_vod_play_fail 表，按 (vod_id,vod_sid,vod_nid) 唯一键聚合累加 fail_count/switch_count 并记录 last_fail_time；请勿高频重复上报。后台菜单「视频 → 播放失败统计(vodplayfail)」可按失败次数/最近失败时间排序，定位失效线路。
+  - 返回：{code:1, msg:'ok'} 或 {code:0, msg:'参数错误'}
 - 积分日志：GET /api.php/user/get_plog
   - 需登录；参数：page、limit；可选 filter=income|expense
 - 删除积分日志：POST /api.php/user/del_plog

@@ -217,6 +217,54 @@ class Ulog extends Base
     }
 
     /**
+     * 上报一次线路播放失败（前端播放器 onerror 自动切换线路时调用）
+     * POST api.php/ulog/report_fail
+     * 参数：
+     *   vod_id    必填，影片ID
+     *   sid       线路序号(第几个播放源,从0开始)
+     *   nid       集数序号(可选,默认0)
+     *   play_from 播放器/来源标识(可选,如 dplayer)
+     *   vod_name  影片名称(可选,后台列表冗余显示)
+     *   switched  是否已成功切换到下一线路(0/1,可选)
+     * 无需登录；同一(vod_id,sid,nid)在 30 秒内重复上报会被节流忽略，防止刷量。
+     */
+    public function report_fail(Request $request)
+    {
+        if (!$request->isPost()) {
+            return json(['code' => 1001, 'msg' => lang('param_err')]);
+        }
+
+        $param = $request->post();
+        $vodId = intval($param['vod_id'] ?? 0);
+        $sid   = intval($param['sid'] ?? 0);
+        $nid   = intval($param['nid'] ?? 0);
+
+        if ($vodId < 1) {
+            return json(['code' => 1001, 'msg' => lang('param_err')]);
+        }
+
+        // 防刷：同一线路集数 30 秒内仅记一次
+        $ckey = 'pf_' . $vodId . '_' . $sid . '_' . $nid;
+        if (cookie($ckey)) {
+            return json(['code' => 1, 'msg' => lang('save_ok'), 'info' => ['throttled' => 1]]);
+        }
+        cookie($ckey, 1, 30);
+
+        $data = [
+            'vod_id'    => $vodId,
+            'vod_sid'   => $sid,
+            'vod_nid'   => $nid,
+            'play_from' => (string)($param['play_from'] ?? ''),
+            'vod_name'  => (string)($param['vod_name'] ?? ''),
+            'switched'  => intval($param['switched'] ?? 0),
+            'ip'        => $request->ip(),
+        ];
+
+        $res = model('VodPlayFail')->reportFail($data);
+        return json($res);
+    }
+
+    /**
      * 写入或更新单条播放进度记录
      *
      * @param int  $uid       用户ID

@@ -380,6 +380,47 @@
 	var lastProgressPost = 0;
 	var pendingSeekPoint = null;
 	var hasUserPlayed = false;
+	var canplayTimeoutMs = 15000;
+	var canplayTimer = null;
+	var playOkSent = false;
+	var playFailSent = false;
+
+	function notifyPlayOk() {
+		if (playOkSent) return;
+		playOkSent = true;
+		playFailSent = false;
+		clearCanplayTimeout();
+		try {
+			parent.postMessage({ source: 'mac-player', type: 'play_ok' }, location.origin);
+		} catch (eOk) {}
+	}
+
+	function notifyPlayFail(reason) {
+		if (playFailSent || playOkSent) return;
+		playFailSent = true;
+		clearCanplayTimeout();
+		try {
+			parent.postMessage(
+				{ source: 'mac-player', type: 'play_fail', reason: reason || 'error' },
+				location.origin
+			);
+		} catch (eFail) {}
+	}
+
+	function clearCanplayTimeout() {
+		if (canplayTimer) {
+			clearTimeout(canplayTimer);
+			canplayTimer = null;
+		}
+	}
+
+	function armCanplayTimeout() {
+		clearCanplayTimeout();
+		playFailSent = false;
+		canplayTimer = setTimeout(function () {
+			notifyPlayFail('timeout');
+		}, canplayTimeoutMs);
+	}
 
 	function postProgressMessage(checkpoint) {
 		var video = dp.video;
@@ -458,12 +499,30 @@
 		});
 	}
 
+	function bindFailoverHooks() {
+		dp.on('error', function () {
+			notifyPlayFail('error');
+		});
+		dp.on('canplay', notifyPlayOk);
+		dp.on('playing', notifyPlayOk);
+		dp.on('loadeddata', function () {
+			if (dp.video && dp.video.readyState >= 2) notifyPlayOk();
+		});
+		if (dp.video) {
+			dp.video.addEventListener('error', function () {
+				notifyPlayFail('error');
+			});
+		}
+		armCanplayTimeout();
+	}
+
 	dp.on('pause', checkpointPause);
 
 	dp.on('loadedmetadata', flushPendingSeek);
 	dp.on('canplay', flushPendingSeek);
 	dp.on('loadedmetadata', bindProgressReporting);
 	bindProgressReporting();
+	bindFailoverHooks();
 
 	window.addEventListener('message', function (ev) {
 		try {
@@ -474,6 +533,11 @@
 		var d = ev.data;
 		if (!d || d.source !== MSG_PARENT) return;
 		if (d.type === 'init') {
+			return;
+		}
+		if (d.type === 'failover_init') {
+			canplayTimeoutMs = Math.max(5000, parseInt(d.canplayTimeoutMs, 10) || 15000);
+			armCanplayTimeout();
 			return;
 		}
 		if (d.type === 'danmaku_toggle' && dp.danmaku) {
