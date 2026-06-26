@@ -2017,6 +2017,7 @@ Note: Si les listes noires et blanches sont remplies, les stratégies s\'appliqu
   'admin/live/content'=>'Présentation de la chaîne',
   'admin/make/title' => 'Gestion des pages statiques',
   'admin/make/view_model_static_err' => 'Le mode de navigation n\'est pas statique, impossible de générer',
+  'admin/make/template_not_exists' => 'Fichier de modèle introuvable : %s',
   'admin/make/typepage_make_complete' => 'Génération de pages de catégorie terminée',
   'admin/make/typepage_make_complete_later_make_index' => 'Génération des pages de catégorie terminée, génération de la page d\'accueil en cours',
   'admin/make/list_make_complate_later' => 'Génération de la liste des pages terminée, veuillez patienter',

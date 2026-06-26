@@ -2018,6 +2018,7 @@ Nota: Si se especifican listas negras y blancas, ambas se aplicarán simultánea
   'admin/live/content'=>'Introducción del canal',
   'admin/make/title' => 'Gestión de Generación de Estáticos',
   'admin/make/view_model_static_err' => 'El modo de navegación no es estático y no se puede generar.',
+  'admin/make/template_not_exists' => 'Archivo de plantilla no encontrado: %s',
   'admin/make/typepage_make_complete' => 'Página de Categoría generada correctamente',
   'admin/make/typepage_make_complete_later_make_index' => 'Página de Categoría generada correctamente. Generando página de inicio más tarde.',
   'admin/make/list_make_complate_later' => 'Página de Lista generada correctamente. Continuará más tarde',

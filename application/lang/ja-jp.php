@@ -2016,6 +2016,7 @@ https://www.baidu.com/123.jpg
   'admin/live/content'=>'チャンネル紹介',
   'admin/make/title' => '静的生成管理',
   'admin/make/view_model_static_err' => '閲覧モードは静的ではありません。生成できません',
+  'admin/make/template_not_exists' => 'テンプレートファイルが存在しません：%s',
   'admin/make/typepage_make_complete' => 'カテゴリページの生成が完了しました',
   'admin/make/typepage_make_complete_later_make_index' => 'カテゴリページの生成が完了しました。しばらくしてからホームページの生成を続行します',
   'admin/make/list_make_complate_later' => 'リストページの生成が完了しました。しばらくしてから続行します',

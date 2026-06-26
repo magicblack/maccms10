@@ -30,6 +30,14 @@ class Make extends Base
         if(empty($htmlfile) || empty($htmlpath) || empty($templateFile)){
             return false;
         }
+        if(!mac_tpl_exists($templateFile)){
+            mac_echo('<style type="text/css">body{font-size:12px;color: #333333;line-height:21px;}span{font-weight:bold;color:#FF0000}</style>');
+            mac_echo(lang('admin/make/template_not_exists', [$templateFile . '.html']));
+            if(ENTRANCE=='admin'){
+                mac_jump(url('make/opt'), 3);
+            }
+            exit;
+        }
         $content    =   $this->label_fetch($templateFile);
         $htmlfile = reset_html_filename($htmlfile);
         $dir   =  dirname($htmlfile);
@@ -338,21 +346,13 @@ class Make extends Base
                 $where['art_status'] = ['eq', 1];
                 $data_count = model('Art')->countData($where);
                 $html = mac_read_file($GLOBALS['MAC_ROOT_TEMPLATE'] . 'art/'.$type_info['type_tpl']);
-                $labelRule = '{maccms:art(.*?)num="(.*?)"(.*?)paging="yes"([\s\S]*?)}([\s\S]*?){/maccms:art}';
+                $page_size = mac_make_paging_size($html, 'art', 0);
             }
             else{
                 $where['vod_status'] = ['eq', 1];
                 $data_count = model('Vod')->countData($where);
                 $html = mac_read_file($GLOBALS['MAC_ROOT_TEMPLATE'] . 'vod/'.$type_info['type_tpl']);
-                $labelRule = '{maccms:vod(.*?)num="(.*?)"(.*?)paging="yes"([\s\S]*?)}([\s\S]*?){/maccms:vod}';
-            }
-
-            $labelRule = mac_buildregx($labelRule,"");
-            preg_match_all($labelRule,$html,$arr);
-
-            for($i=0;$i<count($arr[2]);$i++) {
-                $page_size = $arr[2][$i];
-                break;
+                $page_size = mac_make_paging_size($html, 'vod', 0);
             }
             if(empty($page_size)){
                 $page_size = 20;
@@ -471,15 +471,7 @@ class Make extends Base
             $where['topic_status'] = ['eq', 1];
             $data_count = model('Topic')->countData($where);
             $html = mac_read_file($GLOBALS['MAC_ROOT_TEMPLATE'] . 'topic/index.html');
-            $labelRule = '{maccms:topic(.*?)num="(.*?)"(.*?)paging="yes"([\s\S]*?)}([\s\S]*?){/maccms:topic}';
-
-            $labelRule = mac_buildregx($labelRule,"");
-            preg_match_all($labelRule,$html,$arr);
-
-            for($i=0;$i<count($arr[2]);$i++) {
-                $page_size = $arr[2][$i];
-                break;
-            }
+            $page_size = mac_make_paging_size($html, 'topic', 0);
             if(empty($page_size)){
                 $page_size = 20;
             }
@@ -1029,14 +1021,7 @@ class Make extends Base
             $where['actor_status'] = ['eq', 1];
             $data_count = model('Actor')->countData($where);
             $html = mac_read_file($GLOBALS['MAC_ROOT_TEMPLATE'] . 'actor/index.html');
-            $labelRule = '{maccms:actor(.*?)num="(.*?)"(.*?)paging="yes"([\s\S]*?)}([\s\S]*?){/maccms:actor}';
-            $labelRule = mac_buildregx($labelRule,"");
-            preg_match_all($labelRule,$html,$arr);
-            $page_size = 20;
-            for($i=0;$i<count($arr[2]);$i++) {
-                $page_size = $arr[2][$i];
-                break;
-            }
+            $page_size = mac_make_paging_size($html, 'actor', 20);
             $page_count = ceil($data_count / $page_size);
             if($page_count<1){ $page_count=1; }
             $this->_param['data_count'] = $data_count;
@@ -1196,14 +1181,7 @@ class Make extends Base
             $where['role_status'] = ['eq', 1];
             $data_count = model('Role')->countData($where);
             $html = mac_read_file($GLOBALS['MAC_ROOT_TEMPLATE'] . 'role/index.html');
-            $labelRule = '{maccms:vod(.*?)num="(.*?)"(.*?)paging="yes"([\s\S]*?)}([\s\S]*?){/maccms:vod}';
-            $labelRule = mac_buildregx($labelRule,"");
-            preg_match_all($labelRule,$html,$arr);
-            $page_size = 20;
-            for($i=0;$i<count($arr[2]);$i++) {
-                $page_size = $arr[2][$i];
-                break;
-            }
+            $page_size = mac_make_paging_size($html, 'vod', 20);
             $page_count = ceil($data_count / $page_size);
             if($page_count<1){ $page_count=1; }
             $this->_param['data_count'] = $data_count;
@@ -1364,14 +1342,7 @@ class Make extends Base
             $where['vod_plot'] = ['eq', 1];
             $data_count = model('Vod')->countData($where);
             $html = mac_read_file($GLOBALS['MAC_ROOT_TEMPLATE'] . 'plot/index.html');
-            $labelRule = '{maccms:vod(.*?)num="(.*?)"(.*?)paging="yes"([\s\S]*?)}([\s\S]*?){/maccms:vod}';
-            $labelRule = mac_buildregx($labelRule,"");
-            preg_match_all($labelRule,$html,$arr);
-            $page_size = 30;
-            for($i=0;$i<count($arr[2]);$i++) {
-                $page_size = $arr[2][$i];
-                break;
-            }
+            $page_size = mac_make_paging_size($html, 'vod', 30);
             $page_count = ceil($data_count / $page_size);
             if($page_count<1){ $page_count=1; }
             $this->_param['data_count'] = $data_count;

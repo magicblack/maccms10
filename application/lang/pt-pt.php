@@ -2020,6 +2020,7 @@ https://www.baidu.com/123.jpg
   'admin/live/content'=>'Introdução do canal',
   'admin/make/title' => 'Gerenciamento de geração estática',
   'admin/make/view_model_static_err' => 'O modo de navegação não é estático, não é possível gerar',
+  'admin/make/template_not_exists' => 'Ficheiro de modelo não encontrado: %s',
   'admin/make/typepage_make_complete' => 'Geração da página de categoria concluída',
   'admin/make/typepage_make_complete_later_make_index' => 'Geração da página de categoria concluída, continue gerando a página inicial mais tarde',
   'admin/make/list_make_complate_later' => 'Geração da página de lista concluída, continue mais tarde',

@@ -2002,6 +2002,7 @@ Hinweis: Wenn sowohl Blacklist als auch Whitelist ausgefüllt sind, werden beide
   'admin/live/content'=>'Kanalbeschreibung',
   'admin/make/title' => 'Statische Generierungs-Verwaltung',
   'admin/make/view_model_static_err' => 'Nicht-statischer Anzeigemodus, Generierung nicht möglich',
+  'admin/make/template_not_exists' => 'Vorlagendatei nicht gefunden: %s',
   'admin/make/typepage_make_complete' => 'Kategorieseiten-Generierung abgeschlossen',
   'admin/make/typepage_make_complete_later_make_index' => 'Kategorieseiten-Generierung abgeschlossen, Startseite wird in Kürze generiert',
   'admin/make/list_make_complate_later' => 'Listenseiten-Generierung abgeschlossen, wird fortgesetzt',

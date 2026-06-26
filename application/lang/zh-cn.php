@@ -2459,6 +2459,7 @@ https://www.baidu.com/123.jpg
     'admin/make/plot_index_tip'=>'正在生成剧情列表页，共%s页，分%s次生成，当前%s次',
     'admin/make/plotpage_make_complete'=>'剧情列表页生成完毕',
     'admin/make/make_page_num'=>'生成页数',
+    'admin/make/template_not_exists'=>'模板文件不存在：%s',
 
 
     'admin/order/title'=>'订单管理',

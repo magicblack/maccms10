@@ -721,6 +721,40 @@ function mac_buildregx($regstr,$regopt)
     return '/'.str_replace('/','\/',$regstr).'/'.$regopt;
 }
 
+function mac_tpl_file($templateFile)
+{
+    if (empty($templateFile)) {
+        return '';
+    }
+    $templateFile = str_replace('.html', '', $templateFile);
+    return $GLOBALS['MAC_ROOT_TEMPLATE'] . $templateFile . '.html';
+}
+
+function mac_tpl_exists($templateFile)
+{
+    $path = mac_tpl_file($templateFile);
+    return $path !== '' && is_file($path);
+}
+
+function mac_make_paging_size($html, $tag, $default = 0)
+{
+    if ($html === false || $html === '' || $html === null) {
+        return $default;
+    }
+    $tag = preg_quote($tag, '/');
+    $labelRule = '\{maccms:' . $tag . '([^}]*paging="yes"[^}]*)\}';
+    $labelRule = mac_buildregx($labelRule, 'is');
+    if (!preg_match_all($labelRule, $html, $arr)) {
+        return $default;
+    }
+    foreach ($arr[1] as $attrs) {
+        if (preg_match('/\bnum=["\'](\d+)["\']/', $attrs, $numMatch)) {
+            return intval($numMatch[1]);
+        }
+    }
+    return $default;
+}
+
 function mac_em_replace($s)
 {
     return preg_replace("/\[em:(\d{1,})?\]/","<img src=\"". MAC_PATH ."static/images/face/$1.gif\" border=0/>",$s);

@@ -2017,6 +2017,7 @@ https://www.baidu.com/123.jpg
 
   'admin/make/title' => '生成靜態管理',
   'admin/make/view_model_static_err' => '瀏覽模式非靜態，無法生成',
+  'admin/make/template_not_exists' => '模板檔案不存在：%s',
   'admin/make/typepage_make_complete' => '分類頁生成完畢',
   'admin/make/typepage_make_complete_later_make_index' => '分類頁生成完畢，稍後繼續生成首頁',
   'admin/make/list_make_complate_later' => '列表頁生成完畢，稍後繼續',

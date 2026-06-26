@@ -2014,6 +2014,7 @@ https://www.baidu.com/123.jpg
   'admin/live/content'=>'채널 소개',
   'admin/make/title' => '정적 생성 관리',
   'admin/make/view_model_static_err' => '찾아보기 모드가 정적이 아니므로 생성할 수 없습니다.',
+  'admin/make/template_not_exists' => '템플릿 파일을 찾을 수 없습니다: %s',
   'admin/make/typepage_make_complete' => '카테고리 페이지 생성 완료',
   'admin/make/typepage_make_complete_later_make_index' => '카테고리 페이지 생성 완료, 잠시 후 홈페이지 생성 계속',
   'admin/make/list_make_complate_later' => '목록 페이지 생성 완료, 잠시 후 계속',

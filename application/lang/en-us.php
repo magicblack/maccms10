@@ -2164,6 +2164,7 @@ Note: If both black and white lists are filled, both policies will take effect.'
   'admin/live/content'=>'Channel Introduction',
   'admin/make/title' => 'Static Generation Management',
   'admin/make/view_model_static_err' => 'Non-static browsing mode, unable to generate',
+  'admin/make/template_not_exists' => 'Template file not found: %s',
   'admin/make/typepage_make_complete' => 'Category page generation completed',
   'admin/make/typepage_make_complete_later_make_index' => 'Category page generation completed, continue to generate homepage later',
   'admin/make/list_make_complate_later' => 'List page generation completed, continue later',
