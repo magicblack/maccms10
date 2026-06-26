@@ -198,12 +198,12 @@ class User extends Base
         $config = config('maccms');
 
         $data = [];
-        $password_raw = trim($param['user_pwd']);
-        $data['user_name'] = htmlspecialchars(urldecode(trim($param['user_name'])));
-        $data['user_pwd'] = htmlspecialchars(urldecode(trim($param['user_pwd'])));
-        $data['user_pwd2'] = htmlspecialchars(urldecode(trim($param['user_pwd2'])));
-        $data['verify'] = $param['verify'];
-        $uid = $param['uid'];
+        $password_raw = isset($param['user_pwd']) ? trim($param['user_pwd']) : '';
+        $data['user_name'] = htmlspecialchars(urldecode(trim(isset($param['user_name']) ? $param['user_name'] : '')));
+        $data['user_pwd'] = htmlspecialchars(urldecode(trim(isset($param['user_pwd']) ? $param['user_pwd'] : '')));
+        $data['user_pwd2'] = htmlspecialchars(urldecode(trim(isset($param['user_pwd2']) ? $param['user_pwd2'] : '')));
+        $data['verify'] = isset($param['verify']) ? $param['verify'] : '';
+        $uid = isset($param['uid']) ? $param['uid'] : 0;
         $is_from_3rdparty = !empty($param['user_openid_qq']) || !empty($param['user_openid_weixin']);
 
 
@@ -227,7 +227,7 @@ class User extends Base
             return ['code' => 1006, 'msg' => lang('model/user/name_contain')];
         }
 
-        $validate = \think\Loader::validate('User');
+        $validate = new \app\common\validate\User();
         if (!$validate->scene('add')->check($data)) {
             return ['code' => 1007, 'msg' => lang('param_err').'：' . $validate->getError()];
         }
@@ -260,8 +260,8 @@ class User extends Base
         $fields['user_status'] = intval($config['user']['reg_status']);
         $fields['user_reg_time'] = time();
         $fields['user_reg_ip'] = $ip;
-        $fields['user_openid_qq'] = (string)$param['user_openid_qq'];
-        $fields['user_openid_weixin'] = (string)$param['user_openid_weixin'];
+        $fields['user_openid_qq'] = isset($param['user_openid_qq']) ? (string)$param['user_openid_qq'] : '';
+        $fields['user_openid_weixin'] = isset($param['user_openid_weixin']) ? (string)$param['user_openid_weixin'] : '';
 
         if (!$is_from_3rdparty) {
             // https://github.com/magicblack/maccms10/issues/418

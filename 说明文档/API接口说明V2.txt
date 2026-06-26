@@ -426,7 +426,7 @@ API 接口说明 V2（基于当前实现）
   - 参数：user_name、user_pwd（表单或 param 可读）
   - 返回：{code:1, msg:'登录成功', info:{user_id, user_name, user_nick_name, ...}}
 - 注册：POST /api.php/user/register
-  - 参数：user_name、user_pwd 必填；可选 user_email、user_phone、invite_code 等
+  - 参数：user_name、user_pwd、user_pwd2 必填；可选 user_email、user_phone、invite_code 等
 - 退出：任意方式 /api.php/user/logout
   - 返回：{code:1, msg:'已退出登录'}
 - 当前用户资料：GET /api.php/user/get_info
@@ -936,4 +936,3 @@ API 接口说明 V2（基于当前实现）
     - 仅返回 live_status=1 的频道；不存在或已禁用返回 code=1002
     - 请求时自动增加点击量（live_hits、live_hits_day、live_hits_week、live_hits_month 各+1，并更新 live_time_hits）
     - live_url_list 格式与列表接口一致
-
