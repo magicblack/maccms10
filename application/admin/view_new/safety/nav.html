@@ -1,0 +1,5 @@
+<div class="layui-btn-group" style="margin-bottom:12px;">
+    <a href="{:url('safety/file')}" class="layui-btn layui-btn-sm {if condition="$Request.action eq 'file'"}layui-btn-normal{else/}layui-btn-primary{/if}">{:lang('menu/safety_file')}</a>
+    <a href="{:url('safety/checkup')}" class="layui-btn layui-btn-sm {if condition="$Request.action eq 'checkup'"}layui-btn-normal{else/}layui-btn-primary{/if}">{:lang('menu/safety_checkup')}</a>
+    <a href="{:url('safety/data')}" class="layui-btn layui-btn-sm {if condition="$Request.action eq 'data'"}layui-btn-normal{else/}layui-btn-primary{/if}">{:lang('menu/safety_data')}</a>
+</div>

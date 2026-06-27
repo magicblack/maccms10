@@ -1,5 +1,12 @@
 # 安全检测、URL推送、应用市场、在线升级
 
+## 安全体检 (`应用 → 安全体检` / `menu/safety_checkup`)
+
+- 检测 **CSRF、操作审计、API/前台防爬、安全响应头** 等开关是否开启。  
+- 检测 **cache_flag** 是否为弱默认值、**admin_audit_crypto_secret** 是否配置、**site_url** 是否暴露本地/内网地址。  
+- 红/黄/绿灯 + **一键修复**（可自动项）或跳转参数配置。  
+- 升级后若表单 **403**：刷新页面重试；或在 **系统 → 参数配置** 关闭 CSRF，或追加 `security_csrf_admin_exempt` 豁免路由（默认含 `upload/*`）。
+
 ## 文件安全检测 (`安全 → 文件安全检测` / `menu/safety_file`)
 
 - 扫描 `template/`、`runtime/`、`application/` 等处 **新增/可疑 PHP**，对比常见 **WebShell** 特征。  

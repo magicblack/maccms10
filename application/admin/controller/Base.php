@@ -71,6 +71,14 @@ class Base extends All
             return true;
         }
 
+        // 安全体检一键修复：已授权 checkup 的子管理员可 POST fix（fix 为 auth.php 中 show=0 隐藏项）
+        if ($c === 'safety' && $a === 'fix') {
+            $authStr = ',' . (string)$this->_admin['admin_auth'] . ',';
+            if (strpos($authStr, ',safety/fix,') !== false || strpos($authStr, ',safety/checkup,') !== false) {
+                return true;
+            }
+        }
+
         $auths = $this->_admin['admin_auth'] . ',index/index,index/welcome,index/logout,';
         $cur = ','.$c.'/'.$a.',';
         if($this->_admin['admin_id'] =='1'){

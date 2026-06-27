@@ -1815,12 +1815,28 @@ return array (
         'action' => 'file',
         'param' => '',
       ),
+      11301 => 
+      array (
+        'show' => 1,
+        'name' => lang('menu/safety_checkup'),
+        'controller' => 'safety',
+        'action' => 'checkup',
+        'param' => '',
+      ),
       114 => 
       array (
         'show' => 1,
         'name' => lang('menu/safety_data'),
         'controller' => 'safety',
         'action' => 'data',
+        'param' => '',
+      ),
+      11401 => 
+      array (
+        'show' => 0,
+        'name' => lang('admin/safety/fix_menu'),
+        'controller' => 'safety',
+        'action' => 'fix',
         'param' => '',
       ),
       11200 => 

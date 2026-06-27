@@ -16,6 +16,40 @@ class Safety extends Base
 
     }
 
+    /**
+     * 安全体检：开关状态、cache_flag、crypto_secret、site_url 等。
+     */
+    public function checkup()
+    {
+        $report = \app\common\util\SecurityHealthCheck::run(config('maccms'));
+        $this->assign('report', $report);
+        $this->assign('title', lang('admin/safety/checkup_title'));
+        return $this->fetch('admin@safety/checkup');
+    }
+
+    /**
+     * 一键修复（POST action=enable_csrf|enable_all_security|fix_all_recommended|…）
+     */
+    public function fix()
+    {
+        if (!Request()->isPost()) {
+            return $this->error(lang('param_err'));
+        }
+        $param = input();
+        $validate = \think\Loader::validate('Token');
+        if (!$validate->check($param)) {
+            $err = $validate->getError();
+            $msg = is_scalar($err) ? (string)$err : lang('param_err');
+            return $this->error($msg);
+        }
+        $action = isset($param['action']) ? trim((string)$param['action']) : '';
+        $result = \app\common\util\SecurityHealthCheck::applyFix($action);
+        if (empty($result['ok'])) {
+            return $this->error($result['msg']);
+        }
+        return $this->success($result['msg'], url('safety/checkup'));
+    }
+
     protected function listDir($dir){
         if(is_dir($dir)){
             if ($dh = opendir($dir)) {

@@ -1,0 +1,111 @@
+{include file="../../../application/admin/view_new/public/head" /}
+
+<div class="page-container">
+    {include file="../../../application/admin/view_new/safety/nav" /}
+    <div class="layui-tab">
+        <ul class="layui-tab-title">
+            <li class="layui-this">{:lang('admin/safety/checkup_title')}</li>
+        </ul>
+        <div class="layui-tab-content">
+            <div class="layui-tab-item layui-show">
+                <blockquote class="layui-elem-quote layui-quote-nm">
+                    {:lang('admin/safety/checkup_tip')}
+                </blockquote>
+
+                {php}
+                $overall = isset($report['summary']['overall']) ? $report['summary']['overall'] : 'yellow';
+                $overallClass = ['green'=>'#16b777','yellow'=>'#FFB800','red'=>'#FF5722'];
+                $overallColor = isset($overallClass[$overall]) ? $overallClass[$overall] : '#FFB800';
+                {/php}
+                <div class="layui-card" style="margin-bottom:16px;border-left:4px solid {$overallColor};">
+                    <div class="layui-card-body">
+                        <strong>{:lang('admin/safety/checkup_summary')}：</strong>
+                        {if condition="$report.summary.overall eq 'green'"}
+                        <span style="color:#16b777;">{:lang('admin/safety/checkup_level_green')}</span>
+                        {elseif condition="$report.summary.overall eq 'red'"/}
+                        <span style="color:#FF5722;">{:lang('admin/safety/checkup_level_red')}</span>
+                        {else/}
+                        <span style="color:#FFB800;">{:lang('admin/safety/checkup_level_yellow')}</span>
+                        {/if}
+                        <span class="layui-word-aux" style="margin-left:12px;">
+                            {:lang('admin/safety/checkup_counts',[$report.summary.counts.green,$report.summary.counts.yellow,$report.summary.counts.red])}
+                        </span>
+                    </div>
+                </div>
+
+                <table class="layui-table" lay-skin="line">
+                    <thead>
+                        <tr>
+                            <th width="72">{:lang('admin/safety/checkup_col_level')}</th>
+                            <th>{:lang('admin/safety/checkup_col_item')}</th>
+                            <th>{:lang('admin/safety/checkup_col_detail')}</th>
+                            <th>{:lang('admin/safety/checkup_col_suggest')}</th>
+                            <th width="140">{:lang('admin/safety/checkup_col_action')}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {volist name="report.items" id="vo"}
+                        <tr>
+                            <td>
+                                {if condition="$vo.level eq 'green'"}
+                                <span class="layui-badge" style="background:#16b777;">{:lang('admin/safety/checkup_badge_ok')}</span>
+                                {elseif condition="$vo.level eq 'red'"/}
+                                <span class="layui-badge">{:lang('admin/safety/checkup_badge_danger')}</span>
+                                {else/}
+                                <span class="layui-badge layui-bg-orange">{:lang('admin/safety/checkup_badge_warn')}</span>
+                                {/if}
+                            </td>
+                            <td>{$vo.title}</td>
+                            <td>{$vo.detail|htmlspecialchars}</td>
+                            <td>{$vo.suggestion}</td>
+                            <td>
+                                {if condition="$vo.fix_action neq ''"}
+                                <button type="button" class="layui-btn layui-btn-xs btn-fix-one" data-action="{$vo.fix_action}">{:lang('admin/safety/checkup_btn_fix')}</button>
+                                {elseif condition="$vo.manual_url neq ''"/}
+                                <a class="layui-btn layui-btn-primary layui-btn-xs" href="{$vo.manual_url}">{:lang('admin/safety/checkup_btn_goto')}</a>
+                                {else/}
+                                —
+                                {/if}
+                            </td>
+                        </tr>
+                        {/volist}
+                    </tbody>
+                </table>
+
+                <form id="formFix" class="layui-form" method="post" action="{:url('safety/fix')}">
+                    {:token()}
+                    <input type="hidden" name="action" id="fixAction" value="">
+                    <div class="layui-form-item center" style="margin-top:20px;">
+                        <button type="button" class="layui-btn layui-btn-normal" id="btnFixRecommended">{:lang('admin/safety/checkup_btn_fix_recommended')}</button>
+                        <button type="button" class="layui-btn" id="btnFixAll">{:lang('admin/safety/checkup_btn_fix_all')}</button>
+                        <a class="layui-btn layui-btn-primary" href="{:url('system/config')}">{:lang('admin/safety/checkup_btn_config')}</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+{include file="../../../application/admin/view_new/public/foot" /}
+<script type="text/javascript">
+layui.use(['layer'], function(){
+    var layer = layui.layer;
+    function submitFix(action) {
+        $('#fixAction').val(action);
+        layer.msg("{:lang('wait_submit')}");
+        $('#formFix').submit();
+    }
+    $('#btnFixRecommended').on('click', function(){ submitFix('fix_all_recommended'); });
+    $('#btnFixAll').on('click', function(){
+        layer.confirm("{:lang('admin/safety/checkup_confirm_fix_all')}", function(i){
+            layer.close(i);
+            submitFix('enable_all_security');
+        });
+    });
+    $('.btn-fix-one').on('click', function(){
+        submitFix($(this).data('action'));
+    });
+});
+</script>
+</body>
+</html>

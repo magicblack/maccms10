@@ -45,6 +45,10 @@ class Admin extends Base
             if(!in_array('index/welcome',$param['admin_auth'])){
                 $param['admin_auth'][] = 'index/welcome';
             }
+            if (in_array('safety/checkup', $param['admin_auth'], true)
+                && !in_array('safety/fix', $param['admin_auth'], true)) {
+                $param['admin_auth'][] = 'safety/fix';
+            }
             $validate = \think\Loader::validate('Token');
             if(!$validate->check($param)){
                 return $this->error($validate->getError());

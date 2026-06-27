@@ -24,9 +24,13 @@ class SecurityHeaders
                 'X-Content-Type-Options' => 'nosniff',
                 'Referrer-Policy'        => 'strict-origin-when-cross-origin',
                 'X-DNS-Prefetch-Control' => 'off',
+                'X-Frame-Options'        => 'SAMEORIGIN',
             ];
         if ($base !== []) {
             $response->header($base);
+            if (self::isHttpsRequest()) {
+                $response->header('Strict-Transport-Security', 'max-age=31536000; includeSubDomains');
+            }
         }
 
         if (defined('ENTRANCE') && ENTRANCE === 'install') {
@@ -74,5 +78,19 @@ class SecurityHeaders
             "worker-src 'self' blob:",
             "form-action 'self' https: http:",
         ]);
+    }
+
+    protected static function isHttpsRequest()
+    {
+        if (PHP_SAPI === 'cli') {
+            return false;
+        }
+        if ((isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== '' && strtolower((string)$_SERVER['HTTPS']) !== 'off')
+            || (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && strtolower((string)$_SERVER['HTTP_X_FORWARDED_PROTO']) === 'https')
+            || (isset($_SERVER['SERVER_PORT']) && (string)$_SERVER['SERVER_PORT'] === '443')) {
+            return true;
+        }
+
+        return false;
     }
 }
