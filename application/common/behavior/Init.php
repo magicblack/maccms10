@@ -16,17 +16,8 @@ class Init
         if (!isset($config['app']) || !is_array($config['app'])) {
             $config['app'] = [];
         }
-        $securityDefaults = [
-            'security_csrf_admin'       => '1',
-            'admin_audit_enabled'       => '1',
-            'anti_scrape_api_enabled'   => '1',
-            'anti_scrape_index_enabled' => '1',
-            'security_headers_base'     => '1',
-        ];
-        foreach ($securityDefaults as $sk => $sv) {
-            if (!array_key_exists($sk, $config['app'])) {
-                $config['app'][$sk] = $sv;
-            }
+        if (!array_key_exists('security_headers_base', $config['app'])) {
+            $config['app']['security_headers_base'] = '1';
         }
         if (!isset($config['meilisearch']) || !is_array($config['meilisearch'])) {
             $config['meilisearch'] = [
