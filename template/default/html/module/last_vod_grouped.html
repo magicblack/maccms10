@@ -1,0 +1,25 @@
+{php}$last_vod_section_num = isset($last_vod_section_num) ? (int) $last_vod_section_num : 12;{/php}
+<div class="last-vod-grouped mac-vod-grouped-sections">
+{maccms:type ids="parent" mid="1" order="asc" by="sort" id="lastTypeVo"}
+{php}
+$lastSecCover = mac_tpl_vod_type_cover((int) $lastTypeVo['type_id']);
+$lastSecPoster = ($lastSecCover === 'h') ? 'mac-poster--h' : 'mac-poster--v';
+{/php}
+<section class="mac-vod-type-group box latest-tab-box {$lastSecPoster}">
+    <div class="title home-unified-section-head hu-section-head mac-vod-type-group__head">
+        <h2>
+            <span data-lang="string_zuixin">最新</span><span>{$lastTypeVo.type_name}</span>
+        </h2>
+        <a class="pc_more" href="{:mac_url_type($lastTypeVo)}" title="{$lastTypeVo.type_name}">
+            <span data-lang="string_type_more2">更多</span>
+            <i class="iconfont more_i">&#xe623;</i>
+        </a>
+    </div>
+    <ul class="vodlist vodlist_wi last-vod-grid mac-vod-type-group__grid">
+        {maccms:vod num="'.($last_vod_section_num).'" type="'.($lastTypeVo['type_id']).'" order="desc" by="time" id="vo"}
+        {include file="widget/vod_box"}
+        {/maccms:vod}
+    </ul>
+</section>
+{/maccms:type}
+</div>

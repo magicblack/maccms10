@@ -4,7 +4,9 @@
 <head>
 	{include file="public/include"}
 	{include file="public/include_rating_svg" /}
-	<link rel="stylesheet" href="{$maccms.path}template/default/asset/css/vod-detail.css" type="text/css" />
+	<link rel="stylesheet" type="text/css" href="{$maccms.path_tpl}/asset/css/vod-type.css?v=202604161" />
+	<link rel="stylesheet" href="{$maccms.path}template/default/asset/css/vod-detail.css?v=202604161" type="text/css" />
+	{include file="module/vod_tagwall_link_css" /}
 </head>
 
 <body class="detail-wrap" data-detail-module="vod" data-detail-id="{$param.id|default='0'}">
@@ -16,7 +18,6 @@
 		</div>
 	</noscript>
 	{include file="public/th" /}
-	{php}$type_poster_class = (mac_tpl_vod_type_cover(isset($obj['type_id']) ? (int) $obj['type_id'] : 0) === 'h') ? 'mac-poster--h' : 'mac-poster--v';{/php}
 	{include file="public/head"}
 	{include file="ads/ads_banner1"}
 	<div class="hot_banner ">
@@ -163,31 +164,27 @@
 					<div class="plot_list_box js-vod-plot-box"></div>
 				</div>
 				
-				<div class="pannel clearfix">
+				{include file="widget/vod_tagwall" /}
+
+				<div class="pannel clearfix pannel--vod-related">
 					<div class="pannel_head clearfix">
-						<h3 class="title" data-lang="vod_guess">
-							猜你喜欢
-						</h3>
+						<h3 class="title" data-lang="vod_guess">猜你喜欢</h3>
 					</div>
-					<ul id="js-vod-guess-list" class="vodlist vodlist_wi {$type_poster_class}">
-						<li class="home-skeleton-card"><div class="thumb"></div><div class="line w90"></div><div class="line w70"></div></li>
-					</ul>
+					<div id="js-vod-guess-groups" class="mac-vod-grouped-sections">
+						<div class="mac-vod-grouped-skeleton home-skeleton-card"><div class="thumb"></div><div class="line w90"></div><div class="line w70"></div></div>
+					</div>
 				</div>
 				
 				
-				<div class="pannel clearfix">
+				<div class="pannel clearfix pannel--vod-related">
 					<div class="pannel_head clearfix">
-						<h3 class="title">
-							
-							<span data-lang="vod_like_watch">喜欢看</span>
-							<span class="tj-title js-vod-name-wrap"></span>
-							<span data-lang="vod_also_like">的人也喜欢</span>
-
+						<h3 class="title pannel_head__related-title">
+							<span data-lang="vod_like_watch">喜欢看</span><span class="tj-title js-vod-name-wrap"></span><span data-lang="vod_also_like">的人也喜欢</span>
 						</h3>
 					</div>
-					<ul id="js-vod-like-list" class="vodlist vodlist_wi {$type_poster_class}">
-						<li class="home-skeleton-card"><div class="thumb"></div><div class="line w90"></div><div class="line w70"></div></li>
-					</ul>
+					<div id="js-vod-like-groups" class="mac-vod-grouped-sections">
+						<div class="mac-vod-grouped-skeleton home-skeleton-card"><div class="thumb"></div><div class="line w90"></div><div class="line w70"></div></div>
+					</div>
 				</div>
 				
 				{include file="module/vod_art"}
@@ -228,7 +225,8 @@
 	{include file="public/foot"}
 	<script type="text/javascript" src="{$maccms.path_tpl}/asset/js/mac-catalog-media.js"></script>
 	<script type="text/javascript" src="{$maccms.path}template/default/asset/js/mac-home-card-render.js?v=202604161"></script>
-	<script type="text/javascript" src="{$maccms.path_tpl}/asset/js/vod-detail-ajax-render.js"></script>
+	<script type="text/javascript" src="{$maccms.path_tpl}/asset/js/vod-detail-ajax-render.js?v=202604161"></script>
+	{include file="module/vod_tagwall_script_js" /}
 </body>
 
 </html>

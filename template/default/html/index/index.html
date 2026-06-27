@@ -15,6 +15,7 @@
         .home-unified .home-skeleton-line.w220{width:220px}.home-unified .home-skeleton-line.w200{width:200px}.home-unified .home-skeleton-line.w180{width:180px}.home-unified .home-skeleton-line.w160{width:160px}.home-unified .home-skeleton-line.w140{width:140px}.home-unified .home-skeleton-line.w90{width:90%}.home-unified .home-skeleton-line.w70{width:70%}
     </style>
     <link rel="stylesheet" type="text/css" href="{$maccms.path}template/default/asset/css/index.css?v=202604169">
+    {include file="module/vod_tagwall_link_css" /}
     <link rel="stylesheet" type="text/css" href="{$maccms.path_tpl}/asset/css/home-topic-tangram-preview.css">
     <script src="{$maccms.path}template/default/asset/js/jquery-adaptive.js?v=202604161"></script>
 </head>
@@ -26,6 +27,7 @@
         {include file="public/head"}
         {include file="module/banner"}
         {include file="ads/ads_banner1"}
+        {include file="widget/vod_tagwall" /}
         {include file="ads/ads_icon1" ads_icon1_marquee="0"}
 
         <div class="home-detail">
@@ -275,6 +277,7 @@
 <script src="{$maccms.path_tpl}/asset/js/mac-catalog-media.js"></script>
 <script src="{$maccms.path}template/default/asset/js/mac-home-card-render.js?v=202604161"></script>
 <script src="{$maccms.path}template/default/asset/js/index-home-parts.js?v=202604169"></script>
+{include file="module/vod_tagwall_script_js" /}
 {include file="public/foot"}
 </body>
 </html>

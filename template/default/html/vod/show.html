@@ -4,6 +4,7 @@
 <head>
     {include file="public/include"}
     <link rel="stylesheet" type="text/css" href="{$maccms.path_tpl}/asset/css/type-show.css" />
+    {include file="module/vod_tagwall_link_css" /}
 </head>
 
 <body>
@@ -19,6 +20,7 @@
                     {include file="module/mac_catalog_filter_wrap_before"}
                     {include file="module/filter"}
                     {include file="module/mac_catalog_filter_wrap_after"}
+                    {include file="widget/vod_tagwall" /}
                     <div class="pannel mac-catalog-show__panel clearfix">
                         <div class="mac-catalog-show__loading" data-lang="string_loading">加载中…</div>
                         <div class="mac-catalog-show__error mac-hide" data-lang="string_load_err">加载失败，请稍后重试</div>
@@ -32,6 +34,7 @@
         <script type="text/javascript" src="{$maccms.path_tpl}/asset/js/mac-catalog-media.js"></script>
         <script type="text/javascript" src="{$maccms.path}template/default/asset/js/mac-home-card-render.js?v=202604161"></script>
         <script type="text/javascript" src="{$maccms.path_tpl}/asset/js/type-show.js"></script>
+        {include file="module/vod_tagwall_script_js" /}
         {include file="public/foot"}
     </div>
 </body>

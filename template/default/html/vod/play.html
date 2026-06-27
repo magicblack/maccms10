@@ -2,7 +2,7 @@
 <html>
 <head>
     {include file="public/include"}
-    <link rel="stylesheet" type="text/css" href="{$maccms.path_tpl}/asset/css/vod-play.css?v=202604222" />
+    <link rel="stylesheet" type="text/css" href="{$maccms.path_tpl}/asset/css/vod-play.css?v=202606261" />
     {if condition="($obj.vod_copyright neq 1 || $GLOBALS['config']['app']['copyright_status'] neq 1) && !$obj.vod_lock && $popedom.code elt 1 && ($obj['vod_play_list'][$param['sid']]['player_info']['from'] eq 'dplayer' || $obj['vod_play_list'][$param['sid']]['player_info']['from'] eq 'videojs')"}
     <link rel="stylesheet" type="text/css" href="{$maccms.path_tpl}/asset/css/vod-play-social.css?v=202604271" />
     <link rel="stylesheet" type="text/css" href="{$maccms.path_tpl}/asset/css/vod-play-progress.css?v=202606246" />
@@ -250,15 +250,7 @@
                                 {/if} 
                            {/maccms:actor}
                      {/if}
-                        {if condition="$vod_play_tagwall_enabled"}
-                        <script type="application/json" id="vod-play-tagwall-data">{php}echo isset($vod_play_tagwall_json) ? $vod_play_tagwall_json : '';{/php}</script>
-                        <section class="vod-play-tagwall pannel clearfix" id="vodPlayTagwall" data-search-url="{:mac_url('vod/search')}">
-                            <div class="vod-play-tagwall__body">
-                                <div class="vod-play-tagwall__lane vod-play-tagwall__lane--hot" data-tagwall-lane="hot"></div>
-                                <div class="vod-play-tagwall__lane vod-play-tagwall__lane--local" data-tagwall-lane="local"></div>
-                            </div>
-                        </section>
-                        {/if}
+                        {include file="widget/vod_tagwall" /}
 
                         {if condition="$obj.vod_copyright eq 1 && $GLOBALS['config']['app']['copyright_status'] eq 1 "}{else}
                         <div class="pannel clearfix" id="bofy">
@@ -462,7 +454,7 @@
         <script defer src="{$maccms.path_tpl}/asset/js/vod-play-failover.js?v=202606262"></script>
         {/if}
         <script type="text/javascript" src="{$maccms.path_tpl}/asset/js/vod-play-playlist.js"></script>
-        <script type="text/javascript" src="{$maccms.path_tpl}/asset/js/vod-play-tagwall.js"></script>
+        {include file="module/vod_tagwall_script_js" /}
     </div>
 </body>
 </html>
