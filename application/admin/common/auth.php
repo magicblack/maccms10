@@ -1253,6 +1253,34 @@ return array (
         'controller' => 'card',
         'action' => 'del',
       ),
+      641 =>
+      array (
+        'show' => 1,
+        'name' => lang('menu/mall_goods'),
+        'controller' => 'mall_goods',
+        'action' => 'index',
+      ),
+      6411 =>
+      array (
+        'show' => 0,
+        'name' => '--'.lang('add'),
+        'controller' => 'mall_goods',
+        'action' => 'info',
+      ),
+      6412 =>
+      array (
+        'show' => 0,
+        'name' => '--'.lang('del'),
+        'controller' => 'mall_goods',
+        'action' => 'del',
+      ),
+      6413 =>
+      array (
+        'show' => 0,
+        'name' => '--'.lang('status'),
+        'controller' => 'mall_goods',
+        'action' => 'field',
+      ),
       65 => 
       array (
         'show' => 1,

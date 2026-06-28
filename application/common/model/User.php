@@ -923,6 +923,50 @@ class User extends Base
         return false;
     }
 
+    public function consumeDownQuota($user_id, $data)
+    {
+        $user_id = intval($user_id);
+        if ($user_id < 1 || empty($data) || !is_array($data)) {
+            return ['code' => 1001, 'msg' => lang('param_err')];
+        }
+
+        $quotaDeducted = false;
+        Db::startTrans();
+        try {
+            $affected = Db::name('user')
+                ->where('user_id', $user_id)
+                ->where('user_down_quota', '>=', 1)
+                ->setDec('user_down_quota', 1);
+            if ($affected === 0 || $affected === false) {
+                Db::rollback();
+                return ['code' => 1005, 'msg' => lang('mall/download_quota_not_enough')];
+            }
+
+            $quotaDeducted = true;
+            $data['user_id'] = $user_id;
+            $data['ulog_time'] = time();
+            // 额度路径消耗的是下载额度而非积分，ulog 记录积分价应清零，避免账目误解
+            $data['ulog_points'] = 0;
+            $insert = Db::name('ulog')->insert($data);
+            if ($insert === false) {
+                if ($quotaDeducted) {
+                    Db::name('user')->where('user_id', $user_id)->setInc('user_down_quota', 1);
+                }
+                Db::rollback();
+                return ['code' => 1006, 'msg' => lang('api/payment/operation_retry')];
+            }
+
+            Db::commit();
+            return ['code' => 1, 'msg' => lang('mall/download_quota_used')];
+        } catch (\Exception $e) {
+            if ($quotaDeducted) {
+                Db::name('user')->where('user_id', $user_id)->setInc('user_down_quota', 1);
+            }
+            Db::rollback();
+            return ['code' => 1006, 'msg' => lang('api/payment/operation_retry')];
+        }
+    }
+
     public function upgrade($param)
     {
         $group_id = intval($param['group_id']);
@@ -1011,10 +1055,7 @@ class User extends Base
         }
 
         $sj = $points_long[$long];
-        $end_time = time() + $sj;
-        if (intval($user['user_end_time']) > time()) {
-            $end_time = intval($user['user_end_time']) + $sj;
-        }
+        $end_time = $this->calcVipEndTimeByUpgradeRule($user['user_end_time'], $sj);
 
         $where = ['user_id' => intval($user['user_id'])];
         $data = [];
@@ -1043,6 +1084,45 @@ class User extends Base
         cookie('group_name', $group_list[$group_id]['group_name'] ?? '', ['expire' => 2592000]);
 
         return ['code' => 1, 'msg' => lang('model/user/update_group_ok')];
+    }
+
+    public function grantVipDays($user_id, $group_id, $days)
+    {
+        $user_id = intval($user_id);
+        $group_id = intval($group_id);
+        $days = intval($days);
+        if ($user_id < 1 || $group_id < 3 || $days < 1) {
+            return ['code' => 1001, 'msg' => lang('param_err')];
+        }
+
+        $group_list = (new Group())->getCache();
+        if (!isset($group_list[$group_id]) || intval($group_list[$group_id]['group_status']) !== 1) {
+            return ['code' => 1002, 'msg' => lang('model/user/group_not_found')];
+        }
+
+        $user = Db::name('User')->where('user_id', $user_id)->find();
+        if (empty($user)) {
+            return ['code' => 1003, 'msg' => lang('obtain_err')];
+        }
+
+        $end_time = $this->calcVipEndTimeByUpgradeRule($user['user_end_time'], $days * 86400);
+        $res = Db::name('User')->where('user_id', $user_id)->update([
+            'group_id' => $group_id,
+            'user_end_time' => $end_time,
+        ]);
+        if ($res === false) {
+            return ['code' => 1004, 'msg' => lang('model/user/update_group_err')];
+        }
+
+        return ['code' => 1, 'msg' => lang('model/user/update_group_ok'), 'info' => ['user_end_time' => $end_time, 'group_id' => $group_id, 'group_name' => $group_list[$group_id]['group_name'] ?? '']];
+    }
+
+    // Shared VIP extension rule used by upgradeByPaidOrder() and mall VIP exchange.
+    private function calcVipEndTimeByUpgradeRule($current_end_time, $seconds)
+    {
+        $now = time();
+        $base_time = intval($current_end_time) > $now ? intval($current_end_time) : $now;
+        return $base_time + intval($seconds);
     }
 
     public function check_msg($param)

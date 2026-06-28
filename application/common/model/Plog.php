@@ -75,7 +75,7 @@ class Plog extends Base {
         }
 
         $plogType = (int)$data['plog_type'];
-        if ($data['user_id'] == 0 || $plogType < 1 || $plogType > 11) {
+        if ($data['user_id'] == 0 || $plogType < 1 || $plogType > 12) {
             return ['code'=>1002,'msg'=>lang('param_err')];
         }
 
@@ -83,14 +83,16 @@ class Plog extends Base {
             $where=[];
             $where['plog_id'] = ['eq',$data['plog_id']];
             $res = $this->allowField(true)->where($where)->update($data);
+            $plog_id = intval($data['plog_id']);
         }
         else{
-            $res = $this->allowField(true)->insert($data);
+            $res = $this->allowField(true)->insertGetId($data);
+            $plog_id = intval($res);
         }
         if(false === $res){
             return ['code'=>1004,'msg'=>lang('save_err').'：'.$this->getError() ];
         }
-        return ['code'=>1,'msg'=>lang('save_ok')];
+        return ['code'=>1,'msg'=>lang('save_ok'),'info'=>['plog_id'=>$plog_id]];
     }
 
     public function delData($where)

@@ -1,0 +1,90 @@
+{include file="../../../application/admin/view/public/head" /}
+<div class="page-container p10">
+    <div class="my-toolbar-box">
+        <div class="center mb10">
+            <form class="layui-form" method="post" action="{:url('index')}">
+                <div class="layui-input-inline w150">
+                    <select name="type">
+                        <option value="">{:lang('mall/goods_type')}</option>
+                        <option value="vip" {if condition="$param['type'] eq 'vip'"}selected{/if}>{:lang('mall/type_vip')}</option>
+                        <option value="card" {if condition="$param['type'] eq 'card'"}selected{/if}>{:lang('mall/type_card')}</option>
+                        <option value="download_quota" {if condition="$param['type'] eq 'download_quota'"}selected{/if}>{:lang('mall/type_download_quota')}</option>
+                    </select>
+                </div>
+                <div class="layui-input-inline w150">
+                    <select name="status">
+                        <option value="">{:lang('select_status')}</option>
+                        <option value="0" {if condition="$param['status'] eq '0'"}selected{/if}>{:lang('close')}</option>
+                        <option value="1" {if condition="$param['status'] eq '1'"}selected{/if}>{:lang('open')}</option>
+                    </select>
+                </div>
+                <div class="layui-input-inline">
+                    <input type="text" autocomplete="off" placeholder="{:lang('wd')}" class="layui-input" name="wd" value="{$param['wd']|mac_filter_xss}">
+                </div>
+                <button class="layui-btn mgl-20 j-search">{:lang('btn_search')}</button>
+            </form>
+        </div>
+        <div class="layui-btn-group">
+            <a data-href="{:url('info')}" class="layui-btn layui-btn-primary j-iframe" data-width="720px" data-height="620px"><i class="layui-icon">&#xe654;</i>{:lang('add')}</a>
+            <a data-href="{:url('del')}" class="layui-btn layui-btn-primary j-page-btns confirm"><i class="layui-icon">&#xe640;</i>{:lang('del')}</a>
+        </div>
+    </div>
+
+    <form class="layui-form" method="post" id="pageListForm">
+        <table class="layui-table" lay-size="sm">
+            <thead>
+            <tr>
+                <th width="25"><input type="checkbox" lay-skin="primary" lay-filter="allChoose"></th>
+                <th width="70">{:lang('id')}</th>
+                <th>{:lang('mall/goods_name')}</th>
+                <th width="130">{:lang('mall/goods_type')}</th>
+                <th width="90">{:lang('points')}</th>
+                <th width="80">{:lang('mall/stock')}</th>
+                <th width="80">{:lang('sort')}</th>
+                <th width="90">{:lang('status')}</th>
+                <th width="150">{:lang('time')}</th>
+                <th width="100">{:lang('opt')}</th>
+            </tr>
+            </thead>
+            {volist name="list" id="vo"}
+            <tr>
+                <td><input type="checkbox" name="ids[]" value="{$vo.mall_goods_id}" class="layui-checkbox checkbox-ids" lay-skin="primary"></td>
+                <td>{$vo.mall_goods_id}</td>
+                <td>{$vo.mall_goods_name|htmlspecialchars}</td>
+                <td>{$vo.mall_goods_type|mac_get_mall_goods_type_text}</td>
+                <td>{$vo.mall_goods_points}</td>
+                <td>{$vo.mall_goods_stock}</td>
+                <td>{$vo.mall_goods_sort}</td>
+                <td><input type="checkbox" name="status" {if condition="$vo['mall_goods_status'] eq 1"}checked{/if} value="{$vo['mall_goods_status']}" lay-skin="switch" lay-filter="switchStatus" lay-text="{:lang('open')}|{:lang('close')}" data-href="{:url('field?col=mall_goods_status&ids='.$vo['mall_goods_id'])}"></td>
+                <td>{$vo.mall_goods_time|mac_day='color'}</td>
+                <td>
+                    <a class="layui-badge-rim j-iframe" data-href="{:url('info?id='.$vo['mall_goods_id'])}" data-width="720px" data-height="620px" href="javascript:;" title="{:lang('edit')}">{:lang('edit')}</a>
+                    <a class="layui-badge-rim j-tr-del" data-href="{:url('del?ids='.$vo['mall_goods_id'])}" href="javascript:;" title="{:lang('del')}">{:lang('del')}</a>
+                </td>
+            </tr>
+            {/volist}
+        </table>
+        <div id="pages" class="center"></div>
+    </form>
+</div>
+{include file="../../../application/admin/view/public/foot" /}
+<script type="text/javascript">
+var curUrl="{:url('mall_goods/index',$param)}";
+layui.use(['laypage','layer'], function(){
+    var laypage = layui.laypage;
+    laypage.render({
+        elem:'pages',
+        count:{$total},
+        limit:{$limit},
+        curr:{$page},
+        layout:['count','prev','page','next','limit','skip'],
+        jump:function(obj,first){
+            if(!first){
+                location.href = curUrl.replace('%7Bpage%7D',obj.curr).replace('%7Blimit%7D',obj.limit);
+            }
+        }
+    });
+});
+</script>
+</body>
+</html>

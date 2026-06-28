@@ -1,0 +1,137 @@
+{include file="../../../application/admin/view/public/head" /}
+<div class="page-container p10">
+    <form class="layui-form layui-form-pane" method="post" action="">
+        <input name="mall_goods_id" type="hidden" value="{$info.mall_goods_id}">
+        <div class="layui-form-item">
+            <label class="layui-form-label">{:lang('mall/goods_name')}：</label>
+            <div class="layui-input-block">
+                <input type="text" class="layui-input" value="{$info.mall_goods_name|mac_filter_xss}" name="mall_goods_name" lay-verify="required">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">{:lang('mall/goods_type')}：</label>
+            <div class="layui-input-block">
+                <input type="radio" name="mall_goods_type" value="vip" title="{:lang('mall/type_vip')}" {if condition="$info.mall_goods_type eq 'vip'"}checked{/if} lay-filter="goodsType">
+                <input type="radio" name="mall_goods_type" value="card" title="{:lang('mall/type_card')}" {if condition="$info.mall_goods_type eq 'card'"}checked{/if} lay-filter="goodsType">
+                <input type="radio" name="mall_goods_type" value="download_quota" title="{:lang('mall/type_download_quota')}" {if condition="$info.mall_goods_type eq 'download_quota'"}checked{/if} lay-filter="goodsType">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">{:lang('points')}：</label>
+            <div class="layui-input-block">
+                <input type="number" min="1" class="layui-input" value="{$info.mall_goods_points}" name="mall_goods_points" lay-verify="required|number">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">{:lang('mall/stock')}：</label>
+            <div class="layui-input-block">
+                <input type="number" min="0" class="layui-input" value="{$info.mall_goods_stock}" name="mall_goods_stock" lay-verify="required|number">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">{:lang('sort')}：</label>
+            <div class="layui-input-block">
+                <input type="number" class="layui-input" value="{$info.mall_goods_sort}" name="mall_goods_sort">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">{:lang('status')}：</label>
+            <div class="layui-input-block">
+                <input type="radio" name="mall_goods_status" value="1" title="{:lang('open')}" {if condition="$info.mall_goods_status eq 1"}checked{/if}>
+                <input type="radio" name="mall_goods_status" value="0" title="{:lang('close')}" {if condition="$info.mall_goods_status neq 1"}checked{/if}>
+            </div>
+        </div>
+
+        <div class="type-box type-vip">
+            <div class="layui-form-item">
+                <label class="layui-form-label">{:lang('mall/vip_group')}：</label>
+                <div class="layui-input-block">
+                    <select name="vip_group_id">
+                        <option value="0">{:lang('select')}</option>
+                        {volist name="group_list" id="vo"}
+                        {if condition="$vo.group_id egt 3"}
+                        <option value="{$vo.group_id}" {if condition="intval($info['mall_goods_ext_arr']['group_id']) eq $vo['group_id']"}selected{/if}>{$vo.group_name}</option>
+                        {/if}
+                        {/volist}
+                    </select>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">{:lang('mall/vip_days')}：</label>
+                <div class="layui-input-block">
+                    <input type="number" min="1" class="layui-input" value="{$info.mall_goods_ext_arr.days|default=30}" name="vip_days">
+                </div>
+            </div>
+        </div>
+
+        <div class="type-box type-card">
+            <div class="layui-form-item">
+                <label class="layui-form-label">{:lang('mall/card_mode')}：</label>
+                <div class="layui-input-block">
+                    <input type="radio" name="card_mode" value="generate" title="{:lang('mall/card_mode_generate')}" {if condition="$info['mall_goods_ext_arr']['card_mode'] neq 'assign'"}checked{/if}>
+                    <input type="radio" name="card_mode" value="assign" title="{:lang('mall/card_mode_assign')}" {if condition="$info['mall_goods_ext_arr']['card_mode'] eq 'assign'"}checked{/if}>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">{:lang('money')}：</label>
+                <div class="layui-input-block">
+                    <input type="number" min="0" class="layui-input" value="{$info.mall_goods_ext_arr.card_money|default=0}" name="card_money">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">{:lang('mall/card_points')}：</label>
+                <div class="layui-input-block">
+                    <input type="number" min="1" class="layui-input" value="{$info.mall_goods_ext_arr.card_points|default=1}" name="card_points">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">{:lang('card_no')}{:lang('rule')}：</label>
+                <div class="layui-input-block">
+                    <input type="radio" name="role_no" value="" title="{:lang('mixing')}" {if condition="empty($info['mall_goods_ext_arr']['role_no'])"}checked{/if}>
+                    <input type="radio" name="role_no" value="letter" title="{:lang('abc')}" {if condition="$info['mall_goods_ext_arr']['role_no'] eq 'letter'"}checked{/if}>
+                    <input type="radio" name="role_no" value="num" title="{:lang('number')}" {if condition="$info['mall_goods_ext_arr']['role_no'] eq 'num'"}checked{/if}>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">{:lang('pass')}{:lang('rule')}：</label>
+                <div class="layui-input-block">
+                    <input type="radio" name="role_pwd" value="" title="{:lang('mixing')}" {if condition="empty($info['mall_goods_ext_arr']['role_pwd'])"}checked{/if}>
+                    <input type="radio" name="role_pwd" value="letter" title="{:lang('abc')}" {if condition="$info['mall_goods_ext_arr']['role_pwd'] eq 'letter'"}checked{/if}>
+                    <input type="radio" name="role_pwd" value="num" title="{:lang('number')}" {if condition="$info['mall_goods_ext_arr']['role_pwd'] eq 'num'"}checked{/if}>
+                </div>
+            </div>
+        </div>
+
+        <div class="type-box type-download_quota">
+            <div class="layui-form-item">
+                <label class="layui-form-label">{:lang('mall/download_quota')}：</label>
+                <div class="layui-input-block">
+                    <input type="number" min="1" class="layui-input" value="{$info.mall_goods_ext_arr.quota|default=1}" name="download_quota">
+                </div>
+            </div>
+        </div>
+
+        <div class="layui-form-item center">
+            <div class="layui-input-block">
+                <button type="submit" class="layui-btn" lay-submit="" lay-filter="formSubmit" data-child="true">{:lang('btn_save')}</button>
+                <button class="layui-btn layui-btn-warm" type="reset">{:lang('btn_reset')}</button>
+            </div>
+        </div>
+    </form>
+</div>
+{include file="../../../application/admin/view/public/foot" /}
+<script type="text/javascript">
+layui.use(['form'], function(){
+    var form = layui.form, $ = layui.jquery;
+    function showType(type){
+        $('.type-box').hide();
+        $('.type-' + type).show();
+    }
+    showType($('input[name="mall_goods_type"]:checked').val() || 'vip');
+    form.on('radio(goodsType)', function(data){
+        showType(data.value);
+    });
+});
+</script>
+</body>
+</html>

@@ -421,6 +421,11 @@ class Payment extends Base
             return json(['code' => 1, 'msg' => lang('api/payment/already_owned')]);
         }
 
+        if (intval($param['mid']) == 1 && intval($param['type']) == 5 && $data['ulog_points'] > 0 && intval($auth['user']['user_down_quota'] ?? 0) > 0) {
+            $quotaRes = model('User')->consumeDownQuota($auth['user_id'], $data);
+            return json($quotaRes);
+        }
+
         // 检查积分是否足够（先做快速检查，事务内再做原子扣除）
         if ($data['ulog_points'] > $auth['user']['user_points']) {
             return json([

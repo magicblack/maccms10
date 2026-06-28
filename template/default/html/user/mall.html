@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>{:lang('mall/title')} - {$maccms.site_name}</title>
+{include file="user/include" /}
+<link rel="stylesheet" href="{$maccms.path_tpl}/asset/css/user-plog.css">
+</head>
+<body class="mac-plog-wrap">
+{include file="public/th" /}
+{include file="public/head" /}
+<div class="member-wrap member-wrap-bg">
+<div id="member" class="fn-clear">
+    <div id="left">
+        <div class="m-nav">
+            <a href="javascript:MAC.GoBack()" class="btn-left"><i class="iconfont ico-right">&#xe625;</i></a>
+            <a href="{$maccms.path}" class="btn-right"><i class="iconfont ico-right">&#xe634;</i></a>
+            <span class="mb-title" data-lang="mall_title">{:lang('mall/title')}</span>
+        </div>
+        {include file="user/left_nav" /}
+    </div>
+    <div id="right">
+        <div class="m-nav mac-plog-mnav">
+            <a href="javascript:MAC.GoBack()" class="btn-left"><i class="iconfont ico-right">&#xe625;</i></a>
+            <span class="mb-title" data-lang="mall_title">{:lang('mall/title')}</span>
+        </div>
+        <div class="co-right co-right-bg">
+            <h2 class="mac-plog-page-title" data-lang="mall_title">{:lang('mall/title')}</h2>
+            <p class="muted">{:lang('mall/user_points')}：<strong>{$obj.user_points}</strong></p>
+            <div class="filter-tabs mac-plog-filter-tabs">
+                <a href="{:url('user/mall')}" class="{if condition="empty($param['type'])"}active{/if}">{:lang('string_all')}</a>
+                <a href="{:url('user/mall',['type'=>'vip'])}" class="{if condition="$param['type'] eq 'vip'"}active{/if}">{:lang('mall/type_vip')}</a>
+                <a href="{:url('user/mall',['type'=>'card'])}" class="{if condition="$param['type'] eq 'card'"}active{/if}">{:lang('mall/type_card')}</a>
+                <a href="{:url('user/mall',['type'=>'download_quota'])}" class="{if condition="$param['type'] eq 'download_quota'"}active{/if}">{:lang('mall/type_download_quota')}</a>
+                <a href="{:url('user/mall_orders')}">{:lang('mall/my_orders')}</a>
+            </div>
+            <ul class="order__list data__list clearfix">
+                {volist name="list" id="vo"}
+                <li class="order__item">
+                    <div class="order__title">
+                        <label><input type="checkbox" disabled> <span class="plog_name">{$vo.mall_goods_name|htmlspecialchars}</span></label>
+                    </div>
+                    <div class="order__txt">
+                        <p>{:lang('mall/goods_type')}：{$vo.mall_goods_type|mac_get_mall_goods_type_text}</p>
+                        <p>{:lang('points')}：<span class="jg-tz">{$vo.mall_goods_points}</span></p>
+                        <p>{:lang('mall/stock')}：{$vo.mall_goods_stock}</p>
+                    </div>
+                    <div class="order__foot">
+                        <a href="javascript:;" class="btn-order btn-exchange" data-id="{$vo.mall_goods_id}" data-name="{$vo.mall_goods_name|htmlspecialchars}" data-points="{$vo.mall_goods_points}">{:lang('mall/exchange')}</a>
+                    </div>
+                </li>
+                {/volist}
+            </ul>
+            {if condition="empty($list)"}
+            {include file="public/notempty" /}
+            {/if}
+            <div class="member-page">
+                <ul class="page text-center cleafix">
+                    <li><a href="{$__PAGING__.page_url|mac_url_page=1}"{if$__PAGING__['page_current']==1} class="btns-disad"{/if} data-lang="string_home">首页</a></li>
+                    <li><a href="{$__PAGING__.page_url|mac_url_page=$__PAGING__.page_prev}"{if$__PAGING__['page_current']==1} class="btns-disad"{/if} data-lang="string_syy">上一页</a></li>
+                    {maccms:foreach name="$__PAGING__.page_num" id="num"}
+                    <li class="hidden-xs {if condition="$__PAGING__['page_current'] eq $num"}active{/if}"><a href="{$__PAGING__.page_url|mac_url_page=$num}">{$num}</a></li>
+                    {/maccms:foreach}
+                    <li><a href="{$__PAGING__.page_url|mac_url_page=$__PAGING__.page_next}"{if$__PAGING__['page_current']==$__PAGING__.page_total} class="btns-disad"{/if} data-lang="string_xyy">下一页</a></li>
+                    <li><a href="{$__PAGING__.page_url|mac_url_page=$__PAGING__.page_total}"{if$__PAGING__['page_current']==$__PAGING__.page_total} class="btns-disad"{/if} data-lang="string_last_page">尾页</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+<script type="text/javascript">
+$('.btn-exchange').on('click', function(){
+    var $btn = $(this);
+    var msg = "{:lang('mall/exchange_confirm')}".replace('%s', $btn.data('name')).replace('%s', $btn.data('points'));
+    if (!confirm(msg)) {
+        return;
+    }
+    $.post("{:url('user/ajax_mall_exchange')}", {goods_id: $btn.data('id'), quantity: 1}, function(res){
+        MAC.alert(res.msg || '');
+        if (res.code == 1) {
+            setTimeout(function(){ location.href = "{:url('user/mall_orders')}"; }, 800);
+        }
+    }, 'json');
+});
+</script>
+{include file="public/foot" /}
+</body>
+</html>

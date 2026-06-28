@@ -1506,6 +1506,7 @@ function mac_get_plog_type_text($data)
         9 => lang('integral_withdrawal'),
         10 => lang('plog_sign_milestone_reward'),
         11 => lang('plog_task_sign_reward'),
+        12 => lang('plog_mall_exchange'),
     ];
     return isset($arr[$data]) ? $arr[$data] : '';
 }
@@ -1526,6 +1527,16 @@ function mac_get_card_use_status_text($data)
         1 => lang('used'),
     ];
     return $arr[$data];
+}
+
+function mac_get_mall_goods_type_text($data)
+{
+    $arr = [
+        'vip' => lang('mall/type_vip'),
+        'card' => lang('mall/type_card'),
+        'download_quota' => lang('mall/type_download_quota'),
+    ];
+    return isset($arr[$data]) ? $arr[$data] : '';
 }
 
 function mac_get_order_status_text($data)
@@ -3786,5 +3797,3 @@ function mac_strip_tags($string) {
     
     return strip_tags($string);
 }
-
-

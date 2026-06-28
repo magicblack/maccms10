@@ -159,6 +159,21 @@ class User extends Base
             return json(['code' => 1, 'msg' => lang('index/buy_popedom1')]);
         }
 
+        $quotaUser = null;
+        if ($param['mid'] == '1' && $param['type'] == '5' && $data['ulog_points'] > 0) {
+            $quotaUser = Db::name('user')->field('user_down_quota')->where('user_id', $GLOBALS['user']['user_id'])->find();
+        }
+        if ($param['mid'] == '1' && $param['type'] == '5' && $data['ulog_points'] > 0 && intval($quotaUser['user_down_quota'] ?? 0) > 0) {
+            $quotaRes = model('User')->consumeDownQuota($GLOBALS['user']['user_id'], $data);
+            if ($quotaRes['code'] == 1005) {
+                return json(['code' => 2002, 'msg' => lang('mall/download_quota_not_enough')]);
+            }
+            if ($quotaRes['code'] != 1) {
+                return json(['code' => 2003, 'msg' => lang('index/buy_popedom2')]);
+            }
+            return json($quotaRes);
+        }
+
         if ($data['ulog_points'] > $GLOBALS['user']['user_points']) {
             return json(['code' => 2002, 'msg' => lang('index/buy_popedom3',[$data['ulog_points'],$GLOBALS['user']['user_points']])]);
         }
@@ -796,7 +811,7 @@ class User extends Base
         if ($param['filter'] == 'income') {
             $where['plog_type'] = ['in', [1, 2, 3, 4, 5, 6, 10, 11]];
         } elseif ($param['filter'] == 'expense') {
-            $where['plog_type'] = ['in', [7, 8, 9]];
+            $where['plog_type'] = ['in', [7, 8, 9, 12]];
         }
         $order = 'plog_id desc';
         $res = model('Plog')->listData($where, $order, $param['page'], $param['limit']);
@@ -807,6 +822,61 @@ class User extends Base
         $pages = mac_page_param($res['total'], $param['limit'], $param['page'], $page_url);
         $this->assign('__PAGING__', $pages);
         return $this->fetch('user/plog');
+    }
+
+    public function mall()
+    {
+        $param = input();
+        $param['page'] = intval($param['page']) < 1 ? 1 : intval($param['page']);
+        $param['limit'] = intval($param['limit']) < 20 ? 20 : intval($param['limit']);
+
+        $where = [];
+        $where['mall_goods_status'] = 1;
+        if (in_array($param['type'], ['vip', 'card', 'download_quota'], true)) {
+            $where['mall_goods_type'] = ['eq', $param['type']];
+        }
+        $order = 'mall_goods_sort asc,mall_goods_id desc';
+        $res = model('MallGoods')->listData($where, $order, $param['page'], $param['limit']);
+
+        $pages = mac_page_param($res['total'], $param['limit'], $param['page'], url('user/mall', ['type' => $param['type'], 'page' => 'PAGELINK']));
+        $this->assign('__PAGING__', $pages);
+        $this->assign('param', $param);
+        $this->assign('list', $res['list']);
+        return $this->fetch('user/mall');
+    }
+
+    public function mall_orders()
+    {
+        $param = input();
+        $param['page'] = intval($param['page']) < 1 ? 1 : intval($param['page']);
+        $param['limit'] = intval($param['limit']) < 20 ? 20 : intval($param['limit']);
+
+        $where = [];
+        $where['mo.user_id'] = $GLOBALS['user']['user_id'];
+        $order = 'mo.mall_order_id desc';
+        $res = model('MallOrder')->listData($where, $order, $param['page'], $param['limit']);
+
+        $pages = mac_page_param($res['total'], $param['limit'], $param['page'], url('user/mall_orders', ['page' => 'PAGELINK']));
+        $this->assign('__PAGING__', $pages);
+        $this->assign('param', $param);
+        $this->assign('list', $res['list']);
+        return $this->fetch('user/mall_orders');
+    }
+
+    public function ajax_mall_exchange()
+    {
+        if (!request()->isPost()) {
+            return json(['code' => 1001, 'msg' => lang('param_err')]);
+        }
+        $param = input('post.');
+        $goods_id = intval($param['goods_id'] ?? 0);
+        $quantity = max(1, intval($param['quantity'] ?? 1));
+        $res = model('MallOrder')->exchange($goods_id, $GLOBALS['user']['user_id'], $quantity);
+        if (intval($res['code']) === 1 && !empty($res['info']['delivery']['type']) && $res['info']['delivery']['type'] === 'vip') {
+            cookie('group_id', intval($res['info']['delivery']['group_id']), ['expire' => 2592000]);
+            cookie('group_name', $res['info']['delivery']['group_name'] ?? '', ['expire' => 2592000]);
+        }
+        return json($res);
     }
 
     public function plog_del()

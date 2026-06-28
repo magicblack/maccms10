@@ -302,6 +302,53 @@ CREATE TABLE `mac_cash` (
 ) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
+-- Table structure for mac_mall_goods
+-- ----------------------------
+DROP TABLE IF EXISTS `mac_mall_goods`;
+CREATE TABLE `mac_mall_goods` (
+  `mall_goods_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `mall_goods_name` varchar(100) NOT NULL DEFAULT '',
+  `mall_goods_type` varchar(20) NOT NULL DEFAULT '',
+  `mall_goods_points` int(10) unsigned NOT NULL DEFAULT '0',
+  `mall_goods_stock` int(10) unsigned NOT NULL DEFAULT '0',
+  `mall_goods_status` tinyint(1) unsigned NOT NULL DEFAULT '0',
+  `mall_goods_sort` int(10) NOT NULL DEFAULT '0',
+  `mall_goods_ext` text NOT NULL,
+  `mall_goods_time_add` int(10) unsigned NOT NULL DEFAULT '0',
+  `mall_goods_time` int(10) unsigned NOT NULL DEFAULT '0',
+  PRIMARY KEY (`mall_goods_id`),
+  KEY `mall_goods_type` (`mall_goods_type`),
+  KEY `mall_goods_status` (`mall_goods_status`),
+  KEY `mall_goods_sort` (`mall_goods_sort`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Table structure for mac_mall_order
+-- ----------------------------
+DROP TABLE IF EXISTS `mac_mall_order`;
+CREATE TABLE `mac_mall_order` (
+  `mall_order_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `user_id` int(10) unsigned NOT NULL DEFAULT '0',
+  `mall_goods_id` int(10) unsigned NOT NULL DEFAULT '0',
+  `mall_goods_name` varchar(100) NOT NULL DEFAULT '',
+  `mall_goods_type` varchar(20) NOT NULL DEFAULT '',
+  `mall_order_points` int(10) unsigned NOT NULL DEFAULT '0',
+  `mall_order_quantity` int(10) unsigned NOT NULL DEFAULT '1',
+  `mall_order_status` tinyint(1) unsigned NOT NULL DEFAULT '0',
+  `mall_order_snapshot` text NOT NULL,
+  `mall_order_delivery` text NOT NULL,
+  `mall_order_remarks` varchar(255) NOT NULL DEFAULT '',
+  `mall_order_time` int(10) unsigned NOT NULL DEFAULT '0',
+  `mall_order_complete_time` int(10) unsigned NOT NULL DEFAULT '0',
+  PRIMARY KEY (`mall_order_id`),
+  KEY `user_id` (`user_id`),
+  KEY `mall_goods_id` (`mall_goods_id`),
+  KEY `mall_goods_type` (`mall_goods_type`),
+  KEY `mall_order_status` (`mall_order_status`),
+  KEY `mall_order_time` (`mall_order_time`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+
+-- ----------------------------
 -- Table structure for mac_cj_content
 -- ----------------------------
 DROP TABLE IF EXISTS `mac_cj_content`;
@@ -773,6 +820,7 @@ CREATE TABLE `mac_user` (
   `user_answer` varchar(255) NOT NULL DEFAULT '' ,
   `user_points` int(10) unsigned NOT NULL DEFAULT '0' ,
   `user_points_froze` int(10) unsigned NOT NULL DEFAULT '0' ,
+  `user_down_quota` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '下载额度',
   `user_reg_time` int(10) unsigned NOT NULL DEFAULT '0' ,
   `user_reg_ip` int(10) unsigned NOT NULL DEFAULT '0' ,
   `user_login_time` int(10) unsigned NOT NULL DEFAULT '0' ,

@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>{:lang('mall/my_orders')} - {$maccms.site_name}</title>
+{include file="user/include" /}
+<link rel="stylesheet" href="{$maccms.path_tpl}/asset/css/user-plog.css">
+</head>
+<body class="mac-plog-wrap">
+{include file="public/th" /}
+{include file="public/head" /}
+<div class="member-wrap member-wrap-bg">
+<div id="member" class="fn-clear">
+    <div id="left">
+        <div class="m-nav">
+            <a href="javascript:MAC.GoBack()" class="btn-left"><i class="iconfont ico-right">&#xe625;</i></a>
+            <a href="{$maccms.path}" class="btn-right"><i class="iconfont ico-right">&#xe634;</i></a>
+            <span class="mb-title" data-lang="mall_orders">{:lang('mall/my_orders')}</span>
+        </div>
+        {include file="user/left_nav" /}
+    </div>
+    <div id="right">
+        <div class="m-nav mac-plog-mnav">
+            <a href="javascript:MAC.GoBack()" class="btn-left"><i class="iconfont ico-right">&#xe625;</i></a>
+            <span class="mb-title" data-lang="mall_orders">{:lang('mall/my_orders')}</span>
+        </div>
+        <div class="co-right co-right-bg">
+            <h2 class="mac-plog-page-title" data-lang="mall_orders">{:lang('mall/my_orders')}</h2>
+            <div class="filter-tabs mac-plog-filter-tabs">
+                <a href="{:url('user/mall')}">{:lang('mall/title')}</a>
+                <a href="{:url('user/mall_orders')}" class="active">{:lang('mall/my_orders')}</a>
+            </div>
+            <ul class="order__list data__list clearfix">
+                {volist name="list" id="vo"}
+                <li class="order__item">
+                    <div class="order__title">
+                        <span class="plog_name">{$vo.mall_goods_name|htmlspecialchars}</span>
+                    </div>
+                    <div class="order__txt">
+                        <p>{:lang('mall/goods_type')}：{$vo.mall_goods_type|mac_get_mall_goods_type_text}</p>
+                        <p>{:lang('points')}：<span class="jg-tz">{$vo.mall_order_points}</span></p>
+                        <p>{:lang('mall/order_status')}：{if condition="$vo.mall_order_status eq 1"}{:lang('mall/order_success')}{elseif condition="$vo.mall_order_status eq 2"}{:lang('mall/order_fail')}{else/}{:lang('mall/order_pending')}{/if}</p>
+                        <p>{:lang('time')}：{$vo.mall_order_time|mac_day='color'}</p>
+                        {if condition="$vo.mall_goods_type eq 'card' && !empty($vo['mall_order_delivery_arr']['card_no'])"}
+                        <p>{:lang('card_no')}：{$vo.mall_order_delivery_arr.card_no|htmlspecialchars}</p>
+                        <p>{:lang('pass')}：{$vo.mall_order_delivery_arr.card_pwd|htmlspecialchars}</p>
+                        {/if}
+                        {if condition="$vo.mall_goods_type eq 'vip' && !empty($vo['mall_order_delivery_arr']['days'])"}
+                        <p>{:lang('mall/vip_days')}：{$vo.mall_order_delivery_arr.days}</p>
+                        {/if}
+                        {if condition="$vo.mall_goods_type eq 'download_quota' && !empty($vo['mall_order_delivery_arr']['quota'])"}
+                        <p>{:lang('mall/download_quota')}：{$vo.mall_order_delivery_arr.quota}</p>
+                        {/if}
+                        {if condition="!empty($vo.mall_order_remarks)"}
+                        <p>{:lang('remarks')}：{$vo.mall_order_remarks|htmlspecialchars}</p>
+                        {/if}
+                    </div>
+                </li>
+                {/volist}
+            </ul>
+            {if condition="empty($list)"}
+            {include file="public/notempty" /}
+            {/if}
+            <div class="member-page">
+                <ul class="page text-center cleafix">
+                    <li><a href="{$__PAGING__.page_url|mac_url_page=1}"{if$__PAGING__['page_current']==1} class="btns-disad"{/if} data-lang="string_home">首页</a></li>
+                    <li><a href="{$__PAGING__.page_url|mac_url_page=$__PAGING__.page_prev}"{if$__PAGING__['page_current']==1} class="btns-disad"{/if} data-lang="string_syy">上一页</a></li>
+                    {maccms:foreach name="$__PAGING__.page_num" id="num"}
+                    <li class="hidden-xs {if condition="$__PAGING__['page_current'] eq $num"}active{/if}"><a href="{$__PAGING__.page_url|mac_url_page=$num}">{$num}</a></li>
+                    {/maccms:foreach}
+                    <li><a href="{$__PAGING__.page_url|mac_url_page=$__PAGING__.page_next}"{if$__PAGING__['page_current']==$__PAGING__.page_total} class="btns-disad"{/if} data-lang="string_xyy">下一页</a></li>
+                    <li><a href="{$__PAGING__.page_url|mac_url_page=$__PAGING__.page_total}"{if$__PAGING__['page_current']==$__PAGING__.page_total} class="btns-disad"{/if} data-lang="string_last_page">尾页</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+{include file="public/foot" /}
+</body>
+</html>

@@ -80,6 +80,24 @@ if(empty($col_list[$pre.'cash'])){
     $sql .= "CREATE TABLE `{$pre}cash` (  `cash_id` int(10) unsigned NOT NULL AUTO_INCREMENT,  `user_id` int(10) unsigned NOT NULL DEFAULT '0',  `cash_status` tinyint(1) unsigned NOT NULL DEFAULT '0',  `cash_points` smallint(6) unsigned NOT NULL DEFAULT '0',  `cash_money` decimal(12,2) unsigned NOT NULL DEFAULT '0.00',  `cash_bank_name` varchar(60) NOT NULL DEFAULT '',  `cash_bank_no` varchar(30) NOT NULL DEFAULT '',  `cash_payee_name` varchar(30) NOT NULL DEFAULT '',  `cash_time` int(10) unsigned NOT NULL DEFAULT '0',  `cash_time_audit` int(10) unsigned NOT NULL DEFAULT '0',  PRIMARY KEY (`cash_id`),  KEY `user_id` (`user_id`),  KEY `cash_status` (`cash_status`) USING BTREE) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;";
     $sql .="\r";
 }
+if(empty($col_list[$pre.'mall_goods'])){
+    $sql .= "CREATE TABLE `{$pre}mall_goods` ( `mall_goods_id` int(10) unsigned NOT NULL AUTO_INCREMENT, `mall_goods_name` varchar(100) NOT NULL DEFAULT '', `mall_goods_type` varchar(20) NOT NULL DEFAULT '', `mall_goods_points` int(10) unsigned NOT NULL DEFAULT '0', `mall_goods_stock` int(10) unsigned NOT NULL DEFAULT '0', `mall_goods_status` tinyint(1) unsigned NOT NULL DEFAULT '0', `mall_goods_sort` int(10) NOT NULL DEFAULT '0', `mall_goods_ext` text NOT NULL, `mall_goods_time_add` int(10) unsigned NOT NULL DEFAULT '0', `mall_goods_time` int(10) unsigned NOT NULL DEFAULT '0', PRIMARY KEY (`mall_goods_id`), KEY `mall_goods_type` (`mall_goods_type`), KEY `mall_goods_status` (`mall_goods_status`), KEY `mall_goods_sort` (`mall_goods_sort`) ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;";
+    $sql .="\r";
+} else {
+    $sql .= "ALTER TABLE `{$pre}mall_goods` ENGINE=InnoDB;";
+    $sql .="\r";
+}
+if(empty($col_list[$pre.'mall_order'])){
+    $sql .= "CREATE TABLE `{$pre}mall_order` ( `mall_order_id` int(10) unsigned NOT NULL AUTO_INCREMENT, `user_id` int(10) unsigned NOT NULL DEFAULT '0', `mall_goods_id` int(10) unsigned NOT NULL DEFAULT '0', `mall_goods_name` varchar(100) NOT NULL DEFAULT '', `mall_goods_type` varchar(20) NOT NULL DEFAULT '', `mall_order_points` int(10) unsigned NOT NULL DEFAULT '0', `mall_order_quantity` int(10) unsigned NOT NULL DEFAULT '1', `mall_order_status` tinyint(1) unsigned NOT NULL DEFAULT '0', `mall_order_snapshot` text NOT NULL, `mall_order_delivery` text NOT NULL, `mall_order_remarks` varchar(255) NOT NULL DEFAULT '', `mall_order_time` int(10) unsigned NOT NULL DEFAULT '0', `mall_order_complete_time` int(10) unsigned NOT NULL DEFAULT '0', PRIMARY KEY (`mall_order_id`), KEY `user_id` (`user_id`), KEY `mall_goods_id` (`mall_goods_id`), KEY `mall_goods_type` (`mall_goods_type`), KEY `mall_order_status` (`mall_order_status`), KEY `mall_order_time` (`mall_order_time`) ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;";
+    $sql .="\r";
+} else {
+    $sql .= "ALTER TABLE `{$pre}mall_order` ENGINE=InnoDB;";
+    $sql .="\r";
+}
+if(!empty($col_list[$pre.'user']) && empty($col_list[$pre.'user']['user_down_quota'])){
+    $sql .= "ALTER TABLE `{$pre}user` ADD `user_down_quota` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '下载额度' AFTER `user_points_froze`;";
+    $sql .="\r";
+}
 // 采集时，不同资源站，独立配置同步图片选项
 if(empty($col_list[$pre.'collect']['collect_sync_pic_opt'])){
     $sql .= "ALTER TABLE `{$pre}collect` ADD `collect_sync_pic_opt` tinyint(1) unsigned NOT NULL DEFAULT '0' COMMENT '同步图片选项，0-跟随全局，1-开启，2-关闭';";
