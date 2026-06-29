@@ -124,9 +124,10 @@ class MeilisearchService
                 'typo',
                 'proximity',
                 'attribute',
+                'sort',
                 'exactness',
-                'desc(hits_month)',
-                'desc(ts)',
+                'hits_month:desc',
+                'ts:desc',
             ],
             'typoTolerance' => [
                 'enabled' => true,
