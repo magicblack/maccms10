@@ -164,6 +164,13 @@ class Comment extends Base
         $data['comment_status'] = ($GLOBALS['config']['comment']['audit'] == 1) ? 0 : 1;
         $res = model('Comment')->saveData($data);
         cookie($cookie, 't', 30);
+        if (isset($res['code']) && intval($res['code']) === 1 && intval($data['comment_status']) == 1 && intval($data['comment_pid']) > 0) {
+            try {
+                model('Notify')->sendReplyNotify(intval($data['comment_pid']), isset($data['user_id']) ? intval($data['user_id']) : 0);
+            } catch (\Exception $e) {
+                \think\Log::error('api Comment reply notify pid=' . intval($data['comment_pid']) . ' err=' . $e->getMessage());
+            }
+        }
         return json($res);
     }
 

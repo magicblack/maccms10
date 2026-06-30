@@ -105,10 +105,28 @@ class Comment extends Base
         if(!empty($ids) && in_array($col,['comment_status']) ){
             $where=[];
             $where['comment_id'] = ['in',$ids];
+            $replyNotifyRows = [];
+            if (intval($val) === 1) {
+                $replyNotifyRows = Db::name('Comment')
+                    ->where($where)
+                    ->where('comment_status', 'neq', 1)
+                    ->where('comment_pid', 'gt', 0)
+                    ->field('comment_id, comment_pid, user_id')
+                    ->select();
+            }
 
             $res = model('Comment')->fieldData($where,$col,$val);
             if($res['code']>1){
                 return $this->error($res['msg']);
+            }
+            if (!empty($replyNotifyRows)) {
+                foreach ($replyNotifyRows as $row) {
+                    try {
+                        model('Notify')->sendReplyNotify(intval($row['comment_pid']), intval($row['user_id']));
+                    } catch (\Exception $e) {
+                        \think\Log::error('Comment approve reply notify pid=' . intval($row['comment_pid']) . ' err=' . $e->getMessage());
+                    }
+                }
             }
             return $this->success($res['msg']);
         }

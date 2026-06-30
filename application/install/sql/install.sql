@@ -550,6 +550,36 @@ CREATE TABLE `mac_msg` (
 ) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
+-- Table structure for mac_notify
+-- ----------------------------
+DROP TABLE IF EXISTS `mac_notify`;
+CREATE TABLE `mac_notify` (
+  `notify_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `user_id` int(10) unsigned NOT NULL DEFAULT '0',
+  `notify_type` varchar(20) NOT NULL DEFAULT '',
+  `notify_title` varchar(255) NOT NULL DEFAULT '',
+  `notify_content` text,
+  `notify_read` tinyint(1) unsigned NOT NULL DEFAULT '0',
+  `notify_time` int(10) unsigned NOT NULL DEFAULT '0',
+  `notify_link` varchar(255) NOT NULL DEFAULT '',
+  PRIMARY KEY (`notify_id`),
+  KEY `user_read` (`user_id`,`notify_read`),
+  KEY `notify_time` (`notify_time`),
+  KEY `notify_type` (`notify_type`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Table structure for mac_notify_read
+-- ----------------------------
+DROP TABLE IF EXISTS `mac_notify_read`;
+CREATE TABLE `mac_notify_read` (
+  `user_id` int(10) unsigned NOT NULL DEFAULT '0',
+  `notify_id` int(10) unsigned NOT NULL DEFAULT '0',
+  `read_time` int(10) unsigned NOT NULL DEFAULT '0',
+  PRIMARY KEY (`user_id`,`notify_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
 -- Table structure for mac_order
 -- ----------------------------
 DROP TABLE IF EXISTS `mac_order`;

@@ -118,6 +118,9 @@ class Comment extends Base
         if($GLOBALS['config']['comment']['audit'] ==1){
             $param['comment_status'] = 0;
         }
+        else{
+            $param['comment_status'] = 1;
+        }
 
         $param['comment_ip'] = mac_get_ip_long();
         $blcaks = config('blacks');
@@ -143,6 +146,15 @@ class Comment extends Base
         }
         else{
             cookie($cookie, 't', $GLOBALS['config']['comment']['timespan']);
+
+            if (intval($param['comment_status']) == 1 && !empty($param['comment_pid']) && intval($param['comment_pid']) > 0) {
+                try {
+                    model('Notify')->sendReplyNotify(intval($param['comment_pid']), isset($param['user_id']) ? intval($param['user_id']) : 0);
+                } catch (\Exception $e) {
+                    \think\Log::error('index Comment reply notify pid=' . intval($param['comment_pid']) . ' err=' . $e->getMessage());
+                }
+            }
+
             if($GLOBALS['config']['comment']['audit'] ==1){
                 $res['msg'] = lang('index/thanks_msg_audit');
             }

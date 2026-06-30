@@ -163,6 +163,14 @@ class MallOrder extends Base
             ]);
 
             Db::commit();
+
+            try {
+                $notifyType = ($goods['mall_goods_type'] === 'vip') ? 'vip' : 'order';
+                model('Notify')->send($user_id, $notifyType, lang('notify/exchange_ok_title'), lang('notify/exchange_ok_content', [$goods['mall_goods_name']]), '/user/mall_orders');
+            } catch (\Exception $e) {
+                \think\Log::error('MallOrder exchange notify uid=' . $user_id . ' err=' . $e->getMessage());
+            }
+
             return ['code' => 1, 'msg' => lang('mall/exchange_ok'), 'info' => ['order_id' => $order_id, 'delivery' => $delivery['info']]];
         } catch (\Exception $e) {
             $msg = $e->getMessage();

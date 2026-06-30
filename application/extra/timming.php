@@ -68,4 +68,16 @@ return array (
     'weeks' => '1,2,3,4,5,6,0',
     'hours' => '00,01,02,03,04,05,06,07,08,09,10,11,12,13,14,15,16,17,18,19,20,21,22,23',
   ),
+  'notify_vip_expire' =>
+  array (
+    'id' => 'notify_vip_expire',
+    'status' => '0',
+    'name' => 'notify_vip_expire',
+    'des' => 'VIP到期提醒通知',
+    'file' => 'notify',
+    'param' => 'days=3',
+    'weeks' => '1,2,3,4,5,6,0',
+    'hours' => '00,06,12,18',
+    'runtime' => 0,
+  ),
 );

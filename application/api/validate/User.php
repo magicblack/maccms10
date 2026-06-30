@@ -50,5 +50,12 @@ class User extends Validate
             'limit',
         ],
         'get_favorites_status' => [],
+        'get_notify_list' => [
+            'page',
+            'limit',
+        ],
+        'get_notify_unread' => [],
+        'read_notify' => [],
+        'del_notify' => [],
     ];
 }

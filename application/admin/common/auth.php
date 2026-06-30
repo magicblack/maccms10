@@ -1330,6 +1330,41 @@ return array (
         'controller' => 'plog',
         'action' => 'del',
       ),
+      69 =>
+      array (
+        'show' => 1,
+        'name' => lang('menu/notify'),
+        'controller' => 'notify',
+        'action' => 'index',
+      ),
+      6901 =>
+      array (
+        'show' => 0,
+        'name' => '--'.lang('notify/admin_broadcast'),
+        'controller' => 'notify',
+        'action' => 'info',
+      ),
+      6902 =>
+      array (
+        'show' => 0,
+        'name' => '--'.lang('del'),
+        'controller' => 'notify',
+        'action' => 'del',
+      ),
+      6903 =>
+      array (
+        'show' => 0,
+        'name' => '--'.lang('notify/admin_broadcast'),
+        'controller' => 'notify',
+        'action' => 'broadcast',
+      ),
+      6904 =>
+      array (
+        'show' => 0,
+        'name' => '--'.lang('set'),
+        'controller' => 'notify',
+        'action' => 'field',
+      ),
       67101 =>
       array (
         'show' => 0,

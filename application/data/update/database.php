@@ -94,6 +94,20 @@ if(empty($col_list[$pre.'mall_order'])){
     $sql .= "ALTER TABLE `{$pre}mall_order` ENGINE=InnoDB;";
     $sql .="\r";
 }
+if(empty($col_list[$pre.'notify'])){
+    $sql .= "CREATE TABLE `{$pre}notify` ( `notify_id` int(10) unsigned NOT NULL AUTO_INCREMENT, `user_id` int(10) unsigned NOT NULL DEFAULT '0', `notify_type` varchar(20) NOT NULL DEFAULT '', `notify_title` varchar(255) NOT NULL DEFAULT '', `notify_content` text, `notify_read` tinyint(1) unsigned NOT NULL DEFAULT '0', `notify_time` int(10) unsigned NOT NULL DEFAULT '0', `notify_link` varchar(255) NOT NULL DEFAULT '', PRIMARY KEY (`notify_id`), KEY `user_read` (`user_id`,`notify_read`), KEY `notify_time` (`notify_time`), KEY `notify_type` (`notify_type`) ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;";
+    $sql .="\r";
+} else {
+    $sql .= "ALTER TABLE `{$pre}notify` ENGINE=InnoDB;";
+    $sql .="\r";
+}
+if(empty($col_list[$pre.'notify_read'])){
+    $sql .= "CREATE TABLE `{$pre}notify_read` ( `user_id` int(10) unsigned NOT NULL DEFAULT '0', `notify_id` int(10) unsigned NOT NULL DEFAULT '0', `read_time` int(10) unsigned NOT NULL DEFAULT '0', PRIMARY KEY (`user_id`,`notify_id`) ) ENGINE=InnoDB DEFAULT CHARSET=utf8;";
+    $sql .="\r";
+} else {
+    $sql .= "ALTER TABLE `{$pre}notify_read` ENGINE=InnoDB;";
+    $sql .="\r";
+}
 if(!empty($col_list[$pre.'user']) && empty($col_list[$pre.'user']['user_down_quota'])){
     $sql .= "ALTER TABLE `{$pre}user` ADD `user_down_quota` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '下载额度' AFTER `user_points_froze`;";
     $sql .="\r";

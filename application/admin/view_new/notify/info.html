@@ -1,0 +1,63 @@
+{include file="../../../application/admin/view_new/public/head" /}
+<div class="page-container p10">
+
+    <blockquote class="layui-elem-quote">{:lang('admin/notify/broadcast_desc')}</blockquote>
+
+    <form class="layui-form" method="post" action="{:url('broadcast')}">
+        <input type="hidden" name="notify_id" value="{$info.notify_id|default=''}">
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">{:lang('notify/type')}</label>
+            <div class="layui-input-block">
+                <select name="notify_type">
+                    <option value="announce" {if condition="isset($info['notify_type']) and $info['notify_type'] eq 'announce'"}selected {/if}>{:lang('notify/type_announce')}</option>
+                    <option value="system" {if condition="isset($info['notify_type']) and $info['notify_type'] eq 'system'"}selected {/if}>{:lang('notify/type_system')}</option>
+                    <option value="order" {if condition="isset($info['notify_type']) and $info['notify_type'] eq 'order'"}selected {/if}>{:lang('notify/type_order')}</option>
+                    <option value="vip" {if condition="isset($info['notify_type']) and $info['notify_type'] eq 'vip'"}selected {/if}>{:lang('notify/type_vip')}</option>
+                    <option value="activity" {if condition="isset($info['notify_type']) and $info['notify_type'] eq 'activity'"}selected {/if}>{:lang('notify/type_activity')}</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">{:lang('notify/title')}</label>
+            <div class="layui-input-block">
+                <input type="text" name="notify_title" class="layui-input" value="{$info.notify_title|default=''|mac_filter_xss}" placeholder="{:lang('notify/title_required')}">
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">{:lang('notify/content')}</label>
+            <div class="layui-input-block">
+                <textarea name="notify_content" class="layui-textarea" rows="6" placeholder="{:lang('notify/content_required')}">{$info.notify_content|default=''|mac_filter_xss}</textarea>
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">{:lang('notify/link')}</label>
+            <div class="layui-input-block">
+                <input type="text" name="notify_link" class="layui-input" value="{$info.notify_link|default=''|mac_filter_xss}" placeholder="{:lang('notify/link_placeholder')}">
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <div class="layui-input-block">
+                <button class="layui-btn" lay-submit lay-filter="formSubmit">{:lang('notify/admin_broadcast')}</button>
+                <a href="{:url('index')}" class="layui-btn layui-btn-primary">{:lang('btn_back')}</a>
+            </div>
+        </div>
+    </form>
+
+</div>
+
+{include file="../../../application/admin/view_new/public/foot" /}
+<script type="text/javascript">
+    layui.use(['form'], function(){
+        var form = layui.form;
+        form.on('submit(formSubmit)', function(data){
+            return true;
+        });
+    });
+</script>
+</body>
+</html>

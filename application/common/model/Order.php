@@ -169,6 +169,13 @@ class Order extends Base {
             }
 
             Db::commit();
+
+            try {
+                model('Notify')->send($user['info']['user_id'], 'order', lang('notify/order_pay_ok_title'), lang('notify/order_pay_ok_content', [$order['info']['order_code']]), '/user/orders');
+            } catch (\Exception $e) {
+                \think\Log::error('Order pay notify uid=' . $user['info']['user_id'] . ' err=' . $e->getMessage());
+            }
+
             return ['code'=>1,'msg'=>lang('model/order/pay_ok')];
         }catch (\Exception $e){
             Db::rollback();

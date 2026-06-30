@@ -137,4 +137,17 @@ class Timming extends Base
         $runner = new ExternalSyncRunner();
         $runner->runDueJobs($extCfg, $provider);
     }
+
+    protected function notify($param)
+    {
+        @parse_str($param, $output);
+        $days = isset($output['days']) ? intval($output['days']) : 3;
+        if ($days < 1) {
+            $days = 3;
+        }
+        $res = model('Notify')->sendVipExpirationReminders($days);
+        if (isset($res['info']['sent'])) {
+            mac_echo('[notify] vip expiration reminders sent: ' . intval($res['info']['sent']));
+        }
+    }
 }

@@ -932,4 +932,93 @@ class User extends Base
         }
         return true;
     }
+
+    /**
+     * 获取站内通知列表
+     * api.php/user/get_notify_list?page=1&limit=20&type=order|vip|...
+     */
+    public function get_notify_list(Request $request)
+    {
+        $check = model('User')->checkLogin();
+        if ($check['code'] > 1) return json(['code' => 1401, 'msg' => lang('api/please_login_first')]);
+        $uid = intval($check['info']['user_id']);
+        $param = $request->param();
+        $page = max(1, intval($param['page'] ?? 1));
+        $limit = max(1, min(100, intval($param['limit'] ?? 20)));
+        $model = model('Notify');
+        $type = isset($param['type']) ? trim($param['type']) : '';
+        $res = $model->listForUser($uid, $type, $page, $limit);
+        if ($res['code'] > 1) return json($res);
+        $unread = $model->countUnread($uid);
+
+        return json(['code' => 1, 'msg' => lang('obtain_ok'), 'info' => [
+            'page' => intval($res['page']),
+            'pagecount' => intval($res['pagecount']),
+            'limit' => intval($res['limit']),
+            'total' => intval($res['total']),
+            'unread' => intval($unread),
+            'list' => $res['list'],
+            'rows' => $res['list'],
+        ]]);
+    }
+
+    /**
+     * 获取未读通知数
+     * api.php/user/get_notify_unread
+     */
+    public function get_notify_unread(Request $request)
+    {
+        $check = model('User')->checkLogin();
+        if ($check['code'] > 1) return json(['code' => 1401, 'msg' => lang('api/please_login_first')]);
+        $count = model('Notify')->countUnread(intval($check['info']['user_id']));
+        return json(['code' => 1, 'msg' => lang('obtain_ok'), 'info' => ['unread' => intval($count)]]);
+    }
+
+    /**
+     * 标记通知已读
+     * api.php/user/read_notify (POST) ids=1,2,3 或 all=1 全部已读
+     */
+    public function read_notify(Request $request)
+    {
+        $check = model('User')->checkLogin();
+        if ($check['code'] > 1) return json(['code' => 1401, 'msg' => lang('api/please_login_first')]);
+        $uid = intval($check['info']['user_id']);
+        $param = $request->post();
+        $all = isset($param['all']) ? $param['all'] : '';
+        if ((string)$all === '1') {
+            return json(model('Notify')->markAllRead($uid));
+        }
+        $idsRaw = isset($param['ids']) ? htmlspecialchars(urldecode(trim($param['ids']))) : '';
+        $ids = [];
+        foreach (explode(',', $idsRaw) as $v) {
+            $v = abs(intval($v));
+            if ($v > 0) $ids[$v] = $v;
+        }
+        if (empty($ids)) {
+            return json(['code' => 1001, 'msg' => lang('param_err')]);
+        }
+        return json(model('Notify')->markRead($uid, array_values($ids)));
+    }
+
+    /**
+     * 删除站内通知
+     * api.php/user/del_notify (POST) ids=1,2,3
+     */
+    public function del_notify(Request $request)
+    {
+        $check = model('User')->checkLogin();
+        if ($check['code'] > 1) return json(['code' => 1401, 'msg' => lang('api/please_login_first')]);
+        $uid = intval($check['info']['user_id']);
+        $param = $request->post();
+        $idsRaw = isset($param['ids']) ? htmlspecialchars(urldecode(trim($param['ids']))) : '';
+        $ids = [];
+        foreach (explode(',', $idsRaw) as $v) {
+            $v = abs(intval($v));
+            if ($v > 0) $ids[$v] = $v;
+        }
+        if (empty($ids)) {
+            return json(['code' => 1001, 'msg' => lang('param_err')]);
+        }
+        return json(model('Notify')->deleteForUser($uid, array_values($ids)));
+    }
 }
