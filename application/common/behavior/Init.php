@@ -168,9 +168,9 @@ class Init
         if ($root !== '') {
             $root = '/' . ltrim($root, '/');
         }
-        $nv = isset($config['site']['new_version']) ? $config['site']['new_version'] : null;
-        $useNewStatic = ($nv == 1 || !isset($config['site']['new_version']) || (empty($nv) && $nv != 0));
-        $staticPath = $useNewStatic ? '/static_new' : '/static';
+        // 旧版后台已移除，后台统一使用新版静态资源目录 static_new。
+        // 不再依赖 site.new_version 判断（该键已废弃，避免 PHP7/PHP8 对 '' != 0 判定差异导致的目录漂移）。
+        $staticPath = '/static_new';
         $staticReplace = array(
             '__STATIC__' => $root . $staticPath,
             '__CSS__'    => $root . $staticPath . '/css',

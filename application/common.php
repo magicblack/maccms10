@@ -727,7 +727,7 @@ function mac_extends_list($flag)
         if (class_exists($cp)) {
             $c = new $cp;
             $res['ext_list'][$cl] = $c->name;
-            if(file_exists( './application/admin/view/extend/'.$flag.'/'.strtolower($cl) .'.html')) {
+            if(file_exists( './application/admin/view_new/extend/'.$flag.'/'.strtolower($cl) .'.html')) {
                 $res['ext_html'] .= View::instance()->fetch('admin@extend/'.$flag.'/' . strtolower($cl));
             }
         }

@@ -7,7 +7,10 @@ class Notify extends Base
     public function __construct()
     {
         parent::__construct();
+        // admin 模块统一使用新版后台模板目录 view_new/。
+        // Init 会把 template.view_path 指向前台模板目录，模块相对 fetch 需显式指定，否则会白屏。
         $this->view->config('view_path', APP_PATH . 'admin/view_new/');
+
     }
 
     public function index()

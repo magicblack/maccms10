@@ -1748,9 +1748,8 @@ class System extends Base
         $this->assign('theme_ai_image_models', ['gpt-image-1', 'dall-e-3']);
         $this->assign('config', $config);
         $this->assign('title', lang('menu/configthemeai'));
-        // 主题AI 配置页迁移到新版后台主题（view_new）；旧版 view/ 不再承载新功能（铁律 2）
-        $this->view->config('view_path', APP_PATH . 'admin/view_new/');
-        return $this->fetch('system/configthemeai');
+        return $this->fetch('admin@system/configthemeai');
+
     }
 
     public function configanalytics()
@@ -1914,23 +1913,6 @@ class System extends Base
             $config['app'] = [];
         }
         $config['app']['lang'] = $param['lang'];
-        $res = mac_arr2file(APP_PATH . 'extra/maccms.php', $config);
-        if ($res === false) {
-            return $this->ajaxErrorWithFreshToken(lang('save_err'));
-        }
-        return json(['code' => 1, 'msg' => 'ok']);
-    }
-
-    public function configVersion(){
-        $param = input();
-        $config = config('maccms');
-        if (!isset($config['site'])) {
-            $config['site'] = [];
-        }
-        $config['site']['new_version'] = $param['version'];
-        if (!is_writable(APP_PATH . 'extra/maccms.php')) {
-            return $this->error(APP_PATH . 'extra/maccms.php' . lang('install/write_read_err'));
-        }
         $res = mac_arr2file(APP_PATH . 'extra/maccms.php', $config);
         if ($res === false) {
             return $this->ajaxErrorWithFreshToken(lang('save_err'));

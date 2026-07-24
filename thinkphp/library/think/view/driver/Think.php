@@ -42,7 +42,9 @@ class Think
     {
         $this->config = array_merge($this->config, $config);
         if (empty($this->config['view_path'])) {
-            $this->config['view_path'] = App::$modulePath . 'view' . DS;
+            // 后台（admin 模块）统一使用新版模板目录 view_new，其余模块保持 view
+            $isAdmin = (rtrim(App::$modulePath, DS) === rtrim(APP_PATH . 'admin', DS));
+            $this->config['view_path'] = App::$modulePath . ($isAdmin ? 'view_new' : 'view') . DS;
         }
 
         $this->template = new Template($this->config);
@@ -79,17 +81,7 @@ class Think
         }
         // 模板不存在 抛出异常
         if (!is_file($template)) {
-            // 新版后台自动复制模板
-            if (strpos($template, '/view_new') !== false) {
-                $sourcePath = str_replace('/view_new', '/view', $template);
-                if (file_exists($sourcePath)) {
-                    if (!copy($sourcePath, $template)) {
-                        throw new TemplateNotFoundException('Please copy file:' . $sourcePath . ' => ' . $template);
-                    }
-                }
-            }else{
-                throw new TemplateNotFoundException('template not exists:' . $template, $template);
-            }
+            throw new TemplateNotFoundException('template not exists:' . $template, $template);
         }
         // 记录视图信息
         App::$debug && Log::record('[ VIEW ] ' . $template . ' [ ' . var_export(array_keys($data), true) . ' ]', 'info');
@@ -129,7 +121,13 @@ class Think
             $module = isset($module) ? $module : $request->module();
             $path   = $this->config['view_base'] . ($module ? $module . DS : '');
         } else {
-            $path = isset($module) ? APP_PATH . $module . DS . 'view' . DS : $this->config['view_path'];
+            if (isset($module)) {
+                // 后台（admin 模块）跨模块调用统一解析到新版模板目录 view_new
+                $viewDir = ($module === 'admin') ? 'view_new' : 'view';
+                $path = APP_PATH . $module . DS . $viewDir . DS;
+            } else {
+                $path = $this->config['view_path'];
+            }
         }
 
         $depr = $this->config['view_depr'];

@@ -41,12 +41,9 @@ class View
         if ('' != $root) {
             $root = '/' . ltrim($root, '/'); 
         }
-        // 如果 new_version 为 1 或者 new_version 不存在或者为null，则使用新版模板
-        if($GLOBALS['config']['site']['new_version'] == 1 || !isset($GLOBALS['config']['site']['new_version']) || (empty($GLOBALS['config']['site']['new_version']) && $GLOBALS['config']['site']['new_version'] != 0)){
-            $root . $static_path = '/static_new/';
-        }else{
-            $root . $static_path = '/static/';
-        }
+        // 后台统一使用新版静态资源目录
+        $static_path = '/static_new/';
+
         $baseReplace = [
             '__ROOT__'   => $root,
             'MAC_BASE_PATH'   => $root,

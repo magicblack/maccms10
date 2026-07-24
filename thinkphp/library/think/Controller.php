@@ -118,14 +118,13 @@ class Controller
      */
     protected function fetch($template = '', $vars = [], $replace = [], $config = [])
     {
-        // 如果是新版本
-        if($GLOBALS['config']['site']['new_version'] == 1 || !isset($GLOBALS['config']['site']['new_version']) || (empty($GLOBALS['config']['site']['new_version']) && $GLOBALS['config']['site']['new_version'] != 0)){
-            // 如果模板路径以admin@开头
-            if (strpos($template, 'admin@') === 0) {
-                $parts = explode('@', $template);
-                $result = $parts[1];
-                $template = APP_PATH . request()->module() . '/view_new/' . $result .  '.html';
-            }
+        // 后台统一使用新版模板（view_new）。
+        // 写死 'admin'，与 Think 驱动的 admin@ 解析一致，避免非 admin 模块调用时
+        // 误按 request()->module() 拼到不存在的 "<模块>/view_new/" 路径。
+        if (strpos($template, 'admin@') === 0) {
+            $parts = explode('@', $template);
+            $result = $parts[1];
+            $template = APP_PATH . 'admin' . '/view_new/' . $result .  '.html';
         }
         return $this->view->fetch($template, $vars, $replace, $config);
     }

@@ -12,13 +12,14 @@ use think\Db;
  *
  * ★ 新后台控制器约定 ★
  * 构造函数里把 view_path 指向 admin/view_new/，且 fetch() 一律用模块相对形式
- * （fetch('monitor/index')），绝不用跨模块的 admin@ 前缀。
+ * （fetch('monitor/index')），推荐不用跨模块的 admin@ 前缀。
  *
- * thinkphp/library/think/Controller.php:119-131 对 admin@ 做过 patch：
- * 只有当 site.new_version == 1 时才会改写到 view_new/。
- * 站长一旦把 new_version 设成 0，admin@ 就会落回旧的 view/ 并抛
- * TemplateNotFoundException。模块相对形式是唯一与 new_version 无关的写法。
+ * 说明：旧版后台 view/ 已移除，admin 模块统一使用 view_new/。
+ * thinkphp/library/think/Controller.php 与 Think 驱动的 admin@ 解析均已写死
+ * 指向 admin/view_new/，不再依赖 site.new_version（该键已废弃）。
+ * 模块相对形式仍是最直观、自给自足的写法。
  */
+
 class Monitor extends Base
 {
     /** 后台实时面板的轮询结果缓存秒数：多个管理员同时开着页面只打一次 DB */

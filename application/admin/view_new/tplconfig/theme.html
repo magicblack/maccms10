@@ -1,4 +1,5 @@
-{include file="../../../application/admin/view/public/head" /}
+{include file="../../../application/admin/view_new/public/head" /}
+
 <link rel="stylesheet" href="__STATIC__/css/theme_config_ux.css?{$MAC_VERSION}">
 
 <?php $mctheme = (is_file(ROOT_PATH . 'template/default/info.ini')) ? parse_ini_file(ROOT_PATH . 'template/default/info.ini') : []; ?>
@@ -2694,7 +2695,8 @@ $hotvod_tabs_list = (!empty($tplconfig['theme']['hotvod']['tabs']) && is_array($
         </div>
     </form>
 </div>
-{include file="../../../application/admin/view/public/foot" /}
+{include file="../../../application/admin/view_new/public/foot" /}
+
 <script type="text/javascript">
     window.MAC_THEME_TYPE_OPTIONS = {:json_encode(isset($theme_type_options) ? $theme_type_options : [], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES)};
     window.MAC_THEME_TYPE_INDEX = {:json_encode(isset($theme_type_index) ? $theme_type_index : [], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES)};
