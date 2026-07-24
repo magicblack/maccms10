@@ -522,7 +522,7 @@ https://www.baidu.com/123.jpg
     'admin/system/configpush/genkey_tip' => '비공개키는 반드시 비밀로 유지하세요. 재생성 시 기존 구독이 무효화됩니다.',
     'admin/system/configpush/genkey_confirm' => '새 VAPID 키 쌍을 생성하시겠습니까? 기존 구독이 무효화됩니다.',
     'admin/system/configpush/genkey_ok' => '생성됨. 저장을 클릭하세요',
-    'admin/system/configpush/genkey_fail' => '생성 실패. PHP 환경(openssl/gmp)을 확인하세요',
+    'admin/system/configpush/genkey_fail' => '생성 실패. PHP를 7.3 이상으로 업그레이드하고 openssl 확장이 활성화되어 있는지 확인하세요',
     'api/push_disabled' => '푸시 기능이 활성화되지 않았습니다',
   'menu/timming' => '예약 작업',
   'menu/domain' => '사이트 그룹 관리',

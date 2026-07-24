@@ -522,7 +522,7 @@ https://www.baidu.com/123.jpg
     'admin/system/configpush/genkey_tip' => '秘密鍵は必ず秘匿してください。再生成すると既存の購読は無効になります。',
     'admin/system/configpush/genkey_confirm' => '新しいVAPID鍵ペアを生成しますか？既存の購読は無効になります。',
     'admin/system/configpush/genkey_ok' => '生成しました。保存をクリックしてください',
-    'admin/system/configpush/genkey_fail' => '生成に失敗しました。PHP環境（openssl/gmp）を確認してください',
+    'admin/system/configpush/genkey_fail' => '生成に失敗しました。PHP を 7.3 以上にアップグレードし、openssl 拡張が有効か確認してください',
     'api/push_disabled' => 'プッシュ機能が有効になっていません',
   'menu/timming' => 'スケジュールタスク',
   'menu/domain' => 'サイト群管理',

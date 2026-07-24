@@ -522,7 +522,7 @@ https://www.baidu.com/123.jpg
     'admin/system/configpush/genkey_tip' => '私鑰務必保密。重新產生會使舊訂閱失效，需使用者重新訂閱。',
     'admin/system/configpush/genkey_confirm' => '確定產生新的 VAPID 金鑰對？重新產生後舊訂閱將失效。',
     'admin/system/configpush/genkey_ok' => '已產生，請點擊儲存',
-    'admin/system/configpush/genkey_fail' => '產生失敗，請檢查 PHP 環境（openssl/gmp）',
+    'admin/system/configpush/genkey_fail' => '產生失敗，請將 PHP 升級至 7.3 以上，並確認已啟用 openssl 擴充',
     'api/push_disabled' => '推送功能未開啟',
   'menu/timming' => '調度任務',
   'menu/domain' => '站群管理',

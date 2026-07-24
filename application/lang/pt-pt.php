@@ -522,7 +522,7 @@ https://www.baidu.com/123.jpg
     'admin/system/configpush/genkey_tip' => 'Mantenha a chave privada secreta. Regenerar invalida as subscricoes existentes.',
     'admin/system/configpush/genkey_confirm' => 'Gerar um novo par de chaves VAPID? As subscricoes existentes serao invalidadas.',
     'admin/system/configpush/genkey_ok' => 'Gerado, clique em Guardar',
-    'admin/system/configpush/genkey_fail' => 'Falha ao gerar, verifique o ambiente PHP (openssl/gmp)',
+    'admin/system/configpush/genkey_fail' => 'Falha ao gerar. Atualize o PHP para 7.3 ou superior e certifique-se de que a extensao openssl esta ativada',
     'api/push_disabled' => 'As notificacoes push nao estao ativadas',
   'menu/timming' => 'Tarefas agendadas',
   'menu/domain' => 'Gestão de grupo de sites',
