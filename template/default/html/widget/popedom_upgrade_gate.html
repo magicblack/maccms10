@@ -25,7 +25,21 @@ elseif($__buy_mid === 12){
 }
 $__buy_enabled = $__buy_id > 0 ? 1 : 0;
 $__need_points = intval($popedom['points'] ?? 0);
+// 部分权限码（如游客 4001）未带 points：回退到 player_info / 影片积分字段
+if ($__need_points <= 0 && $__buy_mid === 1) {
+	$__need_points = intval($obj['player_info']['points'] ?? 0);
+}
+if ($__need_points <= 0 && $__buy_mid === 1) {
+	$__flag = (string)($obj['player_info']['flag'] ?? 'play');
+	if (!empty($GLOBALS['config']['user']['vod_points_type']) && (string)$GLOBALS['config']['user']['vod_points_type'] === '1') {
+		$__need_points = intval($obj['vod_points'] ?? 0);
+	} else {
+		$__col = ($__flag === 'down') ? 'vod_points_down' : 'vod_points_play';
+		$__need_points = intval($obj[$__col] ?? 0);
+	}
+}
 $__show_confirm_buy = ($__buy_enabled === 1 && $__need_points > 0) ? 1 : 0;
+$__is_down = ($__buy_mid === 1 && (($obj['player_info']['flag'] ?? '') === 'down'));
 {/php}
 
 <div class="popedom-upgrade-gate" data-upgrade-url="{:url('user/upgrade')}" data-ajax-upgrade-url="{:url('user/ajax_upgrade')}" data-upgrade-css-url="{$maccms.path}template/default/asset/css/user-upgrade.css" data-user-buy-url="{:url('user/buy')}" data-user-index-url="{:url('user/index')}" data-buy-enabled="{$__buy_enabled}" data-need-points="{$__need_points}">
@@ -34,14 +48,36 @@ $__show_confirm_buy = ($__buy_enabled === 1 && $__need_points > 0) ? 1 : 0;
 			<img class="popedom-upgrade-gate__icon-img popedom-upgrade-gate__icon-img--light" src="{$maccms.path_tpl}/images/home/popedom-upgrade@2x.png" alt="" width="88" height="88" decoding="async" />
 			<img class="popedom-upgrade-gate__icon-img popedom-upgrade-gate__icon-img--dark" src="{$maccms.path_tpl}/images/home/popedom-upgrade@2x-balck.png" alt="" width="88" height="88" decoding="async" />
 		</div>
+		{if condition="$__is_down"}
+		{if condition="!empty($GLOBALS['config']['user']['vod_points_type']) && $GLOBALS['config']['user']['vod_points_type'] eq 1"}
+		<p class="popedom-upgrade-title">整部下载需付费</p>
+		<p class="popedom-upgrade-subtitle">支付一次，解锁本片全部下载地址</p>
+		{else/}
+		<p class="popedom-upgrade-title">本集下载需付费</p>
+		<p class="popedom-upgrade-subtitle">购买后即可获取本集下载地址</p>
+		{/if}
+		{else/}
 		<p class="popedom-upgrade-title">这部分内容需要会员才能观看哦～</p>
 		<p class="popedom-upgrade-subtitle">开通会员即可畅享全部精彩内容，感谢您的支持</p>
+		{/if}
 		<div class="popedom-upgrade-hints">
 			{if condition="$__show_confirm_buy eq 1"}
 			<p class="popedom-upgrade-hint-line">可选选择金币单次购买（{$__need_points}金币）</p>
+			{if condition="$__is_down"}
+			{if condition="!empty($GLOBALS['config']['user']['vod_points_type']) && $GLOBALS['config']['user']['vod_points_type'] eq 1"}
+			<p class="popedom-upgrade-hint-line">或升级会员畅享整站下载权益</p>
+			{else/}
+			<p class="popedom-upgrade-hint-line">或升级会员畅享下载权益</p>
+			{/if}
+			{else/}
 			<p class="popedom-upgrade-hint-line">或升级会员畅看全站内容</p>
+			{/if}
+			{else/}
+			{if condition="$__is_down"}
+			<p class="popedom-upgrade-hint-line">本内容需会员下载，请升级会员后即可下载</p>
 			{else/}
 			<p class="popedom-upgrade-hint-line">本内容需会员观看，请升级会员后即可观看</p>
+			{/if}
 			{/if}
 		</div>
 		<div class="popedom-upgrade-actions">
@@ -89,17 +125,20 @@ $(function(){
 				return;
 			}
 			var $btn = $(this);
-			var reqUrl = ((typeof maccms !== 'undefined' && maccms.base_url) ? maccms.base_url : '') + '/index.php/user/ajax_buy_popedom.html?id='
-				+ encodeURIComponent($btn.attr('data-id') || '')
-				+ '&mid=' + encodeURIComponent($btn.attr('data-mid') || '')
-				+ '&sid=' + encodeURIComponent($btn.attr('data-sid') || '')
-				+ '&nid=' + encodeURIComponent($btn.attr('data-nid') || '')
-				+ '&type=' + encodeURIComponent($btn.attr('data-type') || '');
+			// ajax_buy_popedom 强制 POST；参数走 body，jQuery 默认带 X-Requested-With 可过同站 CSRF 过渡
+			var reqUrl = ((typeof maccms !== 'undefined' && maccms.base_url) ? maccms.base_url : '') + '/index.php/user/ajax_buy_popedom.html';
 			$btn.addClass('disabled');
 			$.ajax({
 				url: reqUrl,
-				type: 'get',
+				type: 'post',
 				dataType: 'json',
+				data: {
+					id: $btn.attr('data-id') || '',
+					mid: $btn.attr('data-mid') || '',
+					sid: $btn.attr('data-sid') || '',
+					nid: $btn.attr('data-nid') || '',
+					type: $btn.attr('data-type') || ''
+				},
 				success: function(r){
 					if(typeof MAC !== 'undefined' && MAC.Pop && MAC.Pop.Msg){
 						MAC.Pop.Msg(300, 50, r.msg || '', 2000);

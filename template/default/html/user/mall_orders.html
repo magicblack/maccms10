@@ -1,75 +1,103 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"><head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<title>{:lang('mall/my_orders')} - {$maccms.site_name}</title>
+<title>兑换记录 - 会员中心 - {$maccms.site_name}</title>
 {include file="user/include" /}
-<link rel="stylesheet" href="{$maccms.path_tpl}/asset/css/user-plog.css">
+<link rel="stylesheet" href="{$maccms.path_tpl}/asset/css/user-mall.css">
 </head>
-<body class="mac-plog-wrap">
+<body class="user-mall-page">
 {include file="public/th" /}
 {include file="public/head" /}
 <div class="member-wrap member-wrap-bg">
 <div id="member" class="fn-clear">
     <div id="left">
         <div class="m-nav">
-            <a href="javascript:MAC.GoBack()" class="btn-left"><i class="iconfont ico-right">&#xe625;</i></a>
+            <a href="{:url('user/index')}" class="btn-left"><i class="iconfont ico-right">&#xe625;</i></a>
             <a href="{$maccms.path}" class="btn-right"><i class="iconfont ico-right">&#xe634;</i></a>
-            <span class="mb-title" data-lang="mall_orders">{:lang('mall/my_orders')}</span>
+            <span class="mb-title" data-lang="mall_my_orders">兑换记录</span>
         </div>
         {include file="user/left_nav" /}
     </div>
     <div id="right">
-        <div class="m-nav mac-plog-mnav">
-            <a href="javascript:MAC.GoBack()" class="btn-left"><i class="iconfont ico-right">&#xe625;</i></a>
-            <span class="mb-title" data-lang="mall_orders">{:lang('mall/my_orders')}</span>
+        <div class="m-nav">
+            <a href="{:url('user/index')}" class="btn-left"><i class="iconfont ico-right">&#xe625;</i></a>
+            <span class="mb-title" data-lang="mall_my_orders">兑换记录</span>
+            <a href="{:url('user/mall')}" class="btn-right" data-lang="mall_title">金币商城</a>
         </div>
-        <div class="co-right co-right-bg">
-            <h2 class="mac-plog-page-title" data-lang="mall_orders">{:lang('mall/my_orders')}</h2>
-            <div class="filter-tabs mac-plog-filter-tabs">
-                <a href="{:url('user/mall')}">{:lang('mall/title')}</a>
-                <a href="{:url('user/mall_orders')}" class="active">{:lang('mall/my_orders')}</a>
-            </div>
-            <ul class="order__list data__list clearfix">
+        <div class="co-right co-right-bg user-mall">
+            <h2 class="user-mall__page-title" data-lang="mall_my_orders">兑换记录</h2>
+            <p class="user-mall__back">
+                <a href="{:url('user/mall')}" data-lang="mall_back_to_mall">返回金币商城</a>
+            </p>
+            <ul class="um-orders-list">
                 {volist name="list" id="vo"}
-                <li class="order__item">
-                    <div class="order__title">
-                        <span class="plog_name">{$vo.mall_goods_name|htmlspecialchars}</span>
+                <li class="um-orders-item">
+                    <div class="um-orders-item__top">
+                        <span class="um-orders-item__name">{$vo.mall_goods_name|htmlspecialchars}</span>
+                        {eq name="vo.mall_order_status" value="1"}
+                        <span class="um-orders-item__status is-ok" data-lang="mall_order_success">成功</span>
+                        {/eq}
+                        {eq name="vo.mall_order_status" value="2"}
+                        <span class="um-orders-item__status is-fail" data-lang="mall_order_fail">失败</span>
+                        {/eq}
+                        {eq name="vo.mall_order_status" value="0"}
+                        <span class="um-orders-item__status is-pending" data-lang="mall_order_pending">处理中</span>
+                        {/eq}
                     </div>
-                    <div class="order__txt">
-                        <p>{:lang('mall/goods_type')}：{$vo.mall_goods_type|mac_get_mall_goods_type_text}</p>
-                        <p>{:lang('points')}：<span class="jg-tz">{$vo.mall_order_points}</span></p>
-                        <p>{:lang('mall/order_status')}：{if condition="$vo.mall_order_status eq 1"}{:lang('mall/order_success')}{elseif condition="$vo.mall_order_status eq 2"}{:lang('mall/order_fail')}{else/}{:lang('mall/order_pending')}{/if}</p>
-                        <p>{:lang('time')}：{$vo.mall_order_time|mac_day='color'}</p>
-                        {if condition="$vo.mall_goods_type eq 'card' && !empty($vo['mall_order_delivery_arr']['card_no'])"}
-                        <p>{:lang('card_no')}：{$vo.mall_order_delivery_arr.card_no|htmlspecialchars}</p>
-                        <p>{:lang('pass')}：{$vo.mall_order_delivery_arr.card_pwd|htmlspecialchars}</p>
-                        {/if}
-                        {if condition="$vo.mall_goods_type eq 'vip' && !empty($vo['mall_order_delivery_arr']['days'])"}
-                        <p>{:lang('mall/vip_days')}：{$vo.mall_order_delivery_arr.days}</p>
-                        {/if}
-                        {if condition="$vo.mall_goods_type eq 'download_quota' && !empty($vo['mall_order_delivery_arr']['quota'])"}
-                        <p>{:lang('mall/download_quota')}：{$vo.mall_order_delivery_arr.quota}</p>
-                        {/if}
-                        {if condition="!empty($vo.mall_order_remarks)"}
-                        <p>{:lang('remarks')}：{$vo.mall_order_remarks|htmlspecialchars}</p>
-                        {/if}
+                    <div class="um-orders-item__meta">
+                        <div>
+                            {eq name="vo.mall_goods_type" value="vip"}
+                            <span data-lang="mall_type_vip">VIP天数</span>
+                            {/eq}
+                            {eq name="vo.mall_goods_type" value="card"}
+                            <span data-lang="mall_type_card">充值卡密</span>
+                            {/eq}
+                            {eq name="vo.mall_goods_type" value="download_quota"}
+                            <span data-lang="mall_type_download_quota">下载额度</span>
+                            {/eq}
+                            · -{$vo.mall_order_points} <span data-lang="mall_points_unit">金币</span>
+                        </div>
+                        <div>{$vo.mall_order_time|mac_day}</div>
+                        {eq name="vo.mall_goods_type" value="card"}
+                        {notempty name="vo.mall_order_delivery_arr.card_no"}
+                        <div><span data-lang="mall_card_no">卡号</span>：{$vo.mall_order_delivery_arr.card_no|htmlspecialchars}</div>
+                        <div><span data-lang="mall_card_pwd">密码</span>：{$vo.mall_order_delivery_arr.card_pwd|htmlspecialchars}</div>
+                        {/notempty}
+                        {/eq}
+                        {eq name="vo.mall_goods_type" value="vip"}
+                        {notempty name="vo.mall_order_delivery_arr.days"}
+                        <div><span data-lang="mall_vip_days">VIP天数</span>：{$vo.mall_order_delivery_arr.days}</div>
+                        {/notempty}
+                        {/eq}
+                        {eq name="vo.mall_goods_type" value="download_quota"}
+                        {notempty name="vo.mall_order_delivery_arr.quota"}
+                        <div><span data-lang="mall_download_quota">下载额度</span>：{$vo.mall_order_delivery_arr.quota}</div>
+                        {/notempty}
+                        {/eq}
+                        {notempty name="vo.mall_order_remarks"}
+                        <div><span data-lang="mall_remarks">备注</span>：{$vo.mall_order_remarks|htmlspecialchars}</div>
+                        {/notempty}
                     </div>
                 </li>
                 {/volist}
             </ul>
-            {if condition="empty($list)"}
-            {include file="public/notempty" /}
-            {/if}
+            {empty name="list"}
+            <div class="user-mall__empty">
+                {include file="public/notempty" /}
+            </div>
+            {/empty}
             <div class="member-page">
+                {if condition="($__PAGING__.page_total gt 1)"}
                 <ul class="page text-center cleafix">
-                    <li><a href="{$__PAGING__.page_url|mac_url_page=1}"{if$__PAGING__['page_current']==1} class="btns-disad"{/if} data-lang="string_home">首页</a></li>
-                    <li><a href="{$__PAGING__.page_url|mac_url_page=$__PAGING__.page_prev}"{if$__PAGING__['page_current']==1} class="btns-disad"{/if} data-lang="string_syy">上一页</a></li>
+                    <li><a href="{$__PAGING__.page_url|mac_url_page=1}"{eq name="__PAGING__.page_current" value="1"} class="btns-disad"{/eq} data-lang="string_home">首页</a></li>
+                    <li><a href="{$__PAGING__.page_url|mac_url_page=$__PAGING__.page_prev}"{eq name="__PAGING__.page_current" value="1"} class="btns-disad"{/eq} data-lang="string_syy">上一页</a></li>
                     {maccms:foreach name="$__PAGING__.page_num" id="num"}
-                    <li class="hidden-xs {if condition="$__PAGING__['page_current'] eq $num"}active{/if}"><a href="{$__PAGING__.page_url|mac_url_page=$num}">{$num}</a></li>
+                    <li class="hidden-xs{if condition='($__PAGING__.page_current eq $num)'} active{/if}"><a href="{$__PAGING__.page_url|mac_url_page=$num}">{$num}</a></li>
                     {/maccms:foreach}
-                    <li><a href="{$__PAGING__.page_url|mac_url_page=$__PAGING__.page_next}"{if$__PAGING__['page_current']==$__PAGING__.page_total} class="btns-disad"{/if} data-lang="string_xyy">下一页</a></li>
-                    <li><a href="{$__PAGING__.page_url|mac_url_page=$__PAGING__.page_total}"{if$__PAGING__['page_current']==$__PAGING__.page_total} class="btns-disad"{/if} data-lang="string_last_page">尾页</a></li>
+                    <li><a href="{$__PAGING__.page_url|mac_url_page=$__PAGING__.page_next}"{eq name="__PAGING__.page_current" value="$__PAGING__.page_total"} class="btns-disad"{/eq} data-lang="string_xyy">下一页</a></li>
+                    <li><a href="{$__PAGING__.page_url|mac_url_page=$__PAGING__.page_total}"{eq name="__PAGING__.page_current" value="$__PAGING__.page_total"} class="btns-disad"{/eq} data-lang="string_last_page">尾页</a></li>
                 </ul>
+                {/if}
             </div>
         </div>
     </div>

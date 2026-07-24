@@ -1685,18 +1685,36 @@
             },
             'BuyPopedom': function (o) {
                 var $that = $(o);
-                if ($that.attr("data-id")) {
-                    MAC.confirm('您确认购买此条数据访问权限吗？', function () {
-                        MAC.Ajax(maccms.base_url + '/index.php/user/ajax_buy_popedom.html?id=' + $that.attr("data-id") + '&mid=' + $that.attr("data-mid") + '&sid=' + $that.attr("data-sid") + '&nid=' + $that.attr("data-nid") + '&type=' + $that.attr("data-type"), 'get', 'json', '', function (r) {
-                            $that.addClass('disabled');
-                            MAC.Pop.Msg(300, 50, r.msg, 2000);
-                            if (r.code == 1) {
-                                top.location.reload();
-                            }
-                            $that.removeClass('disabled');
-                        });
-                    });
+                if (!$that.attr("data-id")) {
+                    return;
                 }
+                // 游客先登录，避免确认后接口 302 登录页导致空白 Toast
+                if (MAC.User.IsLogin == 0) {
+                    MAC.User.Login();
+                    return;
+                }
+                MAC.confirm('您确认购买此条数据访问权限吗？', function () {
+                    // ajax_buy_popedom 强制 POST + CSRF（同站 XHR 过渡分支）
+                    MAC.Ajax(maccms.base_url + '/index.php/user/ajax_buy_popedom.html', 'post', 'json', {
+                        id: $that.attr("data-id"),
+                        mid: $that.attr("data-mid"),
+                        sid: $that.attr("data-sid"),
+                        nid: $that.attr("data-nid"),
+                        type: $that.attr("data-type")
+                    }, function (r) {
+                        $that.addClass('disabled');
+                        var msg = (r && r.msg) ? r.msg : '';
+                        if (msg) {
+                            MAC.Pop.Msg(300, 50, msg, 2000);
+                        }
+                        if (r && Number(r.code) === 1001) {
+                            MAC.User.Login();
+                        } else if (r && Number(r.code) === 1) {
+                            top.location.reload();
+                        }
+                        $that.removeClass('disabled');
+                    });
+                });
             }
         },
         'parseZIndexEl': function (el) {

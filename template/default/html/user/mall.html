@@ -1,88 +1,228 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"><head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<title>{:lang('mall/title')} - {$maccms.site_name}</title>
+<title>金币商城 - 会员中心 - {$maccms.site_name}</title>
 {include file="user/include" /}
-<link rel="stylesheet" href="{$maccms.path_tpl}/asset/css/user-plog.css">
+<link rel="stylesheet" href="{$maccms.path_tpl}/asset/css/user-mall.css">
 </head>
-<body class="mac-plog-wrap">
+<body class="user-mall-page">
 {include file="public/th" /}
 {include file="public/head" /}
 <div class="member-wrap member-wrap-bg">
 <div id="member" class="fn-clear">
     <div id="left">
         <div class="m-nav">
-            <a href="javascript:MAC.GoBack()" class="btn-left"><i class="iconfont ico-right">&#xe625;</i></a>
+            <a href="{:url('user/index')}" class="btn-left"><i class="iconfont ico-right">&#xe625;</i></a>
             <a href="{$maccms.path}" class="btn-right"><i class="iconfont ico-right">&#xe634;</i></a>
-            <span class="mb-title" data-lang="mall_title">{:lang('mall/title')}</span>
+            <span class="mb-title" data-lang="mall_title">金币商城</span>
         </div>
         {include file="user/left_nav" /}
     </div>
     <div id="right">
-        <div class="m-nav mac-plog-mnav">
-            <a href="javascript:MAC.GoBack()" class="btn-left"><i class="iconfont ico-right">&#xe625;</i></a>
-            <span class="mb-title" data-lang="mall_title">{:lang('mall/title')}</span>
+        <div class="m-nav">
+            <a href="{:url('user/index')}" class="btn-left"><i class="iconfont ico-right">&#xe625;</i></a>
+            <span class="mb-title" data-lang="mall_title">金币商城</span>
+            <button type="button" class="btn-right user-mall__orders-trigger" data-um-open-orders data-lang="mall_my_orders">兑换记录</button>
         </div>
-        <div class="co-right co-right-bg">
-            <h2 class="mac-plog-page-title" data-lang="mall_title">{:lang('mall/title')}</h2>
-            <p class="muted">{:lang('mall/user_points')}：<strong>{$obj.user_points}</strong></p>
-            <div class="filter-tabs mac-plog-filter-tabs">
-                <a href="{:url('user/mall')}" class="{if condition="empty($param['type'])"}active{/if}">{:lang('string_all')}</a>
-                <a href="{:url('user/mall',['type'=>'vip'])}" class="{if condition="$param['type'] eq 'vip'"}active{/if}">{:lang('mall/type_vip')}</a>
-                <a href="{:url('user/mall',['type'=>'card'])}" class="{if condition="$param['type'] eq 'card'"}active{/if}">{:lang('mall/type_card')}</a>
-                <a href="{:url('user/mall',['type'=>'download_quota'])}" class="{if condition="$param['type'] eq 'download_quota'"}active{/if}">{:lang('mall/type_download_quota')}</a>
-                <a href="{:url('user/mall_orders')}">{:lang('mall/my_orders')}</a>
+        <div class="co-right co-right-bg user-mall"
+            data-mac-user-mall
+            data-user-points="{$obj.user_points}"
+            data-type="{$param.type}"
+            data-page="{$param.page|default='1'}"
+            data-exchange-url="{:url('user/ajax_mall_exchange')}"
+            data-goods-url="{:url('user/ajax_mall_goods')}"
+            data-orders-url="{:url('user/ajax_mall_orders')}"
+            data-checkin-url="{:url('user/checkin')}"
+            data-buy-url="{:url('user/buy')}">
+            <h2 class="user-mall__page-title" data-lang="mall_title">金币商城</h2>
+
+            <section class="user-mall__hero" aria-label="points">
+                <div class="user-mall__hero-top">
+                    <p class="user-mall__points-label" data-lang="mall_user_points">我的金币</p>
+                    <button type="button" class="user-mall__orders-link" data-um-open-orders data-lang="mall_my_orders">兑换记录</button>
+                </div>
+                <div class="user-mall__hero-body">
+                    <div class="user-mall__hero-main">
+                        <div class="user-mall__hero-ico" aria-hidden="true">{include file="widget/mall_icon_coin" /}</div>
+                        <p class="user-mall__points-value" data-um-points-value>{$obj.user_points}</p>
+                    </div>
+                    <div class="user-mall__points-actions">
+                        <a class="user-mall__action-btn user-mall__action-btn--ghost" href="{:url('user/checkin')}">
+                            <i class="iconfont" aria-hidden="true">&#xe624;</i>
+                            <span data-lang="user_checkin_nav">每日签到</span>
+                        </a>
+                        <button type="button" class="user-mall__action-btn user-mall__action-btn--ghost" data-um-open-card-redeem>
+                            <i class="iconfont" aria-hidden="true">&#xe65f;</i>
+                            <span data-lang="mall_redeem_card">兑换卡密</span>
+                        </button>
+                        <a class="user-mall__action-btn" href="{:url('user/buy')}">
+                            <i class="iconfont" aria-hidden="true">&#xe660;</i>
+                            <span data-lang="user_recharge">充值中心</span>
+                        </a>
+                    </div>
+                </div>
+            </section>
+
+            <div class="user-mall__toolbar">
+                <div class="user-mall__tabs" role="tablist" data-um-tabs>
+                    <button type="button" role="tab" data-um-tab=""{empty name="param.type"} class="active" aria-selected="true"{else /} aria-selected="false"{/empty} data-lang="string_all">全部</button>
+                    <button type="button" role="tab" data-um-tab="vip"{eq name="param.type" value="vip"} class="active" aria-selected="true"{else /} aria-selected="false"{/eq} data-lang="mall_type_vip">VIP天数</button>
+                    <button type="button" role="tab" data-um-tab="card"{eq name="param.type" value="card"} class="active" aria-selected="true"{else /} aria-selected="false"{/eq} data-lang="mall_type_card">充值卡密</button>
+                    <button type="button" role="tab" data-um-tab="download_quota"{eq name="param.type" value="download_quota"} class="active" aria-selected="true"{else /} aria-selected="false"{/eq} data-lang="mall_type_download_quota">下载额度</button>
+                </div>
             </div>
-            <ul class="order__list data__list clearfix">
-                {volist name="list" id="vo"}
-                <li class="order__item">
-                    <div class="order__title">
-                        <label><input type="checkbox" disabled> <span class="plog_name">{$vo.mall_goods_name|htmlspecialchars}</span></label>
-                    </div>
-                    <div class="order__txt">
-                        <p>{:lang('mall/goods_type')}：{$vo.mall_goods_type|mac_get_mall_goods_type_text}</p>
-                        <p>{:lang('points')}：<span class="jg-tz">{$vo.mall_goods_points}</span></p>
-                        <p>{:lang('mall/stock')}：{$vo.mall_goods_stock}</p>
-                    </div>
-                    <div class="order__foot">
-                        <a href="javascript:;" class="btn-order btn-exchange" data-id="{$vo.mall_goods_id}" data-name="{$vo.mall_goods_name|htmlspecialchars}" data-points="{$vo.mall_goods_points}">{:lang('mall/exchange')}</a>
-                    </div>
-                </li>
-                {/volist}
-            </ul>
-            {if condition="empty($list)"}
-            {include file="public/notempty" /}
-            {/if}
-            <div class="member-page">
-                <ul class="page text-center cleafix">
-                    <li><a href="{$__PAGING__.page_url|mac_url_page=1}"{if$__PAGING__['page_current']==1} class="btns-disad"{/if} data-lang="string_home">首页</a></li>
-                    <li><a href="{$__PAGING__.page_url|mac_url_page=$__PAGING__.page_prev}"{if$__PAGING__['page_current']==1} class="btns-disad"{/if} data-lang="string_syy">上一页</a></li>
-                    {maccms:foreach name="$__PAGING__.page_num" id="num"}
-                    <li class="hidden-xs {if condition="$__PAGING__['page_current'] eq $num"}active{/if}"><a href="{$__PAGING__.page_url|mac_url_page=$num}">{$num}</a></li>
-                    {/maccms:foreach}
-                    <li><a href="{$__PAGING__.page_url|mac_url_page=$__PAGING__.page_next}"{if$__PAGING__['page_current']==$__PAGING__.page_total} class="btns-disad"{/if} data-lang="string_xyy">下一页</a></li>
-                    <li><a href="{$__PAGING__.page_url|mac_url_page=$__PAGING__.page_total}"{if$__PAGING__['page_current']==$__PAGING__.page_total} class="btns-disad"{/if} data-lang="string_last_page">尾页</a></li>
+
+            <div class="user-mall__list-wrap">
+                <ul class="user-mall__grid" data-um-grid>
+                    {volist name="list" id="vo"}
+                    <li class="user-mall__card user-mall__card--{$vo.mall_goods_type}{if condition='($vo.mall_goods_stock elt 0)'} is-soldout{/if}">
+                        {eq name="vo.mall_goods_type" value="vip"}
+                        <span class="user-mall__card-type" data-lang="mall_type_vip">VIP天数</span>
+                        {/eq}
+                        {eq name="vo.mall_goods_type" value="card"}
+                        <span class="user-mall__card-type" data-lang="mall_type_card">充值卡密</span>
+                        {/eq}
+                        {eq name="vo.mall_goods_type" value="download_quota"}
+                        <span class="user-mall__card-type" data-lang="mall_type_download_quota">下载额度</span>
+                        {/eq}
+                        <div class="user-mall__card-name">{$vo.mall_goods_name|htmlspecialchars}</div>
+                        <div class="user-mall__card-meta">
+                            <div class="user-mall__card-points">
+                                <span class="user-mall__card-points-num">{$vo.mall_goods_points}</span>
+                                <span class="user-mall__card-points-unit" data-lang="mall_points_unit">金币</span>
+                            </div>
+                        </div>
+                        {if condition="($vo.mall_goods_stock gt 0)"}
+                        <button type="button" class="user-mall__card-btn" data-um-exchange
+                            data-id="{$vo.mall_goods_id}"
+                            data-name="{$vo.mall_goods_name|htmlspecialchars}"
+                            data-type="{$vo.mall_goods_type}"
+                            data-points="{$vo.mall_goods_points}"
+                            data-stock="{$vo.mall_goods_stock}"
+                            data-lang="mall_exchange">兑换</button>
+                        {else /}
+                        <button type="button" class="user-mall__card-btn is-disabled" disabled data-lang="mall_sold_out">已售罄</button>
+                        {/if}
+                    </li>
+                    {/volist}
                 </ul>
+
+                <div class="user-mall__empty" data-um-empty{notempty name="list"} hidden{/notempty}>
+                    {include file="public/notempty" /}
+                </div>
+
+                <div class="member-page" data-um-goods-pager>
+                    {if condition="($__PAGING__.page_total gt 1)"}
+                    <ul class="page text-center cleafix">
+                        <li><a href="javascript:;" data-um-goods-page="1"{eq name="__PAGING__.page_current" value="1"} class="btns-disad"{/eq} data-lang="string_home">首页</a></li>
+                        <li><a href="javascript:;" data-um-goods-page="{$__PAGING__.page_prev}"{eq name="__PAGING__.page_current" value="1"} class="btns-disad"{/eq} data-lang="string_syy">上一页</a></li>
+                        {maccms:foreach name="$__PAGING__.page_num" id="num"}
+                        <li class="hidden-xs{if condition='($__PAGING__.page_current eq $num)'} active{/if}"><a href="javascript:;" data-um-goods-page="{$num}">{$num}</a></li>
+                        {/maccms:foreach}
+                        <li><a href="javascript:;" data-um-goods-page="{$__PAGING__.page_next}"{eq name="__PAGING__.page_current" value="$__PAGING__.page_total"} class="btns-disad"{/eq} data-lang="string_xyy">下一页</a></li>
+                        <li><a href="javascript:;" data-um-goods-page="{$__PAGING__.page_total}"{eq name="__PAGING__.page_current" value="$__PAGING__.page_total"} class="btns-disad"{/eq} data-lang="string_last_page">尾页</a></li>
+                    </ul>
+                    {/if}
+                </div>
+            </div>
+
+            <!-- 确认兑换 -->
+            <div class="um-modal" data-um-modal="confirm">
+                <div class="um-modal__mask" data-um-close></div>
+                <div class="um-modal__panel" role="dialog" aria-modal="true">
+                    <div class="um-modal__hd">
+                        <h3 class="um-modal__title" data-lang="mall_confirm_title">确认兑换</h3>
+                        <button type="button" class="um-modal__close" data-um-close aria-label="Close">×</button>
+                    </div>
+                    <div class="um-modal__rows">
+                        <p><span class="muted" data-lang="mall_goods_name">商品</span><span data-um-confirm-name></span></p>
+                        <p><span class="muted" data-lang="mall_goods_type">类型</span><span data-um-confirm-type></span></p>
+                        <p><span class="muted" data-lang="mall_cost_points">消耗</span><span data-um-confirm-cost></span></p>
+                        <p><span class="muted" data-lang="mall_balance_change">余额</span><span data-um-confirm-balance></span></p>
+                    </div>
+                    <p class="um-modal__hint" data-um-confirm-hint hidden></p>
+                    <div class="um-modal__actions">
+                        <button type="button" class="um-btn um-btn--ghost" data-um-close data-lang="string_cancel">取消</button>
+                        <button type="button" class="um-btn um-btn--primary" data-um-confirm-submit data-lang="mall_confirm_submit">确认兑换</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 兑换成功 -->
+            <div class="um-modal" data-um-modal="success">
+                <div class="um-modal__mask" data-um-close></div>
+                <div class="um-modal__panel" role="dialog" aria-modal="true">
+                    <div class="um-modal__hd">
+                        <h3 class="um-modal__title" data-lang="mall_exchange_ok">兑换成功</h3>
+                        <button type="button" class="um-modal__close" data-um-close aria-label="Close">×</button>
+                    </div>
+                    <div class="um-success-icon" aria-hidden="true">✓</div>
+                    <div class="um-success-body" data-um-success-body></div>
+                    <div class="um-modal__actions">
+                        <button type="button" class="um-btn um-btn--ghost" data-um-open-orders data-lang="mall_my_orders">兑换记录</button>
+                        <button type="button" class="um-btn um-btn--primary" data-um-success-done data-lang="mall_done">完成</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 兑换记录弹窗 -->
+            <div class="um-modal um-modal--orders" data-um-modal="orders">
+                <div class="um-modal__mask" data-um-close></div>
+                <div class="um-orders-panel" role="dialog" aria-modal="true" aria-labelledby="um-orders-title">
+                    <div class="um-orders-panel__grab" aria-hidden="true"></div>
+                    <div class="um-orders-panel__hd um-modal__hd">
+                        <h3 class="um-modal__title" id="um-orders-title" data-lang="mall_my_orders">兑换记录</h3>
+                        <button type="button" class="um-modal__close" data-um-close aria-label="Close">×</button>
+                    </div>
+                    <div class="um-orders-panel__body">
+                        <p class="um-orders-loading" data-um-orders-loading hidden data-lang="string_loading">加载中…</p>
+                        <ul class="um-orders-list" data-um-orders-list></ul>
+                        <div class="um-orders-empty" data-um-orders-empty hidden>
+                            <div class="um-orders-empty__ico" aria-hidden="true">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
+                            </div>
+                            <p data-lang="mall_orders_empty">暂无兑换记录</p>
+                        </div>
+                    </div>
+                    <div class="um-orders-pager" data-um-orders-pager hidden>
+                        <button type="button" class="um-orders-pager__btn" data-um-orders-prev data-lang="string_syy">上一页</button>
+                        <span class="um-orders-pager__info" data-um-orders-page-info></span>
+                        <button type="button" class="um-orders-pager__btn" data-um-orders-next data-lang="string_xyy">下一页</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 使用充值卡密（兑换为金币） -->
+            <div class="um-modal" data-um-modal="card-redeem">
+                <div class="um-modal__mask" data-um-close></div>
+                <div class="um-modal__panel um-modal__panel--form" role="dialog" aria-modal="true" aria-labelledby="um-card-redeem-title">
+                    <div class="um-modal__hd">
+                        <h3 class="um-modal__title" id="um-card-redeem-title" data-lang="mall_redeem_card_title">兑换卡密</h3>
+                        <button type="button" class="um-modal__close" data-um-close aria-label="Close">×</button>
+                    </div>
+                    <p class="um-modal__lead" data-lang="mall_redeem_card_hint">输入卡号与密码，将卡密兑换为金币</p>
+                    <form class="um-form" data-um-card-redeem-form novalidate>
+                        <label class="um-form__field">
+                            <span class="um-form__label" data-lang="mall_card_no">卡号</span>
+                            <input class="um-form__input" type="text" name="card_no" data-um-card-no autocomplete="off" maxlength="64" data-lang-placeholder="mall_redeem_card_no_ph" placeholder="请输入充值卡号">
+                        </label>
+                        <label class="um-form__field">
+                            <span class="um-form__label" data-lang="mall_card_pwd">密码</span>
+                            <input class="um-form__input" type="text" name="card_pwd" data-um-card-pwd autocomplete="off" maxlength="64" data-lang-placeholder="mall_redeem_card_pwd_ph" placeholder="请输入充值卡密码">
+                        </label>
+                        <p class="um-form__error" data-um-card-redeem-error hidden></p>
+                        <div class="um-modal__actions">
+                            <button type="button" class="um-btn um-btn--ghost" data-um-close data-lang="string_cancel">取消</button>
+                            <button type="submit" class="um-btn um-btn--primary" data-um-card-redeem-submit data-lang="mall_redeem_card_submit">确认兑换</button>
+                        </div>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
 </div>
 </div>
-<script type="text/javascript">
-$('.btn-exchange').on('click', function(){
-    var $btn = $(this);
-    var msg = "{:lang('mall/exchange_confirm')}".replace('%s', $btn.data('name')).replace('%s', $btn.data('points'));
-    if (!confirm(msg)) {
-        return;
-    }
-    $.post("{:url('user/ajax_mall_exchange')}", {goods_id: $btn.data('id'), quantity: 1}, function(res){
-        MAC.alert(res.msg || '');
-        if (res.code == 1) {
-            setTimeout(function(){ location.href = "{:url('user/mall_orders')}"; }, 800);
-        }
-    }, 'json');
-});
-</script>
+<script src="{$maccms.path_tpl}/asset/js/user-mall.js"></script>
 {include file="public/foot" /}
 </body>
 </html>

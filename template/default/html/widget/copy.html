@@ -6,10 +6,7 @@
 <div class="am-share">
 	<div class="am-share-url">
 	<span class="title_span"><span data-lang="string_share_tit">复制下方链接，去粘贴给好友吧：</span></span>
-	<span id="short" class="url_span shorturl">
-		{$obj.vod_name}{$obj.art_name}{if condition="$maccms.mid eq 3"}
-		<span data-lang="string_topic">专题</span>-{$obj.topic_name}{/if}-{$obj['vod_play_list'][$param['sid']]['urls'][$param['nid']]['name']}-
-	</span>
+	<span id="short" class="url_span shorturl">{notempty name="obj.vod_name"}{$obj.vod_name}-{/notempty}{notempty name="obj.art_name"}{$obj.art_name}-{/notempty}{if condition="isset($maccms['mid']) && $maccms.mid eq 3 && !empty($obj['topic_name'])"}<span data-lang="string_topic">专题</span>-{$obj.topic_name}-{/if}{if condition="!empty($param['sid']) && !empty($param['nid']) && !empty($obj['vod_play_list'][$param['sid']]['urls'][$param['nid']]['name'])"}{$obj['vod_play_list'][$param['sid']]['urls'][$param['nid']]['name']}-{/if}</span>
 	</div>
 	<div class="am-share-footer">
 	<span class="share_btn"><span data-lang="string_cancel">取消</span></span>

@@ -3,11 +3,14 @@
 <head>
        
 	{include file="public/include"}
-	<link rel="stylesheet" type="text/css" href="{$maccms.path_tpl}/asset/css/vod-down.css" />
+	<link rel="stylesheet" type="text/css" href="{$maccms.path_tpl}/asset/css/vod-type.css?v=202607101" />
+	<link rel="stylesheet" type="text/css" href="{$maccms.path_tpl}/asset/css/vod-play.css?v=2026071801" />
+	<link rel="stylesheet" type="text/css" href="{$maccms.path_tpl}/asset/css/vod-down.css?v=2026071818" />
 </head>
 
 <body>
-    {include file="public/head"}       	       	
+    {include file="public/head"}
+     <div id="down_page">
      <div class="container ">
         {include file="ads/ads_all"}
         <div class="left_row fl"> 
@@ -39,6 +42,13 @@
 				    {/if}
 					{php}$count++;{/php}{/maccms:foreach}
                   </div>
+                  {if condition="$user.user_id gt 0 && $user.user_down_quota gt 0"}
+                  <p class="down_quota_tip">
+                    <span data-lang="string_down_quota_left">剩余免费下载</span>
+                    <em>{$user.user_down_quota}</em>
+                    <span data-lang="string_down_quota_unit">次</span>
+                  </p>
+                  {/if}
                   </div>
 			</div>	
             {include file="ads/ads_vodw"}
@@ -56,22 +66,66 @@
 				 </div>
 				 <h3 class="down_tips_text" data-lang="string_down_bnxz">因特殊原因，该片不提供下载</h3>
 			</div>
+			{elseif condition="(!empty($GLOBALS['config']['user']['vod_points_type']) && $GLOBALS['config']['user']['vod_points_type'] eq 1) && $popedom.code gt 1"}
+			<div class="pannel clearfix down-popedom-gate down-popedom-gate--with-list">
+				 <div class="pannel_head clearfix down-pannel-head">
+				      <h3 class="title" data-lang="string_down_xzlb">下载列表</h3>
+				 </div>
+				 <div class="popedom-play-gate-wrap">
+				      {include file="widget/popedom_upgrade_gate"}
+				 </div>
+			</div>
+			{maccms:foreach name="obj.vod_down_list" id="vo" key="key" by="sort"}
+			<div class="pannel clearfix down-list-locked">
+				<div id="downlist_locked_{$key}">
+					<div class="pannel_head clearfix down-pannel-head">
+						<h3 class="title"><i class="iconfont down-pannel-head__ico" aria-hidden="true">&#xe63c;</i>{$vo.player_info.show}</h3>
+					</div>
+					<div class="down_list">
+					<ul>
+					{maccms:foreach name="vo.urls" id="vo2" key="key2"}
+					<li class="is-locked">
+						<p>
+							<strong class="down_part_name">
+								<span class="filename">{$vo2.name}</span>
+							</strong>
+							<span class="down-locked-hint" data-lang="string_down_locked">未解锁</span>
+						</p>
+					</li>
+					{/maccms:foreach}
+					</ul>
+					</div>
+				</div>
+	        </div>
+	        {/maccms:foreach}
 			{else}
 			 
-				<script src="{$maccms.path}template/default/asset/js/vod-down.js?v=202604161"></script>
+				<script src="{$maccms.path}template/default/asset/js/vod-down.js?v=2026071810"></script>
 			{maccms:foreach name="obj.vod_down_list" id="vo" key="key" by="sort"}
 			<div class="pannel clearfix">
 				<div id="downlist_{$key}">
-					<div class="pannel_head clearfix">
-						<div class="down_tips pull_right">
+					<div class="pannel_head clearfix down-pannel-head">
+						<h3 class="title"><i class="iconfont down-pannel-head__ico" aria-hidden="true">&#xe63c;</i>{$vo.player_info.show}</h3>
+						<div class="down_tips">
 							<span class="hidden_xs" data-lang="string_down_ts1">※ 若点击迅雷下载无反应，请手动复制框内下载地址到迅雷软件</span>
 							<span class="hidden_mb" data-lang="string_down_ts2">※ 下载需安装迅雷手机版</span>
 						</div>
-					<h3 class="title">{$vo.player_info.show}</h3>
 					</div>
 					<div class="down_list">
 					<ul id="downul">
 					{maccms:foreach name="vo.urls" id="vo2" key="key2"}
+					{if condition="!empty($vo2.locked)"}
+					<li class="is-locked">
+						<p>
+							<strong class="down_part_name">
+								<span class="filename">{$vo2.name}</span>
+							</strong>
+						</p>
+						<span class="down_list__actions">
+							<a href="javascript:;" class="btn_bd btnd down-ep-buy" onclick="MAC.User.BuyPopedom(this)" data-id="{$obj.vod_id}" data-sid="{$vo.sid}" data-nid="{$vo2.nid}" data-mid="1" data-type="5" data-lang="string_down_buy_ep">购买本集{if condition="$obj.vod_points_down gt 0"}（{$obj.vod_points_down}金币）{/if}</a>
+						</span>
+					</li>
+					{else/}
 					<li>
 						<input type="checkbox" name="down_url_list_{$key}" class="style-input down_url" value="{$vo2.url}" file_name="{$vo2.name}" />
 					<p>
@@ -81,18 +135,24 @@
 						</strong>
 						<input type="text" data-title='string_down_ts3' class="thunder_url" value="{$vo2.url}" title="鼠标左键单击可全选后手动复制该条迅雷地址进行分享或其它操作" onclick="this.select()" />
 					</p>
-						<span>
-							<label class="thunder_down" data-lang="string_down_xl">迅雷下载</label>
-							<label class="xiaomi" data-lang="string_down_xm">小米路由</label>
+						<span class="down_list__actions">
+							<label class="thunder_down">
+								<svg class="thunder_down__ico" viewBox="0 0 1024 1024" width="14" height="14" aria-hidden="true" focusable="false"><path fill="currentColor" d="M432.64 407.04s199.68-217.6 468.48-322.56c0 0 12.8-5.12 2.56 7.68s-56.32 84.48-66.56 97.28l-35.84 33.28 17.92-5.12-35.84 79.36-46.08 46.08 33.28-10.24-38.4 92.16-40.96 40.96 35.84-20.48s-17.92 38.4-35.84 66.56c0 0 163.84 17.92 302.08 81.92 0 0-76.8 20.48-107.52 28.16l-33.28-7.68 15.36 10.24-35.84 15.36c-2.56 0-28.16-7.68-40.96-2.56 0 0 15.36 5.12 17.92 10.24l-38.4 15.36s-7.68 5.12-15.36 5.12c-5.12 0-38.4-7.68-48.64-2.56 0 0 20.48 10.24 28.16 10.24 0 0-12.8 17.92-122.88 23.04 0 0 81.92 227.84 79.36 258.56-2.56 30.72-48.64-35.84-48.64-35.84s-69.12-76.8-89.6-92.16c-20.48-15.36-79.36-25.6-204.8-104.96s-125.44-181.76-117.76-230.4c7.68-48.64 7.68-84.48-23.04-94.72s-81.92-23.04-189.44-25.6c0 0-17.92-12.8 12.8-12.8 30.72 2.56 112.64 2.56 156.16-5.12 48.64-10.24 66.56-25.6 104.96-20.48 38.4 5.12 87.04 17.92 140.8 71.68z"/></svg>
+								<span class="thunder_down__txt" data-lang="string_down_xl">迅雷下载</span>
+							</label>
 							<a href="{$vo2.url}" class="btn_bd btnd" data-lang="string_down_bd">本地下载</a>
 						</span>
 					</li>
+					{/if}
 					{/maccms:foreach}
 					</ul>
 					<div class="downtools">
 					<input id="allcheck{$key}" class="style-input" type="checkbox" name="checkall">
 					<em data-lang="string_qx">全选</em>
-					<a rel="nofollow" href="javascript:void(0);" target="_self" class="thunder_down_all" data-lang="string_down_xlxz">迅雷批量下载</a>
+					<a rel="nofollow" href="javascript:void(0);" target="_self" class="thunder_down_all is-disabled" aria-disabled="true">
+						<svg class="thunder_down__ico" viewBox="0 0 1024 1024" width="14" height="14" aria-hidden="true" focusable="false"><path fill="currentColor" d="M432.64 407.04s199.68-217.6 468.48-322.56c0 0 12.8-5.12 2.56 7.68s-56.32 84.48-66.56 97.28l-35.84 33.28 17.92-5.12-35.84 79.36-46.08 46.08 33.28-10.24-38.4 92.16-40.96 40.96 35.84-20.48s-17.92 38.4-35.84 66.56c0 0 163.84 17.92 302.08 81.92 0 0-76.8 20.48-107.52 28.16l-33.28-7.68 15.36 10.24-35.84 15.36c-2.56 0-28.16-7.68-40.96-2.56 0 0 15.36 5.12 17.92 10.24l-38.4 15.36s-7.68 5.12-15.36 5.12c-5.12 0-38.4-7.68-48.64-2.56 0 0 20.48 10.24 28.16 10.24 0 0-12.8 17.92-122.88 23.04 0 0 81.92 227.84 79.36 258.56-2.56 30.72-48.64-35.84-48.64-35.84s-69.12-76.8-89.6-92.16c-20.48-15.36-79.36-25.6-204.8-104.96s-125.44-181.76-117.76-230.4c7.68-48.64 7.68-84.48-23.04-94.72s-81.92-23.04-189.44-25.6c0 0-17.92-12.8 12.8-12.8 30.72 2.56 112.64 2.56 156.16-5.12 48.64-10.24 66.56-25.6 104.96-20.48 38.4 5.12 87.04 17.92 140.8 71.68z"/></svg>
+						<span class="thunder_down__txt" data-lang="string_down_xlxz">迅雷批量下载</span>
+					</a>
 					</div>
 					</div>
 				</div>
@@ -100,57 +160,33 @@
 	        {/maccms:foreach}
 		    
 		    {/if}
-			
-			
+			{notempty name="obj.vod_content"}
 			<div class="pannel clearfix" id="desc">
 				<div class="pannel_head clearfix">
 					<h3 class="title" data-lang="string_vod_introduction">
 						剧情介绍
-					</h3>						
-				</div>																		
+					</h3>
+				</div>
 				<div class="content_desc context clearfix">
-					<span>
-						{php}
-							if($obj['vod_content']){
-							{/php}
-							{$obj.vod_content|mac_filter_html}
-							{php}
-							}else{
-							{/php}
-							<span data-lang="unfilled">未填写</span>
-						{php}}{/php}
-					</span>
+					<span>{$obj.vod_content|mac_filter_html}</span>
 					<a href="javascript:void(0);" class="show_btn" onclick="showdiv(this);"><i class="line_bg"></i><i class="iconfont">&#xe63a;</i><em class="hidden_xs">&nbsp; <span data-lang="string_vod_expand">展开全部</span></em></a>
 				</div>
 				<div class="content_desc full_text clearfix" style="display:none;">
-					<span>
-						{php}
-							if($obj['vod_content']){
-							{/php}
-							{$obj.vod_content|mac_filter_html}
-							{php}
-							}else{
-							{/php}
-							<span data-lang="unfilled">未填写</span>
-						{php}}{/php}
-					</span>
+					<span>{$obj.vod_content|mac_filter_html}</span>
 					<a href="javascript:void(0);" class="hidden_btn" onclick="hidediv(this);"><i class="iconfont">&#xe628;</i><em class="hidden_xs">&nbsp; <span data-lang="string_vod_pull">收起全部</span></em></a>
-				</div>				
-			</div>
-			
-            
-			
-			<div class="pannel clearfix">
-				<div class="pannel_head clearfix">
-					<h3 class="title" data-lang="string_down_xgtj">
-						相关推荐
-					</h3>						
 				</div>
-				<ul class="vodlist vodlist_sm list_scroll clearfix">
-					{maccms:vod num="12" type="current" order="desc" by="time"}
-					{include file="widget/vod_box"}		
-					{/maccms:vod}
-				</ul>
+			</div>
+			{/notempty}
+
+			<div class="pannel clearfix pannel--vod-related">
+				<div class="pannel_head clearfix">
+					<h3 class="title pannel_head__related-title">
+						<span data-lang="vod_like_watch">喜欢看</span><span class="tj-title">{$obj.vod_name}</span><span data-lang="vod_also_like">的人也喜欢</span>
+					</h3>
+				</div>
+				<div id="js-play-like-groups" class="mac-vod-grouped-sections" data-vod-id="{$obj.vod_id}" data-type-id="{$obj.type_id}">
+					<div class="mac-vod-grouped-skeleton home-skeleton-card"><div class="thumb"></div><div class="line w90"></div><div class="line w70"></div></div>
+				</div>
 			</div>
 			
             {include file="module/vod_art"}
@@ -160,7 +196,11 @@
             {include file="module/vod_rank"}
         </div>
     </div>
+    </div>
     <span style="display:none" class="mac_ulog_set" data-type="5" data-mid="{$maccms.mid}" data-id="{$obj.vod_id}" data-sid="{$param.sid}" data-nid="{$param.nid}"></span>
 {include file="public/foot"}
+	<script type="text/javascript" src="{$maccms.path}template/default/asset/js/mac-home-card-render.js?v=202604161"></script>
+	<script type="text/javascript" src="{$maccms.path}template/default/asset/js/mac-vod-related-scroller.js?v=202607102"></script>
+	<script type="text/javascript" src="{$maccms.path_tpl}/asset/js/vod-play-like.js?v=202607102"></script>
 </body>
 </html>
