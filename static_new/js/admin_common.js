@@ -196,6 +196,19 @@ layui.define(['element', 'form'], function (exports) {
             layer.closeAll('dialog');
             var lay = layer.open({ type: 1, title: _title, content: res, area: [_width + 'px', _height + 'px'] });
             form.render('select');
+        }).fail(function (xhr) {
+            // 令牌/登录态失效（如 CsrfGuard 返回 403 code:1002）时，避免弹框不弹、“点没反应”，明确提示刷新。
+            var m = '请求失败，请刷新页面后重试';
+            try {
+                var r = xhr && xhr.responseJSON ? xhr.responseJSON : (xhr && xhr.responseText ? JSON.parse(xhr.responseText) : null);
+                if (r && r.msg) {
+                    m = r.msg;
+                }
+            } catch (e) {}
+            if (xhr && (xhr.status === 403 || xhr.status === 419)) {
+                m = '登录态或安全令牌已失效，请刷新页面后重试';
+            }
+            layer.msg('<span class="error_layer_icon"></span>' + m, { time: 2000, skin: 'error_layer' });
         });
     });
 

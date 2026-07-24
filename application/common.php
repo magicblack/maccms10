@@ -4135,6 +4135,19 @@ if (!function_exists('copydirs')) {
     }
 }
 
+function mac_admin_csrf_token() {
+    // 后台 CSRF 稳定令牌：整个会话生命周期内固定，不随页面渲染轮换。
+    // 旧的 Request::token()（{$Request.token}）每次渲染都会重新生成并覆盖 Session __token__，
+    // 导致多标签页/重新打开后台时先前页面的令牌失效、AJAX 被 CsrfGuard 判 403（表现为“点绑定没反应”）。
+    // 这里改用会话级固定令牌，兼容多标签同时打开后台的场景。
+    $t = \think\Session::get('admin_csrf');
+    if (!is_string($t) || $t === '') {
+        $t = md5(uniqid('mac_admin_csrf_', true) . mt_rand());
+        \think\Session::set('admin_csrf', $t);
+    }
+    return $t;
+}
+
 function mac_strip_tags($string) {
     $pattern = '/&([a-zA-Z0-9#]+);/';
     

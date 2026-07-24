@@ -60,12 +60,35 @@ class CsrfGuard
         if ($submitted === '') {
             self::deny($req, $app);
         }
-        if (!Session::has('__token__')) {
+        // 接受会话级稳定令牌 admin_csrf（多标签页兼容），
+        // 或旧的易变 __token__（向后兼容仍内嵌 {$Request.token} 的表单）。
+        $stable = (string)Session::get('admin_csrf');
+        $legacy = Session::has('__token__') ? (string)Session::get('__token__') : '';
+        if (!self::tokenAccepted($submitted, $stable, $legacy)) {
             self::deny($req, $app);
         }
-        if (!hash_equals((string)Session::get('__token__'), $submitted)) {
-            self::deny($req, $app);
+    }
+
+    /**
+     * 纯判定：提交的令牌是否匹配会话级稳定令牌或旧的易变 __token__。
+     * 抽出为无框架依赖的方法以便回归测试（run() 在 CLI 下会直接 return，无法整体驱动）。
+     *
+     * @param string $submitted
+     * @param string $stable
+     * @param string $legacy
+     * @return bool
+     */
+    public static function tokenAccepted($submitted, $stable, $legacy)
+    {
+        $submitted = (string)$submitted;
+        if ($submitted === '') {
+            return false;
         }
+        $stable = (string)$stable;
+        $legacy = (string)$legacy;
+
+        return ($stable !== '' && hash_equals($stable, $submitted))
+            || ($legacy !== '' && hash_equals($legacy, $submitted));
     }
 
     /**
