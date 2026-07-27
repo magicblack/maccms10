@@ -101,6 +101,9 @@ class Order extends Base
         $data['order_price']  = $payPrice;
         $data['order_time']   = time();
         $data['order_points'] = $orderPoints;
+        // order_remarks 是 text NOT NULL，MySQL 的 TEXT 不能有 DEFAULT，
+        // 省略该列会在严格模式（STRICT_TRANS_TABLES）下报 1364 导致建单失败
+        $data['order_remarks'] = '';
         if (!empty($priced['info']['snapshot'])) {
             $data['order_remarks'] = json_encode($priced['info']['snapshot'], JSON_UNESCAPED_UNICODE);
         }

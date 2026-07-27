@@ -536,6 +536,9 @@ class User extends Base
                 $data['order_price'] = $price;
                 $data['order_time'] = time();
                 $data['order_points'] = intval($GLOBALS['config']['pay']['scale'] * $price);
+                // order_remarks 是 text NOT NULL，MySQL 的 TEXT 不能有 DEFAULT，
+                // 省略该列会在严格模式（STRICT_TRANS_TABLES）下报 1364 导致建单失败
+                $data['order_remarks'] = '';
                 $res = model('Order')->saveData($data);
                 if ($res['code'] == 1) {
                     $orderInfo = model('Order')->infoData(['order_code' => $data['order_code'], 'user_id' => $data['user_id']]);
