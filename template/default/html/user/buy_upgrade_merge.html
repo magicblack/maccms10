@@ -69,6 +69,8 @@
 								<span id="buy_recharge_tips" data-lang="string_loading">加载中…</span>
 							</div>
 						</form>
+						<!-- 券面板挂载：金额 tips 下、确认充值上（scene=recharge） -->
+						<div id="mac-user-coupon-panel" class="mac-user-coupon-panel" data-scene="recharge" data-mount="buy-recharge" hidden></div>
 					</div>
 					<button type="button" id="btn_submit_pay" class="submit-btn recharge-confirm-btn">确认充值</button>
 				</div>
@@ -111,6 +113,8 @@
 				</div>
 				<div class="co-right co-hi co-bottom co-upgrade-plans">
 					<form action="" method="post" name="form3" id="form3">
+						<!-- 秒杀挂载：升级 Tab 套餐上方（入口 B：入口条 + 弹窗列表，无独立路由） -->
+						<div id="mac-user-seckill" class="mac-user-seckill" data-mount="buy-upgrade" hidden></div>
 						<div class="sjhy-ts upgrade-hint-line">
 							<p class="upgrade-hint-line__text" data-lang="string_user_upgrade_hint">选择您需要的会员组及时长，直接购买开通会员权益</p>
 						</div>
@@ -118,6 +122,8 @@
 							<p class="upgrade-groups-loading js-upgrade-groups-loading text_muted" data-lang="string_loading">加载中…</p>
 						</div>
 					</form>
+					<!-- 券面板挂载：套餐下、主 CTA 上（scene=vip） -->
+					<div id="mac-user-coupon-panel-vip" class="mac-user-coupon-panel" data-scene="vip" data-mount="buy-upgrade" hidden></div>
 				</div>
 				<div class="submit-vip" data-lang="string_submit" role="button" tabindex="0">确认</div>
 			</div>

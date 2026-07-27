@@ -1,6 +1,8 @@
 	<link rel="stylesheet" type="text/css" href="{$maccms.path_tpl}/asset/css/widget-recharge_modal.css" />
 	<link rel="stylesheet" type="text/css" href="{$maccms.path_tpl}/asset/css/mac-pop-sheets.css" />
+	<link rel="stylesheet" type="text/css" href="{$maccms.path_tpl}/asset/css/user-coupon.css" />
 	<script src="{$maccms.path_tpl}/asset/js/pay-qrcode-render.js?v=202604161"></script>
+	<script src="{$maccms.path_tpl}/asset/js/user-coupon.js"></script>
 
 <div id="recharge-overlay" data-rc-img-base="{$maccms.path_tpl}/images/recharge/" data-url-benefits="{:url('user/benefits')}" data-rc-config-url="{:rtrim($maccms.path,'/').'/api.php/payment/get_config'}" data-rc-order-create-url="{:rtrim($maccms.path,'/').'/api.php/order/create'}" data-rc-gopay-url="{:rtrim($maccms.path,'/').'/api.php/payment/gopay'}" data-rc-order-query-url="{:rtrim($maccms.path,'/').'/api.php/order/check_status'}">
   <div class="rc-modal">
@@ -33,6 +35,8 @@
             <input type="text" maxlength="8" id="rcPriceInput" class="rc-input" placeholder="请输入金额" inputmode="decimal" autocomplete="off">
           </div>
           <div class="rc-tips" id="rcTips"></div>
+          <!-- 券面板挂载：tips 下、确认充值上（弹窗 scene=recharge） -->
+          <div id="mac-user-coupon-panel-modal" class="mac-user-coupon-panel" data-scene="recharge" data-mount="recharge-modal" hidden></div>
           <button type="button" class="rc-submit" id="rcSubmitBtn">确认充值</button>
         </div>
       </div>
@@ -528,11 +532,19 @@
       return;
     }
     $('#rcInitLoading').text('正在创建会员订单...');
+    var upData = { group_id: groupId, long: groupLong };
+    if (_context.coupon_user_id) {
+      upData.coupon_user_id = _context.coupon_user_id;
+    } else if (window.MacUserCoupon && typeof MacUserCoupon.getByMount === 'function') {
+      var vipPanel = MacUserCoupon.getByMount('buy-upgrade');
+      var vcuid = vipPanel && vipPanel.getSelectedCouponUserId();
+      if (vcuid) upData.coupon_user_id = vcuid;
+    }
     $.ajax({
       url: rcApiPhpBase() + '/user/upgrade_order_create',
       type: 'post',
       dataType: 'json',
-      data: { group_id: groupId, long: groupLong },
+      data: upData,
       success: function(r){
         if (r.code == 1 && r.data) {
           _context.orderBiz = 'member_upgrade';
@@ -540,6 +552,12 @@
           showPayPanel(r.data);
         } else {
           $('#rcInitLoading').text(r.msg || '创建订单失败，请重试');
+          if (window.MacUserCoupon && MacUserCoupon.handleOrderError) {
+            // 错误文案已写在 loading 区，silent 避免再弹一层 toast
+            MacUserCoupon.handleOrderError(r, window.MacUserCoupon.getByMount('buy-upgrade'), {
+              silent: true
+            });
+          }
         }
       },
       error: function(xhr) {
@@ -614,12 +632,26 @@
     );
     $('#rcInitLoading').hide();
     $('#rcAmountPanel').show();
+    if (window.MacUserCoupon && typeof MacUserCoupon.initModalPanel === 'function') {
+      MacUserCoupon.initModalPanel();
+    }
   }
 
   $(document).on('click', '#recharge-overlay .rc-amt', function() {
     $('#recharge-overlay .rc-amt').removeClass('active');
     $(this).addClass('active');
     $('#rcPriceInput').val($(this).data('amount'));
+    if (window.MacUserCoupon && MacUserCoupon.getByMount) {
+      var p = MacUserCoupon.getByMount('recharge-modal');
+      if (p) p.scheduleRefresh();
+    }
+  });
+
+  $(document).on('input', '#rcPriceInput', function () {
+    if (window.MacUserCoupon && MacUserCoupon.getByMount) {
+      var p = MacUserCoupon.getByMount('recharge-modal');
+      if (p) p.scheduleRefresh();
+    }
   });
 
   $(document).on('click', '#rcSubmitBtn', function() {
@@ -643,11 +675,17 @@
       return;
     }
     var $btn = $(this);
+    var orderData = { price: price };
+    if (window.MacUserCoupon && typeof MacUserCoupon.getByMount === 'function') {
+      var couponPanel = MacUserCoupon.getByMount('recharge-modal');
+      var cuid = couponPanel && couponPanel.getSelectedCouponUserId();
+      if (cuid) orderData.coupon_user_id = cuid;
+    }
     $.ajax({
       url: rcOrderCreateUrl(),
       type: 'post',
       dataType: 'text',
-      data: { price: price },
+      data: orderData,
       beforeSend: function() { $btn.text('处理中...').prop('disabled', true); },
       success: function(text) {
         var r = rcParseJsonMaybe(text);
@@ -658,13 +696,34 @@
         if (Number(r.code) === 1) {
           rcFinishCreateOrderFromApi(r);
         } else {
-          rcStatusErr((r && r.msg) || rcGetLang('string_load_err', '创建订单失败', 'Order failed'));
+          if (window.MacUserCoupon && MacUserCoupon.handleOrderError) {
+            MacUserCoupon.handleOrderError(r, window.MacUserCoupon.getByMount('recharge-modal'));
+          } else {
+            rcStatusErr((r && r.msg) || rcGetLang('string_load_err', '创建订单失败', 'Order failed'));
+          }
         }
       },
       error: function(xhr) {
         rcStatusErr(rcFriendlyAjaxMessage(xhr));
       },
-      complete: function() { $btn.text('确认充值').prop('disabled', false); }
+      complete: function () {
+        $btn.prop('disabled', false);
+        var label = rcGetLang('string_confirm_pay', '确认充值', 'Confirm recharge');
+        if (window.MacUserCoupon && typeof MacUserCoupon.getByMount === 'function') {
+          var panel = MacUserCoupon.getByMount('recharge-modal');
+          if (panel && typeof panel.getSelectedCouponUserId === 'function' && typeof panel.getPreview === 'function') {
+            var cid = panel.getSelectedCouponUserId();
+            var preview = panel.getPreview();
+            if (cid && preview && preview.pay >= 0) {
+              label =
+                rcGetLang('string_confirm_pay', '确认充值', 'Confirm') +
+                ' ¥' +
+                Number(preview.pay).toFixed(2);
+            }
+          }
+        }
+        $btn.text(label);
+      }
     });
   });
 

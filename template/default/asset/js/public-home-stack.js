@@ -1792,7 +1792,8 @@
                 '.mac_pop', '.mac_pop_bg', '.mac_pop_msg', '.mac_pop_msg_bg', '.layui-layer', '.layui-layer-shade', '.layui-layer-wrap',
                 '.layui-layer-move', '.mac_confirm_overlay', '[id^="layui-layer"]',
                 '.el-overlay', '.el-message-box__wrapper', '.v-modal', '.ant-modal-mask', '.ant-modal-wrap',
-                '.mac-reg-success-layer', '#recharge-overlay', '.mac_pop_sheet_overlay'
+                '.mac-reg-success-layer', '#recharge-overlay', '.pay-overlay', '.mac_pop_sheet_overlay',
+                '.mac-coupon-overlay', '.mac-seckill-overlay'
             ];
             try {
                 if (typeof $ !== 'undefined') {
