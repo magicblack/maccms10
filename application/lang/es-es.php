@@ -3862,6 +3862,7 @@ Nota: Si se especifican listas negras y blancas, ambas se aplicarán simultánea
   'follow/unfollow_ok'=>'Dejó de seguir',
   'follow/cannot_self'=>'No puede seguirse a sí mismo',
   'follow/user_not_found'=>'El usuario objetivo no existe',
+  'follow/user_disabled'=>'Este usuario ha sido deshabilitado',
   'follow/not_following'=>'No está siguiendo a este usuario',
   'follow/follower'=>'Seguidor',
   'follow/target_user'=>'Usuario seguido',

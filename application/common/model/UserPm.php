@@ -200,20 +200,28 @@ class UserPm extends Base {
         $map1 = ['from_uid' => $uid_a, 'to_uid' => $uid_b];
         $map2 = ['from_uid' => $uid_b, 'to_uid' => $uid_a];
 
+        // 双向会话条件：必须把每个方向各自包成一个 AND 组再 OR。
+        // whereOr(数组) 在 TP5 里是把数组内各字段之间用 OR 连接（见 Builder::buildWhere），
+        // 会退化成 (a→b) OR from_uid=b OR to_uid=a，从而串入与第三方的私信。
+        // 两个方向都显式包一层闭包，不依赖 AND/OR 优先级，后续再加方向时不易写错。
+        $cond = function ($query) use ($map1, $map2) {
+            $query->where(function ($q) use ($map1) {
+                $q->where($map1);
+            })->whereOr(function ($q) use ($map2) {
+                $q->where($map2);
+            });
+        };
+
         $offset = $limit * ($page - 1);
         $total = Db::name('user_pm')
             ->where('pm_status', 1)
-            ->where(function ($query) use ($map1, $map2) {
-                $query->where($map1)->whereOr($map2);
-            })
+            ->where($cond)
             ->count();
 
         $list = Db::name('user_pm')
             ->field('pm_id,from_uid,to_uid,pm_content,pm_time,pm_read,pm_status')
             ->where('pm_status', 1)
-            ->where(function ($query) use ($map1, $map2) {
-                $query->where($map1)->whereOr($map2);
-            })
+            ->where($cond)
             ->order('pm_id DESC')
             ->limit($offset, $limit)
             ->select();

@@ -3853,6 +3853,7 @@ Hinweis: Wenn sowohl Blacklist als auch Whitelist ausgefüllt sind, werden beide
   'follow/unfollow_ok'=>'Nicht mehr gefolgt',
   'follow/cannot_self'=>'Sie können sich nicht selbst folgen',
   'follow/user_not_found'=>'Zielbenutzer existiert nicht',
+  'follow/user_disabled'=>'Dieser Benutzer wurde deaktiviert',
   'follow/not_following'=>'Sie folgen diesem Benutzer nicht',
   'follow/follower'=>'Follower',
   'follow/target_user'=>'Gefolgter Benutzer',

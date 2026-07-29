@@ -3863,6 +3863,7 @@ Note: Si les listes noires et blanches sont remplies, les stratégies s\'appliqu
   'follow/unfollow_ok'=>'Ne suit plus',
   'follow/cannot_self'=>'Vous ne pouvez pas vous suivre vous-même',
   'follow/user_not_found'=>'L\'utilisateur cible n\'existe pas',
+  'follow/user_disabled'=>'Cet utilisateur a été désactivé',
   'follow/not_following'=>'Vous ne suivez pas cet utilisateur',
   'follow/follower'=>'Abonné',
   'follow/target_user'=>'Utilisateur suivi',

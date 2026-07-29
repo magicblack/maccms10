@@ -3866,6 +3866,7 @@ https://www.baidu.com/123.jpg
   'follow/unfollow_ok'=>'Deixou de seguir',
   'follow/cannot_self'=>'Não pode seguir-se a si próprio',
   'follow/user_not_found'=>'O utilizador alvo não existe',
+  'follow/user_disabled'=>'Este utilizador foi desativado',
   'follow/not_following'=>'Não está a seguir este utilizador',
   'follow/follower'=>'Seguidor',
   'follow/target_user'=>'Utilizador seguido',

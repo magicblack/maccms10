@@ -265,6 +265,67 @@ class Follow extends Base {
         return (int)$this->where(['follow_uid' => intval($user_id), 'follow_status' => 1])->count();
     }
 
+    /**
+     * 公开用户资料：供资料弹层使用。
+     * 只返回公开字段，不含 email / 手机号 / IP 等隐私信息。
+     *
+     * @param int $uid       被查看的用户
+     * @param int $viewer_id 观察者用户ID，0 表示游客
+     * @return array
+     */
+    public function profileData($uid, $viewer_id = 0)
+    {
+        $uid = intval($uid);
+        $viewer_id = intval($viewer_id);
+        if ($uid < 1) {
+            return ['code' => 1001, 'msg' => lang('param_err')];
+        }
+
+        // 字段白名单：绝不 select 隐私列
+        $user = Db::name('user')
+            ->field('user_id,user_name,user_nick_name,user_reg_time,user_status')
+            ->where('user_id', $uid)
+            ->find();
+        if (empty($user)) {
+            return ['code' => 1003, 'msg' => lang('follow/user_not_found')];
+        }
+        if (intval($user['user_status']) !== 1) {
+            return ['code' => 1007, 'msg' => lang('follow/user_disabled')];
+        }
+
+        $is_self = ($viewer_id > 0 && $viewer_id === $uid) ? 1 : 0;
+        $following = 0;
+        $mutual = 0;
+        if ($viewer_id > 0 && !$is_self) {
+            $following = $this->isFollowing($viewer_id, $uid) ? 1 : 0;
+            $mutual = $this->isMutual($viewer_id, $uid) ? 1 : 0;
+        }
+
+        // 与好友动态同一套类型白名单；userData 内部已按同一条件统计过 total，
+        // 直接复用避免重复 COUNT，也让白名单只有一个出处
+        $recent = model('Dynamics')->userData($uid, 1, 3);
+        $dynamics_count = isset($recent['total']) ? (int)$recent['total'] : 0;
+
+        return [
+            'code' => 1,
+            'msg' => 'ok',
+            'info' => [
+                'user_id' => (int)$user['user_id'],
+                'display_name' => $user['user_nick_name'] ? $user['user_nick_name'] : $user['user_name'],
+                'user_portrait' => mac_get_user_portrait($uid),
+                'user_reg_time' => (int)$user['user_reg_time'],
+                'following_count' => $this->followingCount($uid),
+                'fans_count' => $this->fansCount($uid),
+                'dynamics_count' => $dynamics_count,
+                'following' => $following,
+                'mutual' => $mutual,
+                'is_self' => $is_self,
+                'is_login' => $viewer_id > 0 ? 1 : 0,
+                'recent_dynamics' => isset($recent['list']) ? $recent['list'] : [],
+            ],
+        ];
+    }
+
     private function _notifyFollow($from_uid, $to_uid)
     {
         try {

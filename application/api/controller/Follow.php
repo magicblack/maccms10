@@ -169,4 +169,21 @@ class Follow extends Base
             ],
         ]);
     }
+
+    /**
+     * 公开用户资料：游客可读。
+     * 关注 / 私信等写操作仍各自要求登录，本接口不放宽任何写权限。
+     */
+    public function profile(Request $request)
+    {
+        $param = $request->param();
+        $uid = intval($param['uid'] ?? 0);
+        if ($uid < 1) {
+            return json(['code' => 1001, 'msg' => lang('param_err')]);
+        }
+        $user = $this->_checkLoginForApi();
+        $viewer_id = $user ? intval($user['user_id']) : 0;
+        $res = model('Follow')->profileData($uid, $viewer_id);
+        return json($res);
+    }
 }

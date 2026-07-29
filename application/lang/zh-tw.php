@@ -4299,6 +4299,7 @@ https://www.baidu.com/123.jpg
   'follow/unfollow_ok'=>'已取消關注',
   'follow/cannot_self'=>'不能關注自己',
   'follow/user_not_found'=>'目標使用者不存在',
+  'follow/user_disabled'=>'該使用者已被停用',
   'follow/not_following'=>'未關注該使用者',
   'follow/follower'=>'關注者',
   'follow/target_user'=>'被關注者',

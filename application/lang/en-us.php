@@ -3897,6 +3897,7 @@ Note: If both black and white lists are filled, both policies will take effect.'
   'follow/unfollow_ok'=>'Unfollowed',
   'follow/cannot_self'=>'You cannot follow yourself',
   'follow/user_not_found'=>'Target user does not exist',
+  'follow/user_disabled'=>'This user has been disabled',
   'follow/not_following'=>'You are not following this user',
   'follow/follower'=>'Follower',
   'follow/target_user'=>'Followed User',

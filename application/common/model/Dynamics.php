@@ -10,6 +10,14 @@ class Dynamics extends Base {
     protected $insert = [];
     protected $update = [];
 
+    /**
+     * 适合公开展示的动态类型白名单。
+     * chat（聊天）属于特定聊天室语境，danmaku（弹幕）量大且碎片化，
+     * 二者都不进入好友动态流与个人公开动态；写入侧 saveData 仍接受全部 7 种类型，
+     * 后台管理列表也仍可查看全量。
+     */
+    const PUBLIC_TYPES = ['fav', 'comment', 'reply', 'follow', 'share'];
+
     public function countData($where)
     {
         $total = $this->where($where)->count();
@@ -95,7 +103,9 @@ class Dynamics extends Base {
             return ['code' => 1003, 'msg' => lang('save_err')];
         }
 
-        if (function_exists('hook')) {
+        // chat/danmaku 不进入好友动态实时推送：原因与它们被 feedData()/userData() 排除在动态流之外一致，
+        // 否则 WS 实时流会与分页动态流永久不一致（chat 自身的 kind=>'chat' 广播由 Chatroom 模型单独触发，不受此影响）。
+        if (function_exists('hook') && in_array($type, self::PUBLIC_TYPES, true)) {
             hook('social_broadcast', [
                 'kind' => 'dynamics',
                 'user_id' => $user_id,
@@ -162,10 +172,14 @@ class Dynamics extends Base {
         }
 
         $offset = $limit * ($page - 1);
-        $total = $this->where('user_id', 'in', $follow_ids)->count();
+        // total 与 list 必须用同一套类型白名单，否则 pagecount 会算错
+        $total = $this->where('user_id', 'in', $follow_ids)
+            ->where('dynamics_type', 'in', self::PUBLIC_TYPES)
+            ->count();
         $list = Db::name('dynamics')
             ->field('dynamics_id,user_id,dynamics_type,dyn_mid,dyn_rid,dyn_pid,dyn_text,dyn_time')
             ->where('user_id', 'in', $follow_ids)
+            ->where('dynamics_type', 'in', self::PUBLIC_TYPES)
             ->order('dyn_time DESC, dynamics_id DESC')
             ->limit($offset, $limit)
             ->select();
@@ -207,7 +221,11 @@ class Dynamics extends Base {
             return ['code' => 1001, 'msg' => lang('param_err')];
         }
 
-        $where = ['user_id' => $user_id];
+        // 个人公开动态与 feed 采用同一套白名单；listData 内部 count 与 list 共用 $where，天然一致
+        $where = [
+            'user_id' => $user_id,
+            'dynamics_type' => ['in', self::PUBLIC_TYPES],
+        ];
         return $this->listData($where, 'dyn_time DESC, dynamics_id DESC', $page, $limit);
     }
 }

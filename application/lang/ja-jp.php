@@ -3866,6 +3866,7 @@ https://www.baidu.com/123.jpg
   'follow/unfollow_ok'=>'フォローを解除しました',
   'follow/cannot_self'=>'自分をフォローできません',
   'follow/user_not_found'=>'対象ユーザーが存在しません',
+  'follow/user_disabled'=>'このユーザーは無効化されています',
   'follow/not_following'=>'このユーザーをフォローしていません',
   'follow/follower'=>'フォロワー',
   'follow/target_user'=>'フォロー対象',
