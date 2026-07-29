@@ -611,6 +611,86 @@ if(empty($col_list[$pre.'danmaku'])){
     $sql .= ") ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='弹幕表';";
     $sql .= "\r";
 }
+// 用户关注关系表
+if(empty($col_list[$pre.'user_follow'])){
+    $sql .= "CREATE TABLE `{$pre}user_follow` (";
+    $sql .= "`follow_id` int(10) unsigned NOT NULL AUTO_INCREMENT,";
+    $sql .= "`user_id` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '关注者(发起关注的用户)',";
+    $sql .= "`follow_uid` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '被关注者',";
+    $sql .= "`follow_status` tinyint(1) unsigned NOT NULL DEFAULT '1' COMMENT '状态 0=已取消 1=正常',";
+    $sql .= "`follow_mutual` tinyint(1) unsigned NOT NULL DEFAULT '0' COMMENT '是否互关 0=否 1=是',";
+    $sql .= "`follow_time` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '关注时间',";
+    $sql .= "PRIMARY KEY (`follow_id`),";
+    $sql .= "UNIQUE KEY `uk_user_follow` (`user_id`,`follow_uid`),";
+    $sql .= "KEY `follow_uid` (`follow_uid`),";
+    $sql .= "KEY `follow_status` (`follow_status`),";
+    $sql .= "KEY `follow_time` (`follow_time`)";
+    $sql .= ") ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='用户关注关系表';";
+    $sql .= "\r";
+}
+// 内容分享日志表
+if(empty($col_list[$pre.'share_log'])){
+    $sql .= "CREATE TABLE `{$pre}share_log` (";
+    $sql .= "`share_id` int(10) unsigned NOT NULL AUTO_INCREMENT,";
+    $sql .= "`user_id` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '用户ID',";
+    $sql .= "`share_mid` tinyint(1) unsigned NOT NULL DEFAULT '1' COMMENT '内容模块 1=vod 2=art 3=topic 8=actor 12=manga',";
+    $sql .= "`share_rid` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '内容ID',";
+    $sql .= "`share_platform` varchar(30) NOT NULL DEFAULT '' COMMENT '分享平台(weixin/qq/weibo/douyin/bilibili等)',";
+    $sql .= "`share_ip` int(10) unsigned NOT NULL DEFAULT '0' COMMENT 'IP',";
+    $sql .= "`share_day` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '分享日期(Ymd,用于按天去重)',";
+    $sql .= "`share_time` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '分享时间',";
+    $sql .= "PRIMARY KEY (`share_id`),";
+    $sql .= "UNIQUE KEY `uk_user_content_day` (`user_id`,`share_mid`,`share_rid`,`share_day`),";
+    $sql .= "KEY `share_mid_rid` (`share_mid`,`share_rid`),";
+    $sql .= "KEY `user_id` (`user_id`),";
+    $sql .= "KEY `share_time` (`share_time`)";
+    $sql .= ") ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='内容分享日志表';";
+    $sql .= "\r";
+}
+// 用户动态事件表
+if(empty($col_list[$pre.'dynamics'])){
+    $sql .= "CREATE TABLE `{$pre}dynamics` (";
+    $sql .= "`dynamics_id` int(10) unsigned NOT NULL AUTO_INCREMENT,";
+    $sql .= "`user_id` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '行为人(产生动态的用户)',";
+    $sql .= "`dynamics_type` varchar(20) NOT NULL DEFAULT '' COMMENT '动态类型 fav/comment/reply/follow/share/danmaku/chat',";
+    $sql .= "`dyn_mid` tinyint(1) unsigned NOT NULL DEFAULT '0' COMMENT '关联内容模块(1=vod 2=art 等,跟随/私信类为0)',";
+    $sql .= "`dyn_rid` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '关联内容ID',";
+    $sql .= "`dyn_pid` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '关联父ID(如回复的评论ID)',";
+    $sql .= "`dyn_text` varchar(500) NOT NULL DEFAULT '' COMMENT '动态摘要文本',";
+    $sql .= "`dyn_extra` varchar(500) NOT NULL DEFAULT '' COMMENT '扩展JSON',";
+    $sql .= "`dyn_time` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '动态时间',";
+    $sql .= "PRIMARY KEY (`dynamics_id`),";
+    $sql .= "KEY `idx_user_time` (`user_id`,`dyn_time`),";
+    $sql .= "KEY `dynamics_type` (`dynamics_type`),";
+    $sql .= "KEY `dyn_mid_rid` (`dyn_mid`,`dyn_rid`),";
+    $sql .= "KEY `dyn_time` (`dyn_time`)";
+    $sql .= ") ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='用户动态事件表';";
+    $sql .= "\r";
+}
+// 用户私信表
+if(empty($col_list[$pre.'user_pm'])){
+    $sql .= "CREATE TABLE `{$pre}user_pm` (";
+    $sql .= "`pm_id` int(10) unsigned NOT NULL AUTO_INCREMENT,";
+    $sql .= "`from_uid` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '发信人',";
+    $sql .= "`to_uid` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '收信人',";
+    $sql .= "`pm_content` varchar(500) NOT NULL DEFAULT '' COMMENT '私信内容',";
+    $sql .= "`pm_ip` int(10) unsigned NOT NULL DEFAULT '0' COMMENT 'IP',";
+    $sql .= "`pm_time` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '发送时间',";
+    $sql .= "`pm_read` tinyint(1) unsigned NOT NULL DEFAULT '0' COMMENT '是否已读 0=未读 1=已读',";
+    $sql .= "`pm_status` tinyint(1) unsigned NOT NULL DEFAULT '1' COMMENT '状态 0=禁用 1=正常',";
+    $sql .= "PRIMARY KEY (`pm_id`),";
+    $sql .= "KEY `idx_to_read_time` (`to_uid`,`pm_read`,`pm_time`),";
+    $sql .= "KEY `from_uid` (`from_uid`),";
+    $sql .= "KEY `pm_time` (`pm_time`),";
+    $sql .= "KEY `pm_status` (`pm_status`)";
+    $sql .= ") ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='用户私信表';";
+    $sql .= "\r";
+}
+// vod_share_count 加列（幂等）
+if(!empty($col_list[$pre.'vod']) && empty($col_list[$pre.'vod']['vod_share_count'])){
+    $sql .= "ALTER TABLE `{$pre}vod` ADD `vod_share_count` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '分享次数';";
+    $sql .= "\r";
+}
 // 修改 group_id 为 varchar(255)（仅当列仍存在且尚未为 varchar(255)，避免每次升级重复 MODIFY）
 if(!empty($col_list[$pre.'user']['group_id'] ?? null)){
     $groupIdType = strtolower($col_list[$pre.'user']['group_id']['COLUMN_TYPE'] ?? '');

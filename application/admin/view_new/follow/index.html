@@ -1,0 +1,97 @@
+{include file="../../../application/admin/view_new/public/head" /}
+<div class="page-container p10">
+
+    <div class="my-toolbar-box" >
+        <div class=" mb10">
+            <form class="layui-form " method="post" action="{:url('data')}">
+                <div class="layui-input-inline w100">
+                    <select name="status">
+                        <option value="">{:lang('select_status')}</option>
+                        <option value="0" {if condition="$param['status'] == '0'"}selected {/if}>{:lang('disable')}</option>
+                        <option value="1" {if condition="$param['status'] == '1'"}selected {/if}>{:lang('normal')}</option>
+                    </select>
+                </div>
+                <div class="layui-input-inline w100">
+                    <select name="mutual">
+                        <option value="">{:lang('follow/mutual_filter')}</option>
+                        <option value="1" {if condition="$param['mutual'] eq '1'"}selected {/if}>{:lang('follow/mutual_yes')}</option>
+                        <option value="0" {if condition="$param['mutual'] eq '0'"}selected {/if}>{:lang('follow/mutual_no')}</option>
+                    </select>
+                </div>
+                <div class="layui-input-inline w100">
+                    <input type="text" autocomplete="off" placeholder="{:lang('follow/uid')}" class="layui-input" name="uid" value="{$param['uid']|default=''}">
+                </div>
+                <div class="layui-input-inline w100">
+                    <input type="text" autocomplete="off" placeholder="{:lang('follow/follow_uid_label')}" class="layui-input" name="follow_uid" value="{$param['follow_uid']|default=''}">
+                </div>
+                <button class="layui-btn mgl-20 j-search" >{:lang('btn_search')}</button>
+            </form>
+        </div>
+
+        <div class="flex gap-5 overflow-x-auto overflow-y-hidden">
+            <a data-href="{:url('del')}" class="layui-btn layui-btn-primary j-page-btns confirm"><i class="layui-icon">&#xe640;</i>{:lang('del')}</a>
+            <a data-href="{:url('index/select')}?tab=follow&col=follow_status&tpl=select_status&url=follow/field" data-width="470" data-height="100" data-checkbox="1" class="layui-btn layui-btn-primary j-select"><i class="layui-icon">&#xe620;</i>{:lang('status')}</a>
+        </div>
+    </div>
+
+    <form class="layui-form" method="post" id="pageListForm" >
+        <table class="layui-table" lay-size="sm">
+            <thead>
+            <tr>
+                <th width="25"><input type="checkbox" lay-skin="primary" lay-filter="allChoose"></th>
+                <th width="60">{:lang('id')}</th>
+                <th width="100">{:lang('follow/follower')}</th>
+                <th width="100">{:lang('follow/target_user')}</th>
+                <th width="80">{:lang('follow/mutual_label')}</th>
+                <th width="80">{:lang('status')}</th>
+                <th width="140">{:lang('follow/follow_time')}</th>
+            </tr>
+            </thead>
+
+            {volist name="list" id="vo"}
+            <tr>
+                <td><input type="checkbox" name="ids[]" value="{$vo.follow_id}" class="layui-checkbox checkbox-ids" lay-skin="primary"></td>
+                <td>{$vo.follow_id}</td>
+                <td>{$vo.user_id}</td>
+                <td>
+                    <u style="cursor:pointer" class="text-primary">{$vo.follow_user_name|default=''|htmlspecialchars}</u>
+                    <span class="ml-10 c-999">({$vo.follow_uid})</span>
+                </td>
+                <td>{if condition="$vo.follow_mutual eq 1"}<span class="layui-badge layui-bg-green">{:lang('follow/mutual_yes')}</span>{else}<span class="layui-badge layui-bg-gray">{:lang('follow/mutual_no')}</span>{/if}</td>
+                <td>{if condition="$vo.follow_status eq 0"}<span class="layui-badge">{:lang('disable')}</span>{else}<span class="layui-badge layui-bg-green">{:lang('normal')}</span>{/if}</td>
+                <td>{$vo.follow_time|mac_day='color'}</td>
+            </tr>
+            {/volist}
+            </tbody>
+        </table>
+
+        <div id="pages" class="center"></div>
+
+    </form>
+</div>
+
+{include file="../../../application/admin/view_new/public/foot" /}
+
+<script type="text/javascript">
+    var curUrl="{:url('follow/data',$param)}";
+    layui.use(['laypage', 'layer','form'], function() {
+        var laypage = layui.laypage
+                , layer = layui.layer,
+                form = layui.form;
+
+        laypage.render({
+            elem: 'pages'
+            ,count: {$total}
+            ,limit: {$limit}
+            ,curr: {$page}
+            ,layout: ['count', 'prev', 'page', 'next', 'limit', 'skip']
+            ,jump: function(obj,first){
+                if(!first){
+                    location.href = curUrl.replace('%7Bpage%7D',obj.curr).replace('%7Blimit%7D',obj.limit);
+                }
+            }
+        });
+    });
+</script>
+</body>
+</html>

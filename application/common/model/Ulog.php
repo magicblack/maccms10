@@ -340,7 +340,40 @@ class Ulog extends Base {
         if(false === $res){
             return ['code'=>1004,'msg'=>lang('save_err').'：'.$this->getError() ];
         }
+
+        // 收藏(ulog_type=2)且为新增时写动态
+        if (empty($data['ulog_id']) && intval($data['ulog_type']) === 2) {
+            try {
+                $dyn_text = '';
+                $content_name = $this->_getContentName(intval($data['ulog_mid']), intval($data['ulog_rid']));
+                if ($content_name) {
+                    $dyn_text = lang('dynamics/type_fav') . ': ' . $content_name;
+                }
+                model('Dynamics')->saveData([
+                    'user_id'       => intval($data['user_id']),
+                    'dynamics_type' => 'fav',
+                    'dyn_mid'       => intval($data['ulog_mid']),
+                    'dyn_rid'       => intval($data['ulog_rid']),
+                    'dyn_text'      => $dyn_text,
+                ]);
+            } catch (\Exception $e) {
+            }
+        }
+
         return ['code'=>1,'msg'=>lang('save_ok')];
+    }
+
+    private function _getContentName($mid, $rid)
+    {
+        $table_map = [1 => 'vod', 2 => 'art', 3 => 'topic', 8 => 'actor', 12 => 'manga'];
+        if (!isset($table_map[$mid])) {
+            return '';
+        }
+        $table = $table_map[$mid];
+        $pk = $table . '_id';
+        $name_col = $table . '_name';
+        $row = \think\Db::name($table)->where($pk, $rid)->field($name_col)->find();
+        return $row ? $row[$name_col] : '';
     }
 
     public function delData($where)

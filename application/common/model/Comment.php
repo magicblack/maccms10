@@ -249,6 +249,25 @@ class Comment extends Base {
         if(false === $res){
             return ['code'=>1002,'msg'=>lang('save_err').'：'.$this->getError() ];
         }
+
+        // 新评论/回复写动态
+        if (empty($data['comment_id'])) {
+            try {
+                $is_reply = intval($data['comment_pid']) > 0;
+                $dyn_type = $is_reply ? 'reply' : 'comment';
+                $dyn_pid = $is_reply ? intval($data['comment_pid']) : 0;
+                model('Dynamics')->saveData([
+                    'user_id'       => intval($data['user_id']),
+                    'dynamics_type' => $dyn_type,
+                    'dyn_mid'       => intval($data['comment_mid']),
+                    'dyn_rid'       => intval($data['comment_rid']),
+                    'dyn_pid'       => $dyn_pid,
+                    'dyn_text'      => mb_substr($data['comment_content'], 0, 200, 'UTF-8'),
+                ]);
+            } catch (\Exception $e) {
+            }
+        }
+
         return ['code'=>1,'msg'=>lang('save_ok')];
     }
 

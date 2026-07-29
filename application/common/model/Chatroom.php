@@ -55,12 +55,15 @@ class Chatroom extends Base {
         $after_id = (int)$after_id;
         $limit = (int)$limit;
 
-        // 短缓存 key：同房间 + 同 after_id + 同 limit 共享缓存，减少 DB 压力
         $cache_flag = isset($GLOBALS['config']['app']['cache_flag']) ? $GLOBALS['config']['app']['cache_flag'] : 'mac';
+        // 仅首次加载(after_id=0)走短缓存；增量拉取(after_id>0)不缓存，保证新消息即时下发
+        $use_cache = ($after_id == 0);
         $cache_key = $cache_flag . '_chatroom_msg_' . $vod_id . '_' . $after_id . '_' . $limit;
-        $cached = \think\Cache::get($cache_key);
-        if ($cached !== false && $cached !== null) {
-            return $cached;
+        if ($use_cache) {
+            $cached = \think\Cache::get($cache_key);
+            if ($cached !== false && $cached !== null) {
+                return $cached;
+            }
         }
 
         $where = [];
@@ -107,8 +110,11 @@ class Chatroom extends Base {
             'total'   => count($list),
         ]];
 
-        // 缓存 5 秒，同房间内多用户同时轮询共用结果
-        \think\Cache::set($cache_key, $result, 5);
+        // 仅首次加载结果缓存 5 秒，同房间内多用户同时打开共用结果；
+        // 增量拉取不缓存，避免新消息延迟最多 5 秒才推给前端
+        if ($use_cache) {
+            \think\Cache::set($cache_key, $result, 5);
+        }
 
         return $result;
     }
@@ -141,10 +147,11 @@ class Chatroom extends Base {
 
         // 黑名单关键字过滤
         $blacks = config('blacks');
+        $content = isset($data['chat_content']) ? $data['chat_content'] : '';
         if (!empty($blacks['black_keyword_list']) && is_array($blacks['black_keyword_list'])) {
             foreach ($blacks['black_keyword_list'] as $keyword) {
                 $keyword = trim($keyword);
-                if (!empty($keyword) && strpos($data['chat_content'], $keyword) !== false) {
+                if (!empty($keyword) && strpos($content, $keyword) !== false) {
                     return ['code' => 1003, 'msg' => lang('content_contain_sensitive')];
                 }
             }
@@ -173,6 +180,20 @@ class Chatroom extends Base {
                         'chat_time_text' => date('H:i:s', $data['chat_time']),
                     ],
                 ]);
+
+                // 写动态
+                if (!empty($data['user_id'])) {
+                    try {
+                        model('Dynamics')->saveData([
+                            'user_id'       => intval($data['user_id']),
+                            'dynamics_type' => 'chat',
+                            'dyn_mid'       => 1,
+                            'dyn_rid'       => intval($data['vod_id']),
+                            'dyn_text'      => mb_substr($data['chat_content'], 0, 200, 'UTF-8'),
+                        ]);
+                    } catch (\Exception $e) {
+                    }
+                }
             }
         }
 

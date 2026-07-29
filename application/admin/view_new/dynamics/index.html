@@ -1,0 +1,97 @@
+{include file="../../../application/admin/view_new/public/head" /}
+<div class="page-container p10">
+
+    <div class="my-toolbar-box" >
+        <div class=" mb10">
+            <form class="layui-form " method="post" action="{:url('data')}">
+                <div class="layui-input-inline w100">
+                    <input type="text" autocomplete="off" placeholder="{:lang('dynamics/user')}" class="layui-input" name="uid" value="{$param['uid']|default=''}">
+                </div>
+                <div class="layui-input-inline w100">
+                    <select name="type">
+                        <option value="">{:lang('dynamics/type')}</option>
+                        <option value="fav" {if condition="$param['type'] eq 'fav'"}selected {/if}>{:lang('dynamics/type_fav')}</option>
+                        <option value="comment" {if condition="$param['type'] eq 'comment'"}selected {/if}>{:lang('dynamics/type_comment')}</option>
+                        <option value="reply" {if condition="$param['type'] eq 'reply'"}selected {/if}>{:lang('dynamics/type_reply')}</option>
+                        <option value="follow" {if condition="$param['type'] eq 'follow'"}selected {/if}>{:lang('dynamics/type_follow')}</option>
+                        <option value="share" {if condition="$param['type'] eq 'share'"}selected {/if}>{:lang('dynamics/type_share')}</option>
+                        <option value="danmaku" {if condition="$param['type'] eq 'danmaku'"}selected {/if}>{:lang('dynamics/type_danmaku')}</option>
+                        <option value="chat" {if condition="$param['type'] eq 'chat'"}selected {/if}>{:lang('dynamics/type_chat')}</option>
+                    </select>
+                </div>
+                <button class="layui-btn mgl-20 j-search" >{:lang('btn_search')}</button>
+            </form>
+        </div>
+
+        <div class="flex gap-5 overflow-x-auto overflow-y-hidden">
+            <a data-href="{:url('del')}" class="layui-btn layui-btn-primary j-page-btns confirm"><i class="layui-icon">&#xe640;</i>{:lang('del')}</a>
+            <a data-href="{:url('del')}?all=1" class="layui-btn layui-btn-primary j-ajax" confirm="{:lang('dynamics/admin_title')}"><i class="layui-icon">&#xe640;</i>{:lang('clear')}</a>
+        </div>
+    </div>
+
+    <form class="layui-form" method="post" id="pageListForm" >
+        <table class="layui-table" lay-size="sm">
+            <thead>
+            <tr>
+                <th width="25"><input type="checkbox" lay-skin="primary" lay-filter="allChoose"></th>
+                <th width="60">{:lang('id')}</th>
+                <th width="100">{:lang('dynamics/user')}</th>
+                <th width="80">{:lang('dynamics/type')}</th>
+                <th>{:lang('dynamics/content')}</th>
+                <th width="140">{:lang('dynamics/time')}</th>
+                <th width="100">{:lang('opt')}</th>
+            </tr>
+            </thead>
+
+            {volist name="list" id="vo"}
+            <tr>
+                <td><input type="checkbox" name="ids[]" value="{$vo.dynamics_id}" class="layui-checkbox checkbox-ids" lay-skin="primary"></td>
+                <td>{$vo.dynamics_id}</td>
+                <td>
+                    <u style="cursor:pointer" class="text-primary">{$vo.user_name|default=''|htmlspecialchars}</u>
+                    <span class="ml-10 c-999">({$vo.user_id})</span>
+                </td>
+                <td><span class="layui-badge layui-bg-blue">{$vo.dynamics_type_text|default=$vo.dynamics_type}</span></td>
+                <td class="f-12 c-999">
+                    {:lang('share/mid')}:{$vo.dyn_mid} {:lang('share/rid')}:{$vo.dyn_rid}
+                    {if condition="$vo.dyn_text"}<br>{$vo.dyn_text|htmlspecialchars}{/if}
+                </td>
+                <td>{$vo.dyn_time|mac_day='color'}</td>
+                <td>
+                    <a class="layui-badge-rim j-tr-del" data-href="{:url('del?ids='.$vo['dynamics_id'])}" href="javascript:;" title="{:lang('del')}">{:lang('del')}</a>
+                </td>
+            </tr>
+            {/volist}
+            </tbody>
+        </table>
+
+        <div id="pages" class="center"></div>
+
+    </form>
+</div>
+
+{include file="../../../application/admin/view_new/public/foot" /}
+
+<script type="text/javascript">
+    var curUrl="{:url('dynamics/data',$param)}";
+    layui.use(['laypage', 'layer','form'], function() {
+        var laypage = layui.laypage
+                , layer = layui.layer,
+                form = layui.form;
+
+        laypage.render({
+            elem: 'pages'
+            ,count: {$total}
+            ,limit: {$limit}
+            ,curr: {$page}
+            ,layout: ['count', 'prev', 'page', 'next', 'limit', 'skip']
+            ,jump: function(obj,first){
+                if(!first){
+                    location.href = curUrl.replace('%7Bpage%7D',obj.curr).replace('%7Blimit%7D',obj.limit);
+                }
+            }
+        });
+    });
+</script>
+</body>
+</html>

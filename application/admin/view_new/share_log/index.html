@@ -1,0 +1,93 @@
+{include file="../../../application/admin/view_new/public/head" /}
+<div class="page-container p10">
+
+    <div class="my-toolbar-box" >
+        <div class=" mb10">
+            <form class="layui-form " method="post" action="{:url('data')}">
+                <div class="layui-input-inline w100">
+                    <input type="text" autocomplete="off" placeholder="{:lang('share/user')}" class="layui-input" name="uid" value="{$param['uid']|default=''}">
+                </div>
+                <div class="layui-input-inline w100">
+                    <input type="text" autocomplete="off" placeholder="{:lang('share/platform')}" class="layui-input" name="platform" value="{$param['platform']|default=''}">
+                </div>
+                <div class="layui-input-inline w100">
+                    <input type="text" autocomplete="off" placeholder="{:lang('share/mid')}" class="layui-input" name="mid" value="{$param['mid']|default=''}">
+                </div>
+                <div class="layui-input-inline w100">
+                    <input type="text" autocomplete="off" placeholder="{:lang('share/rid')}" class="layui-input" name="rid" value="{$param['rid']|default=''}">
+                </div>
+                <button class="layui-btn mgl-20 j-search" >{:lang('btn_search')}</button>
+            </form>
+        </div>
+
+        <div class="flex gap-5 overflow-x-auto overflow-y-hidden">
+            <a data-href="{:url('del')}" class="layui-btn layui-btn-primary j-page-btns confirm"><i class="layui-icon">&#xe640;</i>{:lang('del')}</a>
+            <a data-href="{:url('del')}?all=1" class="layui-btn layui-btn-primary j-ajax" confirm="{:lang('share/admin_title')}"><i class="layui-icon">&#xe640;</i>{:lang('clear')}</a>
+        </div>
+    </div>
+
+    <form class="layui-form" method="post" id="pageListForm" >
+        <table class="layui-table" lay-size="sm">
+            <thead>
+            <tr>
+                <th width="25"><input type="checkbox" lay-skin="primary" lay-filter="allChoose"></th>
+                <th width="60">{:lang('id')}</th>
+                <th width="100">{:lang('share/user')}</th>
+                <th width="60">{:lang('share/mid')}</th>
+                <th width="80">{:lang('share/rid')}</th>
+                <th width="100">{:lang('share/platform')}</th>
+                <th width="140">{:lang('share/time')}</th>
+                <th width="100">{:lang('opt')}</th>
+            </tr>
+            </thead>
+
+            {volist name="list" id="vo"}
+            <tr>
+                <td><input type="checkbox" name="ids[]" value="{$vo.share_id}" class="layui-checkbox checkbox-ids" lay-skin="primary"></td>
+                <td>{$vo.share_id}</td>
+                <td>
+                    <u style="cursor:pointer" class="text-primary">{$vo.user_name|default=''|htmlspecialchars}</u>
+                    <span class="ml-10 c-999">({$vo.user_id})</span>
+                </td>
+                <td>{$vo.share_mid}</td>
+                <td>{$vo.share_rid}</td>
+                <td>{$vo.share_platform|htmlspecialchars}</td>
+                <td>{$vo.share_time|mac_day='color'}</td>
+                <td>
+                    <a class="layui-badge-rim j-tr-del" data-href="{:url('del?ids='.$vo['share_id'])}" href="javascript:;" title="{:lang('del')}">{:lang('del')}</a>
+                </td>
+            </tr>
+            {/volist}
+            </tbody>
+        </table>
+
+        <div id="pages" class="center"></div>
+
+    </form>
+</div>
+
+{include file="../../../application/admin/view_new/public/foot" /}
+
+<script type="text/javascript">
+    var curUrl="{:url('share_log/data',$param)}";
+    layui.use(['laypage', 'layer','form'], function() {
+        var laypage = layui.laypage
+                , layer = layui.layer,
+                form = layui.form;
+
+        laypage.render({
+            elem: 'pages'
+            ,count: {$total}
+            ,limit: {$limit}
+            ,curr: {$page}
+            ,layout: ['count', 'prev', 'page', 'next', 'limit', 'skip']
+            ,jump: function(obj,first){
+                if(!first){
+                    location.href = curUrl.replace('%7Bpage%7D',obj.curr).replace('%7Blimit%7D',obj.limit);
+                }
+            }
+        });
+    });
+</script>
+</body>
+</html>

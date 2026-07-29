@@ -1132,6 +1132,7 @@ CREATE TABLE `mac_vod` (
   `vod_plot` tinyint(1) unsigned NOT NULL DEFAULT '0' ,
   `vod_plot_name` mediumtext NOT NULL ,
   `vod_plot_detail` mediumtext NOT NULL ,
+  `vod_share_count` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '分享次数',
   PRIMARY KEY (`vod_id`),
   KEY `type_id` (`type_id`) USING BTREE,
   KEY `type_id_1` (`type_id_1`) USING BTREE,
@@ -1961,6 +1962,84 @@ INSERT INTO `mac_live` (`cate_id`,`live_name`,`live_en`,`live_url`,`live_play_fr
 (1,'CCTV-15 音乐','cctv15','HD$https://pili-live-hls.cntv.myqcloud.com/live/cctv15hd.m3u8','hls',1,105,0,0,'CCTV-15 音乐频道 中央电视台官方直播'),
 (1,'CCTV-17 农业农村','cctv17','HD$https://pili-live-hls.cntv.myqcloud.com/live/cctv17hd.m3u8','hls',1,104,0,0,'CCTV-17 农业农村频道 中央电视台官方直播');
 
+-- ----------------------------
+-- Table structure for mac_user_follow
+-- ----------------------------
+DROP TABLE IF EXISTS `mac_user_follow`;
+CREATE TABLE `mac_user_follow` (
+  `follow_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `user_id` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '关注者(发起关注的用户)',
+  `follow_uid` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '被关注者',
+  `follow_status` tinyint(1) unsigned NOT NULL DEFAULT '1' COMMENT '状态 0=已取消 1=正常',
+  `follow_mutual` tinyint(1) unsigned NOT NULL DEFAULT '0' COMMENT '是否互关 0=否 1=是',
+  `follow_time` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '关注时间',
+  PRIMARY KEY (`follow_id`),
+  UNIQUE KEY `uk_user_follow` (`user_id`,`follow_uid`),
+  KEY `follow_uid` (`follow_uid`),
+  KEY `follow_status` (`follow_status`),
+  KEY `follow_time` (`follow_time`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='用户关注关系表';
+
+-- ----------------------------
+-- Table structure for mac_share_log
+-- ----------------------------
+DROP TABLE IF EXISTS `mac_share_log`;
+CREATE TABLE `mac_share_log` (
+  `share_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `user_id` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '用户ID',
+  `share_mid` tinyint(1) unsigned NOT NULL DEFAULT '1' COMMENT '内容模块 1=vod 2=art 3=topic 8=actor 12=manga',
+  `share_rid` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '内容ID',
+  `share_platform` varchar(30) NOT NULL DEFAULT '' COMMENT '分享平台(weixin/qq/weibo/douyin/bilibili等)',
+  `share_ip` int(10) unsigned NOT NULL DEFAULT '0' COMMENT 'IP',
+  `share_day` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '分享日期(Ymd,用于按天去重)',
+  `share_time` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '分享时间',
+  PRIMARY KEY (`share_id`),
+  UNIQUE KEY `uk_user_content_day` (`user_id`,`share_mid`,`share_rid`,`share_day`),
+  KEY `share_mid_rid` (`share_mid`,`share_rid`),
+  KEY `user_id` (`user_id`),
+  KEY `share_time` (`share_time`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='内容分享日志表';
+
+-- ----------------------------
+-- Table structure for mac_dynamics
+-- ----------------------------
+DROP TABLE IF EXISTS `mac_dynamics`;
+CREATE TABLE `mac_dynamics` (
+  `dynamics_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `user_id` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '行为人(产生动态的用户)',
+  `dynamics_type` varchar(20) NOT NULL DEFAULT '' COMMENT '动态类型 fav/comment/reply/follow/share/danmaku/chat',
+  `dyn_mid` tinyint(1) unsigned NOT NULL DEFAULT '0' COMMENT '关联内容模块(1=vod 2=art 等,跟随/私信类为0)',
+  `dyn_rid` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '关联内容ID',
+  `dyn_pid` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '关联父ID(如回复的评论ID)',
+  `dyn_text` varchar(500) NOT NULL DEFAULT '' COMMENT '动态摘要文本',
+  `dyn_extra` varchar(500) NOT NULL DEFAULT '' COMMENT '扩展JSON',
+  `dyn_time` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '动态时间',
+  PRIMARY KEY (`dynamics_id`),
+  KEY `idx_user_time` (`user_id`,`dyn_time`),
+  KEY `dynamics_type` (`dynamics_type`),
+  KEY `dyn_mid_rid` (`dyn_mid`,`dyn_rid`),
+  KEY `dyn_time` (`dyn_time`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='用户动态事件表';
+
+-- ----------------------------
+-- Table structure for mac_user_pm
+-- ----------------------------
+DROP TABLE IF EXISTS `mac_user_pm`;
+CREATE TABLE `mac_user_pm` (
+  `pm_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `from_uid` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '发信人',
+  `to_uid` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '收信人',
+  `pm_content` varchar(500) NOT NULL DEFAULT '' COMMENT '私信内容',
+  `pm_ip` int(10) unsigned NOT NULL DEFAULT '0' COMMENT 'IP',
+  `pm_time` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '发送时间',
+  `pm_read` tinyint(1) unsigned NOT NULL DEFAULT '0' COMMENT '是否已读 0=未读 1=已读',
+  `pm_status` tinyint(1) unsigned NOT NULL DEFAULT '1' COMMENT '状态 0=禁用 1=正常',
+  PRIMARY KEY (`pm_id`),
+  KEY `idx_to_read_time` (`to_uid`,`pm_read`,`pm_time`),
+  KEY `from_uid` (`from_uid`),
+  KEY `pm_time` (`pm_time`),
+  KEY `pm_status` (`pm_status`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='用户私信表';
 
 -- -----------------------------------------------------------------------------
 -- Table structure for mac_monitor_metric_min

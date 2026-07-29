@@ -143,10 +143,11 @@ class Danmaku extends Base {
 
         // 黑名单关键字过滤
         $blacks = config('blacks');
+        $content = isset($data['danmaku_text']) ? $data['danmaku_text'] : '';
         if (!empty($blacks['black_keyword_list']) && is_array($blacks['black_keyword_list'])) {
             foreach ($blacks['black_keyword_list'] as $keyword) {
                 $keyword = trim($keyword);
-                if (!empty($keyword) && strpos($data['danmaku_text'], $keyword) !== false) {
+                if (!empty($keyword) && strpos($content, $keyword) !== false) {
                     return ['code' => 1003, 'msg' => lang('content_contain_sensitive')];
                 }
             }
@@ -182,6 +183,20 @@ class Danmaku extends Base {
                         'text'       => $data['danmaku_text'],
                     ],
                 ]);
+
+                // 写动态
+                if (!empty($data['user_id'])) {
+                    try {
+                        model('Dynamics')->saveData([
+                            'user_id'       => intval($data['user_id']),
+                            'dynamics_type' => 'danmaku',
+                            'dyn_mid'       => 1,
+                            'dyn_rid'       => intval($data['vod_id']),
+                            'dyn_text'      => mb_substr($data['danmaku_text'], 0, 200, 'UTF-8'),
+                        ]);
+                    } catch (\Exception $e) {
+                    }
+                }
             }
         }
 
