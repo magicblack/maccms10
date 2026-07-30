@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title data-lang="social_circle">我的圈子 - 会员中心 - {$maccms.site_name}</title>
+{include file="user/include" /}
+<link rel="stylesheet" href="{$maccms.path_tpl}/asset/css/user-social.css?v=2026072816">
+</head>
+<body class="page-user-social">
+{include file="public/head" /}
+<div class="member-wrap member-wrap-bg"><div id="member" class="fn-clear">
+<div id="left"><div class="m-nav"><a href="{:url('user/index')}" class="btn-left"><i class="iconfont ico-right">&#xe625;</i></a><span class="mb-title" data-lang="user_grzx">个人中心</span></div>{include file="user/left_nav" /}</div>
+<div id="right"><div class="m-nav"><a href="{:url('user/index')}" class="btn-left"><i class="iconfont ico-right">&#xe625;</i></a><span class="mb-title" data-social-mobile-title>我的圈子</span></div>
+<main class="co-right co-right-bg mac-social" data-mac-social data-page="dynamics" data-api-base="{:rtrim($maccms.path,'/').'/api.php'}" data-url-login="{:url('user/login')}" data-current-uid="{$user.user_id|intval}">
+<header class="mac-social__hero">
+<div class="mac-social__hero-copy"><h1 data-lang="social_circle">我的圈子</h1><p>分享近况，发现朋友的新动态</p></div>
+<div class="mac-social__hero-mark" aria-hidden="true"><span></span><span></span><span></span></div>
+</header>
+<nav class="mac-social__tabs" aria-label="社交功能">
+<button type="button" class="is-active" data-social-view="dynamics"><i class="iconfont mac-social__tab-icon" aria-hidden="true">&#xe661;</i><strong data-lang="social_circle">我的圈子</strong><small data-lang="social_friend_dynamics">好友动态</small></button>
+<button type="button" data-social-view="following"><svg class="mac-social__tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg><strong data-lang="social_relationships">关系</strong><small data-lang="social_following">我的关注</small></button>
+<button type="button" data-social-view="messages"><i class="iconfont mac-social__tab-icon" aria-hidden="true">&#xe632;</i><strong data-lang="social_messages">私信</strong><small>最近会话</small></button>
+</nav>
+<section class="mac-social__workspace">
+<header class="mac-social__section-head">
+<div><span class="mac-social__section-kicker" data-social-section-kicker>我的圈子</span><h2 data-social-section-title>好友动态</h2></div>
+<nav class="mac-social__subtabs" data-social-subtabs aria-label="内容筛选"></nav>
+</header>
+<div class="mac-social__content" data-social-content>
+<ul class="mac-social__list" data-social-list></ul>
+<div class="mac-social__infinite" data-social-infinite hidden aria-live="polite"><span aria-hidden="true"></span><small data-social-infinite-text></small></div>
+<p class="mac-social__loading" data-social-loading data-lang="string_loading">加载中~</p>
+<div class="mac-social__empty" data-social-empty hidden><span class="mac-social__empty-mark" aria-hidden="true"></span><strong data-social-empty-title>暂无内容</strong><small data-social-empty-copy>这里还没有新动态</small></div>
+<nav class="mac-social__pager" data-social-pager hidden><button type="button" data-social-page="prev" data-lang="string_prev">上一页</button><span data-social-page-label></span><button type="button" data-social-page="next" data-lang="string_next">下一页</button></nav>
+</div>
+<section class="mac-social__conversation" data-social-conversation hidden>
+<header class="mac-social__conversation-head"><button type="button" data-social-chat-back aria-label="返回私信列表">&#8249;</button><button type="button" class="mac-social__profile-trigger mac-social__peer-avatar" data-social-peer-avatar aria-label="查看个人主页">友</button><div class="mac-social__peer-copy"><button type="button" class="mac-social__profile-trigger" data-social-peer-name>私信会话</button><small>互相关注 · 点击查看个人主页</small></div></header>
+<div class="mac-social__messages" data-social-messages></div>
+<div class="mac-social__composer"><textarea maxlength="500" data-social-message-input data-lang-placeholder="social_message_placeholder" placeholder="输入私信内容"></textarea><button type="button" class="mac-social__send" data-social-send data-lang="social_send">发送</button></div>
+</section>
+</section>
+</main></div></div></div>
+<script defer src="{$maccms.path_tpl}/asset/js/user-social.js?v=2026072920"></script>
+{include file="public/foot" /}
+</body></html>

@@ -14,12 +14,12 @@
 	<li class="comm_each line_top margin cmt-thread">
 		<div class="cmt-row">
 		{php}$avatar_src = mac_get_user_portrait(isset($vo['user_id']) ? $vo['user_id'] : 0); $avatar_alt = isset($vo['comment_name']) ? (string)$vo['comment_name'] : ''; $avatar_user_id = isset($vo['user_id']) ? (int)$vo['user_id'] : 0;{/php}
-		<div class="cmt-avatar-wrap">
+		<div class="cmt-avatar-wrap" data-user-card="{$avatar_user_id}" data-user-name="{$avatar_alt|htmlspecialchars}">
 		{include file="widget/user_avatar" avatar_user_id="$avatar_user_id" avatar_size="xs" avatar_variant="list" avatar_class="comm_avat part_roun" /}
 		</div>
 		<div class="cmt-body">
 			<div class="cmt-meta">
-				<strong class="cmt-name text_line">{$vo.comment_name}</strong>
+				<strong class="cmt-name text_line" data-user-card="{$avatar_user_id}" data-user-name="{$avatar_alt|htmlspecialchars}" tabindex="0" role="button">{$vo.comment_name}</strong>
 			</div>
 			<div class="cmt-text comm_content">{$vo.comment_content|mac_em_replace}</div>
 			<div class="cmt-footer">
@@ -37,12 +37,12 @@
 			<div class="comm_reply comm_reply_child comm_tops cmt-reply-item">
 				<div class="cmt-row cmt-row--reply">
 				{php}$avatar_src = mac_get_user_portrait(isset($child['user_id']) ? $child['user_id'] : 0); $avatar_alt = isset($child['comment_name']) ? (string)$child['comment_name'] : ''; $avatar_user_id = isset($child['user_id']) ? (int)$child['user_id'] : 0;{/php}
-				<div class="cmt-avatar-wrap">
+				<div class="cmt-avatar-wrap" data-user-card="{$avatar_user_id}" data-user-name="{$avatar_alt|htmlspecialchars}">
 				{include file="widget/user_avatar" avatar_user_id="$avatar_user_id" avatar_size="xs" avatar_variant="list" avatar_class="comm_avat part_roun" /}
 				</div>
 				<div class="cmt-body">
 					<div class="cmt-meta">
-						<strong class="cmt-name text_line">{$child.comment_name}</strong>
+						<strong class="cmt-name text_line" data-user-card="{$avatar_user_id}" data-user-name="{$avatar_alt|htmlspecialchars}" tabindex="0" role="button">{$child.comment_name}</strong>
 					</div>
 					<div class="cmt-text comm_content">{$child.comment_content|mac_em_replace}</div>
 					<div class="cmt-footer">

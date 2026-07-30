@@ -42,7 +42,7 @@ $hasNext = $epTotal > 0 && $curNid < $epTotal;
             </div>
             <div class="ep">{$obj.manga_name} · <span data-lang="string_zg">共</span>{$epTotal|default='0'}<span data-lang="string_manga_hua">话</span></div>
         </div>
-        <a class="share-btn open-share" href="javascript:;" data-title="manga_share" title="分享">
+        <a class="share-btn open-share" href="javascript:;" data-title="manga_share" title="分享" data-share-mid="12" data-share-rid="{$obj.manga_id}">
             <i class="iconfont">&#xe615;</i>
         </a>
     </header>

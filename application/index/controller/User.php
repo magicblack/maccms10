@@ -782,6 +782,11 @@ class User extends Base
         return $this->fetch('user/notify');
     }
 
+    public function dynamics()
+    {
+        return $this->fetch('user/dynamics');
+    }
+
     public function downs()
     {
         $param = input();

@@ -8,7 +8,8 @@
 			data-url-plog="{:url('user/plog')}"
 			data-url-checkin="{:url('user/checkin')}"
 			data-url-invite="{:url('user/invite')}"
-			data-url-portrait="{:url('user/portrait')}">
+			data-url-portrait="{:url('user/portrait')}"
+			data-social-current-uid="{$user.user_id|intval}">
 			<div id="mac-user-left-profile" class="mac-user-left-profile-root" aria-live="polite"></div>
 		</div>
 		<ul class="show-pc">
@@ -20,6 +21,11 @@
 			<li data-index='1'>
 				<a href="{:rtrim($maccms.path,'/').'/index.php/user/notify.html'}">
 					<i class="iconfont lishi">&#xe624;</i><span data-lang="notify_title">消息中心</span>
+				</a>
+			</li>
+			<li data-index='12'>
+				<a href="{:url('user/dynamics')}" data-social-pm-link>
+					<i class="iconfont mac-social-nav-icon" aria-hidden="true">&#xe612;</i><span data-lang="social_circle">我的圈子</span><span class="mac-social-unread" data-social-pm-badge hidden></span>
 				</a>
 			</li>
 			<li data-index='2'>
@@ -102,6 +108,13 @@
 				<a href="{:rtrim($maccms.path,'/').'/index.php/user/notify.html'}">
 					<img class="userli-img" src="{$maccms.path}template/default/images/member/user-li3.png" alt="">
 					<span data-lang="notify_title">消息中心</span>
+					<i class="iconfont ico-right">&#xe623;</i>
+				</a>
+			</li>
+			<li>
+				<a href="{:url('user/dynamics')}" data-social-pm-link>
+					<i class="iconfont mac-social-nav-icon" aria-hidden="true">&#xe612;</i>
+					<span data-lang="social_circle">我的圈子</span><span class="mac-social-unread" data-social-pm-badge hidden></span>
 					<i class="iconfont ico-right">&#xe623;</i>
 				</a>
 			</li>

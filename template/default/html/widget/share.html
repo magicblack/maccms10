@@ -35,6 +35,10 @@
      data-invite-code="{:htmlspecialchars($inviteCode, ENT_QUOTES, 'UTF-8')}"
      data-invite-code-display="{:htmlspecialchars($inviteCodeDisplay, ENT_QUOTES, 'UTF-8')}"
      data-share-force-home="{if condition='$forceHome'}1{else/}0{/if}"
+     data-share-mid="0"
+     data-share-rid="0"
+     data-share-record-url="{:rtrim($maccms.path,'/').'/api.php/share/record'}"
+     data-share-login-url="{:url('user/login')}"
      data-is-guest="{$isGuestFlag}"
      data-invite-count="{$inviteCount}">
   <div class="invite-share-panel">
@@ -82,17 +86,17 @@
           <div class="invite-step-desc">{if condition="$isGuest"}点击保存推广图片，或复制网址{else/}点击保存推广图片，或复制推广链接{/if}</div>
           <div class="invite-steps-section-label">常用社交软件：</div>
           <div class="invite-app-icons" aria-label="常用社交软件">
-            <span class="invite-app-icon"><img src="{$maccms.path_tpl}/images/share/weixin.png" width="48" height="48" loading="lazy" alt="微信"></span>
-            <span class="invite-app-icon"><img src="{$maccms.path_tpl}/images/share/qq.png" width="48" height="48" loading="lazy" alt="QQ"></span>
-            <span class="invite-app-icon"><img src="{$maccms.path_tpl}/images/share/weibo.png" width="48" height="48" loading="lazy" alt="微博"></span>
-            <span class="invite-app-icon"><img src="{$maccms.path_tpl}/images/share/douyin.png" width="48" height="48" loading="lazy" alt="抖音"></span>
-            <span class="invite-app-icon"><img src="{$maccms.path_tpl}/images/share/xiaohongshu.png" width="48" height="48" loading="lazy" alt="小红书"></span>
-            <span class="invite-app-icon"><img src="{$maccms.path_tpl}/images/share/kuaishou.png" width="48" height="48" loading="lazy" alt="快手"></span>
-            <span class="invite-app-icon"><img src="{$maccms.path_tpl}/images/share/mm.png" width="48" height="48" loading="lazy" alt="陌陌"></span>
-            <span class="invite-app-icon"><img src="{$maccms.path_tpl}/images/share/tt.png" width="48" height="48" loading="lazy" alt="探探"></span>
-            <span class="invite-app-icon"><img src="{$maccms.path_tpl}/images/share/tieba.png" width="48" height="48" loading="lazy" alt="百度贴吧"></span>
-            <span class="invite-app-icon"><img src="{$maccms.path_tpl}/images/share/bzhan.png" width="48" height="48" loading="lazy" alt="哔哩哔哩"></span>
-            <span class="invite-app-icon"><img src="{$maccms.path_tpl}/images/share/zhihu.png" width="48" height="48" loading="lazy" alt="知乎"></span>
+            <button type="button" class="invite-app-icon" data-share-platform="weixin"><img src="{$maccms.path_tpl}/images/share/weixin.png" width="48" height="48" loading="lazy" alt="微信"></button>
+            <button type="button" class="invite-app-icon" data-share-platform="qq"><img src="{$maccms.path_tpl}/images/share/qq.png" width="48" height="48" loading="lazy" alt="QQ"></button>
+            <button type="button" class="invite-app-icon" data-share-platform="weibo"><img src="{$maccms.path_tpl}/images/share/weibo.png" width="48" height="48" loading="lazy" alt="微博"></button>
+            <button type="button" class="invite-app-icon" data-share-platform="douyin"><img src="{$maccms.path_tpl}/images/share/douyin.png" width="48" height="48" loading="lazy" alt="抖音"></button>
+            <button type="button" class="invite-app-icon" data-share-platform="xiaohongshu"><img src="{$maccms.path_tpl}/images/share/xiaohongshu.png" width="48" height="48" loading="lazy" alt="小红书"></button>
+            <button type="button" class="invite-app-icon" data-share-platform="kuaishou"><img src="{$maccms.path_tpl}/images/share/kuaishou.png" width="48" height="48" loading="lazy" alt="快手"></button>
+            <button type="button" class="invite-app-icon" data-share-platform="momo"><img src="{$maccms.path_tpl}/images/share/mm.png" width="48" height="48" loading="lazy" alt="陌陌"></button>
+            <button type="button" class="invite-app-icon" data-share-platform="tantan"><img src="{$maccms.path_tpl}/images/share/tt.png" width="48" height="48" loading="lazy" alt="探探"></button>
+            <button type="button" class="invite-app-icon" data-share-platform="tieba"><img src="{$maccms.path_tpl}/images/share/tieba.png" width="48" height="48" loading="lazy" alt="百度贴吧"></button>
+            <button type="button" class="invite-app-icon" data-share-platform="bilibili"><img src="{$maccms.path_tpl}/images/share/bzhan.png" width="48" height="48" loading="lazy" alt="哔哩哔哩"></button>
+            <button type="button" class="invite-app-icon" data-share-platform="zhihu"><img src="{$maccms.path_tpl}/images/share/zhihu.png" width="48" height="48" loading="lazy" alt="知乎"></button>
           </div>
           <div class="invite-steps-section-label">各类游戏公共频道：</div>
           <div class="invite-app-icons invite-app-icons--games" aria-label="游戏社区">
