@@ -157,7 +157,10 @@ class Admin extends Base {
         }
 
         session('admin_auth','1');
-        session('admin_info',$row->toArray());
+        // 关键：$row 是「更新前」的旧快照，需把本次登录写入 DB 的 $update 合并回去，
+        // 否则 session 里的 admin_last_login_time / admin_login_time 会停留在旧值，
+        $admin_info = array_merge($row->toArray(), $update);
+        session('admin_info',$admin_info);
 
         //cookie('admin_id',$row['admin_id']);
         //cookie('admin_name',$row['admin_name']);

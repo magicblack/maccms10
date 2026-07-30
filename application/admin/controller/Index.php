@@ -848,8 +848,10 @@ class Index extends Base
         }
 
         //近七日用户访问总量
+        // 修复：原代码遍历从未赋值的 $result['seven_day_visit_data']，
+        // 导致近七日访问总量恒为 0 并抛出 PHP notice。实际数据在 $tmp_arr 中。
         $result['seven_day_visit_total_count'] = 0;
-        foreach ($result['seven_day_visit_data'] as $k => $value) {
+        foreach ($tmp_arr as $value) {
             $result['seven_day_visit_total_count'] = $result['seven_day_visit_total_count'] + $value['count'];
         }
 
