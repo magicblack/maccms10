@@ -130,11 +130,11 @@
             '<div class="' +
             rowClass +
             '">' +
-            '<div class="cmt-avatar-wrap">' +
+            '<div class="cmt-avatar-wrap" data-user-card="' + __macCmtEscAttr(uid) + '" data-user-name="' + __macCmtEscAttr(name) + '">' +
             __macCmtAvatarHtml(uid, vo.user_portrait, name) +
             '</div>' +
             '<div class="cmt-body">' +
-            '<div class="cmt-meta"><strong class="cmt-name text_line">' +
+            '<div class="cmt-meta"><strong class="cmt-name text_line" data-user-card="' + __macCmtEscAttr(uid) + '" data-user-name="' + __macCmtEscAttr(name) + '" tabindex="0" role="button">' +
             __macCmtEscText(name) +
             '</strong></div>' +
             '<div class="cmt-text comm_content">' +
