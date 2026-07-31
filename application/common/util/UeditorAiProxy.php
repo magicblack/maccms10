@@ -6,8 +6,8 @@ namespace app\common\util;
  */
 class UeditorAiProxy
 {
-    private const ANTHROPIC_VERSION = '2023-06-01';
-    private const MAX_PROMPT_CHARS = 32000;
+    const ANTHROPIC_VERSION = '2023-06-01';
+    const MAX_PROMPT_CHARS = 32000;
 
     /**
      * @param array $ai ai_seo from maccms

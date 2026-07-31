@@ -8,7 +8,7 @@ namespace addons\aicontent\service\models;
  */
 class OpenAiModel extends BaseModel
 {
-    private const API_URL = 'https://api.openai.com/v1/chat/completions';
+    const API_URL = 'https://api.openai.com/v1/chat/completions';
 
     public function generate(string $prompt): string
     {

@@ -8,7 +8,7 @@ namespace addons\aicontent\service\models;
  */
 class GeminiModel extends BaseModel
 {
-    private const API_BASE = 'https://generativelanguage.googleapis.com/v1beta/models/';
+    const API_BASE = 'https://generativelanguage.googleapis.com/v1beta/models/';
 
     public function generate(string $prompt): string
     {

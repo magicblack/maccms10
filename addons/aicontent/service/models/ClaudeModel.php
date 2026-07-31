@@ -8,8 +8,8 @@ namespace addons\aicontent\service\models;
  */
 class ClaudeModel extends BaseModel
 {
-    private const API_URL = 'https://api.anthropic.com/v1/messages';
-    private const VERSION = '2023-06-01';
+    const API_URL = 'https://api.anthropic.com/v1/messages';
+    const VERSION = '2023-06-01';
 
     public function generate(string $prompt): string
     {

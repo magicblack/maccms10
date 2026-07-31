@@ -9,7 +9,7 @@ namespace addons\aicontent\service\models;
  */
 class DeepSeekModel extends BaseModel
 {
-    private const API_URL = 'https://api.deepseek.com/chat/completions';
+    const API_URL = 'https://api.deepseek.com/chat/completions';
 
     public function generate(string $prompt): string
     {

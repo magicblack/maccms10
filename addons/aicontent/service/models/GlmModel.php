@@ -9,7 +9,7 @@ namespace addons\aicontent\service\models;
  */
 class GlmModel extends BaseModel
 {
-    private const API_URL = 'https://open.bigmodel.cn/api/paas/v4/chat/completions';
+    const API_URL = 'https://open.bigmodel.cn/api/paas/v4/chat/completions';
 
     public function generate(string $prompt): string
     {

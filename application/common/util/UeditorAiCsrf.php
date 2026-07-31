@@ -6,7 +6,7 @@ namespace app\common\util;
  */
 class UeditorAiCsrf
 {
-    private const SESSION_KEY = 'ueditor_ai_csrf_token';
+    const SESSION_KEY = 'ueditor_ai_csrf_token';
 
     public static function token(): string
     {
