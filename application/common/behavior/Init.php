@@ -65,30 +65,14 @@ class Init
             $isMobile = 1;
         }
 
-        $isDomain=0;
-        if( is_array($domain) && !empty($domain[$_SERVER['HTTP_HOST']])){
-            $config['site'] = array_merge($config['site'],$domain[$_SERVER['HTTP_HOST']]);
-            $isDomain=1;
-            if(empty($config['site']['mob_template_dir']) || $config['site']['mob_template_dir'] =='no'){
-                $config['site']['mob_template_dir'] = $config['site']['template_dir'];
-            }
-            $config['site']['site_wapurl'] = $config['site']['site_url'];
-            $config['site']['mob_html_dir'] = $config['site']['html_dir'];
-            $config['site']['mob_ads_dir'] = $config['site']['ads_dir'];
-        }
-        $TMP_ISWAP = 0;
-        $TMP_TEMPLATEDIR = $config['site']['template_dir'];
-        $TMP_HTMLDIR = $config['site']['html_dir'];
-        $TMP_ADSDIR = $config['site']['ads_dir'];
+        $http_host = isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : '';
+        $resolved = self::resolveSite($config['site'], $domain, $http_host, $isMobile);
+        $config['site'] = $resolved['site'];
 
-        if($isMobile && $isDomain==0){
-            if( ($config['site']['mob_status']==2 ) || ($config['site']['mob_status']==1 && $_SERVER['HTTP_HOST']==$config['site']['site_wapurl']) || ($config['site']['mob_status']==1 && $isDomain) ) {
-                $TMP_ISWAP = 1;
-                $TMP_TEMPLATEDIR = $config['site']['mob_template_dir'];
-                $TMP_HTMLDIR = $config['site']['mob_html_dir'];
-                $TMP_ADSDIR = $config['site']['mob_ads_dir'];
-            }
-        }
+        $TMP_ISWAP = $resolved['is_wap'];
+        $TMP_TEMPLATEDIR = $resolved['template_dir'];
+        $TMP_HTMLDIR = $resolved['html_dir'];
+        $TMP_ADSDIR = $resolved['ads_dir'];
 
         define('MAC_URL','http'.'://'.'www'.'.'.'maccms'.'.'.'la'.'/');
         define('MAC_NAME','苹果CMS');
@@ -183,5 +167,185 @@ class Init
         config('view_replace_str', array_merge($existReplace, $staticReplace));
 
         $GLOBALS['config'] = $config;
+    }
+
+    /**
+     * 站群（多域名）匹配。
+     * 先按域名精确命中站群条目；未命中时，只有多域模式（mob_status=1）才反查
+     * 该域名是否是某个站群条目自己的手机站域名，避免每次请求都无谓遍历。
+     *
+     * @param array  $domain_list config('domain')
+     * @param string $host        当前 HTTP_HOST
+     * @param mixed  $mob_status  站点手机端模式：0 关闭 / 1 多域 / 2 单域自适应
+     * @return array|null ['entry'=>条目, 'is_wap_domain'=>0|1]
+     */
+    public static function matchDomain($domain_list, $host, $mob_status)
+    {
+        if (!is_array($domain_list) || empty($domain_list) || empty($host)) {
+            return null;
+        }
+        if (!empty($domain_list[$host]) && is_array($domain_list[$host])) {
+            return ['entry' => $domain_list[$host], 'is_wap_domain' => 0];
+        }
+        if ($mob_status == 1) {
+            // 存量条目（手工编辑过 extra/domain.php、或插件写入）里的手机站域名未必
+            // 已规范化，可能存着 http://m.a.com/ 这种带 scheme 和尾斜杠的值。
+            // 两边都过一遍与写入侧同一个 mac_domain_host()，否则永远比不中。
+            $host_lc = mac_domain_host($host);
+            if ($host_lc !== '') {
+                foreach ($domain_list as $one) {
+                    if (is_array($one) && !empty($one['site_wapurl'])
+                        && mac_domain_host($one['site_wapurl']) === $host_lc) {
+                        return ['entry' => $one, 'is_wap_domain' => 1];
+                    }
+                }
+            }
+        }
+        return null;
+    }
+
+    /**
+     * 取站群条目自己配置的手机模板目录，未配置（缺键 / 空 / 'no'）一律返回空串。
+     * 必须在与全局 site 配置 array_merge 之前取，否则全局 mob_template_dir
+     * （默认 'default'，非空）会漏进来，让「该站未配手机模板」的判定失效。
+     *
+     * @param array $entry 站群条目原始数组
+     * @return string
+     */
+    public static function domainMobTemplate($entry)
+    {
+        if (!is_array($entry) || !isset($entry['mob_template_dir'])) {
+            return '';
+        }
+        $dir = trim($entry['mob_template_dir']);
+        if ($dir === 'no') {
+            return '';
+        }
+        return $dir;
+    }
+
+    /**
+     * 选定本次请求使用的模板目录。
+     * 站群场景下有两种切换信号：多域模式命中该条目自己的手机站域名，
+     * 或自适应模式下该条目自己配了手机模板。两者都没有的存量条目保持 PC 模板。
+     *
+     * @param array  $site           已合并站群条目的 site 配置
+     * @param int    $is_mobile      手机 UA
+     * @param int    $is_domain      是否命中站群条目
+     * @param int    $is_wap_domain  命中的是该条目的手机站域名
+     * @param string $domain_mob_tpl 该条目自己配置的手机模板（空=未配置）
+     * @param string $host           当前 HTTP_HOST
+     * @return array ['is_wap'=>, 'template_dir'=>, 'html_dir'=>, 'ads_dir'=>]
+     */
+    public static function pickTemplate($site, $is_mobile, $is_domain, $is_wap_domain, $domain_mob_tpl, $host)
+    {
+        $is_wap = 0;
+        $mob_status = isset($site['mob_status']) ? $site['mob_status'] : 0;
+
+        if ($is_mobile) {
+            if ($is_domain) {
+                if ($mob_status == 1 && $is_wap_domain) {
+                    // 访客正落在该条目自己的手机站域名上，站长意图已经明确：
+                    // 即便条目没选手机模板也要切，此时 resolveSite 已把 mob_template_dir
+                    // 备成全局手机模板（全局也没配才等于该站 PC 模板）。
+                    // 否则「填了手机站域名却仍吐 PC 模板」，站长只会认为该字段不生效。
+                    $is_wap = 1;
+                } elseif ($mob_status == 2 && $domain_mob_tpl !== '') {
+                    // 自适应模式没有域名这层显式信号，只认条目自己配的手机模板，
+                    // 不能让所有存量站群条目在手机 UA 下突然改用全局手机模板。
+                    $is_wap = 1;
+                }
+            } else {
+                $wapurl = isset($site['site_wapurl']) ? $site['site_wapurl'] : '';
+                if ($mob_status == 2 || ($mob_status == 1 && $wapurl !== '' && $host === $wapurl)) {
+                    $is_wap = 1;
+                }
+            }
+        }
+
+        if ($is_wap) {
+            return [
+                'is_wap' => 1,
+                'template_dir' => $site['mob_template_dir'],
+                'html_dir' => $site['mob_html_dir'],
+                'ads_dir' => $site['mob_ads_dir'],
+            ];
+        }
+        return [
+            'is_wap' => 0,
+            'template_dir' => $site['template_dir'],
+            'html_dir' => $site['html_dir'],
+            'ads_dir' => $site['ads_dir'],
+        ];
+    }
+
+    /**
+     * 合并站群条目并选定模板目录。run() 的域名/手机端处理全部走这里，
+     * 抽成无副作用的静态方法，便于在不引导框架、不连数据库的情况下回归测试。
+     *
+     * @param array  $site        全局 site 配置
+     * @param array  $domain_list config('domain')
+     * @param string $host        当前 HTTP_HOST
+     * @param int    $is_mobile   手机 UA
+     * @return array
+     */
+    public static function resolveSite($site, $domain_list, $host, $is_mobile)
+    {
+        $is_domain = 0;
+        $is_wap_domain = 0;
+        $domain_mob_tpl = '';
+
+        $mob_status = isset($site['mob_status']) ? $site['mob_status'] : 0;
+        $hit = self::matchDomain($domain_list, $host, $mob_status);
+
+        if ($hit !== null) {
+            $is_domain = 1;
+            $is_wap_domain = $hit['is_wap_domain'];
+            $domain_mob_tpl = self::domainMobTemplate($hit['entry']);
+            $entry_wapurl = isset($hit['entry']['site_wapurl']) ? mac_domain_host($hit['entry']['site_wapurl']) : '';
+            // 合并前留存全局模板：条目未配时要还给它，否则后台按 ac2=wap
+            // 生成手机静态页（Make.php 直接读 site.mob_template_dir）会误用该站的 PC 模板。
+            // html/ads 目录必须与模板目录成套留存：模板根是 template/{模板}/{html}/，
+            // 回落用全局模板却配条目的 html 目录，会拼出 template/mobile/cn/ 这种不存在的组合。
+            $global_mob_tpl = isset($site['mob_template_dir']) ? trim($site['mob_template_dir']) : '';
+            $global_tpl = isset($site['template_dir']) ? trim($site['template_dir']) : '';
+            $global_mob_html = isset($site['mob_html_dir']) ? $site['mob_html_dir'] : '';
+            $global_mob_ads = isset($site['mob_ads_dir']) ? $site['mob_ads_dir'] : '';
+
+            $site = array_merge($site, $hit['entry']);
+
+            // 条目模板留在“请选择”(no) 或为空时回落全局模板，否则模板根会指向不存在的 template/no/
+            $entry_tpl = isset($site['template_dir']) ? trim($site['template_dir']) : '';
+            if ($entry_tpl === '' || $entry_tpl === 'no') {
+                $site['template_dir'] = $global_tpl;
+            }
+
+            // 未配手机站域名的条目回落到本站域名，前端 Adaptive() 判定 url==wapurl 便不会跳转
+            $site['site_wapurl'] = $entry_wapurl !== '' ? $entry_wapurl : $site['site_url'];
+            // 模板目录与 html/ads 目录必须同源，否则模板根 template/{模板}/{html}/ 不成立
+            if ($domain_mob_tpl !== '') {
+                // 条目自己配了手机模板 -> 配条目自己的 html/ads
+                $site['mob_template_dir'] = $domain_mob_tpl;
+                $site['mob_html_dir'] = $site['html_dir'];
+                $site['mob_ads_dir'] = $site['ads_dir'];
+            } elseif ($global_mob_tpl !== '' && $global_mob_tpl !== 'no') {
+                // 回落全局手机模板 -> html/ads 也必须取全局的
+                $site['mob_template_dir'] = $global_mob_tpl;
+                $site['mob_html_dir'] = $global_mob_html;
+                $site['mob_ads_dir'] = $global_mob_ads;
+            } else {
+                // 全局也没配 -> 等同该站 PC 模板，整套用条目自己的
+                $site['mob_template_dir'] = $site['template_dir'];
+                $site['mob_html_dir'] = $site['html_dir'];
+                $site['mob_ads_dir'] = $site['ads_dir'];
+            }
+        }
+
+        $res = self::pickTemplate($site, $is_mobile, $is_domain, $is_wap_domain, $domain_mob_tpl, $host);
+        $res['site'] = $site;
+        $res['is_domain'] = $is_domain;
+        $res['is_wap_domain'] = $is_wap_domain;
+
+        return $res;
     }
 }

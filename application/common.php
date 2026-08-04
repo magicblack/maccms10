@@ -815,6 +815,27 @@ function mac_send_push($channel, $title, $content, array $context = [], array $c
     return $c->submit($title, $content, $context, $config);
 }
 
+/**
+ * 规范化域名输入为纯主机名（可带端口），用于与 $_SERVER['HTTP_HOST'] 比对。
+ * 站长常按习惯填 http://m.a.com/，原样存下来会与 HTTP_HOST 永远匹配不上；
+ * 同时限定字符集，避免把引号等注入到模板输出的 JS 变量里。
+ * 非法输入返回空串（等同未配置）。
+ */
+function mac_domain_host($url)
+{
+    $host = strtolower(trim((string)$url));
+    if ($host === '') {
+        return '';
+    }
+    $host = preg_replace('#^[a-z][a-z0-9+.\-]*://#', '', $host);
+    $host = ltrim($host, '/');
+    $host = substr($host, 0, strcspn($host, '/?#'));
+    if (!preg_match('/^[a-z0-9.\-]+(:\d{1,5})?$/', $host)) {
+        return '';
+    }
+    return $host;
+}
+
 function mac_check_back_link($url)
 {
     $res=[];

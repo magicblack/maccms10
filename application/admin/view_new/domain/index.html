@@ -3,7 +3,6 @@
     <div class="showpic" style="display:none;"><img class="showpic_img" width="120" height="160" referrerPolicy="no-referrer"></div>
     
     <form class="layui-form layui-form-pane" method="post" action="">
-        <input type="hidden" name="vod_id" value="{$info.vod_id}">
 
         <div class="layui-tab">
             <ul class="layui-tab-title ">
@@ -41,6 +40,8 @@
                             <div class="layui-input-inline w150"><input type="text" name="domain[html_dir][]" class="layui-input" placeholder="{:lang('tpl_dir')}" value="{$vo.html_dir}"></div>
                             <div class="layui-input-inline w150"><input type="text" name="domain[ads_dir][]" class="layui-input" placeholder="{:lang('ads_dir')}" value="{$vo.ads_dir}"></div>
                             <div class="layui-input-inline w150"><input type="text" name="domain[map_dir][]" class="layui-input" placeholder="{:lang('map_dir')}" value="{$vo.map_dir}"></div>
+                            <div class="layui-input-inline w150"><select name="domain[mob_template_dir][]"><option value="no">{:lang('admin/system/config/mob_template_dir')}.</option>{volist name="templates" id="vo3"}<option value="{$vo3}" {if condition="$vo3 eq $vo.mob_template_dir"}selected{/if}>{$vo3}</option>{/volist}</select></div>
+                            <div class="layui-input-inline w150"><input type="text" name="domain[site_wapurl][]" class="layui-input" placeholder="{:lang('admin/system/config/site_wapurl')}" value="{$vo.site_wapurl}"></div>
                             <div> <a class="layui-badge-rim j-tr-del" data-href="{:url('del?ids='.$vo['site_url'])}" href="javascript:;" title="{:lang('del')}">{:lang('del')}</a></div>
                         </div>
                         {/volist}
@@ -98,7 +99,7 @@
 
         $('.j-player-add').on('click',function(){
             arr_len++;
-            var tpl='<div class="layui-form-item" ><label class="layui-form-label">{:lang('website')}：'+arr_len+'</label><div class="layui-input-inline w150"><input type="text" name="domain[site_url][]" class="layui-input" placeholder="{:lang('domain')}" ></div>&nbsp;<div class="layui-input-inline w150"><input type="text" name="domain[site_name][]" class="layui-input" placeholder="{:lang('site_name')}"></div>&nbsp;<div class="layui-input-inline w150"><input type="text" name="domain[site_keywords][]" class="layui-input" placeholder="{:lang('keywords')}" ></div>&nbsp;<div class="layui-input-inline w150"><input type="text" name="domain[site_description][]" class="layui-input" placeholder="{:lang('description')}" ></div>&nbsp;<div class="layui-input-inline w150"><select name="domain[template_dir][]"><option value="no">{:lang('select_template')}.</option>'+template_select+'</select></div><div class="layui-input-inline w150"><input type="text" name="domain[html_dir][]" class="layui-input" placeholder="{:lang('tpl_dir')}" ></div><div class="layui-input-inline w150"><input type="text" name="domain[ads_dir][]" class="layui-input" placeholder="{:lang('ads_dir')}" ></div><div><a href="javascript:void(0)" class="j-editor-remove">{:lang('del')}</a>&nbsp;</div></div>';
+            var tpl='<div class="layui-form-item" ><label class="layui-form-label">{:lang('website')}：'+arr_len+'</label><div class="layui-input-inline w150"><input type="text" name="domain[site_url][]" class="layui-input" placeholder="{:lang('domain')}" ></div>&nbsp;<div class="layui-input-inline w150"><input type="text" name="domain[site_name][]" class="layui-input" placeholder="{:lang('site_name')}"></div>&nbsp;<div class="layui-input-inline w150"><input type="text" name="domain[site_keywords][]" class="layui-input" placeholder="{:lang('keywords')}" ></div>&nbsp;<div class="layui-input-inline w150"><input type="text" name="domain[site_description][]" class="layui-input" placeholder="{:lang('description')}" ></div>&nbsp;<div class="layui-input-inline w150"><select name="domain[template_dir][]"><option value="no">{:lang('select_template')}.</option>'+template_select+'</select></div><div class="layui-input-inline w150"><input type="text" name="domain[html_dir][]" class="layui-input" placeholder="{:lang('tpl_dir')}" ></div><div class="layui-input-inline w150"><input type="text" name="domain[ads_dir][]" class="layui-input" placeholder="{:lang('ads_dir')}" ></div><div class="layui-input-inline w150"><input type="text" name="domain[map_dir][]" class="layui-input" placeholder="{:lang('map_dir')}" ></div><div class="layui-input-inline w150"><select name="domain[mob_template_dir][]"><option value="no">{:lang('admin/system/config/mob_template_dir')}.</option>'+template_select+'</select></div><div class="layui-input-inline w150"><input type="text" name="domain[site_wapurl][]" class="layui-input" placeholder="{:lang('admin/system/config/site_wapurl')}" ></div><div><a href="javascript:void(0)" class="j-editor-remove">{:lang('del')}</a>&nbsp;</div></div>';
             $("#domain_list").append(tpl);
 
             form.render();

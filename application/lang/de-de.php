@@ -1783,11 +1783,12 @@ Hinweis: Wenn sowohl Blacklist als auch Whitelist ausgefüllt sind, werden beide
   'saturday' => 'Samstag',
   'sunday' => 'Domingo',
   'admin/domain/title' => 'Seitengruppen-Verwaltung',
-  'admin/domain/help_tip' => 'Dicas:<br>
+  'admin/domain/help_tip' => 'Hinweise:<br>
                         1. Diese Funktion unterstützt die Anzeige verschiedener Vorlagen und Website-Konfigurationsinformationen unter derselben Datenbank mit verschiedenen Domains im nicht-statischen Modus.<br>
                         2. Die Anzahl der Domain-Seiten ist unbegrenzt.<br>
-                        3. Textimportformat: Domain$Seitenname$Schlüsselwörter$Beschreibung$Vorlage$Verzeichnis$Vorlagenverzeichnis$Werbeverzeichnis. Jede Zeile ist eine Seite. Löschen Sie vorhandene Daten vor dem Import.<br>
-                        4. Wenn ein Kartenverzeichnis festgelegt wurde, muss der Administrator die Nginx-Weiterleitung selbst konfigurieren. Die URL lautet: rss/$Kartenverzeichnis/index.xml.<br>',
+                        3. Textimportformat: Domain$Seitenname$Schlüsselwörter$Beschreibung$Vorlage$Vorlagenverzeichnis$Werbeverzeichnis$Kartenverzeichnis$Mobile Vorlage$Mobile Domain. Jede Zeile ist eine Seite. Löschen Sie vorhandene Daten vor dem Import.<br>
+                        4. Wenn ein Kartenverzeichnis festgelegt wurde, muss der Administrator die Nginx-Weiterleitung selbst konfigurieren. Die URL lautet: rss/$Kartenverzeichnis/index.xml.<br>
+                        5. Bleibt die mobile Vorlage leer, wird für diese Seite keine mobile Vorlage verwendet. Die mobile Domain wirkt nur im Modus „Adaptives Mobiltelefon = Mehrere Domänennamen“: Der Aufruf dieser Domain vom Mobiltelefon nutzt die mobile Vorlage dieser Seite.<br>',
   'admin/website/title' => 'Website-Verwaltung',
   'admin/website/referer' => 'Verweise gesamt',
   'admin/website/referer_month' => 'Monatliche Verweise',

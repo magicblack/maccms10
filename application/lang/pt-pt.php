@@ -1796,8 +1796,9 @@ https://www.baidu.com/123.jpg
   'admin/domain/help_tip' => 'Informações de dica: <br>
                         1, esta função suporta a exibição de diferentes modelos e informações de configuração do site para diferentes domínios no mesmo banco de dados no modo não estático <br>
                         2, número ilimitado de sites de domínio <br>
-                        3, o formato de texto importado é: domínio $ nome do site $ palavra-chave $ descrição $ modelo $ diretório de modelo $ diretório de anúncios$diretório de mapas. Um site por linha. Limpe os dados originais. <br>
-                        3, Se um diretório de mapas for configurado, o administrador precisa configurar o redirecionamento do nginx por conta própria. A URL é: rss/$diretório de mapas/index.xml.',
+                        3, o formato de texto importado é: domínio$nome do site$palavra-chave$descrição$modelo$diretório de modelo$diretório de anúncios$diretório de mapas$modelo móvel$domínio do site móvel. Um site por linha. Limpe os dados originais. <br>
+                        4, Se um diretório de mapas for configurado, o administrador precisa configurar o redirecionamento do nginx por conta própria. A URL é: rss/$diretório de mapas/index.xml. <br>
+                        5, Se o modelo móvel ficar vazio, esse site não utiliza modelo móvel. O domínio do site móvel só tem efeito no modo «Celular responsivo = Domínio múltiplo»: aceder a esse domínio a partir de um telemóvel utiliza o modelo móvel desse site.',
   'admin/website/title' => 'Gerenciamento de sites',
   'admin/website/referer' => 'Total de referências',
   'admin/website/referer_month' => 'Referências mensais',

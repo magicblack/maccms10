@@ -1795,8 +1795,9 @@ Nota: Si se especifican listas negras y blancas, ambas se aplicarán simultánea
   'admin/domain/help_tip' => 'Información de Ayuda:<br>
                         1. Esta función admite la visualización de diferentes plantillas e información de configuración del sitio web bajo diferentes nombres de dominio en el mismo entorno de base de datos no estático.<br>
                         2. No hay límite en la cantidad de sitios web de dominio.<br>
-                        3. El formato de importación de texto es: dominio$nombre del sitio web$palabras clave$descripción$template$directorio de la plantilla$directorio de anuncios$directorio de mapas. Cada línea representa un sitio web. Borrar los datos existentes.<br>
-                        4. Si se ha configurado un directorio de mapas, el administrador debe configurar la redirección de nginx por sí mismo. La URL es: rss/$directorio de mapas/index.xml.',
+                        3. El formato de importación de texto es: dominio$nombre del sitio web$palabras clave$descripción$plantilla$directorio de la plantilla$directorio de anuncios$directorio de mapas$plantilla móvil$dominio del sitio móvil. Cada línea representa un sitio web. Borrar los datos existentes.<br>
+                        4. Si se ha configurado un directorio de mapas, el administrador debe configurar la redirección de nginx por sí mismo. La URL es: rss/$directorio de mapas/index.xml.<br>
+                        5. Si la plantilla móvil se deja vacía, ese sitio no utilizará plantilla móvil. El dominio del sitio móvil solo surte efecto en el modo «Adaptación móvil = Múltiples dominios»: al visitar ese dominio desde un móvil se utiliza la plantilla móvil de ese sitio.',
   'admin/website/title' => 'Gestión de Sitios Web',
   'admin/website/referer' => 'Tráfico Total',
   'admin/website/referer_month' => 'Tráfico Mensual',
