@@ -128,6 +128,7 @@ return array (
   'select_opt' => 'Selecionar operação',
   'select_level' => 'Selecionar recomendação',
   'select_type' => 'Selecionar categoria',
+  'select_type_must' => 'Selecione uma categoria antes de submeter',
   'select_status' => 'Selecionar status',
   'select_pic' => 'Selecionar imagem',
   'select_sort' => 'Selecionar classificação',

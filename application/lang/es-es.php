@@ -128,6 +128,7 @@ return array (
   'select_opt' => 'Seleccionar Operación',
   'select_level' => 'Seleccionar Nivel',
   'select_type' => 'Seleccionar Tipo',
+  'select_type_must' => 'Seleccione un tipo antes de enviar',
   'select_status' => 'Seleccionar Estado',
   'select_pic' => 'Seleccionar Imagen',
   'select_sort' => 'Seleccionar Orden',

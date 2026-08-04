@@ -128,6 +128,7 @@ return array (
   'select_opt' => '選擇操作',
   'select_level' => '選擇推薦',
   'select_type' => '選擇分類',
+  'select_type_must' => '請先選擇分類再提交',
   'select_status' => '選擇狀態',
   'select_pic' => '選擇圖片',
   'select_sort' => '選擇排序',

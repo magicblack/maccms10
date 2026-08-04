@@ -128,6 +128,7 @@ return array (
   'select_opt' => '작업 선택',
   'select_level' => '추천 선택',
   'select_type' => '카테고리 선택',
+  'select_type_must' => '카테고리를 선택한 후 제출하세요',
   'select_status' => '상태 선택',
   'select_pic' => '사진 선택',
   'select_sort' => '정렬 선택',

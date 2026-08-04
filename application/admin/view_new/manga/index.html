@@ -12,7 +12,7 @@
                     <select name="type">
                         <option value="">{:lang('select_type')}</option>
                         {volist name="type_tree" id="vo"}
-                        {if condition="$vo.type_mid eq 3"}
+                        {if condition="$vo.type_mid eq 12"}
                         <option value="{$vo.type_id}" {if condition="$param['type'] eq $vo.type_id"}selected {/if}>{$vo.type_name}</option>
                         {volist name="vo.child" id="ch"}
                         <option value="{$ch.type_id}" {if condition="$param['type'] eq $ch.type_id"}selected {/if}>&nbsp;&nbsp;&nbsp;&nbsp;├&nbsp;{$ch.type_name}</option>

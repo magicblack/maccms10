@@ -128,6 +128,7 @@ return array (
   'select_opt' => '操作を選択',
   'select_level' => '推薦を選択',
   'select_type' => 'カテゴリを選択',
+  'select_type_must' => 'カテゴリを選択してから送信してください',
   'select_status' => '状態を選択',
   'select_pic' => '画像を選択',
   'select_sort' => '並べ替えを選択',

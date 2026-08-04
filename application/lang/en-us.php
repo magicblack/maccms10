@@ -128,6 +128,7 @@ return array (
   'select_opt' => 'Select Operation',
   'select_level' => 'Select Recommendation',
   'select_type' => 'Select Type',
+  'select_type_must' => 'Please select a type before submitting',
   'select_status' => 'Select Status',
   'select_pic' => 'Select Picture',
   'select_sort' => 'Select Sort',

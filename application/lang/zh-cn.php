@@ -136,6 +136,7 @@ return [
     'select_opt'=>'选择操作',
     'select_level'=>'选择推荐',
     'select_type'=>'选择分类',
+    'select_type_must'=>'请选择分类提交',
     'select_status'=>'选择状态',
     'select_pic'=>'选择图片',
     'select_sort'=>'选择排序',

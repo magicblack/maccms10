@@ -128,6 +128,7 @@ return array (
   'select_opt' => 'Vorgang auswählen',
   'select_level' => 'Empfehlungen auswählen',
   'select_type' => 'Kategorie auswählen',
+  'select_type_must' => 'Bitte vor dem Absenden eine Kategorie auswählen',
   'select_status' => 'Status auswählen',
   'select_pic' => 'Bild auswählen',
   'select_sort' => 'Sortierung auswählen',

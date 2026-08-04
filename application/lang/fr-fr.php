@@ -128,6 +128,7 @@ return array (
   'select_opt' => 'Sélectionner une opération',
   'select_level' => 'Sélectionner le niveau',
   'select_type' => 'Sélectionner le type',
+  'select_type_must' => 'Veuillez sélectionner un type avant de soumettre',
   'select_status' => 'Sélectionner le statut',
   'select_pic' => 'Sélectionner une image',
   'select_sort' => 'Sélectionner un tri',

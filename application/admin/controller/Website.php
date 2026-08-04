@@ -262,7 +262,19 @@ class Website extends Base
         $start = $param['start'];
         $end = $param['end'];
         if ($col == 'type_id' && $val==''){
-            return $this->error("请选择分类提交");
+            return $this->error(lang('select_type_must'));
+        }
+        // 与 batch() 同一套白名单：目标分类必须存在且属于网址模块(type_mid=11)。
+        // field() 同样是一次改整批数据的入口，表单可被直接构造，写进不存在或跨模块的
+        // type_id 后前台按分类取数会整批丢失。取一次缓存供下面复用。
+        $type_pid = 0;
+        if($col == 'type_id'){
+            $type_list = model('Type')->getCache();
+            $type_id = intval($val);
+            if($type_id < 1 || !isset($type_list[$type_id]) || intval($type_list[$type_id]['type_mid']) != 11){
+                return $this->error(lang('select_type_must'));
+            }
+            $type_pid = intval($type_list[$type_id]['type_pid']);
         }
 
         if(!empty($ids) && in_array($col,['website_status','website_lock','website_level','website_hits','type_id'])){
@@ -272,9 +284,7 @@ class Website extends Base
             if(empty($start)) {
                 $update[$col] = $val;
                 if($col == 'type_id'){
-                    $type_list = model('Type')->getCache();
-                    $id1 = intval($type_list[$val]['type_pid']);
-                    $update['type_id_1'] = $id1;
+                    $update['type_id_1'] = $type_pid;
                 }
                 $res = model('Website')->fieldData($where, $update);
             }
