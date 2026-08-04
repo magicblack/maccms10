@@ -14,7 +14,7 @@
              &nbsp;/&nbsp;
              {if $vo['vod_class']}{$vo['vod_class']}{else}<span data-lang='string_no_have'>暂无</span>{/if}
          </p>
-	     <p><span class="vodlist_sub"> <span data-lang="string_vod_status">状态：：</span> {if condition="$vo.vod_remarks neq ''"}{$vo.vod_remarks}{elseif condition="$vo.vod_serial gt 0"} <span data-lang="string_vod_di">第</span>{$vo.vod_serial} <span data-lang="string_vod_ji">集</span> {else /} <span data-lang="string_vod_close">已完结</span> {/if}</span></p>
+	     <p><span class="vodlist_sub">{if condition="$vo.vod_remarks neq ''"}{$vo.vod_remarks}{elseif condition="$vo.vod_serial gt 0"} <span data-lang="string_vod_di">第</span>{$vo.vod_serial} <span data-lang="string_vod_ji">集</span> {else /} <span data-lang="string_vod_close">已完结</span> {/if}</span></p>
 	     {/if}
     </div>
     </a>  		

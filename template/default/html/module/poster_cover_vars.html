@@ -1,0 +1,62 @@
+{php}
+if (!isset($tplconfig) || !is_array($tplconfig)) {
+    $tplconfig = config('mctheme') ?: array('theme' => array());
+}
+$theme = isset($tplconfig['theme']) && is_array($tplconfig['theme']) ? $tplconfig['theme'] : array();
+
+$ratio = isset($theme['cover_ratio']) && is_array($theme['cover_ratio']) ? $theme['cover_ratio'] : array();
+$poster_h_w = isset($ratio['h_w']) ? (int) $ratio['h_w'] : 69;
+$poster_h_h = isset($ratio['h_h']) ? (int) $ratio['h_h'] : 40;
+$poster_v_w = isset($ratio['v_w']) ? (int) $ratio['v_w'] : 20;
+$poster_v_h = isset($ratio['v_h']) ? (int) $ratio['v_h'] : 29;
+if ($poster_h_w < 1) {
+    $poster_h_w = 69;
+}
+if ($poster_h_h < 1) {
+    $poster_h_h = 40;
+}
+if ($poster_v_w < 1) {
+    $poster_v_w = 20;
+}
+if ($poster_v_h < 1) {
+    $poster_v_h = 29;
+}
+if ($poster_h_w > 999) {
+    $poster_h_w = 999;
+}
+if ($poster_h_h > 999) {
+    $poster_h_h = 999;
+}
+if ($poster_v_w > 999) {
+    $poster_v_w = 999;
+}
+if ($poster_v_h > 999) {
+    $poster_v_h = 999;
+}
+
+$mac_poster_ratio_style = '<style id="mac-poster-ratio-vars">:root{'
+    . '--tpl-poster-h-ratio:' . $poster_h_w . '/' . $poster_h_h . ';'
+    . '--tpl-poster-h-pad:calc(100%*' . $poster_h_h . '/' . $poster_h_w . ');'
+    . '--tpl-poster-v-ratio:' . $poster_v_w . '/' . $poster_v_h . ';'
+    . '--tpl-poster-v-pad:calc(100%*' . $poster_v_h . '/' . $poster_v_w . ');'
+    . '}</style>';
+
+$listCover = isset($theme['list_cover']) && is_array($theme['list_cover']) ? $theme['list_cover'] : array();
+$liveDefaultRaw = 'v';
+if (isset($listCover['live_default'])) {
+    $liveDefaultRaw = (string) $listCover['live_default'];
+} elseif (isset($listCover['live']) && is_array($listCover['live'])) {
+    foreach ($listCover['live'] as $liveRow) {
+        if (!is_array($liveRow)) {
+            continue;
+        }
+        $liveCover = isset($liveRow['cover']) ? (string) $liveRow['cover'] : '';
+        if ($liveCover === 'h' || $liveCover === 'v') {
+            $liveDefaultRaw = $liveCover;
+            break;
+        }
+    }
+}
+$mac_live_cover_default = ($liveDefaultRaw === 'h') ? 'h' : 'v';
+$mac_live_poster_class = ($mac_live_cover_default === 'h') ? 'mac-poster--h' : 'mac-poster--v';
+{/php}

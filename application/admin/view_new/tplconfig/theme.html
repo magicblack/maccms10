@@ -73,7 +73,7 @@ $hotvod_tabs_list = (!empty($tplconfig['theme']['hotvod']['tabs']) && is_array($
                                     </div>
                                     <div class="layui-form-item">
                                         <label class="layui-form-label"></label>
-                                        <div class="layui-input-block" style="margin-left:110px;">
+                                        <div class="layui-input-block">
                                             <div class="layui-form-mid layui-word-aux" style="margin-left:0;">{:lang('admin/tpl/config/logo_head_lottie_tip')}</div>
                                         </div>
                                     </div><br>
@@ -115,7 +115,7 @@ $hotvod_tabs_list = (!empty($tplconfig['theme']['hotvod']['tabs']) && is_array($
                                     </div>
                                     <div class="layui-form-item">
                                         <label class="layui-form-label"></label>
-                                        <div class="layui-input-block" style="margin-left:110px;">
+                                        <div class="layui-input-block">
                                             <div class="layui-form-mid layui-word-aux" style="margin-left:0;">{:lang('admin/tpl/config/logo_foot_lottie_tip')}</div>
                                         </div>
                                     </div><br>
@@ -1575,8 +1575,30 @@ $hotvod_tabs_list = (!empty($tplconfig['theme']['hotvod']['tabs']) && is_array($
                                     <div class="layui-form-item">
                                         <label class="layui-form-label">说明</label>
                                         <div class="layui-input-block">
-                                            <div class="layui-form-mid layui-word-aux vod-list-cover-tip">视频按分类 ID 设置分类页、筛选列表等处的封面横竖版；子分类会沿父分类链继承。漫画与小说/资讯在下方单独设置；未配置时默认竖版。</div>
+                                            <div class="layui-form-mid layui-word-aux vod-list-cover-tip">{:lang('admin/tpl/config/list_cover_desc_tip')}</div>
                                         </div>
+                                    </div>
+                                    <div class="layui-form-item">
+                                        <label class="layui-form-label">{:lang('admin/tpl/config/cover_ratio_label')}</label>
+                                        <div class="layui-input-inline w90">
+                                            <input type="number" min="1" max="999" name="theme[cover_ratio][h_w]" value="{$posterRatioH_W}" class="layui-input" placeholder="{:lang('admin/tpl/config/cover_ratio_h_w_ph')}">
+                                        </div>
+                                        <div class="layui-form-mid">:</div>
+                                        <div class="layui-input-inline w90">
+                                            <input type="number" min="1" max="999" name="theme[cover_ratio][h_h]" value="{$posterRatioH_H}" class="layui-input" placeholder="{:lang('admin/tpl/config/cover_ratio_h_h_ph')}">
+                                        </div>
+                                        <div class="layui-form-mid layui-word-aux">{:lang('admin/tpl/config/cover_ratio_h_tip')}</div>
+                                    </div>
+                                    <div class="layui-form-item">
+                                        <label class="layui-form-label"></label>
+                                        <div class="layui-input-inline w90">
+                                            <input type="number" min="1" max="999" name="theme[cover_ratio][v_w]" value="{$posterRatioV_W}" class="layui-input" placeholder="{:lang('admin/tpl/config/cover_ratio_v_w_ph')}">
+                                        </div>
+                                        <div class="layui-form-mid">:</div>
+                                        <div class="layui-input-inline w90">
+                                            <input type="number" min="1" max="999" name="theme[cover_ratio][v_h]" value="{$posterRatioV_H}" class="layui-input" placeholder="{:lang('admin/tpl/config/cover_ratio_v_h_ph')}">
+                                        </div>
+                                        <div class="layui-form-mid layui-word-aux">{:lang('admin/tpl/config/cover_ratio_v_tip')}</div>
                                     </div>
                                     <div class="layui-form-item">
                                         <label class="layui-form-label">连载角标</label>
@@ -1594,20 +1616,12 @@ $hotvod_tabs_list = (!empty($tplconfig['theme']['hotvod']['tabs']) && is_array($
                                         </div>
                                         <div class="layui-form-mid layui-word-aux">关闭后，全站视频/漫画/小说封面卡片标题下方不再显示副标题（如主演、连载备注等）</div>
                                     </div>
-                                    {php}
-                                    $mangaListCover = isset($tplconfig['theme']['list_cover']['manga'])
-                                        ? (string)$tplconfig['theme']['list_cover']['manga']
-                                        : 'v';
-                                    $artListCover = isset($tplconfig['theme']['list_cover']['art'])
-                                        ? (string)$tplconfig['theme']['list_cover']['art']
-                                        : 'v';
-                                    {/php}
                                     <div class="layui-form-item">
                                         <label class="layui-form-label">漫画列表</label>
                                         <div class="layui-input-inline w130">
                                             <select name="theme[list_cover][manga]" class="layui-input">
-                                                <option value="v" {if condition="$mangaListCover neq 'h'"}selected{/if}>竖版封面</option>
-                                                <option value="h" {if condition="$mangaListCover eq 'h'"}selected{/if}>横版封面</option>
+                                                <option value="v" {if condition="$mangaListCover neq 'h'"}selected{/if}>{:lang('admin/tpl/config/cover_orient_v')}</option>
+                                                <option value="h" {if condition="$mangaListCover eq 'h'"}selected{/if}>{:lang('admin/tpl/config/cover_orient_h')}</option>
                                             </select>
                                         </div>
                                         <div class="layui-form-mid layui-word-aux">用于漫画分类页与相关列表模块。</div>
@@ -1616,8 +1630,8 @@ $hotvod_tabs_list = (!empty($tplconfig['theme']['hotvod']['tabs']) && is_array($
                                         <label class="layui-form-label">小说/资讯列表</label>
                                         <div class="layui-input-inline w130">
                                             <select name="theme[list_cover][art]" class="layui-input">
-                                                <option value="v" {if condition="$artListCover neq 'h'"}selected{/if}>竖版封面</option>
-                                                <option value="h" {if condition="$artListCover eq 'h'"}selected{/if}>横版封面</option>
+                                                <option value="v" {if condition="$artListCover neq 'h'"}selected{/if}>{:lang('admin/tpl/config/cover_orient_v')}</option>
+                                                <option value="h" {if condition="$artListCover eq 'h'"}selected{/if}>{:lang('admin/tpl/config/cover_orient_h')}</option>
                                             </select>
                                         </div>
                                         <div class="layui-form-mid layui-word-aux">用于小说/资讯分类页与相关列表模块。</div>
@@ -1641,8 +1655,8 @@ $hotvod_tabs_list = (!empty($tplconfig['theme']['hotvod']['tabs']) && is_array($
                                             </div>
                                             <div class="layui-input-inline w130">
                                                 <select name="theme[list_cover][vod][{$lk-1}][cover]" class="layui-input">
-                                                    <option value="v" {if condition="empty($lc.cover) || $lc.cover neq 'h'"}selected{/if}>竖版封面</option>
-                                                    <option value="h" {if condition="$lc.cover eq 'h'"}selected{/if}>横版封面</option>
+                                                    <option value="v" {if condition="empty($lc.cover) || $lc.cover neq 'h'"}selected{/if}>{:lang('admin/tpl/config/cover_orient_v')}</option>
+                                                    <option value="h" {if condition="$lc.cover eq 'h'"}selected{/if}>{:lang('admin/tpl/config/cover_orient_h')}</option>
                                                 </select>
                                             </div>
                                             <div class="layui-input-inline w90"><button type="button" class="layui-btn layui-btn-danger layui-btn-sm vod-list-cover-remove">删除</button></div>
@@ -1657,8 +1671,8 @@ $hotvod_tabs_list = (!empty($tplconfig['theme']['hotvod']['tabs']) && is_array($
                                             </div>
                                             <div class="layui-input-inline w130">
                                                 <select name="theme[list_cover][vod][0][cover]" class="layui-input">
-                                                    <option value="v" selected>竖版封面</option>
-                                                    <option value="h">横版封面</option>
+                                                    <option value="v" selected>{:lang('admin/tpl/config/cover_orient_v')}</option>
+                                                    <option value="h">{:lang('admin/tpl/config/cover_orient_h')}</option>
                                                 </select>
                                             </div>
                                             <div class="layui-input-inline w90"><button type="button" class="layui-btn layui-btn-danger layui-btn-sm vod-list-cover-remove">删除</button></div>
@@ -1670,6 +1684,16 @@ $hotvod_tabs_list = (!empty($tplconfig['theme']['hotvod']['tabs']) && is_array($
                                         <label class="layui-form-label"></label>
                                         <div class="layui-input-inline w160"><button type="button" class="layui-btn layui-btn-sm" id="vod-list-cover-add">新增分类封面</button></div>
                                         <div class="layui-form-mid layui-word-aux">最多 40 条；仅填写有效分类 ID 的行会保存。仅按当前分类（含父分类继承）生效。</div>
+                                    </div>
+                                    <div class="layui-form-item">
+                                        <label class="layui-form-label">{:lang('admin/tpl/config/live_cover_dir_label')}</label>
+                                        <div class="layui-input-inline w130">
+                                            <select name="theme[list_cover][live_default]" class="layui-input">
+                                                <option value="v" {if condition="$liveListCoverDefault neq 'h'"}selected{/if}>{:lang('admin/tpl/config/cover_orient_v')}</option>
+                                                <option value="h" {if condition="$liveListCoverDefault eq 'h'"}selected{/if}>{:lang('admin/tpl/config/cover_orient_h')}</option>
+                                            </select>
+                                        </div>
+                                        <div class="layui-form-mid layui-word-aux">{:lang('admin/tpl/config/live_cover_dir_tip')}</div>
                                     </div>
                                 </div>
                             </fieldset>
@@ -2704,16 +2728,23 @@ $hotvod_tabs_list = (!empty($tplconfig['theme']['hotvod']['tabs']) && is_array($
 </script>
 <script type="text/javascript" src="__STATIC__/js/theme_config_ux.js?{$MAC_VERSION}"></script>
 <script type="text/javascript">
-    layui.use(['form', 'upload', 'layer'], function () {
+    layui.use(['form', 'upload', 'layer', 'element'], function () {
             // 操作对象
             var form = layui.form
                 , layer = layui.layer
                 , upload = layui.upload
+                , element = layui.element
                 , $ = layui.$ || window.jQuery;
             var ux = window.MacThemeConfigUx;
             if (ux) {
                 ux.bindTypePickerEvents(layer);
+                ux.syncFormLabelColumn();
             }
+            element.on('tab(tb1)', function () {
+                if (ux && ux.syncFormLabelColumn) {
+                    ux.syncFormLabelColumn();
+                }
+            });
             function syncPickerNamesInItem($item, pattern, replacement) {
                 $item.find('.type-picker-value').each(function () {
                     var $inp = $(this);

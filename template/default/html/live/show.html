@@ -2,12 +2,12 @@
 <html>
 <head>
     {include file="public/include"}
-    <link rel="stylesheet" type="text/css" href="{$maccms.path_tpl}/asset/css/live-show.css?v=202604171" />
+    <link rel="stylesheet" type="text/css" href="{$maccms.path_tpl}/asset/css/live-show.css?v=202608025" />
 </head>
 <body id="liveShowPage" class="live-show-body">
     {include file="public/th" /}
     {include file="public/head" /}
-    <div id="live_show_page" class="live-show" data-page-size="48" data-play-url-pattern="{:mac_url('live/play',['id'=>'__ID__'])}">
+    <div id="live_show_page" class="live-show" data-page-size="48" data-live-cover-default="{$mac_live_cover_default|default='v'}" data-play-url-pattern="{:mac_url('live/play',['id'=>'__ID__'])}">
         <main class="live-show__main">
             <div class="member-wrap">
                 <div class="container">
@@ -36,7 +36,7 @@
                 </div>
             </div>
         </main>
-        <script type="text/javascript" src="{$maccms.path_tpl}/asset/js/live-show.js?v=202604171"></script>
+        <script type="text/javascript" src="{$maccms.path_tpl}/asset/js/live-show.js?v=202608025"></script>
     </div>
     {include file="public/foot"}
 </body>

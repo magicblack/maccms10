@@ -22,6 +22,10 @@ $rankHid = $theme['rank']['hid'] ?? '';
 $index_rank_type_ids = !empty($rankHid) ? $rankHid : 'parent';
 
 $index_hotvod_tabs = mac_theme_index_hotvod_tabs($theme);
+foreach ($index_hotvod_tabs as $hotvodIdx => $hotvodTab) {
+    $index_hotvod_tabs[$hotvodIdx]['cover'] = mac_tpl_vod_type_cover((int) ($hotvodTab['id'] ?? 0));
+}
+$index_hotvod_default_poster_class = 'mac-poster--v';
 
 $index_actor_ids = (string) (($theme['actor'] ?? [])['id'] ?? '');
 
@@ -148,10 +152,12 @@ if (is_array($typeListCache)) {
     }
 }
 foreach ($rankTypeList as $typeInfo) {
+    $rankTypeId = (int) ($typeInfo['type_id'] ?? 0);
     $index_rank_types[] = [
-        'type_id' => (int) ($typeInfo['type_id'] ?? 0),
+        'type_id' => $rankTypeId,
         'type_name' => (string) ($typeInfo['type_name'] ?? ''),
         'type_link' => mac_url_type($typeInfo),
+        'cover' => mac_tpl_vod_type_cover($rankTypeId),
     ];
 }
 

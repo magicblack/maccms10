@@ -20,6 +20,58 @@
     --tc-font: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", system-ui, sans-serif;
 }
 
+/* —— 表单项：label 列宽随文案自适应（--tc-form-label-w 由 JS 按最长 label 计算）—— */
+.theme-config-ux .layui-form-item:not(.js-sortable-item) {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    column-gap: 12px;
+    row-gap: 6px;
+}
+
+.theme-config-ux .layui-form-item:not(.js-sortable-item)::after {
+    display: none;
+}
+
+.theme-config-ux .layui-form-item:not(.js-sortable-item) > .layui-form-label {
+    float: none;
+    flex: 0 0 var(--tc-form-label-w, auto);
+    width: var(--tc-form-label-w, auto);
+    max-width: 46%;
+    box-sizing: border-box;
+    padding: 9px 0;
+    text-align: right;
+    white-space: nowrap;
+    line-height: 20px;
+}
+
+.theme-config-ux .layui-form-item:not(.js-sortable-item) > .layui-form-label:empty {
+    flex-basis: var(--tc-form-label-w, 0);
+    width: var(--tc-form-label-w, 0);
+    min-width: 0;
+    padding: 0;
+    overflow: hidden;
+}
+
+.theme-config-ux .layui-form-item:not(.js-sortable-item) > .layui-input-block {
+    float: none;
+    margin-left: 0 !important;
+    flex: 1 1 200px;
+    min-width: min(100%, 200px);
+    min-height: 36px;
+}
+
+.theme-config-ux .layui-form-item:not(.js-sortable-item) > .layui-input-inline,
+.theme-config-ux .layui-form-item:not(.js-sortable-item) > .layui-form-mid {
+    float: none;
+    flex: 0 0 auto;
+}
+
+.theme-config-ux .layui-form-item:not(.js-sortable-item) > .layui-form-mid.layui-word-aux {
+    flex: 1 1 200px;
+    min-width: min(100%, 200px);
+}
+
 .theme-config-ux .theme-list-panel {
     margin-bottom: 16px;
 }
@@ -857,4 +909,23 @@ body.theme-sortable-active .sortable-handle--rail::before {
 .theme-config-ux .type-picker-field--multi .type-picker-trigger {
     min-width: 200px;
     max-width: 400px;
+}
+
+/* 分类封面配置：layui 下拉层不被下一行卡片遮挡 */
+.theme-config-ux fieldset.vod-list-cover-typography .layui-field-box,
+.theme-config-ux fieldset.vod-list-cover-typography .theme-list-panel,
+.theme-config-ux fieldset.vod-list-cover-typography .js-sortable-list,
+.theme-config-ux fieldset.vod-list-cover-typography .js-sortable-list .js-sortable-item,
+.theme-config-ux fieldset.vod-list-cover-typography .js-sortable-list .js-sortable-item .layui-input-inline {
+    overflow: visible;
+}
+
+/* 仅抬 dl 的 z-index 无效：下拉在父行 stacking context 内，需抬升整行 */
+.theme-config-ux .js-sortable-list .js-sortable-item:has(.layui-form-selected),
+.theme-config-ux .js-sortable-list .js-sortable-item.tc-select-open {
+    z-index: 100;
+}
+
+.theme-config-ux fieldset.vod-list-cover-typography .layui-form-select dl {
+    z-index: 1001;
 }

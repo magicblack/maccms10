@@ -2,9 +2,12 @@
 {include file="ads/ads_playlist"}
 {/if}
 {maccms:vod num="6" type="current" paging="false" order="desc" by="rnd"}
+{php}$rec_thumb_orient = (mac_tpl_vod_type_cover(isset($vo['type_id']) ? (int) $vo['type_id'] : 0) === 'h') ? 'h' : 'v';$rec_img_class = 'play_vlist_img' . ($rec_thumb_orient === 'h' ? ' play_vlist_img--h' : '');{/php}
 <div class="play_vlist cblock play_vlist--recommend">
      <a href="{:mac_url_vod_detail($vo)}" title="{$vo.vod_name}">
-		<div class="play_vlist_thumb lazyload" data-original="{:mac_url_img($vo.vod_pic)}"></div>
+		<div class="{$rec_img_class}">
+			<div class="play_vlist_thumb play_vlist_thumb--{$rec_thumb_orient} lazyload" data-original="{:mac_url_img($vo.vod_pic)}"></div>
+		</div>
 		<div class="play_vlist_text">
 			<p class="play_vlist_title">{$vo.vod_name}</p>
 			{if condition="($vo.vod_class neq '') || ($vo.vod_year neq '') || ($vo.vod_area neq '')"}

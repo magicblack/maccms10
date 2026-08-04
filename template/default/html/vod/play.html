@@ -6,6 +6,7 @@
     <link rel="stylesheet" type="text/css" href="{$maccms.path_tpl}/asset/css/vod-play.css?v=202607102" />
     {if condition="($obj.vod_copyright neq 1 || $GLOBALS['config']['app']['copyright_status'] neq 1) && !$obj.vod_lock && $popedom.code elt 1 && ($obj['vod_play_list'][$param['sid']]['player_info']['from'] eq 'dplayer' || $obj['vod_play_list'][$param['sid']]['player_info']['from'] eq 'videojs')"}
     <link rel="stylesheet" type="text/css" href="{$maccms.path_tpl}/asset/css/vod-play-social.css?v=202604271" />
+    <link rel="stylesheet" type="text/css" href="{$maccms.path_tpl}/asset/css/vod-play-fullscreen.css?v=202607304" />
     <link rel="stylesheet" type="text/css" href="{$maccms.path_tpl}/asset/css/vod-play-progress.css?v=202606246" />
     {/if}
     {if condition="($obj.vod_copyright neq 1 || $GLOBALS['config']['app']['copyright_status'] neq 1) && !$obj.vod_lock && $popedom.code elt 1"}
@@ -189,8 +190,11 @@
                                 <span class="fenlei">{$obj.type.type_name}</span>
                             </div>
                             <div class="play_infobox">
+                                {php}$now_thumb_orient = (mac_tpl_vod_type_cover(isset($obj['type_id']) ? (int) $obj['type_id'] : 0) === 'h') ? 'h' : 'v';$now_img_class = 'play_vlist_img' . ($now_thumb_orient === 'h' ? ' play_vlist_img--h' : '');{/php}
                                 <div class="play_vlist cblock">
-                                    <div class="play_vlist_thumb vnow lazyload" data-original="{:mac_url_img($obj.vod_pic)}"></div>
+                                    <div class="{$now_img_class}">
+                                        <div class="play_vlist_thumb play_vlist_thumb--{$now_thumb_orient} vnow lazyload" data-original="{:mac_url_img($obj.vod_pic)}"></div>
+                                    </div>
                                     <div class="play_vlist_text vnow">
                                         <p class="play_vlist_title">{$obj.vod_name}</p>
                                         <p class="play_vlist_now">{if condition="$obj.vod_copyright eq 1 && $GLOBALS['config']['app']['copyright_status'] eq 1 "}{else}<a class="pull_right" href="#bofy"><i class="iconfont">&#xe62a;</i>&nbsp; <span data-lang="string_play_qhxl">切换线路</span> </a>{/if}{$obj['vod_play_list'][$param['sid']]['urls'][$param['nid']]['name']}</p>
@@ -356,9 +360,7 @@
                         {/if}
                     <div class="pannel clearfix pannel--vod-related">
                         <div class="pannel_head clearfix">
-                            <h3 class="title pannel_head__related-title">
-                                <span data-lang="vod_like_watch">喜欢看</span><span class="tj-title">{$obj.vod_name}</span><span data-lang="vod_also_like">的人也喜欢</span>
-                            </h3>
+                            <h3 class="title pannel_head__related-title" data-lang="string_related_recommend">相关推荐</h3>
                         </div>
                         <div id="js-play-like-groups" class="mac-vod-grouped-sections" data-vod-id="{$obj.vod_id}" data-type-id="{$obj.type_id}">
                             <div class="mac-vod-grouped-skeleton home-skeleton-card"><div class="thumb"></div><div class="line w90"></div><div class="line w70"></div></div>
@@ -464,6 +466,7 @@
         {if condition="($obj.vod_copyright neq 1 || $GLOBALS['config']['app']['copyright_status'] neq 1) && !$obj.vod_lock && $popedom.code elt 1 && ($obj['vod_play_list'][$param['sid']]['player_info']['from'] eq 'dplayer' || $obj['vod_play_list'][$param['sid']]['player_info']['from'] eq 'videojs')"}
         <script defer src="{$maccms.path_tpl}/asset/js/vod-play-social.js?v=202604261830"></script>
         <script defer src="{$maccms.path_tpl}/asset/js/vod-play-progress.js?v=202606246"></script>
+        <script defer src="{$maccms.path_tpl}/asset/js/vod-play-fullscreen.js?v=202607303"></script>
         {/if}
         {if condition="($obj.vod_copyright neq 1 || $GLOBALS['config']['app']['copyright_status'] neq 1) && !$obj.vod_lock && $popedom.code elt 1"}
         <script defer src="{$maccms.path_tpl}/asset/js/vod-play-failover.js?v=202607183"></script>

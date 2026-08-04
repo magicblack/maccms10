@@ -1,4 +1,6 @@
-<div class="rank_info">
+<!-- 排行榜第 2-N 名与第 1 名统一 rank_box_all 缩略图，便于横竖版封面比例对齐 -->
+{php}$rank_col_cover = mac_tpl_vod_type_cover((int) $vo['type_id']);{/php}
+<div class="rank_info{if condition="$rank_col_cover eq 'h'"} rank_info--h{else /} rank_info--v{/if}">
     <div class="list_info">
         <div class="pannel_head clearfix">
             <h3 class="title">
@@ -6,21 +8,8 @@
             </h3>
         </div>
         <ul class="part_rows">
-            {maccms:vod num="1" type="'.$vo['type_id'].'" order="desc" by="'.($tplconfig['theme']['rank']['hby'] == 'week' ? 'hits_week' : ($tplconfig['theme']['rank']['hby'] == 'month' ? 'hits_month' : 'hits')).'"} {include file="widget/rank_box_all"} {/maccms:vod}
-            {maccms:vod num="'.(max(0, (int)($tplconfig['theme']['rank']['num'] ?? 5) - 1)).'" type="'.$vo['type_id'].'" start="2" order="desc" by="'.($tplconfig['theme']['rank']['hby'] == 'week' ? 'hits_week' : ($tplconfig['theme']['rank']['hby'] == 'month' ? 'hits_month' : 'hits')).'"}
-            <li class="part_eone">
-                {if condition="$mac_vod_playlink eq 1"}
-                <a href="{:mac_url_vod_play($vo,['sid'=>$vo.sid,'nid'=>1])}">
-                {else /}
-                <a href="{:mac_url_vod_detail($vo)}">
-                {/if}
-    				<span class="part_nums part_num{$key+1}">{$key+1}</span>
-                    <span class="text_muted pull_right renqi">
-                        {$vo.vod_score}<span data-lang="string_fen">分</span>
-                    </span>
-                    {$vo.vod_name}
-                </a>
-            </li>
+            {maccms:vod num="'.(int)($tplconfig['theme']['rank']['num'] ?? 5).'" type="'.$vo['type_id'].'" order="desc" by="'.($tplconfig['theme']['rank']['hby'] == 'week' ? 'hits_week' : ($tplconfig['theme']['rank']['hby'] == 'month' ? 'hits_month' : 'hits')).'"}
+            {include file="widget/rank_box_all"}
             {/maccms:vod}
         </ul>
     </div>

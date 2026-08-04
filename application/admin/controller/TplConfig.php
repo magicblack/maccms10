@@ -93,6 +93,33 @@ class TplConfig extends Base
             if (isset($tplconfig['art']['cover'])) {
                 unset($tplconfig['art']['cover']);
             }
+            $ratioIn = isset($tplconfig['cover_ratio']) && is_array($tplconfig['cover_ratio'])
+                ? $tplconfig['cover_ratio'] : array();
+            $ratioDefaults = array('h_w' => 69, 'h_h' => 40, 'v_w' => 20, 'v_h' => 29);
+            $ratioOut = array();
+            foreach ($ratioDefaults as $ratioKey => $ratioDefault) {
+                $raw = isset($ratioIn[$ratioKey]) ? $ratioIn[$ratioKey] : $ratioDefault;
+                if ($raw === '' || $raw === null) {
+                    $raw = $ratioDefault;
+                }
+                $ratioOut[$ratioKey] = max(1, min(999, (int) $raw));
+            }
+            $tplconfig['cover_ratio'] = $ratioOut;
+            $listCoverIn = isset($tplconfig['list_cover']) && is_array($tplconfig['list_cover'])
+                ? $tplconfig['list_cover'] : array();
+            if (!isset($listCoverIn['live']) || !is_array($listCoverIn['live'])) {
+                $oldTheme = isset($GLOBALS['mctheme']['theme']) && is_array($GLOBALS['mctheme']['theme'])
+                    ? $GLOBALS['mctheme']['theme'] : array();
+                $oldListCover = isset($oldTheme['list_cover']) && is_array($oldTheme['list_cover'])
+                    ? $oldTheme['list_cover'] : array();
+                if (isset($oldListCover['live']) && is_array($oldListCover['live'])) {
+                    $listCoverIn['live'] = $oldListCover['live'];
+                }
+            }
+            $tplconfig['list_cover']['live_default'] = $this->resolveLiveListCoverDefault($listCoverIn);
+            if (isset($tplconfig['list_cover']['live'])) {
+                unset($tplconfig['list_cover']['live']);
+            }
             if (isset($tplconfig['topic']['hbtn'])) {
                 $tplconfig['topic']['hbtn'] = ((string) $tplconfig['topic']['hbtn'] === '1') ? '1' : '0';
             }
@@ -163,6 +190,7 @@ class TplConfig extends Base
         $this->assign('type_tree', $type_tree);
         $this->assign('theme_type_options', $this->buildThemeTypeOptions($type_tree));
         $this->assign('theme_type_index', $this->buildThemeTypeIndex($type_tree));
+        $this->assignThemeListCoverViewVars($tplconfig);
         $this->assignThemeUxI18n();
         $this->assign('title', lang('menu/theme/config'));
         return $this->fetch('admin@tplconfig/theme');
@@ -352,5 +380,47 @@ class TplConfig extends Base
             }
         }
         return $normalized;
+    }
+
+    /**
+     * 列表封面 Tab：封面比例、漫画/资讯/直播方向等表单默认值（服务端渲染，勿在模板写 {php}）
+     */
+    protected function assignThemeListCoverViewVars(array $tplconfig)
+    {
+        $theme = isset($tplconfig['theme']) && is_array($tplconfig['theme']) ? $tplconfig['theme'] : array();
+        $listCover = isset($theme['list_cover']) && is_array($theme['list_cover']) ? $theme['list_cover'] : array();
+        $coverRatio = isset($theme['cover_ratio']) && is_array($theme['cover_ratio']) ? $theme['cover_ratio'] : array();
+
+        $mangaRaw = isset($listCover['manga']) ? (string) $listCover['manga'] : 'v';
+        $artRaw = isset($listCover['art']) ? (string) $listCover['art'] : 'v';
+        $this->assign('mangaListCover', ($mangaRaw === 'h') ? 'h' : 'v');
+        $this->assign('artListCover', ($artRaw === 'h') ? 'h' : 'v');
+        $this->assign('liveListCoverDefault', $this->resolveLiveListCoverDefault($listCover));
+        $this->assign('posterRatioH_W', max(1, min(999, (int) (isset($coverRatio['h_w']) ? $coverRatio['h_w'] : 69))));
+        $this->assign('posterRatioH_H', max(1, min(999, (int) (isset($coverRatio['h_h']) ? $coverRatio['h_h'] : 40))));
+        $this->assign('posterRatioV_W', max(1, min(999, (int) (isset($coverRatio['v_w']) ? $coverRatio['v_w'] : 20))));
+        $this->assign('posterRatioV_H', max(1, min(999, (int) (isset($coverRatio['v_h']) ? $coverRatio['v_h'] : 29))));
+    }
+
+    /**
+     * 直播列表封面方向：优先 live_default；兼容旧版 list_cover.live 按分类配置（取首个有效值）
+     */
+    protected function resolveLiveListCoverDefault(array $listCover)
+    {
+        if (isset($listCover['live_default'])) {
+            return ((string) $listCover['live_default'] === 'h') ? 'h' : 'v';
+        }
+        if (isset($listCover['live']) && is_array($listCover['live'])) {
+            foreach ($listCover['live'] as $row) {
+                if (!is_array($row)) {
+                    continue;
+                }
+                $cover = isset($row['cover']) ? (string) $row['cover'] : '';
+                if ($cover === 'h' || $cover === 'v') {
+                    return $cover;
+                }
+            }
+        }
+        return 'v';
     }
 }

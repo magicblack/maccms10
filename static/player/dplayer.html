@@ -36,6 +36,12 @@
 	.dplayer-setting-item.dplayer-setting-danunlimit {
 		display: none !important;
 	}
+	/* 嵌入 MacCMS 父页 iframe：PC 端常驻显示「网页全屏」，无需悬停 */
+	html.mac-embed-player .dplayer:not(.dplayer-mobile) .dplayer-controller .dplayer-icons .dplayer-full .dplayer-full-in-icon {
+		display: inline-block !important;
+		position: static !important;
+		top: auto !important;
+	}
 	/* 弹幕字黑色描边，亮底/亮字仍可读 */
 	.dplayer-danmaku .dplayer-danmaku-item {
 		text-shadow:
@@ -386,6 +392,21 @@
 	bindSpeedMemory(dp);
 	bindQualityMemory(dp);
 
+	function markEmbedPlayer() {
+		var embedded = false;
+		try {
+			embedded = !!(window.parent && window.parent !== window);
+		} catch (eEmb) {
+			embedded = true;
+		}
+		if (!embedded) {
+			return;
+		}
+		// 仅标记嵌入态：PC 常驻「网页全屏」入口；不改动主全屏按钮（仍走浏览器原生全屏）
+		document.documentElement.classList.add('mac-embed-player');
+	}
+	markEmbedPlayer();
+
 	dp.on('ended', function () {
 		if (parent.MacPlayer.PlayLinkNext != '') {
 			top.location.href = parent.MacPlayer.PlayLinkNext;
@@ -584,6 +605,25 @@
 			seekToPoint(d.point);
 		}
 	});
+
+	function syncParentWebFullscreen(on) {
+		try {
+			parent.postMessage({ source: 'mac-player', type: 'web_fullscreen', on: !!on }, location.origin);
+		} catch (eWf) {}
+	}
+
+	// iframe 内网页全屏只改 #playerCnt 的 class；dp.on('webfullscreen') 在部分环境不触发，改监听 class。
+	var playerRoot = document.getElementById('playerCnt');
+	if (playerRoot) {
+		var lastWebFs = playerRoot.classList.contains('dplayer-fulled');
+		var webFsObs = new MutationObserver(function () {
+			var on = playerRoot.classList.contains('dplayer-fulled');
+			if (on === lastWebFs) return;
+			lastWebFs = on;
+			syncParentWebFullscreen(on);
+		});
+		webFsObs.observe(playerRoot, { attributes: true, attributeFilter: ['class'] });
+	}
 
 	try {
 		parent.postMessage({ source: 'mac-player', type: 'ready', player: 'dplayer' }, location.origin);

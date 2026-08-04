@@ -685,6 +685,79 @@
         });
     }
 
+    /**
+     * layui select 下拉挂在行内 absolute 层；仅抬 dl z-index 会被下一行卡片盖住，展开时抬升整行。
+     * CSS :has(.layui-form-selected) 为主；此处为不支持 :has 时的兜底。
+     */
+    function initSelectRowZIndex() {
+        var root = '.theme-config-ux';
+        $(document)
+            .off('click.themeuxSelectZ', root + ' .layui-form-select .layui-select-title')
+            .on('click.themeuxSelectZ', root + ' .layui-form-select .layui-select-title', function () {
+                var $select = $(this).closest('.layui-form-select');
+                var $item = $(this).closest('.js-sortable-item');
+                setTimeout(function () {
+                    $(root + ' .js-sortable-item').removeClass('tc-select-open');
+                    if ($select.hasClass('layui-form-selected')) {
+                        $item.addClass('tc-select-open');
+                    }
+                }, 0);
+            });
+        $(document)
+            .off('click.themeuxSelectZDoc')
+            .on('click.themeuxSelectZDoc', function (e) {
+                if (!$(e.target).closest(root + ' .layui-form-select').length) {
+                    $(root + ' .js-sortable-item').removeClass('tc-select-open');
+                }
+            });
+    }
+
+    function measureTextWidth(text, font) {
+        var canvas = measureTextWidth._canvas;
+        if (!canvas) {
+            canvas = document.createElement('canvas');
+            measureTextWidth._canvas = canvas;
+        }
+        var ctx = canvas.getContext('2d');
+        ctx.font = font;
+        return ctx.measureText(text).width;
+    }
+
+    /**
+     * 主题配置表单项：按最长 label 文案设置统一列宽，空 label 续行仍能对齐。
+     */
+    function syncFormLabelColumn($root) {
+        $root = $root || $('.theme-config-ux');
+        if (!$root.length) {
+            return;
+        }
+        var $ref = $root.find('.layui-form-item:not(.js-sortable-item) > .layui-form-label').first();
+        var font = '400 14px "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", system-ui, sans-serif';
+        if ($ref.length && window.getComputedStyle) {
+            var computed = window.getComputedStyle($ref[0]);
+            font = computed.fontWeight + ' ' + computed.fontSize + ' ' + computed.fontFamily;
+        }
+        var max = 0;
+        $root.find('.layui-form-item:not(.js-sortable-item) > .layui-form-label').each(function () {
+            var text = $.trim($(this).text());
+            if (!text) {
+                return;
+            }
+            max = Math.max(max, measureTextWidth(text, font));
+        });
+        if (max > 0) {
+            $root.css('--tc-form-label-w', Math.ceil(max + 2) + 'px');
+        }
+    }
+
+    initSelectRowZIndex();
+    $(function () {
+        syncFormLabelColumn();
+        $(window).on('resize.themeuxLabel', function () {
+            syncFormLabelColumn();
+        });
+    });
+
     window.MacThemeConfigUx = {
         initTypePickerLabels: initTypePickerLabels,
         bindTypePickerEvents: bindTypePickerEvents,
@@ -693,6 +766,7 @@
         updateRowLabels: updateRowLabels,
         labelForValue: labelForValue,
         refreshPickerLabel: refreshPickerLabel,
+        syncFormLabelColumn: syncFormLabelColumn,
         hotvodTabLabel: function (index) {
             return sprintf(t('hotvodTabLabel', 'Tab%d'), index + 2);
         }

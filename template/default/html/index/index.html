@@ -49,7 +49,7 @@
                     </ul>
                 </div>
                 <div class="latest-tab-box">
-                    <div id="con_latest_1" class="latest-item wei-latest ">
+                    <div id="con_latest_1" class="latest-item wei-latest {$index_hotvod_default_poster_class}">
                         <div class="silder-cnt">
                             <ul class="img-list">
                                 {maccms:vod num="6" level="1,2,3,4,5,6,7,8,9" order="desc" by="hits_month"}
@@ -64,7 +64,7 @@
                         </ul>
                     </div>
                     {volist name="index_hotvod_tabs" id="ht" key="hidx"}
-                    <div id="con_latest_{$hidx+1}" class="latest-item movie-latest fn-hide"></div>
+                    <div id="con_latest_{$hidx+1}" class="latest-item movie-latest fn-hide {if condition="$ht.cover eq 'h'"}mac-poster--h{else /}mac-poster--v{/if}"></div>
                     {/volist}
                     {if condition="$index_manga_hbtn eq 1"}
                     <div id="con_latest_6" class="latest-item movie-latest fn-hide {$index_manga_poster_class}"></div>
@@ -195,7 +195,7 @@
             {/if}
 
             {if condition="$index_live_hbtn eq 1"}
-            <div class="box latest-tab-box mac-poster--v">
+            <div class="box latest-tab-box {$mac_live_poster_class|default='mac-poster--v'}">
                 <div class="title home-unified-section-head hu-section-head">
                     <img class="laset_new_img hl_icon_light" src="{$maccms.path}template/default/images/la/home_ic_Live_nor_2x.png" alt="">
                     <img class="laset_new_img hl_icon_black" src="{$maccms.path}template/default/images/black/home_ic_Live_nor_2x.png" alt="">

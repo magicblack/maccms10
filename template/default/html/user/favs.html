@@ -5,7 +5,7 @@
 <meta name="keywords" content="">
 <meta name="description" content="">
 {include file="user/include" /}
-<link rel="stylesheet" href="{$maccms.path}template/default/asset/css/user-favs.css">
+<link rel="stylesheet" href="{$maccms.path}template/default/asset/css/user-favs.css?v=202608013">
 </head>
 
 
@@ -31,7 +31,7 @@
 				<span data-lang="string_qk">清空</span>
 			</a>
 	    </div>
-	    <div class="co-right co-right-bg"
+	    <div class="co-right co-right-bg co-right-favs"
 			data-mac-user-ulog
 			data-lazy-placeholder="{:mac_url_img(!empty($tplconfig['theme']['lazy']) ? $maccms['path'].$tplconfig['theme']['lazy'] : $maccms['path_tpl'].'asset/img/load.gif')}"
 			data-api-base="{:rtrim($maccms.path,'/').'/api.php'}"
@@ -48,11 +48,13 @@
 			<a href="{:url('user/favs',['mid'=>3])}" data-mid="3" data-lang="string_topic">专题</a>
 			<a href="{:url('user/favs',['mid'=>12])}" data-mid="12" data-lang="string_manga">漫画</a>
 		</div>
-		<div class="gong">
+		<div class="gong gong-bulk">
+			<div class="gong-bulk__inner">
 			<a href="javascript:;" class="mac-ulog-cb-all" data-lang="string_qx">全选</a>
 			<a href="javascript:;" class="mac-ulog-cb-other" data-lang="string_fx">反选</a>
 			<a href="javascript:;" id="btnDel" data-lang="string_sc">删除</a>
 			<a href="javascript:;" id="btnClear2" data-lang="string_qk">清空</a>
+			</div>
 		</div>
 		<ul class="data__list clearfix"></ul>
 		<p class="mac-ulog-loading muted" data-lang="string_loading">加载中~</p>

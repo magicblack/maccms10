@@ -1,7 +1,8 @@
+{php}$rank_thumb_orient = (mac_tpl_vod_type_cover(isset($vo['type_id']) ? (int) $vo['type_id'] : 0) === 'h') ? 'h' : 'v';{/php}
 <li class="ranklist_item">
-    <a title="{$vo.vod_name}" href="{:mac_url_vod_detail($vo)}">
-	<div class="ranklist_img">
-		 <div class="ranklist_thumb lazyload" data-original="{$vo.vod_pic|mac_url_img}">
+    <a title="{$vo.vod_name}" {if condition="$mac_vod_playlink eq 1"}href="{:mac_url_vod_play($vo,['sid'=>$vo.sid,'nid'=>1])}"{else /}href="{:mac_url_vod_detail($vo)}"{/if}>
+	<div class="ranklist_img{if condition="$rank_thumb_orient eq 'h'"} ranklist_img--h{else /} ranklist_img--v{/if}">
+		 <div class="ranklist_thumb ranklist_thumb--{$rank_thumb_orient} lazyload" data-original="{$vo.vod_pic|mac_url_img}">
 			{assign name="mac_points_value" value="$vo.vod_points_play" /}
 			{include file="widget/mac_badge_top_right" /}
 			{include file="widget/mac_badge_bottom_right" /}

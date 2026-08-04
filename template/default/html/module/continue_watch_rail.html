@@ -3,7 +3,7 @@
     data-api-base="{:rtrim($maccms.path,'/').'/api.php'}"
     data-limit="12"
     data-hide-finished="1"
-    data-plays-url="{:url('user/plays')}"
+    data-plays-url="{:mac_url('user/plays')}"
     aria-hidden="true">
     <div class="mac-cw-fab__backdrop" id="js-continue-watch-backdrop" aria-hidden="true"></div>
     <button type="button"
@@ -25,7 +25,7 @@
         <div class="mac-cw-fab__panel-head">
             <span class="mac-cw-fab__panel-title" data-lang="string_continue_watch">继续观看</span>
             <div class="mac-cw-fab__panel-actions">
-                <a class="mac-cw-fab__panel-more" href="{:url('user/plays')}" data-lang="string_continue_watch_all">查看全部</a>
+                <a class="mac-cw-fab__panel-more" href="{:mac_url('user/plays')}" data-lang="string_continue_watch_all">查看全部</a>
                 <button type="button" class="mac-cw-fab__close" id="js-continue-watch-close" title="关闭" aria-label="关闭">
                     <svg class="mac-cw-fab__close-svg" viewBox="0 0 16 16" width="14" height="14" focusable="false" aria-hidden="true">
                         <path d="M3.2 3.2l9.6 9.6M12.8 3.2l-9.6 9.6" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"></path>
