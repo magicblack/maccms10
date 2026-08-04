@@ -23,6 +23,13 @@
                         {$dashboard_data['today_visit_count']}
                     </h3>
                 </div>
+                {if condition="$dashboard_data['analytics_table_missing'] eq 1"}
+                <p class="text-xs text-red-500">{:lang('admin/analytics/msg_table_not_installed')}</p>
+                {elseif condition="$dashboard_data['analytics_enabled'] eq 0" /}
+                <p class="text-xs text-orange-500">
+                    <a href="{:url('system/configanalytics')}">{:lang('admin/index/welcome/analytics_off_tip')}</a>
+                </p>
+                {/if}
             </div>
         </div>
         <!-- End Card -->
@@ -435,6 +442,9 @@
                 <h2 class="inline-block font-semibold text-gray-800 ">
                     {:lang('admin/index/welcome/seven_day_visit_data')}
                 </h2>
+                {if condition="$dashboard_data['analytics_enabled'] eq 0"}
+                <a class="ml-2 text-xs text-orange-500" href="{:url('system/configanalytics')}">{:lang('admin/index/welcome/analytics_off_tip')}</a>
+                {/if}
             </div>
             <div class="md:justify-end">
                 <div class="w-48">
@@ -812,16 +822,21 @@
                     },
                     method: "POST",
                     success: function (data) {
+                        var res = JSON.parse(data);
                         chart.updateOptions({
                             xaxis: {
-                                categories: JSON.parse(data).days
+                                categories: res.days
                             },
                             series: [{
                                 name: "Visitors",
-                                data: JSON.parse(data).count
+                                data: res.count
                             }],
                         });
-                        $('#visit_sum').text(JSON.parse(data).sum);
+                        $('#visit_sum').text(res.sum);
+                        // 埋点表缺失时图表只会画一条 0 线，要说明原因，口径与首页那句红字一致
+                        if (res.table_missing == 1) {
+                            layer.msg('{:lang("admin/analytics/msg_table_not_installed")}');
+                        }
                     },
                     error: function (xhr, status, error) {
                         layer.msg('获取数据失败');

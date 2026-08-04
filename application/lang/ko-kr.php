@@ -958,6 +958,7 @@ https://www.baidu.com/123.jpg
   'admin/index/welcome/system_status' => '系统资讯',
   'admin/index/welcome/disk_space_usage' => '磁碟空间占比',
   'admin/index/welcome/seven_day_visit_data' => '近七日用户访问量',
+  'admin/index/welcome/analytics_off_tip' => '행동 분석 추적이 꺼져 있습니다. 여기를 클릭해 활성화하면 실제 방문 데이터를 볼 수 있습니다.',
   'admin/index/welcome/seven_day_reg_data' => '近七日用户注册量',
   'admin/index/welcome/reg_users_count' => '注册用户数',
   'admin/index/welcome/active_reg_users_count' => '已审核用户数',

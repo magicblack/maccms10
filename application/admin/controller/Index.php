@@ -4,8 +4,11 @@ namespace app\admin\controller;
 
 use think\Hook;
 use think\Db;
+use think\Cache;
 use Exception;
 use ip_limit\IpLocationQuery;
+use app\common\util\AnalyticsAggregator;
+use app\common\util\AnalyticsServerTracker;
 class Index extends Base
 {
     public function __construct()
@@ -820,42 +823,39 @@ class Index extends Base
 
         $today_start = strtotime(date('Y-m-d 00:00:00'));
         $today_end = $today_start + 86399;
-        //本日来客量
-        $result['today_visit_count'] = model('Visit')->where('visit_time', 'between', $today_start . ',' . $today_end)->count();
-        $result['today_visit_count'] = number_format($result['today_visit_count'], 0, '.', ',');
         //本日总入金
         $result['today_money_get'] = model('Order')->where('order_time', 'between', $today_start . ',' . $today_end)->where('order_status', 1)->sum('order_price');
         $result['today_money_get'] = number_format($result['today_money_get'], 2, '.', ',');
-        //前七天 每日用户访问数
-        $tmp_arr = Db::query("select FROM_UNIXTIME(visit_time, '%Y-%c-%d' ) days,count(*) count from (SELECT * from ".config('database.prefix')."visit where visit_time >= (unix_timestamp(CURDATE())-604800)) as temp group by days");
-        $result['seven_day_visit_day'] = [];
-        $result['seven_day_visit_count'] = [];
 
+        // 访问统计（本日 + 近七日）：口径是埋点表 mac_analytics_pageview 的每日独立访客。
+        // 旧实现读 mac_visit，而那张表只有推广/邀请链接来访会写（User::visit、Website::visit），
+        // 普通浏览和登录都不写，所以「本日用户访问」永远是 0。
+        $result['analytics_enabled'] = AnalyticsServerTracker::isEnabled() ? 1 : 0;
+        $result['analytics_table_missing'] = 0;
+        $visit_buckets = self::cachedDailyUv(date('Y-m-d', strtotime('-6 day')), date('Y-m-d'), $failed);
+        if ($failed) {
+            // 老站升级脚本还没跑到埋点表时不能让首页 500
+            $result['analytics_table_missing'] = 1;
+        }
+
+        $result['seven_day_visit_day'] = $visit_buckets['days'];
+        $result['seven_day_visit_count'] = $visit_buckets['count'];
+        //本日来客量
+        $today_visit_count = empty($visit_buckets['count']) ? 0 : intval(end($visit_buckets['count']));
+        $result['today_visit_count'] = number_format($today_visit_count, 0, '.', ',');
+
+        //比較前一天的訪問量漲幅
         $result['raise_visit_user_today'] = 0;
-        if (is_array($tmp_arr) && count($tmp_arr) > 1 && (strtotime(end($tmp_arr)['days']) == strtotime(date('Y-m-d')))) {
-            $yesterday_visit_count = $tmp_arr[count($tmp_arr) - 2]['count'];
-            $lastday_visit_count = end($tmp_arr)['count'];
+        $bucket_cnt = count($visit_buckets['count']);
+        if ($bucket_cnt > 1) {
+            $yesterday_visit_count = intval($visit_buckets['count'][$bucket_cnt - 2]);
             if ($yesterday_visit_count != 0) {
-                $result['raise_visit_user_today'] = number_format((($lastday_visit_count - $yesterday_visit_count) / $yesterday_visit_count) * 100, 2, '.', ',');
-            } else {
-                $result['raise_visit_user_today'] = 0;
+                $result['raise_visit_user_today'] = number_format((($today_visit_count - $yesterday_visit_count) / $yesterday_visit_count) * 100, 2, '.', ',');
             }
         }
 
-        foreach ($tmp_arr as $data) {
-            array_push($result['seven_day_visit_day'], $data['days']);
-            array_push($result['seven_day_visit_count'], $data['count']);
-        }
-
         //近七日用户访问总量
-        // 修复：原代码遍历从未赋值的 $result['seven_day_visit_data']，
-        // 导致近七日访问总量恒为 0 并抛出 PHP notice。实际数据在 $tmp_arr 中。
-        $result['seven_day_visit_total_count'] = 0;
-        foreach ($tmp_arr as $value) {
-            $result['seven_day_visit_total_count'] = $result['seven_day_visit_total_count'] + $value['count'];
-        }
-
-        $result['seven_day_visit_total_count'] = number_format($result['seven_day_visit_total_count'], 0, '.', ',');
+        $result['seven_day_visit_total_count'] = number_format($visit_buckets['sum'], 0, '.', ',');
         //前七天 每日用户注册数
         $result['seven_day_reg_data'] = Db::query("select FROM_UNIXTIME(user_reg_time, '%Y-%c-%d' ) days,count(*) count from (SELECT * from ".config('database.prefix')."user where user_reg_time >= (unix_timestamp(CURDATE())-604800)) as tmp group by days");
 
@@ -890,28 +890,51 @@ class Index extends Base
 
         $startTs = strtotime(isset($_POST['startDate']) ? $_POST['startDate'] : '');
         $endTs = strtotime(isset($_POST['endDate']) ? $_POST['endDate'] : '');
-        $startTs = ($startTs !== false) ? (int)$startTs : 0;
-        $endTs = ($endTs !== false) ? (int)$endTs : 0;
-        $visitTable = config('database.prefix') . 'visit';
-        $visitTable = '`' . str_replace('`', '``', $visitTable) . '`';
-        $range_daily_visit_data = Db::query(
-            "select FROM_UNIXTIME(visit_time, '%Y-%c-%d' ) days,count(*) count from (SELECT * from {$visitTable} where visit_time >= ? and visit_time <= ? ) as temp group by days",
-            [$startTs, $endTs]
-        );
-        $result = [];
-        $range_visit_day = [];
-        $range_visit_count = [];
-        $range_visit_sum = 0;
-        foreach ($range_daily_visit_data as $data) {
-            $range_visit_sum = $range_visit_sum + $data['count'];
-            array_push($range_visit_day, $data['days']);
-            array_push($range_visit_count, $data['count']);
+        if ($startTs === false || $endTs === false || $startTs <= 0 || $endTs <= 0) {
+            return json_encode(['days' => [], 'count' => [], 'sum' => 0]);
         }
-
-        $result['days'] = $range_visit_day;
-        $result['count'] = $range_visit_count;
-        $result['sum'] = $range_visit_sum;
+        // 与首页同一口径：埋点表的每日独立访客，零填充
+        $result = self::cachedDailyUv(date('Y-m-d', $startTs), date('Y-m-d', $endTs), $failed);
+        // 埋点表不存在（老站还没跑升级脚本）时要让前端说得出原因，否则图表只是画一条 0 线，
+        // 与首页那句红字提示口径不一致，站长会以为是「真没访问」。
+        $result['table_missing'] = $failed ? 1 : 0;
+        // 前端 welcome.html 自己 JSON.parse 取 days/count/sum，不吃 code/msg 信封，形状不能改，
+        // 这里只做加键，不动既有三个字段
         return json_encode($result);
+    }
+
+    /**
+     * 带短 TTL 缓存的每日 UV 取数。
+     *
+     * 聚合表没覆盖的日子（正常只有「今天」，站长没配定时任务时则是整个区间）会回退到
+     * mac_analytics_pageview 明细做 count(distinct visitor_id)，那张表只有 idx_stat_date，
+     * 大站单日就是百万行级的临时表 + filesort。后台首页每打开一次就查一次扛不住，
+     * 这里按区间做 60 秒缓存：统计看板不需要秒级实时，但要挡住刷新风暴。
+     *
+     * 取数失败（老站还没跑升级脚本、埋点表不存在）不写缓存，让调用方拿到 $failed 去提示，
+     * 也避免把「表不存在」这个瞬时状态缓存住。
+     *
+     * @param string $start_date Y-m-d
+     * @param string $end_date   Y-m-d
+     * @param bool   $failed     出参：取数是否失败
+     * @return array ['days'=>[],'count'=>[],'sum'=>0]
+     */
+    private static function cachedDailyUv($start_date, $end_date, &$failed)
+    {
+        $failed = false;
+        $key = 'admin_dashboard_uv_' . $start_date . '_' . $end_date;
+        $cache = Cache::get($key);
+        if (is_array($cache) && isset($cache['days'])) {
+            return $cache;
+        }
+        try {
+            $res = AnalyticsAggregator::dailyUv($start_date, $end_date);
+        } catch (Exception $e) {
+            $failed = true;
+            return ['days' => [], 'count' => [], 'sum' => 0];
+        }
+        Cache::set($key, $res, 60);
+        return $res;
     }
 
     public function botlist()

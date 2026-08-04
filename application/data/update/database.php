@@ -215,6 +215,32 @@ if(empty($col_list[$pre.'seckill_user'])){
         $_timming = [];
     }
     $_timming_defaults = [
+        // 运营统计聚合。这两条此前只存在于版本库的 extra/timming.php，而升级不覆盖该文件，
+        // 所以存量站升级后一直没有这两个任务：analytics_day_overview 恒空，后台首页的
+        // 近七日访问只能每次回退去扫 mac_analytics_pageview 明细做 count(distinct)。
+        // 字段与 extra/timming.php 权威版一致：file=analytics 对应 api/controller/Timming::analytics()。
+        'analytics_hour' => [
+            'id'      => 'analytics_hour',
+            'status'  => '1',
+            'name'    => 'analytics_hour',
+            'des'     => '运营统计小时聚合',
+            'file'    => 'analytics',
+            'param'   => 'mode=hour',
+            'weeks'   => '1,2,3,4,5,6,0',
+            'hours'   => '00,01,02,03,04,05,06,07,08,09,10,11,12,13,14,15,16,17,18,19,20,21,22,23',
+            'runtime' => 0,
+        ],
+        'analytics_day' => [
+            'id'      => 'analytics_day',
+            'status'  => '1',
+            'name'    => 'analytics_day',
+            'des'     => '运营统计日聚合',
+            'file'    => 'analytics',
+            'param'   => 'mode=day',
+            'weeks'   => '1,2,3,4,5,6,0',
+            'hours'   => '01',
+            'runtime' => 0,
+        ],
         'notify_vip_expire' => [
             'id'      => 'notify_vip_expire',
             'status'  => '0',

@@ -25,6 +25,99 @@ class AnalyticsAggregator
         return self::aggregateHour($hourTs);
     }
 
+    /**
+     * 按天统计独立访客（UV），供后台首页「本日 / 近七日用户访问」直接读取。
+     * uv 口径与 aggregateDay() 保持一致：count(distinct visitor_id)。
+     *
+     * 取数优先级：
+     *   1. 历史日优先读已聚合的 analytics_day_overview（analytics_day 定时任务产出）。
+     *      明细表 pageview 上没有 (stat_date, visitor_id) 复合索引，count(distinct visitor_id)
+     *      只能靠 idx_stat_date 定位后回表，长范围会临时表+filesort；后台首页每次打开都要查，
+     *      不能直接扫明细（同 admin/controller/Analytics.php 的封顶思路）。
+     *   2. 聚合没覆盖的日子才回退扫明细表。正常站点只有「今天」落在这里。
+     *
+     * 「今天」永远走明细实时算，不信 day_overview 里今天的行：管理员手动触发
+     * mode=day&date=今天 会把半天的数据落库，之后首页就会一直停在那个半截数字。
+     *
+     * 日期桶零填充：无数据的日子返回 0，而不是直接跳格，否则前端折线图会错位。
+     *
+     * @param string $startDate Y-m-d
+     * @param string $endDate   Y-m-d
+     * @return array ['days'=>['Y-m-d',...],'count'=>[int,...],'sum'=>int]
+     */
+    public static function dailyUv($startDate, $endDate)
+    {
+        $startTs = strtotime($startDate . ' 00:00:00');
+        $endTs = strtotime($endDate . ' 00:00:00');
+        if ($startTs === false || $endTs === false || $startTs <= 0) {
+            return ['days' => [], 'count' => [], 'sum' => 0];
+        }
+        // 起止倒置（前端乱传）时退化为单日桶，不能让逐日循环跑不完
+        if ($endTs < $startTs) {
+            $endTs = $startTs;
+        }
+        // 扫描窗口封顶 31 天，与 admin/controller/Analytics.php 对同一张 pageview 大表的
+        // 既有约定一致：聚合表没覆盖的日子要回退扫明细，而 count(distinct visitor_id)
+        // 无对应复合索引，长范围会触发临时表+filesort。存量站升级当天聚合表还是空的，
+        // 整个区间都会落到明细上，放宽窗口等于把后台首页变成慢查询入口。
+        $maxTs = strtotime('+30 day', $startTs);
+        if ($endTs > $maxTs) {
+            $endTs = $maxTs;
+        }
+
+        $days = [];
+        // 用 strtotime('+1 day') 而不是 +86400，跨夏令时才不会丢日子
+        for ($ts = $startTs; $ts <= $endTs; $ts = strtotime('+1 day', $ts)) {
+            $days[] = date('Y-m-d', $ts);
+        }
+
+        $today = date('Y-m-d');
+        $map = [];
+        try {
+            $overviewRows = Db::name('AnalyticsDayOverview')
+                ->field('stat_date,uv')
+                ->where('stat_date', 'between', [$days[0], $days[count($days) - 1]])
+                ->select();
+            foreach ($overviewRows as $row) {
+                $day = substr((string)$row['stat_date'], 0, 10);
+                if ($day < $today) {
+                    $map[$day] = intval($row['uv']);
+                }
+            }
+        } catch (\Exception $e) {
+            // 聚合表缺失只是失去加速，回退扫明细即可，不能让整个指标取不到
+            $map = [];
+        }
+
+        // 只对聚合没覆盖的日子查明细，用 IN 走 idx_stat_date，不去扫已覆盖的日子
+        $missing = [];
+        foreach ($days as $day) {
+            if (!isset($map[$day])) {
+                $missing[] = $day;
+            }
+        }
+        if (!empty($missing)) {
+            $rows = Db::name('AnalyticsPageview')
+                ->field('stat_date,count(distinct visitor_id) as uv')
+                ->where('stat_date', 'in', $missing)
+                ->group('stat_date')
+                ->select();
+            foreach ($rows as $row) {
+                $map[substr((string)$row['stat_date'], 0, 10)] = intval($row['uv']);
+            }
+        }
+
+        $count = [];
+        $sum = 0;
+        foreach ($days as $day) {
+            $uv = isset($map[$day]) ? $map[$day] : 0;
+            $count[] = $uv;
+            $sum += $uv;
+        }
+
+        return ['days' => $days, 'count' => $count, 'sum' => $sum];
+    }
+
     public static function aggregateHour($hourTs)
     {
         if (empty($hourTs) || $hourTs <= 0) {

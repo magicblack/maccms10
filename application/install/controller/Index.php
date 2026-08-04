@@ -244,6 +244,10 @@ class Index extends Controller
             $config_new['analytics'] = [];
         }
         if (!isset($config_new['analytics']['server_track'])) {
+            // 埋点默认关闭：开启后每个前台请求都会多写一条 mac_analytics_pageview
+            // 外加一次 session 读写，而明细表目前没有保留期清理，不适合替站长默认打开。
+            // 后台首页在未开启时会显示「点此启用」的引导链接（view_new/index/welcome.html），
+            // 由站长自己决定是否开采集。
             $config_new['analytics']['server_track'] = '0';
         }
         if (!isset($config_new['analytics']['track_region'])) {
@@ -365,6 +369,31 @@ class Index extends Controller
 				$_timming = [];
 			}
 			$_timming_defaults = [
+				// 运营统计聚合，与 application/data/update/database.php 的注入块保持一致。
+				// analytics_day 产出的 mac_analytics_day_overview 是后台首页近七日访问的
+				// 加速来源，缺了就只能每次回退扫 mac_analytics_pageview 明细。
+				'analytics_hour' => [
+					'id'      => 'analytics_hour',
+					'status'  => '1',
+					'name'    => 'analytics_hour',
+					'des'     => '运营统计小时聚合',
+					'file'    => 'analytics',
+					'param'   => 'mode=hour',
+					'weeks'   => '1,2,3,4,5,6,0',
+					'hours'   => '00,01,02,03,04,05,06,07,08,09,10,11,12,13,14,15,16,17,18,19,20,21,22,23',
+					'runtime' => 0,
+				],
+				'analytics_day' => [
+					'id'      => 'analytics_day',
+					'status'  => '1',
+					'name'    => 'analytics_day',
+					'des'     => '运营统计日聚合',
+					'file'    => 'analytics',
+					'param'   => 'mode=day',
+					'weeks'   => '1,2,3,4,5,6,0',
+					'hours'   => '01',
+					'runtime' => 0,
+				],
 				'notify_vip_expire' => [
 					'id'      => 'notify_vip_expire',
 					'status'  => '0',
