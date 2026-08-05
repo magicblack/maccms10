@@ -252,16 +252,26 @@ class System extends Base
         }
         $config['app']['vod_search_optimise_cache_minutes'] = model('VodSearch')->getResultCacheMinutes($config);
         if (!isset($config['ai_seo']) || !is_array($config['ai_seo'])) {
+            // 展示默认须与运行时一致：未写入配置时 mergeDetailSeoIntoMaccms 视为关闭
             $config['ai_seo'] = [
                 'enabled' => '0',
-                'auto_generate' => '1',
-                'template_inject' => '1',
+                'auto_generate' => '0',
+                'template_inject' => '0',
                 'provider' => 'openai',
                 'model' => 'gpt-4o-mini',
                 'api_base' => 'https://api.openai.com/v1',
                 'api_key' => '',
                 'timeout' => '20',
             ];
+        }
+        if (!isset($config['ai_seo']['template_inject'])) {
+            $config['ai_seo']['template_inject'] = '0';
+        }
+        if (!isset($config['ai_seo']['auto_generate'])) {
+            $config['ai_seo']['auto_generate'] = '0';
+        }
+        if (!isset($config['ai_seo']['enabled'])) {
+            $config['ai_seo']['enabled'] = '0';
         }
         $apiKey = isset($config['ai_seo']['api_key']) ? trim((string) $config['ai_seo']['api_key']) : '';
         $this->assign('ai_seo_key_saved', $apiKey !== '' ? 1 : 0);

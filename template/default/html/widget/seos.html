@@ -48,7 +48,11 @@ $seo_search_desc = mac_substring(mac_filter_html('关于「' . $seo_search_q . '
 <meta name="keywords" content="{$seo_search_kw}" />
 <meta name="description" content="{$seo_search_desc}" />
 {elseif $maccms.aid==14}
-    
+{notempty name="maccms.page_detail_title"}
+<title>{$maccms.page_detail_title}</title>
+<meta name="keywords" content="{$maccms.page_detail_keywords}" />
+<meta name="description" content="{$maccms.page_detail_description}" />
+{else/}
     {if condition="($obj['type_id']==2) OR ($obj['type_id_1']==2) OR ($obj['type_id']==3) OR ($obj['type_id_1']==3) OR ($obj['type_id']==4) OR ($obj['type_id_1']==4)"}
     <title>{$obj.vod_name|mac_filter_html|mac_default='404'}_{$obj.type.type_name|mac_filter_html}_{$obj.type_1.type_name|mac_filter_html}_{$tplconfig['theme']['seos']['detail_name']|mac_default='详细'} - {$maccms.site_name}</title>
     <meta name="keywords" content="{$obj.vod_name|mac_filter_html},{$obj.type.type_name|mac_filter_html},{$obj.type_1.type_name|mac_filter_html},{$tplconfig['theme']['seos']['detail_key']|mac_default='详细'},{$obj.vod_actor},{$obj.vod_director},{$maccms.site_name}" />
@@ -59,6 +63,7 @@ $seo_search_desc = mac_substring(mac_filter_html('关于「' . $seo_search_q . '
     <meta name="keywords" content="{$obj.vod_name|mac_filter_html},{$obj.type.type_name|mac_filter_html},{$obj.type_1.type_name|mac_filter_html},{$tplconfig['theme']['seos']['detail_key']|mac_default='视频详情-其他'},{$obj.vod_actor},{$obj.vod_director},{$maccms.site_name}" />
     <meta name="description" content="{:mac_substring(mac_filter_html((isset($tplconfig['theme']['seos']['detail_des']) ? $tplconfig['theme']['seos']['detail_des'] : '') . (isset($obj['vod_name']) ? $obj['vod_name'] : '') . '剧情:' . (isset($obj['vod_blurb']) ? $obj['vod_blurb'] : '')), 150)}" />
     {/if}
+{/notempty}
 {elseif $maccms.aid==15}
     
     {if condition="($obj['type_id']==2) OR ($obj['type_id_1']==2) OR ($obj['type_id']==3) OR ($obj['type_id_1']==3) OR ($obj['type_id']==4) OR ($obj['type_id_1']==4)"}
@@ -85,9 +90,15 @@ $arti_des = !empty($tplconfig['theme']['seos']['arti_des']) ? $tplconfig['theme'
 <meta name="keywords" content="{$arti_key|mac_default=$obj.type_key|mac_filter_html},{$maccms.site_name}" />
 <meta name="description" content="{$arti_des|mac_default=$obj.type_des|mac_filter_html},{$maccms.site_name}" />
 {elseif $maccms.aid==24}
+{notempty name="maccms.page_detail_title"}
+<title>{$maccms.page_detail_title}</title>
+<meta name="keywords" content="{$maccms.page_detail_keywords}" />
+<meta name="description" content="{$maccms.page_detail_description}" />
+{else/}
 <title>{$obj.art_name|mac_filter_html|mac_default='404'}_{$tplconfig['theme']['seos']['artd_name']|mac_default=$obj.type.type_name|mac_filter_html} - {$maccms.site_name}</title>
 <meta name="keywords" content="{$obj.art_tag|mac_default=$obj.type.type_name|mac_filter_html},{$tplconfig['theme']['seos']['artd_key']|mac_default='文章详情'},{$maccms.site_name}" />
 <meta name="description" content="{:mac_substring(mac_filter_html((isset($tplconfig['theme']['seos']['artd_des']) ? $tplconfig['theme']['seos']['artd_des'] : '文章详情') . ',' . (isset($obj['art_blurb']) ? $obj['art_blurb'] : '') . ',' . (isset($maccms['site_name']) ? $maccms['site_name'] : '')), 150)}" />
+{/notempty}
 {elseif $maccms.aid==25}
 {php}
 $__rpage = !empty($param['page']) ? (int) $param['page'] : 1;
