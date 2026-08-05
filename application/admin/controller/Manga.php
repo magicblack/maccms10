@@ -76,12 +76,26 @@ class Manga extends Base
             $order='manga_time desc';
             $res = model('Manga')->listData($where,$order,$param['page'],$param['limit']);
         }
+        $mangaIds = array_column($res['list'], 'manga_id');
+        $mangaSeoStatusMap = [];
+        if (!empty($mangaIds)) {
+            $seoRows = Db::name('seo_ai_result')
+                ->field('seo_obj_id,seo_status')
+                ->where('seo_mid', 8)
+                ->where('seo_obj_id', 'in', $mangaIds)
+                ->where('seo_status', 'in', [1, 2])
+                ->select();
+            foreach ((array)$seoRows as $seoRow) {
+                $mangaSeoStatusMap[intval($seoRow['seo_obj_id'])] = intval($seoRow['seo_status']);
+            }
+        }
 
         foreach($res['list'] as $k=>&$v){
             $v['ismake'] = 1;
             if($GLOBALS['config']['view']['manga_detail'] >0 && $v['manga_time_make'] < $v['manga_time']){
                 $v['ismake'] = 0;
             }
+            $v['seo_ai_status'] = isset($mangaSeoStatusMap[$v['manga_id']]) ? intval($mangaSeoStatusMap[$v['manga_id']]) : 0;
         }
 
         $this->assign('list', $res['list']);
@@ -291,12 +305,41 @@ class Manga extends Base
         }
         $this->assign('info',$info);
         $this->assign('manga_page_list', !empty($info['manga_page_list']) ? (array)$info['manga_page_list'] : []);
+        $seoAiStatus = 0;
+        if (!empty($info['manga_id'])) {
+            $seoAi = model('SeoAiResult')->getByObject(8, intval($info['manga_id']));
+            if (!empty($seoAi)) {
+                $seoAiStatus = intval($seoAi['seo_status']);
+            }
+        }
+        $this->assign('seo_ai_status', $seoAiStatus);
 
         $type_tree = model('Type')->getCache('type_tree');
         $this->assign('type_tree',$type_tree);
 
         $this->assign('title',lang('admin/manga/title'));
         return $this->fetch('admin@manga/info');
+    }
+
+    public function aiSeoGenerate()
+    {
+        if (!Request()->isPost()) {
+            return json(['code' => 0, 'msg' => lang('illegal_request'), 'data' => []]);
+        }
+        $id = intval(input('post.id'));
+        if ($id <= 0) {
+            return json(['code' => 0, 'msg' => lang('param_err'), 'data' => []]);
+        }
+        try {
+            $res = \app\common\util\SeoAi::generateByMidObj(8, $id);
+        } catch (\Exception $e) {
+            \think\Log::error('AI SEO generate failed (manga_id=' . $id . '): ' . $e->getMessage());
+            return json(['code' => 0, 'msg' => $e->getMessage(), 'data' => []]);
+        }
+        if (empty($res['code']) || intval($res['code']) !== 1) {
+            return json(['code' => 0, 'msg' => isset($res['msg']) ? $res['msg'] : lang('save_err'), 'data' => []]);
+        }
+        return json(['code' => 1, 'msg' => lang('save_ok'), 'data' => isset($res['data']) ? $res['data'] : []]);
     }
 
     public function restore()

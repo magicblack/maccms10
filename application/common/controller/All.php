@@ -326,6 +326,14 @@ polyfill;
             if ($defaultDesc === '') {
                 $defaultDesc = mac_substring(strip_tags((string)$info['vod_content']), 160);
             }
+        } elseif ((int)$mid === 8) {
+            $defaultTitle = (string)$info['manga_name'] . ($siteName !== '' ? ' - ' . $siteName : '');
+            $defaultKw = mac_format_text(trim((string)$info['manga_tag'] . ',' . (string)$info['manga_class']), true);
+            $defaultDesc = trim(strip_tags((string)$info['manga_blurb']));
+            if ($defaultDesc === '') {
+                $plain = str_replace('$$$', '', strip_tags((string)$info['manga_content']));
+                $defaultDesc = mac_substring($plain, 160);
+            }
         } else {
             $defaultTitle = (string)$info['art_name'] . ($siteName !== '' ? ' - ' . $siteName : '');
             $defaultKw = mac_format_text(trim((string)$info['art_tag'] . ',' . (string)$info['art_class']), true);
@@ -620,6 +628,9 @@ polyfill;
         }
 
         $this->assign('obj',$info);
+        $seo_ai = model('SeoAiResult')->getByObject(8, intval($info['manga_id']));
+        $this->assign('seo_ai', $seo_ai);
+        $this->mergeDetailSeoIntoMaccms(8, $info, $seo_ai);
         $this->assign('comment_mid', 12);
         $this->assign('comment_rid', $info['manga_id']);
         $this->label_comment();

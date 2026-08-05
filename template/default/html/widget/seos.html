@@ -118,6 +118,16 @@ $art_read_desc = (isset($obj['art_blurb']) && (string) $obj['art_blurb'] !== '')
 <title>{$art_read_title} - {$maccms.site_name}</title>
 <meta name="keywords" content="{$art_read_kw}" />
 <meta name="description" content="{$art_read_desc}" />
+{elseif $maccms.aid==124}
+{notempty name="maccms.page_detail_title"}
+<title>{$maccms.page_detail_title}</title>
+<meta name="keywords" content="{$maccms.page_detail_keywords}" />
+<meta name="description" content="{$maccms.page_detail_description}" />
+{else/}
+<title>{$obj.manga_name|mac_filter_html|mac_default='404'}_{$obj.type.type_name|mac_filter_html} - {$maccms.site_name}</title>
+<meta name="keywords" content="{$obj.manga_tag|mac_default=$obj.manga_class|mac_filter_html},{$obj.type.type_name|mac_filter_html},{$maccms.site_name}" />
+<meta name="description" content="{:mac_substring(mac_filter_html((isset($obj['manga_blurb']) && $obj['manga_blurb'] !== '' ? $obj['manga_blurb'] : (isset($obj['manga_name']) ? $obj['manga_name'] : ''))), 150)}" />
+{/notempty}
 {elseif $maccms.aid==125}
 {php}
 $__msid = !empty($param['sid']) ? (int) $param['sid'] : 1;

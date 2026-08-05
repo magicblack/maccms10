@@ -44,6 +44,20 @@
         }
     }
 
+    function resolveFieldPrefix(options) {
+        if (options.fieldPrefix) {
+            return options.fieldPrefix;
+        }
+        var mid = options.mid;
+        if (mid === 'art' || mid === 2 || mid === '2') {
+            return 'art';
+        }
+        if (mid === 'manga' || mid === 8 || mid === '8') {
+            return 'manga';
+        }
+        return 'vod';
+    }
+
     w.initAiSeoButton = function (options) {
         options = options || {};
         var lang = options.lang || {};
@@ -57,7 +71,8 @@
         }
 
         $btn.off('click.ai_seo').on('click.ai_seo', function () {
-            var idName = options.idFieldName || (options.mid === 'art' ? 'art_id' : 'vod_id');
+            var prefix = resolveFieldPrefix(options);
+            var idName = options.idFieldName || (prefix + '_id');
             var id = $('input[name="' + idName + '"]').val();
             if (!id || toInt(id) <= 0) {
                 if (w.layer && typeof w.layer.msg === 'function') {
@@ -88,8 +103,6 @@
                 }
 
                 setBadgeText(seo.status || 0, lang, badgeSelector);
-
-                var prefix = options.mid === 'art' ? 'art' : 'vod';
 
                 var $title = pickFirstSelector([
                     '#' + prefix + '_title',

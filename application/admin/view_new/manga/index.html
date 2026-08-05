@@ -102,6 +102,17 @@
             {/if}
         </div>
 
+        <blockquote class="layui-elem-quote layui-quote-nm" style="margin:10px 0 0 0;padding:12px 15px;font-size:13px;">
+            <div class="layui-form" style="margin:0;">
+                <div style="display:flex;flex-wrap:wrap;align-items:center;gap:12px;margin-bottom:8px;">
+                    <input type="checkbox" id="ai_seo_skip_existing" name="ai_seo_skip_existing" lay-skin="primary" lay-filter="ai_seo_skip_existing">
+                    <label for="ai_seo_skip_existing" style="cursor:pointer;font-weight:700;margin:0;">{:lang('admin/ai_seo/list_skip_label')}</label>
+                    <button type="button" class="layui-btn layui-btn-warm layui-btn-sm" id="btn_ai_seo_batch">{:lang('admin/ai_seo/list_batch_btn')}</button>
+                </div>
+                <div style="color:#666;font-size:12px;line-height:1.55;">{:lang('admin/ai_seo/list_skip_hint')}</div>
+            </div>
+        </blockquote>
+
     </div>
 
 
@@ -112,35 +123,48 @@
                 <th width="25"><input type="checkbox" lay-skin="primary" lay-filter="allChoose"></th>
                 <th width="60">{:lang('id')}</th>
                 <th >{:lang('name')}</th>
+                <th width="90">{:lang('admin/ai_seo/status_col')}</th>
                 <th width="50">{:lang('hits')}</th>
                 <th width="60">{:lang('score')}</th>
                 <th width="50">{:lang('level')}</th>
                 <th width="50">{:lang('browse')}</th>
                 <th width="80">{:lang('author')}</th>
                 <th width="100">{:lang('update_time')}</th>
-                <th width="140">{:lang('opt')}</th>
+                <th width="260">{:lang('opt')}</th>
             </tr>
             </thead>
 
             {volist name="list" id="vo"}
-            <tr>
+            <tr data-seo-status="{$vo.seo_ai_status|default=0}">
                 <td><input type="checkbox" name="ids[]" value="{$vo.manga_id}" class="layui-checkbox checkbox-ids" lay-skin="primary"></td>
                 <td>{$vo.manga_id}</td>
                 <td>[{$vo.type.type_name|mac_filter_xss|mac_restore_htmlfilter}] <a target="_blank" class="layui-badge-rim " href="#">{$vo.manga_name|mac_filter_xss|mac_restore_htmlfilter}</a> {if condition="$vo.manga_status eq 0"} <span class="layui-badge">{:lang('reviewed_not')}</span>{/if} {if condition="$vo.manga_lock eq 1"} <span class="layui-badge">{:lang('lock')}</span>{/if}</td>
+                <td>
+                    {if condition="$vo.seo_ai_status eq 1"}
+                    <span class="layui-badge layui-bg-green">{:lang('admin/ai_seo/status_optimized')}</span>
+                    {elseif condition="$vo.seo_ai_status eq 2"/}
+                    <span class="layui-badge layui-bg-orange">{:lang('admin/ai_seo/status_fallback')}</span>
+                    {else/}
+                    <span class="layui-badge layui-bg-gray">{:lang('admin/ai_seo/status_none')}</span>
+                    {/if}
+                </td>
                 <td>{$vo.manga_hits}</td>
                 <td>{$vo.manga_score}</td>
                 <td><a data-href="{:url('index/select')}?tab=manga&col=manga_level&tpl=select_level&url=manga/field&ids={$vo.manga_id}" data-width="270" data-height="100" class=" j-select"><span class="layui-badge layui-bg-orange">{$vo.manga_level}</span></a></td>
                 <td>{if condition="$vo.ismake eq 1"}<a target="_blank" class="layui-badge layui-bg-green " href="#">Y</a>{else/}<a class="layui-badge" href="{:url('make/make?ac=info&tab=manga')}?ids={$vo.manga_id}&ref=1">N</a>{/if}</td>
                 <td>{$vo.manga_author|htmlspecialchars}</td>
                 <td>{$vo.manga_time|mac_day='color'}</td>
-                <td>
+                <td class="mac-table-opt-cell">
+                    <div class="mac-table-opt-btns">
                     {if condition="$param.recycle eq 1"}
-                    <a class="layui-badge-rim j-tr-del" data-href="{:url('restore?ids='.$vo['manga_id'])}" href="javascript:;" title="{:lang('recycle_restore')}">{:lang('recycle_restore')}</a>
-                    <a class="layui-badge-rim j-tr-del" data-href="{:url('del?ids='.$vo['manga_id'].'&purge=1')}" href="javascript:;" title="{:lang('recycle_purge')}">{:lang('recycle_purge')}</a>
+                    <a class="layui-btn layui-btn-normal j-tr-del" data-href="{:url('restore?ids='.$vo['manga_id'])}" href="javascript:;" title="{:lang('recycle_restore')}">{:lang('recycle_restore')}</a>
+                    <a class="layui-btn layui-btn-danger j-tr-del" data-href="{:url('del?ids='.$vo['manga_id'].'&purge=1')}" href="javascript:;" title="{:lang('recycle_purge')}">{:lang('recycle_purge')}</a>
                     {else/}
-                    <a class="layui-badge-rim j-iframe" data-full="1" data-href="{:url('info?id='.$vo['manga_id'])}" href="javascript:;" title="{:lang('edit')}">{:lang('edit')}</a>
-                    <a class="layui-badge-rim j-tr-del" data-href="{:url('del?ids='.$vo['manga_id'])}" href="javascript:;" title="{:lang('del')}">{:lang('del')}</a>
+                    <a href="javascript:;" class="layui-btn layui-btn-warm j-ai-seo-row" data-id="{$vo.manga_id}" title="{:lang('admin/ai_seo/list_row_btn')}">{:lang('admin/ai_seo/list_row_btn')}</a>
+                    <a class="layui-btn layui-btn-primary j-iframe" data-full="1" data-href="{:url('info?id='.$vo['manga_id'])}" href="javascript:;" title="{:lang('edit')}">{:lang('edit')}</a>
+                    <a class="layui-btn layui-btn-danger j-tr-del" data-href="{:url('del?ids='.$vo['manga_id'])}" href="javascript:;" title="{:lang('del')}">{:lang('del')}</a>
                     {/if}
+                    </div>
                 </td>
             </tr>
             {/volist}
@@ -152,10 +176,11 @@
 
 {include file="../../../application/admin/view_new/public/foot" /}
 
+<script type="text/javascript" src="__STATIC__/js/ai_seo_list.js?{$MAC_VERSION}"></script>
 <script type="text/javascript">
     var curUrl="{:url('manga/data',$param)}";
     layui.use(['laypage', 'layer','form', 'table'], function() {
-        var laypage = layui.laypage, layer = layui.layer, form = layui.form, table = layui.table;
+        var laypage = layui.laypage, layer = layui.layer, form = layui.form, table = layui.table, $ = layui.jquery;
 
         laypage.render({
             elem: 'pages'
@@ -201,6 +226,28 @@
                     break;
             }
         });
+
+        if (typeof initAiSeoListPage === 'function') {
+            initAiSeoListPage({
+                $: $,
+                layer: layer,
+                form: form,
+                postUrl: "{:url('manga/aiSeoGenerate')}",
+                lang: {
+                    no_selection: "{:lang('admin/ai_seo/list_no_selection')}",
+                    progress_title: "{:lang('admin/ai_seo/list_progress_title')}",
+                    progress_line: "{:lang('admin/ai_seo/list_progress_line')}",
+                    progress_sub: "{:lang('admin/ai_seo/list_progress_sub')}",
+                    summary: "{:lang('admin/ai_seo/list_summary')}",
+                    list_batch_cancel: "{:lang('admin/ai_seo/list_batch_cancel')}",
+                    list_summary_cancelled: "{:lang('admin/ai_seo/list_summary_cancelled')}",
+                    row_ok: "{:lang('admin/ai_seo/list_row_ok')}",
+                    row_fail: "{:lang('admin/ai_seo/msg_generate_fail')}",
+                    msg_request_fail: "{:lang('admin/ai_seo/msg_request_fail')}"
+                }
+            });
+        }
+
     });
 </script>
 </body>

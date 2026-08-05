@@ -21,6 +21,13 @@ class SeoAi
             }
             return self::generateForArt($res['info']);
         }
+        if ($mid === 8) {
+            $res = model('Manga')->infoData(['manga_id' => ['eq', $objId]], '*', 0);
+            if ($res['code'] !== 1 || empty($res['info'])) {
+                return ['code' => 0, 'msg' => 'manga not found'];
+            }
+            return self::generateForManga($res['info']);
+        }
         return ['code' => 0, 'msg' => 'unsupported mid'];
     }
 
@@ -54,6 +61,24 @@ class SeoAi
             'class' => (string)$art['art_class'],
             'tag' => (string)$art['art_tag'],
             'year' => date('Y', intval($art['art_time'])),
+            'area' => '',
+            'lang' => '',
+        ];
+        return self::generateAndSave($payload);
+    }
+
+    public static function generateForManga($manga)
+    {
+        $payload = [
+            'mid' => 8,
+            'obj_id' => intval($manga['manga_id']),
+            'name' => (string)$manga['manga_name'],
+            'subtitle' => (string)$manga['manga_sub'],
+            'blurb' => (string)$manga['manga_blurb'],
+            'content' => strip_tags(str_replace('$$$', '', (string)$manga['manga_content'])),
+            'class' => (string)$manga['manga_class'],
+            'tag' => (string)$manga['manga_tag'],
+            'year' => !empty($manga['manga_time']) ? date('Y', intval($manga['manga_time'])) : '',
             'area' => '',
             'lang' => '',
         ];
@@ -119,9 +144,12 @@ class SeoAi
             return self::fallbackResult($payload, $provider, $model, 'empty ai response');
         }
         $json = json_decode((string)$respBody, true);
+        if (!is_array($json) || !isset($json['choices'][0]['message']['content'])) {
+            return self::fallbackResult($payload, $provider, $model, 'invalid ai response');
+        }
         $content = (string)$json['choices'][0]['message']['content'];
         $parsed = json_decode($content, true);
-        if (empty($parsed) || empty($parsed['title'])) {
+        if (!is_array($parsed) || empty($parsed['title'])) {
             return self::fallbackResult($payload, $provider, $model, 'invalid ai response');
         }
 
@@ -130,15 +158,21 @@ class SeoAi
             'provider' => $provider,
             'model' => $model,
             'title' => self::normalizeTitle($parsed['title']),
-            'keywords' => self::normalizeKeywords($parsed['keywords']),
-            'description' => self::normalizeDescription($parsed['description']),
+            'keywords' => self::normalizeKeywords(isset($parsed['keywords']) ? $parsed['keywords'] : ''),
+            'description' => self::normalizeDescription(isset($parsed['description']) ? $parsed['description'] : ''),
             'error' => '',
         ];
     }
 
     private static function buildPrompt($payload)
     {
-        $type = $payload['mid'] == 1 ? 'video detail page' : 'article detail page';
+        if ($payload['mid'] == 1) {
+            $type = 'video detail page';
+        } elseif ($payload['mid'] == 8) {
+            $type = 'manga/comic detail page';
+        } else {
+            $type = 'article detail page';
+        }
         $targetLang = !empty($payload['target_lang']) ? $payload['target_lang'] : 'English';
         return "Generate SEO metadata for a {$type}.\n" .
             "Language: {$targetLang}.\n" .
