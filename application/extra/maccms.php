@@ -1,4 +1,5 @@
 <?php
+
 return array (
   'db' => 
   array (
@@ -14,6 +15,43 @@ return array (
     'part_size' => 20971520,
     'compress' => 1,
     'compress_level' => 4,
+  ),
+  'meilisearch' => 
+  array (
+    'enabled' => '0',
+    'host' => 'http://127.0.0.1:7700',
+    'api_key' => '',
+    'index_uid' => 'maccms_contents',
+    'timeout' => '8',
+    'ssl_verify' => '1',
+    'sync_on_save' => '1',
+    'search_only_wd' => '1',
+  ),
+  'email' => 
+  array (
+    'type' => 'Phpmailer',
+    'time' => '5',
+    'nick' => 'test',
+    'test' => 'test@qq.com',
+    'tpl' => 
+    array (
+      'test_title' => '【{$maccms.site_name}】测试邮件标题',
+      'test_body' => '【{$maccms.site_name}】当您看到这封邮件说明邮件配置正确了！感谢支持开源程序！',
+      'user_reg_title' => '【{$maccms.site_name}】的会员您好，请认真阅读邮件正文并按要求操作完成注册',
+      'user_reg_body' => '【{$maccms.site_name}】的会员您好，注册验证码为：{$code}，请在{$time}分钟内完成验证。',
+      'user_bind_title' => '【{$maccms.site_name}】的会员您好，请认真阅读邮件正文并按要求操作完成绑定',
+      'user_bind_body' => '【{$maccms.site_name}】的会员您好，绑定验证码为：{$code}，请在{$time}分钟内完成验证。',
+      'user_findpass_title' => '【{$maccms.site_name}】的会员您好，请认真阅读邮件正文并按要求操作完成找回',
+      'user_findpass_body' => '【{$maccms.site_name}】的会员您好，找回验证码为：{$code}，请在{$time}分钟内完成验证。',
+    ),
+    'phpmailer' => 
+    array (
+      'host' => 'smtp.qq.com',
+      'port' => '587',
+      'secure' => 'tsl',
+      'username' => 'test@qq.com',
+      'password' => 'test',
+    ),
   ),
   'site' => 
   array (
@@ -531,6 +569,89 @@ return array (
     'gjci4' => 'http://img.aolusb.com/im/201601/201612723554344882.jpg',
     'gjcl4' => 'http://www.loldytt.com/Xijudianying/WPDWP/',
   ),
+  'play' => 
+  array (
+    'width' => '100%',
+    'height' => '100%',
+    'widthmob' => '100%',
+    'heightmob' => '100%',
+    'widthpop' => '0',
+    'heightpop' => '600',
+    'second' => '5',
+    'prestrain' => '//union.maccms.la/html/prestrain.html',
+    'buffer' => '//union.maccms.la/html/buffer.html',
+    'parse' => '',
+    'autofull' => '0',
+    'showtop' => '1',
+    'showlist' => '1',
+    'flag' => '0',
+    'colors' => '000000,F6F6F6,F6F6F6,333333,666666,FFFFF,FF0000,2c2c2c,ffffff,a3a3a3,2c2c2c,adadad,adadad,48486c,fcfcfc',
+  ),
+  'sms' => 
+  array (
+    'type' => '',
+    'sign' => '我的网站',
+    'tpl_code_reg' => 'SMS_144850895',
+    'tpl_code_bind' => 'SMS_144940283',
+    'tpl_code_findpass' => 'SMS_144851023',
+    'aliyun' => 
+    array (
+      'appid' => '',
+      'appkey' => '',
+    ),
+    'qcloud' => 
+    array (
+      'appid' => '',
+      'appkey' => '',
+    ),
+  ),
+  'seo' => 
+  array (
+    'vod' => 
+    array (
+      'name' => '视频首页',
+      'key' => '短视频,搞笑视频,视频分享,免费视频,在线视频,预告片',
+      'des' => '提供最新最快的视频分享数据',
+    ),
+    'art' => 
+    array (
+      'name' => '文章首页',
+      'key' => '新闻资讯,娱乐新闻,八卦娱乐,狗仔队,重大事件',
+      'des' => '提供最新最快的新闻资讯',
+    ),
+    'actor' => 
+    array (
+      'name' => '演员首页',
+      'key' => '大陆明星,港台明星,日韩明星,欧美明星,最火明星',
+      'des' => '明星个人信息介绍',
+    ),
+    'role' => 
+    array (
+      'name' => '角色首页',
+      'key' => '电影角色,电视剧角色,动漫角色,综艺角色',
+      'des' => '角色人物介绍',
+    ),
+    'plot' => 
+    array (
+      'name' => '剧情首页',
+      'key' => '剧情连载,剧情更新,剧情前瞻,剧情完结',
+      'des' => '提供最新的剧情信息',
+    ),
+  ),
+  'urlsend' => 
+  array (
+    'baidu' => 
+    array (
+      'token' => '111',
+    ),
+    'baidufast' => 
+    array (
+      'token' => '222',
+    ),
+  ),
+  'extra' => 
+  array (
+  ),
   'view' => 
   array (
     'index' => '0',
@@ -647,125 +768,5 @@ label-<file> => label/index
 
 plotdetail/<id>-<page?>   => plot/plot
 plotdetail/<id>   => plot/detail',
-  ),
-  'email' => 
-  array (
-    'type' => 'Phpmailer',
-    'time' => '5',
-    'nick' => 'test',
-    'test' => 'test@qq.com',
-    'tpl' => 
-    array (
-      'test_title' => '【{$maccms.site_name}】测试邮件标题',
-      'test_body' => '【{$maccms.site_name}】当您看到这封邮件说明邮件配置正确了！感谢支持开源程序！',
-      'user_reg_title' => '【{$maccms.site_name}】的会员您好，请认真阅读邮件正文并按要求操作完成注册',
-      'user_reg_body' => '【{$maccms.site_name}】的会员您好，注册验证码为：{$code}，请在{$time}分钟内完成验证。',
-      'user_bind_title' => '【{$maccms.site_name}】的会员您好，请认真阅读邮件正文并按要求操作完成绑定',
-      'user_bind_body' => '【{$maccms.site_name}】的会员您好，绑定验证码为：{$code}，请在{$time}分钟内完成验证。',
-      'user_findpass_title' => '【{$maccms.site_name}】的会员您好，请认真阅读邮件正文并按要求操作完成找回',
-      'user_findpass_body' => '【{$maccms.site_name}】的会员您好，找回验证码为：{$code}，请在{$time}分钟内完成验证。',
-    ),
-    'phpmailer' => 
-    array (
-      'host' => 'smtp.qq.com',
-      'port' => '587',
-      'secure' => 'tsl',
-      'username' => 'test@qq.com',
-      'password' => 'test',
-    ),
-  ),
-  'play' => 
-  array (
-    'width' => '100%',
-    'height' => '100%',
-    'widthmob' => '100%',
-    'heightmob' => '100%',
-    'widthpop' => '0',
-    'heightpop' => '600',
-    'second' => '5',
-    'prestrain' => '//union.maccms.la/html/prestrain.html',
-    'buffer' => '//union.maccms.la/html/buffer.html',
-    'parse' => '',
-    'autofull' => '0',
-    'showtop' => '1',
-    'showlist' => '1',
-    'flag' => '0',
-    'colors' => '000000,F6F6F6,F6F6F6,333333,666666,FFFFF,FF0000,2c2c2c,ffffff,a3a3a3,2c2c2c,adadad,adadad,48486c,fcfcfc',
-  ),
-  'sms' => 
-  array (
-    'type' => '',
-    'sign' => '我的网站',
-    'tpl_code_reg' => 'SMS_144850895',
-    'tpl_code_bind' => 'SMS_144940283',
-    'tpl_code_findpass' => 'SMS_144851023',
-    'aliyun' => 
-    array (
-      'appid' => '',
-      'appkey' => '',
-    ),
-    'qcloud' => 
-    array (
-      'appid' => '',
-      'appkey' => '',
-    ),
-  ),
-  'extra' => 
-  array (
-  ),
-  'seo' => 
-  array (
-    'vod' => 
-    array (
-      'name' => '视频首页',
-      'key' => '短视频,搞笑视频,视频分享,免费视频,在线视频,预告片',
-      'des' => '提供最新最快的视频分享数据',
-    ),
-    'art' => 
-    array (
-      'name' => '文章首页',
-      'key' => '新闻资讯,娱乐新闻,八卦娱乐,狗仔队,重大事件',
-      'des' => '提供最新最快的新闻资讯',
-    ),
-    'actor' => 
-    array (
-      'name' => '演员首页',
-      'key' => '大陆明星,港台明星,日韩明星,欧美明星,最火明星',
-      'des' => '明星个人信息介绍',
-    ),
-    'role' => 
-    array (
-      'name' => '角色首页',
-      'key' => '电影角色,电视剧角色,动漫角色,综艺角色',
-      'des' => '角色人物介绍',
-    ),
-    'plot' => 
-    array (
-      'name' => '剧情首页',
-      'key' => '剧情连载,剧情更新,剧情前瞻,剧情完结',
-      'des' => '提供最新的剧情信息',
-    ),
-  ),
-  'meilisearch' =>
-  array (
-    'enabled' => '0',
-    'host' => 'http://127.0.0.1:7700',
-    'api_key' => '',
-    'index_uid' => 'maccms_contents',
-    'timeout' => '8',
-    'ssl_verify' => '1',
-    'sync_on_save' => '1',
-    'search_only_wd' => '1',
-  ),
-  'urlsend' => 
-  array (
-    'baidu' => 
-    array (
-      'token' => '111',
-    ),
-    'baidufast' => 
-    array (
-      'token' => '222',
-    ),
   ),
 );
