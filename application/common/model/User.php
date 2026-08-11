@@ -310,7 +310,9 @@ class User extends Base
             return ['code' => 1010, 'msg' => lang('model/user/reg_err')];
         }
         $nid = $this->getLastInsID();
-        
+        // 风控日志（issue #149）：注册成功记录 IP/UA
+        \app\common\model\UserAccessLog::record('register', ['user_id' => $nid, 'user_name' => $fields['user_name']]);
+
         $invite_code = $this->generateUniqueInviteCode($nid);
         $this->where('user_id', $nid)->update(['user_invite_code' => $invite_code]);
         
@@ -470,9 +472,17 @@ class User extends Base
         if (!empty($row)) {
             // ---- 帐号存在：校验密码 ----
             if (!mac_verify_password($password_raw, $row['user_pwd'])) {
+                \app\common\model\UserAccessLog::record('login_fail', [
+                    'user_id' => 0,
+                    'user_name' => $user_name,
+                ]);
                 return ['code' => 1003, 'msg' => lang('pass_err')];
             }
             if ($row['user_status'] != 1) {
+                \app\common\model\UserAccessLog::record('login_fail', [
+                    'user_id' => 0,
+                    'user_name' => $user_name,
+                ]);
                 return ['code' => 1004, 'msg' => lang('model/user/account_disabled')];
             }
 
@@ -502,6 +512,10 @@ class User extends Base
             $this->where('user_id', $row['user_id'])->update($update);
 
             $this->_setLoginCookie($row, $random);
+            \app\common\model\UserAccessLog::record('login', [
+                'user_id' => $row['user_id'],
+                'user_name' => $row['user_name'],
+            ]);
 
             $info = $this->where('user_id', $row['user_id'])->find();
             if ($info) {
@@ -569,6 +583,10 @@ class User extends Base
             return ['code' => 1011, 'msg' => lang('model/user/reg_fail_try_later')];
         }
         $nid = $this->getLastInsID();
+        \app\common\model\UserAccessLog::record('register', [
+            'user_id' => $nid,
+            'user_name' => $user_name,
+        ]);
 
         // 生成邀请码
         $invite_code = $this->generateUniqueInviteCode($nid);
@@ -673,12 +691,25 @@ class User extends Base
         $row = $this->where($where)->find();
 
         if(empty($row)) {
+            if (empty($data['openid'])) {
+                // 查无或停用账号同样是撞库/账号喷洒的重要信号；失败事件固定 user_id=0，
+                // 不把攻击者来源误关联到被尝试的账号。
+                \app\common\model\UserAccessLog::record('login_fail', [
+                    'user_id' => 0,
+                    'user_name' => $data['user_name'],
+                ]);
+            }
             return ['code' => 1003, 'msg' => lang('model/user/not_found')];
         }
 
         // 用户名/密码登录需校验密码；openid 登录凭 openid 即可，不校验密码
         if (empty($data['openid'])) {
             if (!mac_verify_password($password_raw, $row['user_pwd'])) {
+                // 风控日志（issue #149）：记录登录失败尝试的 IP/UA，用于关联封禁撞库/爆破
+                \app\common\model\UserAccessLog::record('login_fail', [
+                    'user_id' => 0,
+                    'user_name' => isset($data['user_name']) ? $data['user_name'] : '',
+                ]);
                 return ['code' => 1003, 'msg' => lang('model/user/not_found')];
             }
         }
@@ -709,6 +740,9 @@ class User extends Base
         if ($res === false) {
             return ['code' => 1004, 'msg' => lang('model/user/update_login_err')];
         }
+
+        // 风控日志（issue #149）：登录成功记录 IP/UA，用于关联封禁分析
+        \app\common\model\UserAccessLog::record('login', ['user_id' => $row['user_id'], 'user_name' => $row['user_name']]);
 
         //用户组
         $group_list = model('Group')->getCache('group_list');
@@ -1478,56 +1512,52 @@ class User extends Base
         return ['code'=>1,'msg'=>lang('model/user/visit_ok')];
     }
 
-    public function reward($fee_points=0)
+    public function reward($fee_points=0, $strict=false)
     {
         //三级分销
+        // $strict=true（购买交易）：任一必要写入失败即返回错误码，交由调用方回滚整笔事务，
+        //   避免「只给上级加了积分却漏记积分日志」的账目黑洞。
+        // ★ 前置约束：$strict=true 必须在 Db::startTrans() 事务内调用。本方法自身只返回错误码、
+        //   不会 rollback；strict 下若一级上级 setInc 已成功而随后 Plog::saveData 失败，会带着
+        //   「已加分未记账」的中间状态返回，须由调用方 rollback 撤销（否则残留半付的分销链）。
+        //   当前 strict=true 的调用方仅两处，且均在 Db::startTrans() 事务内：
+        //   api/controller/Payment.php::buy_popedom() 与 index/controller/User.php::ajax_buy_popedom()。
+        //   本类 upgrade() 等升级/充值流程走 $strict=false（默认），不受此约束；事务外调用请勿传 strict=true。
+        // $strict=false（默认，兼容既有会员升级/充值等流程）：三级分销为尽力而为的附带奖励，
+        //   内部失败自行吞掉、不阻断主流程，保持原有语义。
         if($fee_points>0 && $GLOBALS['config']['user']['reward_status'] == '1'){
-
-            if(!empty($GLOBALS['config']['user']['reward_ratio']) && !empty($GLOBALS['user']['user_pid'])){
-                $points = floor($fee_points / 100 * $GLOBALS['config']['user']['reward_ratio']);
-                if($points>0){
-                    $where=[];
-                    $where['user_id'] = $GLOBALS['user']['user_pid'];
-                    $r = model('User')->where($where)->setInc('user_points',$points);
-                    if($r){
-                        $data = [];
-                        $data['user_id'] = $GLOBALS['user']['user_pid'];
-                        $data['plog_type'] = 4;
-                        $data['plog_points'] = $points;
-                        $data['plog_remarks'] = lang('model/user/reward_tip',[$GLOBALS['user']['user_id'],$GLOBALS['user']['user_name'],$fee_points,$points]);
-                        model('Plog')->saveData($data);
-                    }
+            $levels = [
+                ['ratio' => 'reward_ratio',   'pid' => 'user_pid',   'type' => 4],
+                ['ratio' => 'reward_ratio_2', 'pid' => 'user_pid_2', 'type' => 5],
+                ['ratio' => 'reward_ratio_3', 'pid' => 'user_pid_3', 'type' => 6],
+            ];
+            foreach ($levels as $lv) {
+                if (empty($GLOBALS['config']['user'][$lv['ratio']]) || empty($GLOBALS['user'][$lv['pid']])) {
+                    continue;
                 }
-            }
-            if(!empty($GLOBALS['config']['user']['reward_ratio_2']) && !empty($GLOBALS['user']['user_pid_2'])){
-                $points = floor($fee_points / 100 * $GLOBALS['config']['user']['reward_ratio_2']);
-                if($points>0){
-                    $where=[];
-                    $where['user_id'] = $GLOBALS['user']['user_pid_2'];
-                    $r = model('User')->where($where)->setInc('user_points',$points);
-                    if($r){
-                        $data = [];
-                        $data['user_id'] = $GLOBALS['user']['user_pid_2'];
-                        $data['plog_type'] = 5;
-                        $data['plog_points'] = $points;
-                        $data['plog_remarks'] =lang('model/user/reward_tip',[$GLOBALS['user']['user_id'],$GLOBALS['user']['user_name'],$fee_points,$points]);
-                        model('Plog')->saveData($data);
-                    }
+                $points = floor($fee_points / 100 * $GLOBALS['config']['user'][$lv['ratio']]);
+                if ($points <= 0) {
+                    continue;
                 }
-            }
-            if(!empty($GLOBALS['config']['user']['reward_ratio_3']) && !empty($GLOBALS['user']['user_pid_3'])){
-                $points = floor($fee_points / 100 * $GLOBALS['config']['user']['reward_ratio_3']);
-                if($points>0){
-                    $where=[];
-                    $where['user_id'] = $GLOBALS['user']['user_pid_3'];
-                    $r = model('User')->where($where)->setInc('user_points',$points);
-                    if($r){
-                        $data = [];
-                        $data['user_id'] = $GLOBALS['user']['user_pid_3'];
-                        $data['plog_type'] = 6;
-                        $data['plog_points'] = $points;
-                        $data['plog_remarks'] = lang('model/user/reward_tip',[$GLOBALS['user']['user_id'],$GLOBALS['user']['user_name'],$fee_points,$points]);
-                        model('Plog')->saveData($data);
+                $where = ['user_id' => $GLOBALS['user'][$lv['pid']]];
+                $r = model('User')->where($where)->setInc('user_points', $points);
+                // setInc 返回 false 才是写库失败；受影响 0 行代表上级用户不存在（配置层面问题），
+                // 非交易故障，strict 下也不应连累买家的正常交易，故仅跳过、不判失败。
+                if ($r === false) {
+                    if ($strict) {
+                        return ['code'=>1101,'msg'=>lang('save_err')];
+                    }
+                    continue;
+                }
+                if ($r) {
+                    $data = [];
+                    $data['user_id'] = $GLOBALS['user'][$lv['pid']];
+                    $data['plog_type'] = $lv['type'];
+                    $data['plog_points'] = $points;
+                    $data['plog_remarks'] = lang('model/user/reward_tip',[$GLOBALS['user']['user_id'],$GLOBALS['user']['user_name'],$fee_points,$points]);
+                    $plogRes = model('Plog')->saveData($data);
+                    if ($strict && (!is_array($plogRes) || intval(isset($plogRes['code']) ? $plogRes['code'] : 0) !== 1)) {
+                        return ['code'=>1102,'msg'=>lang('save_err')];
                     }
                 }
             }

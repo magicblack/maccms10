@@ -1,0 +1,159 @@
+{include file="../../../application/admin/view_new/public/head" /}
+<div class="page-container p10">
+
+    <div class="my-toolbar-box">
+        <div class="mb-2">
+            <form class="layui-form space-x-1 space-y-1" method="get" action="{:url('index')}">
+                <div class="layui-input-inline w120">
+                    <input type="number" name="uid" min="0" placeholder="{:lang('user')} ID" class="layui-input" value="{$param['uid']|default=''|mac_filter_xss}">
+                </div>
+                <div class="layui-input-inline w150">
+                    <select name="action">
+                        <option value="">{:lang('admin/useraccesslog/col_action')}（{:lang('all')}）</option>
+                        {volist name="actions" id="act"}
+                        <option value="{$act}" {if condition="isset($param['action']) && $param['action'] eq $act"}selected{/if}>{$act}</option>
+                        {/volist}
+                    </select>
+                </div>
+                <div class="layui-input-inline w150">
+                    <input type="text" autocomplete="off" placeholder="IP" class="layui-input" name="ip" value="{$param['ip']|default=''|mac_filter_xss}">
+                </div>
+                <div class="layui-input-inline w120">
+                    <select name="anonymized">
+                        <option value="">{:lang('admin/useraccesslog/col_anonymized')}（{:lang('all')}）</option>
+                        <option value="0" {if condition="isset($param['anonymized']) && $param['anonymized'] eq '0'"}selected{/if}>{:lang('admin/useraccesslog/anonymized_no')}</option>
+                        <option value="1" {if condition="isset($param['anonymized']) && $param['anonymized'] eq '1'"}selected{/if}>{:lang('admin/useraccesslog/anonymized_yes')}</option>
+                    </select>
+                </div>
+                <div class="layui-input-inline">
+                    <input type="text" autocomplete="off" placeholder="{:lang('user')}" class="layui-input" name="wd" value="{$param['wd']|default=''|mac_filter_xss}">
+                </div>
+                <button type="submit" class="layui-btn mgl-20">{:lang('btn_search')}</button>
+            </form>
+        </div>
+
+        <div class="flex gap-5 overflow-x-auto overflow-y-hidden">
+            <!-- 批量删除：j-page-btns 走 $.post 提交本表单；CSRF 由 admin_common.js 自动附加的 X-CSRF-Token 头承载，删除接口只收 POST -->
+            <a data-href="{:url('del')}" class="layui-btn layui-btn-primary j-page-btns confirm"><i class="layui-icon">&#xe640;</i>{:lang('del')}</a>
+            <!-- 清空全部：破坏性操作改为 POST，避免 GET 被跨站自动触发；token 随 $.post 一并提交 -->
+            <a href="javascript:;" id="btnClearAll" class="layui-btn layui-btn-primary"><i class="layui-icon">&#xe640;</i>{:lang('clear')}</a>
+        </div>
+    </div>
+
+    <form class="layui-form" method="post" id="pageListForm">
+        <table class="layui-table min-w-[1240px]" lay-size="sm">
+            <thead>
+            <tr>
+                <th width="25"><input type="checkbox" lay-skin="primary" lay-filter="allChoose"></th>
+                <th width="70">{:lang('id')}</th>
+                <th width="120">{:lang('user')}</th>
+                <th width="90">{:lang('admin/useraccesslog/col_action')}</th>
+                <th width="110">{:lang('model')}(mid-rid)</th>
+                <th width="130">{:lang('admin/useraccesslog/col_ip')}</th>
+                <th width="180">{:lang('admin/useraccesslog/col_ua')}</th>
+                <th>{:lang('admin/useraccesslog/col_path')}</th>
+                <th width="70">{:lang('admin/useraccesslog/col_anonymized')}</th>
+                <th width="140">{:lang('log_time')}</th>
+                <th width="110">{:lang('opt')}</th>
+            </tr>
+            </thead>
+            <tbody>
+            {volist name="list" id="vo"}
+            <tr>
+                <td><input type="checkbox" name="ids[]" value="{$vo.log_id}" class="layui-checkbox checkbox-ids" lay-skin="primary"></td>
+                <td>{$vo.log_id}</td>
+                <!-- 外部可控字段（user_name/IP/UA/path）一律用 htmlspecialchars(ENT_QUOTES,UTF-8) 做 HTML/属性上下文转义。
+                     不能只依赖 mac_filter_xss()：它对 URL 型字符串会跳过实体转义，放进 title="..." 属性会被 UA 突破属性造成 XSS。 -->
+                <td>[{$vo.user_id}]{:htmlspecialchars((string)$vo['user_name'], ENT_QUOTES, 'UTF-8')}</td>
+                <td><span class="layui-badge layui-bg-gray">{$vo.log_action|mac_filter_xss}</span></td>
+                <td>{$vo.log_mid}{if condition="$vo.log_rid gt 0"}-{$vo.log_rid}{/if}</td>
+                <td><code>{:htmlspecialchars((string)$vo['log_ip'], ENT_QUOTES, 'UTF-8')}</code></td>
+                <td title="{:htmlspecialchars((string)$vo['log_ua'], ENT_QUOTES, 'UTF-8')}">{:htmlspecialchars((string)$vo['log_device'], ENT_QUOTES, 'UTF-8')} / {:htmlspecialchars((string)$vo['log_os'], ENT_QUOTES, 'UTF-8')} / {:htmlspecialchars((string)$vo['log_browser'], ENT_QUOTES, 'UTF-8')}</td>
+                <td style="word-break:break-all;">{:htmlspecialchars(mac_substring($vo['log_path'],80), ENT_QUOTES, 'UTF-8')}</td>
+                <td>
+                    {if condition="$vo.log_anonymized eq 1"}<span class="layui-badge layui-bg-orange">{:lang('admin/useraccesslog/anonymized_yes')}</span>
+                    {else /}<span class="layui-badge layui-bg-green">{:lang('admin/useraccesslog/anonymized_no')}</span>{/if}
+                </td>
+                <td>{$vo.log_time|mac_day='color'}</td>
+                <td>
+                    {if condition="$vo.user_id gt 0"}<a class="layui-badge-rim" href="{:url('info',['uid'=>$vo['user_id']])}" title="{:lang('admin/useraccesslog/related_title')}">{:lang('admin/useraccesslog/related_btn')}</a>{/if}
+                    <a class="layui-badge-rim j-row-del" data-id="{$vo.log_id}" href="javascript:;" title="{:lang('del')}">{:lang('del')}</a>
+                </td>
+            </tr>
+            {/volist}
+            </tbody>
+        </table>
+
+        <div id="pages" class="center"></div>
+
+    </form>
+</div>
+
+{include file="../../../application/admin/view_new/public/foot" /}
+
+<script type="text/javascript">
+    var curUrl = "{:url('user_access_log/index',$param)}";
+    var DEL_URL = "{:url('del')}";
+    layui.use(['laypage', 'layer'], function () {
+        var laypage = layui.laypage;
+        var layer = layui.layer;
+        var $ = layui.$;
+        laypage.render({
+            elem: 'pages'
+            , count: {$total}
+            , limit: {$limit}
+            , curr: {$page}
+            , layout: ['count', 'prev', 'page', 'next', 'limit', 'skip']
+            , jump: function (obj, first) {
+                if (!first) {
+                    location.href = curUrl.replace('%7Bpage%7D', obj.curr).replace('%7Blimit%7D', obj.limit);
+                }
+            }
+        });
+
+        // 破坏性操作统一走 POST。CSRF 采用会话级“稳定令牌”：admin_common.js 已为所有
+        // jQuery POST 自动带上 X-CSRF-Token 头（值取自 <meta name="mac-admin-csrf">），
+        // 开启 security_csrf_admin 后即受全局 CsrfGuard 保护（GET 不在其保护面内）。
+        // 这里再把同一枚稳定令牌放进 body __token__ 与 info.html 对齐；绝不使用
+        // {$Request.token} 那种“每次渲染轮换并覆盖 Session __token__”的旧写法（会导致多标签 403）。
+        function delToken() {
+            var m = document.querySelector('meta[name="mac-admin-csrf"]');
+            return m ? (m.getAttribute('content') || '') : '';
+        }
+
+        function postDel(data, onOk) {
+            data = data || {};
+            data.__token__ = delToken();
+            $.post(DEL_URL, data, function (res) {
+                if (res && res.code == 1) {
+                    layer.msg(res.msg || 'ok', {icon: 1});
+                    if (typeof onOk === 'function') { onOk(); }
+                    else { setTimeout(function () { location.reload(); }, 800); }
+                } else {
+                    layer.alert((res && res.msg) ? res.msg : "{:lang('admin/useraccesslog/op_err')}", {icon: 2});
+                }
+            }, 'json');
+        }
+
+        // 清空全部
+        $('#btnClearAll').on('click', function () {
+            layer.confirm("{:lang('clear_confirm')}", function (idx) {
+                layer.close(idx);
+                postDel({all: 1});
+            });
+        });
+
+        // 单条删除
+        $(document).on('click', '.j-row-del', function () {
+            var id = $(this).data('id');
+            if (!id) { return; }
+            var $tr = $(this).closest('tr');
+            layer.confirm("{:lang('del')}?", function (idx) {
+                layer.close(idx);
+                postDel({ids: id}, function () { $tr.remove(); });
+            });
+        });
+    });
+</script>
+</body>
+</html>

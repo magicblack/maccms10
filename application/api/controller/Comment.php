@@ -139,9 +139,15 @@ class Comment extends Base
         $cookie = 'comment_timespan';
         if (!empty(cookie($cookie))) return json(['code' => 1005, 'msg' => lang('frequently')]);
 
-        if ($GLOBALS['config']['comment']['login'] == 1) {
-            $check = model('User')->checkLogin();
-            if ($check['code'] > 1) return json(['code' => 1003, 'msg' => lang('index/require_login')]);
+        // 解析已验证身份：仅当 JWT 或签名 Cookie 校验通过才认账，绝不直接信任可伪造的 user_id Cookie，
+        // 否则攻击者可伪造 Cookie 把留言/风控 comment 事件归到任意用户名下。
+        $authUser = null;
+        $check = model('User')->checkLogin();
+        if (isset($check['code']) && intval($check['code']) === 1 && !empty($check['info'])) {
+            $authUser = $check['info'];
+        }
+        if ($GLOBALS['config']['comment']['login'] == 1 && empty($authUser)) {
+            return json(['code' => 1003, 'msg' => lang('index/require_login')]);
         }
 
         $data = [];
@@ -152,10 +158,9 @@ class Comment extends Base
         $data['comment_ip'] = mac_get_client_ip();
         $data['comment_time'] = time();
 
-        if (!empty(cookie('user_id'))) {
-            $uinfo = model('User')->field('user_nick_name,user_name')->where(['user_id' => intval(cookie('user_id'))])->find();
-            $data['user_id'] = intval(cookie('user_id'));
-            $data['comment_name'] = htmlentities($uinfo['user_nick_name'] ?: $uinfo['user_name']);
+        if (!empty($authUser)) {
+            $data['user_id'] = intval($authUser['user_id']);
+            $data['comment_name'] = htmlentities($authUser['user_nick_name'] ?: $authUser['user_name']);
         } else {
             $data['user_id'] = 0;
             $data['comment_name'] = htmlentities(trim($param['comment_name'] ?? lang('controller/visitor')));
@@ -164,6 +169,14 @@ class Comment extends Base
         $data['comment_status'] = ($GLOBALS['config']['comment']['audit'] == 1) ? 0 : 1;
         $res = model('Comment')->saveData($data);
         cookie($cookie, 't', 30);
+        // 风控日志（issue #149）：登录用户发表评论埋点（游客评论 user_id=0 不记）
+        if (isset($res['code']) && intval($res['code']) === 1 && intval($data['user_id']) > 0) {
+            \app\common\model\UserAccessLog::record('comment', [
+                'user_id' => intval($data['user_id']),
+                'mid'     => intval($data['comment_mid']),
+                'rid'     => intval($data['comment_rid']),
+            ]);
+        }
         if (isset($res['code']) && intval($res['code']) === 1 && intval($data['comment_status']) == 1 && intval($data['comment_pid']) > 0) {
             try {
                 model('Notify')->sendReplyNotify(intval($data['comment_pid']), isset($data['user_id']) ? intval($data['user_id']) : 0);

@@ -391,6 +391,10 @@ class Auth extends Base
         if ($token === '') {
             return json(['code' => 1005, 'msg' => 'Token issue failed']);
         }
+        // 风控日志（issue #149）：API 签发 JWT 令牌（凭证签发关键行为）
+        \app\common\model\UserAccessLog::record('api_token', [
+            'user_id' => (int)$meta['user_id'],
+        ]);
 
         return json([
             'code' => 1,

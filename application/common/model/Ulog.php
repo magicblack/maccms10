@@ -317,7 +317,14 @@ class Ulog extends Base {
 
     public function saveData($data)
     {
-        $data['user_id'] = intval(cookie('user_id'));
+        // 优先采用调用方已验证的 user_id（Web 取 $GLOBALS['user']、API 取 checkLogin/JWT 结果）；
+        // 仅在未提供时才回退 Cookie。JWT 场景没有 user_id Cookie，若无条件覆盖会把已认证用户的
+        // 购买/收藏记录错误写成 user_id=0 而校验失败。
+        if (empty($data['user_id'])) {
+            $data['user_id'] = intval(cookie('user_id'));
+        } else {
+            $data['user_id'] = intval($data['user_id']);
+        }
         $data['ulog_time'] = time();
 
         $validate = \think\Loader::validate('Ulog');

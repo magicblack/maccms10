@@ -318,6 +318,11 @@ class Index extends Controller
             'access_track_max_ip'   => '300',
             'retain_access_days'    => '30',
             'ban_whitelist'         => '',
+            // 用户访问风控日志（issue #149）
+            'user_access_log_enabled' => '1',
+            'user_access_throttle_min' => '10',
+            'retain_user_access_days'  => '90',
+            'user_access_anonymize_days' => '30',
             'webhook_url'           => '',
             'webhook_secret'        => '',
             'telegram_token'        => '',
@@ -458,6 +463,19 @@ class Index extends Controller
 					'param'   => 'limit=200&days=30',
 					'weeks'   => '1,2,3,4,5,6,0',
 					'hours'   => '05',
+					'runtime' => 0,
+				],
+				// 用户访问风控日志（issue #149）：全新安装也必须自动执行匿名化/清理，
+				// 否则只建表并默认开启采集会造成敏感 IP/UA 无限期累积。
+				'user_access_purge' => [
+					'id'      => 'user_access_purge',
+					'status'  => '1',
+					'name'    => 'user_access_purge',
+					'des'     => '用户访问风控日志清理/匿名化',
+					'file'    => 'user_access_purge',
+					'param'   => 'max=5000',
+					'weeks'   => '1,2,3,4,5,6,0',
+					'hours'   => '00,01,02,03,04,05,06,07,08,09,10,11,12,13,14,15,16,17,18,19,20,21,22,23',
 					'runtime' => 0,
 				],
 				// PWA Web Push：广播队列派发任务（feat-pwa）。与 update/database.php 保持一致，

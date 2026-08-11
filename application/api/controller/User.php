@@ -601,16 +601,34 @@ class User extends Base
             $data['ulog_points'] = $res['info']['vod_points_' . $flag];
         }
         $data['ulog_points'] = intval($data['ulog_points']);
+        $__ualMap = [2 => 'fav', 3 => 'want', 4 => 'play', 5 => 'down'];
         // 已存在则更新时间
         $existing = model('Ulog')->infoData($data);
         if ($existing['code'] == 1) {
-            model('Ulog')->where($data)->update(['ulog_time' => time()]);
+            $updated = model('Ulog')->where($data)->update(['ulog_time' => time()]);
+            // update() 返回 false 才是写库失败；受影响行数为 0（时间戳值未变）仍算成功。失败不埋点。
+            if ($updated !== false && isset($__ualMap[$data['ulog_type']])) {
+                // 只有原有行为日志更新成功后才记录对应风控行为。
+                \app\common\model\UserAccessLog::record($__ualMap[$data['ulog_type']], [
+                    'user_id' => $uid,
+                    'mid'     => $data['ulog_mid'],
+                    'rid'     => $data['ulog_rid'],
+                ]);
+            }
             return json(['code' => 1, 'msg' => lang('update_ok')]);
         }
         if ($data['ulog_points'] > 0) {
             return json(['code' => 2001, 'msg' => lang('index/ulog_fee')]);
         }
         $res = model('Ulog')->saveData($data);
+        if (isset($res['code']) && intval($res['code']) === 1 && isset($__ualMap[$data['ulog_type']])) {
+            // 付费播放/下载在上方已被拦截；走到这里代表行为日志确实写入成功。
+            \app\common\model\UserAccessLog::record($__ualMap[$data['ulog_type']], [
+                'user_id' => $uid,
+                'mid'     => $data['ulog_mid'],
+                'rid'     => $data['ulog_rid'],
+            ]);
+        }
         return json($res);
     }
 

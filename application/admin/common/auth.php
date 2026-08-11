@@ -84,6 +84,13 @@ return array (
         'controller' => 'system',
         'action' => 'configuser',
       ),
+      2111 =>
+      array (
+        'show' => 1,
+        'name' => lang('menu/configuseraccess'),
+        'controller' => 'system',
+        'action' => 'configuseraccess',
+      ),
       212 => 
       array (
         'show' => 0,
@@ -1410,6 +1417,41 @@ return array (
         'name' => '--访问日志删除',
         'controller' => 'ulog',
         'action' => 'del',
+      ),
+      661 =>
+      array (
+        'show' => 1,
+        'name' => lang('menu/user_access_log'),
+        'controller' => 'user_access_log',
+        'action' => 'index',
+      ),
+      6611 =>
+      array (
+        'show' => 0,
+        'name' => '--'.lang('del'),
+        'controller' => 'user_access_log',
+        'action' => 'del',
+      ),
+      6612 =>
+      array (
+        'show' => 0,
+        'name' => '--'.lang('detail'),
+        'controller' => 'user_access_log',
+        'action' => 'info',
+      ),
+      6613 =>
+      array (
+        'show' => 0,
+        'name' => '--'.lang('admin/monitor/ban'),
+        'controller' => 'user_access_log',
+        'action' => 'ban',
+      ),
+      6614 =>
+      array (
+        'show' => 0,
+        'name' => '--'.lang('admin/monitor/unban'),
+        'controller' => 'user_access_log',
+        'action' => 'unban',
       ),
       67 => 
       array (

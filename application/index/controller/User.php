@@ -68,15 +68,31 @@ class User extends Base
             }
             $data['ulog_points'] = intval($data['ulog_points']);
 
+            $__ualMap = [2 => 'fav', 3 => 'want', 4 => 'play', 5 => 'down'];
             $res = model('Ulog')->infoData($data);
             if ($res['code'] == 1) {
                 $r = model('Ulog')->where($data)->update(['ulog_time'=>time()]);
+                // update() 返回 false 才是写库失败；受影响行数为 0（时间戳值未变）仍算成功。失败不埋点。
+                if ($r !== false && isset($__ualMap[$data['ulog_type']])) {
+                    \app\common\model\UserAccessLog::record($__ualMap[$data['ulog_type']], [
+                        'user_id' => $data['user_id'],
+                        'mid'     => $data['ulog_mid'],
+                        'rid'     => $data['ulog_rid'],
+                    ]);
+                }
                 return json($res);
             }
             if ($data['ulog_points'] == 0) {
                 $res = model('Ulog')->saveData($data);
             } else {
                 $res = ['code' => 2001, 'msg' => lang('index/ulog_fee')];
+            }
+            if (isset($res['code']) && intval($res['code']) === 1 && isset($__ualMap[$data['ulog_type']])) {
+                \app\common\model\UserAccessLog::record($__ualMap[$data['ulog_type']], [
+                    'user_id' => $data['user_id'],
+                    'mid'     => $data['ulog_mid'],
+                    'rid'     => $data['ulog_rid'],
+                ]);
             }
         } else {
             $where = [];
@@ -190,6 +206,12 @@ class User extends Base
             if ($quotaRes['code'] != 1) {
                 return json(['code' => 2003, 'msg' => lang('index/buy_popedom2')]);
             }
+            // 风控日志（issue #149）：下载额度兑换成功（等同一次付费下载访问）
+            \app\common\model\UserAccessLog::record('buy', [
+                'user_id' => $GLOBALS['user']['user_id'],
+                'mid'     => $data['ulog_mid'],
+                'rid'     => $data['ulog_rid'],
+            ]);
             return json($quotaRes);
         }
 
@@ -216,14 +238,37 @@ class User extends Base
             $data2['user_id'] = $GLOBALS['user']['user_id'];
             $data2['plog_type'] = 8;
             $data2['plog_points'] = $data['ulog_points'];
-            model('Plog')->saveData($data2);
+            // 扣分凭证必须写入成功，否则出现「已扣分但无扣分日志」的账目黑洞：任一必要写入失败即整单回滚。
+            $plogRes = model('Plog')->saveData($data2);
+            if (!is_array($plogRes) || intval(isset($plogRes['code']) ? $plogRes['code'] : 0) !== 1) {
+                Db::rollback();
+                return json(['code' => 2003, 'msg' => lang('index/buy_popedom2')]);
+            }
 
-            //分销日志
-            model('User')->reward($data['ulog_points']);
+            //分销佣金：strict 模式下，上级积分已加但佣金日志写入失败会连同本单一起回滚，保账目一致（与 API 购买流程一致）。
+            $rewardRes = model('User')->reward($data['ulog_points'], true);
+            if (!is_array($rewardRes) || intval(isset($rewardRes['code']) ? $rewardRes['code'] : 0) !== 1) {
+                Db::rollback();
+                return json(['code' => 2003, 'msg' => lang('index/buy_popedom2')]);
+            }
 
+            // 购买/使用凭证必须写入成功，否则用户扣了分却拿不到使用权。
+            // 注意 mac_ulog 仍是 MyISAM，本行不受事务回滚保护；故放在事务最后一步、紧接
+            // Db::commit()，把「已扣分未记权 / 已记权未扣分」的窗口压到最小。写入失败时，
+            // 回滚的只是 InnoDB 侧的扣分/佣金；ulog 迁移 InnoDB 以获得真正原子性，另行拆 PR。
             $res = model('Ulog')->saveData($data);
+            if (!is_array($res) || intval(isset($res['code']) ? $res['code'] : 0) !== 1) {
+                Db::rollback();
+                return json(['code' => 2003, 'msg' => lang('index/buy_popedom2')]);
+            }
 
             Db::commit();
+            // 风控日志（issue #149）：积分购买/点播成功埋点
+            \app\common\model\UserAccessLog::record('buy', [
+                'user_id' => $GLOBALS['user']['user_id'],
+                'mid'     => $data['ulog_mid'],
+                'rid'     => $data['ulog_rid'],
+            ]);
             return json($res);
         } catch (\Exception $e) {
             Db::rollback();

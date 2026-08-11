@@ -328,11 +328,14 @@ function mac_arr2file($f,$arr='')
         $con = $arr;
     }
     $con = "<?php\nreturn $con;";
-    mac_write_file($f, $con);
+    // 必须把写入结果透传给调用方：file_put_contents 失败时返回 false，
+    // 否则 configxxx 等配置页即便磁盘写入失败（磁盘满/权限/只读挂载）也会误报 save_ok。
+    $res = mac_write_file($f, $con);
     // opcache清理以实时生效配置
     if (function_exists('opcache_invalidate')) {
         opcache_invalidate($f, true);
     }
+    return $res;
 }
 
 /**
@@ -346,8 +349,9 @@ function mac_save_config_data($f, $arr = '')
     if (!is_array($arr)) {
         return false;
     }
-    mac_arr2file($f, $arr);
-    return true;
+    // 必须透传 mac_arr2file 的写入结果：磁盘满/权限/只读挂载导致写入失败时返回 false，
+    // 否则 TplConfig 等主题配置页会在实际未落盘的情况下误报保存成功。
+    return mac_arr2file($f, $arr);
 }
 
 function mac_replace_text($txt,$type=1)
@@ -4163,7 +4167,13 @@ function mac_admin_csrf_token() {
     // 这里改用会话级固定令牌，兼容多标签同时打开后台的场景。
     $t = \think\Session::get('admin_csrf');
     if (!is_string($t) || $t === '') {
-        $t = md5(uniqid('mac_admin_csrf_', true) . mt_rand());
+        // 优先使用 CSPRNG 生成 128-bit 令牌；random_bytes 在极少数无熵源环境会抛异常，
+        // 此时回退到旧的 md5(uniqid()+mt_rand())，确保功能不中断。
+        try {
+            $t = bin2hex(random_bytes(16));
+        } catch (\Throwable $e) {
+            $t = md5(uniqid('mac_admin_csrf_', true) . mt_rand());
+        }
         \think\Session::set('admin_csrf', $t);
     }
     return $t;

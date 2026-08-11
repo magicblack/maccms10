@@ -307,6 +307,19 @@ if(empty($col_list[$pre.'seckill_user'])){
             'hours'   => '05',
             'runtime' => 0,
         ],
+        // 用户访问风控日志（issue #149）到期清理/匿名化。默认启用：日志属敏感数据，
+        // 保留期/脱敏必须自动执行，不能依赖站长记得手动开。
+        'user_access_purge' => [
+            'id'      => 'user_access_purge',
+            'status'  => '1',
+            'name'    => 'user_access_purge',
+            'des'     => '用户访问风控日志清理/匿名化',
+            'file'    => 'user_access_purge',
+            'param'   => 'max=5000',
+            'weeks'   => '1,2,3,4,5,6,0',
+            'hours'   => '00,01,02,03,04,05,06,07,08,09,10,11,12,13,14,15,16,17,18,19,20,21,22,23',
+            'runtime' => 0,
+        ],
         // PWA Web Push：广播队列派发任务（feat-pwa）。存量站点升级不覆盖 extra/timming.php，
         // 必须在此注入，否则 push_queue 入队后无任务派发，公告永远卡在 status=0 收不到。
         // 字段与 extra/timming.php 权威版一致：file=pushbroadcast 对应 api/controller/Timming::pushbroadcast()。
@@ -1268,6 +1281,12 @@ if (empty($col_list[$pre . 'monitor_abnormal_access'])) {
     $sql .= "('跳出率飙升',0,'analytics','analytics.bounce_rate','last',1440,'gt',0.0000,0,2,720,720,'notify','zscore','{\"k\":3,\"baseline_days\":14,\"min_sample\":7,\"min_abs\":10}');";
     $sql .= "\r";
 }
+// 用户访问风控日志（issue #149）：登录/失败/注册/关键行为的 IP/UA 明细，用于关联封禁。
+// 独立表、只追加，绝不动 mac_ulog。存量站升级时按需建表。
+if (empty($col_list[$pre . 'user_access_log'])) {
+    $sql .= "CREATE TABLE `{$pre}user_access_log` (`log_id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,`user_id` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '用户ID，0=未登录',`user_name` varchar(60) NOT NULL DEFAULT '' COMMENT '登录/失败尝试的账号名',`log_action` varchar(20) NOT NULL DEFAULT '' COMMENT '事件:login/login_fail/register/play/down/fav/want/buy/api_token/comment',`log_mid` tinyint(3) unsigned NOT NULL DEFAULT '0' COMMENT '模块ID',`log_rid` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '内容ID',`log_ip` varchar(45) NOT NULL DEFAULT '' COMMENT '来源IP(匿名化后为/24网段)',`log_ip_long` int(10) unsigned NOT NULL DEFAULT '0' COMMENT 'IPv4的ip2long,匿名化后置0',`log_ua` varchar(255) NOT NULL DEFAULT '' COMMENT '原始UA(截断),匿名化后清空',`log_ua_hash` char(32) NOT NULL DEFAULT '' COMMENT 'UA指纹md5,用于关联比对',`log_device` varchar(20) NOT NULL DEFAULT '' COMMENT '解析设备类型',`log_os` varchar(30) NOT NULL DEFAULT '' COMMENT '解析操作系统',`log_browser` varchar(30) NOT NULL DEFAULT '' COMMENT '解析浏览器',`log_path` varchar(255) NOT NULL DEFAULT '' COMMENT '请求路径',`log_anonymized` tinyint(1) unsigned NOT NULL DEFAULT '0' COMMENT '是否已匿名化',`log_time` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '记录时间',PRIMARY KEY (`log_id`),KEY `idx_user_time` (`user_id`,`log_time`),KEY `idx_ip_time` (`log_ip`,`log_time`),KEY `idx_uahash_time` (`log_ua_hash`,`log_time`),KEY `idx_action_time` (`log_action`,`log_time`),KEY `idx_time` (`log_time`)) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='用户访问风控日志(IP/UA)';";
+    $sql .= "\r";
+}
 // 视频定时上架时间（Unix 时间戳；vod_pubdate 仍为上映日期元数据）
 if (!empty($col_list[$pre . 'vod']) && empty($col_list[$pre . 'vod']['vod_publish_time'])) {
     $sql .= "ALTER TABLE `{$pre}vod` ADD `vod_publish_time` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '定时上架时间戳' AFTER `vod_pubdate`;";
@@ -1403,6 +1422,11 @@ if (!empty($col_list[$pre . 'vod'])) {
                 'access_track_max_ip'   => '300',
                 'retain_access_days'    => '30',
                 'ban_whitelist'         => '',
+                // 用户访问风控日志（issue #149）
+                'user_access_log_enabled' => '1',
+                'user_access_throttle_min' => '10',
+                'retain_user_access_days'  => '90',
+                'user_access_anonymize_days' => '30',
                 'webhook_url'           => '',
                 'webhook_secret'        => '',
                 'telegram_token'        => '',

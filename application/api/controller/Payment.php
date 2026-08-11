@@ -432,6 +432,15 @@ class Payment extends Base
 
         if (intval($param['mid']) == 1 && intval($param['type']) == 5 && $data['ulog_points'] > 0 && intval($auth['user']['user_down_quota'] ?? 0) > 0) {
             $quotaRes = model('User')->consumeDownQuota($auth['user_id'], $data);
+            // 风控埋点（buy）：下载额度兑换成功同样属于「购买」行为，需与积分购买一致地记录。
+            if (isset($quotaRes['code']) && intval($quotaRes['code']) === 1) {
+                \app\common\model\UserAccessLog::record('buy', [
+                    'user_id'   => intval($auth['user_id']),
+                    'user_name' => isset($auth['user']['user_name']) ? (string)$auth['user']['user_name'] : '',
+                    'mid'       => intval($data['ulog_mid']),
+                    'rid'       => intval($data['ulog_rid']),
+                ]);
+            }
             return json($quotaRes);
         }
 
@@ -461,20 +470,53 @@ class Payment extends Base
                 return json(['code' => 1005, 'msg' => lang('api/payment/points_insufficient')]);
             }
 
-            // 积分日志
+            // 积分日志：扣分凭证必须写入成功，否则出现「已扣分但无扣分日志」的账目黑洞，整单回滚。
             $plog = [];
             $plog['user_id']     = $auth['user_id'];
             $plog['plog_type']   = 8;
             $plog['plog_points'] = $data['ulog_points'];
-            model('Plog')->saveData($plog);
+            $plogRes = model('Plog')->saveData($plog);
+            if (!is_array($plogRes) || intval(isset($plogRes['code']) ? $plogRes['code'] : 0) !== 1) {
+                Db::rollback();
+                return json(['code' => 1006, 'msg' => lang('api/payment/operation_retry')]);
+            }
 
-            // 分销佣金
-            model('User')->reward($data['ulog_points']);
+            // 分销佣金：reward() 依赖 $GLOBALS['user'] 解析上级关系，这里用已验证用户回填，
+            // 确保 JWT（无 Cookie）购买也能正确分销；用完必须立即还原全局，避免污染后续读取
+            // $GLOBALS['user']['group'] 的消费者（Art/Manga/Type）——照搬 common/model/User.php:1148 既有范式。
+            // strict 模式下佣金链（mac_user / mac_plog，均 InnoDB）任一必要写入失败即返回错误码，
+            // 交由本方法 Db::rollback() 撤销。
+            $prevUser = isset($GLOBALS['user']) ? $GLOBALS['user'] : null;
+            $GLOBALS['user'] = $auth['user'];
+            try {
+                $rewardRes = model('User')->reward($data['ulog_points'], true);
+            } finally {
+                // 正常返回与 reward() 抛异常两条路径都必须还原，避免污染后续全局用户读取。
+                $GLOBALS['user'] = $prevUser;
+            }
+            if (!is_array($rewardRes) || intval(isset($rewardRes['code']) ? $rewardRes['code'] : 0) !== 1) {
+                Db::rollback();
+                return json(['code' => 1006, 'msg' => lang('api/payment/operation_retry')]);
+            }
 
-            // 写入购买记录
+            // 写入购买记录：用户扣了分必须拿到使用权。注意 mac_ulog 仍是 MyISAM，本行不受事务回滚
+            // 保护——故放在事务最后一步、紧接 Db::commit()，把「已扣分未记权 / 已记权未扣分」的
+            // 窗口压到最小；若本行写入返回失败码，回滚的是 InnoDB 侧的扣分/佣金。ulog 迁 InnoDB
+            // 以获得真正原子性，涉及存量站整表重建，另行拆独立 PR 处理。
             $save_res = model('Ulog')->saveData($data);
+            if (!is_array($save_res) || intval(isset($save_res['code']) ? $save_res['code'] : 0) !== 1) {
+                Db::rollback();
+                return json(['code' => 1006, 'msg' => lang('api/payment/operation_retry')]);
+            }
 
             Db::commit();
+            // 风控埋点（buy）：commit 成功后再记，避免回滚仍留下购买痕迹。
+            \app\common\model\UserAccessLog::record('buy', [
+                'user_id'   => intval($auth['user_id']),
+                'user_name' => isset($auth['user']['user_name']) ? (string)$auth['user']['user_name'] : '',
+                'mid'       => intval($data['ulog_mid']),
+                'rid'       => intval($data['ulog_rid']),
+            ]);
             return json($save_res);
         } catch (\Exception $e) {
             Db::rollback();

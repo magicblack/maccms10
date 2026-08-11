@@ -416,5 +416,30 @@ class Timming extends Base
         $res = \app\common\util\PushDispatcher::runQueue($batch, $max);
         mac_echo('[pushbroadcast] ' . (isset($res['msg']) ? $res['msg'] : '') . ' processed=' . (isset($res['processed']) ? intval($res['processed']) : 0));
     }
+
+    /**
+     * 用户访问风控日志（issue #149）到期清理 + 匿名化。
+     * 保留期/匿名化天数读 monitor 配置：retain_user_access_days / user_access_anonymize_days。
+     * 参数：max=单次处理行数上限（默认5000；任务每小时执行，摊平逐行匿名化压力）。
+     */
+    protected function user_access_purge($param)
+    {
+        @parse_str($param, $output);
+        $cfg = config('maccms');
+        $mon = isset($cfg['monitor']) && is_array($cfg['monitor']) ? $cfg['monitor'] : [];
+        // 读取配置后再正规化：形成「后台保存→定时读取→模型 purge」三层一致的边界防御。
+        // 配置文件可能被手动改、旧版升级或外部部署流程写坏，故不单独信任其内容。
+        $retain = intval(isset($mon['retain_user_access_days']) ? $mon['retain_user_access_days'] : 90);
+        $retain = max(1, min(365, $retain));
+        $anon = intval(isset($mon['user_access_anonymize_days']) ? $mon['user_access_anonymize_days'] : 30);
+        $anon = max(0, min(365, $anon));
+        // 不变量：匿名化期限必须早于删除期限，否则匿名化窗口恒为空集，资料在去识别化前被整行删除。
+        if ($anon > 0 && $anon >= $retain) {
+            $anon = $retain - 1;
+        }
+        $max = intval(isset($output['max']) ? $output['max'] : 5000);
+        $res = \app\common\model\UserAccessLog::purge($retain, $anon, $max);
+        mac_echo('[user_access_purge] deleted=' . intval($res['deleted']) . ' anonymized=' . intval($res['anonymized']));
+    }
 }
 

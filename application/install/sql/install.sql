@@ -938,6 +938,37 @@ CREATE TABLE `mac_ulog` (
 ) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 ;
 
 -- ----------------------------
+-- Table structure for mac_user_access_log
+-- 用户访问风控日志：登录/失败/注册/关键行为的 IP/UA 明细，用于风控关联封禁。
+-- 独立于 mac_ulog（业务凭证表），只追加、不参与去重判定；InnoDB + utf8mb4。
+-- ----------------------------
+DROP TABLE IF EXISTS `mac_user_access_log`;
+CREATE TABLE `mac_user_access_log` (
+  `log_id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `user_id` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '用户ID，0=未登录',
+  `user_name` varchar(60) NOT NULL DEFAULT '' COMMENT '登录/失败尝试的账号名',
+  `log_action` varchar(20) NOT NULL DEFAULT '' COMMENT '事件:login/login_fail/register/play/down/fav/want/buy/api_token/comment',
+  `log_mid` tinyint(3) unsigned NOT NULL DEFAULT '0' COMMENT '模块ID',
+  `log_rid` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '内容ID',
+  `log_ip` varchar(45) NOT NULL DEFAULT '' COMMENT '来源IP(匿名化后为/24网段)',
+  `log_ip_long` int(10) unsigned NOT NULL DEFAULT '0' COMMENT 'IPv4的ip2long,匿名化后置0',
+  `log_ua` varchar(255) NOT NULL DEFAULT '' COMMENT '原始UA(截断),匿名化后清空',
+  `log_ua_hash` char(32) NOT NULL DEFAULT '' COMMENT 'UA指纹md5,用于关联比对',
+  `log_device` varchar(20) NOT NULL DEFAULT '' COMMENT '解析设备类型',
+  `log_os` varchar(30) NOT NULL DEFAULT '' COMMENT '解析操作系统',
+  `log_browser` varchar(30) NOT NULL DEFAULT '' COMMENT '解析浏览器',
+  `log_path` varchar(255) NOT NULL DEFAULT '' COMMENT '请求路径',
+  `log_anonymized` tinyint(1) unsigned NOT NULL DEFAULT '0' COMMENT '是否已匿名化',
+  `log_time` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '记录时间',
+  PRIMARY KEY (`log_id`),
+  KEY `idx_user_time` (`user_id`,`log_time`),
+  KEY `idx_ip_time` (`log_ip`,`log_time`),
+  KEY `idx_uahash_time` (`log_ua_hash`,`log_time`),
+  KEY `idx_action_time` (`log_action`,`log_time`),
+  KEY `idx_time` (`log_time`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COMMENT='用户访问风控日志(IP/UA)';
+
+-- ----------------------------
 -- Table structure for mac_vod_play_fail
 -- ----------------------------
 DROP TABLE IF EXISTS `mac_vod_play_fail`;

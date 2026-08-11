@@ -470,6 +470,84 @@ class System extends Base
         return $this->fetch('admin@system/configuser');
     }
 
+    /**
+     * 用户访问风控日志配置。
+     *
+     * 这 4 个键物理上仍存放在 maccms.php 的 monitor 段（与 UserAccessLog::cfg()
+     * 和定时任务 user_access_purge 的读取路径保持一致），此页仅负责在“系统”菜单
+     * 下呈现/回写这几个键；存档时用 array_merge 只覆盖这 4 个键，其余 monitor 键
+     * （cron_token / webhook 等）原样保留，避免误伤。
+     */
+    public function configuseraccess()
+    {
+        if (Request()->isPost()) {
+            $post = input('post.', '', 'htmlentities');
+            // 该页使用会话级稳定令牌，不能调用 ThinkPHP Token validator：
+            // validator 会消费并删除易变的 Session __token__，导致多标签页互相失效。
+            // 同时保留 legacy token 比对，兼容升级前已经打开的旧页面。
+            $submitted = isset($post['__token__']) && is_string($post['__token__'])
+                ? $post['__token__'] : '';
+            $stable = function_exists('mac_admin_csrf_token')
+                ? (string)mac_admin_csrf_token() : (string)\think\Session::get('admin_csrf');
+            $legacy = \think\Session::has('__token__') ? (string)\think\Session::get('__token__') : '';
+            $tokenOk = ($stable !== '' && hash_equals($stable, $submitted))
+                || ($legacy !== '' && hash_equals($legacy, $submitted));
+            if (!$tokenOk) {
+                return $this->error(lang('token_err'));
+            }
+            // 只有真正使用旧 token 时才消费它；稳定 token 可跨标签页重复使用。
+            if ($legacy !== '' && hash_equals($legacy, $submitted)) {
+                \think\Session::delete('__token__');
+            }
+            unset($post['__token__']);
+
+            $config_old = config('maccms');
+            $ua = isset($post['user_access']) && is_array($post['user_access']) ? $post['user_access'] : [];
+
+            $retain = max(1, min(365, intval(isset($ua['retain_user_access_days']) ? $ua['retain_user_access_days'] : 90)));
+            $anonymize = max(0, min(365, intval(isset($ua['user_access_anonymize_days']) ? $ua['user_access_anonymize_days'] : 30)));
+            // 不变量：匿名化期限必须早于删除期限。若站长误填 anonymize >= retain，
+            // 匿名化窗口（>=删除线 且 <匿名化线）恒为空，资料会在去识别化前就整行删除。
+            // 这里钳制为 retain-1（retain=1 时归 0，即等价关闭匿名化），与模型层 purge() 双重兜底。
+            if ($anonymize > 0 && $anonymize >= $retain) {
+                $anonymize = $retain - 1;
+            }
+
+            $row = [
+                'user_access_log_enabled'    => isset($ua['user_access_log_enabled']) && (string)$ua['user_access_log_enabled'] === '1' ? '1' : '0',
+                'user_access_throttle_min'   => (string)max(0, min(1440, intval(isset($ua['user_access_throttle_min']) ? $ua['user_access_throttle_min'] : 10))),
+                'retain_user_access_days'    => (string)$retain,
+                'user_access_anonymize_days' => (string)$anonymize,
+            ];
+
+            $old_monitor = (isset($config_old['monitor']) && is_array($config_old['monitor'])) ? $config_old['monitor'] : [];
+            $config_new = $config_old;
+            $config_new['monitor'] = array_merge($old_monitor, $row);
+
+            $res = mac_arr2file(APP_PATH . 'extra/maccms.php', $config_new);
+            if ($res === false) {
+                return $this->ajaxErrorWithFreshToken(lang('save_err'));
+            }
+            return $this->success(lang('save_ok'));
+        }
+
+        $config = config('maccms');
+        $mon = (isset($config['monitor']) && is_array($config['monitor'])) ? $config['monitor'] : [];
+        // 视图专用聚合键（仅用于渲染表单，存储位置仍是 monitor 段）
+        $config['user_access'] = [
+            'user_access_log_enabled'    => (string)(isset($mon['user_access_log_enabled']) ? $mon['user_access_log_enabled'] : '1'),
+            'user_access_throttle_min'   => (string)(isset($mon['user_access_throttle_min']) ? $mon['user_access_throttle_min'] : '10'),
+            'retain_user_access_days'    => (string)(isset($mon['retain_user_access_days']) ? $mon['retain_user_access_days'] : '90'),
+            'user_access_anonymize_days' => (string)(isset($mon['user_access_anonymize_days']) ? $mon['user_access_anonymize_days'] : '30'),
+        ];
+
+        // 仅承载于新版后台主题（view_new）；旧版 view/ 不再承载新功能（铁律 2）
+        $this->assign('config', $config);
+        $this->assign('title', lang('admin/system/configuseraccess'));
+        $this->view->config('view_path', APP_PATH . 'admin/view_new/');
+        return $this->fetch('system/configuseraccess');
+    }
+
     public function configupload()
     {
         $phar_status = file_exists(ROOT_PATH . 'extend/aws/src/Aws/aws.phar');

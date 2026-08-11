@@ -1,0 +1,154 @@
+{include file="../../../application/admin/view_new/public/head" /}
+<div class="page-container p10">
+    <blockquote class="layui-elem-quote">
+        {:lang('admin/useraccesslog/related_title')} — [{$uid}]{:htmlspecialchars((string)$self_name, ENT_QUOTES, 'UTF-8')}
+    </blockquote>
+
+    <fieldset class="layui-elem-field layui-field-title">
+        <legend>{:lang('admin/useraccesslog/related_accounts')}</legend>
+    </fieldset>
+    <table class="layui-table" lay-size="sm">
+        <thead>
+        <tr>
+            <th width="120">{:lang('user')} ID</th>
+            <th>{:lang('user')}</th>
+            <th width="160">{:lang('admin/useraccesslog/via')}</th>
+            <th width="120">{:lang('opt')}</th>
+        </tr>
+        </thead>
+        <tbody>
+        {volist name="related" id="r"}
+        <tr>
+            <td>{$r.user_id}</td>
+            <td>{:htmlspecialchars((string)$r['user_name'], ENT_QUOTES, 'UTF-8')}</td>
+            <td>
+                {if condition="$r.via eq 'both'"}<span class="layui-badge layui-bg-red">{:lang('admin/useraccesslog/via_both')}</span>
+                {elseif condition="$r.via eq 'ip'" /}<span class="layui-badge layui-bg-orange">{:lang('admin/useraccesslog/via_ip')}</span>
+                {else /}<span class="layui-badge layui-bg-gray">{:lang('admin/useraccesslog/via_ua')}</span>{/if}
+            </td>
+            <td>
+                <a class="layui-badge-rim" href="{:url('info',['uid'=>$r['user_id']])}">{:lang('admin/useraccesslog/related_btn')}</a>
+                <a class="layui-badge-rim" href="{:url('index',['uid'=>$r['user_id']])}">{:lang('detail')}</a>
+            </td>
+        </tr>
+        {/volist}
+        {if condition="empty($related)"}
+        <tr><td colspan="4" style="text-align:center;color:#999;padding:20px;">{:lang('admin/useraccesslog/empty')}</td></tr>
+        {/if}
+
+        </tbody>
+    </table>
+
+    <fieldset class="layui-elem-field layui-field-title mgt-20">
+        <legend>{:lang('admin/useraccesslog/related_ips')}</legend>
+    </fieldset>
+    <table class="layui-table" lay-size="sm">
+        <thead>
+        <tr>
+            <th width="220">{:lang('admin/useraccesslog/col_ip')}</th>
+            <th width="120">{:lang('admin/useraccesslog/hit_cnt')}</th>
+            <th>{:lang('admin/useraccesslog/last_time')}</th>
+            <th width="120">{:lang('opt')}</th>
+        </tr>
+        </thead>
+        <tbody>
+        {volist name="ips" id="ip"}
+        <tr>
+            <td>
+                <code>{:htmlspecialchars((string)$ip['log_ip'], ENT_QUOTES, 'UTF-8')}</code>
+                {if condition="$ip['is_banned'] eq 1"}<span class="layui-badge layui-bg-black">{:lang('admin/monitor/banned')}</span>{/if}
+            </td>
+            <td>{$ip.cnt}</td>
+            <td>{$ip.last_time|mac_day='color'}</td>
+            <td>
+                {if condition="$ip['is_banned'] eq 1"}
+                    <button type="button" class="layui-btn layui-btn-xs layui-btn-primary ip-unban" data-ip="{:htmlspecialchars((string)$ip['log_ip'], ENT_QUOTES, 'UTF-8')}">{:lang('admin/monitor/unban')}</button>
+                {else /}
+                    <button type="button" class="layui-btn layui-btn-xs layui-btn-danger ip-ban" data-ip="{:htmlspecialchars((string)$ip['log_ip'], ENT_QUOTES, 'UTF-8')}">{:lang('admin/monitor/ban')}</button>
+                {/if}
+            </td>
+        </tr>
+        {/volist}
+        {if condition="empty($ips)"}
+        <tr><td colspan="4" style="text-align:center;color:#999;padding:20px;">{:lang('admin/useraccesslog/empty')}</td></tr>
+        {/if}
+
+        </tbody>
+    </table>
+
+    <div class="center mgt-20">
+        <a href="javascript:history.back();" class="layui-btn layui-btn-primary">{:lang('return')}</a>
+    </div>
+</div>
+{include file="../../../application/admin/view_new/public/foot" /}
+
+<script type="text/javascript">
+    // 关联封禁：复用 monitor 的 access_ban / access_unban 同款交互，
+    // 后端转发到 IpBanRepository，白名单/自身 IP/私网保护都在库里统一兜底。
+    var BAN_URL = "{:url('ban')}";
+    var UNBAN_URL = "{:url('unban')}";
+
+    // 后台稳定 CSRF 令牌（会话级）。原生 fetch 不经过 jQuery 的全局 ajax 拦截，
+    // 不会自动带上 X-CSRF-Token，故这里手动读取 meta 并随请求提交；
+    // 开启 security_csrf_admin 时封禁/解封才不会被全局 CsrfGuard 判 403。
+    function macAdminCsrf() {
+        var m = document.querySelector('meta[name="mac-admin-csrf"]');
+        return m ? (m.getAttribute('content') || '') : '';
+    }
+    function macEscHtml(s) {
+        // 用 charCode 组装实体，避免源码中的 & 等被 HTML 反解析成裸字符导致转义失效。
+        var amp = String.fromCharCode(38);
+        var map = {};
+        map[String.fromCharCode(38)] = amp + 'amp;';
+        map[String.fromCharCode(60)] = amp + 'lt;';
+        map[String.fromCharCode(62)] = amp + 'gt;';
+        map[String.fromCharCode(34)] = amp + 'quot;';
+        map[String.fromCharCode(39)] = amp + '#39;';
+        return String(s).replace(/[&<>"']/g, function (c) { return map[c]; });
+    }
+
+
+    layui.use(['layer'], function () {
+        var layer = layui.layer;
+
+        function post(url, ip, confirmMsg) {
+            // IP 来自服务端渲染的 data-ip，理论上已过滤；此处仍做转义，防止注入到 confirm 的 HTML。
+            layer.confirm(confirmMsg + '<br><code>' + macEscHtml(ip) + '</code>', function (idx) {
+                layer.close(idx);
+                var csrf = macAdminCsrf();
+                var fd = new FormData();
+                fd.append('ip', ip);
+                if (csrf) { fd.append('__token__', csrf); }
+                fetch(url, {
+                    method: 'POST',
+                    headers: csrf ? {'X-CSRF-Token': csrf} : {},
+                    body: fd,
+                    credentials: 'same-origin'
+                })
+                    .then(function (r) { return r.json(); })
+                    .then(function (res) {
+                        if (res.code === 1) {
+                            layer.msg(res.msg, {icon: 1});
+                            setTimeout(function () { location.reload(); }, 600);
+                        } else {
+                            layer.alert(res.msg, {icon: 2});
+                        }
+                    })
+                    .catch(function () { layer.alert("{:lang('admin/useraccesslog/network_err')}", {icon: 2}); });
+            });
+        }
+
+        document.querySelectorAll('.ip-ban').forEach(function (b) {
+            b.addEventListener('click', function () {
+                post(BAN_URL, b.getAttribute('data-ip'), "{:lang('admin/monitor/ban_confirm')}");
+            });
+        });
+        document.querySelectorAll('.ip-unban').forEach(function (b) {
+            b.addEventListener('click', function () {
+                post(UNBAN_URL, b.getAttribute('data-ip'), "{:lang('admin/monitor/unban_confirm')}");
+            });
+        });
+    });
+</script>
+</body>
+</html>
