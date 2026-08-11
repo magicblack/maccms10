@@ -29,4 +29,19 @@ var maccms = {
 };
 var MAC_PATH = maccms.path;
 maccms.csrfToken = "{$csrf_token}";
+window.__macNormalizeMaccmsBaseUrl = function () {
+    if (typeof maccms === 'undefined') {
+        return '';
+    }
+    var raw = String(maccms.base_url || '').replace(/\/+$/, '');
+    if (/^https?:\/\/[^\/\s?#]+/i.test(raw)) {
+        maccms.base_url = raw;
+        return raw;
+    }
+    var sub = String(maccms.path || '').replace(/\/+$/, '');
+    var resolved = window.location.protocol + '//' + window.location.host + sub;
+    maccms.base_url = resolved;
+    return resolved;
+};
+window.__macNormalizeMaccmsBaseUrl();
 </script>

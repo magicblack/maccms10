@@ -610,7 +610,14 @@
 
                 },
                 error: function (XHR, textStatus, errorThrown) {
-                    if (efun) efun(XHR, textStatus, errorThrown);
+                    if (efun) {
+                        efun(XHR, textStatus, errorThrown);
+                    } else if (typeof MAC !== 'undefined' && MAC.Pop && typeof MAC.Pop.Msg === 'function' && typeof MAC.GetLang === 'function') {
+                        var ajaxErrMsg = MAC.GetLang('string_load_err');
+                        if (ajaxErrMsg) {
+                            MAC.Pop.Msg(100, 20, ajaxErrMsg, 2000);
+                        }
+                    }
                 },
                 success: function (data) {
                     sfun(data);
