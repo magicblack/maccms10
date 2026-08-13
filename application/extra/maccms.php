@@ -85,7 +85,6 @@ return array (
   'app' => 
   array (
     'pathinfo_depr' => '/',
-    'suffix' => 'html',
     'popedom_filter' => '0',
     'cache_type' => 'file',
     'cache_host' => '127.0.0.1',

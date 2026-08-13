@@ -1068,7 +1068,6 @@ https://www.baidu.com/123.jpg
   'admin/system/config/xg' => 'Barra /',
   'admin/system/config/zhx' => 'Hífen -',
   'admin/system/config/xhx' => 'Sublinhado _',
-  'admin/system/config/suffix' => 'Extensão do nome da página',
   'admin/system/config/wall_filter' => 'Defesa de parede falsa',
   'admin/system/config/wall_unicode' => 'Método de codificação',
   'admin/system/config/wall_blank' => 'Método de espaço em branco',

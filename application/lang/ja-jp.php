@@ -1067,7 +1067,6 @@ https://www.baidu.com/123.jpg
   'admin/system/config/xg' => 'スラッシュ/',
   'admin/system/config/zhx' => 'ハイフン-',
   'admin/system/config/xhx' => 'アンダースコア_',
-  'admin/system/config/suffix' => 'ページサフィックス',
   'admin/system/config/wall_filter' => '偽の壁の防御',
   'admin/system/config/wall_unicode' => 'エンコーディング方式',
   'admin/system/config/wall_blank' => '空白方式',

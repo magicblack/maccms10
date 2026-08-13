@@ -1166,7 +1166,6 @@ https://www.baidu.com/123.jpg
     'admin/system/config/xg'=>'斜杠/',
     'admin/system/config/zhx'=>'中横线-',
     'admin/system/config/xhx'=>'下横线_',
-    'admin/system/config/suffix'=>'页面后缀名',
     'admin/system/config/mainland_ip_limit'=>'大陆地区限制',
     'admin/system/config/mainland_ip_only_allow'=>'只允许',
     'admin/system/config/mainland_ip_not_allow'=>'不允许',

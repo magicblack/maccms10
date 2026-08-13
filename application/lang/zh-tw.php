@@ -1069,7 +1069,6 @@ https://www.baidu.com/123.jpg
   'admin/system/config/xg' => '斜杠/',
   'admin/system/config/zhx' => '中橫線-',
   'admin/system/config/xhx' => '下橫線_',
-  'admin/system/config/suffix' => '頁面後綴名',
   'admin/system/config/wall_filter' => '假墻防禦',
   'admin/system/config/wall_unicode' => '編碼方式',
   'admin/system/config/wall_blank' => '空白方式',

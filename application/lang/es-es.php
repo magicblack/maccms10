@@ -1067,7 +1067,6 @@ https://www.baidu.com/123.jpg
   'admin/system/config/xg' => 'Barra diagonal /',
   'admin/system/config/zhx' => 'Guion medio -',
   'admin/system/config/xhx' => 'Guion bajo _',
-  'admin/system/config/suffix' => 'Extensión de página',
   'admin/system/config/wall_filter' => 'Defensa contra falsos cortafuegos',
   'admin/system/config/wall_unicode' => 'Codificación',
   'admin/system/config/wall_blank' => 'Método de espacio en blanco',

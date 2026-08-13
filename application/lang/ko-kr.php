@@ -1067,7 +1067,6 @@ https://www.baidu.com/123.jpg
   'admin/system/config/xg' => '슬래시 /',
   'admin/system/config/zhx' => '대시 -',
   'admin/system/config/xhx' => '밑줄 _',
-  'admin/system/config/suffix' => '페이지 접미사',
   'admin/system/config/wall_filter' => '가짜 방화벽 방어',
   'admin/system/config/wall_unicode' => '인코딩 방식',
   'admin/system/config/wall_blank' => '공백 방식',
