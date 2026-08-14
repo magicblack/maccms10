@@ -673,12 +673,17 @@ class OpenApiSpec
                 $this->q('type', 'integer', false, '1浏览 2收藏 3想看 4播放 5下载'),
                 $this->q('mid', 'integer', false, '模型 ID'),
             )),
-            '/user/add_ulog' => $this->post('User', '添加/更新行为日志', '需登录。', array(
+            '/user/get_read_chapters' => $this->get('User', '已读章节列表', '需登录；返回某文章/小说或漫画作品实际读过的章节（供阅读进度还原）。', array(
+                $this->q('mid', 'integer', true, '模型 ID（2=文章/小说 Art，12=漫画 Manga）'),
+                $this->q('rid', 'integer', true, '作品 ID'),
+                $this->q('sid', 'integer', false, '卷/分组 ID：漫画(mid=12)必填且需 ≥1；文章/小说(mid=2)内部固定为 1，可不传'),
+            )),
+            '/user/add_ulog' => $this->post('User', '添加/更新行为日志', '需登录，仅 POST。CSRF：Cookie 会话须带 CSRF（__token__ 或 X-CSRF-Token，或同站 X-Requested-With）；Bearer JWT 客户端凭证在 Authorization 头、不依赖 Cookie，免会话型 CSRF。type=4 且 mid∈{2,12} 记为章节阅读进度。', array(
                 array('mid', 'integer', true, '模型 ID'),
                 array('rid', 'integer', true, '资源 ID'),
-                array('type', 'integer', true, '行为类型'),
-                array('sid', 'integer', false, '播放源'),
-                array('nid', 'integer', false, '集数'),
+                array('type', 'integer', true, '行为类型（1浏览 2收藏 3想看 4播放/阅读 5下载）'),
+                array('sid', 'integer', false, '播放源/卷分组'),
+                array('nid', 'integer', false, '集数/章节'),
             )),
             '/user/del_ulog' => $this->post('User', '删除行为日志', '需登录；all=1 且 type=1..5 清空该类。', array(
                 array('ids', 'string', false, 'ulog_id 列表，逗号分隔'),

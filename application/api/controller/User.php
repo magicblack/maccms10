@@ -3,6 +3,7 @@
 namespace app\api\controller;
 
 use app\common\util\CsrfGuard;
+use app\common\util\JwtService;
 use think\Db;
 use think\Request;
 use think\Url;
@@ -567,16 +568,48 @@ class User extends Base
     }
 
     /**
+     * 获取单一小说/漫画作品实际读过的章节。
+     * api.php/user/get_read_chapters?mid=2&rid=123&sid=1
+     */
+    public function get_read_chapters(Request $request)
+    {
+        $check = model('User')->checkLogin();
+        if ($check['code'] > 1) return json(['code' => 1401, 'msg' => lang('api/please_login_first')]);
+        $param = $request->param();
+        return json(model('Ulog')->readChapterData(
+            intval($check['info']['user_id']),
+            intval($param['mid'] ?? 0),
+            intval($param['rid'] ?? 0),
+            intval($param['sid'] ?? 0)
+        ));
+    }
+
+    /**
      * 添加/更新用户行为日志（收藏/播放记录等）
      * api.php/user/add_ulog (POST)
      * 参数: mid, rid, type, [sid=0, nid=0]
      */
     public function add_ulog(Request $request)
     {
+        if (!$request->isPost()) {
+            return json(['code' => 1001, 'msg' => lang('param_err')]);
+        }
+        // 先验证登录态（Bearer JWT 或 Cookie 会话），再按认证方式决定是否做会话型 CSRF。
         $check = model('User')->checkLogin();
         if ($check['code'] > 1) return json(['code' => 1401, 'msg' => lang('api/please_login_first')]);
+        // 认证方式区分 CSRF：
+        // - Cookie 会话：写操作必须通过 CSRF 校验，防止第三方页面借登录 Cookie 跨站写入。
+        // - Bearer JWT（原生 App / uni-app / 第三方客户端）：凭证在 Authorization 头、不依赖 Cookie，
+        //   天然免疫 CSRF；此处 checkLogin 已验签通过，跳过会话型 CSRF，避免逼客户端伪装 jQuery XHR。
+        $viaBearer = JwtService::bearerFromRequest() !== '' && JwtService::isEnabled();
+        if (!$viaBearer) {
+            $csrfErr = $this->checkCsrf();
+            if ($csrfErr !== null) {
+                return json($csrfErr);
+            }
+        }
         $uid = intval($check['info']['user_id']);
-        $param = $request->param();
+        $param = $request->post();
         $data = [
             'ulog_mid'  => intval($param['mid'] ?? 0),
             'ulog_rid'  => intval($param['rid'] ?? 0),
@@ -587,6 +620,15 @@ class User extends Base
         ];
         if ($data['ulog_mid'] < 1 || $data['ulog_rid'] < 1 || $data['ulog_type'] < 1) {
             return json(['code' => 1001, 'msg' => lang('param_err')]);
+        }
+        if ($data['ulog_type'] === 4 && in_array($data['ulog_mid'], [2, 12], true)) {
+            return json($this->record_read_chapter(
+                $uid,
+                $data['ulog_mid'],
+                $data['ulog_rid'],
+                $data['ulog_sid'],
+                $data['ulog_nid']
+            ));
         }
         $data['ulog_points'] = 0;
         // 视频播放/下载：按真实定价核算，禁止伪造 0 分购买记录

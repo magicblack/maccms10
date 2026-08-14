@@ -38,7 +38,14 @@ class Ulog extends Base {
                 // 漫画收藏 / 历史
                 $manga_info = model('Manga')->infoData(['manga_id'=>['eq',$v['ulog_rid']]],'*',1);
                 if (!empty($manga_info['info'])) {
-                    $manga_info['info']['link'] = mac_url_manga_detail($manga_info['info']);
+                    if (intval($v['ulog_type']) === 4 && intval($v['ulog_sid']) > 0 && intval($v['ulog_nid']) > 0) {
+                        $manga_info['info']['link'] = mac_url_manga_play($manga_info['info'], [
+                            'sid' => intval($v['ulog_sid']),
+                            'nid' => intval($v['ulog_nid']),
+                        ]);
+                    } else {
+                        $manga_info['info']['link'] = mac_url_manga_detail($manga_info['info']);
+                    }
                     $v['data'] = [
                         'id'   => $manga_info['info']['manga_id'],
                         'name' => $manga_info['info']['manga_name'],
@@ -82,7 +89,14 @@ class Ulog extends Base {
             }
             elseif($v['ulog_mid']==2){
                 $art_info = model('Art')->infoData(['art_id'=>['eq',$v['ulog_rid']]],'*',1);
-                $art_info['info']['link'] = mac_url_art_detail($art_info['info']);
+                if (intval($v['ulog_type']) === 4 && intval($v['ulog_nid']) > 0) {
+                    $art_info['info']['link'] = mac_url('art/read', [
+                        'id' => intval($v['ulog_rid']),
+                        'page' => intval($v['ulog_nid']),
+                    ]);
+                } else {
+                    $art_info['info']['link'] = mac_url_art_detail($art_info['info']);
+                }
                 $v['data'] = [
                     'id'=>$art_info['info']['art_id'],
                     'name'=>$art_info['info']['art_name'],
@@ -289,6 +303,168 @@ class Ulog extends Base {
         $info = $info->toArray();
 
         return ['code'=>1,'msg'=>lang('obtain_ok'),'info'=>$info];
+    }
+
+    /**
+     * 记录小说/漫画实际打开过的章节。
+     * 小说固定 sid=1、nid=页码；漫画使用来源 sid 与话数 nid。
+     */
+    public function recordReadChapter($userId, $mid, $rid, $sid, $nid)
+    {
+        $validated = $this->validateReadChapter($userId, $mid, $rid, $sid, $nid);
+        if ($validated['code'] !== 1) {
+            return $validated;
+        }
+
+        $data = $validated['data'];
+        $data['ulog_time'] = time();
+        $data['ulog_touch'] = (int)round(microtime(true) * 1000000);
+        $historyWhere = $data;
+        unset($historyWhere['ulog_time'], $historyWhere['ulog_touch']);
+        $lockName = 'ulog_read_' . sha1(implode(':', [
+            $data['user_id'], $data['ulog_mid'], $data['ulog_rid'], $data['ulog_sid'], $data['ulog_nid'],
+        ]));
+        try {
+            $lock = Db::query('SELECT GET_LOCK(?, 3) AS acquired', [$lockName]);
+            if (empty($lock) || intval($lock[0]['acquired']) !== 1) {
+                return ['code' => 1004, 'msg' => lang('save_err')];
+            }
+            $existing = $this->field('ulog_id')->where($historyWhere)->find();
+            if (!empty($existing)) {
+                $res = $this->where('ulog_id', intval($existing['ulog_id']))->update([
+                    'ulog_time' => $data['ulog_time'],
+                    'ulog_touch' => $data['ulog_touch'],
+                ]);
+                if ($res === false) {
+                    return ['code' => 1004, 'msg' => lang('save_err')];
+                }
+                return ['code' => 1, 'msg' => lang('save_ok')];
+            }
+            return $this->saveData($data);
+        } catch (\Exception $e) {
+            return ['code' => 1004, 'msg' => lang('save_err')];
+        } finally {
+            try {
+                Db::query('SELECT RELEASE_LOCK(?)', [$lockName]);
+            } catch (\Exception $e) {
+            }
+        }
+    }
+
+    /**
+     * 返回单一作品真实到访过的章节集合及最近阅读位置。
+     */
+    public function readChapterData($userId, $mid, $rid, $sid = 0)
+    {
+        $userId = intval($userId);
+        $mid = intval($mid);
+        $rid = intval($rid);
+        $sid = intval($sid);
+        if ($userId < 1 || $rid < 1 || !in_array($mid, [2, 12], true)) {
+            return ['code' => 1001, 'msg' => lang('param_err')];
+        }
+        if ($mid === 2) {
+            $sid = 1;
+        } elseif ($sid < 1) {
+            return ['code' => 1001, 'msg' => lang('param_err')];
+        }
+
+        $where = [
+            'user_id' => $userId,
+            'ulog_mid' => $mid,
+            'ulog_type' => 4,
+            'ulog_rid' => $rid,
+            'ulog_sid' => $sid,
+        ];
+        $rows = Db::name('Ulog')
+            ->field('ulog_nid')
+            ->where($where)
+            ->where('ulog_nid', 'gt', 0)
+            ->group('ulog_nid')
+            ->order('ulog_nid asc')
+            ->select();
+
+        $readChapters = [];
+        foreach ($rows as $row) {
+            $readChapters[] = intval($row['ulog_nid']);
+        }
+        $lastRow = Db::name('Ulog')
+            ->field('ulog_nid,ulog_time')
+            ->where($where)
+            ->where('ulog_nid', 'gt', 0)
+            ->order('ulog_touch desc,ulog_time desc,ulog_id desc')
+            ->find();
+        $lastChapter = empty($lastRow) ? 0 : intval($lastRow['ulog_nid']);
+        $lastReadTime = empty($lastRow) ? 0 : intval($lastRow['ulog_time']);
+
+        return [
+            'code' => 1,
+            'msg' => lang('obtain_ok'),
+            'info' => [
+                'mid' => $mid,
+                'rid' => $rid,
+                'sid' => $sid,
+                'read_chapters' => $readChapters,
+                'read_count' => count($readChapters),
+                'last_chapter' => $lastChapter,
+                'last_read_time' => $lastReadTime,
+            ],
+        ];
+    }
+
+    private function validateReadChapter($userId, $mid, $rid, $sid, $nid)
+    {
+        $userId = intval($userId);
+        $mid = intval($mid);
+        $rid = intval($rid);
+        $sid = intval($sid);
+        $nid = intval($nid);
+        if ($userId < 1 || $rid < 1 || $nid < 1 || !in_array($mid, [2, 12], true)) {
+            return ['code' => 1001, 'msg' => lang('param_err')];
+        }
+
+        if ($mid === 2) {
+            if ($sid !== 1) {
+                return ['code' => 1001, 'msg' => lang('param_err')];
+            }
+            $content = Db::name('Art')->where('art_id', $rid)->value('art_content');
+            if ($content === null || $content === '') {
+                return ['code' => 1002, 'msg' => lang('obtain_err')];
+            }
+            $chapterCount = count(explode('$$$', $content));
+            if ($nid > $chapterCount) {
+                return ['code' => 1001, 'msg' => lang('param_err')];
+            }
+        } else {
+            if ($sid < 1) {
+                return ['code' => 1001, 'msg' => lang('param_err')];
+            }
+            $manga = Db::name('Manga')->field('manga_chapter_from,manga_chapter_url')->where('manga_id', $rid)->find();
+            if (empty($manga) || empty($manga['manga_chapter_url'])) {
+                return ['code' => 1002, 'msg' => lang('obtain_err')];
+            }
+            $sourceList = explode('$$$', (string)$manga['manga_chapter_url']);
+            if (!isset($sourceList[$sid - 1]) || $sourceList[$sid - 1] === '') {
+                return ['code' => 1001, 'msg' => lang('param_err')];
+            }
+            $chapterList = explode('#', $sourceList[$sid - 1]);
+            if (!isset($chapterList[$nid - 1]) || trim($chapterList[$nid - 1]) === '') {
+                return ['code' => 1001, 'msg' => lang('param_err')];
+            }
+        }
+
+        return [
+            'code' => 1,
+            'data' => [
+                'user_id' => $userId,
+                'ulog_mid' => $mid,
+                'ulog_type' => 4,
+                'ulog_rid' => $rid,
+                'ulog_sid' => $sid,
+                'ulog_nid' => $nid,
+                'ulog_points' => 0,
+            ],
+        ];
     }
 
     /**

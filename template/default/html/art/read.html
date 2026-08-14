@@ -175,8 +175,9 @@ $curChapterTitle = !empty($curPageInfo['title']) ? $curPageInfo['title'] : '第'
             part: "{$curChapterTitle|default=''}"
         });
 
+        var artId = parseInt('{$obj.art_id}', 10) || 0;
         var STORAGE_KEY_FONT = 'novel_reader_font_size';
-        var STORAGE_KEY_PROGRESS = 'novel_reader_progress_art_' + String({$obj.art_id});
+        var STORAGE_KEY_PROGRESS = 'novel_reader_progress_art_' + String(artId);
 
         var minFont = 15;
         var maxFont = 24;
@@ -194,6 +195,9 @@ $curChapterTitle = !empty($curPageInfo['title']) ? $curPageInfo['title'] : '第'
         var curPage = parseInt('{$curPage}', 10) || 1;
         var curChapterTitle = '{$curChapterTitle}';
         var pageTotal = parseInt('{$pageTotal}', 10) || 1;
+        /* guest | member；身份未确认前不读写任一进度 */
+        var identityMode = '';
+        var memberReadPages = [];
 
         function applyFontSize(size){
             size = Math.max(minFont, Math.min(maxFont, size));
@@ -210,6 +214,76 @@ $curChapterTitle = !empty($curPageInfo['title']) ? $curPageInfo['title'] : '第'
             $catalog.removeClass('open').attr('aria-hidden','true');
         }
 
+        function normalizeReadPages(list){
+            var out = [];
+            var seen = {};
+            if(!Array.isArray(list)){ return out; }
+            for(var i = 0; i < list.length; i++){
+                var n = parseInt(list[i], 10);
+                if(isNaN(n) || n < 1){ continue; }
+                if(seen[n]){ continue; }
+                seen[n] = 1;
+                out.push(n);
+            }
+            out.sort(function(a, b){ return a - b; });
+            return out;
+        }
+
+        function mergeReadPages(a, b){
+            return normalizeReadPages([].concat(a || [], b || []));
+        }
+
+        function langText(key, fallback){
+            try{
+                if(typeof MAC !== 'undefined' && typeof MAC.GetLang === 'function'){
+                    var v = MAC.GetLang(key);
+                    if(v != null && String(v) !== '' && String(v) !== 'undefined'){
+                        return String(v);
+                    }
+                }
+            }catch(e){}
+            return fallback;
+        }
+
+        /* 无自定义标题时：第N章 / Ch.N chapters（走语言包） */
+        function defaultChapterTitle(page){
+            var n = parseInt(page, 10) || 0;
+            return langText('art_read_chapter_ordinal', '第') + n + langText('art_read_chapter_unit', '章');
+        }
+
+        function isMemberLoggedIn(){
+            try{
+                if(typeof MAC !== 'undefined' && MAC.User){
+                    if(Number(MAC.User.IsLogin) === 1){ return true; }
+                    if(typeof MAC.User.getAuthMe === 'function'){
+                        var me = MAC.User.getAuthMe();
+                        if(me && Number(me.is_login) === 1){ return true; }
+                    }
+                }
+            }catch(e){}
+            return false;
+        }
+
+        /* MAC.User.Init 在 $(ready) 且常异步 fetchAuthMe；未 emit 前 __authMe 为 undefined */
+        function isAuthReady(){
+            return typeof window.__authMe !== 'undefined';
+        }
+
+        function hasUserIdCookie(){
+            try{
+                if(typeof MAC !== 'undefined' && MAC.Cookie && typeof MAC.Cookie.Get === 'function'){
+                    var cid = MAC.Cookie.Get('user_id');
+                    return cid != null && String(cid).trim() !== '';
+                }
+            }catch(e){}
+            return false;
+        }
+
+        function apiUserUrl(path){
+            var base = (window.maccms && maccms.path) ? String(maccms.path).replace(/\/+$/, '') : '';
+            return (base ? base + '/' : '/') + 'api.php/user/' + String(path || '').replace(/^\/+/, '');
+        }
+
         function readProgress(){
             try{
                 var raw = window.localStorage.getItem(STORAGE_KEY_PROGRESS);
@@ -219,6 +293,12 @@ $curChapterTitle = !empty($curPageInfo['title']) ? $curPageInfo['title'] : '第'
                 var p = parseInt(data.page, 10);
                 if(isNaN(p) || p < 1){ return null; }
                 data.page = Math.min(pageTotal, p);
+                var pages = normalizeReadPages(data.readPages);
+                /* 旧数据只有 page：只把该章加入集合，禁止展开为 1..page */
+                if(!pages.length && data.page){
+                    pages = [data.page];
+                }
+                data.readPages = pages;
                 return data;
             }catch(e){
                 return null;
@@ -227,34 +307,132 @@ $curChapterTitle = !empty($curPageInfo['title']) ? $curPageInfo['title'] : '第'
 
         function saveProgress(page, title){
             try{
-                var data = {};
-                data.page = page;
-                data.title = title || ('第' + page + '章');
-                data.ts = Date.now();
+                var oldPages = [];
+                try{
+                    var raw = window.localStorage.getItem(STORAGE_KEY_PROGRESS);
+                    if(raw){
+                        var old = JSON.parse(raw);
+                        if(old && Array.isArray(old.readPages)){
+                            oldPages = old.readPages;
+                        }else if(old && old.page){
+                            oldPages = [parseInt(old.page, 10)];
+                        }
+                    }
+                }catch(ex){}
+                var data = {
+                    page: page,
+                    title: title || defaultChapterTitle(page),
+                    readPages: mergeReadPages(oldPages, [page]),
+                    ts: Date.now()
+                };
                 window.localStorage.setItem(STORAGE_KEY_PROGRESS, JSON.stringify(data));
             }catch(e){}
         }
 
-        function applyProgressUI(){
-            var progress = readProgress();
+        function applyProgressUI(progress){
             if(!progress){ return; }
 
-            var lastPage = progress.page;
-            var lastTitle = progress.title || ('第' + lastPage + '章');
+            var readPages = normalizeReadPages(progress.readPages);
+            var lastPage = parseInt(progress.page, 10) || 0;
+            var chapterMark = lastPage ? defaultChapterTitle(lastPage) : '';
+            var lastTitle = progress.title || chapterMark;
 
             $catalogList.find('.novel-catalog-item').each(function(){
                 var p = parseInt($(this).attr('data-page'), 10);
-                if(!isNaN(p) && p <= lastPage){
+                if(!isNaN(p) && readPages.indexOf(p) !== -1){
                     $(this).addClass('read');
+                }else{
+                    $(this).removeClass('read');
                 }
             });
 
-            if(lastPage !== curPage){
-                $progressText.text(lastTitle + '（第' + lastPage + '章）');
+            if(lastPage && lastPage !== curPage){
+                /* 有独立标题时附带章节序号；标题已是默认「第N章」则不再重复括号 */
+                $progressText.text(lastTitle && lastTitle !== chapterMark ? (lastTitle + '（' + chapterMark + '）') : chapterMark);
                 $catalogProgress.show();
                 var url = "{:mac_url('art/read',['id'=>$obj.art_id,'page'=>'PAGEX'])}";
                 $continueBtn.attr('href', url.replace('PAGEX', String(lastPage)));
+            }else{
+                $catalogProgress.hide();
             }
+        }
+
+        function loadMemberReadChapters(){
+            memberReadPages = normalizeReadPages([curPage]);
+            applyProgressUI({
+                page: curPage,
+                title: curChapterTitle,
+                readPages: memberReadPages
+            });
+            var url = apiUserUrl('get_read_chapters') + '?mid=2&rid=' + encodeURIComponent(String(artId)) + '&sid=1';
+            var req;
+            if(window.fetch){
+                req = fetch(url, { credentials: 'same-origin' }).then(function(r){ return r.json(); });
+            }else{
+                req = $.ajax({ url: url, dataType: 'json', xhrFields: { withCredentials: true } });
+            }
+            req.then(function(res){
+                if(identityMode !== 'member'){ return; }
+                if(!(res && Number(res.code) === 1 && res.info)){ return; }
+                var serverPages = normalizeReadPages(res.info.read_chapters);
+                memberReadPages = mergeReadPages(serverPages, [curPage]);
+                /* 当前章优先：ajax_ulog 写入与 get_read_chapters 并发时，
+                   last_chapter 可能仍是上一章；本页「继续阅读」以 curPage 为准。 */
+                applyProgressUI({
+                    page: curPage,
+                    title: curChapterTitle,
+                    readPages: memberReadPages
+                });
+            }, function(){});
+        }
+
+        function bootstrapProgress(){
+            if(identityMode){ return; }
+            memberReadPages = [];
+            if(isMemberLoggedIn()){
+                identityMode = 'member';
+                loadMemberReadChapters();
+                return;
+            }
+            /* 身份未确认：禁止读写访客 localStorage，避免会员误入访客通道 */
+            if(!isAuthReady()){ return; }
+            identityMode = 'guest';
+            saveProgress(curPage, curChapterTitle);
+            applyProgressUI(readProgress());
+        }
+
+        function waitForIdentityThenBootstrap(){
+            if(isMemberLoggedIn() || isAuthReady()){
+                bootstrapProgress();
+                return;
+            }
+            var settled = false;
+            function finish(){
+                if(settled){ return; }
+                settled = true;
+                try{ document.removeEventListener('mac:auth-me-ready', onAuthReady); }catch(e){}
+                if(identityMode){ return; }
+                if(isMemberLoggedIn()){
+                    bootstrapProgress();
+                    return;
+                }
+                if(isAuthReady()){
+                    bootstrapProgress();
+                    return;
+                }
+                /* 超时仍未 ready：有 user_id cookie 则走会员（只读 API，不写访客 key），否则访客 */
+                if(hasUserIdCookie()){
+                    identityMode = 'member';
+                    loadMemberReadChapters();
+                }else{
+                    identityMode = 'guest';
+                    saveProgress(curPage, curChapterTitle);
+                    applyProgressUI(readProgress());
+                }
+            }
+            function onAuthReady(){ finish(); }
+            try{ document.addEventListener('mac:auth-me-ready', onAuthReady); }catch(e){}
+            setTimeout(finish, 3000);
         }
 
         var savedFont = parseInt(window.localStorage ? window.localStorage.getItem(STORAGE_KEY_FONT) : defaultFont, 10);
@@ -277,8 +455,7 @@ $curChapterTitle = !empty($curPageInfo['title']) ? $curPageInfo['title'] : '第'
         $('#novelCatalog').on('click', '[data-close="1"]', function(){ closeCatalog(); });
         $(document).on('keydown', function(e){ if(e && e.key === 'Escape'){ closeCatalog(); } });
 
-        saveProgress(curPage, curChapterTitle);
-        applyProgressUI();
+        waitForIdentityThenBootstrap();
 
         $('#artBackBtn, #artBackBtnPc, [data-back-detail="1"]').on('click', function(e){
             e.preventDefault();

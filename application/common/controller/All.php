@@ -244,15 +244,20 @@ polyfill;
         $user = ['user_id'=>0,'user_name'=>lang('controller/visitor'),'user_portrait'=>'static_new/images/touxiang.png','group_id'=>1,'points'=>0];
         $group_list = model('Group')->getCache();
 
-        if(!empty($user_id) && !empty($user_name) && !empty($user_check)){
+        $has_cookie_auth = !empty($user_id) && !empty($user_name) && !empty($user_check);
+        // API 同时支持 Bearer JWT；即使没有 Cookie 也必须执行 checkLogin，
+        // 让后续 check_user_popedom 与接口控制器使用同一个已验证身份。
+        if($has_cookie_auth || ENTRANCE == 'api'){
             $res = model('User')->checkLogin();
             if($res['code'] == 1){
                 $user = $res['info'];
             }
             else{
-                cookie('user_id','0');
-                cookie('user_name',lang('controller/visitor'));
-                cookie('user_check','');
+                if ($has_cookie_auth) {
+                    cookie('user_id','0');
+                    cookie('user_name',lang('controller/visitor'));
+                    cookie('user_check','');
+                }
                 $user['group'] = $group_list[1];
             }
         }
@@ -1253,5 +1258,58 @@ polyfill;
         }
 
         return ['code' => 1, 'msg' => lang('controller/popedom_ok')];
+    }
+
+    /**
+     * 校验正文访问权限后记录真实阅读章节，供 index/api 控制器共用。
+     */
+    protected function record_read_chapter($userId, $mid, $rid, $sid, $nid)
+    {
+        $userId = intval($userId);
+        $mid = intval($mid);
+        $rid = intval($rid);
+        $sid = intval($sid);
+        $nid = intval($nid);
+        if ($userId < 1 || $rid < 1 || $nid < 1 || !in_array($mid, [2, 12], true)) {
+            return ['code' => 1001, 'msg' => lang('param_err')];
+        }
+
+        // 不信任调用方单独传入的 userId；重新确认当前 Cookie/JWT 身份并同步权限上下文。
+        if (intval($GLOBALS['user']['user_id'] ?? 0) !== $userId) {
+            $auth = model('User')->checkLogin();
+            if ($auth['code'] !== 1 || intval($auth['info']['user_id'] ?? 0) !== $userId) {
+                return ['code' => 1401, 'msg' => lang('api/please_login_first')];
+            }
+            $GLOBALS['user'] = $auth['info'];
+            $this->assign('user', $auth['info']);
+        }
+
+        if ($mid === 2) {
+            $data = model('Art')->infoData([
+                'art_id' => ['eq', $rid],
+                'art_status' => ['eq', 1],
+            ], '*', 0);
+            if ($data['code'] !== 1 || empty($data['info'])) {
+                return ['code' => 1002, 'msg' => lang('obtain_err')];
+            }
+            $sid = 1;
+            $param = ['id' => $rid, 'page' => $nid];
+            $popedom = $this->check_user_popedom($data['info']['type_id'], 3, $param, 'art_read', $data['info']);
+        } else {
+            $data = model('Manga')->infoData([
+                'manga_id' => ['eq', $rid],
+                'manga_status' => ['eq', 1],
+            ], '*', 0);
+            if ($data['code'] !== 1 || empty($data['info'])) {
+                return ['code' => 1002, 'msg' => lang('obtain_err')];
+            }
+            $param = ['id' => $rid, 'sid' => $sid, 'nid' => $nid];
+            $popedom = $this->check_user_popedom($data['info']['type_id'], 3, $param, 'manga_play', $data['info']);
+        }
+
+        if (intval($popedom['code']) !== 1) {
+            return $popedom;
+        }
+        return model('Ulog')->recordReadChapter($userId, $mid, $rid, $sid, $nid);
     }
 }

@@ -530,7 +530,14 @@ var MAC={
         'Set':function(){
             if($(".mac_ulog_set").attr('data-mid')){
                 var $that = $(".mac_ulog_set");
-                $.get(maccms.path+'/index.php/user/ajax_ulog/?ac=set&mid='+$that.attr("data-mid")+'&id='+$that.attr("data-id")+'&sid='+$that.attr("data-sid")+'&nid='+$that.attr("data-nid")+'&type='+$that.attr("data-type"));
+                $.post(maccms.path+'/index.php/user/ajax_ulog/?ac=set', {
+                    mid: $that.attr("data-mid"),
+                    id: $that.attr("data-id"),
+                    sid: $that.attr("data-sid"),
+                    nid: $that.attr("data-nid"),
+                    type: $that.attr("data-type"),
+                    __token__: (window.maccms && maccms.csrfToken) || ''
+                });
             }
         },
         'Click':function(){
@@ -544,7 +551,12 @@ var MAC={
 
                 var $that = $(this);
                 if($that.attr("data-id")){
-                    MAC.Ajax(maccms.path+'/index.php/user/ajax_ulog/?ac=set&mid='+$that.attr("data-mid")+'&id='+$that.attr("data-id")+'&type='+$that.attr("data-type"),'get','json','',function(r){
+                    MAC.Ajax(maccms.path+'/index.php/user/ajax_ulog/?ac=set','post','json',{
+                        mid: $that.attr("data-mid"),
+                        id: $that.attr("data-id"),
+                        type: $that.attr("data-type"),
+                        __token__: (window.maccms && maccms.csrfToken) || ''
+                    },function(r){
                         MAC.Pop.Msg(100,20,r.msg,1000);
                         if(r.code == 1){
                             $that.addClass('disabled');

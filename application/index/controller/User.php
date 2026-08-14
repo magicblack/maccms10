@@ -48,6 +48,16 @@ class User extends Base
     {
         $param = input();
         if ($param['ac'] == 'set') {
+            // 写入类操作（收藏/想看/播放/章节阅读历史）必须为 POST 且通过 CSRF 校验，
+            // 杜绝第三方页面、浏览器预加载器或爬虫借登录用户 Cookie 发起 GET 写入而污染记录。
+            // 读取路径（ac=list）不受影响，仍可 GET。
+            if (!request()->isPost()) {
+                return json(['code' => 1001, 'msg' => lang('param_err')]);
+            }
+            $csrfErr = $this->checkCsrf();
+            if ($csrfErr !== null) {
+                return json($csrfErr);
+            }
             $data = [];
             $data['ulog_mid'] = intval($param['mid']);
             $data['ulog_rid'] = intval($param['id']);
@@ -55,6 +65,16 @@ class User extends Base
             $data['ulog_sid'] = intval($param['sid']);
             $data['ulog_nid'] = intval($param['nid']);
             $data['user_id'] = $GLOBALS['user']['user_id'];
+
+            if ($data['ulog_type'] === 4 && in_array($data['ulog_mid'], [2, 12], true)) {
+                return json($this->record_read_chapter(
+                    $data['user_id'],
+                    $data['ulog_mid'],
+                    $data['ulog_rid'],
+                    $data['ulog_sid'],
+                    $data['ulog_nid']
+                ));
+            }
 
             if ($data['ulog_mid'] == 1 && $data['ulog_type'] > 3) {
                 $where2 = [];

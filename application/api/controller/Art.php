@@ -271,6 +271,9 @@ class Art extends Base
             $html = mac_url_content_img($cur['content']);
         }
 
+        // 阅读历史改由前端在正文实际打开后，显式调用受登录态+CSRF 保护的 POST 接口
+        // （api.php/user/add_ulog）写入；此 GET 内容接口只读，不再写入任何记录，
+        // 以杜绝预加载/爬虫/第三方页面用 Cookie 携带发起 GET 即污染已读集合。
         $canRead = ($popedom['code'] == 1) ? 1 : 0;
         $out     = [
             'can_read'     => $canRead,

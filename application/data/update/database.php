@@ -942,6 +942,12 @@ if(!empty($col_list[$pre.'ulog']) && empty($col_list[$pre.'ulog']['ulog_point'])
     $sql .= "ALTER TABLE `{$pre}ulog` ADD `ulog_point` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '已观看秒数' AFTER `ulog_points`, ADD `ulog_duration` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '影片总时长(秒)' AFTER `ulog_point`;";
     $sql .= "\r";
 }
+if(!empty($col_list[$pre.'ulog']) && empty($col_list[$pre.'ulog']['ulog_touch'])){
+    $sql .= "ALTER TABLE `{$pre}ulog` ADD `ulog_touch` bigint(20) unsigned NOT NULL DEFAULT '0' COMMENT '最近到访微秒序号' AFTER `ulog_time`;";
+    $sql .= "\r";
+    $sql .= "UPDATE `{$pre}ulog` SET `ulog_touch`=`ulog_time`*1000000+MOD(`ulog_id`,1000000) WHERE `ulog_mid` IN (2,12) AND `ulog_type`=4 AND `ulog_touch`=0;";
+    $sql .= "\r";
+}
 // 续播/播放记录查询优化：mac_ulog 复合索引 (user_id, ulog_mid, ulog_type, ulog_time)
 // 覆盖“按用户+模块+类型筛选并按时间倒序”的续播/历史查询，避免仅命中 ulog_mid 低区分度索引及 ulog_time filesort
 // 使用 SHOW INDEX 检查索引是否已存在，保证升级幂等
@@ -949,6 +955,32 @@ if(!empty($col_list[$pre.'ulog'])){
     $index_exists = \think\Db::query("SHOW INDEX FROM `{$pre}ulog` WHERE Key_name = 'idx_user_mid_type_time'");
     if(empty($index_exists)){
         $sql .= "ALTER TABLE `{$pre}ulog` ADD INDEX `idx_user_mid_type_time` (`user_id`,`ulog_mid`,`ulog_type`,`ulog_time`);";
+        $sql .= "\r";
+    }
+    $read_index = \think\Db::query("SHOW INDEX FROM `{$pre}ulog` WHERE Key_name = 'idx_read_chapter'");
+    $read_index_expected = ['user_id','ulog_mid','ulog_type','ulog_rid','ulog_sid','ulog_nid'];
+    $read_index_columns = [];
+    $read_index_valid = !empty($read_index);
+    if(!empty($read_index)){
+        usort($read_index, function($a, $b){
+            return intval($a['Seq_in_index']) - intval($b['Seq_in_index']);
+        });
+        foreach($read_index as $read_index_row){
+            $read_index_columns[] = $read_index_row['Column_name'];
+            if(intval($read_index_row['Non_unique']) !== 1){
+                $read_index_valid = false;
+            }
+        }
+        if($read_index_columns !== $read_index_expected){
+            $read_index_valid = false;
+        }
+    }
+    if(!$read_index_valid){
+        if(!empty($read_index)){
+            $sql .= "ALTER TABLE `{$pre}ulog` DROP INDEX `idx_read_chapter`;";
+            $sql .= "\r";
+        }
+        $sql .= "ALTER TABLE `{$pre}ulog` ADD INDEX `idx_read_chapter` (`user_id`,`ulog_mid`,`ulog_type`,`ulog_rid`,`ulog_sid`,`ulog_nid`);";
         $sql .= "\r";
     }
 }

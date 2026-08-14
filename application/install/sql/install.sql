@@ -929,12 +929,14 @@ CREATE TABLE `mac_ulog` (
   `ulog_point` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '已观看秒数' ,
   `ulog_duration` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '影片总时长(秒)' ,
   `ulog_time` int(10) unsigned NOT NULL DEFAULT '0' ,
+  `ulog_touch` bigint(20) unsigned NOT NULL DEFAULT '0' COMMENT '最近到访微秒序号' ,
   PRIMARY KEY (`ulog_id`),
   KEY `user_id` (`user_id`),
   KEY `ulog_mid` (`ulog_mid`),
   KEY `ulog_type` (`ulog_type`),
   KEY `ulog_rid` (`ulog_rid`),
-  KEY `idx_user_mid_type_time` (`user_id`,`ulog_mid`,`ulog_type`,`ulog_time`)
+  KEY `idx_user_mid_type_time` (`user_id`,`ulog_mid`,`ulog_type`,`ulog_time`),
+  KEY `idx_read_chapter` (`user_id`,`ulog_mid`,`ulog_type`,`ulog_rid`,`ulog_sid`,`ulog_nid`)
 ) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 ;
 
 -- ----------------------------
