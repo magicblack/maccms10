@@ -83,13 +83,7 @@ class Annex extends Base {
 
         $path = './';
         foreach($list['list'] as $k=>$v){
-            if (stripos($v['annex_file'], '../') !== false) {
-                continue;
-            }
-            $pic = $path.$v['annex_file'];
-            if(file_exists($pic) && (substr($pic,0,8) == "./upload") || count( explode("./",$pic) ) ==1){
-                unlink($pic);
-            }
+            mac_safe_unlink_upload($v['annex_file']);
         }
         $res = $this->where($where)->delete();
         if($res===false){

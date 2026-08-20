@@ -631,18 +631,9 @@ class Art extends Base {
         $path = './';
         foreach($list['list'] as $k=>$v){
             MeilisearchSync::deleteArt(intval($v['art_id']));
-            $pic = $path.$v['art_pic'];
-            if(file_exists($pic) && (substr($pic,0,8) == "./upload") || count( explode("./",$pic) ) ==1){
-                unlink($pic);
-            }
-            $pic = $path.$v['art_pic_thumb'];
-            if(file_exists($pic) && (substr($pic,0,8) == "./upload") || count( explode("./",$pic) ) ==1){
-                unlink($pic);
-            }
-            $pic = $path.$v['art_pic_slide'];
-            if(file_exists($pic) && (substr($pic,0,8) == "./upload") || count( explode("./",$pic) ) ==1){
-                unlink($pic);
-            }
+            mac_safe_unlink_upload($v['art_pic']);
+            mac_safe_unlink_upload($v['art_pic_thumb']);
+            mac_safe_unlink_upload($v['art_pic_slide']);
             if($GLOBALS['config']['view']['art_detail'] ==2 ){
                 $lnk = mac_url_art_detail($v);
                 $lnk = reset_html_filename($lnk);

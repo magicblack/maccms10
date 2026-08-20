@@ -320,6 +320,60 @@ function mac_rmdirs($dirname, $withself = true)
     return true;
 }
 
+/**
+ * 安全删除“上传目录”内的文件，防止路径穿越（../）导致任意文件删除。
+ *
+ * 背景：历史代码使用
+ *   $pic = './'.$v['xxx_pic'];
+ *   if(file_exists($pic) && (substr($pic,0,8) == "./upload") || count(explode("./",$pic))==1){ unlink($pic); }
+ * 由于 && 优先级高于 ||，等价于 (file_exists && 前缀=="./upload") || (count==1)。
+ * 只要文件存在且以 ./upload 开头即可删除，导致 ./upload/../xxx 这类穿越路径被删。
+ * 同时 $pic 恒以 "./" 开头，count(explode("./",$pic)) 恒 >=2，"|| count==1" 实为死代码。
+ *
+ * 本函数只删除“真实解析后仍位于 ./upload 目录内”的文件：
+ *  - 拒绝远程地址（http/https 等协议）
+ *  - 拒绝任何包含 .. 的路径
+ *  - 强制路径必须位于 upload/ 之下
+ *  - 使用 realpath 解析后再次校验是否落在 upload 目录内
+ *
+ * @param string $relative 数据库中存储的相对路径，如 upload/vod/2024/a.jpg
+ * @return bool 是否成功删除
+ */
+function mac_safe_unlink_upload($relative)
+{
+    if (!is_string($relative) || $relative === '') {
+        return false;
+    }
+    // 远程地址（http://、https://、ftp:// 等）不做本地删除
+    if (preg_match('#^[a-zA-Z][a-zA-Z0-9+.\-]*://#', $relative)) {
+        return false;
+    }
+    // 统一分隔符并去除首部斜杠
+    $relative = str_replace('\\', '/', $relative);
+    $relative = ltrim($relative, '/');
+    // 任何包含 .. 的路径直接拒绝，杜绝路径穿越
+    if ($relative === '' || strpos($relative, '..') !== false) {
+        return false;
+    }
+    // 必须位于 upload 目录下
+    if ($relative !== 'upload' && strpos($relative, 'upload/') !== 0) {
+        return false;
+    }
+    $base = realpath('./upload');
+    $target = realpath('./' . $relative);
+    if ($base === false || $target === false) {
+        return false;
+    }
+    // 解析后的真实路径必须仍在 upload 目录内（防止软链接等绕过）
+    if ($target !== $base && strpos($target, $base . DIRECTORY_SEPARATOR) !== 0) {
+        return false;
+    }
+    if (!is_file($target)) {
+        return false;
+    }
+    return @unlink($target);
+}
+
 function mac_arr2file($f,$arr='')
 {
     if(is_array($arr)){

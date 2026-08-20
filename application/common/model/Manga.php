@@ -627,18 +627,9 @@ class Manga extends Base {
         $path = './';
         foreach($list['list'] as $k=>$v){
             MeilisearchSync::deleteManga(intval($v['manga_id']));
-            $pic = $path.$v['manga_pic'];
-            if(file_exists($pic) && (substr($pic,0,8) == "./upload") || count( explode("./",$pic) ) ==1){
-                unlink($pic);
-            }
-            $pic = $path.$v['manga_pic_thumb'];
-            if(file_exists($pic) && (substr($pic,0,8) == "./upload") || count( explode("./",$pic) ) ==1){
-                unlink($pic);
-            }
-            $pic = $path.$v['manga_pic_slide'];
-            if(file_exists($pic) && (substr($pic,0,8) == "./upload") || count( explode("./",$pic) ) ==1){
-                unlink($pic);
-            }
+            mac_safe_unlink_upload($v['manga_pic']);
+            mac_safe_unlink_upload($v['manga_pic_thumb']);
+            mac_safe_unlink_upload($v['manga_pic_slide']);
             if($GLOBALS['config']['view']['manga_detail'] ==2 ){
                 $lnk = mac_url_manga_detail($v);
                 $lnk = reset_html_filename($lnk);

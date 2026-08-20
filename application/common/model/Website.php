@@ -582,10 +582,7 @@ class Website extends Base {
         $path = './';
         foreach($list['list'] as $k=>$v){
             MeilisearchSync::deleteWebsite(intval($v['website_id']));
-            $pic = $path.$v['website_pic'];
-            if(file_exists($pic) && (substr($pic,0,8) == "./upload") || count( explode("./",$pic) ) ==1){
-                unlink($pic);
-            }
+            mac_safe_unlink_upload($v['website_pic']);
             if($GLOBALS['config']['view']['website_detail'] ==2 ){
                 $lnk = mac_url_website_detail($v);
                 $lnk = reset_html_filename($lnk);

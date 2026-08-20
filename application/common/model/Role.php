@@ -411,10 +411,7 @@ class Role extends Base {
         }
         $path = './';
         foreach($list as $k=>$v){
-            $pic = $path.$v['role_pic'];
-            if(file_exists($pic) && (substr($pic,0,8) == "./upload") || count( explode("./",$pic) ) ==1){
-                unlink($pic);
-            }
+            mac_safe_unlink_upload($v['role_pic']);
         }
         return ['code'=>1,'msg'=>lang('del_ok')];
     }
