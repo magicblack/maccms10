@@ -290,7 +290,7 @@ class Database extends Base
             $param=input();
             $validate = \think\Loader::validate('Token');
             if(!$validate->check($param)){
-                return $this->error($validate->getError());
+                return $this->ajaxErrorWithFreshToken($validate->getError());
             }
 
             $sql = trim($param['sql']);
@@ -299,7 +299,7 @@ class Database extends Base
                 $forbidden_keywords = ['into dumpfile', 'into outfile', 'char(', 'load_file'];
                 foreach ($forbidden_keywords as $keyword) {
                     if (stripos($sql, $keyword) !== false) {
-                        return $this->error(lang('format_err'));
+                        return $this->ajaxErrorWithFreshToken(lang('format_err'));
                     }
                 }
                 $sql = str_replace('{pre}',config('database.prefix'),$sql);
@@ -345,20 +345,20 @@ class Database extends Base
 
             $validate = \think\Loader::validate('Token');
             if(!$validate->check($param)){
-                return $this->error($validate->getError());
+                return $this->ajaxErrorWithFreshToken($validate->getError());
             }
             if ($table === '' || !$this->isValidTable($table)) {
-                return $this->error('Table is invalid.');
+                return $this->ajaxErrorWithFreshToken('Table is invalid.');
             }
             if ($field === '' || $findstr === '' || $tostr === '') {
-                return $this->error(lang('param_err'));
+                return $this->ajaxErrorWithFreshToken(lang('param_err'));
             }
             if (!$this->isValidField($table, $field)) {
-                return $this->error('Column is invalid.');
+                return $this->ajaxErrorWithFreshToken('Column is invalid.');
             }
             $whereSql = $this->sanitizeRepWhereClause($where);
             if ($whereSql === false) {
-                return $this->error('WHERE clause is invalid.');
+                return $this->ajaxErrorWithFreshToken('WHERE clause is invalid.');
             }
             $tq = '`' . str_replace('`', '``', $table) . '`';
             $fq = '`' . str_replace('`', '``', $field) . '`';

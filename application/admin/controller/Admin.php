@@ -51,11 +51,11 @@ class Admin extends Base
             }
             $validate = \think\Loader::validate('Token');
             if(!$validate->check($param)){
-                return $this->error($validate->getError());
+                return $this->ajaxErrorWithFreshToken($validate->getError());
             }
             $res = model('Admin')->saveData($param);
             if($res['code']>1){
-                return $this->error($res['msg']);
+                return $this->ajaxErrorWithFreshToken($res['msg']);
             }
             return $this->success($res['msg']);
         }

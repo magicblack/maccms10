@@ -180,12 +180,12 @@ class Template extends Base
         if (Request()->isPost()) {
             $validate = \think\Loader::validate('Token');
             if(!$validate->check($param)){
-                return $this->error($validate->getError());
+                return $this->ajaxErrorWithFreshToken($validate->getError());
             }
 
             $validate = \think\Loader::validate('Template');
             if(!$validate->check($param)){
-                return $this->error($validate->getError());
+                return $this->ajaxErrorWithFreshToken($validate->getError());
             }
 
             $fcontent = $param['fcontent'];
@@ -197,7 +197,7 @@ class Template extends Base
             $res = @fwrite(fopen($fullname,'wb'),$fcontent);
 
             if($res===false){
-                return $this->error(lang('save_err'));
+                return $this->ajaxErrorWithFreshToken(lang('save_err'));
             }
             return $this->success(lang('save_ok'));
         }

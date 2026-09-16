@@ -148,14 +148,14 @@ class Index extends Base
             $param = input();
             $validate = \think\Loader::validate('Token');
             if (!$validate->check($param)) {
-                return $this->error($validate->getError());
+                return $this->ajaxErrorWithFreshToken($validate->getError());
             }
             $quickmenu = input('post.quickmenu');
             $quickmenu = str_replace(chr(10), '', $quickmenu);
             $menu_arr = explode(chr(13), $quickmenu);
             $res = mac_arr2file(APP_PATH . 'extra/quickmenu.php', $menu_arr);
             if ($res === false) {
-                return $this->error(lang('save_err'));
+                return $this->ajaxErrorWithFreshToken(lang('save_err'));
             }
             return $this->success(lang('save_ok'));
         } else {

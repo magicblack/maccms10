@@ -27,7 +27,7 @@ class VodServer extends Base
         if (Request()->isPost()) {
             $validate = \think\Loader::validate('Token');
             if(!$validate->check($param)){
-                return $this->error($validate->getError());
+                return $this->ajaxErrorWithFreshToken($validate->getError());
             }
             unset($param['__token__']);
             unset($param['flag']);
@@ -51,7 +51,7 @@ class VodServer extends Base
             array_multisort($sort, SORT_DESC, SORT_FLAG_CASE , $list);
             $res = mac_arr2file( APP_PATH .'extra/'.$this->_pre.'.php', $list);
             if($res===false){
-                return $this->error(lang('save_err'));
+                return $this->ajaxErrorWithFreshToken(lang('save_err'));
             }
             cache('cache_data','1');
             return $this->success(lang('save_ok'));

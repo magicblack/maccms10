@@ -1051,6 +1051,8 @@ https://www.baidu.com/123.jpg
   'admin/system/config/site_publish_err_title_len' => 'El título de la página de publicación es demasiado largo (máx. 120 caracteres)',
   'admin/system/config/site_publish_err_subtitle_len' => 'El subtítulo de la página de publicación es demasiado largo (máx. 240 caracteres)',
   'admin/system/config/site_publish_err_groups_len' => 'El JSON de grupos de dominios es demasiado largo',
+  'admin/system/config/submit_incomplete' => 'Envío incompleto: falta %s. Actualice la página e inténtelo de nuevo',
+  'admin/system/config/required_mark' => '(*obligatorio)',
   'admin/system/config/site_publish_err_groups_json' => 'No se puede analizar el JSON de grupos de dominios o no hay grupos válidos',
   'admin/system/config/site_publish_err_links_or_groups' => 'Si la página de publicación está activada, configure al menos un grupo de dominios válido',
   'admin/system/config/mainland_ip_limit' => 'Restricciones regionales',

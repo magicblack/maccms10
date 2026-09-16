@@ -25,14 +25,14 @@
             <div class="layui-tab-content">
                 <div class="layui-tab-item layui-show layui-form layui-form-pane" id="movementTable">
                     <div class="layui-form-item">
-                        <label class="layui-form-label">{:lang('admin/system/config/site_name')}：</label>
+                        <label class="layui-form-label">{:lang('admin/system/config/site_name')}<span class="mac-required">{:lang('admin/system/config/required_mark')}</span>：</label>
                         <div class="layui-input-block">
                             <input type="text" name="site[site_name]" placeholder=""
                                 value="{$config['site']['site_name']}" class="layui-input" form="form_config_main">
                         </div>
                     </div>
                     <div class="layui-form-item">
-                        <label class="layui-form-label">{:lang('admin/system/config/site_url')}：</label>
+                        <label class="layui-form-label">{:lang('admin/system/config/site_url')}<span class="mac-required">{:lang('admin/system/config/required_mark')}</span>：</label>
                         <div class="layui-input-block">
                             <input type="text" name="site[site_url]"
                                 placeholder="{:lang('admin/system/config/site_url_tip')}"
@@ -145,7 +145,7 @@
 
 
                     <div class="layui-form-item">
-                        <label class="layui-form-label">{:lang('admin/system/config/template_dir')}：</label>
+                        <label class="layui-form-label">{:lang('admin/system/config/template_dir')}<span class="mac-required">{:lang('admin/system/config/required_mark')}</span>：</label>
                         <div class="layui-input-inline">
                             <select class="w150" name="site[template_dir]" form="form_config_main">
                                 {volist name="templates" id="vo"}
@@ -189,7 +189,7 @@
                         <div class="layui-form-mid layui-word-aux">{:lang('admin/system/config/mob_status_tip')}</div>
                     </div>
                     <div class="layui-form-item">
-                        <label class="layui-form-label">{:lang('admin/system/config/mob_template_dir')}：</label>
+                        <label class="layui-form-label">{:lang('admin/system/config/mob_template_dir')}<span class="mac-required">{:lang('admin/system/config/required_mark')}</span>：</label>
                         <div class="layui-input-inline">
                             <select class="w150" name="site[mob_template_dir]" form="form_config_main">
                                 {volist name="templates" id="vo"}
@@ -298,7 +298,7 @@
 
                 <div class="layui-tab-item layui-form layui-form-pane" id="movementTable">
                     <div class="layui-form-item">
-                        <label class="layui-form-label">{:lang('admin/system/config/pathinfo_depr')}：</label>
+                        <label class="layui-form-label">{:lang('admin/system/config/pathinfo_depr')}<span class="mac-required">{:lang('admin/system/config/required_mark')}</span>：</label>
                         <div class="layui-input-inline w150">
                             <select class="w150" name="app[pathinfo_depr]" form="form_config_main">
                                 <option value="/" {if condition="$config['app']['pathinfo_depr'] eq '/'" }selected

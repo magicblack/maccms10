@@ -1053,6 +1053,8 @@ https://www.baidu.com/123.jpg
   'admin/system/config/site_publish_err_title_len' => '發布頁標題過長（最多 120 字）',
   'admin/system/config/site_publish_err_subtitle_len' => '發布頁副標題過長（最多 240 字）',
   'admin/system/config/site_publish_err_groups_len' => '網域組 JSON 過長',
+  'admin/system/config/submit_incomplete' => '提交資料不完整，缺少 %s，請重新整理頁面後再試',
+  'admin/system/config/required_mark' => '（*必填）',
   'admin/system/config/site_publish_err_groups_json' => '網域組 JSON 無法解析或無有效組',
   'admin/system/config/site_publish_err_links_or_groups' => '開啟發布頁時，請至少設定一組有效網域組',
   'admin/system/config/mainland_ip_limit'=>' 地區限制',

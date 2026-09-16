@@ -182,3 +182,10 @@
         min-width: 88px;
     }
 }
+
+/* 必填项标记：跟在字段名后面的"（*必填）" */
+.mac-required {
+    color: #FF5722;
+    font-weight: normal;
+    margin-left: 2px;
+}

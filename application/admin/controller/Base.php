@@ -226,15 +226,15 @@ class Base extends All
         $param = input('post.');
         $validate = \think\Loader::validate('Token');
         if (!$validate->check($param)) {
-            return $this->error($validate->getError());
+            return $this->ajaxErrorWithFreshToken($validate->getError());
         }
         $file = $this->request->file('file');
         if (!$file) {
-            return $this->error(lang('param_err'));
+            return $this->ajaxErrorWithFreshToken(lang('param_err'));
         }
         $info = $file->rule('uniqid')->validate(['size' => 20971520, 'ext' => 'csv,txt,xlsx']);
         if (!$info) {
-            return $this->error($file->getError());
+            return $this->ajaxErrorWithFreshToken($file->getError());
         }
         $path = $info->getPathname();
         $ext = strtolower(pathinfo($info->getInfo('name'), PATHINFO_EXTENSION));
@@ -242,7 +242,7 @@ class Base extends All
             $parsed = BulkTableIo::parseFile($path, $ext);
         } catch (\Exception $e) {
             @unlink($path);
-            return $this->error(lang('import_err'));
+            return $this->ajaxErrorWithFreshToken(lang('import_err'));
         }
         @unlink($path);
         $fields = Db::name(ucfirst($table))->getTableFields();
@@ -278,7 +278,7 @@ class Base extends All
             }
         }
         if ($ok === 0 && $fail === 0) {
-            return $this->error(lang('import_err'));
+            return $this->ajaxErrorWithFreshToken(lang('import_err'));
         }
         $msg = lang('admin/batch/io_ok', [$ok]);
         if ($fail > 0) {
@@ -288,9 +288,22 @@ class Base extends All
             }
         }
         if ($ok === 0) {
-            return $this->error($msg);
+            return $this->ajaxErrorWithFreshToken($msg);
         }
         return $this->success($msg);
+    }
+
+    /**
+     * 令牌校验通过后的失败返回。
+     *
+     * think\Validate::token() 校验成功时就把会话令牌销毁了，此后任何失败分支
+     * 若只 error() 返回，站长不手动刷新页面就再也提交不了（只会收到"请不要重复提交表单"）。
+     * 这里补发新令牌，static_new/js/admin_common.js 的 success 回调会写回表单。
+     */
+    protected function ajaxErrorWithFreshToken($msg, $data = [])
+    {
+        $t = \think\Request::instance()->token('__token__');
+        return $this->error($msg, null, array_merge($data, ['__token__' => $t]));
     }
 
 }

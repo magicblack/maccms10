@@ -1051,6 +1051,8 @@ https://www.baidu.com/123.jpg
   'admin/system/config/site_publish_err_title_len' => '공개 페이지 제목이 너무 깁니다(최대 120자)',
   'admin/system/config/site_publish_err_subtitle_len' => '공개 페이지 부제가 너무 깁니다(최대 240자)',
   'admin/system/config/site_publish_err_groups_len' => '도메인 그룹 JSON이 너무 깁니다',
+  'admin/system/config/submit_incomplete' => '제출 데이터가 불완전합니다. %s 이(가) 없습니다. 페이지를 새로 고친 후 다시 시도하세요',
+  'admin/system/config/required_mark' => '(*필수)',
   'admin/system/config/site_publish_err_groups_json' => '도메인 그룹 JSON을 해석할 수 없거나 유효한 그룹이 없습니다',
   'admin/system/config/site_publish_err_links_or_groups' => '공개 페이지를 켠 경우 유효한 도메인 그룹을 하나 이상 설정하세요',
   'admin/system/config/mainland_ip_limit' => ' 지역 제한',

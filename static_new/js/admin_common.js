@@ -277,6 +277,38 @@ layui.define(['element', 'form'], function (exports) {
         });
     });
 
+    /* 清掉上一轮的出错标记。layui 渲染出来的假下拉框既不在 form.elements 里、
+       也不是表单的后代节点，得顺着原生控件找过去，否则红框会残留 */
+    function macClearInvalidFields($form) {
+        var els = $($form[0] && $form[0].elements ? $form[0].elements : []);
+        els.removeClass('layui-form-danger');
+        els.next('.layui-form-select').find('input').removeClass('layui-form-danger');
+        $form.find('.layui-form-danger').removeClass('layui-form-danger');
+    }
+
+    /* 服务端指出哪个字段不合格时，把那个输入框标红并带到站长眼前 */
+    function macMarkInvalidField($form, name) {
+        var node = $($form[0] && $form[0].elements ? $form[0].elements : []).filter('[name="' + name + '"]').eq(0);
+        if (!node.length) {
+            return;
+        }
+        //字段可能待在没被激活的 tab 里，先把那个 tab 切出来，否则站长根本看不见红框。
+        //切换必须在标红之前：切 tab 会触发页面的 form.render()，layui 把下拉框整个重建，
+        //之前加上去的 class 会被一并冲掉。
+        var item = node.closest('.layui-tab-item');
+        if (item.length) {
+            var tab = item.closest('.layui-tab');
+            tab.find('> .layui-tab-title > li').eq(item.index()).trigger('click');
+        }
+        node.addClass('layui-form-danger');
+        //select 被 layui 换成了自己渲染的下拉，原生控件是藏起来的，要标它后面那个
+        node.next('.layui-form-select').find('input').addClass('layui-form-danger');
+        if (node[0].scrollIntoView) {
+            node[0].scrollIntoView({ block: 'center' });
+        }
+        node.trigger('focus');
+    }
+
     /* 监听表单提交 */
     form.on('submit(formSubmit)', function (data) {
         var that = $(this),
@@ -296,6 +328,7 @@ layui.define(['element', 'form'], function (exports) {
         var $button = (that.attr('form') || that.attr('data-form')) ? that : $form.find('[lay-submit]');
 
         $button.prop('disabled', true);
+        macClearInvalidFields($form);
 
         // CKEditor专用
         if (typeof (CKEDITOR) != 'undefined') {
@@ -313,6 +346,14 @@ layui.define(['element', 'form'], function (exports) {
             url: $form.attr('action'),
             data: _formData,
             success: function (res) {
+                //失败时服务端会回发新令牌：Validate::token 校验通过就把会话令牌销毁了，
+                //不写回表单的话，站长不手动刷新页面就再也提交不了（只会收到"请不要重复提交表单"）
+                if (res.data && res.data.__token__) {
+                    $form.find('input[name="__token__"]').val(res.data.__token__);
+                }
+                if (res.code != 1 && res.data && res.data.invalid_field) {
+                    macMarkInvalidField($form, res.data.invalid_field);
+                }
                 var msg = '<span class="success_layer_icon"></span>' + res.msg;
                 if (res.code == 1) {
                     msg = '<span class="success_layer_icon"></span>' + res.msg;

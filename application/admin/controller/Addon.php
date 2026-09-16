@@ -699,7 +699,7 @@ class Addon extends Base
         }
         $id = input('post.id/s', '');
         if ($id === '') {
-            return $this->error(lang('admin/addon/cloud_use_catalog'));
+            return $this->ajaxErrorWithFreshToken(lang('admin/addon/cloud_use_catalog'));
         }
         $adminId = 0;
         if (!empty($this->_admin['admin_id'])) {

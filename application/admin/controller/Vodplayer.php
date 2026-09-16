@@ -26,7 +26,7 @@ class VodPlayer extends Base
         if (Request()->isPost()) {
             $validate = \think\Loader::validate('Token');
             if(!$validate->check($param)){
-                return $this->error($validate->getError());
+                return $this->ajaxErrorWithFreshToken($validate->getError());
             }
             unset($param['__token__']);
             unset($param['flag']);
@@ -53,12 +53,12 @@ class VodPlayer extends Base
 
             $res = mac_arr2file( APP_PATH .'extra/'.$this->_pre.'.php', $list);
             if($res===false){
-                return $this->error(lang('write_err_config'));
+                return $this->ajaxErrorWithFreshToken(lang('write_err_config'));
             }
 
             $res = fwrite(fopen('./static/player/' . $param['from'].'.js','wb'),$code);
             if($res===false){
-                return $this->error(lang('wirte_err_codefile'));
+                return $this->ajaxErrorWithFreshToken(lang('wirte_err_codefile'));
             }
             cache('cache_data','1');
             return $this->success(lang('save_ok'));
@@ -169,7 +169,7 @@ class VodPlayer extends Base
             $param = input();
             $validate = \think\Loader::validate('Token');
             if(!$validate->check($param)){
-                return $this->error($validate->getError());
+                return $this->ajaxErrorWithFreshToken($validate->getError());
             }
             unset($param['__token__']);
             $file = $this->request->file('file');
@@ -179,7 +179,7 @@ class VodPlayer extends Base
                 @unlink($info->getpathName());
                 if ($data) {
                     if (empty($data['status']) || empty($data['from']) || empty($data['sort'])) {
-                        return $this->error(lang('format_err'));
+                        return $this->ajaxErrorWithFreshToken(lang('format_err'));
                     }
                     if (strpos($data['from'], '.') !== false || strpos($data['from'], '/') !== false || strpos($data['from'], '\\') !== false) {
                         $this->error(lang('param_err'));
@@ -192,17 +192,17 @@ class VodPlayer extends Base
                     $list[$data['from']] = $data;
                     $res = mac_arr2file(APP_PATH . 'extra/' . $this->_pre . '.php', $list);
                     if ($res === false) {
-                        return $this->error(lang('write_err_config'));
+                        return $this->ajaxErrorWithFreshToken(lang('write_err_config'));
                     }
 
                     $res = fwrite(fopen('./static/player/' . $data['from'] . '.js', 'wb'), $code);
                     if ($res === false) {
-                        return $this->error(lang('wirte_err_codefile'));
+                        return $this->ajaxErrorWithFreshToken(lang('wirte_err_codefile'));
                     }
                 }
                 return $this->success(lang('import_ok'));
             } else {
-                return $this->error($file->getError());
+                return $this->ajaxErrorWithFreshToken($file->getError());
             }
         }
         else{

@@ -40,12 +40,12 @@ class Safety extends Base
         if (!$validate->check($param)) {
             $err = $validate->getError();
             $msg = is_scalar($err) ? (string)$err : lang('param_err');
-            return $this->error($msg);
+            return $this->ajaxErrorWithFreshToken($msg);
         }
         $action = isset($param['action']) ? trim((string)$param['action']) : '';
         $result = \app\common\util\SecurityHealthCheck::applyFix($action);
         if (empty($result['ok'])) {
-            return $this->error($result['msg']);
+            return $this->ajaxErrorWithFreshToken($result['msg']);
         }
         return $this->success($result['msg'], url('safety/checkup'));
     }

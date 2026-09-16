@@ -1051,6 +1051,8 @@ https://www.baidu.com/123.jpg
   'admin/system/config/site_publish_err_title_len' => '公開ページのタイトルが長すぎます（最大 120 文字）',
   'admin/system/config/site_publish_err_subtitle_len' => '公開ページのサブタイトルが長すぎます（最大 240 文字）',
   'admin/system/config/site_publish_err_groups_len' => 'ドメイングループの JSON が長すぎます',
+  'admin/system/config/submit_incomplete' => '送信データが不完全です。%s が不足しています。ページを再読み込みしてからもう一度お試しください',
+  'admin/system/config/required_mark' => '（*必須）',
   'admin/system/config/site_publish_err_groups_json' => 'ドメイングループの JSON を解析できないか、有効なグループがありません',
   'admin/system/config/site_publish_err_links_or_groups' => '公開ページを有効にする場合は、有効なドメイングループを少なくとも 1 つ設定してください',
   'admin/system/config/mainland_ip_limit' => '地域制限',

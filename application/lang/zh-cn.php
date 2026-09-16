@@ -1159,6 +1159,8 @@ https://www.baidu.com/123.jpg
     'admin/system/config/site_publish_err_title_len'=>'发布页标题过长（最多 120 字）',
     'admin/system/config/site_publish_err_subtitle_len'=>'发布页副标题过长（最多 240 字）',
     'admin/system/config/site_publish_err_groups_len'=>'域名组 JSON 过长',
+    'admin/system/config/submit_incomplete'=>'提交数据不完整，缺少 %s，请刷新页面后重试',
+    'admin/system/config/required_mark'=>'（*必填）',
     'admin/system/config/site_publish_err_groups_json'=>'域名组 JSON 无法解析或无有效组',
     'admin/system/config/site_publish_err_links_or_groups'=>'开启发布页（门闸）时，请至少配置一组有效域名组',
     'admin/system/config/pathinfo_depr'=>'PATH分隔符',

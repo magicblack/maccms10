@@ -70,13 +70,13 @@ class Type extends Base
             $param = input('post.');
             $validate = \think\Loader::validate('Token');
             if(!$validate->check($param)){
-                return $this->error($validate->getError());
+                return $this->ajaxErrorWithFreshToken($validate->getError());
             }
             $contentLang = $param['content_lang'] ?? [];
             unset($param['content_lang']);
             $res = model('Type')->saveData($param);
             if($res['code']>1){
-                return $this->error($res['msg']);
+                return $this->ajaxErrorWithFreshToken($res['msg']);
             }
             $typeId = (int)($res['type_id'] ?? 0);
             if ($typeId > 0 && is_array($contentLang)) {

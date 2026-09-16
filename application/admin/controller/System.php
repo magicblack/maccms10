@@ -78,21 +78,31 @@ class System extends Base
                 return $this->ajaxErrorWithFreshToken($msg);
             }
             unset($config['__token__']);
-            $invalidSubmitMsg = '提交数据不完整，请刷新页面后重试';
-            if (
-                !isset($config['site']) || !is_array($config['site']) ||
-                !isset($config['app']) || !is_array($config['app'])
-            ) {
-                return $this->error($invalidSubmitMsg);
-            }
-            $requiredSiteKeys = ['site_name', 'site_url', 'template_dir', 'mob_template_dir'];
-            foreach ($requiredSiteKeys as $requiredKey) {
-                if (!isset($config['site'][$requiredKey]) || trim((string)$config['site'][$requiredKey]) === '') {
-                    return $this->error($invalidSubmitMsg);
+            //只报"提交数据不完整"站长无从下手：既要在文案里指名是哪一项，
+            //也要把表单字段名回给前端，让那个输入框直接标红（见 static_new/js/admin_common.js）
+            $missing = '';
+            $missingField = '';
+            if (!isset($config['site']) || !is_array($config['site'])) {
+                $missing = 'site';
+            } elseif (!isset($config['app']) || !is_array($config['app'])) {
+                $missing = 'app';
+            } else {
+                $requiredKeys = ['site' => ['site_name', 'site_url', 'template_dir', 'mob_template_dir'], 'app' => ['pathinfo_depr']];
+                foreach ($requiredKeys as $grp => $keys) {
+                    foreach ($keys as $key) {
+                        if (!isset($config[$grp][$key]) || trim((string)$config[$grp][$key]) === '') {
+                            $missingField = $grp . '[' . $key . ']';
+                            $missing = lang('admin/system/config/' . $key) . '（' . $missingField . '）';
+                            break 2;
+                        }
+                    }
                 }
             }
-            if (!isset($config['app']['pathinfo_depr']) || trim((string)$config['app']['pathinfo_depr']) === '') {
-                return $this->error($invalidSubmitMsg);
+            if ($missing !== '') {
+                return $this->ajaxErrorWithFreshToken(
+                    lang('admin/system/config/submit_incomplete', [$missing]),
+                    ['invalid_field' => $missingField]
+                );
             }
 
 
@@ -181,7 +191,7 @@ class System extends Base
             $permUrlRaw = isset($config['site']['site_publish_permanent_url']) ? (string) $config['site']['site_publish_permanent_url'] : '';
             $permUrl = PublishPage::sanitizeUrl($permUrlRaw);
             if (mb_strlen($permText, 'UTF-8') > 200) {
-                return $this->error(lang('admin/system/config/site_publish_err_perm_text_len'));
+                return $this->ajaxErrorWithFreshToken(lang('admin/system/config/site_publish_err_perm_text_len'));
             }
             $config['site']['site_publish_permanent_text'] = $permText;
             $config['site']['site_publish_permanent_url'] = $permUrl;
@@ -202,16 +212,16 @@ class System extends Base
                 $gRaw = (string) $config['site']['site_publish_groups'];
             }
             if (strlen($gRaw) > 120000) {
-                return $this->error(lang('admin/system/config/site_publish_err_groups_len'));
+                return $this->ajaxErrorWithFreshToken(lang('admin/system/config/site_publish_err_groups_len'));
             }
             $groupsParsed = PublishPage::parseGroups($gRaw);
             if ($gRaw !== '' && $gRaw !== '[]' && json_decode($gRaw, true) !== null && count($groupsParsed) < 1) {
-                return $this->error(lang('admin/system/config/site_publish_err_groups_json'));
+                return $this->ajaxErrorWithFreshToken(lang('admin/system/config/site_publish_err_groups_json'));
             }
             $config['site']['site_publish_groups'] = $gRaw;
             $hasGroups = count($groupsParsed) > 0;
             if ($config['site']['site_publish_status'] === '1' && !$hasGroups) {
-                return $this->error(lang('admin/system/config/site_publish_err_links_or_groups'));
+                return $this->ajaxErrorWithFreshToken(lang('admin/system/config/site_publish_err_links_or_groups'));
             }
             $config_new['site'] = $config['site'];
             $config_new['app'] = $config['app'];
@@ -398,7 +408,7 @@ class System extends Base
 
             $res = mac_arr2file(APP_PATH . 'route.php', $route);
             if ($res === false) {
-                return $this->error(lang('write_err_route'));
+                return $this->ajaxErrorWithFreshToken(lang('write_err_route'));
             }
 
             //写扩展配置
@@ -406,7 +416,7 @@ class System extends Base
             $config_new = array_merge($config_old, $config_new);
             $res = mac_arr2file(APP_PATH . 'extra/maccms.php', $config_new);
             if ($res === false) {
-                return $this->error(lang('write_err_config'));
+                return $this->ajaxErrorWithFreshToken(lang('write_err_config'));
             }
             return $this->success(lang('save_ok'));
         }
@@ -927,7 +937,7 @@ class System extends Base
             unset($config['__token__']);
 
             if($config['interface']['status']==1 && strlen($config['interface']['pass']) < 16){
-                return $this->error(lang('admin/system/configinterface/pass_check'));
+                return $this->ajaxErrorWithFreshToken(lang('admin/system/configinterface/pass_check'));
             }
 
             $config_new['interface'] = $config['interface'];
@@ -2035,10 +2045,4 @@ class System extends Base
     /**
      * AJAX form error with a new __token__ (ThinkPHP deletes the session token when validation runs).
      */
-    private function ajaxErrorWithFreshToken($msg)
-    {
-        $t = \think\Request::instance()->token('__token__');
-        return $this->error($msg, null, ['__token__' => $t]);
-    }
-
 }

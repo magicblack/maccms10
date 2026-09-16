@@ -25,7 +25,7 @@ class Timming extends Base
         if (Request()->isPost()) {
             $validate = \think\Loader::validate('Token');
             if(!$validate->check($param)){
-                return $this->error($validate->getError());
+                return $this->ajaxErrorWithFreshToken($validate->getError());
             }
 
             $param['weeks'] = isset($param['weeks']) ? join(',',$param['weeks']) : '';
@@ -39,7 +39,7 @@ class Timming extends Base
             $list[$param['name']] = array_merge($old, $param);
             $res = mac_arr2file( APP_PATH .'extra/timming.php', $list);
             if($res===false){
-                return $this->error(lang('write_err_config'));
+                return $this->ajaxErrorWithFreshToken(lang('write_err_config'));
             }
 
             return $this->success(lang('save_ok'));
