@@ -280,13 +280,13 @@ class Ajax extends Base
         $id = $this->_param['id'];
         $mid = $this->_param['mid'];
         $type = $this->_param['type'];
-        if(empty($id) ||  !in_array($mid,['1','2','3','8','9','11']) ) {
+        if(empty($id) ||  !in_array($mid,['1','2','3','8','9','11','12']) ) {
             return json(['code'=>1001,'msg'=>lang('param_err')]);
         }
         $pre = mac_get_mid_code($mid);
         $where = [];
         $where[$pre.'_id'] = $id;
-        $field = $pre.'_hits,'.$pre.'_hits_day,'.$pre.'_hits_week,'.$pre.'_hits_month,'.$pre.'_time_hits';
+        $field = $pre.'_hits,'.$pre.'_hits_day,'.$pre.'_hits_week,'.$pre.'_hits_month,'.$pre.'_time_hits,'.$pre.'_en';
         $model = model($pre);
 
         $res = $model->infoData($where,$field);
@@ -327,6 +327,18 @@ class Ajax extends Base
             $update[$pre.'_hits'] = $update[$pre.'_hits']+1;
             $update[$pre.'_time_hits'] = time();
             $model->where($where)->update($update);
+
+            // infoData() 详情页用 $cache=1 读取并缓存整条记录（含 hits 字段），这里只是直接
+            // update() 落库，不会使该缓存失效，导致详情/阅读页在缓存过期前一直显示旧的 hits 值。
+            // 按 infoData() 里同样的 key 拼法清掉，覆盖按 id 查、按 en 查两种命中方式。
+            $flag = $GLOBALS['config']['app']['cache_flag'];
+            $en = isset($info[$pre.'_en']) ? $info[$pre.'_en'] : '';
+            Cache::rm($flag.'_'.$pre.'_detail_'.$id.'_'.$en);
+            Cache::rm($flag.'_'.$pre.'_detail_'.$id.'_');
+            Cache::rm($flag.'_'.$pre.'_detail_'.'_'.$en);
+            // by:hits/hits_day/hits_week/hits_month 排序的首页/分类列表缓存同样要跟着失效，
+            // 否则栏目排序在缓存过期前一直按旧人气数排（对齐 saveData() 写路径已有的 clearListCache() 用法）。
+            $model->clearListCache();
 
             $data['hits'] = $update[$pre.'_hits'];
             $data['hits_day'] = $update[$pre.'_hits_day'];
@@ -530,7 +542,7 @@ class Ajax extends Base
         $type = $this->_param['type'];
         $pwd = input('param.pwd');
 
-        if( empty($id) || empty($pwd) || !in_array($mid,['1','2']) || !in_array($type,['1','4','5'])){
+        if( empty($id) || empty($pwd) || !in_array($mid,['1','2','8']) || !in_array($type,['1','4','5'])){
             return json(['code'=>1001,'msg'=>lang('param_err')]);
         }
 
@@ -552,30 +564,41 @@ class Ajax extends Base
                 return json(['code'=>1011,'msg'=>$info['msg']]);
             }
             if($type=='1'){
-                if($info['info']['vod_pwd'] != $pwd){
+                if(!hash_equals((string)$info['info']['vod_pwd'], (string)$pwd)){
                     return json(['code'=>1012,'msg'=>lang('pass_err')]);
                 }
             }
             elseif($type=='4'){
-                if($info['info']['vod_pwd_play'] != $pwd){
+                if(!hash_equals((string)$info['info']['vod_pwd_play'], (string)$pwd)){
                     return json(['code'=>1013,'msg'=>lang('pass_err')]);
                 }
             }
             elseif($type=='5'){
-                if($info['info']['vod_pwd_down'] != $pwd){
+                if(!hash_equals((string)$info['info']['vod_pwd_down'], (string)$pwd)){
                     return json(['code'=>1014,'msg'=>lang('pass_err')]);
                 }
             }
         }
-        else{
+        elseif($mid=='2'){
             $where=[];
             $where['art_id'] = ['eq',$id];
             $info = model('Art')->infoData($where);
             if($info['code'] >1){
                 return json(['code'=>1021,'msg'=>$info['msg']]);
             }
-            if($info['info']['art_pwd'] != $pwd){
+            if(!hash_equals((string)$info['info']['art_pwd'], (string)$pwd)){
                 return json(['code'=>1022,'msg'=>lang('pass_err')]);
+            }
+        }
+        else{
+            $where=[];
+            $where['manga_id'] = ['eq',$id];
+            $info = model('Manga')->infoData($where);
+            if($info['code'] >1){
+                return json(['code'=>1031,'msg'=>$info['msg']]);
+            }
+            if(!hash_equals((string)$info['info']['manga_pwd'], (string)$pwd)){
+                return json(['code'=>1032,'msg'=>lang('pass_err')]);
             }
         }
 

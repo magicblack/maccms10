@@ -317,7 +317,7 @@ class User extends Base
     /**
      * 登录/注册一体化
      * POST api.php/user/login_or_register
-     * 参数: user_name, user_pwd, [invite_code]
+     * 参数: user_name, user_pwd, [invite_code], [uid]（推广链接 ?uid= 携带的上级 ID，也可由 uid Cookie 兜底）
      *
      * - 帐号存在 → 校验密码 → 登录
      * - 帐号不存在 → 自动创建帐号 → 登录
@@ -656,8 +656,9 @@ class User extends Base
             ));
         }
         $data['ulog_points'] = 0;
-        // 视频播放/下载：按真实定价核算，禁止伪造 0 分购买记录
-        if ($data['ulog_mid'] == 1 && $data['ulog_type'] > 3) {
+        // 仅播放(4)/下载(5)按积分计费；新增的点赞(6)等类型没有对应的 vod_points_xxx 字段，
+        // 用 > 3 会把它们误路由进这段付费逻辑。
+        if ($data['ulog_mid'] == 1 && in_array($data['ulog_type'], [4, 5], true)) {
             $where2 = [];
             $where2['vod_id'] = $data['ulog_rid'];
             $res = model('Vod')->infoData($where2);
@@ -714,10 +715,10 @@ class User extends Base
         if ($check['code'] > 1) return json(['code' => 1401, 'msg' => lang('api/please_login_first')]);
         $uid = intval($check['info']['user_id']);
         $param = $request->param();
-        // 清空某类日志：all=1 且 type=1..5（与 index user/ulog_del 一致）
+        // 清空某类日志：all=1 且 type=1..6（与 index user/ulog_del 一致）
         if (!empty($param['all']) && (string)$param['all'] === '1') {
             $type = isset($param['type']) ? (string)$param['type'] : '';
-            if (!in_array($type, ['1', '2', '3', '4', '5'], true)) {
+            if (!in_array($type, ['1', '2', '3', '4', '5', '6'], true)) {
                 return json(['code' => 1001, 'msg' => lang('api/param_type_required')]);
             }
             $where = ['user_id' => $uid, 'ulog_type' => intval($type)];

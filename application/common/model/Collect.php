@@ -1517,6 +1517,9 @@ class Collect extends Base {
 
                 if(empty($v['art_blurb'])){
                     $v['art_blurb'] = mac_substring( strip_tags( str_replace('$$$','',$v['art_content']) ) ,100);
+                } else {
+                    // 采集源不可信，简介字段此前未过滤直接入库，前台详情页以 raw 输出会形成存储型XSS
+                    $v['art_blurb'] = mac_filter_xss($v['art_blurb']);
                 }
 
                 if ($config['tag'] == 1) {

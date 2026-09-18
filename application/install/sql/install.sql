@@ -173,7 +173,8 @@ CREATE TABLE `mac_art` (
   KEY `art_lock` (`art_lock`),
   KEY `art_score` (`art_score`),
   KEY `art_score_all` (`art_score_all`),
-  KEY `art_score_num` (`art_score_num`)
+  KEY `art_score_num` (`art_score_num`),
+  KEY `idx_status_time_add` (`art_status`,`art_time_add`)
 ) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 ;
 
 -- ----------------------------
@@ -255,7 +256,8 @@ CREATE TABLE `mac_manga` (
   KEY `manga_lock` (`manga_lock`),
   KEY `manga_score` (`manga_score`),
   KEY `manga_score_all` (`manga_score_all`),
-  KEY `manga_score_num` (`manga_score_num`)
+  KEY `manga_score_num` (`manga_score_num`),
+  KEY `idx_status_time_add` (`manga_status`,`manga_time_add`)
 ) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COMMENT='漫画表';
 
 -- ----------------------------
@@ -1201,7 +1203,8 @@ CREATE TABLE `mac_vod` (
   KEY `vod_score` (`vod_score`) USING BTREE,
   KEY `vod_version` (`vod_version`),
   KEY `vod_state` (`vod_state`),
-  KEY `vod_isend` (`vod_isend`)
+  KEY `vod_isend` (`vod_isend`),
+  KEY `idx_status_time_add` (`vod_status`,`vod_time_add`)
 ) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 ;
 
 -- ----------------------------
@@ -1525,7 +1528,8 @@ CREATE TABLE `mac_analytics_content_day` (
   `updated_at` int(10) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`stat_date`,`mid`,`content_id`),
   KEY `idx_date_type` (`stat_date`,`type_id`),
-  KEY `idx_hot` (`stat_date`,`view_pv`)
+  KEY `idx_hot` (`stat_date`,`view_pv`),
+  KEY `idx_mid_content_date` (`mid`,`content_id`,`stat_date`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='运营统计-内容按日效果';
 
 

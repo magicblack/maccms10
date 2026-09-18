@@ -276,7 +276,7 @@ if(empty($col_list[$pre.'seckill_user'])){
         ],
         'content_quality' => [
             'id'      => 'content_quality',
-            'status'  => '0',
+            'status'  => '1',
             'name'    => 'content_quality',
             'des'     => '内容质量分批量计算',
             'file'    => 'content_quality',
@@ -287,7 +287,7 @@ if(empty($col_list[$pre.'seckill_user'])){
         ],
         'content_quality_art' => [
             'id'      => 'content_quality_art',
-            'status'  => '0',
+            'status'  => '1',
             'name'    => 'content_quality_art',
             'des'     => '内容质量分批量计算-文章',
             'file'    => 'content_quality',
@@ -583,6 +583,41 @@ if(empty($col_list[$pre.'analytics_event'])){
 if(empty($col_list[$pre.'analytics_content_day'])){
     $sql .= "CREATE TABLE `{$pre}analytics_content_day` (`stat_date` date NOT NULL,`mid` tinyint(3) unsigned NOT NULL COMMENT '1视频2文章8漫画',`content_id` int(10) unsigned NOT NULL,`type_id` smallint(6) unsigned NOT NULL DEFAULT '0' COMMENT '分类，冗余便于按类分析',`view_pv` bigint(20) unsigned NOT NULL DEFAULT '0',`view_uv` bigint(20) unsigned NOT NULL DEFAULT '0',`play_or_read_cnt` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '播放/阅读次数（按业务定义）',`avg_stay_ms` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '平均停留',`bounce_cnt` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '仅访问该内容即离开的会话数（任务算）',`collect_add` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '收藏新增',`want_add` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '想看新增',`order_cnt` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '关联订单数（付费转化）',`order_amount` decimal(14,2) unsigned NOT NULL DEFAULT '0.00',`updated_at` int(10) unsigned NOT NULL DEFAULT '0',PRIMARY KEY (`stat_date`,`mid`,`content_id`),KEY `idx_date_type` (`stat_date`,`type_id`),KEY `idx_hot` (`stat_date`,`view_pv`)) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='运营统计-内容按日效果';";
     $sql .="\r";
+}
+// 运营统计-零曝光内容：NOT EXISTS 相关子查询按 mid+content_id 探测该内容在时间窗内是否有曝光行，
+// 主键是 (stat_date,mid,content_id)，mid/content_id 不在前导列，探测退化为按 stat_date 扫描。
+// 补一条 (mid,content_id,stat_date) 索引，让每次探测都是索引内的定位+小范围扫描。
+if(!empty($col_list[$pre.'analytics_content_day'])){
+    $index_exists = \think\Db::query("SHOW INDEX FROM `{$pre}analytics_content_day` WHERE Key_name = 'idx_mid_content_date'");
+    if(empty($index_exists)){
+        $sql .= "ALTER TABLE `{$pre}analytics_content_day` ADD INDEX `idx_mid_content_date` (`mid`,`content_id`,`stat_date`);";
+        $sql .="\r";
+    }
+}
+// 运营统计-零曝光内容：{vod,art,manga} 的 status 列此前完全没有索引，查询按
+// status=1 过滤并按 time_add 倒序取前 N 条，命中 NOT EXISTS 子查询时会退化为
+// 近似全表扫描逐行探测。补 (status,time_add) 复合索引后可直接按索引顺序扫描，
+// 命中 LIMIT 即可停止，同时也惠及前台一般的“已审+按时间排序”列表查询。
+if(!empty($col_list[$pre.'vod'])){
+    $index_exists = \think\Db::query("SHOW INDEX FROM `{$pre}vod` WHERE Key_name = 'idx_status_time_add'");
+    if(empty($index_exists)){
+        $sql .= "ALTER TABLE `{$pre}vod` ADD INDEX `idx_status_time_add` (`vod_status`,`vod_time_add`);";
+        $sql .="\r";
+    }
+}
+if(!empty($col_list[$pre.'art'])){
+    $index_exists = \think\Db::query("SHOW INDEX FROM `{$pre}art` WHERE Key_name = 'idx_status_time_add'");
+    if(empty($index_exists)){
+        $sql .= "ALTER TABLE `{$pre}art` ADD INDEX `idx_status_time_add` (`art_status`,`art_time_add`);";
+        $sql .="\r";
+    }
+}
+if(!empty($col_list[$pre.'manga'])){
+    $index_exists = \think\Db::query("SHOW INDEX FROM `{$pre}manga` WHERE Key_name = 'idx_status_time_add'");
+    if(empty($index_exists)){
+        $sql .= "ALTER TABLE `{$pre}manga` ADD INDEX `idx_status_time_add` (`manga_status`,`manga_time_add`);";
+        $sql .="\r";
+    }
 }
 if(empty($col_list[$pre.'analytics_retention_cohort'])){
     $sql .= "CREATE TABLE `{$pre}analytics_retention_cohort` (`cohort_date` date NOT NULL COMMENT 'cohort 基准日（常用：注册日）',`cohort_type` varchar(16) NOT NULL DEFAULT 'register',`return_day` smallint(5) unsigned NOT NULL COMMENT '回访间隔天 0=当日 1=次日',`user_cnt` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '该日仍活跃用户数',`updated_at` int(10) unsigned NOT NULL DEFAULT '0',PRIMARY KEY (`cohort_date`,`cohort_type`,`return_day`),KEY `idx_cohort` (`cohort_date`,`cohort_type`)) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='运营统计-留存 cohort';";

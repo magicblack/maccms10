@@ -19,7 +19,7 @@ class User extends Base
 
         //判断用户登录状态
         $ac = request()->action();
-        $guestAllowedActions = ['login', 'logout', 'ajax_login', 'reg', 'findpass', 'findpass_msg', 'findpass_reset', 'reg_msg', 'oauth', 'logincallback', 'visit', 'index', 'ajax_upgrade', 'ajax_buy_popedom'];
+        $guestAllowedActions = ['login', 'logout', 'ajax_login', 'reg', 'findpass', 'findpass_msg', 'findpass_reset', 'reg_msg', 'oauth', 'logincallback', 'visit', 'index', 'ajax_upgrade', 'ajax_buy_popedom', 'invite_lookup'];
         $guestAllowedGetActions = ['buy', 'plays', 'upgrade', 'checkin', 'ajax_mall_goods', 'ajax_mall_orders'];
         if (in_array($ac, $guestAllowedActions) || (in_array($ac, $guestAllowedGetActions) && !Request()->isPost())) {
             // 游客可访问的页面也注入 obj，避免模板判断分支缺少变量
@@ -32,6 +32,20 @@ class User extends Base
             }
             $this->assign('obj', $GLOBALS['user']);
         }
+    }
+
+    /**
+     * 会员页渲染：走 label_fetch + mac_page_view，主题设计预览才能加载 *.draft.twig。
+     * @param string $route 如 user/index
+     * @return string
+     */
+    protected function userView($route)
+    {
+        $route = str_replace('\\', '/', trim((string) $route));
+        if (function_exists('mac_page_view')) {
+            $route = mac_page_view($route);
+        }
+        return $this->label_fetch($route);
     }
 
     public function ajax_login()
@@ -76,7 +90,9 @@ class User extends Base
                 ));
             }
 
-            if ($data['ulog_mid'] == 1 && $data['ulog_type'] > 3) {
+            // 仅播放(4)/下载(5)按积分计费；新增的点赞(6)等类型没有对应的 vod_points_xxx 字段，
+            // 用 > 3 会把它们误路由进这段付费逻辑。
+            if ($data['ulog_mid'] == 1 && in_array($data['ulog_type'], [4, 5], true)) {
                 $where2 = [];
                 $where2['vod_id'] = $data['ulog_rid'];
                 $res = model('Vod')->infoData($where2);
@@ -302,7 +318,7 @@ class User extends Base
 
     public function index()
     {
-        return $this->fetch('user/index');
+        return $this->userView('user/index');
     }
 
     public function login()
@@ -312,10 +328,12 @@ class User extends Base
             $res = model('User')->login($param);
             return json($res);
         }
-        if (!empty(cookie('user_id') && !empty(cookie('user_name')))) {
+        // 主题设计预览需要看到登录页本身，勿因前台 Cookie 跳走
+        $inTdPreview = function_exists('mac_td_preview_mode') && mac_td_preview_mode();
+        if (!$inTdPreview && !empty(cookie('user_id')) && !empty(cookie('user_name'))) {
             return redirect('user/index');
         }
-        return $this->fetch('user/login');
+        return $this->userView('user/login');
     }
 
     public function logout()
@@ -444,7 +462,7 @@ class User extends Base
         $this->assign('ac', $ac);
         $this->assign('bind_readonly', $bind_readonly ? 1 : 0);
         $this->assign('param', $param);
-        return $this->fetch('user/bind');
+        return $this->userView('user/bind');
     }
 
     public function unbind()
@@ -459,7 +477,7 @@ class User extends Base
             return json($res);
         }
         $this->assign('param',$param);
-        return $this->fetch('user/unbind');
+        return $this->userView('user/unbind');
     }
 
     public function info()
@@ -468,19 +486,14 @@ class User extends Base
         if (Request()->isPost()) {
             $csrfErr = $this->checkCsrf();
             if ($csrfErr !== null) {
-                $this->error($csrfErr['msg']);
-                exit;
+                return json($csrfErr);
             }
+            // 与 bind/unbind 一致：AJAX 直接返回业务 JSON，避免 success/error 把业务码抹成 0/1
             $res = model('User')->info($param);
-            if ($res['code'] == 1) {
-                $this->success($res['msg']);
-                exit;
-            }
-            $this->error($res['msg']);
-            exit;
+            return json($res);
         }
         $this->assign('param',$param);
-        return $this->fetch('user/info');
+        return $this->userView('user/info');
     }
 
     public function regcheck()
@@ -493,6 +506,30 @@ class User extends Base
             return $str;
         }
         return json($res);
+    }
+
+    /**
+     * 根据 ?uid= 推广链接中的用户ID查询其邀请码，供注册页在仅有 uid（无 invite_code）
+     * 时把邀请码回显到可见输入框（uid 本身只落隐藏字段，用户看不到）。
+     */
+    public function invite_lookup()
+    {
+        // 会话级节流可被丢弃 Cookie 绕过，按 IP 再加一道，避免匿名批量探测 uid 是否已注册
+        $ipKey = 'invite_lookup_rl_' . md5(mac_get_client_ip());
+        if (\think\Cache::get($ipKey)) {
+            return json(['code' => 0]);
+        }
+        \think\Cache::set($ipKey, 1, 5);
+        if (mac_get_time_span('last_invite_lookup') < 5) {
+            return json(['code' => 0]);
+        }
+        $param = input();
+        $uid = intval($param['uid']);
+        $invite_code = $uid > 0 ? model('User')->getInviteCodeByUserId($uid) : '';
+        if (empty($invite_code)) {
+            return json(['code' => 0]);
+        }
+        return json(['code' => 1, 'invite_code' => $invite_code]);
     }
 
     public function reg()
@@ -512,14 +549,32 @@ class User extends Base
             $res['msg'] = lang('index/reg_ok').'，' . $res['msg'];
             return json($res);
         }
-        if (!empty($param['uid'])) {
-            cookie('uid', $param['uid']);
+        // 已登录用户访问注册页（如 spike 主题注册成功后 reload 同一 URL）应跳走，
+        // 否则会卡在注册表单页面，看起来像“注册成功但进不去其它页面”
+        $inTdPreview = function_exists('mac_td_preview_mode') && mac_td_preview_mode();
+        if (!$inTdPreview && !empty(cookie('user_id')) && !empty(cookie('user_name'))) {
+            return redirect('user/index');
+        }
+        // uid/invite_code 落 Cookie 已由 Base::capture_invite_ref() 全站统一处理
+        // 表单回填：URL 未带参数时，回退读取 Cookie 中已捕获的邀请关系
+        if (empty($param['invite_code']) && !empty(cookie('invite_code'))) {
+            $param['invite_code'] = htmlspecialchars(cookie('invite_code'));
+        }
+        if (empty($param['uid']) && !empty(cookie('uid'))) {
+            $param['uid'] = intval(cookie('uid'));
+        }
+        // uid-only 推广链接没有邀请码字符串，反查该 uid 的邀请码用于经典主题回显
+        if (empty($param['invite_code']) && !empty($param['uid'])) {
+            $invite_code = model('User')->getInviteCodeByUserId($param['uid']);
+            if (!empty($invite_code)) {
+                $param['invite_code'] = $invite_code;
+            }
         }
 
         $user_config = $GLOBALS['config']['user'];
         $this->assign('user_config', $user_config);
         $this->assign('param', $param);
-        return $this->fetch('user/reg');
+        return $this->userView('user/reg');
     }
 
     public function reg_msg()
@@ -564,7 +619,7 @@ class User extends Base
             $res = model('Upload')->upload($param);
             return json($res);
         }
-        return $this->fetch('user/portrait');
+        return $this->userView('user/portrait');
     }
 
     public function findpass()
@@ -575,7 +630,7 @@ class User extends Base
             return json($res);
         }
         $this->assign('param',$param);
-        return $this->fetch('user/findpass');
+        return $this->userView('user/findpass');
     }
 
     public function findpass_msg()
@@ -587,7 +642,7 @@ class User extends Base
         }
         $param['ac_text'] = $param['ac'] == 'phone' ? lang('mobile') : lang('email');
         $this->assign('param', $param);
-        return $this->fetch('user/findpass_msg');
+        return $this->userView('user/findpass_msg');
     }
 
     public function findpass_reset()
@@ -604,6 +659,9 @@ class User extends Base
         $param = input();
         if (Request()->isPost()) {
             $flag = input('param.flag');
+            if ($flag === '' || $flag === null) {
+                $flag = input('flag');
+            }
             if ($flag == 'card') {
                 $card_no = htmlspecialchars(urldecode(trim($param['card_no'])));
                 $card_pwd = htmlspecialchars(urldecode(trim($param['card_pwd'])));
@@ -644,7 +702,7 @@ class User extends Base
         $this->assign('config', $GLOBALS['config']['pay']);
         $extends = mac_extends_list('pay');
         $this->assign('ext_list', $extends['ext_list']);
-        return $this->fetch('user/buy');
+        return $this->userView('user/buy');
     }
 
     public function pay()
@@ -666,7 +724,7 @@ class User extends Base
         $this->assign('extends',$extends);
         $this->assign('ext_list',$extends['ext_list']);
 
-        return $this->fetch('user/pay');
+        return $this->userView('user/pay');
     }
 
     public function gopay()
@@ -717,7 +775,7 @@ class User extends Base
         //$payment_res = model('Pay' . $payment)->submit($this->user, $res['info'], $param);
         if ($payment == 'weixin') {
             $this->assign('payment', $payment_res);
-            return $this->fetch('user/payment_weixin');
+            return $this->userView('user/payment_weixin');
         }
     }
 
@@ -751,7 +809,7 @@ class User extends Base
         $this->assign('group_list', $group_list);
         $this->assign('pay_config', $GLOBALS['config']['pay']);
         $this->assign('param',$param);
-        return $this->fetch('user/upgrade');
+        return $this->userView('user/upgrade');
     }
 
     /**
@@ -759,7 +817,7 @@ class User extends Base
      */
     public function benefits()
     {
-        return $this->fetch('user/benefits');
+        return $this->userView('user/benefits');
     }
 
     /**
@@ -767,7 +825,7 @@ class User extends Base
      */
     public function checkin()
     {
-        return $this->fetch('user/checkin');
+        return $this->userView('user/checkin');
     }
 
     /**
@@ -837,7 +895,7 @@ class User extends Base
 
         $this->assign('type_tree', $type_tree);
 
-        return $this->fetch('user/popedom');
+        return $this->userView('user/popedom');
     }
 
     public function plays()
@@ -861,7 +919,7 @@ class User extends Base
         $page_url = url('user/plays', ['mid' => $param['mid'], 'page' => 'PAGELINK']);
         $pages = mac_page_param($res['total'], $param['limit'], $param['page'], $page_url);
         $this->assign('__PAGING__', $pages);
-        return $this->fetch('user/plays');
+        return $this->userView('user/plays');
     }
 
     /**
@@ -869,12 +927,12 @@ class User extends Base
      */
     public function notify()
     {
-        return $this->fetch('user/notify');
+        return $this->userView('user/notify');
     }
 
     public function dynamics()
     {
-        return $this->fetch('user/dynamics');
+        return $this->userView('user/dynamics');
     }
 
     public function downs()
@@ -894,7 +952,7 @@ class User extends Base
         $this->assign('list', $res['list']);
         $pages = mac_page_param($res['total'], $param['limit'], $param['page'], url('user/downs', ['page' => 'PAGELINK']));
         $this->assign('__PAGING__', $pages);
-        return $this->fetch('user/downs');
+        return $this->userView('user/downs');
     }
 
     public function favs()
@@ -918,7 +976,7 @@ class User extends Base
         $page_url = url('user/favs', ['mid' => $param['mid'], 'page' => 'PAGELINK']);
         $pages = mac_page_param($res['total'], $param['limit'], $param['page'], $page_url);
         $this->assign('__PAGING__', $pages);
-        return $this->fetch('user/favs');
+        return $this->userView('user/favs');
     }
 
     public function ulog()
@@ -932,7 +990,7 @@ class User extends Base
         if(in_array($param['mid'],['1','2','3','8'])){
             $where['ulog_mid'] = $param['mid'];
         }
-        if(in_array($param['type'],['1','2','3','4','5'])){
+        if(in_array($param['type'],['1','2','3','4','5','6'])){
             $where['ulog_type'] = $param['type'];
         }
 
@@ -943,7 +1001,7 @@ class User extends Base
         $this->assign('list', $res['list']);
         $pages = mac_page_param($res['total'], $param['limit'], $param['page'], url('user/ulog', ['page' => 'PAGELINK']));
         $this->assign('__PAGING__', $pages);
-        return $this->fetch('user/ulog');
+        return $this->userView('user/ulog');
     }
 
     public function ulog_del()
@@ -953,7 +1011,7 @@ class User extends Base
         $type = $param['type'];
         $all = $param['all'];
 
-        if (!in_array($type, array('1', '2', '3', '4', '5'))) {
+        if (!in_array($type, array('1', '2', '3', '4', '5', '6'))) {
             return json(['code' => 1001, 'msg' => lang('param_err')]);
         }
 
@@ -1001,7 +1059,7 @@ class User extends Base
         $page_url = url('user/plog', ['filter' => $param['filter'], 'page' => 'PAGELINK']);
         $pages = mac_page_param($res['total'], $param['limit'], $param['page'], $page_url);
         $this->assign('__PAGING__', $pages);
-        return $this->fetch('user/plog');
+        return $this->userView('user/plog');
     }
 
     public function mall()
@@ -1022,7 +1080,7 @@ class User extends Base
         $this->assign('__PAGING__', $pages);
         $this->assign('param', $param);
         $this->assign('list', $res['list']);
-        return $this->fetch('user/mall');
+        return $this->userView('user/mall');
     }
 
     public function mall_orders()
@@ -1040,7 +1098,7 @@ class User extends Base
         $this->assign('__PAGING__', $pages);
         $this->assign('param', $param);
         $this->assign('list', $res['list']);
-        return $this->fetch('user/mall_orders');
+        return $this->userView('user/mall_orders');
     }
 
     public function ajax_mall_goods()
@@ -1196,7 +1254,7 @@ class User extends Base
         $this->assign('list', $res['list']);
         $pages = mac_page_param($res['total'], $param['limit'], $param['page'], url('user/cash', ['page' => 'PAGELINK']));
         $this->assign('__PAGING__', $pages);
-        return $this->fetch('user/cash');
+        return $this->userView('user/cash');
     }
 
     public function cash_del()
@@ -1251,7 +1309,7 @@ class User extends Base
         $this->assign('list', $res['list']);
         $pages = mac_page_param($res['total'], $param['limit'], $param['page'], url('user/reward', ['level'=>$param['level'], 'page' => 'PAGELINK']));
         $this->assign('__PAGING__', $pages);
-        return $this->fetch('user/reward');
+        return $this->userView('user/reward');
     }
 
     public function orders()
@@ -1270,7 +1328,7 @@ class User extends Base
         $this->assign('__PAGING__', $pages);
         $this->assign('param',$param);
         $this->assign('list', $res['list']);
-        return $this->fetch('user/orders');
+        return $this->userView('user/orders');
     }
 
     public function order_info()
@@ -1284,7 +1342,7 @@ class User extends Base
             return json($res);
         }
         $this->assign('param',$param);
-        return $this->fetch('user/order_info');
+        return $this->userView('user/order_info');
     }
 
 
@@ -1305,21 +1363,21 @@ class User extends Base
         $this->assign('__PAGING__', $pages);
         $this->assign('param',$param);
         $this->assign('list', $res['list']);
-        return $this->fetch('user/cards');
+        return $this->userView('user/cards');
     }
 
     public function comment()
     {
         $param = input();
         $this->assign('param',$param);
-        return $this->fetch('user/comment');
+        return $this->userView('user/comment');
     }
 
     public function gbook()
     {
         $param = input();
         $this->assign('param',$param);
-        return $this->fetch('user/gbook');
+        return $this->userView('user/gbook');
     }
 
     /**
@@ -1388,7 +1446,7 @@ class User extends Base
         $pages = mac_page_param($total, $param['limit'], $param['page'], url('user/invite', ['page' => 'PAGELINK']));
         $this->assign('__PAGING__', $pages);
 
-        return $this->fetch('user/invite');
+        return $this->userView('user/invite');
     }
 
     public function visit()

@@ -137,6 +137,9 @@ class TplConfig extends Base
             if (isset($tplconfig['rank']['btn'])) {
                 $tplconfig['rank']['btn'] = ((string) $tplconfig['rank']['btn'] === '1') ? '1' : '0';
             }
+            $tplconfig['rank']['boards'] = $this->normalizeRankBoards(
+                isset($tplconfig['rank']['boards']) ? $tplconfig['rank']['boards'] : []
+            );
             if (isset($tplconfig['nav']) && is_array($tplconfig['nav'])) {
                 if (isset($tplconfig['nav']['id'])) {
                     $navIds = preg_replace('/\s+/', '', (string) $tplconfig['nav']['id']);
@@ -186,6 +189,9 @@ class TplConfig extends Base
         if (!is_array($type_tree)) {
             $type_tree = [];
         }
+        if (empty($tplconfig['theme']['rank']['boards']) || !is_array($tplconfig['theme']['rank']['boards'])) {
+            $tplconfig['theme']['rank']['boards'] = $this->buildDefaultRankBoards($tplconfig);
+        }
         $this->assign('tplconfig', $tplconfig);
         $this->assign('type_tree', $type_tree);
         $this->assign('theme_type_options', $this->buildThemeTypeOptions($type_tree));
@@ -194,6 +200,77 @@ class TplConfig extends Base
         $this->assignThemeUxI18n();
         $this->assign('title', lang('menu/theme/config'));
         return $this->fetch('admin@tplconfig/theme');
+    }
+
+    /**
+     * 排行榜页多榜单配置归一化：过滤未填写的空行，限制条数与每榜视频数区间，
+     * 提交时的行顺序即前台展示顺序（对应表单的拖动排序）。
+     */
+    protected function normalizeRankBoards($boards)
+    {
+        if (!is_array($boards)) {
+            return [];
+        }
+        $out = [];
+        foreach ($boards as $row) {
+            if (!is_array($row)) {
+                continue;
+            }
+            $title = isset($row['title']) ? mac_filter_xss(trim((string) $row['title'])) : '';
+            $typeId = isset($row['type_id']) ? (int) $row['type_id'] : 0;
+            if ($title === '' && $typeId <= 0) {
+                continue;
+            }
+            $num = isset($row['num']) ? (int) $row['num'] : 6;
+            $num = max(2, min(30, $num ?: 6));
+            $status = (isset($row['status']) && (string) $row['status'] === '0') ? '0' : '1';
+            $out[] = [
+                'title'   => $title,
+                'type_id' => (string) max(0, $typeId),
+                'num'     => (string) $num,
+                'status'  => $status,
+            ];
+            if (count($out) >= 20) {
+                break;
+            }
+        }
+        return $out;
+    }
+
+    /**
+     * 首次进入排行榜配置页（尚未保存过 boards）时，用旧版单一榜单字段
+     * （rank.id/rank.num/rank.title）拼出一份初始榜单列表，避免老站点升级后表单看起来是空的。
+     */
+    protected function buildDefaultRankBoards($tplconfig)
+    {
+        $rankCfg = (isset($tplconfig['theme']['rank']) && is_array($tplconfig['theme']['rank'])) ? $tplconfig['theme']['rank'] : [];
+        $legacyIds = trim((string) ($rankCfg['hid'] ?? ($rankCfg['id'] ?? '')));
+        $legacyNum = (int) ($rankCfg['num'] ?? 6);
+        $legacyNum = max(2, min(30, $legacyNum ?: 6));
+
+        $boards = [];
+        if ($legacyIds !== '' && $legacyIds !== 'parent') {
+            $typeModel = model('Type');
+            foreach (array_filter(array_map('intval', explode(',', $legacyIds))) as $tid) {
+                $info = $typeModel->getCacheInfo($tid);
+                $name = !empty($info['type_name']) ? (string) $info['type_name'] : '';
+                $boards[] = [
+                    'title'   => $name,
+                    'type_id' => (string) $tid,
+                    'num'     => (string) $legacyNum,
+                    'status'  => '1',
+                ];
+            }
+        }
+        if (empty($boards)) {
+            $boards[] = [
+                'title'   => '全站',
+                'type_id' => '0',
+                'num'     => (string) $legacyNum,
+                'status'  => '1',
+            ];
+        }
+        return $boards;
     }
 
     /**
@@ -293,6 +370,7 @@ class TplConfig extends Base
             'multiMeta' => lang('admin/tpl/config/type_picker_multi_meta'),
             'singleMeta' => lang('admin/tpl/config/type_picker_single_meta'),
             'hotvodTabLabel' => lang('admin/tpl/config/hotvod_tab_label'),
+            'rankBoardLabel' => lang('admin/tpl/config/rank_boards_row_label'),
         ], JSON_UNESCAPED_UNICODE | JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP));
     }
 

@@ -546,7 +546,7 @@ class Vod extends Base {
         // 大表下 ORDER BY RAND() 有性能代价，属语义正确性与性能的取舍
         $use_rand = ($by == 'rnd');
         if (!$use_rand) {
-            if (!in_array($by, ['id', 'time', 'time_add', 'score', 'hits', 'hits_day', 'hits_week', 'hits_month', 'up', 'down', 'level', 'rnd'])) {
+            if (!in_array($by, ['id', 'time', 'time_add', 'score', 'hits', 'hits_day', 'hits_week', 'hits_month', 'duration', 'up', 'down', 'level', 'rnd'])) {
                 $by = 'time';
             }
         }
@@ -586,6 +586,10 @@ class Vod extends Base {
                 }
             }
             $order = ['[rand]' => '[rand]'];
+        } else if ($by == 'duration') {
+            // vod_duration 是自由文本（如 "57:00"/"1:35:20"/"95"），直接按字符串排序会导致顺序错乱，
+            // 这里统一换算成秒数再排序
+            $order = Db::raw($this->buildDurationOrderExpr($order));
         } else {
             $order = 'vod_' . $by . ' ' . $order;
         }
@@ -632,13 +636,53 @@ class Vod extends Base {
                 $res = $this->listData($where, $order, $page, $num, $start,$field,1, $totalshow);
             }
             if($GLOBALS['config']['app']['cache_core']==1 && !$use_rand) {
-                Cache::set($cach_name, $res, $cachetime);
+                // 打上表名标签，写路径才能定点作废这一族列表缓存（见 Base::clearListCache()）
+                Cache::tag($this->name)->set($cach_name, $res, $cachetime);
             }
         }
         $res['pageurl'] = $pageurl;
         $res['half'] = $half;
 
         return $res;
+    }
+
+    /**
+     * 构造按 vod_duration 排序的 SQL 表达式：先把常见格式（H:MM:SS、MM:SS、纯数字分钟）统一换算成秒数再比较，
+     * 避免直接对文本做字典序排序导致的长短错位
+     */
+    private function buildDurationOrderExpr($order)
+    {
+        $order = in_array($order, ['asc', 'desc']) ? $order : 'desc';
+        // 无法识别的 vod_duration 格式（如"未知"、"1h35m"）归为 NULL，
+        // 而不是静默 CAST 成 0，避免脏数据聚集到排序的一端；NULL 统一排最后
+        $expr = "(CASE
+            WHEN vod_duration REGEXP '^[0-9]{1,2}:[0-9]{1,2}:[0-9]{1,2}$' THEN
+                CAST(SUBSTRING_INDEX(vod_duration,':',1) AS UNSIGNED) * 3600
+                + CAST(SUBSTRING_INDEX(SUBSTRING_INDEX(vod_duration,':',2),':',-1) AS UNSIGNED) * 60
+                + CAST(SUBSTRING_INDEX(vod_duration,':',-1) AS UNSIGNED)
+            WHEN vod_duration REGEXP '^[0-9]{1,3}:[0-9]{1,2}$' THEN
+                CAST(SUBSTRING_INDEX(vod_duration,':',1) AS UNSIGNED) * 60
+                + CAST(SUBSTRING_INDEX(vod_duration,':',-1) AS UNSIGNED)
+            WHEN vod_duration REGEXP '^[0-9]+$' THEN
+                CAST(vod_duration AS UNSIGNED) * 60
+            ELSE NULL
+        END)";
+        return "{$expr} IS NULL, {$expr} {$order}";
+    }
+
+    /**
+     * 清 infoData() 的详情缓存。key 必须和 infoData() 里 Cache::get()/set() 用的
+     * 格式完全一致（带 cache_flag 前缀、vod_id 和 vod_en 都拼在同一个 key 里），
+     * 否则 rm() 清的是另一个字符串，等于没清——编辑保存后前台仍命中旧缓存。
+     * 详情页只会用 vod_id 或 vod_en 单边查（哪边留空取决于伪静态设置），
+     * 所以两种组合都要清，救的是「保存前用另一种方式被缓存过」的情况。
+     */
+    private function clearDetailCache($vod_id, $vod_en)
+    {
+        $flag = $GLOBALS['config']['app']['cache_flag'];
+        Cache::rm($flag . '_vod_detail_' . $vod_id . '_' . $vod_en);
+        Cache::rm($flag . '_vod_detail_' . $vod_id . '_');
+        Cache::rm($flag . '_vod_detail__' . $vod_en);
     }
 
     public function infoData($where,$field='*',$cache=0)
@@ -724,12 +768,7 @@ class Vod extends Base {
         if(!$validate->check($data)){
             return ['code'=>1001,'msg'=>lang('param_err').'：'.$validate->getError() ];
         }
-        $key = 'vod_detail_'.$data['vod_id'];
-        Cache::rm($key);
-        $key = 'vod_detail_'.$data['vod_en'];
-        Cache::rm($key);
-        $key = 'vod_detail_'.$data['vod_id'].'_'.$data['vod_en'];
-        Cache::rm($key);
+        $this->clearDetailCache($data['vod_id'], $data['vod_en']);
 
         $type_list = model('Type')->getCache('type_list');
         $type_info = $type_list[$data['type_id']];
@@ -847,6 +886,7 @@ class Vod extends Base {
             $ixVodId = intval($this->getLastInsID());
         }
         MeilisearchSync::afterVodSave($ixVodId);
+        $this->clearListCache();
 
         return ['code'=>1,'msg'=>lang('save_ok'),'vod_id'=>$ixVodId];
     }
@@ -857,12 +897,7 @@ class Vod extends Base {
         if(!$validate->check($data)){
             return ['code'=>1001,'msg'=>lang('param_err').'：'.$validate->getError() ];
         }
-        $key = 'vod_detail_'.$data['vod_id'];
-        Cache::rm($key);
-        $key = 'vod_detail_'.$data['vod_en'];
-        Cache::rm($key);
-        $key = 'vod_detail_'.$data['vod_id'].'_'.$data['vod_en'];
-        Cache::rm($key);
+        $this->clearDetailCache($data['vod_id'], $data['vod_en']);
 
         if(!empty($data['vod_plot_name'])) {
             $data['vod_plot'] = 1;
@@ -923,6 +958,7 @@ class Vod extends Base {
             return ['code'=>1002,'msg'=>lang('del_err').'：'.$this->getError() ];
         }
         \app\common\model\ContentLang::deleteByContent('vod', $delIds);
+        $this->clearListCache();
         return ['code'=>1,'msg'=>lang('del_ok')];
     }
 
@@ -940,17 +976,16 @@ class Vod extends Base {
         $list = $this->field('vod_id,vod_name,vod_en')->where($where)->select();
         $syncSearch = isset($update['vod_status']);
         foreach($list as $k=>$v){
-            $key = 'vod_detail_'.$v['vod_id'];
-            Cache::rm($key);
-            $key = 'vod_detail_'.$v['vod_en'];
-            Cache::rm($key);
+            $this->clearDetailCache($v['vod_id'], $v['vod_en']);
             if ($syncSearch) {
                 MeilisearchSync::afterVodSave((int)$v['vod_id']);
             }
         }
+        $this->clearListCache();
 
         return ['code'=>1,'msg'=>lang('set_ok')];
     }
+
 
     public function updateToday($flag='vod')
     {

@@ -1724,26 +1724,66 @@ $hotvod_tabs_list = (!empty($tplconfig['theme']['hotvod']['tabs']) && is_array($
                                         <div class="layui-form-mid layui-word-aux">{:lang('admin/tpl/config/content7')}
                                         </div>
                                     </div>
-                                    <div class="layui-form-item">
-                                        <label class="layui-form-label">{:lang('admin/tpl/config/content8')}</label>
-                                        <div class="layui-input-inline w200">
-                                            <input type="text" name="theme[rank][num]"
-                                                placeholder="{:lang('admin/tpl/config/content9')}"
-                                                value="{$tplconfig['theme']['rank']['num']}" class="layui-input">
+                                    <div class="theme-list-panel">
+                                        <div class="theme-list-head">
+                                            <span class="theme-list-head-title">{:lang('admin/tpl/config/rank_boards_title')}</span>
+                                            <span class="theme-list-head-hint">{:lang('admin/tpl/config/rank_boards_hint')}</span>
                                         </div>
-                                        <div class="layui-form-mid layui-word-aux">{:lang('admin/tpl/config/content10')}
+                                        <div class="theme-list-columns theme-list-columns--compact">
+                                            <span></span><span>{:lang('admin/tpl/config/rank_boards_col_title')}</span><span>{:lang('admin/tpl/config/rank_boards_col_type')}</span><span>{:lang('admin/tpl/config/rank_boards_col_num')}</span><span>{:lang('admin/tpl/config/rank_boards_col_status')}</span><span></span>
                                         </div>
-                                    </div>
-                                    <div class="layui-form-item">
-                                        <label class="layui-form-label">{:lang('admin/tpl/config/key34')}</label>
-                                        <div class="layui-input-inline w320">
-                                            <div class="type-picker-field type-picker-field--multi" data-picker-mode="multiple">
-                                                <input type="hidden" class="type-picker-value" name="theme[rank][id]" value="{$tplconfig['theme']['rank']['id']}">
+                                    <div id="rank-boards-list" class="js-sortable-list">
+                                        {if condition="!empty($tplconfig['theme']['rank']['boards']) && is_array($tplconfig['theme']['rank']['boards'])"}
+                                        {volist name="tplconfig.theme.rank.boards" id="rb" key="rk"}
+                                        <div class="layui-form-item rank-board-item js-sortable-item">
+                                            <label class="layui-form-label">{:sprintf(lang('admin/tpl/config/rank_boards_row_label'), $rk)}</label>
+                                            <div class="layui-input-inline w200">
+                                                <input type="text" name="theme[rank][boards][{$rk-1}][title]" placeholder="{:lang('admin/tpl/config/rank_boards_title_ph')}" value="{$rb.title|htmlentities}" class="layui-input">
+                                            </div>
+                                            <div class="layui-input-inline type-picker-field w200">
+                                                <input type="hidden" class="type-picker-value" name="theme[rank][boards][{$rk-1}][type_id]" value="{$rb.type_id}">
                                                 <button type="button" class="js-type-picker-btn type-picker-trigger" aria-label="{:lang('admin/tpl/config/type_picker_btn')}"><span class="type-picker-text">{:lang('admin/tpl/config/type_picker_btn')}</span><span class="type-picker-chevron" aria-hidden="true"></span></button>
                                             </div>
+                                            <div class="layui-input-inline w90">
+                                                <input type="text" name="theme[rank][boards][{$rk-1}][num]" value="{$rb.num|default='6'}" class="layui-input">
+                                            </div>
+                                            <div class="layui-input-inline w100">
+                                                <select name="theme[rank][boards][{$rk-1}][status]" class="layui-input">
+                                                    <option value="1" {if condition="$rb.status neq '0'"}selected{/if}>{:lang('admin/tpl/config/btn_on')}</option>
+                                                    <option value="0" {if condition="$rb.status eq '0'"}selected{/if}>{:lang('admin/tpl/config/desc44')}</option>
+                                                </select>
+                                            </div>
+                                            <div class="layui-input-inline w90"><button type="button" class="layui-btn layui-btn-danger layui-btn-sm rank-board-remove">{:lang('admin/tpl/config/rank_boards_del')}</button></div>
                                         </div>
-                                        <div class="layui-form-mid layui-word-aux">{:lang('admin/tpl/config/content13')}
+                                        {/volist}
+                                        {else /}
+                                        <div class="layui-form-item rank-board-item js-sortable-item">
+                                            <label class="layui-form-label">{:sprintf(lang('admin/tpl/config/rank_boards_row_label'), 1)}</label>
+                                            <div class="layui-input-inline w200">
+                                                <input type="text" name="theme[rank][boards][0][title]" placeholder="{:lang('admin/tpl/config/rank_boards_title_ph')}" value="" class="layui-input">
+                                            </div>
+                                            <div class="layui-input-inline type-picker-field w200">
+                                                <input type="hidden" class="type-picker-value" name="theme[rank][boards][0][type_id]" value="0">
+                                                <button type="button" class="js-type-picker-btn type-picker-trigger" aria-label="{:lang('admin/tpl/config/type_picker_btn')}"><span class="type-picker-text">{:lang('admin/tpl/config/type_picker_btn')}</span><span class="type-picker-chevron" aria-hidden="true"></span></button>
+                                            </div>
+                                            <div class="layui-input-inline w90">
+                                                <input type="text" name="theme[rank][boards][0][num]" value="6" class="layui-input">
+                                            </div>
+                                            <div class="layui-input-inline w100">
+                                                <select name="theme[rank][boards][0][status]" class="layui-input">
+                                                    <option value="1" selected>{:lang('admin/tpl/config/btn_on')}</option>
+                                                    <option value="0">{:lang('admin/tpl/config/desc44')}</option>
+                                                </select>
+                                            </div>
+                                            <div class="layui-input-inline w90"><button type="button" class="layui-btn layui-btn-danger layui-btn-sm rank-board-remove">{:lang('admin/tpl/config/rank_boards_del')}</button></div>
                                         </div>
+                                        {/if}
+                                    </div>
+                                    </div>
+                                    <div class="layui-form-item rank-board-actions">
+                                        <label class="layui-form-label"></label>
+                                        <div class="layui-input-inline w160"><button type="button" class="layui-btn layui-btn-sm" id="rank-board-add">{:lang('admin/tpl/config/rank_boards_add')}</button></div>
+                                        <div class="layui-form-mid layui-word-aux">{:lang('admin/tpl/config/rank_boards_add_hint')}</div>
                                     </div>
                                 </div>
                             </fieldset>
@@ -2940,6 +2980,56 @@ $hotvod_tabs_list = (!empty($tplconfig['theme']['hotvod']['tabs']) && is_array($
             });
             rebuildVodListCoverNames();
 
+            // 排行榜页多榜单配置（theme[rank][boards]）
+            function rerenderRankBoardSelects() {
+                var $list = $('#rank-boards-list');
+                $list.find('.layui-form-select').remove();
+                $list.find('select').removeClass('layui-hide').css({ display: '', visibility: '' });
+                form.render('select');
+            }
+            function rebuildRankBoardNames() {
+                var $items = $('#rank-boards-list .rank-board-item');
+                var rankLabelFn = (ux && typeof ux.rankBoardLabel === 'function')
+                    ? function (i) { return ux.rankBoardLabel(i); }
+                    : function (i) { return 'Board ' + (i + 1); };
+                $items.each(function (index) {
+                    var $item = $(this);
+                    $item.find('.layui-form-label').first().text(rankLabelFn(index));
+                    $item.find('input,select,textarea').each(function () {
+                        var $el = $(this);
+                        var name = $el.attr('name');
+                        if (name) {
+                            name = name.replace(/theme\[rank]\[boards]\[\d+]/, 'theme[rank][boards][' + index + ']');
+                            $el.attr('name', name);
+                        }
+                    });
+                    syncPickerNamesInItem($item, /theme\[rank]\[boards]\[\d+]/, 'theme[rank][boards][' + index + ']');
+                });
+            }
+            $('#rank-boards-list').on('click', '.rank-board-remove', function () {
+                var $items = $('#rank-boards-list .rank-board-item');
+                if ($items.length <= 1) { layer.msg('至少保留 1 条'); return; }
+                $(this).closest('.rank-board-item').remove();
+                rebuildRankBoardNames();
+                rerenderRankBoardSelects();
+                afterListMutation($('#rank-boards-list'));
+            });
+            $('#rank-board-add').on('click', function () {
+                var $list = $('#rank-boards-list'); var $items = $list.find('.rank-board-item');
+                if ($items.length >= 20) { layer.msg('最多只能添加 20 条'); return; }
+                if (!$items.length) { layer.msg('请刷新页面后重试'); return; }
+                var $clone = $items.last().clone(false);
+                $clone.find('input').val('');
+                $clone.find('select').val('1');
+                $clone.find('.layui-form-select').remove();
+                $clone.find('select').removeClass('layui-hide').css({ display: '', visibility: '' });
+                $list.append($clone);
+                rebuildRankBoardNames();
+                rerenderRankBoardSelects();
+                afterListMutation($clone);
+            });
+            rebuildRankBoardNames();
+
 
             // 全部分类动态增删（最多 20 条）
             function rebuildAllmenuNames() {
@@ -3294,6 +3384,11 @@ $hotvod_tabs_list = (!empty($tplconfig['theme']['hotvod']['tabs']) && is_array($
                     rebuildVodListCoverNames();
                     rerenderVodListCoverSelects();
                     afterListMutation($('#vod-list-cover-list'));
+                }, form);
+                ux.initSortableList($('#rank-boards-list'), function () {
+                    rebuildRankBoardNames();
+                    rerenderRankBoardSelects();
+                    afterListMutation($('#rank-boards-list'));
                 }, form);
             }
 

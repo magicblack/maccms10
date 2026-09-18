@@ -15,6 +15,17 @@ class TemplateCloudService
     const CACHE_CATALOG_BACKUP = 'template_market_catalog_backup';
 
     /**
+     * 主题包解压/扫描允许的文件后缀白名单（而非黑名单）：即便签名/哈希校验的信任链被攻破，
+     * 也不因黑名单漏收某个可执行后缀（.phtml3/.pht/.php5 等）而留口子。
+     */
+    const ALLOWED_PACKAGE_EXTS = [
+        'twig', 'html', 'css', 'js', 'json', 'ini', 'properties', 'md', 'txt', 'map',
+        'png', 'jpg', 'jpeg', 'gif', 'svg', 'webp', 'ico',
+        'woff', 'woff2', 'ttf', 'eot', 'otf',
+    ];
+    const ALLOWED_PACKAGE_EXT_PATTERN = '(twig|html|css|js|json|ini|properties|md|txt|map|png|jpg|jpeg|gif|svg|webp|ico|woff|woff2|ttf|eot|otf)';
+
+    /**
      * 内置验签公钥（与 application/data/template_market_cloud/catalog_public.pem 一致）
      * 轮换密钥时同步更新此常量与 PEM 文件。
      */
@@ -212,6 +223,21 @@ PEM;
             return ['code' => 0, 'msg' => lang('admin/template_market/invalid_structure'), 'data' => []];
         }
 
+        // Twig 主题：过一遍主题校验闸（契约 / 编译 / 函数白名单 / 渲染冒烟）。
+        // 装进来但功能静默失效的主题是最难排查的一类问题，必须在启用前拦下。
+        // 非 Twig 主题（存量 taglib 模板）闸内部会直接放行，不受影响。
+        $gate = \app\common\view\ThemeGate::run($dir);
+        if ($gate['code'] !== 1) {
+            $this->cleanupPath($target);
+            $this->restoreTemplateBackup($backupPath, $target);
+            $detail = implode('; ', array_slice($gate['errors'], 0, 5));
+            return [
+                'code' => 0,
+                'msg' => lang('admin/template_market/invalid_structure') . ' - ' . $detail,
+                'data' => ['gate' => $gate],
+            ];
+        }
+
         $this->discardTemplateBackup($backupPath);
 
         $this->recordInstall($id, $dir, $item);
@@ -237,6 +263,34 @@ PEM;
         $path = ROOT_PATH . 'template' . DS . $dir;
         if (!is_dir($path) || !is_dir($path . DS . 'html')) {
             return ['code' => 0, 'msg' => lang('admin/template_market/not_installed')];
+        }
+
+        // Twig 主题：激活与安装同闸（TWIG-GATE-01）。安装闸挡得住模板市场，
+        // 挡不住手拷进 template/ 的目录 —— 只要有引擎开关就可能被启用上线。
+        // 非 Twig 主题（存量 taglib 模板）闸内部会直接放行，不受影响。
+        //
+        // thin PB 主题（pb_enabled=1）例外：页面由 Page Builder 按需编译，
+        // 不齐 T0 模板是其正常形态（site-clean 即如此），「缺少模板」类
+        // contract 缺口降级放行；安全类错误（TwigGuard 拒绝、编译/渲染失败）
+        // 对任何主题仍然硬拦 —— 本闸要堵的就是后者。
+        $gate = \app\common\view\ThemeGate::run($dir);
+        if ($gate['code'] !== 1) {
+            $pbEnabled = \app\common\util\ThemePreset::isPbEnabled(ROOT_PATH . 'template' . DS . $dir);
+            $blocking = $gate['errors'];
+            if ($pbEnabled) {
+                $blocking = array_values(array_filter($gate['errors'], function ($e) {
+                    return strpos($e, '[contract] 缺少') !== 0;
+                }));
+            }
+            if (!empty($blocking)) {
+                $detail = implode('; ', array_slice($blocking, 0, 5));
+                return [
+                    'code' => 0,
+                    'msg' => lang('admin/template_market/invalid_structure') . ' - ' . $detail,
+                    'data' => ['gate' => $gate],
+                ];
+            }
+            $gate['warnings'] = array_merge($gate['warnings'], $gate['errors']);
         }
 
         $configFile = APP_PATH . 'extra' . DS . 'maccms.php';
@@ -398,7 +452,8 @@ PEM;
      */
     protected function fetchRemoteSecure($url, $timeout = 30)
     {
-        if (!$this->validateRemoteUrl($url)) {
+        $resolvedIp = null;
+        if (!$this->validateRemoteUrl($url, $resolvedIp)) {
             return false;
         }
         if (!function_exists('curl_init')) {
@@ -410,6 +465,12 @@ PEM;
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_FOLLOWLOCATION, false);
         curl_setopt($ch, CURLOPT_MAXREDIRS, 0);
+        // 把 host 钉到校验时解析出的公网 IP，堵住「校验时解析公网、连接时(curl 内部重新解析)
+        // 解析到内网」的 DNS-rebinding TOCTOU 窗口（SSRF），与 HttpClient::curlGetNoRedirect 一致。
+        $resolve = $this->buildCurlResolve($url, $resolvedIp);
+        if ($resolve !== null) {
+            curl_setopt($ch, CURLOPT_RESOLVE, [$resolve]);
+        }
         curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 15);
         curl_setopt($ch, CURLOPT_TIMEOUT, max(5, (int) $timeout));
         curl_setopt($ch, CURLOPT_HEADER, false);
@@ -451,7 +512,7 @@ PEM;
         return [];
     }
 
-    protected function validateRemoteUrl($url)
+    protected function validateRemoteUrl($url, &$resolvedIp = null)
     {
         $parts = parse_url($url);
         if (empty($parts['scheme']) || !in_array(strtolower($parts['scheme']), ['http', 'https'], true)) {
@@ -477,7 +538,27 @@ PEM;
             return false;
         }
 
+        $resolvedIp = $ip;
         return true;
+    }
+
+    /**
+     * 由 validateRemoteUrl() 校验出的 IP 拼出 CURLOPT_RESOLVE 条目（host:port:ip），
+     * 用于把 curl 的实际连接钉在校验时解析出的公网 IP 上，避免二次 DNS 解析绕过校验。
+     * @return string|null
+     */
+    protected function buildCurlResolve($url, $ip)
+    {
+        if (empty($ip) || !filter_var($ip, FILTER_VALIDATE_IP)) {
+            return null;
+        }
+        $parts = parse_url($url);
+        if (empty($parts['host'])) {
+            return null;
+        }
+        $scheme = isset($parts['scheme']) ? strtolower($parts['scheme']) : 'http';
+        $port = isset($parts['port']) ? (int) $parts['port'] : ($scheme === 'https' ? 443 : 80);
+        return $parts['host'] . ':' . $port . ':' . $ip;
     }
 
     protected function extractZipSafely(\ZipArchive $zip, $destDir)
@@ -496,7 +577,7 @@ PEM;
             if (preg_match('#(^|/)\.\.(/|$)#', $name)) {
                 return false;
             }
-            if (preg_match('#\.(php|phtml|phar|inc)$#i', $name)) {
+            if (substr($name, -1) !== '/' && !preg_match('#\.' . self::ALLOWED_PACKAGE_EXT_PATTERN . '$#i', $name)) {
                 return false;
             }
 
@@ -562,7 +643,7 @@ PEM;
                 continue;
             }
             $ext = strtolower(pathinfo($file->getFilename(), PATHINFO_EXTENSION));
-            if (in_array($ext, ['php', 'phtml', 'phar', 'inc'], true)) {
+            if (!in_array($ext, self::ALLOWED_PACKAGE_EXTS, true)) {
                 return false;
             }
         }

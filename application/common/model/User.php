@@ -212,7 +212,6 @@ class User extends Base
         $data['user_pwd'] = htmlspecialchars(urldecode(trim(isset($param['user_pwd']) ? $param['user_pwd'] : '')));
         $data['user_pwd2'] = htmlspecialchars(urldecode(trim(isset($param['user_pwd2']) ? $param['user_pwd2'] : '')));
         $data['verify'] = isset($param['verify']) ? $param['verify'] : '';
-        $uid = isset($param['uid']) ? $param['uid'] : 0;
         $is_from_3rdparty = !empty($param['user_openid_qq']) || !empty($param['user_openid_weixin']);
 
 
@@ -326,13 +325,17 @@ class User extends Base
         $this->where('user_id', $nid)->update(['user_invite_code' => $invite_code]);
         
         $invite_code_param = trim($param['invite_code'] ?? '');
-        $uid = intval($uid);
-        
+        if (empty($invite_code_param) && !empty(cookie('invite_code'))) {
+            $invite_code_param = trim(cookie('invite_code'));
+        }
+
+        // 邀请关系只能通过校验过的邀请码解析推荐人，禁止直接信任请求/Cookie 中的原始 uid
+        $uid = 0;
         if (!empty($invite_code_param)) {
             $uid = $this->getUserIdByInviteCode($invite_code_param);
         }
-        
-        if($uid > 0) {
+
+        if ($uid > 0 && $uid != $nid) {
             $where2 = [];
             $where2['user_id'] = $uid;
             $invite = $this->where($where2)->find();
@@ -445,19 +448,53 @@ class User extends Base
             }
         }
 
+        // 资料自助更新：不可改 user_name，也不走 saveData 的 edit 场景。
+        // edit 场景含 user_name.min:6，会把已有短用户名（如 test）误杀成「名称最少不能低于6个字符」。
+        $uid = intval($GLOBALS['user']['user_id'] ?? 0);
+        if ($uid < 1) {
+            return ['code' => 1002, 'msg' => lang('model/user/not_login')];
+        }
+
         $data = [];
-        $data['user_id'] = $GLOBALS['user']['user_id'];
-        $data['user_name'] = $GLOBALS['user']['user_name'];
-        if(!empty($param['user_nick_name'])){
-            $data['user_nick_name'] = htmlspecialchars(urldecode(trim($param['user_nick_name'])));
+        // 改密表单不带资料字段：切勿用空值覆盖 QQ/密保
+        $hasProfile = isset($param['user_nick_name']) || isset($param['user_qq'])
+            || isset($param['user_question']) || isset($param['user_answer']);
+        if ($hasProfile) {
+            // 昵称与 QQ/密保一致用 isset：显式提交空串即视为「清空昵称」，
+            // 前台展示回落 user_name；isset 但为空的其它情况由各自语义决定
+            if (isset($param['user_nick_name'])) {
+                $nick = htmlspecialchars(urldecode(trim((string) $param['user_nick_name'])));
+                if ($nick !== '' && (mb_strlen($nick) < 2 || mb_strlen($nick) > 20)) {
+                    return ['code' => 1006, 'msg' => lang('model/user/nick_length_err')];
+                }
+                $data['user_nick_name'] = $nick;
+            }
+            if (isset($param['user_qq'])) {
+                $data['user_qq'] = htmlspecialchars(urldecode(trim($param['user_qq'])));
+            }
+            if (isset($param['user_question'])) {
+                $data['user_question'] = htmlspecialchars(urldecode(trim($param['user_question'])));
+            }
+            if (isset($param['user_answer'])) {
+                $data['user_answer'] = htmlspecialchars(urldecode(trim($param['user_answer'])));
+            }
         }
-        $data['user_qq'] = htmlspecialchars(urldecode(trim($param['user_qq'])));
-        $data['user_question'] = htmlspecialchars(urldecode(trim($param['user_question'])));
-        $data['user_answer'] = htmlspecialchars(urldecode(trim($param['user_answer'])));
         if ($wantPwdChange && $pwd2 !== '') {
-            $data['user_pwd'] = $pwd2;
+            if (strlen($pwd2) < 6) {
+                return ['code' => 1005, 'msg' => lang('model/user/pass_length_err')];
+            }
+            $data['user_pwd'] = mac_hash_password_for_column($pwd2, 'user', 'user_pwd');
         }
-        return $this->saveData($data);
+
+        if (empty($data)) {
+            return ['code' => 1001, 'msg' => lang('param_err')];
+        }
+
+        $res = $this->where(['user_id' => $uid])->update($data);
+        if ($res === false) {
+            return ['code' => 1003, 'msg' => '' . $this->getError()];
+        }
+        return ['code' => 1, 'msg' => lang('save_ok')];
     }
 
     /**
@@ -601,29 +638,33 @@ class User extends Base
         $invite_code = $this->generateUniqueInviteCode($nid);
         $this->where('user_id', $nid)->update(['user_invite_code' => $invite_code]);
 
-        // 处理邀请码
+        // 处理推广/邀请关系：只信任校验过的邀请码解析出的推荐人，禁止直接信任请求/Cookie 中的原始 uid
         $invite_code_param = trim($param['invite_code'] ?? '');
+        if (empty($invite_code_param) && !empty(cookie('invite_code'))) {
+            $invite_code_param = trim(cookie('invite_code'));
+        }
+        $uid = 0;
         if (!empty($invite_code_param)) {
             $uid = $this->getUserIdByInviteCode($invite_code_param);
-            if ($uid > 0) {
-                $invite = $this->where('user_id', $uid)->find();
-                if ($invite) {
-                    $upd = [];
-                    $upd['user_pid'] = $invite['user_id'];
-                    $upd['user_pid_2'] = $invite['user_pid'];
-                    $upd['user_pid_3'] = $invite['user_pid_2'];
-                    $this->where('user_id', $nid)->update($upd);
+        }
+        if ($uid > 0 && $uid != $nid) {
+            $invite = $this->where('user_id', $uid)->find();
+            if ($invite) {
+                $upd = [];
+                $upd['user_pid'] = $invite['user_id'];
+                $upd['user_pid_2'] = $invite['user_pid'];
+                $upd['user_pid_3'] = $invite['user_pid_2'];
+                $this->where('user_id', $nid)->update($upd);
 
-                    if (!empty($config['user']['invite_reg_points']) && $config['user']['invite_reg_points'] > 0) {
-                        $this->where('user_id', $uid)->setInc('user_points', $config['user']['invite_reg_points']);
-                        $pdata = [];
-                        $pdata['user_id'] = $uid;
-                        $pdata['plog_type'] = 2;
-                        $pdata['plog_points'] = $config['user']['invite_reg_points'];
-                        model('Plog')->saveData($pdata);
-                    }
-                    $this->addInviteCount($uid);
+                if (!empty($config['user']['invite_reg_points']) && $config['user']['invite_reg_points'] > 0) {
+                    $this->where('user_id', $uid)->setInc('user_points', $config['user']['invite_reg_points']);
+                    $pdata = [];
+                    $pdata['user_id'] = $uid;
+                    $pdata['plog_type'] = 2;
+                    $pdata['plog_points'] = $config['user']['invite_reg_points'];
+                    model('Plog')->saveData($pdata);
                 }
+                $this->addInviteCount($uid);
             }
         }
 
@@ -1634,6 +1675,21 @@ class User extends Base
     {
         $info = $this->where('user_invite_code', $invite_code)->find();
         return $info ? $info['user_id'] : 0;
+    }
+
+    /**
+     * 根据用户ID获取其邀请码（用于 ?uid= 推广链接在注册页回显邀请码）
+     * @param int $user_id
+     * @return string
+     */
+    public function getInviteCodeByUserId($user_id)
+    {
+        $user_id = intval($user_id);
+        if ($user_id <= 0) {
+            return '';
+        }
+        $info = $this->where('user_id', $user_id)->field('user_invite_code')->find();
+        return $info ? (string) $info['user_invite_code'] : '';
     }
 
     /**
