@@ -691,21 +691,6 @@ class Vod extends Base {
         return "{$expr} IS NULL, {$expr} {$order}";
     }
 
-    /**
-     * 清 infoData() 的详情缓存。key 必须和 infoData() 里 Cache::get()/set() 用的
-     * 格式完全一致（带 cache_flag 前缀、vod_id 和 vod_en 都拼在同一个 key 里），
-     * 否则 rm() 清的是另一个字符串，等于没清——编辑保存后前台仍命中旧缓存。
-     * 详情页只会用 vod_id 或 vod_en 单边查（哪边留空取决于伪静态设置），
-     * 所以两种组合都要清，救的是「保存前用另一种方式被缓存过」的情况。
-     */
-    private function clearDetailCache($vod_id, $vod_en)
-    {
-        $flag = $GLOBALS['config']['app']['cache_flag'];
-        Cache::rm($flag . '_vod_detail_' . $vod_id . '_' . $vod_en);
-        Cache::rm($flag . '_vod_detail_' . $vod_id . '_');
-        Cache::rm($flag . '_vod_detail__' . $vod_en);
-    }
-
     public function infoData($where,$field='*',$cache=0)
     {
         if(empty($where) || !is_array($where)){
