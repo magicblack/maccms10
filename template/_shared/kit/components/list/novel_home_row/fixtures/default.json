@@ -1,0 +1,9 @@
+{
+    "props": {
+        "preset": "hot",
+        "title": "",
+        "subtitle": "",
+        "num": 12
+    },
+    "context": []
+}

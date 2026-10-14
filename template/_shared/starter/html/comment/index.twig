@@ -1,0 +1,91 @@
+{# Starter T0: comment index #}
+{% extends "layout/base.twig" %}
+{% import "@shared/components.twig" as c %}
+{% block layout_mod %} list{% endblock %}
+{% block page_class %} pb-components-only page-comment{% endblock %}
+{% block theme_styles %}
+<link rel="stylesheet" href="{{ maccms.path_tpl }}asset/css/tokens.css">
+{% set _pb_td_override = mac_theme_override_css_href() %}
+{% if _pb_td_override %}<link rel="stylesheet" href="{{ _pb_td_override }}">{% endif %}
+<link rel="stylesheet" href="{{ maccms.path_tpl }}asset/css/pb-shell.css">
+{% endblock %}
+{% block title %}{{ maccms.page_title|default('评论') }}{% endblock %}
+{% block head %}
+<link rel="stylesheet" href="{{ maccms.path_tpl }}page-builder-components/_shared/css/peers.css">
+<link rel="stylesheet" href="{{ maccms.path_tpl }}page-builder-components/_shared/css/comment.css">
+<link rel="stylesheet" href="{{ maccms.path_tpl }}asset/css/pb-t0.css?v=2">
+
+<link rel="stylesheet" href="{{ maccms.path_tpl }}page-builder-components/site_nav/style.css">
+<script src="{{ maccms.path_tpl }}page-builder-components/site_nav/script.js" defer></script>
+<link rel="stylesheet" href="{{ maccms.path_tpl }}page-builder-components/notify_bell/style.css">
+<script src="{{ maccms.path_tpl }}page-builder-components/notify_bell/script.js" defer></script>
+<link rel="stylesheet" href="{{ maccms.path_tpl }}page-builder-components/header_decor/style.css">
+<script src="{{ maccms.path_tpl }}page-builder-components/header_decor/script.js" defer></script>
+<link rel="stylesheet" href="{{ maccms.path_tpl }}page-builder-components/channel_strip/style.css">
+<script src="{{ maccms.path_tpl }}page-builder-components/channel_strip/script.js" defer></script>
+<link rel="stylesheet" href="{{ maccms.path_tpl }}page-builder-components/empty_state/style.css">
+<link rel="stylesheet" href="{{ maccms.path_tpl }}page-builder-components/paging/style.css">
+<link rel="stylesheet" href="{{ maccms.path_tpl }}page-builder-components/site_footer/style.css">
+<link rel="stylesheet" href="{{ maccms.path_tpl }}page-builder-components/bottom_nav/style.css">
+{% endblock %}
+
+{% block site_header %}
+  {% include 'page-builder-components/site_nav/template.twig' with {props: { max: 8, show_search: true, type_ids: [] }} %}
+{% endblock %}
+{% block channel %}
+  {% include 'page-builder-components/channel_strip/template.twig' with {props: { compact: false, chip_limit: 11, show_icons: true, show_more: true, type_ids: [] }} %}
+{% endblock %}
+{% block content %}
+{% set pagesize = comment.pagesize|default(20) %}
+{% set res = mac_comment({num: pagesize, paging: true, pageurl: 'comment/index', order: 'desc', by: 'id'}) %}
+{% set list = res.list|default([]) %}
+{% set pg = mac_paging(res) %}
+<section class="pb-t0" aria-labelledby="pb-t0-cmt-title">
+  <header class="pb-t0__hero">
+    <p class="pb-t0__kicker" data-lang="comment">互动</p>
+    <h1 class="pb-t0__title" id="pb-t0-cmt-title" data-lang="string_quanbupl">全部评论</h1>
+    <p class="pb-t0__desc" data-lang="comment_empty_hint2">看看大家在讨论什么。</p>
+  </header>
+  <div class="pb-t0__panel">
+    {% if list %}
+    <div class="pb-t0-cmt">
+      {% for vo in list %}
+      <article class="pb-t0-cmt__item">
+        <div class="pb-t0-cmt__avatar">{{ c.lazy_img(mac_get_user_portrait(vo.user_id|default(0)), vo.comment_name|default('')) }}</div>
+        <div>
+          <div>
+            <span class="pb-t0-cmt__name">{{ vo.comment_name|default('匿名') }}</span>
+            {% if vo.comment_time %}<time class="pb-t0-cmt__time">{{ vo.comment_time|date('Y-m-d H:i') }}</time>{% endif %}
+          </div>
+          <div class="pb-t0-cmt__body">{{ mac_em_replace(vo.comment_content|default('')) }}</div>
+          {% if vo.sub|default([]) %}
+          <div class="pb-t0-cmt__replies">
+            {% for child in vo.sub %}
+            <div class="pb-t0-cmt__reply">
+              <strong>{{ child.comment_name|default('') }}</strong>
+              {% if child.comment_time %}<span class="pb-t0-cmt__time">{{ child.comment_time|date('Y-m-d H:i') }}</span>{% endif %}
+              <div>{{ mac_em_replace(child.comment_content|default('')) }}</div>
+            </div>
+            {% endfor %}
+          </div>
+          {% endif %}
+        </div>
+      </article>
+      {% endfor %}
+    </div>
+    {% include 'page-builder-components/paging/template.twig' with {props: {pg: pg}} %}
+    {% else %}
+    <div class="pb-t0__empty">
+      <svg class="pb-t0__empty-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+      <p data-lang="comment_feed_empty_title">还没有评论</p>
+      <a class="pb-t0__btn" href="{{ maccms.path|default('/') }}" data-lang="comment_go_browse">去逛逛</a>
+    </div>
+    {% endif %}
+  </div>
+</section>
+{% endblock %}
+{% block sidebar %}{% endblock %}
+{% block footer %}
+  {% include 'page-builder-components/site_footer/template.twig' with {props: { variant: 'default', copyright: '', show_nav: true, show_friends: true, logo: '' }} %}
+  {% include 'page-builder-components/bottom_nav/template.twig' with {props: {  }} %}
+{% endblock %}

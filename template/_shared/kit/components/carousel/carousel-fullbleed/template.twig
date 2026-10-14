@@ -1,0 +1,48 @@
+{# 轮播 · 全宽沉浸（bind=数据源） #}
+{% set bind = props.bind|default('vod') %}
+{% set num = props.num|default(6) %}
+{% set by = props.by|default('hits') %}
+{% set type_id = props.type|default(0) %}
+{% set feed = mac_pb_feed({bind: bind, num: num, by: by, type: type_id}) %}
+{% set items = feed.list|default([]) %}
+
+{% if items is not empty %}
+<section class="pb-cfb"{% if bind == 'art' %} data-cover-kind="book"{% endif %} aria-label="精选推荐" data-lang-aria-label="carousel_pick_aria" data-pb-carousel-fullbleed>
+  <div class="pb-cfb__root" data-pb-cfb-root>
+    <div class="pb-cfb__slides">
+      {% for vo in items %}
+      {# 竖版封面（短剧 / 漫画 / 小说）：横版轮播框里 runtime 按封面实际尺寸写 data-cover-fit="contain"，
+         完整显示并垫同图模糊底；图片载入前用 data-cover-orient 做首屏提示（专用横版幻灯图 pic_wide 不提示） #}
+      {% set vo_orient = '' %}
+      {% if vo.pic_wide|default('') == vo.pic|default('') %}
+        {% if bind == 'manga' or bind == 'art' %}
+          {% set vo_orient = 'v' %}
+        {% else %}
+          {% set vo_cover = mac_type_cover(vo.type_id|default(0)) %}
+          {% if vo_cover and vo_cover.orient == 'v' %}{% set vo_orient = 'v' %}{% endif %}
+        {% endif %}
+      {% endif %}
+      <a class="pb-cfb__slide{% if loop.first %} is-on{% endif %}" href="{{ vo.url }}" data-i="{{ loop.index0 }}" data-cover-auto="fit"{% if vo_orient %} data-cover-orient="{{ vo_orient }}"{% endif %}>
+        <span class="pb-cfb__backdrop" data-cover-backdrop aria-hidden="true"></span>
+        <img data-cover src="{{ mac_url_img(vo.pic_wide|default(vo.pic)) }}" alt="{{ vo.name }}"{% if loop.first %} fetchpriority="high"{% endif %}>
+        <div class="pb-cfb__overlay">
+          <h2 class="pb-cfb__title">{{ vo.name }}</h2>
+          {% if vo.blurb %}<p class="pb-cfb__sub">{{ vo.blurb|slice(0, 80) }}</p>{% endif %}
+        </div>
+      </a>
+      {% endfor %}
+    </div>
+    <div class="pb-cfb__bar">
+      <div class="pb-cfb__dots" role="tablist">
+        {% for vo in items %}
+        <button type="button" class="pb-cfb__dot{% if loop.first %} is-on{% endif %}" data-i="{{ loop.index0 }}" aria-label="第{{ loop.index }}张"></button>
+        {% endfor %}
+      </div>
+      <div class="pb-cfb__nav">
+        <button type="button" class="pb-cfb__btn" data-dir="-1" aria-label="上一张" data-lang-aria-label="carousel_prev_slide_aria">‹</button>
+        <button type="button" class="pb-cfb__btn" data-dir="1" aria-label="下一张" data-lang-aria-label="carousel_next_slide_aria">›</button>
+      </div>
+    </div>
+  </div>
+</section>
+{% endif %}

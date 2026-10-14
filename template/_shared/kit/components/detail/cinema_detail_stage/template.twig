@@ -1,0 +1,111 @@
+{#
+  影院式详情顶栏 — 自动读取页面 obj（vod 详情）。
+#}
+{% set p = props|default({}) %}
+{% if obj.vod_id|default(0) %}
+{% set _tpl = maccms.path_tpl|default('') %}
+{% set cover = mac_url_img(obj.vod_pic|default('')) %}
+{% set title = obj.vod_name|default('') %}
+{% set intro_raw = mac_plain_text(obj.vod_blurb|default('')) ?: mac_plain_text(obj.vod_content|default('')) %}
+{% set tag_src = mac_txt_merge(obj.vod_class|default(''), obj.vod_tag|default('')) %}
+{% set class_tags = tag_src ? tag_src|split(',') : [] %}
+{% set type_name = obj.type.type_name|default('')|trim %}
+{% set first = obj.vod_play_list|default({})|length > 0 ? mac_url_vod_play(obj, 'first') : '' %}
+{% set hero_meta = [] %}
+{% if obj.vod_year %}{% set hero_meta = hero_meta|merge([obj.vod_year]) %}{% endif %}
+{% if obj.vod_area %}{% set hero_meta = hero_meta|merge([obj.vod_area]) %}{% endif %}
+{% if obj.vod_lang %}{% set hero_meta = hero_meta|merge([obj.vod_lang]) %}{% endif %}
+{# 备注以 {rm} 形式入列，渲染时走 episode_remarks.twig（集数备注多语化） #}
+{% if obj.vod_remarks %}{% set hero_meta = hero_meta|merge([{rm: obj.vod_remarks}]) %}{% endif %}
+<div class="pb-cinema-stage cinema-stage" data-component="cinema_detail_stage">
+  <header class="media-hero">
+    <div class="media-hero__bg" style="background-image:url('{{ cover }}')" aria-hidden="true"></div>
+    <div class="media-hero__shade" aria-hidden="true"></div>
+    <div class="media-hero__wrap">
+      <nav class="media-hero__crumb" aria-label="breadcrumb">
+        <a href="{{ maccms.path }}" data-lang="string_home">首页</a>
+        <span aria-hidden="true">›</span>
+        {% if obj.type.type_name|default('') %}
+        <a href="{{ mac_url_type(obj.type) }}">{{ obj.type.type_name }}</a>
+        <span aria-hidden="true">›</span>
+        {% endif %}
+        <span class="media-hero__crumb-cur">{{ title }}</span>
+      </nav>
+
+      <div class="media-hero__inner">
+        <div class="media-hero__poster-box">
+          <a class="media-hero__poster{% if first %} is-playable{% endif %}"
+             {% if first %}href="{{ first }}" data-lang-aria-label="string_play_ljbf" aria-label="立即播放"{% else %}href="javascript:;" tabindex="-1"{% endif %}>
+            <img data-cover src="{{ cover }}" alt="{{ title }}" decoding="async" fetchpriority="high">
+            {% if first %}
+            <span class="media-hero__poster-play" aria-hidden="true"></span>
+            {% endif %}
+          </a>
+        </div>
+
+        <div class="media-hero__body">
+          <div class="media-hero__title-row">
+            <h1 class="media-hero__title">{{ title }}</h1>
+            <div class="media-hero__tags">
+              {% if type_name %}
+              <a class="media-hero__tag media-hero__tag--type" href="{{ mac_url_type(obj.type) }}">{{ type_name }}</a>
+              {% endif %}
+              {% for tag in class_tags|slice(0, 4) %}
+                {% set t = tag|trim %}
+                {% if t and (not type_name or t != type_name) %}
+                <span class="media-hero__tag media-hero__tag--keyword">{{ t }}</span>
+                {% endif %}
+              {% endfor %}
+            </div>
+          </div>
+
+          {% if hero_meta|length > 0 %}
+          <p class="media-hero__meta">
+            {% for span in hero_meta %}
+              {% if span is iterable %}<span>{% include "page-builder-components/_shared/episode_remarks.twig" with {remarks: span.rm} only %}</span>{% elseif span %}<span>{{ span }}</span>{% endif %}
+            {% endfor %}
+          </p>
+          {% endif %}
+
+          {% if intro_raw %}
+          <p class="media-hero__desc">{{ intro_raw|slice(0, 200) }}{% if intro_raw|length > 200 %}…{% endif %}</p>
+          {% endif %}
+
+          <div class="media-hero__actions">
+            {% if first %}
+            <a class="media-hero__play" href="{{ first }}" data-lang="string_play">立即播放</a>
+            {% endif %}
+          </div>
+        </div>
+
+        {% set score = obj.vod_score|default('') %}
+        {% if score and score != '0.0' and score != '0' %}
+        <div class="media-hero__rating" data-lang-title="string_vod_rating_label" title="评分">
+          <strong>{{ score }}</strong>
+          <span class="media-hero__rating-stars" aria-hidden="true">★★★★★</span>
+          <span class="media-hero__rating-label" data-lang="string_vod_rating_label">评分</span>
+        </div>
+        {% endif %}
+      </div>
+    </div>
+  </header>
+
+  {% set hero_tabs = [{href: '#media-eps', label: '选集', lang: 'string_vod_bfdz', active: true}] %}
+  {% if obj.vod_content|default('') %}{% set hero_tabs = hero_tabs|merge([{href: '#media-intro', label: '简介', lang: 'string_play_jj'}]) %}{% endif %}
+  {% set hero_tabs = hero_tabs|merge([
+    {href: '#media-cmt', label: '评论', lang: 'manga_comment'},
+    {href: '#media-related', label: '推荐', lang: 'string_vod_recommend'}
+  ]) %}
+  {% if hero_tabs|length > 0 %}
+  <div class="cinema-stage__bar">
+    <div class="cinema-stage__bar-inner">
+      <nav class="media-tabs media-tabs--cinema" data-lang-aria-label="cinema_detail_section_aria" aria-label="详情分区">
+        {% for tab in hero_tabs %}
+        <a{% if tab.active|default(false) %} class="is-on"{% endif %} href="{{ tab.href }}"{% if tab.lang|default('') and mac_i18n_key(tab.label, tab.lang) %} data-lang="{{ tab.lang }}"{% endif %}>{{ tab.label }}</a>
+        {% endfor %}
+      </nav>
+    </div>
+  </div>
+  {% endif %}
+</div>
+{% endif %}

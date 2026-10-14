@@ -12,6 +12,7 @@ class Base extends All
     {
         parent::__construct();
 
+        $this->capture_invite_ref();
         $this->check_ip_limit();
         $this->check_site_status();
         $this->label_maccms();
@@ -31,6 +32,22 @@ class Base extends All
         $this->assign('content_lang', $lang);
         $this->assign('content_lang_default', mac_content_lang_default());
         $this->assign('content_lang_list', mac_content_lang_allow_list());
+    }
+
+    /**
+     * 推广/邀请关系全站捕获：无论访客从哪个页面（首页、详情页等）携带
+     * ?uid= 或 ?invite_code= 进站，都记录到 Cookie，供后续在任意页面
+     * 完成的注册（含登录/注册一体化弹窗）使用，而不仅限于 /user/reg。
+     */
+    protected function capture_invite_ref()
+    {
+        $param = input();
+        if (!empty($param['uid'])) {
+            cookie('uid', intval($param['uid']));
+        }
+        if (!empty($param['invite_code'])) {
+            cookie('invite_code', trim($param['invite_code']));
+        }
     }
 
     protected function check_ip_limit()
@@ -53,14 +70,14 @@ class Base extends All
             if ($mainland_ip_limit == "1") {
                 // 只允许中国大陆IP
                 if ($country_code === "") {
-                    echo $this->fetch('public/close');
-                    die;
+                    $this->echo_site_closed();
+                    return;
                 }
             } elseif ($mainland_ip_limit == "2") {
                 // 不允许中国大陆IP
                 if ($country_code !== "") {
-                    echo $this->fetch('public/close');
-                    die;
+                    $this->echo_site_closed();
+                    return;
                 }
             }
             
@@ -113,8 +130,22 @@ class Base extends All
             exit;
         }
         $page = isset($param['page']) ? (int)$param['page'] : 1;
-        if ($page === 1 && mac_get_time_span("last_searchtime") < $GLOBALS['config']['app']['search_timespan']) {
-            echo $this->error(lang('search_frequently')."".$GLOBALS['config']['app']['search_timespan']."".lang('seconds'));
+        // 同一检索条件下切换排序（by/order）、翻页、重复点击不算新搜索，不受间隔限制；
+        // 只有检索条件本身变化才计入频次
+        $sig_param = is_array($param) ? $param : [];
+        unset($sig_param['page'], $sig_param['by'], $sig_param['order']);
+        ksort($sig_param);
+        $search_sig = md5(request()->controller() . '|' . json_encode($sig_param));
+        $same_search = session('last_search_sig') === $search_sig;
+        session('last_search_sig', $search_sig);
+        // 主题设计预览会频繁刷新，跳过搜索间隔限制
+        if (!(function_exists('mac_td_preview_mode') && mac_td_preview_mode())
+            && $page === 1
+            && !$same_search
+            && mac_get_time_span("last_searchtime") < $GLOBALS['config']['app']['search_timespan']) {
+            // lang('seconds') 是「秒前」（相对时间），这里不能复用
+            $span = (int) $GLOBALS['config']['app']['search_timespan'];
+            echo $this->error(lang('search_frequently') . $span . lang('second_unit'));
             exit;
         }
         if($GLOBALS['config']['app']['search_verify'] ==1 && $aj ==0){
@@ -130,10 +161,32 @@ class Base extends All
     protected function check_site_status()
     {
         if ($GLOBALS['config']['site']['site_status'] == 0) {
-            $this->assign('close_tip',$GLOBALS['config']['site']['site_close_tip']);
-            echo $this->fetch('public/close');
-            die;
+            $this->echo_site_closed($GLOBALS['config']['site']['site_close_tip']);
         }
+    }
+
+    /**
+     * 站点关闭/维护：走 label_fetch 渲染 public/close（含 maccms 变量与 Twig 路径）。
+     * 主题设计预览模式豁免，便于后台预览草稿。
+     *
+     * @param string $closeTip
+     */
+    private function echo_site_closed($closeTip = '')
+    {
+        if (function_exists('mac_td_preview_mode') && mac_td_preview_mode()) {
+            return;
+        }
+        if ($closeTip === '' && !empty($GLOBALS['config']['site']['site_close_tip'])) {
+            $closeTip = (string)$GLOBALS['config']['site']['site_close_tip'];
+        }
+        $this->label_maccms();
+        $this->assign('close_tip', $closeTip);
+        if (!headers_sent()) {
+            http_response_code(503);
+            header('Cache-Control: no-store, no-cache, must-revalidate');
+            header('Pragma: no-cache');
+        }
+        exit($this->label_fetch('public/close', 0));
     }
 
     protected function check_browser_jump()

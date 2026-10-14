@@ -1,0 +1,19 @@
+{# 搜索引擎 SiteMap 的公共 urlset 主体。
+   百度/360/搜狗/必应/神马这五家的格式完全一致（default 主题里也是五份一模一样的
+   文件），这里抽成一个 include，避免以后改一处漏四处。
+   google.twig 因为多了 image/video 扩展，单独成文。 #}
+{% set _vods = mac_vod({num: 100, order: 'desc', by: 'time'}).list|default([]) %}
+{% set _arts = mac_art({num: 100, order: 'desc', by: 'time'}).list|default([]) %}
+{% for v in _vods %}	<url>
+		<loc>{{ maccms.http_type }}{{ maccms.site_url }}{{ mac_url_vod_detail(v) }}</loc>
+		<lastmod>{{ v.vod_time|date('Y-m-d H:i:s') }}</lastmod>
+		<changefreq>always</changefreq>
+		<priority>1.0</priority>
+	</url>
+{% endfor %}{% for a in _arts %}	<url>
+		<loc>{{ maccms.http_type }}{{ maccms.site_url }}{{ mac_url_art_detail(a) }}</loc>
+		<lastmod>{{ a.art_time|date('Y-m-d H:i:s') }}</lastmod>
+		<changefreq>always</changefreq>
+		<priority>1.0</priority>
+	</url>
+{% endfor %}

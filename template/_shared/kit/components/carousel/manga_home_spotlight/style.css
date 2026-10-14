@@ -1,0 +1,477 @@
+[data-component="manga_home_spotlight"].mc-sec {
+  margin: 48px 0 8px;
+}
+
+[data-component="manga_home_spotlight"].mc-sec--pick {
+  margin-top: 24px;
+}
+
+.page-manga-home [data-component="manga_home_spotlight"].mc-sec--pick {
+  margin-top: 16px;
+}
+
+[data-component="manga_home_spotlight"] .mc-sec__head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 6px 12px;
+  margin-bottom: 0;
+}
+
+[data-component="manga_home_spotlight"] .mc-sec__title {
+  margin: 0;
+  font-size: 32px;
+  font-weight: 400;
+  color: var(--c-text, #1c1c1f);
+  letter-spacing: 0.02em;
+  line-height: 1.2;
+}
+
+[data-component="manga_home_spotlight"] .mc-sec__sub {
+  margin: 0;
+  font-size: 16px;
+  line-height: 1.2;
+  color: var(--c-text-muted, #90929b);
+}
+
+.mc-spot {
+  position: relative;
+  min-width: 0;
+  max-width: 100%;
+  --spot-hero-w: min(255px, 28%);
+  --spot-hero-h: 340px;
+}
+
+.mc-spot__box {
+  position: relative;
+  margin-top: 33px;
+  min-height: 340px;
+  width: 100%;
+  max-width: 100%;
+  border-radius: 16px;
+  background: transparent;
+  /* visible：右侧立绘会微微探出顶边；宽度约束靠父级 minmax(0,1fr) */
+  overflow: visible;
+  color: #fff;
+  /* 相对内容栏宽度，避免 48vw 在窄栏场景超出容器 */
+  padding-right: calc(var(--spot-hero-w) + 36px);
+  box-sizing: border-box;
+}
+
+.mc-spot__bg-wrap {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  border-radius: inherit;
+  overflow: hidden;
+  pointer-events: none;
+  text-decoration: none;
+  color: inherit;
+  display: block;
+}
+
+.mc-spot__bg-img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 72% top;
+  display: block;
+  opacity: 1;
+  transition: opacity 0.42s ease;
+}
+
+.mc-spot__shade {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  border-radius: inherit;
+  pointer-events: none;
+  background:
+    linear-gradient(to right,
+      rgba(27, 32, 34, 0.98) 0%,
+      rgba(27, 32, 34, 0.94) 38%,
+      rgba(27, 32, 34, 0.82) 58%,
+      rgba(27, 32, 34, 0.62) 78%,
+      rgba(27, 32, 34, 0.48) 100%);
+}
+
+.mc-spot__main {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  min-height: 340px;
+  max-width: none;
+  width: auto;
+  padding: 28px 24px 20px 32px;
+  box-sizing: border-box;
+}
+
+.mc-spot__name {
+  margin: 0;
+  font-size: 28px;
+  font-weight: 700;
+  line-height: 1.22;
+  color: #fff;
+  transition: opacity 0.25s ease;
+}
+
+.mc-spot__tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.mc-spot__tags span {
+  padding: 3px 10px;
+  border-radius: 4px;
+  font-size: 12px;
+  background: rgba(255, 255, 255, 0.12);
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.mc-spot__desc {
+  margin: 14px 0 0;
+  width: 100%;
+  max-width: 560px;
+  padding-top: 14px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  overflow: hidden;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.45;
+  color: #d1d2d3;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  transition: opacity 0.25s ease;
+}
+
+.mc-spot__thumbs {
+  display: flex;
+  gap: 10px;
+  margin-top: auto;
+  padding-top: 18px;
+  padding-bottom: 2px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  align-self: flex-start;
+  max-width: 100%;
+}
+
+.mc-spot__thumbs::-webkit-scrollbar {
+  display: none;
+}
+
+.mc-spot__thumb {
+  flex: 0 0 auto;
+  width: 64px;
+  height: 85px;
+  border: none;
+  border-radius: 4px;
+  padding: 0;
+  background: #444 center / cover no-repeat;
+  cursor: pointer;
+  opacity: 0.72;
+  outline: none;
+  transform-origin: center bottom;
+  transition: opacity 0.15s ease, transform 0.15s ease;
+}
+
+.mc-spot__thumb:hover {
+  opacity: 0.92;
+}
+
+.mc-spot__thumb.is-on {
+  opacity: 1;
+  transform: scale(1.25);
+}
+
+.mc-spot__cta {
+  position: absolute;
+  right: 44px;
+  bottom: 68px;
+  z-index: 3;
+  display: inline-block;
+  margin: 0;
+  padding: 0 16px;
+  height: 36px;
+  line-height: 36px;
+  font-size: 14px;
+  font-weight: 700;
+  color: #fff !important;
+  background: rgba(0, 0, 0, 0.5);
+  border-radius: 22px;
+  text-align: center;
+  transition: background 0.2s ease;
+}
+
+.mc-spot__cta:hover {
+  background: rgba(0, 0, 0, 0.62);
+}
+
+.mc-spot__hero-wrap {
+  position: absolute;
+  top: -27px;
+  right: 24px;
+  z-index: 3;
+  width: var(--spot-hero-w);
+  height: var(--spot-hero-h);
+  max-width: calc(100% - 48px);
+}
+
+.mc-spot__hero {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.35);
+  transition: transform 0.5s ease;
+}
+
+.mc-spot__hero-wrap:hover .mc-spot__hero {
+  transform: translateY(-2px);
+}
+
+.mc-spot__hero img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center top;
+  aspect-ratio: 3 / 4;
+  border-radius: 12px;
+  transition: opacity 0.35s ease;
+}
+
+@media (max-width: 900px) {
+.mc-spot__box {
+    min-height: auto;
+    padding-right: 0;
+    padding-bottom: 16px;
+  }
+
+.mc-spot__bg-img {
+    object-position: center top;
+  }
+
+.mc-spot__shade {
+    background: linear-gradient(180deg,
+        rgba(27, 32, 34, 0.94) 0%,
+        rgba(27, 32, 34, 0.88) 100%);
+  }
+
+.mc-spot__hero-wrap {
+    position: relative;
+    top: auto;
+    right: auto;
+    width: min(255px, 72vw);
+    max-width: none;
+    height: auto;
+    aspect-ratio: 3 / 4;
+    margin: 0 auto 16px;
+  }
+
+.mc-spot__cta {
+    right: 16px;
+    bottom: 16px;
+  }
+
+.mc-spot__hero {
+    height: 100%;
+  }
+
+.mc-spot__main {
+    max-width: none;
+    min-height: auto;
+    padding: 20px 16px 0;
+  }
+
+.mc-spot__thumbs {
+    margin-top: 16px;
+    padding-top: 0;
+    max-width: none;
+  }
+
+.mc-spot__desc {
+    width: 100%;
+    -webkit-line-clamp: 2;
+  }
+}
+
+@media (max-width: 768px) {
+  [data-component="manga_home_spotlight"].mc-sec {
+    margin: 24px 0 4px;
+  }
+
+  [data-component="manga_home_spotlight"].mc-sec--pick {
+    margin-top: 12px;
+  }
+
+  [data-component="manga_home_spotlight"] .mc-sec__head {
+    align-items: center;
+    gap: 4px 10px;
+    margin-bottom: 10px;
+    padding: 0 2px;
+  }
+
+  [data-component="manga_home_spotlight"] .mc-sec__title {
+    font-size: 20px;
+    font-weight: 600;
+  }
+
+  [data-component="manga_home_spotlight"] .mc-sec__sub {
+    flex: 1 1 auto;
+    font-size: 13px;
+  }
+
+.mc-spot__box {
+    display: flex;
+    flex-direction: column;
+    margin-top: 0;
+    min-height: 0;
+    padding-right: 0;
+    padding-bottom: 58px;
+    border-radius: 12px;
+    overflow: hidden;
+  }
+
+.mc-spot__shade {
+    background: linear-gradient(180deg,
+        rgba(27, 32, 34, 0.35) 0%,
+        rgba(27, 32, 34, 0.92) 42%,
+        rgba(27, 32, 34, 0.98) 100%);
+  }
+
+.mc-spot__hero-wrap {
+    order: 1;
+    position: static;
+    top: auto;
+    right: auto;
+    width: min(220px, 58vw);
+    max-width: none;
+    margin: 0 auto;
+    aspect-ratio: 3 / 4;
+    border-radius: 0;
+    flex: 0 0 auto;
+  }
+
+.mc-spot__hero {
+    border-radius: 0;
+    box-shadow: none;
+  }
+
+.mc-spot__hero img {
+    border-radius: 0;
+  }
+
+.mc-spot__main {
+    order: 2;
+    min-height: 0;
+    padding: 14px 14px 0;
+  }
+
+.mc-spot__name {
+    font-size: 18px;
+    line-height: 1.3;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+.mc-spot__tags {
+    margin-top: 8px;
+    gap: 6px;
+  }
+
+.mc-spot__tags span {
+    padding: 2px 8px;
+    font-size: 11px;
+  }
+
+.mc-spot__desc {
+    margin-top: 8px;
+    padding-top: 10px;
+    font-size: 13px;
+    -webkit-line-clamp: 2;
+  }
+
+.mc-spot__thumbs {
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 8px;
+    margin: 10px -14px 0;
+    padding: 6px 14px 12px;
+    width: calc(100% + 28px);
+    max-width: none;
+    overflow-x: auto;
+    overflow-y: hidden;
+    overscroll-behavior-x: contain;
+    -webkit-overflow-scrolling: touch;
+    scroll-snap-type: x mandatory;
+    scroll-padding-inline: 14px;
+    scrollbar-width: none;
+    /* 勿用 touch-action: pan-x，会阻断缩略条上的页面纵向滑动 */
+    -webkit-mask-image: linear-gradient(to right, transparent, #000 10px, #000 calc(100% - 24px), transparent);
+    mask-image: linear-gradient(to right, transparent, #000 10px, #000 calc(100% - 24px), transparent);
+  }
+
+.mc-spot__thumbs::-webkit-scrollbar {
+    display: none;
+  }
+
+.mc-spot__thumb {
+    width: 52px;
+    height: 70px;
+    border-radius: 6px;
+    scroll-snap-align: center;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+.mc-spot__thumb.is-on {
+    transform: scale(1.06);
+    box-shadow: 0 0 0 2px var(--c-accent);
+  }
+
+.mc-spot__cta {
+    position: absolute;
+    left: 14px;
+    right: 14px;
+    bottom: 14px;
+    z-index: 4;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: auto;
+    height: 44px;
+    margin: 0;
+    line-height: 1;
+    font-size: 15px;
+    border-radius: var(--radius);
+    background: var(--c-accent);
+  }
+
+.mc-spot__cta:hover {
+    background: var(--c-accent-hover);
+  }
+}
+
+@media (max-width: 560px) {
+.mc-spot__name {
+    font-size: 17px;
+  }
+
+.mc-spot__thumb {
+    width: 48px;
+    height: 64px;
+  }
+}

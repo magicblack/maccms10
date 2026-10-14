@@ -14,3 +14,8 @@ nohup*
 .well-known
 /upload
 node_modules/
+
+# 采集接口可用性状态与日志（站点运行时数据）
+/application/extra/collect_health.php
+/application/data/collect_log/
+/application/data/content_check_log/

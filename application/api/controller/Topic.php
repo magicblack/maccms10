@@ -118,8 +118,10 @@ class Topic extends Base
             {
                 $topic_rel_vod_arr = explode(',',$result['topic_rel_vod']);
                 foreach ($topic_rel_vod_arr as $index => $item) {
-                    $vod = Db::table('mac_vod')->where(['vod_id' => $item])->field('vod_id,vod_name,vod_en,vod_pic,vod_actor,vod_director,vod_blurb,vod_remarks,vod_score,vod_year,vod_area,vod_class,type_id,type_id_1')->find();
+                    $vod = Db::table('mac_vod')->where(['vod_id' => $item])->field('vod_id,vod_name,vod_en,vod_pic,vod_actor,vod_director,vod_blurb,vod_remarks,vod_duration,vod_score,vod_year,vod_area,vod_class,vod_play_url,type_id,type_id_1')->find();
                     if ($vod) {
+                        $vod['vod_remarks'] = mac_vod_episode_remarks($vod['vod_remarks'], $vod['vod_play_url']);
+                        unset($vod['vod_play_url']);
                         $vod['vod_pic'] = mac_url_img($vod['vod_pic']);
                         $vod['vod_link'] = mac_url_vod_detail($vod);
                         array_push($topic_rel_vod,$vod);
@@ -175,8 +177,7 @@ class Topic extends Base
     public function get_recommend(Request $request)
     {
         $param = $request->param();
-        $num = isset($param['num']) ? (int)$param['num'] : 5;
-        $num = max(1, min(20, $num));
+        list($num) = $this->clampNumStart($param, 5, 20);
         $idsRaw = isset($param['ids']) ? trim((string) $param['ids']) : '';
 
         if ($idsRaw !== '') {

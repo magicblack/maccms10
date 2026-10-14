@@ -1,0 +1,20 @@
+{
+    "id": "paging",
+    "label_key": "admin/themedesign/pb_block_paging",
+    "category": "list",
+    "kind": "fragment",
+    "palette": false,
+    "styleMode": "component",
+    "peer_styles": [],
+    "assets": {
+        "css": "style.css",
+        "js": "script.js"
+    },
+    "props": {
+        "class": { "type": "string", "default": "pg" }
+    },
+    "context": {
+        "pageTypes": ["list", "detail"],
+        "requires": []
+    }
+}

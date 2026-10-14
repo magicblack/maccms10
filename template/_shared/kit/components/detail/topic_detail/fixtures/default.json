@@ -1,0 +1,9 @@
+{
+    "props": {
+        "show_intro": true,
+        "num": 24,
+        "vod_title": "专题影片",
+        "vod_title_lang": "string_vod"
+    },
+    "context": []
+}

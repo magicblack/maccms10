@@ -1,0 +1,105 @@
+{#
+  详情/播放页相关推荐（twigspike media_related_panel）
+  bind: vod | art | manga
+#}
+{% import "page-builder-components/_shared/macros.twig" as pb %}
+{% set p = props|default({}) %}
+{% set bind = p.bind|default('vod') %}
+{% set num = p.num|default(10) %}
+{% set title = p.title|default('相关推荐') %}
+{% set title_lang = p.title_lang|default('string_xgtj') %}
+{% set context = p.context|default('detail') %}
+{% set use_relation = p.relation is defined ? p.relation : true %}
+{% set layout = p.layout|default(bind == 'art' ? 'rows' : 'grid') %}
+{% set row_compact = p.row_compact is defined ? p.row_compact : false %}
+{# 小说相关推荐默认带竖版书封；需纯文字时显式传 text_only #}
+{% set text_only = p.text_only is defined ? p.text_only : false %}
+{# 视频：当前影片所在分类单独设置了封面比例（如竖屏短剧）时，推荐网格按该比例排版 #}
+{% set _type_cover = bind == 'vod' ? mac_type_cover(obj.type_id|default(0)) : [] %}
+{% set _cover_props = _type_cover ? p|merge({card: _type_cover.orient == 'h' ? 'poster-h' : 'poster-v', ratio: _type_cover.ratio, ratio_w: 0, ratio_h: 0}) : p %}
+{% set _cover_cls = pb.pb_cover_classes(_cover_props) %}
+{% set _cover_style = pb.pb_cover_style(_cover_props) %}
+{% set by = p.by|default('hits') %}
+{% set list = [] %}
+
+{% if bind == 'art' %}
+  {% set art_args = {num: num, order: 'desc', by: by} %}
+  {% if context == 'play' %}
+    {% set art_args = art_args|merge({type: obj.type_id|default(0), not: obj.art_id|default(0)}) %}
+  {% elseif use_relation and obj.art_rel_art|default('') %}
+    {% set art_args = art_args|merge({rel: obj.art_rel_art, not: obj.art_id|default(0)}) %}
+  {% elseif use_relation and obj.type_id|default(0) %}
+    {% set art_args = art_args|merge({type: obj.type_id, not: obj.art_id|default(0)}) %}
+  {% else %}
+    {% set type_raw = p.type|default(0) %}
+    {% set type_id = (type_raw == 'current') ? obj.type_id|default(0) : type_raw %}
+    {% set art_args = art_args|merge({type: type_id}) %}
+  {% endif %}
+  {% set res = mac_art(art_args) %}
+  {% set list = res.list|default([]) %}
+{% elseif bind == 'manga' %}
+  {% set manga_args = {num: num, order: 'desc', by: by} %}
+  {% if context == 'play' %}
+    {% set manga_args = manga_args|merge({type: obj.type_id|default(0), not: obj.manga_id|default(0)}) %}
+  {% elseif use_relation and obj.manga_rel_manga|default('') %}
+    {% set manga_args = manga_args|merge({rel: obj.manga_rel_manga, not: obj.manga_id|default(0)}) %}
+  {% elseif use_relation and obj.type_id|default(0) %}
+    {% set manga_args = manga_args|merge({type: obj.type_id, not: obj.manga_id|default(0)}) %}
+  {% else %}
+    {% set type_raw = p.type|default(0) %}
+    {% set type_id = (type_raw == 'current') ? obj.type_id|default(0) : type_raw %}
+    {% set manga_args = manga_args|merge({type: type_id}) %}
+  {% endif %}
+  {% set res = mac_manga(manga_args) %}
+  {% set list = res.list|default([]) %}
+{% else %}
+  {% set vod_args = {num: num, order: 'desc', by: by} %}
+  {% if context == 'play' %}
+    {% set vod_args = vod_args|merge({type: obj.type_id|default(0), not: obj.vod_id|default(0)}) %}
+  {% elseif use_relation and obj.vod_rel_vod|default('') %}
+    {% set vod_args = vod_args|merge({rel: obj.vod_rel_vod, not: obj.vod_id|default(0)}) %}
+  {% elseif use_relation and obj.type_id|default(0) %}
+    {% set vod_args = vod_args|merge({type: obj.type_id, not: obj.vod_id|default(0)}) %}
+  {% else %}
+    {% set type_raw = p.type|default(0) %}
+    {% set type_id = (type_raw == 'current') ? obj.type_id|default(0) : type_raw %}
+    {% set vod_args = vod_args|merge({type: type_id}) %}
+  {% endif %}
+  {% set res = mac_vod(vod_args) %}
+  {% set list = res.list|default([]) %}
+{% endif %}
+
+<section class="media-panel media-panel--cinema pb-media-related pb-media-related--{{ context }} pb-media-related--{{ bind }} pb-media-related--{{ layout }} {{ _cover_cls }}" id="media-related" data-component="media_related_panel"{% if _cover_style %} style="{{ _cover_style }}"{% endif %}>
+  <h2 class="media-panel__title"{% if title_lang and mac_i18n_key(title, title_lang) %} data-lang="{{ title_lang }}"{% endif %}>{{ title }}</h2>
+  {% if list is not empty %}
+    {% if bind == 'art' and layout == 'rows' %}
+    <div class="rows--art-related{% if text_only %} rows--art-text{% endif %} pb-media-related__rows" role="list">
+      {% for vo in list %}
+      <div class="pb-media-related__item" role="listitem">
+        {% include "page-builder-components/_shared/art_row.twig" with {a: vo, compact: row_compact, text_only: text_only} %}
+      </div>
+      {% endfor %}
+    </div>
+    {% elseif bind == 'manga' %}
+    <div class="bili-grid bili-grid--related bili-grid--poster pb-media-related__grid" role="list">
+      {% for vo in list %}
+      <div class="pb-media-related__item" role="listitem">
+        {% include "page-builder-components/_shared/manga_card.twig" %}
+      </div>
+      {% endfor %}
+    </div>
+    {% else %}
+    <div class="bili-grid bili-grid--related{% if context == 'play' %} bili-grid--play{% endif %} pb-media-related__grid" role="list">
+      {% for vo in list %}
+      <div class="pb-media-related__item" role="listitem">
+        {% include "page-builder-components/_shared/vod_card.twig" %}
+      </div>
+      {% endfor %}
+    </div>
+    {% endif %}
+  {% else %}
+  <div class="pb-media-related__empty">
+    {% include 'page-builder-components/empty_state/template.twig' with {props: {title: '', title_lang: 'string_no_have', preset: ''}} %}
+  </div>
+  {% endif %}
+</section>

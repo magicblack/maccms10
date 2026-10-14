@@ -1,0 +1,7 @@
+{
+    "props": {
+        "show_chapters": true,
+        "show_intro": true
+    },
+    "context": []
+}

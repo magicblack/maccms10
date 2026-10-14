@@ -1,0 +1,20 @@
+{
+    "id": "website_detail",
+    "label_key": "admin/themedesign/pb_block_website_detail",
+    "category": "detail",
+    "kind": "detail",
+    "palette": false,
+    "styleMode": "peer_only",
+    "peer_styles": ["shared/css/entity_detail.css"],
+    "assets": {
+        "css": "style.css",
+        "js": "script.js"
+    },
+    "props": {
+        "show_intro": { "type": "boolean", "default": true, "trait": "show_intro" }
+    },
+    "context": {
+        "pageTypes": ["detail"],
+        "requires": ["obj.website_id"]
+    }
+}

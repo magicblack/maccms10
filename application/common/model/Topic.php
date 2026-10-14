@@ -282,7 +282,8 @@ class Topic extends Base {
                 $res = $this->listData($where,$order,$page,$num,$start,'*',$totalshow);
             }
             if($GLOBALS['config']['app']['cache_core']==1 && !$use_rnd_order) {
-                Cache::set($cach_name, $res, $cachetime);
+                // 打上表名标签，写路径才能定点作废这一族列表缓存（见 Base::clearListCache()）
+                Cache::tag($this->name)->set($cach_name, $res, $cachetime);
             }
         }
         $res['pageurl'] = $pageurl;
@@ -375,12 +376,7 @@ class Topic extends Base {
         if(!$validate->check($data)){
             return ['code'=>1001,'msg'=>lang('param_err').'：'.$validate->getError() ];
         }
-        $key = 'topic_detail_'.$data['topic_id'];
-        Cache::rm($key);
-        $key = 'topic_detail_'.$data['topic_en'];
-        Cache::rm($key);
-        $key = 'topic_detail_'.$data['topic_id'].'_'.$data['topic_en'];
-        Cache::rm($key);
+        $this->clearDetailCache($data['topic_id'], $data['topic_en']);
 
 
         if(empty($data['topic_extend'])){
@@ -456,6 +452,7 @@ class Topic extends Base {
         $ixTopicId = !empty($data['topic_id']) ? intval($data['topic_id']) : intval($this->getLastInsID());
         MeilisearchSync::afterTopicSave($ixTopicId);
 
+        $this->clearListCache();
         return ['code'=>1,'msg'=>lang('save_ok'),'topic_id'=>$ixTopicId];
     }
 
@@ -486,6 +483,7 @@ class Topic extends Base {
             return ['code'=>1001,'msg'=>lang('del_err').'：'.$this->getError() ];
         }
         \app\common\model\ContentLang::deleteByContent('topic', $delIds);
+        $this->clearListCache();
         return ['code'=>1,'msg'=>lang('del_ok')];
     }
 
@@ -504,12 +502,10 @@ class Topic extends Base {
 
         $list = $this->field('topic_id,topic_name,topic_en')->where($where)->select();
         foreach($list as $k=>$v){
-            $key = 'topic_detail_'.$v['topic_id'];
-            Cache::rm($key);
-            $key = 'topic_detail_'.$v['topic_en'];
-            Cache::rm($key);
+            $this->clearDetailCache($v['topic_id'], $v['topic_en']);
         }
 
+        $this->clearListCache();
         return ['code'=>1,'msg'=>lang('set_ok')];
     }
 

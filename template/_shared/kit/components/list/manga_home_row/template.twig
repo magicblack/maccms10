@@ -1,0 +1,74 @@
+{# twigspike manga/index — 横滑内容行 #}
+{% set p = props|default({}) %}
+{% set legacy_preset_by = {'hot': 'hits', 'buzz': 'hits_week', 'score': 'time'} %}
+{% set by = p.by|default(legacy_preset_by[p.preset|default('')]|default('hits')) %}
+{% set by_cfg = {
+  'hits': {title: '人气热门', title_lang: 'string_mc_hits_title', subtitle: '', subtitle_lang: '', meta: 'class', show_tip: true, more_params: {by: 'hits'}},
+  'hits_week': {title: '全网热议', title_lang: 'string_mc_hits_week_title', subtitle: '恭喜你发现宝藏', subtitle_lang: 'string_mc_hits_week_sub', meta: 'hot', show_tip: false, more_params: {by: 'hits_week'}},
+  'hits_month': {title: '月榜热门', title_lang: 'string_mc_hits_month_title', subtitle: '', subtitle_lang: '', meta: 'class', show_tip: false, more_params: {by: 'hits_month'}},
+  'time': {title: '最近更新', title_lang: 'string_zuijingx', subtitle: '追更不间断', subtitle_lang: '', meta: 'recent', show_tip: false, more_params: {by: 'time'}}
+} %}
+{% set cfg = by_cfg[by]|default(by_cfg.hits) %}
+{% set title = p.title|default(cfg.title) %}
+{% set title_lang = p.title_lang|default(cfg.title_lang|default('')) %}
+{% set subtitle = p.subtitle is defined ? p.subtitle : cfg.subtitle %}
+{% set subtitle_lang = p.subtitle_lang|default(cfg.subtitle_lang|default('')) %}
+{% set num = p.num|default(10) %}
+{% set more_url = p.more_url|default('manga/show') %}
+{% set manga_type_default = mac_top_types(12, 1)|first %}
+{% set manga_more_href = manga_type_default ? mac_url_type(manga_type_default, cfg.more_params|default({by: 'hits'}), 'show') : mac_url('manga/index') %}
+{% set row_mod = by|replace({'_': '-'}) %}
+{% set section_id = p.section_id|default('mc-' ~ row_mod) %}
+{# TEMP: hits_week ("全网热议") row hidden — its "更多" link lands on manga/show,
+   whose list is sorted by normal update time, not the hot/hits_week ranking this
+   row shows. Re-enable once that "更多" page sorts consistently with this row. #}
+{% if by == 'hits_week' %}
+  {% set list = [] %}
+{% else %}
+  {% set list = mac_manga({num: num, order: 'desc', by: by}).list|default([]) %}
+  {% if list is empty and by != 'hits' %}
+    {% set list = mac_manga({num: num, order: 'desc', by: 'hits'}).list|default([]) %}
+  {% endif %}
+{% endif %}
+
+{% if list is not empty %}
+<section class="mc-sec pb-manga-home-row pb-manga-home-row--{{ row_mod }}" id="{{ section_id }}" aria-labelledby="{{ section_id }}-h" data-component="manga_home_row">
+  <header class="mc-sec__head">
+    <div class="mc-sec__intro">
+      <h2 class="mc-sec__title" id="{{ section_id }}-h"{% if title_lang and mac_i18n_key(title, title_lang) %} data-lang="{{ title_lang }}"{% endif %}>{{ title }}</h2>
+      {% if subtitle %}<p class="mc-sec__sub"{% if subtitle_lang and mac_i18n_key(subtitle, subtitle_lang) %} data-lang="{{ subtitle_lang }}"{% endif %}>{{ subtitle }}</p>{% endif %}
+    </div>
+    <a class="mc-sec__more" href="{{ manga_more_href }}"><span data-lang="string_more">更多</span> ›</a>
+  </header>
+  <div class="mc-row" data-mc-row>
+    <button type="button" class="mc-row__btn mc-row__btn--prev" data-dir="-1" aria-label="向左" data-lang-aria-label="carousel_prev_aria">‹</button>
+    <div class="mc-row__viewport">
+      <div class="mc-row__track">
+        {% for vo in list %}
+        <a class="mc-poster" href="{{ mac_url_manga_detail(vo) }}">
+          <span class="mc-poster__cover" data-cover-bg="{{ mac_url_img(vo.manga_pic) }}" style="background-image:url('{{ mac_url_img(vo.manga_pic) }}')">
+            {% if cfg.show_tip %}
+            <i class="mc-poster__tip">{% include 'page-builder-components/_shared/manga_serial_tip.twig' with {vo: vo} %}</i>
+            {% endif %}
+          </span>
+          <strong class="mc-poster__name">{{ vo.manga_name }}</strong>
+          <em class="mc-poster__meta{% if cfg.meta == 'hot' %} mc-poster__meta--hot{% endif %}">
+            {% if cfg.meta == 'hot' %}
+              {% if vo.manga_class %}{{ vo.manga_class|split(',')|slice(0,2)|join(' ') }} · {% endif %}{{ vo.manga_hits_week|default(vo.manga_hits)|default(0) }} <span data-lang="string_manga_buzzing">人热议中</span>
+            {% elseif cfg.meta == 'score' %}
+              {% if vo.manga_class %}{{ vo.manga_class|split(',')|slice(0,2)|join(' ') }}{% endif %}
+              {% if vo.manga_score and vo.manga_score > 0 %} · {{ vo.manga_score }}<span data-lang="string_fen">分</span>{% elseif vo.manga_remarks %} · {% include "page-builder-components/_shared/chapter_remarks.twig" with {remarks: vo.manga_remarks, kind: 'manga'} only %}{% endif %}
+            {% elseif cfg.meta == 'recent' %}
+              {% if vo.manga_class %}{{ vo.manga_class|split(',')|slice(0,2)|join(' ') }} · {% endif %}{% if vo.manga_remarks %}{% include "page-builder-components/_shared/chapter_remarks.twig" with {remarks: vo.manga_remarks, kind: 'manga'} only %}{% else %}<span data-lang="string_manga_updating">更新中</span>{% endif %}
+            {% else %}
+              {% if vo.manga_class %}{{ vo.manga_class|split(',')|slice(0,2)|join(' ') }}{% endif %}
+            {% endif %}
+          </em>
+        </a>
+        {% endfor %}
+      </div>
+    </div>
+    <button type="button" class="mc-row__btn mc-row__btn--next" data-dir="1" aria-label="向右" data-lang-aria-label="carousel_next_aria">›</button>
+  </div>
+</section>
+{% endif %}

@@ -52,8 +52,10 @@ layui.define(function(exports){
     : [10, 20, 30, 40, 50];
     config.limit = (config.limit|0) || 10; //默认条数
     
-    //总页数
-    config.pages = Math.ceil(config.count/config.limit) || 1;
+    //总页数，允许调用方显式传入 pages（如第三方分页总数），未传或非法时按数据总数/每页条数换算
+    config.pages = (('pages' in config) && (config.pages|0) > 0)
+      ? (config.pages|0)
+      : (Math.ceil(config.count/config.limit) || 1);
     
     //当前页不能超过总页数
     if(config.curr > config.pages){

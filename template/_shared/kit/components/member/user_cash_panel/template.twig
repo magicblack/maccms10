@@ -1,0 +1,38 @@
+{# 积分提现 #}
+<div id="mac-user-cash-root" data-component="user_cash_panel" data-api-base="{{ maccms.path }}api.php">
+  <header class="member-card__head">
+    <h2 class="member-card__title" data-lang="user_jftx">金币提现</h2>
+  </header>
+  <nav class="member-tabs member-tabs--cash" aria-label="提现选项">
+    <button type="button" class="member-tabs__item label-item active" data-step="1" data-lang="user_wytx">我要提现</button>
+    <button type="button" class="member-tabs__item label-item" data-step="2" data-lang="user_txjl">提现记录</button>
+  </nav>
+  <div class="label-one show-content">
+    <form class="member-form" id="fm" method="post" action="">
+      <label class="member-form__field">
+        <span class="member-form__label" data-lang="user_khh">开户行</span>
+        <input type="text" name="cash_bank_name" data-lang-placeholder="user_khh" placeholder="开户行">
+      </label>
+      <label class="member-form__field">
+        <span class="member-form__label" data-lang="user_zh">账号</span>
+        <input type="text" name="cash_bank_no" data-lang-placeholder="user_zhanghao" placeholder="账号">
+      </label>
+      <label class="member-form__field">
+        <span class="member-form__label" data-lang="user_skr">收款人</span>
+        <input type="text" name="cash_payee_name" data-lang-placeholder="user_skr" placeholder="收款人">
+      </label>
+      <label class="member-form__field">
+        <span class="member-form__label" data-lang="user_je">金额</span>
+        <input type="text" name="cash_money" data-lang-placeholder="user_txje" placeholder="提现金额">
+      </label>
+      <div class="member-form__actions">
+        <button type="button" class="member-form__submit" id="btn_submit" data-lang="string_tj">提交</button>
+      </div>
+    </form>
+  </div>
+  <div class="label-two noshow-content">
+    <p class="mac-cash-loading muted" style="display:none" data-lang="string_topic_feed_loading">加载中…</p>
+    <ul class="order__list clearfix member-rows" data-mac-cash-list></ul>
+    <div class="member-page" data-mac-cash-page></div>
+  </div>
+</div>

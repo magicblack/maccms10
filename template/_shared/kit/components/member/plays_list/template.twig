@@ -1,0 +1,187 @@
+{#
+  播放记录列表 — 消费控制器 assign 的 list / __PAGING__ / param
+  props: show_clear (bool, 默认 true)
+#}
+{% import "@shared/components.twig" as c %}
+{% set p = props|default({}) %}
+{% set show_clear = p.show_clear is defined ? p.show_clear : true %}
+{% set rows = list|default([]) %}
+{% set has_rows = rows|length > 0 %}
+
+<section class="plays-list" data-component="plays_list">
+  <header class="plays-list__head plays-list__head--desktop">
+    <h2 class="plays-list__title" data-lang="string_play_history">播放记录</h2>
+    {% if show_clear and has_rows %}
+    <button type="button"
+      class="plays-list__clear"
+      data-member-history-clear
+      data-ulog-type="4"
+      aria-label="清空全部播放记录"
+      data-lang-aria-label="plays_clear_all_aria">
+      {% include "page-builder-components/_shared/component_icon.twig" with {
+        component: 'plays_list', name: 'icon-trash', class: 'plays-list__clear-ico', mode: 'current'
+      } %}
+      <span data-lang="string_qk">清空</span>
+    </button>
+    {% endif %}
+  </header>
+
+  <ul class="plays-list__items member-history"
+      data-member-history
+      data-ulog-type="4"
+      data-confirm-del="删除后将从播放记录中移除。"
+      data-confirm-del-lang="plays_confirm_del_msg"
+      data-confirm-del-title="删除记录"
+      data-confirm-del-title-lang="plays_confirm_del_title"
+      data-confirm-clear="将清空全部播放记录，此操作不可恢复。"
+      data-confirm-clear-lang="plays_confirm_clear_msg"
+      data-confirm-clear-title="清空记录"
+      data-confirm-clear-title-lang="plays_confirm_clear_title">
+    {% for u in rows %}
+    {% set item = u.data|default({}) %}
+    {% set item_link = item.link|default('javascript:;') %}
+    {% set item_name = item.name|default('') %}
+    {% set item_name_lang = item_name ? '' : 'unknown_content' %}
+    {% set item_name = item_name|default('未知内容', true) %}
+    {% set item_pic = item.pic|default('') %}
+    {% set item_type = item.type|default({}) %}
+    {% set type_name = item_type.type_name|default('') %}
+    {% set type_name_lang = '' %}
+    {% if not type_name %}
+      {% if u.ulog_mid == 1 %}{% set type_name = '视频' %}{% set type_name_lang = 'string_vod' %}
+      {% elseif u.ulog_mid == 2 %}{% set _ml = mac_module_label(2) %}{% set type_name = _ml.name %}{% set type_name_lang = _ml.lang %}
+      {% elseif u.ulog_mid == 3 %}{% set type_name = '专题' %}{% set type_name_lang = 'string_topic' %}
+      {% elseif u.ulog_mid == 12 %}{% set _ml = mac_module_label(12) %}{% set type_name = _ml.name %}{% set type_name_lang = _ml.lang %}
+      {% endif %}
+    {% endif %}
+    {% set pct = 0 %}
+    {% if u.ulog_watch_progress|default(0) > 0 %}
+      {% set pct = u.ulog_watch_progress %}
+    {% elseif u.ulog_duration|default(0) > 0 %}
+      {% set pct = ((u.ulog_point|default(0) * 100) / u.ulog_duration)|round %}
+      {# 看了几秒四舍五入成 0 也算有进度，否则进度条/百分比整块不显示 #}
+      {% if pct < 1 and u.ulog_point|default(0) > 0 %}{% set pct = 1 %}{% endif %}
+    {% endif %}
+    {% if pct > 100 %}{% set pct = 100 %}{% endif %}
+    {# 时长未知（跨域线路估算且 vod_duration 为空）时退回显示「已看 mm:ss」 #}
+    {% set watched_at = '' %}
+    {% set _pt = u.ulog_point|default(0) %}
+    {% if pct <= 0 and _pt > 0 %}
+      {% set _h = (_pt / 3600)|round(0, 'floor') %}
+      {% set _m = ((_pt % 3600) / 60)|round(0, 'floor') %}
+      {% set _s = _pt % 60 %}
+      {% set watched_at = (_h > 0 ? _h ~ ':' ~ ('%02d'|format(_m)) : _m) ~ ':' ~ ('%02d'|format(_s)) %}
+    {% endif %}
+    {% if pct < 0 %}{% set pct = 0 %}{% endif %}
+    {% set ep_num = 0 %}
+    {% set ep_unit_key = '' %}
+    {% set ep_unit_fallback = '' %}
+    {% if u.ulog_mid == 12 and u.ulog_nid|default(0) > 0 %}
+      {% set ep_num = u.ulog_nid %}
+      {% set ep_unit_key = 'string_manga_hua' %}
+      {% set ep_unit_fallback = '话' %}
+    {% elseif u.ulog_mid == 2 and u.ulog_nid|default(0) > 0 %}
+      {% set ep_num = u.ulog_nid %}
+      {% set ep_unit_key = 'art_read_chapter_unit' %}
+      {% set ep_unit_fallback = '章' %}
+    {% endif %}
+    {# 视频分集：每集一条记录、标题相同，显示集名区分。纯序号集名（第01集 / 01 / EP1）后端给 ep_num 走多语文案，其余（如「大结局」）原样显示 #}
+    {% set vod_ep_num = u.ulog_mid == 1 ? item.ep_num|default(0) : 0 %}
+    {% set vod_ep_name = u.ulog_mid == 1 ? item.ep_name|default('') : '' %}
+    {# 视频分类单独设置的封面比例（竖屏短剧等，后台分类管理 type_extend.cover）；
+       data-cover-auto="shape"：runtime 再按封面实际尺寸校正（各资源站采集的竖版封面），见 plays_list/style.css #}
+    {% set play_cover = u.ulog_mid == 1 ? mac_type_cover(item_type.type_id|default(0)) : [] %}
+    {% set play_kind = 'default' %}
+    {% if u.ulog_mid == 1 %}{% set play_kind = 'vod' %}
+    {% elseif u.ulog_mid == 2 %}{% set play_kind = 'novel' %}
+    {% elseif u.ulog_mid == 12 %}{% set play_kind = 'manga' %}
+    {% endif %}
+    <li class="plays-list__item plays-list__item--{{ play_kind }}{% if play_cover and play_cover.orient == 'v' %} plays-list__item--portrait{% endif %} member-history__item"{% if u.ulog_mid == 1 %} data-cover-auto="shape"{% endif %}
+        data-ulog-id="{{ u.ulog_id }}"
+        data-ulog-mid="{{ u.ulog_mid }}"
+        data-search-title="{{ item_name|e('html_attr') }}">
+      {% if play_kind != 'novel' %}
+      <a class="plays-list__thumb member-history__thumb" href="{{ item_link }}" title="{{ item_name }}" data-lang-title="{{ item_name_lang }}"{% if play_cover %} style="aspect-ratio: {{ play_cover.w }} / {{ play_cover.h }}"{% endif %}>
+        {# 封面為空也輸出 lazy_img：data-original="" 由 runtime cover 模組換成預設縮略圖，與其他列表一致 #}
+        {{ c.lazy_img(item_pic, item_name, {class: 'plays-list__img member-history__img'}) }}
+        {% if pct > 0 %}
+        <span class="plays-list__thumb-progress member-history__thumb-progress" aria-hidden="true">{{ pct }}%</span>
+        {% elseif u.ulog_mid == 1 %}
+        <span class="plays-list__play-badge" aria-hidden="true">
+          {% include "page-builder-components/_shared/component_icon.twig" with {
+            component: 'plays_list', name: 'icon-play-line', class: 'plays-list__play-ico', mode: 'current'
+          } %}
+        </span>
+        {% endif %}
+      </a>
+      {% endif %}
+      <div class="plays-list__body member-history__body">
+        <h3 class="plays-list__name member-history__title">
+          <a href="{{ item_link }}" data-lang="{{ item_name_lang }}">{{ item_name }}</a>
+          {% if vod_ep_num > 0 %}<span class="plays-list__vod-ep" data-lang="vod_ep_nth" data-lang-arg="{{ vod_ep_num }}">第{{ vod_ep_num }}集</span>
+          {% elseif vod_ep_name %}<span class="plays-list__vod-ep">{{ vod_ep_name }}</span>{% endif %}
+        </h3>
+        <p class="plays-list__meta member-history__meta">
+          {% if type_name %}<span class="plays-list__type member-history__type" data-lang="{{ type_name_lang }}">{{ type_name }}</span>{% endif %}
+          {% if ep_num > 0 %}<span class="plays-list__ep"><span data-lang="art_read_chapter_ordinal">第</span>{{ ep_num }}<span data-lang="{{ ep_unit_key }}">{{ ep_unit_fallback }}</span></span>{% endif %}
+          {% if pct > 0 %}<span class="plays-list__pct"><span data-lang="plays_watched_prefix">已看</span> {{ pct }}%</span>
+          {% elseif watched_at %}<span class="plays-list__pct"><span data-lang="plays_watched_prefix">已看</span> {{ watched_at }}</span>{% endif %}
+          <time datetime="{{ u.ulog_time|date('c') }}">{{ mac_day(u.ulog_time)|raw }}</time>
+        </p>
+        {% if pct > 0 %}
+        <div class="plays-list__progress member-history__progress"
+             role="progressbar"
+             aria-valuemin="0"
+             aria-valuemax="100"
+             aria-valuenow="{{ pct }}"
+             aria-label="观看进度 {{ pct }}%">
+          <span class="plays-list__bar member-history__bar" style="width: {{ pct }}%"></span>
+        </div>
+        {% endif %}
+      </div>
+      <div class="plays-list__actions member-history__actions">
+        <a class="plays-list__continue member-history__continue" href="{{ item_link }}">
+          {% if u.ulog_mid == 1 %}
+          {% include "page-builder-components/_shared/component_icon.twig" with {
+            component: 'plays_list', name: 'icon-play-line', class: 'plays-list__continue-ico member-history__continue-ico', mode: 'current'
+          } %}
+          <span data-lang="string_jxbofang">继续播放</span>
+          {% else %}
+          {% include "page-builder-components/_shared/component_icon.twig" with {
+            component: 'plays_list', name: 'icon-book', class: 'plays-list__continue-ico member-history__continue-ico', mode: 'current'
+          } %}
+          <span data-lang="string_continue_read">继续阅读</span>
+          {% endif %}
+        </a>
+        <button type="button"
+          class="plays-list__del member-history__del"
+          data-member-history-del
+          data-ulog-id="{{ u.ulog_id }}"
+          data-ulog-type="4"
+          aria-label="删除这条记录"
+          data-lang-aria-label="plays_delete_record_aria">
+          {% include "page-builder-components/_shared/component_icon.twig" with {
+            component: 'plays_list', name: 'icon-trash', class: 'plays-list__del-ico member-history__del-ico', mode: 'current'
+          } %}
+          <span data-lang="string_sc">删除</span>
+        </button>
+      </div>
+    </li>
+    {% else %}
+    <li class="plays-list__empty" role="status">
+      <div class="plays-list__empty-art" aria-hidden="true">
+        {% include "page-builder-components/_shared/component_icon.twig" with {
+          component: 'plays_list', name: 'icon-history', class: 'plays-list__empty-ico', mode: 'current'
+        } %}
+      </div>
+      <p class="plays-list__empty-title" data-lang="user_play_log_empty">暂无播放记录</p>
+      <p class="plays-list__empty-hint" data-lang="plays_empty_hint">看过的视频、小说、漫画会出现在这里</p>
+      <a class="plays-list__empty-cta" href="{{ maccms.path|default('/') }}" data-lang="string_goto_home">去首页看看</a>
+    </li>
+    {% endfor %}
+  </ul>
+
+  {% if has_rows %}
+  {{ c.paging(__PAGING__|default({}), {class: 'pg plays-list__paging member-pg member-pg--plays', item_class: 'plays-list__pg-nav', num_class: 'plays-list__pg-num', active_class: 'on'}) }}
+  {% endif %}
+</section>

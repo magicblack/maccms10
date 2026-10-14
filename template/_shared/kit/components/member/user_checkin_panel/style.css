@@ -1,0 +1,167 @@
+/* user_checkin panel — bundled from _shared/assets/css/member/checkin.css */
+.page-member--checkin .uc-checkin-sheet {
+  padding: 0 0 28px;
+}
+
+.page-member--checkin .uc-checkin-hero-card,
+.page-member--checkin .uc-checkin-card--main {
+  margin-bottom: 12px;
+  padding: 16px 14px;
+  border-radius: var(--radius-lg);
+  background: var(--c-surface);
+  border: 1px solid var(--c-border);
+}
+
+.page-member--checkin .uc-hero__user {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.page-member--checkin .uc-hero__avatar-wrap {
+  flex-shrink: 0;
+  width: 56px;
+  height: 56px;
+  overflow: hidden;
+  border-radius: 50%;
+  border: 2px solid var(--c-border);
+}
+
+.page-member--checkin .uc-hero__label {
+  margin: 0 0 4px;
+  font-size: 13px;
+  color: var(--c-text-muted);
+}
+
+.page-member--checkin .uc-hero__value {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0;
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.page-member--checkin .uc-streak__line {
+  margin: 0 0 8px;
+  font-size: 17px;
+  font-weight: 600;
+  line-height: 1.45;
+}
+
+.page-member--checkin .uc-streak__num {
+  margin: 0 4px;
+  color: var(--c-accent);
+  font-weight: 800;
+}
+
+.page-member--checkin .uc-streak__hint,
+.page-member--checkin .uc-milestones__guest-msg {
+  margin: 0;
+  font-size: 14px;
+  color: var(--c-text-muted);
+}
+
+.page-member--checkin .uc-milestones__grid {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.page-member--checkin .uc-milestones__band {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.page-member--checkin .uc-mile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 12px 6px 10px;
+  border: 1px solid var(--c-border);
+  border-radius: 10px;
+  background: var(--c-surface-2);
+  text-align: center;
+}
+
+.page-member--checkin .uc-mile--status-1 {
+  border-color: var(--c-accent);
+  background: var(--c-accent-soft);
+}
+
+.page-member--checkin .uc-mile__points {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 800;
+}
+
+.page-member--checkin .uc-mile__caption {
+  margin: 0;
+  font-size: 12px;
+  color: var(--c-text-muted);
+  line-height: 1.4;
+}
+
+.page-member--checkin .uc-mile__claim {
+  width: 100%;
+  min-height: 30px;
+  margin-top: 4px;
+  border: 0;
+  border-radius: 8px;
+  background: var(--c-accent);
+  color: #fff;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.page-member--checkin .uc-milestones {
+  margin-top: 12px;
+}
+
+.page-member--checkin .uc-cta-wrap {
+  margin-top: 18px;
+}
+
+.page-member--checkin .uc-cta {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: 52px;
+  padding: 14px 20px;
+  border: 0;
+  border-radius: var(--radius-lg);
+  font-size: 16px;
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.page-member--checkin .uc-cta--guest {
+  background: var(--c-accent);
+  color: #fff;
+}
+
+.page-member--checkin .uc-cta--done {
+  background: var(--c-surface-2);
+  border: 1px solid var(--c-border);
+  color: var(--c-text-muted);
+  cursor: not-allowed;
+}
+
+.page-member--checkin .uc-rules__title {
+  margin: 0 0 12px;
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.page-member--checkin .uc-rules__list {
+  margin: 0;
+  padding-left: 1.2em;
+  font-size: 12px;
+  line-height: 1.6;
+  color: var(--c-text-muted);
+}

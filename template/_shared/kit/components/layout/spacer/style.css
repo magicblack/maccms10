@@ -1,0 +1,25 @@
+/* layout spacer — size tokens align with template.twig */
+.pb-spacer {
+  display: block;
+  width: 100%;
+  clear: both;
+  flex-shrink: 0;
+}
+
+.pb-spacer[data-size="sm"] {
+  height: 12px;
+}
+
+.pb-spacer[data-size="md"] {
+  height: 24px;
+}
+
+.pb-spacer[data-size="lg"] {
+  height: 48px;
+}
+
+@media (max-width: 720px) {
+  .pb-spacer[data-size="lg"] {
+    height: 32px;
+  }
+}

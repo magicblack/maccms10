@@ -1,0 +1,100 @@
+{% import "@shared/components.twig" as c %}
+{% set pb_empty_illustration = 'image' %}
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="utf-8">
+{# IE/360 兼容模式自动拦截（纯前端，须在 PB CSS 之前） #}
+<script src="{{ maccms.path_tpl }}page-builder-components/_shared/js/browser-ie-detect.js"></script>
+{# 强制 360/搜狗/QQ 等双核浏览器使用高速内核，避免被兼容模式(IE内核)渲染导致前端异常 #}
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="renderer" content="webkit">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>{% block title %}{{ maccms.site_name }}{% endblock %}</title>
+{% block meta %}
+<meta name="keywords" content="{{ maccms.site_keywords }}">
+<meta name="description" content="{{ maccms.site_description }}">
+{% endblock %}
+{% block theme_styles %}
+<link rel="stylesheet" href="{{ maccms.path_tpl }}asset/css/tokens.css?v=np2-55">
+{% set _pb_td_override = mac_theme_override_css_href() %}
+{% if _pb_td_override %}<link rel="stylesheet" href="{{ _pb_td_override }}">
+{% endif %}
+<link rel="stylesheet" href="{{ maccms.path_tpl }}asset/css/pb-shell.css?v=np2-3">
+{% endblock %}
+<link rel="stylesheet" href="{{ maccms.path_tpl }}asset/css/pb-responsive.css">
+<link rel="stylesheet" href="{{ maccms.path_tpl }}asset/css/np2-app.css?v=np2-167">
+<link rel="stylesheet" href="{{ maccms.path_tpl }}page-builder-components/ads_grid/style.css?v=np2-74">
+<link rel="stylesheet" href="{{ maccms.path_tpl }}page-builder-components/site_nav/style.css">
+<link rel="stylesheet" href="{{ maccms.path_tpl }}page-builder-components/site_footer/style.css">
+<link rel="stylesheet" href="{{ maccms.path_tpl }}page-builder-components/notify_bell/style.css">
+<link rel="stylesheet" href="{{ maccms.path_tpl }}page-builder-components/auth_modals/style.css">
+<script src="{{ maccms.path_tpl }}page-builder-components/auth_modals/script.js" defer></script>
+<link rel="stylesheet" href="{{ maccms.path_tpl }}page-builder-components/auth_form/style.css">
+<script src="{{ maccms.path_tpl }}page-builder-components/auth_form/script.js" defer></script>
+{{ c.jsvar(maccms, csrf_token|default(''), user.user_id|default(0)) }}
+{% if maccms.path_tpl|default('') != '' %}
+<link rel="stylesheet" href="{{ maccms.path_tpl }}page-builder-components/_shared/css/share-sheet.css">
+<script src="{{ maccms.path_tpl }}page-builder-components/_shared/js/list-utils.js" defer></script>
+{% endif %}
+{% block head %}{% endblock %}
+{# 组件专属皮须在 page-builder-components/*/style.css 之后，避免被 kit 同步副本盖掉 #}
+<link rel="stylesheet" href="{{ maccms.path_tpl }}asset/css/np2-pb-skin.css?v=np2-150">
+</head>
+<body class="pbs-body np2-app{% block page_class %}{% endblock %}" data-mid="{{ maccms.mid|default(0) }}" data-aid="{{ maccms.aid|default(0) }}">
+<div class="pbs-shell{% block shell_class %}{% endblock %}">
+  <aside class="pbs-shell__nav" aria-label="站点导航">
+    {% block shell_nav %}{% endblock %}
+  </aside>
+  <div class="pbs-shell__main np2-app__main">
+    {% block site_header %}{% endblock %}
+    {% block hero %}{% endblock %}
+    <div class="pbs-wrap">
+      {% block channel %}{% endblock %}
+      <div class="layout{% block layout_mod %} solo{% endblock %}">
+        <main id="main" class="pbs-main">{% block content %}{% endblock %}</main>
+        {% block sidebar %}{% endblock %}
+      </div>
+    </div>
+    {% block footer %}{% endblock %}
+  </div>
+</div>
+{% block tabbar %}
+<nav class="np2-tabbar" aria-label="底部导航">
+  {% set _tab = np2_tab|default('') %}
+  {% if _tab == '' %}
+    {% set _mid = maccms.mid|default(0) %}
+    {% if _mid == 2 %}{% set _tab = 'art' %}
+    {% elseif _mid == 12 %}{% set _tab = 'manga' %}
+    {% else %}{% set _tab = 'home' %}
+    {% endif %}
+  {% endif %}
+  <a href="{{ maccms.path|default('/') }}" class="{% if _tab == 'home' %}is-active{% endif %}"{% if _tab == 'home' %} aria-current="page"{% endif %}>
+    <span class="np2-tabbar__ico" aria-hidden="true"><svg viewBox="0 0 24 24" width="22" height="22"><path fill="currentColor" d="M12 3.2 3.5 10.2h2.2V20h5.1v-5.2h2.4V20h5.1V10.2h2.2L12 3.2z"/></svg></span>首页
+  </a>
+  <a href="{{ mac_url('label/short') }}" class="{% if _tab == 'short' %}is-active{% endif %}"{% if _tab == 'short' %} aria-current="page"{% endif %}>
+    <span class="np2-tabbar__ico" aria-hidden="true"><svg viewBox="0 0 24 24" width="22" height="22"><rect x="4" y="5" width="16" height="14" rx="3" fill="none" stroke="currentColor" stroke-width="1.8"/><path fill="currentColor" d="M10.2 9.2v5.6L15.4 12z"/></svg></span>短视频
+  </a>
+  <a href="{{ mac_url('art/index') }}" class="{% if _tab == 'art' %}is-active{% endif %}"{% if _tab == 'art' %} aria-current="page"{% endif %}>
+    <span class="np2-tabbar__ico" aria-hidden="true"><svg viewBox="0 0 24 24" width="22" height="22"><path d="M6.2 4.8h9.4A1.6 1.6 0 0 1 17.2 6.4v12.2c0 .7-.7 1.1-1.25.8L12 16.9l-3.95 2.5c-.55.3-1.25-.1-1.25-.8V6.4A1.6 1.6 0 0 1 6.2 4.8z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg></span>小说
+  </a>
+  <a href="{{ mac_url('manga/index') }}" class="{% if _tab == 'manga' %}is-active{% endif %}"{% if _tab == 'manga' %} aria-current="page"{% endif %}>
+    <span class="np2-tabbar__ico" aria-hidden="true"><svg viewBox="0 0 24 24" width="22" height="22"><rect x="4" y="3.8" width="16" height="7.2" rx="1.6" fill="none" stroke="currentColor" stroke-width="1.8"/><rect x="4" y="13" width="16" height="7.2" rx="1.6" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M7 7h5.5M7 16.2h4" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></span>漫画
+  </a>
+  <a href="{{ mac_url('user/index') }}" class="{% if _tab == 'mine' %}is-active{% endif %}"{% if _tab == 'mine' %} aria-current="page"{% endif %}>
+    <span class="np2-tabbar__ico" aria-hidden="true"><svg viewBox="0 0 24 24" width="22" height="22"><circle cx="12" cy="9" r="3.2" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M5.8 19c1.4-3 3.6-4.4 6.2-4.4s4.8 1.4 6.2 4.4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></span>我的
+  </a>
+</nav>
+{% endblock %}
+{% if not user.user_id or mac_td_preview_mode() %}
+{% include "page-builder-components/auth_modals/template.twig" %}
+{% endif %}
+{% include "page-builder-components/_shared/share_sheet.twig" %}
+{% include "page-builder-components/_shared/confirm_dialog.twig" %}
+{% include "page-builder-components/_shared/recharge_sheet.twig" %}
+{{ c.runtime(maccms.path, '', '', maccms.path_tpl|default('')) }}
+{{ c.chrome(maccms.path, maccms.path_tpl|default('')) }}
+<script src="{{ maccms.path_tpl }}asset/js/np2-app.js?v=np2-55" defer></script>
+{% block foot %}{% endblock %}
+</body>
+</html>

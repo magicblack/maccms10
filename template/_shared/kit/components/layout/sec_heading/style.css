@@ -1,0 +1,13 @@
+.pb-sec-heading {
+  margin: 0 0 12px;
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 1.35;
+  color: var(--c-text, #1a1a1a);
+}
+.pb-sec-heading small {
+  margin-left: 8px;
+  font-size: 13px;
+  font-weight: 400;
+  color: var(--c-text-muted, #888);
+}

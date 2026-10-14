@@ -1,0 +1,36 @@
+{# 充值面板 #}
+{% set _pb_shared_img = maccms.path_tpl|default('') ~ 'page-builder-components/_shared/img/' %}
+{% set _tab = pay_default_tab|default('recharge') %}
+<div class="member-pay-panel member-pay-panel--recharge user-buy-upgrade-panel user-buy-upgrade-panel--recharge"{% if _tab == 'upgrade' %} hidden{% endif %}>
+  <div class="member-pay-recharge">
+    <div class="member-pay-card">
+      <form id="fm" name="fm" method="post" action="">
+        <div class="member-pay-amounts">
+          <div class="member-pay-amount" data-amount="50" role="button" tabindex="0">
+            <span class="member-pay-amount__yen">¥</span><span class="member-pay-amount__num">50</span>
+          </div>
+          <div class="member-pay-amount" data-amount="100" role="button" tabindex="0">
+            <span class="member-pay-amount__yen">¥</span><span class="member-pay-amount__num">100</span>
+          </div>
+          <div class="member-pay-amount member-pay-amount--hot" data-amount="200" role="button" tabindex="0">
+            <img class="member-pay-amount__ribbon" src="{{ _pb_shared_img }}recharge/recharge-ribbon-hot.png" width="48" height="48" alt="">
+            <span class="member-pay-amount__yen">¥</span><span class="member-pay-amount__num">200</span>
+          </div>
+          <div class="member-pay-amount" data-amount="500" role="button" tabindex="0">
+            <span class="member-pay-amount__yen">¥</span><span class="member-pay-amount__num">500</span>
+          </div>
+        </div>
+        <div class="member-pay-field">
+          <label class="member-pay-field__label" for="price_input" data-lang="user_czje">充值的金额</label>
+          <input type="text" maxlength="8" name="price" id="price_input" value="" class="member-pay-field__input" placeholder="请输入金额" data-lang-placeholder="amount_placeholder" inputmode="decimal" autocomplete="off">
+        </div>
+        <div class="member-pay-tips">
+          <img class="member-pay-tips__ico" src="{{ _pb_shared_img }}recharge/recharge-tip-ico.png" width="18" height="18" alt="" decoding="async">
+          <span id="buy_recharge_tips" data-lang="string_topic_feed_loading">加载中…</span>
+        </div>
+      </form>
+      {% include "page-builder-components/_shared/coupon_mount.twig" with { id: 'mac-user-coupon-panel', scene: 'recharge', mount: 'buy-recharge' } %}
+    </div>
+    <button type="button" id="btn_submit_pay" class="member-pay-submit" data-lang="recharge_confirm_btn">确认充值</button>
+  </div>
+</div>

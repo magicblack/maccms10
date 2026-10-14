@@ -1,0 +1,29 @@
+{% set _list = list|default([]) %}
+{% set _hues = ['var(--c-accent)', 'var(--c-link)', '#ff7f24', '#9c6ade', '#6bcf7f'] %}
+<div class="pb-gbook-wall">
+  {% for g in _list %}
+  {% set hue = _hues[loop.index0 % _hues|length] %}
+  <article class="pb-gbook-card">
+    <header class="pb-gbook-card__head">
+      {% if g.user_portrait|default('') %}
+      <span class="pb-gbook-card__avatar pb-gbook-card__avatar--img">
+        <img src="{{ mac_url_img(g.user_portrait) }}" alt="{{ g.gbook_name|default('访客') }}" loading="lazy" decoding="async">
+      </span>
+      {% else %}
+      <span class="pb-gbook-card__avatar" style="--pb-gbook-avatar-bg: {{ hue }}" aria-hidden="true">{{ g.gbook_name|default('访客')|slice(0, 1) }}</span>
+      {% endif %}
+      <span class="pb-gbook-card__meta">
+        <strong class="pb-gbook-card__name">{{ g.gbook_name|default('访客') }}</strong>
+        <time class="pb-gbook-card__time" datetime="{{ g.gbook_time }}">{{ mac_day(g.gbook_time)|raw }}</time>
+      </span>
+    </header>
+    <p class="pb-gbook-card__text">{{ g.gbook_content }}</p>
+    {% if g.gbook_reply|default('') %}
+    <p class="pb-gbook-card__reply">
+      <span class="pb-gbook-card__reply-tag" data-lang="gbook_official_reply">官方回复</span>
+      {{ g.gbook_reply }}
+    </p>
+    {% endif %}
+  </article>
+  {% endfor %}
+</div>

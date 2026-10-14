@@ -1,0 +1,25 @@
+{
+    "id": "auth_form",
+    "label_key": "admin/themedesign/pb_block_auth_form",
+    "category": "member",
+    "kind": "member",
+    "peer_styles": [],
+    "assets": {
+        "css": "style.css",
+        "js": "script.js"
+    },
+    "palette": false,
+    "props": {
+        "expand_invite": {
+            "type": "boolean",
+            "default": false,
+            "trait": "expand_invite"
+        }
+    },
+    "context": {
+        "pageTypes": [
+            "member"
+        ],
+        "requires": []
+    }
+}

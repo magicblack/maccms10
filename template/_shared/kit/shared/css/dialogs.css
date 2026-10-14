@@ -1,0 +1,243 @@
+/* 确认弹窗 + 底部状态 Sheet（替代原生 alert/confirm） */
+
+body.has-mac-confirm {
+  overflow: hidden;
+}
+
+.mac-confirm {
+  position: fixed;
+  inset: 0;
+  z-index: 10050;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px 16px;
+  box-sizing: border-box;
+}
+
+.mac-confirm[hidden] {
+  display: none !important;
+}
+
+.mac-confirm__backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(8, 10, 16, 0.55);
+  backdrop-filter: blur(4px);
+  opacity: 0;
+  transition: opacity 0.22s ease-out;
+}
+
+.mac-confirm.is-open .mac-confirm__backdrop {
+  opacity: 1;
+}
+
+.mac-confirm__dialog {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 360px;
+  transform: translateY(10px) scale(0.97);
+  opacity: 0;
+  transition:
+    transform 0.24s cubic-bezier(0.22, 0.61, 0.36, 1),
+    opacity 0.2s ease-out;
+}
+
+.mac-confirm.is-open .mac-confirm__dialog {
+  transform: translateY(0) scale(1);
+  opacity: 1;
+}
+
+.mac-confirm__panel {
+  padding: 22px 20px 16px;
+  border-radius: 16px;
+  background: var(--c-surface, #fff);
+  border: 1px solid var(--c-border, rgba(255, 255, 255, 0.08));
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.28);
+  text-align: center;
+}
+
+.mac-confirm__icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  margin: 0 auto 12px;
+  border-radius: 50%;
+  background: rgba(239, 68, 68, 0.12);
+  color: #ef4444;
+}
+
+.mac-confirm__icon[hidden] {
+  display: none !important;
+}
+
+.mac-confirm__title {
+  margin: 0 0 8px;
+  font-size: 17px;
+  font-weight: 700;
+  line-height: 1.4;
+  color: var(--c-text, #111);
+}
+
+.mac-confirm__title[hidden] {
+  display: none !important;
+}
+
+.mac-confirm__message {
+  margin: 0 0 20px;
+  font-size: 14px;
+  line-height: 1.55;
+  color: var(--c-text-muted, #64748b);
+}
+
+.mac-confirm__actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.mac-confirm__btn {
+  appearance: none;
+  border: 0;
+  border-radius: 10px;
+  padding: 11px 14px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.12s ease, opacity 0.12s ease;
+}
+
+.mac-confirm__btn:active {
+  transform: scale(0.98);
+}
+
+.mac-confirm__btn--cancel {
+  background: var(--c-surface-2, #f1f5f9);
+  color: var(--c-text, #334155);
+}
+
+.mac-confirm__btn--ok {
+  background: var(--c-accent, #6366f1);
+  color: var(--c-on-accent, #fff);
+}
+
+.mac-confirm--danger .mac-confirm__btn--ok {
+  background: #ef4444;
+  color: #fff;
+}
+
+/* 状态弹层（成功/失败）— 全端居中 */
+
+.mac-status-sheet {
+  position: fixed;
+  inset: 0;
+  z-index: 10060;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+
+.mac-status-sheet.is-open {
+  pointer-events: auto;
+}
+
+.mac-status-sheet__backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(8, 10, 16, 0.45);
+  opacity: 0;
+  transition: opacity 0.22s ease-out;
+}
+
+.mac-status-sheet.is-open .mac-status-sheet__backdrop {
+  opacity: 1;
+}
+
+.mac-status-sheet__panel {
+  position: relative;
+  z-index: 1;
+  width: calc(100% - 48px);
+  max-width: 320px;
+  margin: 0;
+  padding: 28px 24px 22px;
+  border-radius: 20px;
+  background: var(--c-surface, #fff);
+  border: 1px solid var(--c-border, rgba(255, 255, 255, 0.08));
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.18);
+  text-align: center;
+  transform: translateY(12px) scale(0.96);
+  opacity: 0;
+  transition: transform 0.28s cubic-bezier(0.22, 0.61, 0.36, 1), opacity 0.22s ease-out;
+}
+
+.mac-status-sheet.is-open .mac-status-sheet__panel {
+  transform: translateY(0) scale(1);
+  opacity: 1;
+}
+
+.mac-status-sheet--toast .mac-status-sheet__backdrop {
+  background: transparent;
+}
+
+.mac-status-sheet__icon {
+  width: 64px;
+  height: 64px;
+  margin: 0 auto 14px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.mac-status-sheet--success .mac-status-sheet__icon {
+  background: rgba(34, 197, 94, 0.14);
+  color: #22c55e;
+}
+
+.mac-status-sheet--error .mac-status-sheet__icon {
+  background: rgba(239, 68, 68, 0.12);
+  color: #ef4444;
+}
+
+.mac-status-sheet__msg {
+  margin: 0;
+  font-size: 17px;
+  font-weight: 700;
+  line-height: 1.45;
+  color: var(--c-text, #111);
+}
+
+.mac-status-sheet__detail {
+  margin: 8px 0 0;
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--c-text-muted, #64748b);
+}
+
+.mac-status-sheet__ok {
+  appearance: none;
+  width: 100%;
+  margin-top: 18px;
+  border: 0;
+  border-radius: 12px;
+  padding: 13px 16px;
+  font-size: 15px;
+  font-weight: 600;
+  background: var(--c-accent, #6366f1);
+  color: var(--c-on-accent, #fff);
+  cursor: pointer;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mac-confirm__backdrop,
+  .mac-confirm__dialog,
+  .mac-status-sheet__backdrop,
+  .mac-status-sheet__panel,
+  .mac-confirm__btn {
+    transition: none !important;
+  }
+}

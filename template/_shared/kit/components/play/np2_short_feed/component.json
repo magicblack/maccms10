@@ -1,0 +1,38 @@
+{
+    "id": "np2_short_feed",
+    "label_key": "admin/themedesign/pb_block_np2_short_feed",
+    "category": "play",
+    "kind": "np2_short_feed",
+    "styleMode": "component",
+    "peer_styles": [],
+    "assets": {
+        "css": "style.css",
+        "js": "script.js"
+    },
+    "palette": false,
+    "props": {
+        "num": {
+            "type": "number",
+            "default": 24,
+            "min": 1,
+            "max": 48,
+            "trait": "count"
+        },
+        "by": {
+            "type": "enum",
+            "default": "hits",
+            "values": ["time", "hits", "hits_day", "hits_week", "hits_month", "score"],
+            "trait": "sort"
+        },
+        "order": {
+            "type": "enum",
+            "default": "desc",
+            "values": ["desc", "asc"],
+            "trait": "order"
+        }
+    },
+    "context": {
+        "pageTypes": ["list"],
+        "requires": []
+    }
+}

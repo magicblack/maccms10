@@ -1,0 +1,561 @@
+/* preset-sidebar：左侧栏目导航 + 右侧内容区（适配当前 .hd / .nav 顶栏 markup） */
+
+.pbs-shell__nav {
+  display: none;
+}
+
+.pbs-shell.is-left-nav {
+  --pbs-left-nav-w: 200px;
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
+  min-height: 100vh;
+  min-height: 100dvh;
+}
+
+.pbs-shell.is-left-nav .pbs-shell__nav {
+  display: block;
+  flex: 0 0 var(--pbs-left-nav-w, 200px);
+  width: var(--pbs-left-nav-w, 200px);
+  max-width: var(--pbs-left-nav-w, 200px);
+  /* Pin to viewport; category list scrolls inside the rail */
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  height: 100vh;
+  height: 100dvh;
+  max-height: 100vh;
+  max-height: 100dvh;
+  background: var(--c-surface, #fff);
+  border-right: 1px solid var(--c-border, #e3e5e7);
+  z-index: 30;
+  overflow-x: hidden;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.pbs-shell.is-left-nav .pbs-shell__main {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  min-height: 100dvh;
+  position: relative;
+  z-index: 0;
+  /* Reserve space for fixed left rail */
+  margin-left: var(--pbs-left-nav-w, 200px);
+  width: calc(100% - var(--pbs-left-nav-w, 200px));
+  box-sizing: border-box;
+}
+
+/* —— 当前 site_nav（.hd）竖排 —— */
+.pbs-shell.is-left-nav .pbs-shell__nav .hd {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  max-width: none;
+  height: auto;
+  min-height: 100%;
+  overflow: visible;
+  background: transparent !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  box-shadow: none !important;
+}
+
+.pbs-shell.is-left-nav .pbs-shell__nav .hd .wrap {
+  max-width: none;
+  margin: 0;
+  padding: 16px 10px 20px;
+  box-sizing: border-box;
+}
+
+.pbs-shell.is-left-nav .pbs-shell__nav .hd-main {
+  flex-direction: column !important;
+  align-items: stretch !important;
+  flex-wrap: nowrap !important;
+  gap: 16px;
+  min-height: 100%;
+  padding: 0 !important;
+}
+
+.pbs-shell.is-left-nav .pbs-shell__nav .brand {
+  max-width: none;
+  justify-content: center;
+  padding: 4px 8px 12px;
+  border-bottom: 1px solid var(--c-border, #e3e5e7);
+  margin-bottom: 4px;
+}
+
+.pbs-shell.is-left-nav .pbs-shell__nav .brand__logo {
+  max-width: 100%;
+  height: auto;
+  max-height: 40px;
+}
+
+.pbs-shell.is-left-nav .pbs-shell__nav .nav {
+  flex: 0 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 4px;
+  width: 100%;
+  min-width: 0;
+}
+
+.pbs-shell.is-left-nav .pbs-shell__nav .nav a {
+  display: block;
+  padding: 10px 12px;
+  border-radius: 8px;
+  font-size: 14px;
+  line-height: 1.4;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.pbs-shell.is-left-nav .pbs-shell__nav .nav a.on,
+.pbs-shell.is-left-nav .pbs-shell__nav .nav a[aria-current="page"] {
+  background: var(--c-link-soft, rgba(0, 161, 214, 0.12));
+  color: var(--c-link, #00a1d6);
+  font-weight: 600;
+}
+
+/* 主区浮层顶栏：搜索居中 + 右侧登录/语言（不占左栏） */
+.pbs-shell.is-left-nav {
+  --pbs-left-nav-w: 200px;
+}
+
+.pbs-shell.is-left-nav .pbs-shell__nav .hd-main {
+  min-height: 0;
+}
+
+.pbs-shell.is-left-nav .pbs-shell__nav .hd-end {
+  position: fixed;
+  top: 0;
+  left: var(--pbs-left-nav-w);
+  right: 0;
+  width: auto;
+  height: 56px;
+  z-index: 40;
+  margin: 0;
+  padding: 0 20px;
+  flex: 0 0 auto !important;
+  flex-direction: row !important;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+  min-height: 0;
+  pointer-events: none;
+  background: linear-gradient(180deg, rgba(255,255,255,.72), rgba(255,255,255,.28) 70%, transparent);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  box-sizing: border-box;
+}
+
+.pbs-shell.is-left-nav .pbs-shell__nav .hd-end > * {
+  pointer-events: auto;
+}
+
+/* Top-bar .sbox flex-basis 280px must not become height */
+.pbs-shell.is-left-nav .pbs-shell__nav .sbox {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: min(420px, 46vw);
+  max-width: 420px;
+  min-width: 160px;
+  flex: 0 0 auto !important;
+  height: 40px !important;
+  max-height: 40px;
+  border-radius: 999px !important;
+  background: rgba(255, 255, 255, 0.92) !important;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+}
+
+.pbs-shell.is-left-nav .pbs-shell__nav .sbox input {
+  height: 100%;
+  line-height: normal;
+}
+
+.pbs-shell.is-left-nav .pbs-shell__nav .hd-trailing {
+  width: auto;
+  margin: 0;
+  margin-left: auto;
+  flex-wrap: nowrap;
+  justify-content: flex-end;
+  flex: 0 0 auto;
+}
+
+/* 非首页：实底顶栏 */
+body:not(.page-home) .pbs-shell.is-left-nav .pbs-shell__nav .hd-end {
+  top: 0;
+  left: var(--pbs-left-nav-w);
+  right: 0;
+  height: 56px;
+  padding: 0 16px;
+  background: var(--c-surface, #fff);
+  border-bottom: 1px solid var(--c-border, #e3e5e7);
+  box-shadow: none;
+}
+
+body:not(.page-home) .pbs-shell.is-left-nav .pbs-shell__nav .sbox {
+  position: static;
+  transform: none;
+  margin: 0 auto;
+  box-shadow: none;
+  background: var(--c-bg, #f4f6f8) !important;
+}
+
+body:not(.page-home) .pbs-shell.is-left-nav .pbs-shell__main {
+  padding-top: 56px;
+}
+
+.pbs-shell.is-left-nav .pbs-shell__nav .hd-menu {
+  display: none;
+}
+
+/* 兼容旧 .pb-site-nav 类名（若仍有残留 markup） */
+.pbs-shell.is-left-nav .pb-site-nav {
+  position: fixed;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  height: 100vh;
+  height: 100dvh;
+  overflow-x: hidden;
+  overflow-y: auto;
+  top: 0;
+  z-index: 2;
+  height: 100vh;
+  max-height: 100vh;
+  overflow-y: auto;
+  border-bottom: none;
+  box-shadow: none;
+  background: transparent;
+}
+
+.pbs-shell.is-left-nav .pb-site-nav__inner {
+  flex-direction: column;
+  align-items: stretch;
+  max-width: none;
+  min-height: 100%;
+  padding: 16px 10px 20px;
+  gap: 16px;
+}
+
+.pbs-shell.is-left-nav .pb-site-nav__brand {
+  max-width: none;
+  justify-content: center;
+  padding: 4px 8px 12px;
+  border-bottom: 1px solid var(--c-border, #e3e5e7);
+  margin-bottom: 4px;
+}
+
+.pbs-shell.is-left-nav .pb-site-nav__menu {
+  flex: 1;
+  display: block;
+  width: 100%;
+  min-width: 0;
+}
+
+.pbs-shell.is-left-nav .pb-site-nav__links {
+  flex-direction: column;
+  align-items: stretch;
+  gap: 4px;
+  width: 100%;
+}
+
+.pbs-shell.is-left-nav .pb-site-nav__link {
+  display: block;
+  padding: 10px 12px;
+  border-radius: 8px;
+  font-size: 14px;
+  line-height: 1.4;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.pbs-shell.is-left-nav .pb-site-nav__link.is-active {
+  background: var(--c-link-soft, rgba(0, 161, 214, 0.12));
+  color: var(--c-link);
+  font-weight: 600;
+}
+
+.pbs-shell.is-left-nav .pb-site-nav__actions {
+  width: 100%;
+  margin-top: auto;
+  padding-top: 8px;
+}
+
+.pbs-shell.is-left-nav .pb-site-nav__search,
+.pbs-shell.is-left-nav .pb-site-nav__search-wrap {
+  width: 100%;
+  max-width: none;
+  min-width: 0;
+  flex: 0 0 auto !important;
+  height: 40px !important;
+  max-height: 40px;
+}
+
+.pbs-shell.is-left-nav .pb-site-nav__search-btn-text {
+  display: none;
+}
+
+.pbs-shell.is-left-nav .pb-site-nav__toggle {
+  display: none;
+}
+
+.pbs-shell.is-left-nav .pbs-wrap {
+  max-width: none;
+}
+
+/* 左导航模式下隐藏顶部频道条 / 装饰头图，避免与侧栏重复 */
+.pbs-shell.is-left-nav .pb-channel-strip,
+.pbs-shell.is-left-nav .pb-header-decor,
+.pbs-shell.is-left-nav .bili-channel,
+.pbs-shell.is-left-nav .bili-hero {
+  display: none;
+}
+
+@media (max-width: 960px) {
+  .pbs-shell.is-left-nav {
+    flex-direction: column;
+    --pbs-left-nav-w: 0px;
+  }
+  .pbs-shell.is-left-nav .pbs-shell__main {
+    margin-left: 0;
+    width: 100%;
+  }
+
+
+  .pbs-shell.is-left-nav .pbs-shell__nav {
+    height: auto;
+    max-height: none;
+    left: auto;
+    bottom: auto;
+    /* sticky 相对视口吸顶；清掉桌面 fixed + overflow 滚动容器，否则子级 .hd sticky 失效 */
+    top: 0;
+    width: 100%;
+    max-width: none;
+    flex: none;
+    min-height: 0;
+    border-right: none;
+    border-bottom: 1px solid var(--c-border, #e3e5e7);
+    position: sticky;
+    z-index: 1000;
+    background: var(--c-surface, #fff);
+    overflow: visible;
+    overflow-x: visible;
+    overflow-y: visible;
+  }
+
+  .pbs-shell.is-left-nav .pbs-shell__nav .hd {
+    height: auto;
+    max-height: none;
+    /* site_nav 已 sticky !important；此处勿造 overflow 祖先 */
+    overflow: visible;
+  }
+
+  .pbs-shell.is-left-nav .pbs-shell__nav .hd .wrap {
+    padding: 10px 12px 8px;
+  }
+
+  /* 三行：Logo+操作 | 全宽搜索 | 分类横滑 */
+  .pbs-shell.is-left-nav .pbs-shell__nav .hd-main {
+    display: flex !important;
+    flex-direction: row !important;
+    flex-wrap: wrap !important;
+    align-items: center !important;
+    gap: 8px 10px;
+    min-height: 0;
+    padding: 0 !important;
+  }
+
+  .pbs-shell.is-left-nav .pbs-shell__nav .brand {
+    order: 1;
+    flex: 0 0 auto;
+    border-bottom: none;
+    margin: 0;
+    padding: 0;
+    max-width: 45%;
+  }
+
+  .pbs-shell.is-left-nav .pbs-shell__nav .brand__logo {
+    max-height: 28px;
+  }
+
+  /* display:contents 让 sbox/trailing 参与 hd-main 换行（logo+头像同行、搜索第二行） */
+  .pbs-shell.is-left-nav .pbs-shell__nav .hd-end {
+    display: contents !important;
+    position: static !important;
+    pointer-events: auto;
+  }
+
+  .pbs-shell.is-left-nav .pbs-shell__nav .hd-trailing {
+    order: 2;
+    margin: 0 0 0 auto;
+    width: auto;
+    flex: 0 0 auto;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    position: relative;
+    z-index: 90;
+  }
+
+  /* contents 下绝对定位会丢包含块：H5 菜单改 fixed，由 JS 按头像锚点写入 top/right */
+  .pbs-shell.is-left-nav .pbs-shell__nav .user-dd__menu {
+    position: fixed !important;
+    left: auto !important;
+    right: 12px;
+    top: 56px;
+    z-index: 200;
+  }
+
+  /* 压掉语言文案，只留图标/头像，避免顶栏挤爆 */
+  .pbs-shell.is-left-nav .pbs-shell__nav .lang-dd__cur,
+  .pbs-shell.is-left-nav .pbs-shell__nav .lang-dd__caret,
+  .pbs-shell.is-left-nav .pbs-shell__nav .user-dd__name {
+    display: none !important;
+  }
+
+  /* 搜索单独第二行全宽 */
+  .pbs-shell.is-left-nav .pbs-shell__nav .sbox {
+    order: 3;
+    position: static !important;
+    left: auto !important;
+    transform: none !important;
+    flex: 1 1 100% !important;
+    width: 100% !important;
+    max-width: none !important;
+    min-width: 0;
+    height: 40px !important;
+    max-height: 40px;
+    margin: 0;
+    box-shadow: none;
+    border-radius: 999px !important;
+    background: var(--c-bg, #f1f2f3) !important;
+  }
+
+  .pbs-shell.is-left-nav .pbs-shell__nav .sbox input {
+    height: 100%;
+  }
+
+  /* 分类第三行横滑，盖掉 site_nav 默认 absolute 汉堡层 */
+  .pbs-shell.is-left-nav .pbs-shell__nav .nav {
+    order: 4;
+    position: static !important;
+    left: auto !important;
+    right: auto !important;
+    top: auto !important;
+    display: flex !important;
+    flex: 1 1 100%;
+    flex-direction: row !important;
+    flex-wrap: nowrap !important;
+    gap: 6px;
+    width: 100%;
+    max-height: none !important;
+    overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+    padding: 4px 0 2px;
+    background: transparent !important;
+    box-shadow: none !important;
+  }
+
+  .pbs-shell.is-left-nav .pbs-shell__nav .nav a {
+    flex: 0 0 auto;
+    padding: 6px 12px;
+    font-size: 13px;
+    white-space: nowrap;
+  }
+
+  .pbs-shell.is-left-nav .pbs-shell__nav .hd-menu {
+    display: none !important;
+  }
+
+  body:not(.page-home) .pbs-shell.is-left-nav .pbs-shell__nav .hd-end {
+    position: static !important;
+    left: auto !important;
+    height: auto;
+    padding: 0;
+    background: transparent;
+    border: 0;
+  }
+
+  body:not(.page-home) .pbs-shell.is-left-nav .pbs-shell__main {
+    padding-top: 0;
+  }
+
+  .pbs-shell.is-left-nav .pb-site-nav {
+    height: auto;
+    max-height: none;
+  }
+
+  .pbs-shell.is-left-nav .pb-site-nav__inner {
+    flex-direction: row;
+    flex-wrap: wrap;
+    min-height: auto;
+    padding: 8px 12px;
+  }
+
+  .pbs-shell.is-left-nav .pb-site-nav__brand {
+    border-bottom: none;
+    margin-bottom: 0;
+    padding: 0;
+  }
+
+  .pbs-shell.is-left-nav .pb-site-nav__menu {
+    flex: 1 1 100%;
+    order: 3;
+  }
+
+  .pbs-shell.is-left-nav .pb-site-nav__links {
+    flex-direction: row;
+    flex-wrap: nowrap;
+    gap: 6px;
+    overflow-x: auto;
+  }
+
+  .pbs-shell.is-left-nav .pb-site-nav__toggle {
+    display: none;
+  }
+
+  /* H5 恢复频道条（桌面左栏已替代频道，小屏仍需顶栏下频道） */
+  .pbs-shell.is-left-nav .pb-channel-strip,
+  .pbs-shell.is-left-nav .bili-channel {
+    display: block;
+  }
+
+  /* 顶栏与频道条无缝衔接 */
+  .pbs-shell.is-left-nav .pbs-wrap {
+    padding-top: 0;
+  }
+}
+
+/* SVG brand lockup in left nav */
+.pbs-shell.is-left-nav .brand {
+  justify-content: center;
+  width: 100%;
+}
+.pbs-shell.is-left-nav .brand__svg--lockup {
+  --brand-h: 34px;
+}
+.pbs-shell.is-left-nav .brand__svg-lockup {
+  height: 34px;
+  max-width: 170px;
+}
+
+
+/* H5 会员页：去掉内容区水平 gutter */
+@media (max-width: 960px) {
+  body.page-member .pbs-wrap {
+    padding-left: 0;
+    padding-right: 0;
+  }
+}

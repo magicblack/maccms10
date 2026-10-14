@@ -1,0 +1,95 @@
+{
+    "id": "vod_list_np2",
+    "label_key": "admin/themedesign/pb_block_vod_list_np2",
+    "category": "list",
+    "kind": "list",
+    "palette": true,
+    "styleMode": "component",
+    "peer_styles": [],
+    "assets": {
+        "css": "style.css",
+        "js": "script.js"
+    },
+    "props": {
+        "title": {
+            "type": "string",
+            "default": "热门推荐",
+            "trait": "title"
+        },
+        "title_mode": {
+            "type": "enum",
+            "default": "custom",
+            "values": ["custom", "type_name"],
+            "trait": "title_mode"
+        },
+        "icon": {
+            "type": "enum",
+            "default": "fire",
+            "values": ["", "none", "auto", "spark", "film", "heart", "clapper", "fire", "tv", "star"],
+            "trait": "icon"
+        },
+        "layout": {
+            "type": "enum",
+            "default": "grid2",
+            "values": ["grid2", "hscroll", "cols3"],
+            "trait": "layout"
+        },
+        "num": {
+            "type": "number",
+            "default": 12,
+            "min": 1,
+            "max": 24,
+            "trait": "count"
+        },
+        "by": {
+            "type": "enum",
+            "default": "hits",
+            "values": ["time", "hits", "hits_day", "hits_week", "hits_month", "score"],
+            "trait": "sort"
+        },
+        "order": {
+            "type": "enum",
+            "default": "desc",
+            "values": ["desc", "asc"],
+            "trait": "order"
+        },
+        "type_pick": {
+            "type": "enum",
+            "default": "all",
+            "values": ["all", "category", "top_types"],
+            "trait": "type_pick"
+        },
+        "type": {
+            "type": "category",
+            "mid": 1,
+            "default": 0,
+            "trait": "category"
+        },
+        "top_types_index": {
+            "type": "number",
+            "default": 1,
+            "min": 1,
+            "max": 24,
+            "trait": "top_types_index"
+        },
+        "show_shuffle": {
+            "type": "boolean",
+            "default": true,
+            "trait": "show_shuffle"
+        },
+        "show_more": {
+            "type": "boolean",
+            "default": true,
+            "trait": "show_more"
+        }
+    },
+    "context": {
+        "pageTypes": ["home", "list"],
+        "requires": ["maccms"]
+    },
+    "data": {
+        "source": "mac_vod",
+        "listKey": "list",
+        "argsFromProps": ["num", "by", "order", "type"]
+    }
+}

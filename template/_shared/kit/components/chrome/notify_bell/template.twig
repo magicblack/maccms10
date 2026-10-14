@@ -1,0 +1,18 @@
+{# 头部消息铃铛 — script.js 驱动 [data-mac-notify-bell] #}
+{% set _tpl = maccms.path_tpl|default('') %}
+{% if _tpl == '' %}{% set _tpl = '/template/_shared/starter/' %}{% endif %}
+<link rel="stylesheet" href="{{ _tpl }}page-builder-components/notify_bell/style.css">
+<div class="mac-notify-bell hd-notify" data-component="notify_bell" data-mac-notify-bell>
+  <button type="button" class="mac-notify-bell__btn hd-notify__btn" aria-label="消息" data-lang-aria-label="notify_bell_aria" aria-haspopup="menu" aria-expanded="false">
+    {% include "page-builder-components/_shared/component_icon.twig" with { component: 'notify_bell', name: 'icon-bell', class: 'hd-notify__ico', mode: 'current' } %}
+    <span class="mac-notify-bell__badge" hidden></span>
+  </button>
+  <div class="mac-notify-bell__dropdown" hidden>
+    <div class="mac-notify-bell__head">
+      <span data-lang="notify_title">消息中心</span>
+      <a class="mac-notify-bell__all" href="{{ mac_url('user/notify') }}" data-lang="notify_view_all">查看全部</a>
+    </div>
+    <div class="mac-notify-bell__list"></div>
+    <div class="mac-notify-bell__empty" hidden data-lang="notify_empty">暂无消息</div>
+  </div>
+</div>

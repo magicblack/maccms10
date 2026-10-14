@@ -1,0 +1,19 @@
+{# 列表空态 / 分页（vod_list 等同款） #}
+{% if list is not empty %}
+  {% if use_paging|default(false) and pg is defined %}
+    {% include 'page-builder-components/paging/template.twig' with {props: {pg: pg}} %}
+  {% endif %}
+{% else %}
+  {% include 'page-builder-components/empty_state/template.twig' with {props: {
+    preset: empty_preset|default(''),
+    title: empty_title|default('暂无内容'),
+    title_lang: empty_title_lang|default(''),
+    hint: empty_hint|default(''),
+    hint_lang: empty_hint_lang|default(''),
+    cta_text: empty_cta_text|default(''),
+    cta_text_lang: empty_cta_text_lang|default(''),
+    cta_url: empty_cta_url|default(maccms.path|default('/')),
+    illustration: empty_illustration|default(pb_empty_illustration|default('svg')),
+    image: empty_image|default('')
+  }} %}
+{% endif %}

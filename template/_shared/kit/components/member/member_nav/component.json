@@ -1,0 +1,25 @@
+{
+    "id": "member_nav",
+    "label_key": "admin/themedesign/pb_block_member_nav",
+    "category": "member",
+    "kind": "member",
+    "peer_styles": [],
+    "assets": {
+        "css": "style.css",
+        "js": "script.js"
+    },
+    "palette": false,
+    "props": {
+        "active": {
+            "type": "string",
+            "default": "index",
+            "trait": "member_active"
+        }
+    },
+    "context": {
+        "pageTypes": [
+            "member"
+        ],
+        "requires": []
+    }
+}

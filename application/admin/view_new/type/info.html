@@ -103,6 +103,18 @@
                 <input type="text" class="layui-input" value="{$info.type_jumpurl}" placeholder="" id="type_jumpurl" name="type_jumpurl">
             </div>
         </div>
+        <div class="layui-form-item vod-list">
+            <label class="layui-form-label">{:lang('admin/type/cover')}：</label>
+            <div class="layui-input-inline w200">
+                <select name="type_extend[cover]">
+                    <option value="">{:lang('admin/type/cover_follow')}</option>
+                    {volist name="type_cover_options" id="co"}
+                    <option value="{$co.value}" {if condition="$type_cover eq $co.value"}selected{/if}>{$co.label}</option>
+                    {/volist}
+                </select>
+            </div>
+            <div class="layui-form-mid layui-word-aux">{:lang('admin/type/cover_tip')}</div>
+        </div>
 
         <blockquote class="layui-elem-quote layui-quote-nm">
             {:lang('admin/type/content_lang_tip')}

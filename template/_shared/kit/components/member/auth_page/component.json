@@ -1,0 +1,61 @@
+{
+    "id": "auth_page",
+    "label_key": "admin/themedesign/pb_block_auth_page",
+    "category": "member",
+    "kind": "member",
+    "palette": false,
+    "styleMode": "peer_only",
+    "peer_styles": [],
+    "assets": {
+        "css": "style.css",
+        "js": "script.js"
+    },
+    "props": {
+        "panel": {
+            "type": "enum",
+            "default": "login",
+            "values": ["login", "findpass"],
+            "trait": "auth_panel"
+        },
+        "expand_invite": {
+            "type": "boolean",
+            "default": false,
+            "trait": "expand_invite"
+        },
+        "hero_title": {
+            "type": "string",
+            "default": "",
+            "trait": "hero_title"
+        },
+        "hero_desc": {
+            "type": "string",
+            "default": "",
+            "trait": "hero_desc"
+        },
+        "hero_image": {
+            "type": "string",
+            "default": "",
+            "trait": "hero_image"
+        },
+        "hero_image_mobile": {
+            "type": "string",
+            "default": "",
+            "trait": "hero_image_mobile"
+        },
+        "show_hero": {
+            "type": "boolean",
+            "default": true,
+            "trait": "show_hero"
+        },
+        "layout": {
+            "type": "enum",
+            "default": "split",
+            "values": ["split", "center", "minimal"],
+            "trait": "auth_layout"
+        }
+    },
+    "context": {
+        "pageTypes": ["member"],
+        "requires": []
+    }
+}

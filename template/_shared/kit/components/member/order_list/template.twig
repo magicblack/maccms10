@@ -1,0 +1,15 @@
+{# 充值记录列表壳 #}
+{% set api_base = maccms.path|trim('/') ~ '/api.php' %}
+{% set _tpl = maccms.path_tpl|default('') %}
+<div class="member-order-list mac-orders-wrap"
+  data-component="order_list"
+  data-mac-user-orders
+  data-api-base="{{ api_base }}">
+  <header class="member-card__head">
+    <h2 class="member-card__title" data-lang="user_zxczjl">在线充值记录</h2>
+  </header>
+  <ul class="member-order-list__items order__list data__list mac-plog-list mac-orders-list"></ul>
+  <p class="mac-ulog-loading member-pay-muted" data-lang="string_loading">加载中~</p>
+  <div class="member-page"></div>
+</div>
+<script src="{{ _tpl }}page-builder-components/order_list/script.js" defer></script>

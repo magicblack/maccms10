@@ -1,0 +1,9 @@
+{
+    "props": {
+        "bind": "manga",
+        "type": 0,
+        "num": 24,
+        "by": "hits_week"
+    },
+    "context": []
+}

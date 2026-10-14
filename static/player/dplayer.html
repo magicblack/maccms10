@@ -259,6 +259,40 @@
 	var videoCfg = buildVideoConfig(playUrl, pa);
 	var type = videoCfg.type;
 	var live = !!videoCfg.live;
+
+	// DPlayer 只要浏览器声称支持原生 HLS 就改走原生播放；新版桌面 Chrome 会声称支持，
+	// 但其原生 HLS 在 ts 分片与 m3u8 不在同一域名时直接 MEDIA_ERR 4（光速/新浪/jp98 等资源站）。
+	// 能用 hls.js 时一律走 hls.js（自定义类型，DPlayer 不会再切原生）。
+	var HLSJS_TYPE = 'machls';
+	var useHlsJs = !!(window.Hls && typeof window.Hls.isSupported === 'function' && window.Hls.isSupported());
+	if (useHlsJs) {
+		if (type === 'hls') type = HLSJS_TYPE;
+		if (videoCfg.quality) {
+			for (var qi = 0; qi < videoCfg.quality.length; qi++) {
+				if (videoCfg.quality[qi].type === 'hls') videoCfg.quality[qi].type = HLSJS_TYPE;
+			}
+		}
+	}
+	var hlsInstances = [];
+
+	function attachHlsJs(video) {
+		var Hls = window.Hls;
+		var hls = new Hls();
+		var mediaRecovered = false;
+		hls.on(Hls.Events.ERROR, function (evt, data) {
+			if (!data || !data.fatal) return;
+			if (data.type === Hls.ErrorTypes.MEDIA_ERROR && !mediaRecovered) {
+				mediaRecovered = true;
+				hls.recoverMediaError();
+				return;
+			}
+			hls.destroy();
+			notifyPlayFail('error');
+		});
+		hls.loadSource(video.src);
+		hls.attachMedia(video);
+		hlsInstances.push(hls);
+	}
 	var vid = pa.id != null ? pa.id : 0;
 	var sid = pa.sid != null ? pa.sid : 0;
 	var nid = pa.nid != null ? pa.nid : 0;
@@ -377,6 +411,10 @@
 		},
 		contextmenu: [],
 	};
+	if (useHlsJs) {
+		dpOpts.video.customType = {};
+		dpOpts.video.customType[HLSJS_TYPE] = attachHlsJs;
+	}
 	if (videoCfg.quality && videoCfg.quality.length >= 2) {
 		dpOpts.video.quality = videoCfg.quality;
 		dpOpts.video.defaultQuality = videoCfg.defaultQuality || 0;
@@ -416,6 +454,18 @@
 		document.documentElement.classList.add('mac-embed-player');
 	}
 	markEmbedPlayer();
+
+	// 切换清晰度时 DPlayer 会新建 video 并再次 attachHlsJs，旧实例在切换完成后释放
+	dp.on('quality_end', function () {
+		while (hlsInstances.length > 1) {
+			try { hlsInstances.shift().destroy(); } catch (eHls) {}
+		}
+	});
+	dp.on('destroy', function () {
+		while (hlsInstances.length) {
+			try { hlsInstances.shift().destroy(); } catch (eHls2) {}
+		}
+	});
 
 	dp.on('ended', function () {
 		if (parent.MacPlayer.PlayLinkNext != '') {

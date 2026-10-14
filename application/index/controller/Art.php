@@ -88,6 +88,9 @@ class Art extends Base
     public function read()
     {
         $info = $this->label_art_detail([], 0, true);
+        if(!empty($info['art_pwd']) && session('2-1-'.$info['art_id'])!='1'){
+            return $this->label_fetch('art/detail_pwd');
+        }
         return $this->label_fetch('art/read');
     }
 

@@ -1,0 +1,34 @@
+{% import "page-builder-components/_shared/macros.twig" as pb %}
+{% set use_paging = props.paging|default(false) %}
+{% set num = props.num|default(8) %}
+{% set cate_id = props.cate|default(live_cate_id|default(0))|default(0) %}
+{% if use_paging %}
+  {% set _grid_num = num + 0 %}
+  {% set num = _grid_num < 60 ? 60 : (((_grid_num + 59) // 60) * 60) %}
+{% endif %}
+{% set _cover_cls = pb.pb_cover_classes(props) %}
+{% set _cover_style = pb.pb_cover_style(props) %}
+{% set live_args = {num: num} %}
+{% if cate_id > 0 %}
+  {% set live_args = live_args|merge({cate: cate_id}) %}
+{% endif %}
+{% if use_paging %}
+  {% set live_args = live_args|merge({paging: true, pageurl: props.pageurl|default('live/show')}) %}
+{% endif %}
+{% set res = mac_live_list(live_args) %}
+{% set list = res.list|default([]) %}
+{% if use_paging and res.total is defined %}
+  {% set pg = mac_paging(res) %}
+{% endif %}
+{% if list is not empty %}
+<div class="bili-grid pb-live-list {{ _cover_cls }}"{% if _cover_style %} style="{{ _cover_style }}"{% endif %}>
+  {% for lv in list %}{% include "page-builder-components/_shared/live_card.twig" with {lv: lv} %}{% endfor %}
+</div>
+{% endif %}
+{% include "page-builder-components/_shared/list_footer.twig" with {
+  use_paging: use_paging,
+  pg: pg|default(null),
+  empty_preset: use_paging ? 'filter' : '',
+  empty_title: use_paging ? '暂无直播' : '暂无内容',
+  empty_title_lang: use_paging ? 'live_empty_default' : ''
+} %}

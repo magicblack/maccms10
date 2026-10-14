@@ -122,6 +122,15 @@ class Type extends Base
             }
         }
         $this->assign('info',$res['info']);
+        //分类封面比例（type_extend.cover）：空 = 跟随模板
+        $type_cover = (string)($res['info']['type_extend']['cover'] ?? '');
+        $type_cover_options = [];
+        foreach (mac_type_cover_options() as $ratio => $wh) {
+            $kind = $wh[0] > $wh[1] ? 'cover_h' : ($wh[0] < $wh[1] ? 'cover_v' : 'cover_square');
+            $type_cover_options[] = ['value' => $ratio, 'label' => lang('admin/type/' . $kind) . ' ' . $wh[0] . ':' . $wh[1]];
+        }
+        $this->assign('type_cover', $type_cover);
+        $this->assign('type_cover_options', $type_cover_options);
         $this->assign('content_lang_default', $content_lang_default);
         $this->assign('content_lang_enabled', $content_lang_enabled);
         $this->assign('content_lang_multi', count($content_lang_enabled) > 1);

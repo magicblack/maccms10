@@ -1,0 +1,174 @@
+{#
+  文章详情（twigspike art/detail：cinema hero 小说版 + 目录 + 简介）
+  相关推荐请用 media_related_panel（bind: art）
+#}
+{% import "page-builder-components/_shared/macros.twig" as pb %}
+{% set p = props|default({}) %}
+{# 书封默认竖版 3:4（编译期不合并 component.json 默认值，未配置 card 时宏会回退横版） #}
+{% set _cover_p = p|merge({card: p.card|default('poster-v'), ratio: p.ratio|default('3-4')}) %}
+{% set _cover_cls = pb.pb_cover_classes(_cover_p) %}
+{% set _cover_style = pb.pb_cover_style(_cover_p) %}
+{% if obj.art_id|default(0) %}
+{% set pages = obj.art_page_list|default({}) %}
+{% set page_total = pages|length %}
+{% set read_url = page_total > 0 ? mac_url('art/read', {id: obj.art_id, page: 1}) : '' %}
+{% set _pic_raw = obj.art_pic|default('')|trim %}
+{# 小说已采集到封面：默认展示书封；需纯文字排版时显式传 show_cover: false #}
+{% set show_cover = p.show_cover is defined ? p.show_cover : true %}
+{% set has_cover = show_cover and _pic_raw != '' %}
+{% set cover = has_cover ? mac_url_img(_pic_raw) : '' %}
+{% set title = obj.art_name|default('') %}
+{% set intro_raw = page_total > 0 ? mac_plain_text(obj.art_blurb|default('')) : (mac_plain_text(obj.art_blurb|default('')) ?: mac_plain_text(obj.art_content|default(''))) %}
+{% set tag_src = mac_txt_merge(obj.art_class|default(''), obj.art_tag|default('')) %}
+{% set class_tags = tag_src ? tag_src|split(',') : [] %}
+{% set type_name = obj.type.type_name|default('')|trim %}
+{% set show_toc = p.show_toc is defined ? p.show_toc : true %}
+{% set show_intro = p.show_intro is defined ? p.show_intro : true %}
+{% set hero_stats = [] %}
+{% if obj.art_hits %}{% set hero_stats = hero_stats|merge([{key: 'hits', value: obj.art_hits, label: '阅读', lang: 'string_stat_reads'}]) %}{% endif %}
+{% if page_total > 0 %}{% set hero_stats = hero_stats|merge([{key: 'ch', value: page_total, label: '章', lang: 'string_art_chapter_unit'}]) %}{% endif %}
+{% set hero_meta = [] %}
+{% if obj.art_author|default(obj.art_from|default('')) %}{% set hero_meta = hero_meta|merge([obj.art_author|default(obj.art_from)]) %}{% endif %}
+{# 备注以 {rm} 形式入列，渲染时走 chapter_remarks.twig（章节数备注多语化） #}
+{% if obj.art_remarks %}{% set hero_meta = hero_meta|merge([{rm: obj.art_remarks}]) %}{% endif %}
+{% if obj.art_time %}{% set hero_meta = hero_meta|merge([mac_day(obj.art_time)|striptags]) %}{% endif %}
+{% set detail_fav_id = mac_user_fav_id(obj.art_id, 2) %}
+{% set detail_like_id = mac_user_like_id(obj.art_id, 2) %}
+{% set detail_like_count = mac_content_like_count(obj.art_id, 2) %}
+
+<div class="pb-art-detail cinema-stage cinema-stage--novel{% if has_cover %} pb-art-detail--has-cover{% else %} pb-art-detail--no-cover{% endif %}{% if has_cover %} {{ _cover_cls }}{% endif %}" data-component="art_detail" data-mac-art-detail data-mac-art-id="{{ obj.art_id }}"{% if has_cover and _cover_style %} style="{{ _cover_style }}"{% endif %}>
+  <header class="media-hero media-hero--novel{% if not has_cover %} media-hero--novel-text{% endif %}">
+    {% if has_cover %}
+    <div class="media-hero__bg media-hero__bg--novel" style="background-image:url('{{ cover }}')" aria-hidden="true"></div>
+    <div class="media-hero__shade media-hero__shade--novel" aria-hidden="true"></div>
+    {% endif %}
+    <div class="media-hero__wrap">
+      <nav class="media-hero__crumb" aria-label="breadcrumb">
+        <a href="{{ maccms.path }}" data-lang="string_home">首页</a>
+        <span aria-hidden="true">›</span>
+        <a href="{{ mac_url('art/index') }}"{% set _ml = mac_module_label(2) %}{% if _ml.lang %} data-lang="{{ _ml.lang }}"{% endif %}>{{ _ml.name }}</a>
+        <span aria-hidden="true">›</span>
+        {% if obj.type.type_name|default('') %}
+        <a href="{{ mac_url_type(obj.type) }}">{{ obj.type.type_name }}</a>
+        <span aria-hidden="true">›</span>
+        {% endif %}
+        <span class="media-hero__crumb-cur">{{ title }}</span>
+      </nav>
+
+      <div class="media-hero__inner{% if not has_cover %} media-hero__inner--text-only{% endif %}">
+        {% if has_cover %}
+        <div class="media-hero__poster-box">
+          <a class="media-hero__poster media-hero__poster--book{% if read_url %} is-playable{% endif %}" data-cover-kind="book"
+             {% if read_url %}href="{{ read_url }}" data-lang-aria-label="manga_read_now" aria-label="开始阅读"{% else %}href="javascript:;" tabindex="-1"{% endif %}>
+            <img src="{{ cover }}" alt="{{ title }}" width="196" height="261" decoding="async" fetchpriority="high"
+                 onerror="this.onerror=null;if(this.parentNode){this.parentNode.classList.add('is-empty');}">
+            <span class="media-hero__poster-ph" aria-hidden="true">{% include "page-builder-components/_shared/book_cover_empty.twig" %}</span>
+            {% if read_url %}<span class="media-hero__poster-play media-hero__poster-play--read" aria-hidden="true"></span>{% endif %}
+          </a>
+        </div>
+        {% endif %}
+
+        <div class="media-hero__body">
+          <div class="media-hero__info">
+            <div class="media-hero__title-row">
+              <h1 class="media-hero__title">{{ title }}</h1>
+              <div class="media-hero__tags">
+                {% if type_name %}
+                <a class="media-hero__tag media-hero__tag--type" href="{{ mac_url_type(obj.type) }}">{{ type_name }}</a>
+                {% endif %}
+                {% for tag in class_tags|slice(0, 4) %}
+                  {% set t = tag|trim %}
+                  {% if t and (not type_name or t != type_name) %}
+                  <span class="media-hero__tag media-hero__tag--keyword">{{ t }}</span>
+                  {% endif %}
+                {% endfor %}
+              </div>
+            </div>
+
+            {% if hero_stats|length > 0 %}
+            <ul class="media-hero__stats">
+              {% for stat in hero_stats %}
+              <li class="media-hero__stat media-hero__stat--{{ stat.key }}">
+                <span class="media-hero__stat-body"><em>{{ stat.value }}</em><span class="media-hero__stat-label"{% if stat.lang and mac_i18n_key(stat.label, stat.lang) %} data-lang="{{ stat.lang }}"{% endif %}>{{ stat.label }}</span></span>
+              </li>
+              {% endfor %}
+            </ul>
+            {% endif %}
+
+            {% if hero_meta|length > 0 %}
+            <p class="media-hero__meta">{% for span in hero_meta %}{% if span is iterable %}<span>{% include "page-builder-components/_shared/chapter_remarks.twig" with {remarks: span.rm} only %}</span>{% elseif span %}<span>{{ span }}</span>{% endif %}{% endfor %}</p>
+            {% endif %}
+
+            {% if intro_raw %}
+            <p class="media-hero__desc">{{ intro_raw|slice(0, 200) }}{% if intro_raw|length > 200 %}…{% endif %}</p>
+            {% endif %}
+          </div>
+
+          {% if read_url %}
+          <p class="media-hero__read-progress" data-mac-art-read-progress hidden>
+            <span data-lang="string_recent_read">最近阅读</span>：
+            <span data-mac-art-read-progress-text></span>
+          </p>
+          {% endif %}
+
+          <div class="media-hero__actions">
+            {% if read_url %}
+            <a class="media-hero__play media-hero__play--read" href="{{ read_url }}" data-mac-art-read-btn>
+              {% include "page-builder-components/_shared/component_icon.twig" with { component: 'art_detail', name: 'channel-art', class: 'media-hero__play-ico', mode: 'img' } %}
+              <span data-lang="art_start_read" data-mac-art-read-btn-label>开始阅读</span>
+            </a>
+            {% endif %}
+            <div class="media-hero__follow mac_ulog{% if detail_fav_id %} is_fav{% endif %}"
+                 data-type="2" data-mid="2" data-id="{{ obj.art_id }}"
+                 data-uid="{{ detail_fav_id ?: '' }}" role="button" tabindex="0">
+              <svg class="media-hero__follow-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+              {% if detail_fav_id %}<span data-lang="string_isfav">已收藏</span>
+              {% else %}<span data-lang="string_fav">收藏</span>{% endif %}
+            </div>
+            <div class="media-hero__follow media-hero__like mac_ulog{% if detail_like_id %} is_fav{% endif %}"
+                 data-type="6" data-mid="2" data-id="{{ obj.art_id }}"
+                 data-uid="{{ detail_like_id ?: '' }}"
+                 data-lang-on="string_detail_up_done" data-lang-off="string_stat_likes"
+                 role="button" tabindex="0">
+              <svg class="media-hero__follow-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 10v12"/><path d="M15 5.88L14 10h5.83a2 2 0 0 1 1.92 2.56l-2.33 8A2 2 0 0 1 17.5 22H4a2 2 0 0 1-2-2v-8a2 2 0 0 1 2-2h2.76a2 2 0 0 0 1.79-1.11L12 2a3.13 3.13 0 0 1 3 3.88z"/></svg>
+              {% if detail_like_id %}<span data-lang="string_detail_up_done">已赞</span>
+              {% else %}<span data-lang="string_stat_likes">点赞</span>{% endif %}
+              <em class="mac_ulog_count">{{ detail_like_count }}</em>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  {% if show_toc and page_total > 0 %}
+  <section class="media-panel media-panel--cinema pb-art-detail__toc" id="media-eps">
+    <h2 class="media-panel__title"><span data-lang="art_read_toc">目录</span> <small class="media-panel__sub"><span data-lang="art_read_chapter_total">共</span> {{ page_total }} <span data-lang="art_read_chapter_unit">章</span></small></h2>
+    <div class="art-toc art-toc--detail">
+      <ul class="art-toc__list">
+        {% for p in pages %}
+        <li class="art-toc__item" data-mac-art-toc-item data-page="{{ p.page }}">
+          <a href="{{ mac_url('art/read', {id: obj.art_id, page: p.page}) }}">
+            <span class="art-toc__no">{{ p.page }}</span>
+            <span class="art-toc__title">{{ p.title|default('第' ~ p.page ~ '章') }}</span>
+          </a>
+        </li>
+        {% endfor %}
+      </ul>
+    </div>
+  </section>
+  {% elseif obj.art_content|default('') %}
+  <section class="media-panel media-panel--cinema pb-art-detail__intro" id="media-intro">
+    <h2 class="media-panel__title" data-lang="string_art_body_text">正文</h2>
+    <div class="media-panel__body prose">{{ obj.art_content|raw }}</div>
+  </section>
+  {% endif %}
+
+  {% if show_intro and mac_plain_text(obj.art_blurb|default('')) %}
+  <section class="media-panel media-panel--cinema pb-art-detail__intro" id="media-intro-blurb">
+    <h2 class="media-panel__title" data-lang="string_play_jj">简介</h2>
+    <div class="media-panel__body prose">{{ mac_plain_text(obj.art_blurb|default('')) }}</div>
+  </section>
+  {% endif %}
+</div>
+{% endif %}

@@ -1,0 +1,21 @@
+{# twigspike art/index — 排行榜 / 分类快捷入口 #}
+{% set art_type_default = mac_top_types(2, 1)|first %}
+{% set cat_url = art_type_default ? mac_url_type(art_type_default, {}, 'show') : mac_url('art/search') %}
+<nav class="nv-dock" data-component="novel_home_dock" aria-label="小说快捷入口" data-lang-aria-label="nv_dock_aria_label">
+  <a class="nv-dock__card nv-dock__card--rank" href="#nv-rank">
+    <span class="nv-dock__ico nv-dock__ico--rank" aria-hidden="true"></span>
+    <span class="nv-dock__text">
+      <strong data-lang="nv_dock_rank_title">排行榜</strong>
+      <em data-lang="nv_dock_rank_sub">热门小说排行榜</em>
+    </span>
+    <span class="nv-dock__chev" aria-hidden="true"></span>
+  </a>
+  <a class="nv-dock__card nv-dock__card--cat" href="{{ cat_url }}">
+    <span class="nv-dock__ico nv-dock__ico--cat" aria-hidden="true"></span>
+    <span class="nv-dock__text">
+      <strong data-lang="nv_dock_cat_title">分类</strong>
+      <em data-lang="nv_dock_cat_sub">按类型浏览小说</em>
+    </span>
+    <span class="nv-dock__chev" aria-hidden="true"></span>
+  </a>
+</nav>

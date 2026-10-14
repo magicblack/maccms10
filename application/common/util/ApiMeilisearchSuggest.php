@@ -171,7 +171,7 @@ class ApiMeilisearchSuggest
     {
         $k = strtolower((string)$kind);
         $m = $meta !== null ? $meta : self::meta($k);
-        if (!$m || !MeilisearchService::enabled()) {
+        if (!$m || !MeilisearchService::enabled() || \app\common\model\VodSearch::skipMeiliForWd($k, $wd)) {
             return [];
         }
         $filter = MeilisearchService::filterPublishedKind($k);
@@ -205,6 +205,22 @@ class ApiMeilisearchSuggest
      *
      * @return array{code:int,msg:string,page:int,pagecount:int,limit:int,total:int,list:array}
      */
+    /**
+     * 回退查询的关键词条件；视频按 VodSearch::wdSql 规则（短英文词不在拼音字段里做包含匹配）
+     *
+     * @return array<string, mixed>
+     */
+    private static function likeWhere($kind, array $m, $wd)
+    {
+        $where = [$m['status'] => ['eq', 1]];
+        if ($kind === 'vod') {
+            $where['_string'] = \app\common\model\VodSearch::wdSql($m['like'], $wd);
+        } else {
+            $where[$m['like']] = ['like', self::sqlLikeContains($wd)];
+        }
+        return $where;
+    }
+
     public static function fallbackListDataRes($kind, $wd, $limit, array $meta = null)
     {
         $k = strtolower((string)$kind);
@@ -212,11 +228,7 @@ class ApiMeilisearchSuggest
         if (!$m) {
             return ['code' => 1001, 'msg' => 'param_err', 'page' => 1, 'pagecount' => 0, 'limit' => $limit, 'total' => 0, 'list' => []];
         }
-        $like = self::sqlLikeContains($wd);
-        $where = [
-            $m['status'] => ['eq', 1],
-            $m['like'] => ['like', $like],
-        ];
+        $where = self::likeWhere($k, $m, $wd);
         $order = $m['pk'] . ' desc';
         $model = model($m['model']);
         $field = $m['field'];
@@ -382,11 +394,7 @@ class ApiMeilisearchSuggest
             ];
         }
 
-        $like = self::sqlLikeContains($wd);
-        $where = [
-            $m['status'] => ['eq', 1],
-            $m['like'] => ['like', $like],
-        ];
+        $where = self::likeWhere($k, $m, $wd);
         $order = SearchService::suggestOrder($k, $orderMode);
         $modelName = $m['model'];
         $field = $k . '_id as id,' . $k . '_name as name,' . $k . '_en as en,' . $k . '_pic as pic';

@@ -1,0 +1,43 @@
+{
+    "id": "gbook_list",
+    "label_key": "admin/themedesign/pb_block_gbook_list",
+    "category": "list",
+    "kind": "content",
+    "peer_styles": [],
+    "assets": {
+        "css": "style.css",
+        "js": "script.js"
+    },
+    "palette": false,
+    "palette_inject": true,
+    "props": {
+        "title": {
+            "type": "string",
+            "default": "",
+            "trait": "title"
+        },
+        "num": {
+            "type": "number",
+            "default": 20,
+            "min": 1,
+            "max": 50,
+            "trait": "count"
+        },
+        "paging": {
+            "type": "boolean",
+            "default": true,
+            "trait": "paging"
+        },
+        "pageurl": {
+            "type": "string",
+            "default": "gbook/index",
+            "trait": "pageurl"
+        }
+    },
+    "context": {
+        "pageTypes": [
+            "gbook"
+        ],
+        "requires": []
+    }
+}

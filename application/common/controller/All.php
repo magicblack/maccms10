@@ -25,6 +25,10 @@ class All extends Controller
 
     protected function load_page_cache($tpl,$type='html')
     {
+        // 主题设计预览不走全页缓存（键不含 td_theme，否则会命中其它主题/空缓存导致白屏）
+        if (function_exists('mac_td_preview_mode') && mac_td_preview_mode()) {
+            return;
+        }
         // 开启防红防封时，首页不使用缓存，确保每次都进行浏览器检查
         if($tpl == 'index/index' && !empty($GLOBALS['config']['app']['browser_junmp']) && $GLOBALS['config']['app']['browser_junmp'] == 1) {
             return;
@@ -51,6 +55,28 @@ class All extends Controller
 
     protected function label_fetch($tpl,$loadcache=1,$type='html')
     {
+        $restoreViewPath = null;
+        if ($type === 'html') {
+            if (function_exists('mac_pb_ensure_page_scaffold')) {
+                mac_pb_ensure_page_scaffold($tpl);
+            }
+            if (function_exists('mac_pb_resolve_template')) {
+                $tpl = mac_pb_resolve_template($tpl);
+                if (function_exists('mac_pb_should_use_site_theme') && mac_pb_should_use_site_theme($tpl)) {
+                    $siteViewPath = mac_pb_site_theme_view_path();
+                    if ($siteViewPath !== '') {
+                        $restoreViewPath = config('template.view_path');
+                        config('template.view_path', $siteViewPath);
+                        if (is_object($this->view) && is_object($this->view->engine)) {
+                            $this->view->engine->config(array(
+                                'view_path' => ROOT_PATH . $siteViewPath,
+                            ));
+                        }
+                        $tpl = preg_replace('/\.draft$/', '', (string) $tpl);
+                    }
+                }
+            }
+        }
         // 埋点必须在 load_page_cache() 之前 —— 后者命中缓存会直接 echo+die，
         // 放后面的话所有缓存命中的 PV 全部丢失。
         $this->analytics_track();
@@ -58,7 +84,18 @@ class All extends Controller
         if($loadcache==1){
             $this->load_page_cache($tpl,$type);
         }
-        $html = $this->fetch($tpl);
+        try {
+            $html = $this->fetch($tpl);
+        } finally {
+            if ($restoreViewPath !== null) {
+                config('template.view_path', $restoreViewPath);
+                if (is_object($this->view) && is_object($this->view->engine)) {
+                    $this->view->engine->config(array(
+                        'view_path' => ROOT_PATH . $restoreViewPath,
+                    ));
+                }
+            }
+        }
         if($GLOBALS['config']['app']['compress'] == 1){
             $html = mac_compress_html($html);
         }
@@ -209,6 +246,10 @@ polyfill;
         // 默认模板主题配置
         $this->assign('tplconfig', $GLOBALS['mctheme']);
         $this->assign('mac_vod_playlink', mac_tpl_vod_playlink_on() ? 1 : 0);
+        $pbKit = new \app\common\util\PageBuilderKit();
+        if ($pbKit->themeHasAuthModals()) {
+            $this->assign('auth_modal', $pbKit->resolveAuthModalConfigForFront());
+        }
     }
 
     protected function page_error($msg='')
@@ -275,6 +316,9 @@ polyfill;
         }
         if (!empty(cookie('is_member'))) {
             $user['vip_nav'] = 1;
+        }
+        if (defined('ENTRANCE') && ENTRANCE === 'index') {
+            $user = \app\common\util\MemberPreviewMock::applyToUser($user);
         }
         $GLOBALS['user'] = $user;
         $this->assign('user',$user);
@@ -379,7 +423,11 @@ polyfill;
         if(empty($info)){
             return $this->error(lang('controller/get_type_err'));
         }
-        if($view<2) {
+        // 未指定/未解析出具体分类（如“更多”落到不带 id 的跨分类列表页，仅带 by/order 排序）时，
+        // mac_label_type() 对空 id 的 getCacheInfo('') 查找不到分类，$info 里没有真正的 type_id。
+        // 这种“不针对任何分类”的浏览没有可判定的分类级权限，不该按空 type_id 去查
+        // check_user_popedom() —— 那边会把它当成“不属于任何用户组”而对所有人（含VIP）拒绝。
+        if($view<2 && !empty($info['type_id'])) {
             $res = $this->check_user_popedom($info['type_id'], 1);
             if($res['code']>1){
                 echo $this->error($res['msg'], mac_url('user/index') );

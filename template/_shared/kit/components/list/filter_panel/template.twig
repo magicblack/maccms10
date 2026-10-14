@@ -1,0 +1,377 @@
+{#
+  统一筛选器组件 — kit 版，props.preset 或 props.rows 配置行。
+#}
+{% set p = props|default({}) %}
+{#
+  当前页面所属模型 mid。宏内看不到 maccms（它是模板上下文变量而非 Twig global），
+  所以在顶层算好，再经 render_rows 注入每一行（row.page_mid）。
+  不带分类 id 的列表页（如 art/show、manga/show）obj 里没有 type_id / type_mid，
+  若在宏里回落到 1，小说/漫画页就会渲染成视频分类。
+#}
+{% set page_mid = (obj is defined and obj.type_id|default(0) > 0) ? obj.type_mid|default(maccms.mid|default(1)) : maccms.mid|default(1) %}
+{% if p.preset|default('') == 'vod_show' %}
+{% set _vod_show_rows = [
+    { type: 'subtype', flag: 'show' },
+    { type: 'field', field: 'class', items: mac_class({mid: 1}), label: '类型', label_lang: 'string_show_leixing' },
+    { type: 'field', field: 'area', items: mac_area({mid: 1}), label: '地区', label_lang: 'string_show_dq' },
+    { type: 'field', field: 'lang', items: mac_lang({mid: 1}), label: '语言', label_lang: 'string_show_yy' },
+    { type: 'field', field: 'year', items: mac_year({mid: 1}), label: '年份', label_lang: 'string_show_nf' }
+] %}
+{% if p.show_letter|default(false) %}
+{% set _vod_show_rows = _vod_show_rows|merge([{ type: 'field', field: 'letter', items: mac_letter({mid: 1}), label: '字母', label_lang: 'string_show_zm' }]) %}
+{% endif %}
+{% set rows = p.rows|default(_vod_show_rows) %}
+{% elseif p.preset|default('') == 'art_show' %}
+{#
+  小说（art）列表不再出「类型」行：分类未配扩展分类时回落成全局 art_extend_class
+  （段子手/八卦精…这类文章频道词），对小说毫无意义。需要时可用 props.rows 自定义。
+#}
+{% set _art_show_rows = [
+    { type: 'subtype', flag: 'show' }
+] %}
+{% if p.show_letter|default(false) %}
+{% set _art_show_rows = _art_show_rows|merge([{ type: 'field', field: 'letter', items: mac_letter({}), label: '字母', label_lang: 'string_show_zm' }]) %}
+{% endif %}
+{% set rows = p.rows|default(_art_show_rows) %}
+{% elseif p.preset|default('') == 'manga_show' %}
+{% set _manga_show_rows = [
+    { type: 'subtype', flag: 'show' },
+    { type: 'field', field: 'class', items: mac_class({tid: obj.type_id|default(0), mid: page_mid}), label: '类型', label_lang: 'string_show_leixing' }
+] %}
+{% if p.show_letter|default(false) %}
+{% set _manga_show_rows = _manga_show_rows|merge([{ type: 'field', field: 'letter', items: mac_letter({}), label: '字母', label_lang: 'string_show_zm' }]) %}
+{% endif %}
+{% set rows = p.rows|default(_manga_show_rows) %}
+{% elseif p.preset|default('') == 'vod_type' %}
+{% set rows = p.rows|default([{ type: 'subtype', flag: p.flag|default('show') }]) %}
+{% elseif p.preset|default('') == 'map_index' %}
+{% set rows = p.rows|default([
+    {
+        type: 'sort',
+        field: 'by',
+        label: '排序',
+        label_lang: 'string_px',
+        default: 'time',
+        url_mode: 'route',
+        route: 'map/index',
+        options: [
+            { value: 'time', label: '按最新', label_lang: 'string_search_zx' },
+            { value: 'hits', label: '按最热', label_lang: 'string_search_zr' },
+            { value: 'score', label: '按评分', label_lang: 'string_search_pf' }
+        ]
+    },
+    {
+        type: 'top_types',
+        field: 'type',
+        label: '分类',
+        label_lang: 'string_show_zfl',
+        items: mac_top_types(1, 0),
+        url_mode: 'route',
+        route: 'map/index'
+    },
+    { type: 'field', field: 'area', items: mac_area({mid: 1}), label: '地区', label_lang: 'string_show_dq', url_mode: 'route', route: 'map/index' },
+    { type: 'field', field: 'year', items: mac_year({mid: 1}), label: '年份', label_lang: 'string_show_nf', url_mode: 'route', route: 'map/index' },
+    { type: 'field', field: 'class', items: mac_class({mid: 1}), label: '类型', label_lang: 'string_show_leixing', url_mode: 'route', route: 'map/index' }
+]) %}
+{% elseif p.preset|default('') == 'vod_search' %}
+{% set rows = p.rows|default([{
+    type: 'sort',
+    field: 'by',
+    label: '排序',
+    label_lang: 'string_px',
+    default: 'time',
+    url_mode: 'search',
+    options: [
+        { value: 'time', label: '按最新', label_lang: 'string_search_zx' },
+        { value: 'hits', label: '按最热', label_lang: 'string_search_zr' },
+        { value: 'duration', label: '按时长', label_lang: 'string_search_sc' }
+    ]
+}]) %}
+{% else %}
+{% set rows = p.rows|default([]) %}
+{% endif %}
+{% set advanced_rows = p.advanced_rows|default([]) %}
+{% set advanced_fields = p.advanced_fields|default([]) %}
+{% set more_toggle = p.more_toggle|default(false) %}
+{% set reset_url = p.reset_url|default(p.preset|default('') == 'map_index' ? mac_url('map/index') : '') %}
+{% set wrapper_class = p.wrapper_class|default('') %}
+{#
+  统一筛选器组件 — 所有列表/筛选页共用同一套 bili-filter 结构与样式。
+
+  参数：
+    rows   — 行配置数组，每行 type 决定渲染方式
+    obj    — 当前分类对象（type 系页面）
+    param  — mac_param_url() 结果
+
+  行类型：
+    subtype    — 子分类（原 filter_chips）
+    field      — 标准字段（class/area/lang/year/letter…）
+    top_types  — 顶部分类 Tab（map 页）
+    links      — 自定义链接列表（直播分类等）
+    sort       — 排序选项
+    custom     — 完全自定义 chips：[{label, href, active, lang?, soft?}]
+#}
+{% import _self as fp %}
+
+{%- macro item_value(it) -%}
+{{- it.class_name|default(it.area_name|default(it.lang_name|default(it.year_name|default(it.version_name|default(it.letter_name|default(it.letter|default(it.name|default('')))))))) -}}
+{%- endmacro %}
+
+{%- macro row_url(obj, param, row, field, val) -%}
+{% set val_raw = val|default('') %}
+{% set val = (val_raw is iterable) ? '' : val_raw|trim %}
+{% set carry = {
+  state: param.state|default(''),
+  area: param.area|default(''),
+  year: param.year|default(''),
+  lang: param.lang|default(''),
+  letter: param.letter|default(''),
+  class: param.class|default(''),
+  version: param.version|default(''),
+  by: param.by|default(''),
+  order: param.order|default(''),
+  wd: param.wd|default(''),
+  type: param.type|default(''),
+  cate: param.cate|default('')
+}|merge(row.carry|default({})) %}
+{% set merged = carry|merge({(field): val, page: 1}) %}
+{% set mode = row.url_mode|default('type') %}
+{% if mode == 'route' %}
+{{- mac_url(row.route|default(''), merged) -}}
+{% elseif mode == 'search' %}
+{{- mac_url_vod_search(merged) -}}
+{% else %}
+{% set _url_type = {
+  type_id: obj.type_id|default(0),
+  type_mid: obj.type_mid|default(row.page_mid|default(1))
+} %}
+{{- mac_url_type(_url_type, merged, row.flag|default('show')) -}}
+{% endif %}
+{%- endmacro %}
+
+{% macro chip_row(label, label_lang, chips_html, row_class, aria_label) %}
+{% if chips_html|trim %}
+<nav class="bili-filter{{ row_class|default('') ? ' ' ~ row_class : '' }}" data-filter-collapse aria-label="{{ aria_label|default(label) }}">
+  <span class="bili-filter__label"{% if label_lang and mac_i18n_key(label, label_lang) %} data-lang="{{ label_lang }}"{% endif %}>{{ label }}</span>
+  <div class="bili-filter__chips">
+    {{ chips_html|raw }}
+  </div>
+  <button type="button" class="bili-filter__more" data-filter-more hidden aria-expanded="false">
+    <span data-more>展开</span><span data-less hidden>收起</span>
+    <svg class="bili-filter__more-ico" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>
+  </button>
+</nav>
+{% endif %}
+{% endmacro %}
+
+{% macro subtype_row(obj, param, row) %}
+{% set flag = row.flag|default('show') %}
+{% set has_obj = obj is defined and obj.type_id is defined %}
+{% if has_obj %}
+{% set is_child = obj.type_pid|default(0) > 0 %}
+{% set parent_id = is_child ? obj.type_pid : obj.type_id %}
+{% set mid = obj.type_mid|default(row.page_mid|default(1)) %}
+{% set types = mac_type({parent: parent_id, mid: mid, order: 'asc', by: 'sort'}).list|default([]) %}
+{% else %}
+{# 无分类 id 的跨分类列表页：列出当前模型的一级分类（parent: 0 在模型里等于不过滤，会把子类也平铺进来） #}
+{% set is_child = false %}
+{% set parent_id = 0 %}
+{% set mid = row.page_mid|default(1) %}
+{% set types = mac_type({ids: 'parent', mid: mid, order: 'asc', by: 'sort'}).list|default([]) %}
+{% set _mid_route = {1: 'vod', 2: 'art', 8: 'actor', 11: 'website', 12: 'manga'} %}
+{% set all_href = attribute(_mid_route, mid) is defined ? mac_url(attribute(_mid_route, mid) ~ '/' ~ flag) : mac_url('index/index') %}
+{% endif %}
+{% set carry = {
+  state: param.state|default(''),
+  area: param.area|default(''),
+  year: param.year|default(''),
+  lang: param.lang|default(''),
+  letter: param.letter|default(''),
+  class: param.class|default(''),
+  version: param.version|default(''),
+  by: param.by|default(''),
+  order: param.order|default(''),
+  page: 1
+}|merge(row.carry|default({})) %}
+{% if types %}
+  {% set chips %}
+    {% if has_obj %}
+    <a class="bili-filter__chip{% if not is_child %} on{% endif %}"
+       href="{{ mac_url_type({type_id: parent_id, type_mid: mid}, carry, flag) }}"
+       data-lang="vod_all">全部</a>
+    {% else %}
+    <a class="bili-filter__chip on"
+       href="{{ all_href }}"
+       data-lang="vod_all">全部</a>
+    {% endif %}
+    {% for t in types %}
+      {% if '未分类' not in t.type_name %}
+    <a class="bili-filter__chip{% if has_obj and t.type_id == obj.type_id %} on{% endif %}"
+       href="{{ mac_url_type(t, {}, flag) }}">{{ t.type_name }}</a>
+      {% endif %}
+    {% endfor %}
+    {% for t in types %}
+      {% if '未分类' in t.type_name %}
+    <a class="bili-filter__chip bili-filter__chip--soft{% if has_obj and t.type_id == obj.type_id %} on{% endif %}"
+       href="{{ mac_url_type(t, {}, flag) }}">{{ t.type_name }}</a>
+      {% endif %}
+    {% endfor %}
+  {% endset %}
+  {{ fp.chip_row('分类', 'string_show_zfl', chips, row.class|default('')) }}
+{% endif %}
+{% endmacro %}
+
+{% macro field_row(obj, param, row) %}
+{% set field = row.field %}
+{% set cur_raw = attribute(param, field)|default('') %}
+{% set cur = (cur_raw is iterable) ? '' : cur_raw|trim %}
+{% set item_list = row.items.list is defined ? row.items.list : (row.items|default([])) %}
+{% set option_chips %}{% for it in item_list %}{% set val_raw = fp.item_value(it) %}{% set val = (val_raw is iterable) ? '' : val_raw|trim %}{% if val != '' %}<a class="bili-filter__chip{{ cur == val ? ' on' : '' }}" href="{{ fp.row_url(obj, param, row, field, val) }}">{{ val }}</a>{% endif %}{% endfor %}{% endset %}
+{% if option_chips|trim %}
+  {% set chips %}
+    <a class="bili-filter__chip{{ cur == '' ? ' on' : '' }}"
+       href="{{ fp.row_url(obj, param, row, field, '') }}"
+       data-lang="string_show_all">全部</a>
+    {{ option_chips|raw }}
+  {% endset %}
+  {{ fp.chip_row(row.label|default(''), row.label_lang|default(''), chips, row.class|default('')) }}
+{% endif %}
+{% endmacro %}
+
+{% macro top_types_row(obj, param, row) %}
+{% set field = row.field|default('type') %}
+{% set cur = attribute(param, field)|default('') %}
+{% set item_list = row.items|default([]) %}
+{% if item_list %}
+  {% set chips %}
+    <a class="bili-filter__chip{{ cur == '' ? ' on' : '' }}"
+       href="{{ fp.row_url(obj, param, row, field, '') }}"
+       data-lang="vod_all">全部</a>
+    {% for t in item_list %}
+    <a class="bili-filter__chip{{ cur|default('') == t.type_id|default('') ? ' on' : '' }}"
+       href="{{ fp.row_url(obj, param, row, field, t.type_id) }}">{{ t.type_name }}</a>
+    {% endfor %}
+  {% endset %}
+  {{ fp.chip_row(row.label|default('分类'), row.label_lang|default('string_show_zfl'), chips, row.class|default('')) }}
+{% endif %}
+{% endmacro %}
+
+{% macro links_row(param, row) %}
+{% set field = row.field %}
+{% set cur = attribute(param, field)|default('') %}
+{% set item_list = row.items|default([]) %}
+{% set value_key = row.value_key|default('id') %}
+{% set label_key = row.label_key|default('name') %}
+{% if item_list or row.show_all|default(true) %}
+  {% set chips %}
+    {% if row.show_all|default(true) %}
+    <a class="bili-filter__chip{{ cur == '' ? ' on' : '' }}"
+       href="{{ mac_url(row.route|default(''), row.all_params|default({})) }}"
+       data-lang="string_show_all">全部</a>
+    {% endif %}
+    {% for it in item_list %}
+    <a class="bili-filter__chip{{ cur == attribute(it, value_key) ? ' on' : '' }}"
+       href="{{ mac_url(row.route|default(''), row.link_params|default({})|merge({(field): attribute(it, value_key)})) }}">{{ attribute(it, label_key) }}</a>
+    {% endfor %}
+  {% endset %}
+  {{ fp.chip_row(row.label|default(''), row.label_lang|default(''), chips, row.class|default('')) }}
+{% endif %}
+{% endmacro %}
+
+{% macro sort_row(obj, param, row) %}
+{% set field = row.field|default('by') %}
+{% set cur = attribute(param, field)|default(row.default|default('time')) %}
+{% set options = row.options|default([]) %}
+{% if options %}
+  {% set chips %}
+    {% for opt in options %}
+    <a class="bili-filter__chip{{ cur == opt.value ? ' on' : '' }}"
+       href="{{ fp.row_url(obj, param, row, field, opt.value) }}"
+       {% if opt.label_lang|default('') %}data-lang="{{ opt.label_lang }}"{% endif %}>{{ opt.label }}</a>
+    {% endfor %}
+  {% endset %}
+  {{ fp.chip_row(row.label|default('排序'), row.label_lang|default('string_px'), chips, row.class|default('')) }}
+{% endif %}
+{% endmacro %}
+
+{% macro custom_row(row) %}
+{% set chips %}
+  {% for opt in row.options|default([]) %}
+  <a class="bili-filter__chip{% if opt.soft|default(false) %} bili-filter__chip--soft{% endif %}{{ opt.active|default(false) ? ' on' : '' }}"
+     href="{{ opt.href }}"
+     {% if opt.label_lang|default('') %}data-lang="{{ opt.label_lang }}"{% endif %}>{{ opt.label }}</a>
+  {% endfor %}
+{% endset %}
+{{ fp.chip_row(row.label|default(''), row.label_lang|default(''), chips, row.class|default('')) }}
+{% endmacro %}
+
+{% macro render_rows(obj, param, rows, page_mid) %}
+{% for row in rows|default([]) %}
+  {% set row = {page_mid: page_mid|default(1)}|merge(row) %}
+  {% set type = row.type|default('field') %}
+  {% if type == 'subtype' %}
+    {{ fp.subtype_row(obj, param, row) }}
+  {% elseif type == 'field' %}
+    {{ fp.field_row(obj, param, row) }}
+  {% elseif type == 'top_types' %}
+    {{ fp.top_types_row(obj, param, row) }}
+  {% elseif type == 'links' %}
+    {{ fp.links_row(param, row) }}
+  {% elseif type == 'sort' %}
+    {{ fp.sort_row(obj, param, row) }}
+  {% elseif type == 'custom' %}
+    {{ fp.custom_row(row) }}
+  {% endif %}
+{% endfor %}
+{% endmacro %}
+
+{% set adv_rows = advanced_rows|default([]) %}
+{% set adv_fields = advanced_fields|default([]) %}
+{% set adv_count = 0 %}
+{% for f in adv_fields %}
+  {% if attribute(param, f)|default('') %}{% set adv_count = adv_count + 1 %}{% endif %}
+{% endfor %}
+{% set has_active = false %}
+{% if reset_url|default('') %}
+  {% if param.type|default('') or param.area|default('') or param.year|default('') or param.class|default('') or param.cate|default('') %}
+    {% set has_active = true %}
+  {% elseif param.by|default('') and param.by|default('') != 'time' %}
+    {% set has_active = true %}
+  {% elseif adv_count > 0 %}
+    {% set has_active = true %}
+  {% endif %}
+{% endif %}
+
+{% set filter_inner %}
+  {{ fp.render_rows(obj, param, rows, page_mid) }}
+
+  {% if more_toggle|default(false) and adv_rows|length %}
+  <button type="button"
+          class="bili-filter-panel__toggle"
+          data-filter-advanced-toggle
+          aria-expanded="false"
+          aria-controls="filter-advanced-panel">
+    <span data-lang="filter_more">更多筛选</span>
+    {% if adv_count > 0 %}<span class="bili-filter-panel__badge">{{ adv_count }}</span>{% endif %}
+    <svg class="bili-filter-panel__toggle-ico" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>
+  </button>
+
+  <div class="bili-filter-panel__advanced"
+       id="filter-advanced-panel"
+       data-filter-advanced{% if adv_count > 0 %} data-open="1"{% endif %}>
+    {{ fp.render_rows(obj, param, adv_rows, page_mid) }}
+  </div>
+  {% endif %}
+
+  {% if reset_url|default('') and has_active %}
+  <div class="bili-filter-panel__actions">
+    <a class="bili-filter-panel__reset" href="{{ reset_url }}" data-lang="filter_reset">清除筛选</a>
+  </div>
+  {% endif %}
+{% endset %}
+{% if filter_inner|trim %}
+<div class="filters{{ wrapper_class|default('') ? ' ' ~ wrapper_class : '' }}"
+     {% if more_toggle|default(false) %}data-filter-panel{% endif %}>
+  {{ filter_inner|raw }}
+</div>
+{% endif %}

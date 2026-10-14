@@ -1,0 +1,33 @@
+{% import "page-builder-components/_shared/macros.twig" as pb %}
+{% set num = props.num|default(24) %}
+{% set by = props.by|default('time') %}
+{% set order = props.order|default('desc') %}
+{% set use_paging = props.paging|default(false) %}
+{% set _cover_cls = pb.pb_cover_classes(props) %}
+{% set _cover_style = pb.pb_cover_style(props) %}
+{% set role_args = {num: num, order: order, by: by} %}
+{% if use_paging %}
+  {% set role_args = role_args|merge({
+    paging: true,
+    pageurl: props.pageurl|default('role/show'),
+    letter: param.letter|default(''),
+    wd: param.wd|default('')
+  }) %}
+{% endif %}
+{% set res = mac_role(role_args) %}
+{% set list = res.list|default([]) %}
+{% if use_paging %}
+  {% set pg = mac_paging(res) %}
+{% endif %}
+{% if list is not empty %}
+<div class="bili-grid pb-role-list {{ _cover_cls }}" data-component="role_list"{% if _cover_style %} style="{{ _cover_style }}"{% endif %}>
+  {% for vo in list %}{% include "page-builder-components/_shared/role_card.twig" %}{% endfor %}
+</div>
+{% endif %}
+{% include "page-builder-components/_shared/list_footer.twig" with {
+  use_paging: use_paging,
+  pg: pg|default(null),
+  empty_preset: use_paging ? 'filter' : '',
+  empty_title: use_paging ? '暂无符合条件的角色' : '暂无角色',
+  empty_title_lang: use_paging ? 'role_empty_filter' : 'role_empty_default'
+} %}

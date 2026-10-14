@@ -1,0 +1,41 @@
+<h2 class="bili-sec__head{% if sort_links|default([])|length %} bili-sec__head--sort{% endif %}" id="{{ id|default('') }}">
+  <span class="bili-sec__head-main">
+    {% if show_icon|default(false) %}
+    <span class="bili-sec__ico bili-sec__ico--{{ icon_mod|default('type') }}" aria-hidden="true">
+      {% include "page-builder-components/_shared/component_icon.twig" with {
+        component: icon_component|default('section'),
+        name: icon_name|default('film'),
+        class: 'bili-sec__ico-svg',
+        mode: 'img'
+      } %}
+    </span>
+    {% endif %}
+    {# 站长改过的标题不挂 key，否则 i18n 载入后被字典覆盖回默认名 #}
+    {% set _title_lang = lang ? mac_i18n_key(title, lang) : '' %}
+    <span class="bili-sec__title"{% if _title_lang %} data-lang="{{ _title_lang }}"{% endif %}>{{ title }}</span>
+  </span>
+  {% if sort_links|default([])|length %}
+  <nav class="bili-sec__sort" aria-label="{{ sort_aria|default('排序') }}"{% if sort_aria_lang|default('') or not sort_aria|default('') %} data-lang-aria-label="{{ sort_aria_lang|default('string_vod_sort') }}"{% endif %}>
+    {% for link in sort_links %}
+    <a class="bili-sec__sort-link{{ link.active|default(false) ? ' is-on' : '' }}{% if link.active|default(false) and link.order|default('') %} is-{{ link.order }}{% endif %}"
+       href="{{ link.href }}"
+       {% if link.order|default('') %}data-order="{{ link.order }}"{% endif %}>
+      {% if link.icon|default('') %}
+      {% include "page-builder-components/_shared/component_icon.twig" with {
+        component: link.icon_component|default('section'),
+        name: link.icon,
+        class: 'bili-sec__sort-ico',
+        mode: 'current'
+      } %}
+      {% endif %}
+      <span class="bili-sec__sort-label"{% if link.lang|default('') and mac_i18n_key(link.label, link.lang) %} data-lang="{{ link.lang }}"{% endif %}>{{ link.label }}</span>
+      {% if link.active|default(false) and link.order|default('') %}
+      <span class="bili-sec__sort-dir" aria-hidden="true"></span>
+      {% endif %}
+    </a>
+    {% endfor %}
+  </nav>
+  {% elseif more_url and title %}
+  <a class="more" href="{{ more_url }}"><span data-lang="{{ more_lang|default('string_more') }}">更多</span><span aria-hidden="true"> ›</span></a>
+  {% endif %}
+</h2>

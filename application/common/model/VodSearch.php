@@ -14,6 +14,80 @@ class VodSearch extends Base {
     /** @var array<string, int[]> 单次 PHP 请求内按 search_key 去重，避免采集等循环对同一词重复 LIKE / 写 vod_search */
     private static $getResultIdListMemo = [];
 
+    /** 搜索框 wd 的缓存行 search_field 前缀：与 name/tag 等纯 LIKE 缓存区分，按 wdFieldMatch 规则匹配 */
+    const WD_FIELD_PREFIX = 'wd2:';
+
+    /**
+     * 1~3 位纯英文 / 数字关键词（如 SM、TV、4K）。
+     * 这类短词对拼音、副标题等附加字段做包含匹配会大量误中：vod_en 是去掉空格连写的拼音 / 英文，
+     * 「Kiss Me」→ kissme、「VS马来西亚」→ vsmalaixiya 都含 sm。
+     */
+    public static function isShortLatinWord($wd)
+    {
+        return (bool)preg_match('/^[A-Za-z0-9]{1,3}$/', (string)$wd);
+    }
+
+    /**
+     * 短英文词不交给 Meilisearch：Meili 对副标题 / 拼音等所有可搜字段做前缀 + 容错匹配，
+     * SM 会命中 Smith、Smile 等（QA #254）。调用方跳过 Meili 后走 wdSql 同一套规则。
+     */
+    public static function skipMeiliForWd($kind, $wd)
+    {
+        return $kind === 'vod' && self::isShortLatinWord(trim((string)$wd));
+    }
+
+    /**
+     * wd 在单个字段上的 SQL 匹配条件。
+     * - vod_name：始终包含匹配
+     * - 短英文词：vod_en 只做前缀匹配；vod_sub / vod_tag / vod_actor / vod_director 须是完整单词
+     *   （前后都不是字母数字）：只卡词首时 SM 仍会命中副标题里的 Small / Smile / Smith
+     * - 其余（中文、4 位以上）：包含匹配，与原逻辑一致
+     */
+    public static function wdFieldSql($field, $wd)
+    {
+        $field = preg_replace('/[^a-z_]/', '', (string)$field);
+        $wd = (string)$wd;
+        $conn = Db::connect();
+        if ($field !== 'vod_name' && self::isShortLatinWord($wd)) {
+            if ($field === 'vod_en') {
+                return '`' . $field . '` LIKE ' . $conn->quote($wd . '%');
+            }
+            return '`' . $field . '` REGEXP ' . $conn->quote('(^|[^a-zA-Z0-9])' . $wd . '([^a-zA-Z0-9]|$)');
+        }
+        $like = '%' . str_replace(['\\', '%', '_'], ['\\\\', '\\%', '\\_'], $wd) . '%';
+        return '`' . $field . '` LIKE ' . $conn->quote($like);
+    }
+
+    /** wd 在 vod_name|vod_en|... 多个字段上的 OR 条件 */
+    public static function wdSql($role, $wd)
+    {
+        $parts = [];
+        foreach (explode('|', (string)$role) as $field) {
+            $field = trim($field);
+            if ($field !== '') {
+                $parts[] = self::wdFieldSql($field, $wd);
+            }
+        }
+        return empty($parts) ? '' : '(' . implode(' OR ', $parts) . ')';
+    }
+
+    /** 与 wdFieldSql 同规则的 PHP 侧判断（保存视频时增量更新搜索缓存用） */
+    public static function wdFieldMatch($field, $value, $wd)
+    {
+        $value = (string)$value;
+        $wd = (string)$wd;
+        if ($value === '' || $wd === '') {
+            return false;
+        }
+        if ($field !== 'vod_name' && self::isShortLatinWord($wd)) {
+            if ($field === 'vod_en') {
+                return stripos($value, $wd) === 0;
+            }
+            return (bool)preg_match('/(^|[^a-zA-Z0-9])' . preg_quote($wd, '/') . '([^a-zA-Z0-9]|$)/i', $value);
+        }
+        return stripos($value, $wd) !== false;
+    }
+
 
     /**
      * 获取结果Id列表
@@ -49,7 +123,11 @@ class VodSearch extends Base {
         $search_row = $this->where($where)->field("search_result_ids, search_hit_count")->find();
         if (empty($search_row)) {
             $where_vod = [];
-            $where_vod[$search_field] = ['LIKE', '%' . $search_word . '%'];
+            if (strpos($search_field, self::WD_FIELD_PREFIX) === 0) {
+                $where_vod = self::wdSql(substr($search_field, strlen(self::WD_FIELD_PREFIX)), $search_word);
+            } else {
+                $where_vod[$search_field] = ['LIKE', '%' . $search_word . '%'];
+            }
             // 仅已发布；回收站过滤在 listData 中由 Vod 模型处理，此处不重复 merge 以免依赖 protected API
             try {
                 $id_list = Db::name('Vod')
@@ -147,15 +225,24 @@ class VodSearch extends Base {
             if ($searchKey === '' || !preg_match('/^[a-f0-9]{32}$/i', $searchKey)) {
                 continue;
             }
-            foreach (explode('|', (string)$row['search_field']) as $field) {
+            $searchField = (string)$row['search_field'];
+            $isWd = strpos($searchField, self::WD_FIELD_PREFIX) === 0;
+            if ($isWd) {
+                $searchField = substr($searchField, strlen(self::WD_FIELD_PREFIX));
+            }
+            foreach (explode('|', $searchField) as $field) {
                 $field = trim($field);
                 if ($field === '' || !isset($vod[$field]) || $vod[$field] === '' || $vod[$field] === null) {
                     continue;
                 }
-                if (stripos((string)$vod[$field], (string)$row['search_word']) === false) {
+                $hit = $isWd
+                    ? self::wdFieldMatch($field, $vod[$field], (string)$row['search_word'])
+                    : stripos((string)$vod[$field], (string)$row['search_word']) !== false;
+                if (!$hit) {
                     continue;
                 }
                 $this->appendVodIdToSearchCacheRow($searchKey, $vid, $time_now);
+                break;
             }
         }
     }

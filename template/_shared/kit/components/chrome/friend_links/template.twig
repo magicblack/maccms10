@@ -1,0 +1,23 @@
+{% import "page-builder-components/_shared/macros.twig" as pb %}
+{% set num = props.num|default(50) + 0 %}
+{% if num < 1 %}{% set num = 50 %}{% endif %}
+{% set friend_links = [] %}
+{% for l in mac_link({num: num, order: 'asc', by: 'sort'}).list|default([]) %}
+  {% set _fl_name = l.link_name|default('')|trim %}
+  {% set _fl_url = l.link_url|default('')|trim %}
+  {% set _fl_type = l.link_type|default(0) + 0 %}
+  {% set _fl_logo = l.link_logo|default('')|trim %}
+  {% if _fl_url != '' and ((_fl_type == 1 and _fl_logo != '') or (_fl_type != 1 and _fl_name != '')) %}
+    {% set friend_links = friend_links|merge([l]) %}
+  {% endif %}
+{% endfor %}
+{% if friend_links is not empty %}
+<section class="pb-friend-links" data-component="friend_links">
+  <h2 class="pb-friend-links__title" data-lang="string_friend_link">友情链接</h2>
+  <ul class="pb-friend-links__list">
+    {% for l in friend_links %}
+    {{ pb.friend_link_item(l, 'pb-friend-links__item', 'pb-friend-links__link', 'noopener noreferrer', '_blank') }}
+    {% endfor %}
+  </ul>
+</section>
+{% endif %}

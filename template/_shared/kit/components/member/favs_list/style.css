@@ -1,0 +1,115 @@
+/* favs_list — 列表视觉以 member-favs.css 为准；此处补空态与挂载细节 */
+
+[data-component="favs_list"] {
+  min-width: 0;
+}
+
+[data-component="favs_list"].favs-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-width: 0;
+}
+
+/* 空态：隐藏清空/删除入口（防御性；模板在无数据时本就不渲染清空按钮） */
+.favs-list--empty .member-history__clear,
+.favs-list--empty [data-member-history-clear],
+.favs-list--empty .member-fav__unfav,
+.favs-list--empty [data-member-history-del] {
+  display: none !important;
+}
+
+/* 垂直居中空态：插画在上 + 文案 + hint + CTA（对齐 plays_list 空态） */
+.favs-list .member-empty--favs,
+[data-component="favs_list"] .member-empty--favs {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  list-style: none;
+  width: 100%;
+  max-width: 100%;
+  margin: 0;
+  padding: 48px 20px 40px;
+  min-height: min(52vh, 400px);
+  box-sizing: border-box;
+  text-align: center;
+  border: 0;
+  border-radius: 14px;
+  background:
+    radial-gradient(120% 80% at 50% 0%, var(--c-accent-soft), transparent 55%),
+    transparent;
+  box-shadow: none;
+}
+
+.favs-list .member-empty__art,
+.favs-list .member-empty--favs .pb-empty-state__art {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: auto;
+  max-width: 100%;
+  margin: 0 0 4px;
+  line-height: 0;
+  opacity: 1;
+  filter: drop-shadow(0 8px 24px rgba(15, 23, 42, 0.06));
+}
+
+.favs-list .member-empty--favs .pb-empty-state__svg,
+.favs-list .member-empty__art > svg {
+  display: block;
+  width: 160px;
+  height: 160px;
+  max-width: min(56vw, 168px);
+  margin: 0 auto;
+  color: var(--c-accent);
+}
+
+.favs-list .member-empty__title {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 650;
+  line-height: 1.4;
+  color: var(--c-text, #18191c);
+}
+
+.favs-list .member-empty__hint {
+  margin: 0;
+  max-width: 28ch;
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--c-text-muted, #9499a0);
+}
+
+.favs-list .member-empty__cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 40px;
+  margin-top: 8px;
+  padding: 0 18px;
+  border-radius: 999px;
+  background: var(--c-accent);
+  color: var(--c-accent-ink, #fff);
+  font-size: 13px;
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+  transition: filter 180ms ease;
+}
+
+.favs-list .member-empty__cta:hover {
+  filter: brightness(1.05);
+}
+
+.favs-list .member-empty__cta:focus-visible {
+  outline: 2px solid var(--c-link, #008ac5);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .favs-list .member-empty__cta {
+    transition: none;
+  }
+}

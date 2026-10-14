@@ -1,0 +1,18 @@
+{
+    "id": "notify_bell",
+    "label_key": "admin/themedesign/pb_block_notify_bell",
+    "category": "chrome",
+    "kind": "chrome",
+    "palette": false,
+    "styleMode": "component",
+    "peer_styles": [],
+    "assets": {
+        "css": "style.css",
+        "js": "script.js"
+    },
+    "props": {},
+    "context": {
+        "pageTypes": ["home", "list", "detail", "play", "member"],
+        "requires": []
+    }
+}

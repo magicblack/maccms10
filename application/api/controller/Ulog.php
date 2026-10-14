@@ -379,9 +379,11 @@ class Ulog extends Base
             'ulog_nid'  => $nid,
         ];
 
+        // 优先命中免费播放历史行；付费播放的购买记录(ulog_points>0)也是 type=4
         $exist = Db::name('ulog')
-            ->field('ulog_id,ulog_point')
+            ->field('ulog_id,ulog_point,ulog_points')
             ->where($where)
+            ->order('ulog_points asc,ulog_time desc')
             ->find();
 
         if (!empty($exist)) {
@@ -395,6 +397,10 @@ class Ulog extends Base
                 'ulog_duration' => $duration > 0 ? $duration : Db::raw('ulog_duration'),
                 'ulog_time'     => $now,
             ];
+            // 购买记录的 sid 参与播放权限校验（All::popedom 按 sid/nid 查），不能被换源改写
+            if (intval($exist['ulog_points']) > 0) {
+                unset($update['ulog_sid']);
+            }
             return Db::name('ulog')->where('ulog_id', intval($exist['ulog_id']))->update($update);
         }
 

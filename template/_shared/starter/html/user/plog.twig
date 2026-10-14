@@ -1,0 +1,50 @@
+{# Starter T0: user plog #}
+{% extends "layout/base.twig" %}
+{% import "@shared/components.twig" as c %}
+{% block layout_mod %} member{% endblock %}
+{% block page_class %} pb-components-only page-member page-member--plog{% endblock %}
+{% block theme_styles %}
+<link rel="stylesheet" href="{{ maccms.path_tpl }}asset/css/tokens.css">
+{% set _pb_td_override = mac_theme_override_css_href() %}
+{% if _pb_td_override %}<link rel="stylesheet" href="{{ _pb_td_override }}">{% endif %}
+<link rel="stylesheet" href="{{ maccms.path_tpl }}asset/css/pb-shell.css">
+{% endblock %}
+{% block title %}{{ maccms.page_title|default('积分记录') }}{% endblock %}
+{% block head %}
+<link rel="stylesheet" href="{{ maccms.path_tpl|default('') }}page-builder-components/_shared/css/member.css">
+<link rel="stylesheet" href="{{ maccms.path_tpl|default('') }}page-builder-components/_shared/css/member-mobile.css">
+<link rel="stylesheet" href="{{ maccms.path_tpl|default('') }}page-builder-components/_shared/css/records.css">
+<link rel="stylesheet" href="{{ maccms.path_tpl }}page-builder-components/_shared/css/peers.css">
+<link rel="stylesheet" href="{{ maccms.path_tpl }}asset/css/pb-t0.css?v=2">
+<link rel="stylesheet" href="{{ maccms.path_tpl }}page-builder-components/site_nav/style.css">
+<script src="{{ maccms.path_tpl }}page-builder-components/site_nav/script.js" defer></script>
+<link rel="stylesheet" href="{{ maccms.path_tpl }}page-builder-components/notify_bell/style.css">
+<script src="{{ maccms.path_tpl }}page-builder-components/notify_bell/script.js" defer></script>
+<link rel="stylesheet" href="{{ maccms.path_tpl }}page-builder-components/member_shell/style.css">
+<script src="{{ maccms.path_tpl }}page-builder-components/member_shell/script.js" defer></script>
+<link rel="stylesheet" href="{{ maccms.path_tpl }}page-builder-components/member_nav/style.css">
+<script src="{{ maccms.path_tpl }}page-builder-components/member_nav/script.js" defer></script>
+<link rel="stylesheet" href="{{ maccms.path_tpl }}page-builder-components/member_hub_menu/style.css">
+<script src="{{ maccms.path_tpl }}page-builder-components/member_hub_menu/script.js" defer></script>
+<link rel="stylesheet" href="{{ maccms.path_tpl }}page-builder-components/member_profile_card/style.css">
+<script src="{{ maccms.path_tpl }}page-builder-components/member_profile_card/script.js" defer></script>
+<link rel="stylesheet" href="{{ maccms.path_tpl }}page-builder-components/user_plog_panel/style.css">
+<script src="{{ maccms.path_tpl }}page-builder-components/user_plog_panel/script.js" defer></script>
+<link rel="stylesheet" href="{{ maccms.path_tpl }}page-builder-components/site_footer/style.css">
+<link rel="stylesheet" href="{{ maccms.path_tpl }}page-builder-components/bottom_nav/style.css">
+{% endblock %}
+{% block site_header %}
+  {% include 'page-builder-components/site_nav/template.twig' with {props: { max: 8, show_search: true, type_ids: [] }} %}
+{% endblock %}
+{% block content %}
+<span class="is-sr-only" hidden aria-hidden="true">{{ c.lazy_img('', '') }}</span>
+{% set _pb_slot_body %}
+  {% include 'page-builder-components/user_plog_panel/template.twig' with {props: {}} %}
+{% endset %}
+{% include 'page-builder-components/member_shell/template.twig' with {props: { title: '积分记录', title_lang: 'user_plog_title', show_hub: false, require_login: true, active: 'plog' }, member_body: _pb_slot_body} %}
+{% endblock %}
+{% block sidebar %}{% endblock %}
+{% block footer %}
+  {% include 'page-builder-components/site_footer/template.twig' with {props: { variant: 'default', copyright: '', show_nav: true, show_friends: true, logo: '' }} %}
+  {% include 'page-builder-components/bottom_nav/template.twig' with {props: {  }} %}
+{% endblock %}

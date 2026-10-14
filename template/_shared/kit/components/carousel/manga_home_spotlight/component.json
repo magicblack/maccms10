@@ -1,0 +1,60 @@
+{
+    "id": "manga_home_spotlight",
+    "label_key": "admin/themedesign/pb_block_manga_home_spotlight",
+    "category": "carousel",
+    "kind": "carousel",
+    "styleMode": "component",
+    "peer_styles": [],
+    "assets": {
+        "css": "style.css",
+        "js": "script.js"
+    },
+    "palette": false,
+    "palette_inject": true,
+    "props": {
+        "bind": {
+            "type": "enum",
+            "default": "manga",
+            "values": ["vod", "manga", "art"],
+            "trait": "bind"
+        },
+        "type": {
+            "type": "category",
+            "mid": 12,
+            "default": 0,
+            "trait": "category"
+        },
+        "num": {
+            "type": "number",
+            "default": 7,
+            "min": 1,
+            "max": 12,
+            "trait": "count"
+        },
+        "by": {
+            "type": "enum",
+            "default": "hits_month",
+            "values": ["time", "hits", "hits_day", "hits_week", "hits_month", "score"],
+            "trait": "sort"
+        },
+        "title": {
+            "type": "string",
+            "default": "为你推荐",
+            "trait": "title"
+        },
+        "subtitle": {
+            "type": "string",
+            "default": "Pick你的最爱！",
+            "trait": "subtitle"
+        },
+        "show_hero": {
+            "type": "boolean",
+            "default": true,
+            "trait": "show_hero"
+        }
+    },
+    "context": {
+        "pageTypes": ["home", "list", "detail"],
+        "requires": []
+    }
+}

@@ -1,0 +1,53 @@
+/* member_nav — 侧栏导航；页面级配色仍可由主题 member.css 叠加 */
+[data-component="member_nav"].member-nav__list,
+.member-nav__list[data-component="member_nav"] {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.member-nav__link {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 44px;
+  padding: 0 12px;
+  border-radius: 8px;
+  color: var(--c-text, #18191c);
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 500;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.member-nav__ico {
+  display: inline-flex;
+  width: 20px;
+  height: 20px;
+  color: var(--c-text-muted, #9499a0);
+}
+
+.member-nav__svg {
+  width: 20px;
+  height: 20px;
+}
+
+.member-nav__gap {
+  height: 8px;
+}
+
+.member-nav__link:hover {
+  background: var(--c-accent-soft);
+  color: var(--c-accent);
+}
+
+.member-nav__link.is-on {
+  color: var(--c-accent);
+  background: var(--c-accent-soft);
+  font-weight: 600;
+}
+
+.member-nav__link.is-on .member-nav__ico,
+.member-nav__link:hover .member-nav__ico {
+  color: var(--c-accent);
+}

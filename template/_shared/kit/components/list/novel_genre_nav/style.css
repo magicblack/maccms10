@@ -1,0 +1,69 @@
+.nv-tabs-shell {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.nv-tabs {
+  display: inline-flex;
+  align-items: center;
+  margin: 8px 0 0;
+  padding: 0;
+}
+
+.nv-tabs--capsule {
+  gap: 2px;
+  padding: 3px;
+  border-radius: 999px;
+  background: var(--c-surface-2, rgba(15, 23, 42, 0.05));
+  border: 1px solid var(--c-border, rgba(15, 23, 42, 0.06));
+}
+
+.nv-tabs__item {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 32px;
+  min-width: 56px;
+  padding: 0 18px;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--c-text-muted, #61666d);
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: background var(--dur, 0.2s) var(--ease, ease), color var(--dur, 0.2s) var(--ease, ease), box-shadow var(--dur, 0.2s) var(--ease, ease);
+}
+
+.nv-tabs__item:hover {
+  color: var(--c-text, #18191c);
+}
+
+.nv-tabs--capsule .nv-tabs__item:hover:not(.is-on):not([aria-current="page"]) {
+  background: var(--c-accent-soft, rgba(15, 23, 42, 0.04));
+}
+
+.nv-tabs__item.is-on,
+.nv-tabs__item[aria-current="page"] {
+  background: var(--c-surface, #fff);
+  color: var(--c-accent, #7c4dff);
+  font-weight: 600;
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.08);
+}
+
+.nv-tabs__item:focus-visible {
+  outline: 2px solid var(--c-accent, #7c4dff);
+  outline-offset: 2px;
+}
+
+@media (min-width: 821px) {
+  .nv-tabs {
+    margin-top: 12px;
+  }
+
+  .nv-tabs__item {
+    min-height: 36px;
+    padding: 0 20px;
+  }
+}

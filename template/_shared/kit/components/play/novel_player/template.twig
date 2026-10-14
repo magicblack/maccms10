@@ -1,0 +1,160 @@
+{#
+  小说阅读器组件 — 沉浸式正文 + 顶栏 / 底栏 / 目录 / 阅读设置
+  参数：obj, param, popedom（可选）
+#}
+
+{% set _popedom = popedom|default({}) %}
+{% set _props = props|default({}) %}
+{% set show_settings = _props.show_settings is not defined ? true : _props.show_settings %}
+{% set show_share = _props.show_share is not defined ? true : _props.show_share %}
+{% set show_catalog_btn = _props.show_catalog_btn is not defined ? true : _props.show_catalog_btn %}
+{% set show_fav = _props.show_fav is not defined ? true : _props.show_fav %}
+{% set default_theme = _props.default_theme|default('day') %}
+{% if default_theme not in ['day','sepia','night'] %}{% set default_theme = 'day' %}{% endif %}
+{% set pages = obj.art_page_list|default({}) %}
+{% set page_total = pages|length > 0 ? pages|length : 1 %}
+{% set req_page = param.page|default(1) %}
+{% set cur_page = req_page < 1 ? 1 : (req_page > page_total ? page_total : req_page) %}
+{% set cur = pages[cur_page]|default({}) %}
+{% set chapter_title = cur.title|default('第' ~ cur_page ~ '章') %}
+{% set prev_page = cur_page > 1 ? cur_page - 1 : 1 %}
+{% set next_page = (page_total > 0 and cur_page < page_total) ? cur_page + 1 : cur_page %}
+{% set can_read = _popedom.code|default(1) <= 1 %}
+{% set has_prev = cur_page > 1 %}
+{% set has_next = page_total > 0 and cur_page < page_total %}
+{% set play_fav_id = mac_user_fav_id(obj.art_id, 2) %}
+{% set play_url = mac_url('art/read', {id: obj.art_id, page: cur_page}) %}
+{% set detail_url = mac_url_art_detail(obj) %}
+
+<div class="novel-player" data-component="novel_player" data-mac-novel-player data-mac-novel-theme="{{ default_theme }}"
+     data-mid="2" data-id="{{ obj.art_id|default('') }}"
+     data-mac-novel-name="{{ obj.art_name }}"
+     data-mac-novel-pic="{{ mac_url_img(obj.art_pic) }}"
+     data-mac-novel-part="{{ chapter_title }}"
+     data-jumpurl="{{ obj.art_jumpurl|default('') }}"
+     data-prev-url="{{ has_prev ? mac_url('art/read', {id: obj.art_id, page: prev_page}) : '' }}"
+     data-next-url="{{ has_next ? mac_url('art/read', {id: obj.art_id, page: next_page}) : '' }}">
+  <header class="novel-player__top">
+    <a class="novel-player__back" href="{{ detail_url }}" data-lang-aria-label="art_read_back_detail" aria-label="返回详情" data-mac-novel-back>
+      {% include "page-builder-components/_shared/component_icon.twig" with { component: 'novel_player', name: 'chevron-right', class: 'novel-player__back-ico' } %}
+    </a>
+    <div class="novel-player__head">
+      <h1 class="novel-player__chapter">{{ chapter_title }}</h1>
+      <p class="novel-player__sub">{{ obj.art_name }} · <span data-lang="art_read_chapter_total">共</span>{{ page_total }}<span data-lang="art_read_chapter_unit">章</span></p>
+    </div>
+    <button type="button" class="novel-player__settings-btn"
+            data-mac-novel-settings-open
+            aria-expanded="false"
+            data-lang-aria-label="art_read_settings"
+            aria-label="阅读设置"
+            {% if not show_settings %}hidden{% endif %}>
+      {% include "page-builder-components/_shared/component_icon.twig" with { component: 'novel_player', name: 'icon-settings', class: 'novel-player__settings-ico' } %}
+    </button>
+    <button type="button" class="novel-player__share"
+            data-mac-share-open
+            data-mac-share-url="{{ play_url }}"
+            data-mac-share-title="{{ obj.art_name }} {{ chapter_title }}"
+            data-lang-aria-label="string_vod_share"
+            aria-label="分享"
+            {% if not show_share %}hidden{% endif %}>
+      {% include "page-builder-components/_shared/component_icon.twig" with { component: 'novel_player', name: 'icon-share', class: 'novel-player__share-ico' } %}
+    </button>
+  </header>
+
+  <div class="novel-player__stage" id="novel-player-stage">
+    {% if can_read %}
+    <article class="novel-player__article">
+      <div class="novel-player__prose prose" id="novelContent" data-mac-novel-content>
+        {% if cur.content is defined and cur.content %}
+          {{ mac_url_content_img(cur.content)|raw }}
+        {% elseif obj.art_content and page_total <= 1 %}
+          {{ mac_url_content_img(obj.art_content)|raw }}
+        {% else %}
+          {% include "page-builder-components/empty_state/template.twig" with {props: {title: '本章暂无内容', title_lang: 'novel_chapter_empty_title', preset: ''}} %}
+        {% endif %}
+      </div>
+    </article>
+    {% else %}
+    {% include "page-builder-components/_shared/player_popedom_gate.twig" with {obj: obj, param: param, popedom: _popedom, mid: 2} %}
+    {% endif %}
+  </div>
+
+  <nav class="novel-player__bar" data-lang-aria-label="manga_read_actions" aria-label="阅读操作">
+    <a class="novel-player__bar-item" href="{{ detail_url }}">
+      {% include "page-builder-components/_shared/component_icon.twig" with { component: 'novel_player', name: 'channel-art', class: 'novel-player__bar-ico' } %}
+      <span data-lang="art_read_detail">详情</span>
+    </a>
+    {% if has_prev %}
+    <a class="novel-player__bar-item novel-player__bar-item--primary" href="{{ mac_url('art/read', {id: obj.art_id, page: prev_page}) }}">
+      {% include "page-builder-components/_shared/component_icon.twig" with { component: 'novel_player', name: 'chevron-right', class: 'novel-player__bar-ico novel-player__bar-ico--prev' } %}
+      <span data-lang="art_read_prev_chapter">上一章</span>
+    </a>
+    {% else %}
+    <span class="novel-player__bar-item novel-player__bar-item--primary is-disabled" aria-disabled="true">
+      {% include "page-builder-components/_shared/component_icon.twig" with { component: 'novel_player', name: 'chevron-right', class: 'novel-player__bar-ico novel-player__bar-ico--prev' } %}
+      <span data-lang="art_read_prev_chapter">上一章</span>
+    </span>
+    {% endif %}
+    {% if has_next %}
+    <a class="novel-player__bar-item novel-player__bar-item--primary" href="{{ mac_url('art/read', {id: obj.art_id, page: next_page}) }}">
+      {% include "page-builder-components/_shared/component_icon.twig" with { component: 'novel_player', name: 'chevron-right', class: 'novel-player__bar-ico novel-player__bar-ico--next' } %}
+      <span data-lang="art_read_next_chapter">下一章</span>
+    </a>
+    {% else %}
+    <span class="novel-player__bar-item novel-player__bar-item--primary is-disabled" aria-disabled="true">
+      {% include "page-builder-components/_shared/component_icon.twig" with { component: 'novel_player', name: 'chevron-right', class: 'novel-player__bar-ico novel-player__bar-ico--next' } %}
+      <span data-lang="art_read_next_chapter">下一章</span>
+    </span>
+    {% endif %}
+    {% if show_fav %}
+    <button type="button"
+            class="novel-player__bar-item mac_ulog{% if play_fav_id %} is_fav{% endif %}"
+            data-type="2" data-mid="2" data-id="{{ obj.art_id }}"
+            data-uid="{{ play_fav_id ?: '' }}">
+      {% include "page-builder-components/_shared/component_icon.twig" with { component: 'novel_player', name: 'icon-fav', class: 'novel-player__bar-ico' } %}
+      <span>{% if play_fav_id %}<span data-lang="string_isfav">已收藏</span>{% else %}<span data-lang="string_fav">收藏</span>{% endif %}</span>
+    </button>
+    {% endif %}
+    {% if show_catalog_btn %}
+    <button type="button" class="novel-player__bar-item" data-mac-novel-catalog-open aria-expanded="false">
+      {% include "page-builder-components/_shared/component_icon.twig" with { component: 'novel_player', name: 'film', class: 'novel-player__bar-ico' } %}
+      <span data-lang="art_read_toc">目录</span>
+    </button>
+    {% endif %}
+  </nav>
+
+  <aside class="novel-player__settings" data-mac-novel-settings hidden aria-hidden="true">
+    <div class="novel-player__settings-mask" data-mac-novel-settings-close tabindex="-1"></div>
+    <div class="novel-player__settings-panel" role="dialog" aria-modal="true" data-lang-aria-label="art_read_settings" aria-label="阅读设置">
+      <div class="novel-player__settings-head">
+        <h2 class="novel-player__settings-title" data-lang="art_read_settings">阅读设置</h2>
+        <button type="button" class="novel-player__settings-close" data-mac-novel-settings-close data-lang-aria-label="string_close" aria-label="关闭">×</button>
+      </div>
+      <div class="novel-player__settings-body">
+        <div class="novel-player__settings-group">
+          <p class="novel-player__settings-label" data-lang="art_read_theme">主题</p>
+          <div class="novel-player__settings-chips" role="group" data-lang-aria-label="reader_theme_aria" aria-label="阅读主题">
+            <button type="button" class="novel-player__chip{% if default_theme == 'day' %} is-on{% endif %}" data-mac-novel-theme="day" data-lang="art_read_day">日间</button>
+            <button type="button" class="novel-player__chip{% if default_theme == 'sepia' %} is-on{% endif %}" data-mac-novel-theme="sepia" data-lang="reader_theme_eye_care">护眼</button>
+            <button type="button" class="novel-player__chip{% if default_theme == 'night' %} is-on{% endif %}" data-mac-novel-theme="night" data-lang="art_read_night">夜间</button>
+          </div>
+        </div>
+        <div class="novel-player__settings-group">
+          <p class="novel-player__settings-label" data-lang="art_read_font_size">字号</p>
+          <div class="novel-player__settings-chips" role="group" data-lang-aria-label="art_read_font_size" aria-label="字号">
+            <button type="button" class="novel-player__chip" data-mac-novel-font="sm">A-</button>
+            <button type="button" class="novel-player__chip is-on" data-mac-novel-font="md">A</button>
+            <button type="button" class="novel-player__chip" data-mac-novel-font="lg">A+</button>
+            <button type="button" class="novel-player__chip" data-mac-novel-font="xl" data-lang="art_read_font_xl">特大</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  {% if can_read %}
+  <div class="mac_ulog_set hide" data-mac-novel-ulog
+       data-mid="2" data-id="{{ obj.art_id }}"
+       data-sid="1" data-nid="{{ cur_page }}" data-type="4"></div>
+  {% endif %}
+</div>

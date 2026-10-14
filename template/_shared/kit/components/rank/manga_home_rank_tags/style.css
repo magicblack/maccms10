@@ -1,0 +1,336 @@
+[data-component="manga_home_rank_tags"].mc-sec {
+  margin: 48px 0 8px;
+}
+
+[data-component="manga_home_rank_tags"] .mc-sec__head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 6px 12px;
+  margin-bottom: 16px;
+  padding: 0 12px;
+  box-sizing: border-box;
+}
+
+[data-component="manga_home_rank_tags"] .mc-sec__title {
+  margin: 0;
+  flex: 0 0 auto;
+  font-size: 32px;
+  font-weight: 400;
+  color: var(--c-text);
+  letter-spacing: 0.02em;
+  line-height: 1.2;
+}
+
+[data-component="manga_home_rank_tags"] .mc-sec__actions {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: 12px;
+  margin-left: auto;
+}
+
+[data-component="manga_home_rank_tags"] .mc-sec__more {
+  flex: 0 0 auto;
+  margin-left: 0;
+  align-self: center;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 32px;
+  min-width: 44px;
+  padding: 6px 14px;
+  border: 0;
+  border-radius: var(--radius-pill, 999px);
+  background: var(--c-surface-2);
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.4;
+  color: var(--c-text-muted);
+  text-decoration: none;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: color var(--dur, 0.2s) var(--ease, ease), background var(--dur, 0.2s) var(--ease, ease);
+}
+
+[data-component="manga_home_rank_tags"] .mc-sec__more:hover {
+  color: var(--c-accent);
+  background: var(--c-accent-soft);
+}
+
+[data-component="manga_home_rank_tags"] .mc-sec__more:focus-visible {
+  outline: 2px solid var(--c-accent-glow);
+  outline-offset: 2px;
+  border-radius: var(--radius-sm, 4px);
+}
+
+[data-component="manga_home_rank_tags"] .mc-rank-tabs {
+  display: inline-flex;
+  flex: 0 1 auto;
+  flex-wrap: nowrap;
+  align-items: center;
+  gap: 2px;
+  margin-left: 0;
+  padding: 4px;
+  border-radius: 999px;
+  background: rgba(15, 23, 42, 0.05);
+  border: 1px solid rgba(15, 23, 42, 0.06);
+  box-sizing: border-box;
+}
+
+[data-component="manga_home_rank_tags"] .mc-rank-tabs button,
+[data-component="manga_home_rank_tags"] .mc-rank-tabs__link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 32px;
+  min-width: 52px;
+  padding: 0 16px;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1;
+  color: var(--c-text-muted, #61666d);
+  text-decoration: none;
+  white-space: nowrap;
+  cursor: pointer;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  box-sizing: border-box;
+  transition: background var(--dur, 0.2s) var(--ease, ease), color var(--dur, 0.2s) var(--ease, ease), box-shadow var(--dur, 0.2s) var(--ease, ease);
+}
+
+[data-component="manga_home_rank_tags"] .mc-rank-tabs button:hover,
+[data-component="manga_home_rank_tags"] .mc-rank-tabs__link:hover {
+  color: var(--c-text, #18191c);
+}
+
+[data-component="manga_home_rank_tags"] .mc-rank-tabs button:hover:not(.is-on),
+[data-component="manga_home_rank_tags"] .mc-rank-tabs__link:hover {
+  background: rgba(15, 23, 42, 0.04);
+}
+
+[data-component="manga_home_rank_tags"] .mc-rank-tabs button.is-on {
+  background: #fff;
+  color: var(--c-accent, #4f46e5);
+  font-weight: 600;
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.08);
+}
+
+[data-component="manga_home_rank_tags"] .mc-rank-tabs button:focus-visible,
+[data-component="manga_home_rank_tags"] .mc-rank-tabs__link:focus-visible {
+  outline: 2px solid var(--c-accent, #4f46e5);
+  outline-offset: 2px;
+}
+
+[data-component="manga_home_rank_tags"] .mc-rank-panels {
+  padding: 0 12px;
+  box-sizing: border-box;
+}
+
+[data-component="manga_home_rank_tags"] .mc-rank-grid {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: none;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 16px 14px;
+  box-sizing: border-box;
+}
+
+[data-component="manga_home_rank_tags"] .mc-rank-grid.is-on {
+  display: grid;
+}
+
+[data-component="manga_home_rank_tags"] .mc-rank-grid > li {
+  min-width: 0;
+}
+
+[data-component="manga_home_rank_tags"] .mc-rank-card {
+  position: relative;
+  display: block;
+  padding-top: 10px;
+  text-decoration: none;
+}
+
+[data-component="manga_home_rank_tags"] .mc-rank-card__n {
+  position: absolute;
+  left: -2px;
+  top: 0;
+  z-index: 2;
+  font-size: 56px;
+  font-weight: 800;
+  line-height: 0.85;
+  color: rgba(79, 70, 229, 0.55);
+  pointer-events: none;
+  font-variant-numeric: tabular-nums;
+  -webkit-text-stroke: 2px rgba(255, 255, 255, 0.92);
+  paint-order: stroke fill;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+}
+
+[data-component="manga_home_rank_tags"] .mc-rank-card:nth-child(1) .mc-rank-card__n {
+  color: rgba(255, 122, 34, 0.82);
+}
+
+[data-component="manga_home_rank_tags"] .mc-rank-card:nth-child(2) .mc-rank-card__n {
+  color: rgba(160, 170, 190, 0.78);
+}
+
+[data-component="manga_home_rank_tags"] .mc-rank-card:nth-child(3) .mc-rank-card__n {
+  color: rgba(205, 140, 90, 0.78);
+}
+
+[data-component="manga_home_rank_tags"] .mc-rank-card__cover {
+  position: relative;
+  z-index: 1;
+  display: block;
+  aspect-ratio: 3 / 4;
+  margin-left: 16px;
+  border-radius: 8px;
+  background: var(--c-surface-2, #e7e9ec) center / cover no-repeat;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+[data-component="manga_home_rank_tags"] .mc-rank-card__body {
+  min-width: 0;
+}
+
+[data-component="manga_home_rank_tags"] .mc-rank-card__name {
+  display: block;
+  margin: 10px 0 6px 16px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--c-text, #1c1c1f);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+[data-component="manga_home_rank_tags"] .mc-rank-card:hover .mc-rank-card__name {
+  color: var(--c-accent);
+}
+
+[data-component="manga_home_rank_tags"] .mc-rank-card__meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin: 0 0 0 16px;
+  font-size: 12px;
+  font-style: normal;
+  color: var(--c-text-muted, #90929b);
+}
+
+[data-component="manga_home_rank_tags"] .mc-rank-card__tag {
+  display: inline-flex;
+  align-items: center;
+  min-height: 20px;
+  padding: 0 7px;
+  border-radius: 6px;
+  background: var(--c-accent-soft);
+  color: var(--c-accent);
+  font-size: 11px;
+  font-weight: 600;
+  font-style: normal;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+
+@media (max-width: 900px) {
+  [data-component="manga_home_rank_tags"] .mc-rank-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  [data-component="manga_home_rank_tags"] .mc-rank-card__n {
+    font-size: 44px;
+  }
+}
+
+@media (max-width: 768px) {
+  [data-component="manga_home_rank_tags"].mc-sec {
+    margin: 24px 0 4px;
+  }
+
+  [data-component="manga_home_rank_tags"] .mc-sec__head {
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px 10px;
+    margin-bottom: 12px;
+    padding: 0 12px;
+  }
+
+  [data-component="manga_home_rank_tags"] .mc-sec__title {
+    font-size: 20px;
+    font-weight: 600;
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+
+  [data-component="manga_home_rank_tags"] .mc-sec__actions {
+    display: contents;
+  }
+
+  [data-component="manga_home_rank_tags"] .mc-sec__more {
+    flex: 0 0 auto;
+    align-self: center;
+    margin-left: 0;
+    margin-top: 0;
+    min-height: 32px;
+    padding: 5px 12px;
+    font-size: 12px;
+  }
+
+  [data-component="manga_home_rank_tags"] .mc-rank-tabs {
+    flex: 1 1 100%;
+    order: 3;
+    margin-left: 0;
+    width: 100%;
+    max-width: none;
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 2px;
+    padding: 3px;
+    overflow: visible;
+    border-radius: 999px;
+    background: rgba(15, 23, 42, 0.05);
+    border: 1px solid rgba(15, 23, 42, 0.06);
+    box-sizing: border-box;
+  }
+
+  [data-component="manga_home_rank_tags"] .mc-rank-tabs button,
+  [data-component="manga_home_rank_tags"] .mc-rank-tabs__link {
+    flex: 1 1 0;
+    min-width: 0;
+    min-height: 44px;
+    padding: 8px 10px;
+    font-size: 14px;
+    border: 0;
+    background: transparent;
+  }
+
+  [data-component="manga_home_rank_tags"] .mc-rank-tabs button.is-on {
+    background: #fff;
+    box-shadow: 0 1px 3px rgba(15, 23, 42, 0.08);
+  }
+
+  [data-component="manga_home_rank_tags"] .mc-rank-panels {
+    padding: 0 12px;
+  }
+
+  [data-component="manga_home_rank_tags"] .mc-rank-grid {
+    gap: 12px 10px;
+  }
+
+  [data-component="manga_home_rank_tags"] .mc-rank-card__n {
+    font-size: 40px;
+  }
+}
+
+@media (max-width: 560px) {
+  [data-component="manga_home_rank_tags"] .mc-rank-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}

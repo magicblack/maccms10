@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1" xmlns:video="http://www.google.com/schemas/sitemap-video/1.1">
+{% for v in mac_vod({num: 100, order: 'desc', by: 'time'}).list|default([]) %}	<url>
+		<loc>{{ maccms.http_type }}{{ maccms.site_url }}{{ mac_url_vod_detail(v) }}</loc>
+		<image:image>
+			<image:loc>{{ mac_url_img(v.vod_pic) }}</image:loc>
+		</image:image>
+		<video:video>
+			<video:title>{{ v.vod_name }}</video:title>
+			<video:content_loc>{{ maccms.http_type }}{{ maccms.site_url }}{{ mac_url_vod_play(v, {sid: 1, nid: 1}) }}</video:content_loc>
+			<video:category>{{ v.type.type_name|default('') }}</video:category>
+			<video:view_count>{{ v.vod_hits }}</video:view_count>
+			<video:description>
+				<![CDATA[{{ mac_filter_html(v.vod_content) }}]]>
+			</video:description>
+		</video:video>
+	</url>
+{% endfor %}{% for a in mac_art({num: 100, order: 'desc', by: 'time'}).list|default([]) %}	<url>
+		<loc>{{ maccms.http_type }}{{ maccms.site_url }}{{ mac_url_art_detail(a) }}</loc>
+		<image:image>
+			<image:loc>
+				<![CDATA[{{ mac_url_img(a.art_pic) }}]]>
+			</image:loc>
+		</image:image>
+	</url>
+{% endfor %}</urlset>

@@ -1,0 +1,7 @@
+{# 统一排行榜：style 决定侧栏榜单 / 内联序号列表 #}
+{% set style = props.style|default('panel') %}
+{% if style == 'inline' %}
+  {% include "page_builder/rank_inline.twig" with {props: props} %}
+{% else %}
+  {% include "page_builder/rank_list.twig" with {props: props} %}
+{% endif %}

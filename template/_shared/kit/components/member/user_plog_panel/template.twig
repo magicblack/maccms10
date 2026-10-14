@@ -1,0 +1,51 @@
+{# 积分记录 — 消费控制器 assign 的 list / __PAGING__ / param #}
+{% import "@shared/components.twig" as c %}
+{% set _filter = param.filter|default('')|trim %}
+{% set rows = list|default([]) %}
+{# 收入类型须与 index/api User::plog 的 income 筛选一致；14=邀请奖励金币、15=邀请赠送会员 #}
+{% set _income_types = [1, 2, 3, 4, 5, 6, 10, 11, 14, 15] %}
+
+<div class="pb-plog" data-component="user_plog_panel">
+  <nav class="member-tabs member-tabs--plog" data-lang-aria-label="str_shaixuan" aria-label="筛选">
+    <a href="{{ mac_url('user/plog') }}"
+       class="member-tabs__link{% if _filter == '' %} is-on{% endif %}"
+       {% if _filter == '' %}aria-current="page"{% endif %}
+       data-lang="string_all">全部</a>
+    <a href="{{ mac_url('user/plog', {filter: 'income'}) }}"
+       class="member-tabs__link{% if _filter == 'income' %} is-on{% endif %}"
+       {% if _filter == 'income' %}aria-current="page"{% endif %}
+       data-lang="user_plog_income">收入</a>
+    <a href="{{ mac_url('user/plog', {filter: 'expense'}) }}"
+       class="member-tabs__link{% if _filter == 'expense' %} is-on{% endif %}"
+       {% if _filter == 'expense' %}aria-current="page"{% endif %}
+       data-lang="user_plog_expense">支出</a>
+  </nav>
+
+  <ul class="member-rows pb-plog__rows">
+    {% for p in rows %}
+    {% set _ptype = p.plog_type|default(0) + 0 %}
+    {% set _income = _ptype in _income_types %}
+    <li class="member-row pb-plog__row">
+      <div class="member-row__body">
+        <h3 class="member-row__title">{{ p.plog_remarks|default('') }}</h3>
+        <p class="member-row__meta">
+          <span class="pb-plog__points{% if _income %} pb-plog__points--income{% else %} pb-plog__points--expense{% endif %}">
+            {% if _ptype == 15 %}<span data-lang="user_plog_vip_gift">赠送会员</span>{% else %}{% if _income %}+{% else %}-{% endif %}{{ p.plog_points|default(0) }}{% endif %}
+          </span>
+          <span class="pb-plog__sep" aria-hidden="true">·</span>
+          <time datetime="{{ p.plog_time|date('c') }}">{{ mac_day(p.plog_time)|raw }}</time>
+        </p>
+      </div>
+    </li>
+    {% else %}
+    <li class="member-empty pb-empty-state" style="list-style:none">
+      <p class="pb-empty-state__title" data-lang="user_plog_empty">暂无金币记录</p>
+      <p class="pb-empty-state__hint" data-lang="user_plog_empty_hint">签到、充值或兑换后会显示在这里</p>
+    </li>
+    {% endfor %}
+  </ul>
+
+  {% if rows|length %}
+  {{ c.paging(__PAGING__|default({}), {class: 'pg pb-plog__paging member-pg', active_class: 'on'}) }}
+  {% endif %}
+</div>

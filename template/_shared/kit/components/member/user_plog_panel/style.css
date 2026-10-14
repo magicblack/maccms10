@@ -1,0 +1,57 @@
+[data-component="user_plog_panel"].pb-plog {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-width: 0;
+}
+
+[data-component="user_plog_panel"] .member-tabs--plog {
+  margin-bottom: 4px;
+}
+
+[data-component="user_plog_panel"] .pb-plog__rows {
+  margin: 0;
+}
+
+[data-component="user_plog_panel"] .pb-plog__row {
+  padding: 14px 16px;
+  border-radius: var(--radius-lg, 12px);
+  background: var(--c-surface, #fff);
+  border: 1px solid var(--c-border, rgba(0, 0, 0, 0.06));
+}
+
+[data-component="user_plog_panel"] .member-row__title {
+  margin: 0 0 6px;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.45;
+  color: var(--c-text, #18191c);
+  word-break: break-word;
+}
+
+[data-component="user_plog_panel"] .member-row__meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  margin: 0;
+  font-size: 13px;
+  color: var(--c-text-muted, #9499a0);
+}
+
+[data-component="user_plog_panel"] .pb-plog__points {
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+[data-component="user_plog_panel"] .pb-plog__points--income {
+  color: #16a34a;
+}
+
+[data-component="user_plog_panel"] .pb-plog__points--expense {
+  color: #dc2626;
+}
+
+[data-component="user_plog_panel"] .pb-plog__paging {
+  margin-top: 4px;
+}

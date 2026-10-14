@@ -1,0 +1,45 @@
+{
+    "id": "manga_mosaic_hero",
+    "label_key": "admin/themedesign/pb_block_manga_mosaic_hero",
+    "category": "carousel",
+    "kind": "carousel",
+    "styleMode": "component",
+    "peer_styles": [],
+    "assets": {
+        "css": "style.css",
+        "js": "script.js"
+    },
+    "palette": false,
+    "palette_inject": true,
+    "props": {
+        "bind": {
+            "type": "enum",
+            "default": "manga",
+            "values": ["vod", "manga", "art"],
+            "trait": "bind"
+        },
+        "type": {
+            "type": "category",
+            "mid": 12,
+            "default": 0,
+            "trait": "category"
+        },
+        "num": {
+            "type": "number",
+            "default": 24,
+            "min": 1,
+            "max": 50,
+            "trait": "count"
+        },
+        "by": {
+            "type": "enum",
+            "default": "hits_week",
+            "values": ["time", "hits", "hits_day", "hits_week", "hits_month", "score"],
+            "trait": "sort"
+        }
+    },
+    "context": {
+        "pageTypes": ["home", "list", "detail"],
+        "requires": []
+    }
+}

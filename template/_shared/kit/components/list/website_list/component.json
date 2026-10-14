@@ -1,0 +1,69 @@
+{
+    "id": "website_list",
+    "label_key": "admin/themedesign/pb_block_website_list",
+    "category": "list",
+    "kind": "content",
+    "palette": false,
+    "styleMode": "peer_only",
+    "peer_styles": ["_shared/css/peers.css"],
+    "assets": {
+        "css": "style.css",
+        "js": "script.js"
+    },
+    "props": {
+        "type": {
+            "type": "category",
+            "mid": 1,
+            "default": 0,
+            "trait": "category"
+        },
+        "num": {
+            "type": "number",
+            "default": 8,
+            "min": 1,
+            "max": 50,
+            "trait": "count"
+        },
+        "by": {
+            "type": "enum",
+            "default": "hits",
+            "values": ["time", "hits", "hits_day", "hits_week", "hits_month", "score"],
+            "trait": "sort"
+        },
+        "order": {
+            "type": "enum",
+            "default": "desc",
+            "values": ["desc", "asc"]
+        },
+        "paging": {
+            "type": "boolean",
+            "default": false,
+            "trait": "paging"
+        },
+        "pageurl": {
+            "type": "string",
+            "default": "website/show",
+            "trait": "pageurl"
+        },
+        "card": {
+            "type": "enum",
+            "default": "poster-h",
+            "values": ["poster-h", "poster-v"],
+            "trait": "card"
+        },
+        "ratio": {
+            "type": "string",
+            "default": "default",
+            "trait": "cover_ratio"
+        }
+    },
+    "context": {
+        "pageTypes": ["home", "list", "detail"],
+        "requires": []
+    },
+    "data": {
+        "source": "mac_website",
+        "listKey": "list",
+        "argsFromProps": ["num", "type", "by", "order", "paging", "pageurl"]
+    }
+}

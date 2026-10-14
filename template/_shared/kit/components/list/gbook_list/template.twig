@@ -1,0 +1,62 @@
+{% set num = props.num|default(20) %}
+{% set use_paging = props.paging|default(true) %}
+{% set list_title = props.title|default('')|trim %}
+{% set gbook_args = {num: num, order: 'desc', by: 'time'} %}
+{% if use_paging %}
+  {% set gbook_args = gbook_args|merge({paging: true, pageurl: props.pageurl|default('gbook/index')}) %}
+{% endif %}
+{% set res = mac_gbook(gbook_args) %}
+{% set list = res.list|default([]) %}
+{% if use_paging %}
+  {% set pg = mac_paging(res) %}
+{% endif %}
+{% set avatar_hues = ['var(--c-accent)', 'var(--c-link)', '#ff7f24', '#9c6ade', '#6bcf7f'] %}
+
+<div class="pb-gbook-list" data-component="gbook_list">
+  <div class="pb-gbook-panel pb-gbook-panel--list">
+    {% set hide_title = props.hide_title|default(false) %}
+    {% if not hide_title %}
+    <header class="pb-gbook-list__head">
+      <h2 class="pb-gbook-list__title"{% if list_title == '' %} data-lang="string_gbook_list"{% endif %}>{{ list_title != '' ? list_title : '全部留言' }}</h2>
+      <span class="pb-gbook-list__count" aria-label="留言总数" data-lang-aria-label="gbook_total_aria">{{ res.total|default(list|length) }} <span data-lang="string_gbook_t">条</span></span>
+    </header>
+    {% endif %}
+
+    {% if list is not empty %}
+    <ul class="pb-gbook-list__body">
+      {% for g in list %}
+      {% set hue = avatar_hues[loop.index0 % avatar_hues|length] %}
+      <li class="pb-gbook-item">
+        <span class="pb-gbook-item__avatar" style="--pb-gbook-avatar-bg: {{ hue }}" aria-hidden="true">{{ g.gbook_name|default('访客')|slice(0, 1) }}</span>
+        <article class="pb-gbook-item__body">
+          <header class="pb-gbook-item__meta">
+            <strong class="pb-gbook-item__name">{{ g.gbook_name|default('访客') }}</strong>
+            <time class="pb-gbook-item__time" datetime="{{ g.gbook_time }}">{{ mac_day(g.gbook_time)|raw }}</time>
+          </header>
+          <p class="pb-gbook-item__text">{{ g.gbook_content }}</p>
+          {% if g.gbook_reply|default('') %}
+          <div class="pb-gbook-item__reply">
+            <span class="pb-gbook-item__reply-tag" data-lang="gbook_official_reply">官方回复</span>
+            <p class="pb-gbook-item__reply-text">{{ g.gbook_reply }}</p>
+            {% if g.gbook_reply_time|default(0) > 0 %}
+            <time class="pb-gbook-item__reply-time" datetime="{{ g.gbook_reply_time }}">{{ mac_day(g.gbook_reply_time)|raw }}</time>
+            {% endif %}
+          </div>
+          {% endif %}
+        </article>
+      </li>
+      {% endfor %}
+    </ul>
+    {% else %}
+    <div class="pb-gbook-empty" role="status">
+      <p class="pb-gbook-empty__title" data-lang="string_gbook_mrly">还没有人留言哎！</p>
+      <p class="pb-gbook-empty__hint" data-lang="string_gbook_empty_hint">写下第一条留言，和我们聊聊吧</p>
+      <button type="button" class="pb-gbook-empty__cta" data-gbook-focus data-lang="string_gbook_wyly">我要留言</button>
+    </div>
+    {% endif %}
+  </div>
+</div>
+
+{% if use_paging and list is not empty and pg is defined %}
+{% include 'page-builder-components/paging/template.twig' with {props: {pg: pg}} %}
+{% endif %}

@@ -182,10 +182,13 @@ class Role extends Base
         $res['vod_info'] = null;
         if (!empty($res['role_rid'])) {
             $vodInfo = Db::name('vod')
-                ->field('vod_id,vod_name,vod_sub,vod_pic,vod_remarks,vod_score,vod_year,vod_area,vod_class,type_id,type_id_1')
+                ->field('vod_id,vod_name,vod_sub,vod_pic,vod_remarks,vod_duration,vod_score,vod_year,vod_area,vod_class,type_id,type_id_1')
                 ->where('vod_id', intval($res['role_rid']))
                 ->find();
             if ($vodInfo) {
+                $vodRows = [$vodInfo];
+                mac_vod_rows_episode_remarks($vodRows);
+                $vodInfo = $vodRows[0];
                 $vodInfo['vod_pic'] = mac_url_img($vodInfo['vod_pic'] ?? '');
                 $vodInfo['vod_link'] = mac_url_vod_detail($vodInfo);
                 $res['vod_info'] = $vodInfo;
@@ -220,8 +223,7 @@ class Role extends Base
     public function get_recommend(Request $request)
     {
         $param = $request->param();
-        $num   = isset($param['num']) ? (int)$param['num'] : 8;
-        $start = isset($param['start']) ? max(0, (int)$param['start']) : 0;
+        list($num, $start) = $this->clampNumStart($param, 8);
         $by    = isset($param['by']) ? trim($param['by']) : 'time';
         $rid   = isset($param['rid']) ? (int)$param['rid'] : 0;
         $level = isset($param['level']) ? trim($param['level']) : '';

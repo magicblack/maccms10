@@ -1,0 +1,8 @@
+{% import "page-builder-components/_shared/macros.twig" as pb %}
+<article class="pb-live-card" data-live-id="{{ lv.live_id }}">
+  <a class="pb-live-card__pic" href="{{ mac_url('live/play', {id: lv.live_id}) }}" title="{{ lv.live_name }}">
+    {{ pb.lazy_img(lv.live_pic, lv.live_name) }}
+  </a>
+  <div class="pb-live-card__title"><a href="{{ mac_url('live/play', {id: lv.live_id}) }}">{{ lv.live_name }}</a></div>
+  <div class="pb-live-card__meta">{{ lv.live_sub }}</div>
+</article>

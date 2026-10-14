@@ -17,6 +17,10 @@ class MeilisearchListBridge
         if (!MeilisearchService::enabled() || $wd === '' || trim($wd) === '') {
             return null;
         }
+        // 短英文词（SM 等）回到 MySQL，由 Vod::listCacheData 按 VodSearch::wdSql 匹配
+        if (\app\common\model\VodSearch::skipMeiliForWd('vod', $wd)) {
+            return null;
+        }
         $c = MeilisearchService::cfg();
         if (!empty($c['search_only_wd']) && (string)$c['search_only_wd'] === '1') {
             if ($name !== '' || $tag !== '' || $class !== '' || $actor !== '' || $director !== '') {

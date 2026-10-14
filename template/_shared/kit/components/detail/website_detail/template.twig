@@ -1,0 +1,59 @@
+{#
+  网址详情（twigspike website/detail：Logo + 资料 + 外链 + 介绍）
+#}
+{% set p = props|default({}) %}
+{% if obj.website_id|default(0) %}
+{% set cover = mac_url_img(obj.website_logo|default(obj.website_pic|default(''))) %}
+{% set title = obj.website_name|default('') %}
+{% set show_intro = p.show_intro is defined ? p.show_intro : true %}
+{% set visit_url = mac_url_website_index(obj) %}
+
+<div class="pb-entity-detail" data-component="website_detail">
+  <nav class="pb-entity-detail__crumb mac-crumb" aria-label="breadcrumb">
+    <a href="{{ maccms.path }}" data-lang="string_home">首页</a>
+    <span class="pb-entity-detail__crumb-sep" aria-hidden="true">/</span>
+    <a href="{{ mac_url('website/index') }}" data-lang="string_website_short">网址</a>
+    {% if obj.type.type_name|default('') %}
+    <span class="pb-entity-detail__crumb-sep" aria-hidden="true">/</span>
+    <a href="{{ mac_url_type(obj.type) }}">{{ obj.type.type_name }}</a>
+    {% endif %}
+    <span class="pb-entity-detail__crumb-sep" aria-hidden="true">/</span>
+    <span class="pb-entity-detail__crumb-cur">{{ title }}</span>
+  </nav>
+
+  <header class="pb-entity-detail__head">
+    <div class="pb-entity-detail__pic pb-entity-detail__pic--logo">
+      <img src="{{ cover }}" alt="{{ title }}" width="120" height="120" decoding="async" fetchpriority="high">
+    </div>
+    <div class="pb-entity-detail__body">
+      <h1 class="pb-entity-detail__title">{{ title }}</h1>
+      <dl class="pb-entity-detail__meta-dl">
+        {% if obj.website_area|default('') %}
+        <dt data-lang="string_show_dq">地区</dt><dd>{{ obj.website_area }}</dd>
+        {% endif %}
+        {% if obj.website_lang|default('') %}
+        <dt data-lang="string_show_yy">语言</dt><dd>{{ obj.website_lang }}</dd>
+        {% endif %}
+        {% if obj.website_remarks|default('') %}
+        <dt data-lang="mall_remarks">备注</dt><dd>{{ obj.website_remarks }}</dd>
+        {% endif %}
+      </dl>
+      {% if visit_url %}
+      <div class="pb-entity-detail__actions">
+        <a class="pb-entity-detail__cta" href="{{ visit_url }}" target="_blank" rel="nofollow noopener">
+          {% include "page-builder-components/_shared/component_icon.twig" with { component: 'website_detail', name: 'channel-map', class: 'pb-entity-detail__cta-ico', label: '', mode: 'img' } %}
+          <span data-lang="string_website_go">访问网站</span>
+        </a>
+      </div>
+      {% endif %}
+    </div>
+  </header>
+
+  {% if show_intro and obj.website_content|default('')|trim %}
+  <section class="pb-entity-detail__panel" id="website-intro">
+    <h2 class="pb-entity-detail__panel-title" data-lang="string_website_intro">网站介绍</h2>
+    <div class="pb-entity-detail__panel-body prose">{{ obj.website_content|raw }}</div>
+  </section>
+  {% endif %}
+</div>
+{% endif %}

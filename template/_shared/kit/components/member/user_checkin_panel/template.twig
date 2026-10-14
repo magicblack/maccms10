@@ -1,0 +1,44 @@
+{# 每日签到 #}
+{% set _pb_shared_img = maccms.path_tpl|default('') ~ 'page-builder-components/_shared/img/' %}
+{% set _panel_img = maccms.path_tpl|default('') ~ 'page-builder-components/user_checkin_panel/assets/img/' %}
+<div id="mac-user-checkin-root" data-component="user_checkin_panel"
+     data-coin-img="{{ _pb_shared_img }}recharge/recharge-coin.png"
+     data-check-ico="{{ _panel_img }}checkin/milestone-check.png">
+  <div class="uc-checkin-sheet">
+    <div class="uc-checkin-hero-card">
+      <div class="uc-hero__user" id="mac-user-checkin-hero" data-default-avatar="{{ _panel_img }}member/touxiang.png">
+        <span class="uc-hero__avatar-wrap">
+          {% include "page-builder-components/_shared/user_avatar.twig" with {uid: user.user_id, class: 'uc-hero__avatar mac-avatar__img', size: 56} %}
+        </span>
+        <div class="uc-hero__stats">
+          <p class="uc-hero__label" data-lang="user_checkin_total_label">累计领取金币</p>
+          <p class="uc-hero__value">
+            <img class="uc-hero__coin-ico" src="{{ _pb_shared_img }}recharge/recharge-coin.png" width="22" height="22" alt="" decoding="async">
+            <span class="uc-hero__num">0</span>
+          </p>
+        </div>
+      </div>
+    </div>
+    <div class="uc-checkin-card uc-checkin-card--main">
+      <section class="uc-streak">
+        <p class="uc-streak__line">
+          <span class="uc-streak__line-text">
+            <span data-lang="user_checkin_streak_before">已连续签到</span>
+            <strong class="uc-streak__num" id="mac-checkin-serial">0</strong>
+            <span data-lang="user_checkin_streak_after">天</span>
+          </span>
+        </p>
+        <p class="uc-streak__hint" id="mac-checkin-next-hint"></p>
+      </section>
+      <section class="uc-milestones">
+        <p class="uc-milestones__guest-msg" id="mac-checkin-milestones-guest" data-lang="user_checkin_milestones_login" hidden>登录后查看签到里程碑</p>
+        <div class="uc-milestones__grid" id="mac-checkin-milestones-root" hidden></div>
+      </section>
+      <div class="uc-cta-wrap" id="mac-checkin-cta-wrap"></div>
+    </div>
+    <section class="uc-rules" aria-labelledby="uc-rules-h">
+      <h2 class="uc-rules__title" id="uc-rules-h" data-lang="user_checkin_rules_title">签到规则</h2>
+      <ol class="uc-rules__list" id="mac-checkin-rules-list"></ol>
+    </section>
+  </div>
+</div>

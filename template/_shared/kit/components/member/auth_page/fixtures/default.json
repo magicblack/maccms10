@@ -1,0 +1,13 @@
+{
+    "props": {
+        "panel": "login",
+        "expand_invite": false,
+        "hero_title": "",
+        "hero_desc": "",
+        "hero_image": "",
+        "hero_image_mobile": "",
+        "show_hero": true,
+        "layout": "split"
+    },
+    "context": []
+}

@@ -94,10 +94,19 @@ class Pwa extends Base
         $tplDir = isset($site['template_dir']) ? (string)$site['template_dir'] : 'default';
         $swFile = ROOT_PATH . 'template' . DS . $tplDir . DS . 'asset' . DS . 'pwa' . DS . 'sw.js';
 
+        // 薄壳 / 缺 PWA 资源的主题：回退到 default，避免 404 留下坏 SW 劫持整站（浏览器白屏）
+        if (!is_file($swFile) && $tplDir !== 'default') {
+            $swFile = ROOT_PATH . 'template' . DS . 'default' . DS . 'asset' . DS . 'pwa' . DS . 'sw.js';
+        }
+
+        header('Content-Type: application/javascript; charset=utf-8');
+        header('X-Content-Type-Options: nosniff');
+        header('Service-Worker-Allowed: /');
+        header('Cache-Control: no-cache');
+
         if (!is_file($swFile)) {
-            header('HTTP/1.0 404 Not Found');
-            header('Content-Type: application/javascript; charset=utf-8');
-            echo '// PWA service worker not found';
+            // 仍无文件时下发自注销 SW，让已注册的坏客户端自动恢复
+            echo $this->killSwitchSwJs();
             exit;
         }
 
@@ -110,12 +119,39 @@ class Pwa extends Base
         }
         $js = str_replace('__MAC_PATH__', $macPath, $js);
 
-        header('Content-Type: application/javascript; charset=utf-8');
-        header('X-Content-Type-Options: nosniff');
-        header('Service-Worker-Allowed: /');
-        header('Cache-Control: no-cache');
         echo $js;
         exit;
+    }
+
+    /**
+     * 自注销 Service Worker：清缓存并 unregister，随后刷新受控页面。
+     * @return string
+     */
+    protected function killSwitchSwJs()
+    {
+        return <<<'JS'
+'use strict';
+self.addEventListener('install', function (event) {
+  event.waitUntil(self.skipWaiting());
+});
+self.addEventListener('activate', function (event) {
+  event.waitUntil(
+    caches.keys().then(function (keys) {
+      return Promise.all(keys.map(function (k) { return caches.delete(k); }));
+    }).then(function () {
+      return self.registration.unregister();
+    }).then(function () {
+      return self.clients.matchAll({ type: 'window' });
+    }).then(function (clients) {
+      clients.forEach(function (c) {
+        if (c && typeof c.navigate === 'function') {
+          c.navigate(c.url);
+        }
+      });
+    })
+  );
+});
+JS;
     }
 
     public function offline()

@@ -1,0 +1,19 @@
+{
+    "id": "live_player",
+    "label_key": "admin/themedesign/pb_block_live_player",
+    "category": "play",
+    "kind": "player",
+    "palette": false,
+    "palette_inject": true,
+    "styleMode": "component",
+    "peer_styles": [],
+    "assets": {
+        "css": "style.css",
+        "js": "script.js"
+    },
+    "props": {},
+    "context": {
+        "pageTypes": ["play"],
+        "requires": ["live_id"]
+    }
+}

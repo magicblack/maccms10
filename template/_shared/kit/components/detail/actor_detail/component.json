@@ -1,0 +1,45 @@
+{
+    "id": "actor_detail",
+    "label_key": "admin/themedesign/pb_block_actor_detail",
+    "category": "detail",
+    "kind": "detail",
+    "palette": false,
+    "styleMode": "peer_only",
+    "peer_styles": [
+        "shared/css/entity_detail.css"
+    ],
+    "assets": {
+        "css": "style.css",
+        "js": "script.js"
+    },
+    "props": {
+        "show_intro": {
+            "type": "boolean",
+            "default": true,
+            "trait": "show_intro"
+        },
+        "num": {
+            "type": "number",
+            "default": 12,
+            "min": 4,
+            "max": 48,
+            "trait": "count"
+        },
+        "vod_title": {
+            "type": "string",
+            "default": "",
+            "trait": "title"
+        },
+        "vod_title_lang": {
+            "type": "string",
+            "default": "string_xgtj",
+            "trait": "title_lang"
+        }
+    },
+    "context": {
+        "pageTypes": [
+            "detail"
+        ],
+        "requires": []
+    }
+}

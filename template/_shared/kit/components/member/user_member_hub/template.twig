@@ -1,0 +1,120 @@
+{# 会员中心首页 — 中性玻璃风素材 + 现有布局 #}
+{% if user.user_id|default(0) %}
+{% set _hub_name = user.user_nick_name|default('')|trim %}
+{% if _hub_name == '' %}{% set _hub_name = user.user_name|default('') %}{% endif %}
+<div class="pb-member-hub" data-component="user_member_hub">
+  <div class="pb-member-hub__hero">
+    <span class="pb-member-hub__deco pb-member-hub__deco--wave" aria-hidden="true"></span>
+    <span class="pb-member-hub__deco pb-member-hub__deco--crystal" aria-hidden="true"></span>
+    <a class="pb-member-hub__profile-link" href="{{ mac_url('user/info') }}" data-lang-aria-label="string_actor_grzl" aria-label="个人资料">
+      {% include "page-builder-components/_shared/user_avatar.twig" with {
+        uid: user.user_id,
+        class: 'pb-member-hub__avatar',
+        size: 72,
+        alt: _hub_name
+      } %}
+      <span class="pb-member-hub__meta">
+        <strong class="pb-member-hub__name">{{ _hub_name }}</strong>
+        {% if user.group.group_name|default('') %}
+        <span class="pb-member-hub__group">
+          <span class="pb-member-hub__group-ico" aria-hidden="true">
+            {% include "page-builder-components/_shared/component_icon.twig" with { component: 'user_member_hub', name: 'vip', class: 'pb-member-hub__group-svg', mode: 'img' } %}
+          </span>
+          <span class="pb-member-hub__group-text">{{ user.group.group_name }}</span>
+        </span>
+        {% endif %}
+      </span>
+      <span class="pb-member-hub__profile-go" aria-hidden="true">
+        {% include "page-builder-components/_shared/component_icon.twig" with { component: 'member_hub_menu', name: 'chevron-right', class: 'pb-member-hub__profile-go-ico', mode: 'img' } %}
+      </span>
+    </a>
+
+    <a class="pb-member-hub__vip" href="{{ mac_url('user/upgrade') }}">
+      <span class="pb-member-hub__deco pb-member-hub__deco--crown" aria-hidden="true"></span>
+      <span class="pb-member-hub__vip-copy">
+        <strong class="pb-member-hub__vip-title" data-lang="play_mssj">马上升级</strong>
+        <span class="pb-member-hub__vip-desc" data-lang="member_vip_promo_desc">解锁高清播放与专属权益</span>
+      </span>
+      <span class="pb-member-hub__vip-cta" data-lang="user_recharge">充值中心</span>
+    </a>
+
+    <div class="pb-member-hub__stats" role="list">
+      <div class="pb-member-hub__stat" role="listitem">
+        <span class="pb-member-hub__stat-ico" aria-hidden="true">
+          {% include "page-builder-components/_shared/component_icon.twig" with { component: 'user_member_hub', name: 'points', class: 'pb-member-hub__stat-svg', mode: 'img' } %}
+        </span>
+        <span class="pb-member-hub__stat-body">
+          <span class="pb-member-hub__stat-val">{{ user.user_points|default(0) }}</span>
+          <span class="pb-member-hub__stat-label" data-lang="user_jf">金币</span>
+        </span>
+      </div>
+      <div class="pb-member-hub__stat" role="listitem">
+        <span class="pb-member-hub__stat-ico" aria-hidden="true">
+          {% include "page-builder-components/_shared/component_icon.twig" with { component: 'user_member_hub', name: 'vip', class: 'pb-member-hub__stat-svg', mode: 'img' } %}
+        </span>
+        <span class="pb-member-hub__stat-body">
+          <span class="pb-member-hub__stat-val pb-member-hub__stat-val--text">{{ user.group.group_name|default('—') }}</span>
+          <span class="pb-member-hub__stat-label" data-lang="string_group">用户组</span>
+        </span>
+      </div>
+      <div class="pb-member-hub__stat" role="listitem">
+        <span class="pb-member-hub__stat-ico" aria-hidden="true">
+          {% include "page-builder-components/_shared/component_icon.twig" with { component: 'user_member_hub', name: 'checkin', class: 'pb-member-hub__stat-svg', mode: 'img' } %}
+        </span>
+        <span class="pb-member-hub__stat-body">
+          <span class="pb-member-hub__stat-val pb-member-hub__stat-val--text">{% set _end = user.user_end_time|default(0) %}{% if _end and _end > 0 %}{{ _end|date('Y-m-d') }}{% else %}—{% endif %}</span>
+          <span class="pb-member-hub__stat-label" data-lang="user_dqsj">到期时间</span>
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <nav class="pb-member-hub__quick" data-lang-aria-label="member_hub_quick_entry_aria" aria-label="快捷入口">
+    {% set quick = [
+      {url: 'user/plays', icon: 'icon-history', pack: 'member_hub_menu', label: '播放记录', lang: 'string_play_history'},
+      {url: 'user/favs', icon: 'icon-fav', pack: 'member_hub_menu', label: '我的收藏', lang: 'user_my_collection'},
+      {url: 'user/notify', icon: 'bell', pack: 'user_member_hub', label: '消息中心', lang: 'notify_title'},
+      {url: 'user/upgrade', icon: 'vip', pack: 'user_member_hub', label: '充值中心', lang: 'user_recharge'}
+    ] %}
+    {% for item in quick %}
+    <a class="pb-member-hub__quick-item" href="{{ mac_url(item.url) }}">
+      <span class="pb-member-hub__quick-ico" aria-hidden="true">
+        {% include "page-builder-components/_shared/component_icon.twig" with { component: item.pack, name: item.icon, class: 'pb-member-hub__quick-svg', mode: 'img' } %}
+      </span>
+      <span class="pb-member-hub__quick-label" data-lang="{{ item.lang }}">{{ item.label }}</span>
+    </a>
+    {% endfor %}
+  </nav>
+
+  <section class="pb-member-hub__section" aria-labelledby="pb-member-hub-services">
+    <h2 class="pb-member-hub__heading" id="pb-member-hub-services" data-lang="string_member_hub_more_services">更多服务</h2>
+    <nav class="pb-member-hub__menu" data-lang-aria-label="string_member_hub_more_services" aria-label="更多服务">
+      {% set tiles = [
+        {url: 'user/benefits', icon: 'benefits', label: '我的权益', lang: 'user_my_benefits'},
+        {url: 'user/orders', icon: 'icon-receipt', pack: 'member_hub_menu', label: '充值记录', lang: 'user_recharge_record'},
+        {url: 'user/mall', icon: 'coins', label: '金币商城', lang: 'mall_title'},
+        {url: 'user/checkin', icon: 'checkin', label: '每日签到', lang: 'user_checkin_nav'},
+        {url: 'user/info', icon: 'profile', label: '资料修改', lang: 'user_zlxg'},
+        {url: 'user/plog', icon: 'points', label: '金币记录', lang: 'user_jfjl'},
+        {url: 'user/invite', icon: 'invite', label: '邀请好友', lang: 'string_user_invite'}
+      ] %}
+      {% for tile in tiles %}
+      <a class="pb-member-hub__menu-item" href="{{ mac_url(tile.url) }}">
+        <span class="pb-member-hub__menu-ico" aria-hidden="true">
+          {% include "page-builder-components/_shared/component_icon.twig" with { component: tile.pack|default('user_member_hub'), name: tile.icon, class: 'pb-member-hub__menu-svg', mode: 'img' } %}
+        </span>
+        <span class="pb-member-hub__menu-label" data-lang="{{ tile.lang }}">{{ tile.label }}</span>
+        <span class="pb-member-hub__menu-arrow" aria-hidden="true">
+          {% include "page-builder-components/_shared/component_icon.twig" with { component: 'member_hub_menu', name: 'chevron-right', class: 'pb-member-hub__menu-arrow-ico', mode: 'img' } %}
+        </span>
+      </a>
+      {% endfor %}
+    </nav>
+  </section>
+</div>
+{% else %}
+<div class="pb-member-hub pb-member-hub--guest" data-component="user_member_hub">
+  <p class="pb-member-hub__guest" data-lang="member_guest_redirect_text">请先登录后查看会员中心</p>
+  <a class="pb-member-hub__login" href="{{ mac_url('user/login') }}" data-lang="string_login">登录</a>
+</div>
+{% endif %}

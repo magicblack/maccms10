@@ -1,0 +1,162 @@
+/**
+ * site_map — Flat chip navigation；仅引用 tokens。
+ */
+.pb-site-map {
+  padding: 0 0 var(--space-6, 28px);
+  box-sizing: border-box;
+}
+
+.pb-site-map__panel {
+  margin: 0 var(--space-3, 12px) var(--space-3, 12px);
+  padding: 14px var(--space-3, 12px);
+  background: var(--c-surface);
+  border: 1px solid var(--c-border);
+  border-radius: var(--radius-surface, 12px);
+  box-sizing: border-box;
+}
+
+.pb-site-map__title {
+  margin: 0 0 var(--space-3, 12px);
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--c-text);
+}
+
+.pb-site-map__chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2, 8px);
+}
+
+.pb-site-map__chip {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0 14px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--c-text);
+  background: var(--c-surface-2);
+  border: 1px solid var(--c-border);
+  border-radius: var(--radius-pill, 999px);
+  text-decoration: none;
+  cursor: pointer;
+  touch-action: manipulation;
+  transition: border-color var(--dur) var(--ease), color var(--dur) var(--ease), background var(--dur) var(--ease), transform var(--dur) var(--ease);
+}
+
+.pb-site-map__chip:hover {
+  color: var(--c-accent);
+  border-color: var(--c-accent-border-strong);
+  background: var(--c-accent-soft);
+}
+
+.pb-site-map__chip:active {
+  transform: scale(0.97);
+}
+
+.pb-site-map__chip:focus-visible {
+  outline: 2px solid var(--c-accent-focus-ring);
+  outline-offset: 2px;
+}
+
+.pb-site-map__meta {
+  margin: 0;
+  font-size: 13px;
+  color: var(--c-text-muted);
+}
+
+.pb-site-map__media-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 10px var(--space-4, 16px);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.pb-site-map__media-item--empty {
+  grid-column: 1 / -1;
+}
+
+.pb-site-map__media-link {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 44px;
+  padding: 4px 0;
+  color: var(--c-text-muted);
+  text-decoration: none;
+  border-radius: var(--radius-sm, 4px);
+  cursor: pointer;
+  transition: color var(--dur) var(--ease);
+}
+
+.pb-site-map__media-link:hover {
+  color: var(--c-accent);
+}
+
+.pb-site-map__media-link:hover .pb-site-map__media-pic img {
+  transform: scale(1.04);
+}
+
+.pb-site-map__media-link:focus-visible {
+  outline: 2px solid var(--c-accent-focus-ring);
+  outline-offset: 2px;
+  border-radius: var(--radius-sm, 4px);
+}
+
+.pb-site-map__media-pic {
+  position: relative;
+  flex: 0 0 84px;
+  width: 84px;
+  aspect-ratio: 69 / 40;
+  border-radius: 6px;
+  overflow: hidden;
+  background: var(--c-surface-2);
+}
+
+.pb-site-map__media-pic img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform var(--dur) var(--ease);
+}
+
+/* 竖屏封面（短剧等）：缩略图换竖版框，不再裁成横条。
+   --portrait = 分类比例提示（type_extend.cover）；data-cover-natural 由 runtime（mac-theme-runtime.js cover.orient）
+   按封面实际尺寸写入，同一分类里横竖混杂也逐条校正 */
+.pb-site-map__media-item[data-cover-natural="v"] .pb-site-map__media-pic,
+.pb-site-map__media-item--portrait:not([data-cover-natural="h"]):not([data-cover-natural="s"]) .pb-site-map__media-pic {
+  flex-basis: 60px;
+  width: 60px;
+  aspect-ratio: 3 / 4;
+}
+
+.pb-site-map__media-name {
+  flex: 1;
+  min-width: 0;
+  font-size: 13px;
+  line-height: 1.4;
+  color: inherit;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pb-site-map__chip,
+  .pb-site-map__media-link,
+  .pb-site-map__media-pic img {
+    transition: none;
+  }
+  .pb-site-map__chip:active {
+    transform: none;
+  }
+  .pb-site-map__media-link:hover .pb-site-map__media-pic img {
+    transform: none;
+  }
+}

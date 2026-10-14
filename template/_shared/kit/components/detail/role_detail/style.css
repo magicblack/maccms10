@@ -1,0 +1,28 @@
+[data-component="role_detail"].pb-entity-detail {
+  min-width: 0;
+}
+
+[data-component="role_detail"] .pb-entity-detail__pic {
+  position: relative;
+}
+
+[data-component="role_detail"] .pb-entity-detail__pic img.is-broken {
+  object-fit: none;
+  background: var(--c-surface-2, #f1f2f3);
+  color: transparent;
+}
+
+[data-component="role_detail"] .pb-entity-detail__pic:has(img.is-broken)::after {
+  content: attr(data-label);
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px;
+  text-align: center;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--c-text-muted, #9499a0);
+  pointer-events: none;
+}

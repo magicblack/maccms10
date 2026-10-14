@@ -1,0 +1,18 @@
+{# 直播分类 Tab — mac_live_cates() + live_cate_id #}
+{% set cur_cate = live_cate_id|default(0) %}
+{% set route = route|default('live/index') %}
+{% set cats = mac_live_cates() %}
+{% if cats is not empty %}
+<nav class="pb-live-cate-nav" aria-label="直播分类" data-lang-aria-label="live_cate_nav_aria">
+  <div class="pb-live-cate-nav__inner">
+    <a class="pb-live-cate-nav__item{% if cur_cate == 0 %} is-active{% endif %}"
+       href="{{ mac_url(route) }}"
+       data-lang="string_quanbu">全部</a>
+    {% for ct in cats %}
+    <a class="pb-live-cate-nav__item{% if cur_cate == ct.cate_id %} is-active{% endif %}"
+       href="{{ mac_url(route, {cate_id: ct.cate_id}) }}"
+       title="{{ ct.cate_name }}">{{ ct.cate_name }}</a>
+    {% endfor %}
+  </div>
+</nav>
+{% endif %}

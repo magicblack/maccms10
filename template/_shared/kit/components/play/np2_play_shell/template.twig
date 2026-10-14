@@ -1,0 +1,209 @@
+{% set np2_title = obj.vod_name|default('播放')|replace({'[FAILOVER测试]': ''}) %}
+{% set cur_sid = param.sid|default(1) %}
+{% set cur_nid = param.nid|default(1) %}
+{% if cur_sid == 0 %}{% set cur_sid = 1 %}{% endif %}
+{% if cur_nid == 0 %}{% set cur_nid = 1 %}{% endif %}
+{% set play_lines = [] %}
+{% for sid, group in obj.vod_play_list|default([]) %}
+  {% set _raw = group.url|default('') %}
+  {% if 'invalid.failover' not in _raw and 'failover.test' not in _raw %}
+    {% set play_lines = play_lines|merge([{ sid: sid, name: group.from|default(''), lang: group.from ? '' : 'string_play_xl' }]) %}
+  {% endif %}
+{% endfor %}
+{% set play_fav_id = mac_user_fav_id(obj.vod_id, 1) %}
+{% set cmt_res = mac_comment({num: comment.pagesize|default(20), mid: 1, rid: obj.vod_id, paging: true}) %}
+{% set cmt_total = cmt_res.total|default(0) %}
+{% set hits = obj.vod_hits|default(0) %}
+{% set tag_src = obj.vod_class|default(obj.vod_tag|default('')) %}
+{% set tags = tag_src ? tag_src|split(',') : [] %}
+{% set _pts = obj.vod_points_play|default(0) %}
+{% if _pts|default(0) <= 0 %}{% set _pts = obj.vod_points|default(0) %}{% endif %}
+{% set need_vip = (_pts|default(0) > 0) or (obj.vod_level|default(0) > 0) or (obj.type_is_vip_exclusive|default(0) == 1) %}
+{% set vip_href = mac_url('user/upgrade') %}
+
+<div class="np2-play" data-component="np2_play_shell">
+  <div class="np2-play__player">
+    {% if need_vip %}
+    <a class="np2-play__vip-pill" href="{{ vip_href }}">
+      <span class="np2-play__vip-pill-em" data-lang="np2_member_open">开通会员</span><span data-lang="np2_unlock_film">解锁本片</span>
+    </a>
+    {% endif %}
+    {% include 'page-builder-components/vod_player/template.twig' with {props: { show_episodes: false, show_nav: false }} %}
+  </div>
+
+  {% if need_vip %}
+  <a class="np2-play__preview" href="{{ vip_href }}">
+    <span class="np2-play__preview-badge" data-lang="np2_member_exclusive">会员专享</span>
+    <span class="np2-play__preview-crown" aria-hidden="true">
+      <svg viewBox="0 0 24 24" width="18" height="18"><path fill="currentColor" d="M3.5 17.5 5 8l4.2 4.2L12 6.5l2.8 5.7L19 8l1.5 9.5H3.5zM5 19.5h14V21H5z"/></svg>
+    </span>
+    <span class="np2-play__preview-copy"><em data-lang="np2_member_open">开通会员</em><span class="np2-play__preview-copy-tail" data-lang="np2_member_full_access_tail">即可观看完整内容</span></span>
+    <span class="np2-play__preview-cta" data-lang="np2_member_open">开通会员</span>
+  </a>
+  {% endif %}
+
+  <div class="np2-play__toolbar">
+    <div class="np2-play__tabs" role="tablist" data-lang-aria-label="np2_play_info_aria" aria-label="播放信息">
+      <button type="button" class="np2-play__tab is-on" role="tab" aria-selected="true" data-np2-play-tab="intro" data-lang="string_play_jj">简介</button>
+      <button type="button" class="np2-play__tab" role="tab" aria-selected="false" data-np2-play-tab="comment"><span data-lang="string_play_pl">评论</span>{% if cmt_total %}{{ cmt_total }}{% endif %}</button>
+    </div>
+    {% if play_lines|length > 0 %}
+    <div class="np2-play__line" data-np2-play-line>
+      <span class="np2-play__line-label" data-np2-play-line-label><span data-lang="string_play_xl">线路</span>{{ cur_sid }}</span>
+      <button type="button" class="np2-play__line-btn" data-np2-play-line-swap data-lang-aria-label="string_play_qhxl" aria-label="切换线路">
+        <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" fill="none">
+          <path d="M7 8h11M7 8l2.2-2.2M7 8l2.2 2.2M17 16H6M17 16l-2.2-2.2M17 16l-2.2 2.2" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+      <div class="np2-play__line-menu" data-np2-play-line-menu hidden>
+        {% for line in play_lines %}
+        <a href="{{ mac_url_vod_play(obj, {sid: line.sid, nid: cur_nid}) }}"{% if line.sid == cur_sid %} class="is-on" aria-current="true"{% endif %}>{% if line.name %}{{ line.name }}{% else %}<span data-lang="{{ line.lang }}">线路</span>{{ line.sid }}{% endif %}</a>
+        {% endfor %}
+      </div>
+    </div>
+    {% endif %}
+  </div>
+
+  <div class="np2-play__panel is-on" data-np2-play-panel="intro">
+    {% set blurb = mac_plain_text(obj.vod_blurb|default('')) ?: mac_plain_text(obj.vod_content|default('')) %}
+    {% set type_name = obj.type.type_name|default('') %}
+    {% set ep_count = 0 %}
+    {% if obj.vod_play_list[cur_sid] is defined %}
+      {% set ep_count = obj.vod_play_list[cur_sid].urls|default([])|length %}
+    {% endif %}
+
+    <header class="np2-play__head">
+      <h1 class="np2-play__title">{{ np2_title }}</h1>
+      <p class="np2-play__meta">
+        {% if type_name %}
+        <a class="np2-play__meta-type" href="{{ mac_url_type(obj.type, {}, 'type') }}">{{ type_name }}</a>
+        {% endif %}
+        {% if hits > 0 %}
+        <span>{% if hits >= 10000 %}{{ (hits / 10000)|round(1) }}万{% else %}{{ hits }}{% endif %}<span data-lang="np2_play_count_suffix">次播放</span></span>
+        {% endif %}
+        {% if obj.vod_duration|default('') %}
+        <span>{{ obj.vod_duration }}</span>
+        {% endif %}
+        {% if obj.vod_time|default(0) %}
+        <span>{{ obj.vod_time|date('Y-m-d') }}</span>
+        {% elseif obj.vod_time_add|default(0) %}
+        <span>{{ obj.vod_time_add|date('Y-m-d') }}</span>
+        {% endif %}
+      </p>
+      {% if tags %}
+      <div class="np2-play__tags" data-lang-aria-label="website_bq" aria-label="标签">
+        {% for tg in tags %}
+          {% set _t = tg|trim %}
+          {% if _t and loop.index <= 8 %}
+          <a href="{{ mac_url('vod/search', {wd: _t}) }}">{{ _t }}</a>
+          {% endif %}
+        {% endfor %}
+      </div>
+      {% endif %}
+    </header>
+
+    <div class="np2-play__actions" role="toolbar" data-lang-aria-label="np2_quick_actions_aria" aria-label="快捷操作">
+      <button type="button" class="np2-play__act mac_ulog{% if play_fav_id %} is_fav{% endif %}" data-type="2" data-mid="1" data-id="{{ obj.vod_id }}" data-uid="{{ play_fav_id|default('') }}" data-lang-aria-label="{{ play_fav_id ? 'string_qxsc' : 'string_fav' }}" aria-label="{% if play_fav_id %}取消收藏{% else %}收藏{% endif %}">
+        <span class="np2-play__act-ico np2-play__act-ico--star" aria-hidden="true">
+          <svg viewBox="0 0 24 24" width="20" height="20"><path fill="currentColor" d="M12 3.4 14.5 9l6 .5-4.6 4 1.5 5.8L12 16.6 6.6 19.3 8.1 13.5 3.5 9.5 9.5 9z"/></svg>
+        </span>
+        <span class="np2-play__act-lbl">{% if play_fav_id %}<span data-lang="string_isfav">已收藏</span>{% else %}<span data-lang="string_fav">收藏</span>{% endif %}</span>
+      </button>
+      <button type="button" class="np2-play__act" data-recharge-open data-lang-aria-label="user_quick_recharge_title" aria-label="金币充值">
+        <span class="np2-play__act-ico np2-play__act-ico--coin" aria-hidden="true">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none"><circle cx="12" cy="12" r="8" stroke="currentColor" stroke-width="1.7"/><path d="M12 7.5v9M9.4 9.4c.7-.7 1.6-1 2.6-1 1.8 0 3 1 3 2.4s-1.2 2.3-3.2 2.3h-1.2c-2 0-3.2.9-3.2 2.3 0 1.4 1.3 2.4 3.2 2.4 1.1 0 2.1-.3 2.8-1" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+        </span>
+        <span class="np2-play__act-lbl" data-lang="string_user_tab_recharge">充值</span>
+      </button>
+      <button type="button" class="np2-play__act" data-mac-share-open data-mac-share-title="{{ np2_title|e('html_attr') }}" data-mac-share-url="{{ mac_url_vod_play(obj, {sid: cur_sid, nid: cur_nid}) }}" data-lang-aria-label="string_vod_share" aria-label="分享">
+        <span class="np2-play__act-ico np2-play__act-ico--share" aria-hidden="true">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none"><circle cx="18" cy="6" r="2.4" stroke="currentColor" stroke-width="1.6"/><circle cx="6" cy="12" r="2.4" stroke="currentColor" stroke-width="1.6"/><circle cx="18" cy="18" r="2.4" stroke="currentColor" stroke-width="1.6"/><path d="M8.2 11.1 15.7 7.2M8.2 12.9l7.5 3.9" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+        </span>
+        <span class="np2-play__act-lbl" data-lang="string_vod_share">分享</span>
+      </button>
+    </div>
+
+    {% if blurb %}
+    <section class="np2-play__blurb" data-lang-aria-label="np2_intro_aria" aria-label="剧情简介">
+      <p class="np2-play__blurb-txt" id="np2-play-blurb">{{ blurb }}</p>
+      <button type="button" class="np2-play__blurb-more" id="np2-play-blurb-btn" hidden data-lang="string_filter_expand">展开</button>
+    </section>
+    {% endif %}
+
+    {% if obj.vod_play_list|default([])|length > 0 %}
+    <section class="np2-play__eps" data-np2-play-eps aria-labelledby="np2-play-eps-title">
+      <button type="button" class="np2-play__eps-head" data-np2-play-eps-toggle aria-expanded="true" aria-controls="np2-play-eps-body">
+        <h2 id="np2-play-eps-title" data-lang="string_vod_bfdz">选集</h2>
+        {% if ep_count > 0 %}<span class="np2-play__eps-count"><span data-lang="string_vod_zg">共</span> {{ ep_count }} <span data-lang="np2_episode_count_suffix">集</span></span>{% endif %}
+        <span class="np2-play__eps-chevron" aria-hidden="true">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </span>
+      </button>
+      <div class="np2-play__eps-body" id="np2-play-eps-body" data-np2-play-eps-body>
+      {% for sid, group in obj.vod_play_list|default([]) %}
+        {% set _raw = group.url|default('') %}
+        {% if 'invalid.failover' not in _raw and 'failover.test' not in _raw %}
+        <div class="np2-eps np2-eps--row" data-sid="{{ sid }}"{% if sid != cur_sid %} hidden{% endif %}>
+          {% for nid, ep in group.urls|default([]) %}
+          <a href="{{ mac_url_vod_play(obj, {sid: sid, nid: nid}) }}"{% if cur_sid == sid and cur_nid == nid %} class="is-on" aria-current="true"{% endif %}>{{ ep.name|default(nid) }}</a>
+          {% endfor %}
+        </div>
+        {% endif %}
+      {% endfor %}
+      </div>
+    </section>
+    {% endif %}
+
+    {% set rel = mac_vod({num: 12, type: obj.type_id|default(0), order: 'desc', by: 'hits'}).list|default([]) %}
+    {% if rel %}
+    <section class="np2-play__rel" aria-labelledby="np2-play-rel-title">
+      <div class="np2-play__rel-head">
+        <h2 id="np2-play-rel-title" data-lang="vod_guess">猜你喜欢</h2>
+      </div>
+      <div class="np2-vgrid np2-vgrid--play">
+        {% set n = 0 %}
+        {% for vo in rel %}
+          {% if vo.vod_id != obj.vod_id and n < 8 %}
+          <a class="np2-vgrid__card" href="{{ mac_url_vod_play(vo) }}">
+            <div class="np2-vgrid__pic">
+              {% if vo.vod_pic %}
+              <img data-cover src="{{ mac_url_img(vo.vod_pic) }}" alt="{{ vo.vod_name }}" loading="lazy">
+              {% else %}
+              {% include "lib/np2_ph.twig" %}
+              {% endif %}
+              {% include "lib/np2_card_badges.twig" %}
+            </div>
+            <div class="np2-vgrid__name">{{ vo.vod_name }}</div>
+            {% if vo.vod_remarks|default('') %}
+            <div class="np2-vgrid__meta">{% include "page-builder-components/_shared/episode_remarks.twig" with {remarks: vo.vod_remarks} only %}</div>
+            {% endif %}
+          </a>
+          {% set n = n + 1 %}
+          {% endif %}
+        {% endfor %}
+      </div>
+    </section>
+    {% endif %}
+
+    {% include "lib/np2_home_ads.twig" %}
+  </div>
+
+  <div class="np2-play__panel" data-np2-play-panel="comment" hidden>
+    {% include "page-builder-components/_shared/comment_block.twig" with {
+      mid: 1,
+      rid: obj.vod_id,
+      num: comment.pagesize|default(20),
+      comment_res: cmt_res,
+      hide_list_head: true,
+      in_play_tab: true,
+      csrf_token: csrf_token|default('')
+    } %}
+  </div>
+
+  <a class="np2-play__fab" href="javascript:history.back()" data-lang-aria-label="auth_back" aria-label="返回">
+    <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" fill="none">
+      <path d="M14.5 6.5 9 12l5.5 5.5" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+  </a>
+</div>
+<script src="{{ maccms.path_tpl }}asset/js/np2-play.js?v=np2-46"></script>

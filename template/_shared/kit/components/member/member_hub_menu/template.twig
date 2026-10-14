@@ -1,0 +1,28 @@
+{# 会员中心移动端菜单 — H5 精简高频入口；完整项见侧栏 member_nav #}
+{% set p = props|default({}) %}
+{% set active = p.active|default(active|default('')) %}
+<nav class="member-hub-menu" data-component="member_hub_menu" data-lang-aria-label="member_hub_nav_aria" aria-label="会员中心导航">
+  <ul class="member-hub-menu__list">
+    {% set items = [
+      {key: 'upgrade', match: ['upgrade','buy','pay','cards','benefits'], url: 'user/upgrade', icon: 'icon-wallet', ico: 'wallet', label: '充值中心', lang: 'user_recharge'},
+      {key: 'orders', match: ['orders'], url: 'user/orders', icon: 'icon-receipt', ico: 'receipt', label: '充值记录', lang: 'user_recharge_record'},
+      {key: 'mall', match: ['mall'], url: 'user/mall', icon: 'icon-bag', ico: 'bag', label: '金币商城', lang: 'mall_title'},
+      {key: 'checkin', match: ['checkin'], url: 'user/checkin', icon: 'icon-calendar', ico: 'calendar', label: '每日签到', lang: 'user_checkin_nav'},
+      {key: 'notify', match: ['notify'], url: 'user/notify', icon: 'icon-bell', ico: 'bell', label: '消息中心', lang: 'notify_title'},
+      {key: 'favs', match: ['favs'], url: 'user/favs', icon: 'icon-fav', ico: 'fav', label: '我的收藏', lang: 'user_my_collection'},
+      {key: 'plays', match: ['plays'], url: 'user/plays', icon: 'icon-history', ico: 'history', label: '播放记录', lang: 'string_play_history'},
+      {key: 'info', match: ['info'], url: 'user/info', icon: 'icon-id-card', ico: 'profile', label: '资料修改', lang: 'user_zlxg'},
+      {key: 'invite', match: ['invite'], url: 'user/invite', icon: 'icon-user-plus', ico: 'invite', label: '邀请好友', lang: 'string_user_invite'}
+    ] %}
+    {% for it in items %}
+    {% set on = active in it.match %}
+    <li>
+      <a class="member-hub-menu__link{% if on %} is-on{% endif %}" href="{{ mac_url(it.url) }}{% if it.hash is defined and it.hash %}#{{ it.hash }}{% endif %}"{% if on and not (it.hash is defined and it.hash) %} aria-current="page"{% endif %}>
+        <span class="member-hub-menu__ico member-hub-menu__ico--{{ it.ico }}">{% include "page-builder-components/_shared/component_icon.twig" with { component: 'member_hub_menu', name: it.icon, class: 'member-hub-menu__svg', mode: 'current' } %}</span>
+        <span class="member-hub-menu__label" data-lang="{{ it.lang }}">{{ it.label }}</span>
+        {% include "page-builder-components/_shared/component_icon.twig" with { component: 'member_hub_menu', name: 'chevron-right', class: 'member-hub-menu__arrow', mode: 'current' } %}
+      </a>
+    </li>
+    {% endfor %}
+  </ul>
+</nav>

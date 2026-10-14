@@ -1,0 +1,37 @@
+{# 轮播 · 图文焦点（bind=数据源，默认 art） #}
+{% set p = props|default({}) %}
+{% set bind = p.bind|default('art') %}
+{% set num = p.num|default(6) %}
+{% set by = p.by|default('hits_week') %}
+{% set type_id = p.type|default(0) %}
+{% set feed = mac_pb_feed({bind: bind, num: num, by: by, type: type_id}) %}
+{% set banner_list = feed.list|default([]) %}
+{% set cta = p.cta|default(bind == 'art' ? '立即阅读' : (bind == 'manga' ? '开始阅读' : '立即观看')) %}
+{% set cta_lang = p.cta_lang|default(bind == 'art' ? 'manga_spot_read' : (bind == 'manga' ? 'manga_read_now' : 'novel_banner_cta_watch')) %}
+
+{% if banner_list is not empty %}
+<section class="nv-banner" data-component="novel_home_banner" data-nv-banner aria-label="编辑推荐" data-lang-aria-label="novel_banner_editor_pick_aria">
+  {% if banner_list|length > 1 %}
+  <button type="button" class="nv-banner__btn nv-banner__btn--prev" data-dir="-1" aria-label="向左" data-lang-aria-label="carousel_prev_aria">‹</button>
+  {% endif %}
+  <div class="nv-banner__viewport">
+    <div class="nv-banner__track">
+      {% for a in banner_list %}
+      <a class="nv-banner__slide" href="{{ a.url }}">
+        <span class="nv-banner__cover"{% if bind == 'art' %} data-cover-kind="book"{% endif %}>
+          <img data-cover src="{{ mac_url_img(a.pic) }}" alt="{{ a.name }}" width="120" height="160" loading="lazy" decoding="async">
+        </span>
+        <span class="nv-banner__body">
+          <strong>{{ a.name }}</strong>
+          <em>{% if a.blurb %}{{ a.blurb|slice(0, 42) }}{% if a.blurb|length > 42 %}…{% endif %}{% else %}<span data-lang="carousel_pick_aria">精选推荐</span>{% endif %}</em>
+          <span class="nv-banner__cta"{% if cta_lang and mac_i18n_key(cta, cta_lang) %} data-lang="{{ cta_lang }}"{% endif %}>{{ cta }}</span>
+        </span>
+      </a>
+      {% endfor %}
+    </div>
+  </div>
+  {% if banner_list|length > 1 %}
+  <button type="button" class="nv-banner__btn nv-banner__btn--next" data-dir="1" aria-label="向右" data-lang-aria-label="carousel_next_aria">›</button>
+  {% endif %}
+</section>
+{% endif %}

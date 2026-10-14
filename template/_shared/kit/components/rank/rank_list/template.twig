@@ -1,0 +1,101 @@
+{# 排行榜页：带封面的完整榜单（侧栏仍用 aside_panel_rank） #}
+{% set num = props.num|default(5) %}
+{% set type_id = props.type|default(0) %}
+{% set mid = props.mid|default(1) %}
+{% set period = props.period|default('week') %}
+{% set by = period == 'month' ? 'hits_month' : (period == 'day' ? 'hits_day' : 'hits_week') %}
+{% if props.title|default('') != '' %}
+  {% set title = props.title %}
+{% else %}
+  {% set title = period == 'month' ? '本月排行' : (period == 'day' ? '今日排行' : '本周排行') %}
+{% endif %}
+{% if type_id > 0 and (props.title is not defined or props.title == '') %}
+  {% for t in mac_type({ids: type_id, mid: mid}).list|default([]) %}
+    {% set title = t.type_name %}
+  {% endfor %}
+{% endif %}
+
+{% if mid == 12 %}
+  {% set list = mac_manga({num: num, type: type_id, order: 'desc', by: by}).list|default([]) %}
+{% elseif mid == 2 %}
+  {% set list = mac_art({num: num, type: type_id, order: 'desc', by: by}).list|default([]) %}
+{% else %}
+  {% set list = mac_vod({num: num, type: type_id, order: 'desc', by: by}).list|default([]) %}
+{% endif %}
+
+{# hide_title：外层 section 已出标题时由编译器注入，避免「本周排行」套娃 #}
+{% set hide_title = props.hide_title|default(false) %}
+
+<section class="pb-rank-list" data-component="rank_list" data-mid="{{ mid }}">
+  {% if not hide_title and title != '' %}
+  <h3 class="pb-rank-list__title">{{ title }}</h3>
+  {% endif %}
+
+  {% if list|length > 0 %}
+  <ol class="pb-rank-list__ol">
+    {% for vo in list %}
+      {% if mid == 12 %}
+        {% set _name = vo.manga_name|default('') %}
+        {% set _pic = vo.manga_pic|default('') %}
+        {% set _href = mac_url_manga_detail(vo) %}
+        {% set _remarks = vo.manga_remarks|default('') %}
+        {% set _meta = [] %}
+        {% if vo.manga_year %}{% set _meta = _meta|merge([vo.manga_year]) %}{% endif %}
+        {% if vo.manga_area %}{% set _meta = _meta|merge([vo.manga_area]) %}{% endif %}
+      {% elseif mid == 2 %}
+        {% set _name = vo.art_name|default('') %}
+        {% set _pic = vo.art_pic|default('') %}
+        {% set _href = mac_url_art_detail(vo) %}
+        {% set _remarks = '' %}
+        {% set _meta = [] %}
+        {% if vo.art_author %}{% set _meta = _meta|merge([vo.art_author]) %}{% endif %}
+      {% else %}
+        {% set _name = vo.vod_name|default('') %}
+        {% set _pic = vo.vod_pic|default('') %}
+        {% set _href = mac_url_vod_detail(vo) %}
+        {% set _remarks = vo.vod_remarks|default('') %}
+        {% set _meta = [] %}
+        {% if vo.type.type_name|default('') %}{% set _meta = _meta|merge([vo.type.type_name]) %}{% endif %}
+        {% if vo.vod_time|default(0) %}{% set _meta = _meta|merge([vo.vod_time|date('Y-m-d')]) %}
+        {% elseif vo.vod_time_add|default(0) %}{% set _meta = _meta|merge([vo.vod_time_add|date('Y-m-d')]) %}{% endif %}
+      {% endif %}
+      {% set _cover = mac_url_img(_pic) %}
+      {% set _rank = loop.index %}
+      {% set _fallback = maccms.path_tpl ~ 'page-builder-components/rank_card/empty-state.svg' %}
+      {# 视频竖屏封面（短剧等）：分类比例（type_extend.cover）做首屏提示，
+         data-cover-auto="shape"：runtime 按封面实际尺寸写 data-cover-natural 校正，见 style.css #}
+      {% set _vod_cover = mid == 1 ? mac_type_cover(vo.type_id|default(0)) : [] %}
+    <li class="pb-rank-list__item{% if _rank <= 3 %} is-top{% endif %}{% if mid == 2 %} is-text-only{% endif %}{% if _vod_cover and _vod_cover.orient == 'v' %} pb-rank-list__item--portrait{% endif %}"{% if mid == 1 %} data-cover-auto="shape"{% endif %}>
+      <a class="pb-rank-list__link" href="{{ _href }}" title="{{ _name }}">
+        <span class="pb-rank-list__no" aria-hidden="true">{{ _rank }}</span>
+        {% if mid != 2 %}
+        <span class="pb-rank-list__poster">
+          <img
+            src="{{ _cover|default(_fallback) }}"
+            {% if _cover %}data-cover {% endif %}alt=""
+            width="{% if mid == 12 %}56{% else %}120{% endif %}"
+            height="{% if mid == 12 %}75{% else %}70{% endif %}"
+            loading="lazy"
+            decoding="async"
+            onerror="this.onerror=null;this.removeAttribute('data-cover');this.src='{{ _fallback }}';this.classList.add('is-fallback');"
+          >
+        </span>
+        {% endif %}
+        <span class="pb-rank-list__body">
+          <span class="pb-rank-list__name">{{ _name }}</span>
+          {% if _meta|length or _remarks %}
+          <span class="pb-rank-list__meta">
+            {% if _meta|length %}{{ _meta|join(' · ') }}{% endif %}
+            {% if _meta|length and _remarks %} · {% endif %}
+            {% if _remarks %}{% if mid == 12 %}{% include "page-builder-components/_shared/chapter_remarks.twig" with {remarks: _remarks, kind: 'manga'} only %}{% else %}{% include "page-builder-components/_shared/episode_remarks.twig" with {remarks: _remarks} only %}{% endif %}{% endif %}
+          </span>
+          {% endif %}
+        </span>
+      </a>
+    </li>
+    {% endfor %}
+  </ol>
+  {% else %}
+  <div class="pb-rank-list__empty" data-lang="rank_empty">暂无排行数据</div>
+  {% endif %}
+</section>

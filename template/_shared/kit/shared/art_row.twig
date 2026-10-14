@@ -1,0 +1,44 @@
+{% import "page-builder-components/_shared/macros.twig" as pb %}
+{% set compact = compact|default(false) %}
+{% set text_only = text_only|default(false) %}
+{% set novel_home = novel_home|default(false) %}
+{% if novel_home %}
+  {% set _cat = a.type.type_name|default('') %}
+  {% if _cat == '' and a.art_class|default('') %}
+    {% set _cat = a.art_class|split(',')|first %}
+  {% endif %}
+<a class="pb-art-row pb-art-row--text-only pb-art-row--novel-home" href="{{ mac_url_art_detail(a) }}" data-mid="2" data-id="{{ a.art_id }}">
+  <span class="pb-art-row__book" aria-hidden="true"></span>
+  <span class="pb-art-row__body">
+    <strong class="pb-art-row__title">{{ a.art_name }}</strong>
+    {% if _cat %}<em class="pb-art-row__meta">{{ _cat }}</em>{% endif %}
+  </span>
+  <span class="pb-art-row__chev" aria-hidden="true"></span>
+</a>
+{% else %}
+<div class="pb-art-row{% if compact %} pb-art-row--compact{% endif %}{% if text_only %} pb-art-row--text-only{% endif %}" data-mid="2" data-id="{{ a.art_id }}">
+  {% if not text_only %}
+  {% set _pic = a.art_pic|default('')|trim %}
+  {# 竖版书封缩略图；封面为空或失效时回退书形占位 #}
+  <div class="pb-art-row__fig"><a class="pb-art-row__cover{% if not _pic %} is-empty{% endif %}" data-cover-kind="book" href="{{ mac_url_art_detail(a) }}">
+    {% if _pic %}{{ pb.lazy_img(_pic, a.art_name, {broken_class: 'is-empty'}) }}{% endif %}
+    <span class="pb-art-row__ph" aria-hidden="true">{% include "page-builder-components/_shared/book_cover_empty.twig" %}</span>
+  </a></div>
+  {% endif %}
+  <div class="pb-art-row__body">
+    <h4><a href="{{ mac_url_art_detail(a) }}">{{ a.art_name }}</a></h4>
+    {% if text_only %}
+      {% set _cat = a.type.type_name|default('') %}
+      {% if _cat == '' and a.art_class|default('') %}
+        {% set _cat = a.art_class|split(',')|first %}
+      {% endif %}
+      {% if _cat %}
+      <div class="pb-art-row__meta">{{ _cat }}</div>
+      {% endif %}
+    {% elseif not compact %}
+    <p>{{ mac_substring(mac_plain_text(a.art_blurb), 90) }}</p>
+    <div class="pb-art-row__meta">{{ mac_day(a.art_time)|raw }}{% if a.art_hits %} · {{ a.art_hits }}{% endif %}</div>
+    {% endif %}
+  </div>
+</div>
+{% endif %}

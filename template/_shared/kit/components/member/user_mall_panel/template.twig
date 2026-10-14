@@ -1,0 +1,190 @@
+{# 金币商城 #}
+{% set paging = __PAGING__|default({}) %}
+{% set cur_type = param.type|default('') %}
+{% set goods_list = goods_list|default(list|default([])) %}
+<div class="user-mall" data-component="user_mall_panel" data-mac-user-mall
+       data-user-points="{{ user.user_points|default(0) }}"
+       data-type="{{ cur_type }}"
+       data-page="{{ param.page|default('1') }}"
+       data-pagecount="{{ paging.page_total|default(1) }}"
+       data-limit="{{ param.limit|default(20) }}"
+       data-exchange-url="{{ mac_url('user/ajax_mall_exchange') }}"
+       data-goods-url="{{ mac_url('user/ajax_mall_goods') }}"
+       data-orders-url="{{ mac_url('user/ajax_mall_orders') }}"
+       data-checkin-url="{{ mac_url('user/checkin') }}"
+       data-buy-url="{{ mac_url('user/buy') }}">
+    <header class="member-card__head member-card__head--toolbar">
+      <h2 class="member-card__title" data-lang="string_mall">金币商城</h2>
+      <button type="button" class="member-mnav__action user-mall__orders-trigger" data-um-open-orders data-lang="mall_my_orders">兑换记录</button>
+    </header>
+
+    <section class="user-mall__hero" aria-label="points">
+      <div class="user-mall__hero-top">
+        <p class="user-mall__points-label" data-lang="mall_user_points">我的金币</p>
+        <button type="button" class="user-mall__orders-link" data-um-open-orders data-lang="mall_my_orders">兑换记录</button>
+      </div>
+      <div class="user-mall__hero-body">
+        <div class="user-mall__hero-main">
+          <p class="user-mall__points-value" data-um-points-value>{{ user.user_points|default(0) }}</p>
+        </div>
+        <div class="user-mall__points-actions">
+          <a class="user-mall__action-btn user-mall__action-btn--ghost" href="{{ mac_url('user/checkin') }}">
+            <span data-lang="user_checkin_nav">每日签到</span>
+          </a>
+          <button type="button" class="user-mall__action-btn user-mall__action-btn--ghost" data-um-open-card-redeem>
+            <span data-lang="mall_redeem_card">兑换卡密</span>
+          </button>
+          <a class="user-mall__action-btn" href="{{ mac_url('user/upgrade') }}">
+            <span data-lang="user_recharge">充值中心</span>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <div class="user-mall__toolbar">
+      <div class="user-mall__tabs" role="tablist" data-um-tabs>
+        <button type="button" role="tab" data-um-tab=""{% if not cur_type %} class="active" aria-selected="true"{% else %} aria-selected="false"{% endif %} data-lang="string_show_all">全部</button>
+        <button type="button" role="tab" data-um-tab="vip"{% if cur_type == 'vip' %} class="active" aria-selected="true"{% else %} aria-selected="false"{% endif %} data-lang="mall_type_vip">VIP天数</button>
+        <button type="button" role="tab" data-um-tab="card"{% if cur_type == 'card' %} class="active" aria-selected="true"{% else %} aria-selected="false"{% endif %} data-lang="mall_type_card">充值卡密</button>
+        <button type="button" role="tab" data-um-tab="download_quota"{% if cur_type == 'download_quota' %} class="active" aria-selected="true"{% else %} aria-selected="false"{% endif %} data-lang="mall_type_download_quota">下载额度</button>
+      </div>
+    </div>
+
+    <div class="user-mall__list-wrap">
+      <ul class="user-mall__grid" data-um-grid>
+        {% for g in goods_list %}
+        {% set g_stock = g.mall_goods_stock|default(0) %}
+        {% set g_points = g.mall_goods_points|default(0) %}
+        {% set g_id = g.mall_goods_id|default(0) %}
+        <li class="user-mall__card user-mall__card--{{ g.mall_goods_type|default('') }}{{ g_stock <= 0 ? ' is-soldout' : '' }}">
+          {% if g.mall_goods_type == 'vip' %}
+          <span class="user-mall__card-type" data-lang="mall_type_vip">VIP天数</span>
+          {% elseif g.mall_goods_type == 'card' %}
+          <span class="user-mall__card-type" data-lang="mall_type_card">充值卡密</span>
+          {% elseif g.mall_goods_type == 'download_quota' %}
+          <span class="user-mall__card-type" data-lang="mall_type_download_quota">下载额度</span>
+          {% else %}
+          <span class="user-mall__card-type">{{ g.mall_goods_type }}</span>
+          {% endif %}
+          <div class="user-mall__card-name">{{ g.mall_goods_name }}</div>
+          <div class="user-mall__card-meta">
+            <div class="user-mall__card-points">
+              <span class="user-mall__card-points-num">{{ g_points }}</span>
+              <span class="user-mall__card-points-unit" data-lang="mall_points_unit">金币</span>
+            </div>
+          </div>
+          {% if g_stock > 0 %}
+          <button type="button" class="user-mall__card-btn" data-um-exchange
+                  data-id="{{ g_id }}"
+                  data-name="{{ g.mall_goods_name|default('') }}"
+                  data-type="{{ g.mall_goods_type|default('') }}"
+                  data-points="{{ g_points }}"
+                  data-stock="{{ g_stock }}"
+                  data-lang="mall_exchange">兑换</button>
+          {% else %}
+          <button type="button" class="user-mall__card-btn is-disabled" disabled data-lang="mall_sold_out">已售罄</button>
+          {% endif %}
+        </li>
+        {% endfor %}
+      </ul>
+      <div class="user-mall__empty" data-um-empty{% if goods_list|length %} hidden{% endif %}>
+        <p data-lang="mall_empty_goods">暂无商品</p>
+      </div>
+      <div class="member-page" data-um-goods-pager>
+        {% if paging.page_total|default(0) > 1 %}
+        <ul class="page text-center cleafix">
+          <li><a href="javascript:;" data-um-goods-page="1"{% if paging.page_current|default(1) == 1 %} class="btns-disad"{% endif %} data-lang="string_home">首页</a></li>
+          <li><a href="javascript:;" data-um-goods-page="{{ paging.page_prev|default(1) }}"{% if paging.page_current|default(1) == 1 %} class="btns-disad"{% endif %} data-lang="string_syy">上一页</a></li>
+          {% for num in paging.page_num|default([]) %}
+          <li class="hidden-xs{% if paging.page_current|default(1) == num %} active{% endif %}"><a href="javascript:;" data-um-goods-page="{{ num }}">{{ num }}</a></li>
+          {% endfor %}
+          <li><a href="javascript:;" data-um-goods-page="{{ paging.page_next|default(1) }}"{% if paging.page_current|default(1) == paging.page_total|default(1) %} class="btns-disad"{% endif %} data-lang="string_xyy">下一页</a></li>
+          <li><a href="javascript:;" data-um-goods-page="{{ paging.page_total|default(1) }}"{% if paging.page_current|default(1) == paging.page_total|default(1) %} class="btns-disad"{% endif %} data-lang="string_last_page">尾页</a></li>
+        </ul>
+        {% endif %}
+      </div>
+    </div>
+
+    <div class="um-modal" data-um-modal="confirm">
+      <div class="um-modal__mask" data-um-close></div>
+      <div class="um-modal__panel" role="dialog" aria-modal="true">
+        <div class="um-modal__hd">
+          <h3 class="um-modal__title" data-lang="mall_confirm_title">确认兑换</h3>
+          <button type="button" class="um-modal__close" data-um-close aria-label="Close">×</button>
+        </div>
+        <div class="um-modal__rows">
+          <p><span class="muted" data-lang="mall_goods_name">商品</span><span data-um-confirm-name></span></p>
+          <p><span class="muted" data-lang="mall_goods_type">类型</span><span data-um-confirm-type></span></p>
+          <p><span class="muted" data-lang="mall_cost_points">消耗</span><span data-um-confirm-cost></span></p>
+          <p><span class="muted" data-lang="mall_balance_change">余额</span><span data-um-confirm-balance></span></p>
+        </div>
+        <p class="um-modal__hint" data-um-confirm-hint hidden></p>
+        <div class="um-modal__actions">
+          <button type="button" class="um-btn um-btn--ghost" data-um-close data-lang="string_cancel">取消</button>
+          <button type="button" class="um-btn um-btn--primary" data-um-confirm-submit data-lang="mall_confirm_submit">确认兑换</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="um-modal" data-um-modal="success">
+      <div class="um-modal__mask" data-um-close></div>
+      <div class="um-modal__panel" role="dialog" aria-modal="true">
+        <div class="um-modal__hd">
+          <h3 class="um-modal__title" data-lang="mall_exchange_ok">兑换成功</h3>
+          <button type="button" class="um-modal__close" data-um-close aria-label="Close">×</button>
+        </div>
+        <div class="um-success-body" data-um-success-body></div>
+        <div class="um-modal__actions">
+          <button type="button" class="um-btn um-btn--ghost" data-um-open-orders data-lang="mall_my_orders">兑换记录</button>
+          <button type="button" class="um-btn um-btn--primary" data-um-success-done data-lang="mall_done">完成</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="um-modal um-modal--orders" data-um-modal="orders">
+      <div class="um-modal__mask" data-um-close></div>
+      <div class="um-orders-panel" role="dialog" aria-modal="true">
+        <div class="um-orders-panel__hd um-modal__hd">
+          <h3 class="um-modal__title" data-lang="mall_my_orders">兑换记录</h3>
+          <button type="button" class="um-modal__close" data-um-close aria-label="Close">×</button>
+        </div>
+        <div class="um-orders-panel__body">
+          <p class="um-orders-loading" data-um-orders-loading hidden data-lang="string_topic_feed_loading">加载中…</p>
+          <ul class="um-orders-list" data-um-orders-list></ul>
+          <div class="um-orders-empty" data-um-orders-empty hidden>
+            <p data-lang="mall_orders_empty">暂无兑换记录</p>
+          </div>
+        </div>
+        <div class="um-orders-pager" data-um-orders-pager hidden>
+          <button type="button" class="um-orders-pager__btn" data-um-orders-prev data-lang="string_syy">上一页</button>
+          <span class="um-orders-pager__info" data-um-orders-page-info></span>
+          <button type="button" class="um-orders-pager__btn" data-um-orders-next data-lang="string_xyy">下一页</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="um-modal" data-um-modal="card-redeem">
+      <div class="um-modal__mask" data-um-close></div>
+      <div class="um-modal__panel um-modal__panel--form" role="dialog" aria-modal="true">
+        <div class="um-modal__hd">
+          <h3 class="um-modal__title" data-lang="mall_redeem_card_title">兑换卡密</h3>
+          <button type="button" class="um-modal__close" data-um-close aria-label="Close">×</button>
+        </div>
+        <form class="um-form" data-um-card-redeem-form novalidate>
+          <label class="um-form__field">
+            <span class="um-form__label" data-lang="mall_card_no">卡号</span>
+            <input class="um-form__input" type="text" name="card_no" data-um-card-no autocomplete="off" maxlength="64">
+          </label>
+          <label class="um-form__field">
+            <span class="um-form__label" data-lang="mall_card_pwd">密码</span>
+            <input class="um-form__input" type="text" name="card_pwd" data-um-card-pwd autocomplete="off" maxlength="64">
+          </label>
+          <p class="um-form__error" data-um-card-redeem-error hidden></p>
+          <div class="um-modal__actions">
+            <button type="button" class="um-btn um-btn--ghost" data-um-close data-lang="string_cancel">取消</button>
+            <button type="submit" class="um-btn um-btn--primary" data-um-card-redeem-submit data-lang="mall_redeem_card_submit">确认兑换</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>

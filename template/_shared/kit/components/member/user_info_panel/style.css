@@ -1,0 +1,314 @@
+/* user_info_panel — 资料 / 改密；底色走 member.css
+ * 默认单列堆叠（H5）；≥960px 两列：左资料 / 右改密
+ */
+.pb-user-info__grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 0;
+  align-items: start;
+}
+
+.pb-user-info__col {
+  min-width: 0;
+}
+
+.pb-user-info .member-card__head--section {
+  margin-top: 28px;
+  padding-top: 16px;
+  border-top: 1px solid var(--c-border, #e3e5e7);
+}
+
+.pb-user-info .member-form__field--static,
+.pb-user-info .member-form__field--bind {
+  display: block;
+  margin-bottom: 14px;
+}
+
+.pb-user-info .member-form__static {
+  margin: 0;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  padding: 0 14px;
+  border: 1px solid var(--c-border, #e3e5e7);
+  border-radius: 8px;
+  background: var(--c-surface-2, #f6f7f8);
+  color: var(--c-text, #18191c);
+  font-size: 14px;
+  box-sizing: border-box;
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.pb-user-info .member-form__static--empty {
+  color: var(--c-text-muted, #9499a0);
+}
+
+.pb-user-info .member-form__bindrow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+}
+
+.pb-user-info .member-form__linkbtn {
+  appearance: none;
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 36px;
+  padding: 0 14px;
+  border: 1px solid var(--c-accent);
+  border-radius: 8px;
+  background: var(--c-surface, #fff);
+  color: var(--c-accent);
+  font: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: none;
+  white-space: nowrap;
+  box-sizing: border-box;
+}
+
+.pb-user-info .member-form__linkbtn:hover {
+  background: color-mix(in srgb, var(--c-accent) 12%, var(--c-surface));
+  color: var(--c-accent-hover, #0090bf);
+  border-color: var(--c-accent-hover, #0090bf);
+}
+
+.pb-user-info .member-form__pwd {
+  position: relative;
+  display: block;
+}
+
+.pb-user-info .member-form__pwd input {
+  padding-right: 44px;
+}
+
+.pb-user-info .member-form__eye {
+  position: absolute;
+  top: 50%;
+  right: 8px;
+  transform: translateY(-50%);
+  width: 32px;
+  height: 32px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  cursor: pointer;
+  color: var(--c-text-muted, #9499a0);
+}
+
+.pb-user-info .member-form__eye::before {
+  content: "";
+  display: block;
+  width: 18px;
+  height: 18px;
+  margin: 0 auto;
+  background: currentColor;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z'/%3E%3Ccircle cx='12' cy='12' r='3'/%3E%3C/svg%3E") center / contain no-repeat;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z'/%3E%3Ccircle cx='12' cy='12' r='3'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+
+.pb-user-info .member-form__eye.is-open::before {
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M17.94 17.94A10.07 10.07 0 0 1 12 20c-6.5 0-10-8-10-8a18.45 18.45 0 0 1 5.06-5.94'/%3E%3Cpath d='M9.9 4.24A9.12 9.12 0 0 1 12 4c6.5 0 10 8 10 8a18.5 18.5 0 0 1-2.16 3.19'/%3E%3Cpath d='M14.12 14.12a3 3 0 1 1-4.24-4.24'/%3E%3Cline x1='1' y1='1' x2='23' y2='23'/%3E%3C/svg%3E") center / contain no-repeat;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M17.94 17.94A10.07 10.07 0 0 1 12 20c-6.5 0-10-8-10-8a18.45 18.45 0 0 1 5.06-5.94'/%3E%3Cpath d='M9.9 4.24A9.12 9.12 0 0 1 12 4c6.5 0 10 8 10 8a18.5 18.5 0 0 1-2.16 3.19'/%3E%3Cpath d='M14.12 14.12a3 3 0 1 1-4.24-4.24'/%3E%3Cline x1='1' y1='1' x2='23' y2='23'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+
+.pb-user-info .member-form__submit:disabled {
+  opacity: 0.65;
+  cursor: wait;
+}
+
+/* H5 / 窄屏：表单拉满，保持上下堆叠（先资料后改密） */
+@media (max-width: 959px) {
+  .pb-user-info .member-form {
+    max-width: none;
+  }
+}
+
+/* PC（与 member_shell / member 一致：≥960）两列对齐，覆盖全局 420px 以免右侧留白 */
+@media (min-width: 960px) {
+  .pb-user-info__grid {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 28px 40px;
+  }
+
+  .pb-user-info .member-card__head--section {
+    margin-top: 0;
+    padding-top: 0;
+    border-top: 0;
+  }
+
+  .pb-user-info .member-form {
+    max-width: none;
+    width: 100%;
+  }
+}
+
+/* ===== avatar (portrait) — large circle + camera mask ===== */
+.pb-user-info #mac-info-portrait-file,
+.pb-user-info input[type="file"][accept="image/*"] {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0, 0, 0, 0) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
+  display: none !important;
+}
+
+.pb-user-info .member-form__field--avatar {
+  display: block;
+  margin-bottom: 20px;
+}
+
+.pb-user-info__avatar-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.pb-user-info__avatar {
+  position: relative;
+  flex: 0 0 auto;
+  display: block;
+  width: 96px;
+  height: 96px;
+  border-radius: 50%;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.pb-user-info__avatar-preview {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 2px solid var(--c-border, #e3e5e7);
+  background: var(--c-surface-2, #f6f7f8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+}
+
+.pb-user-info__avatar-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* 无真实头像时 user_avatar 输出主色圆形 SVG 占位 */
+.pb-user-info__avatar-preview .pb-avatar-fallback,
+.pb-user-info__avatar-preview .pb-user-info__avatar-img.pb-avatar-fallback {
+  width: 100% !important;
+  height: 100% !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  overflow: hidden;
+  box-sizing: border-box;
+  line-height: 0;
+}
+.pb-user-info__avatar-preview .pb-avatar-fallback > svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.pb-user-info__avatar-mask {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  background: rgba(0, 0, 0, 0.48);
+  color: #fff;
+  opacity: 0;
+  transition: opacity .18s ease;
+  pointer-events: none;
+}
+
+.pb-user-info__avatar:hover .pb-user-info__avatar-mask,
+.pb-user-info__avatar:focus-within .pb-user-info__avatar-mask,
+.pb-user-info__avatar.is-busy .pb-user-info__avatar-mask {
+  opacity: 1;
+}
+
+.pb-user-info__avatar-cam {
+  display: block;
+  flex: 0 0 auto;
+}
+
+.pb-user-info__avatar-mask-text {
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: 0.02em;
+}
+
+.pb-user-info__avatar.is-busy {
+  pointer-events: none;
+  cursor: wait;
+}
+
+.pb-user-info__avatar.is-busy .pb-user-info__avatar-mask-text::after {
+  content: '…';
+}
+
+.pb-user-info__avatar-hint {
+  margin: 0;
+  flex: 1 1 140px;
+  min-width: 0;
+  font-size: 12px;
+  line-height: 1.45;
+  color: var(--c-text-muted, #9499a0);
+  opacity: 0.85;
+}
+
+@media (max-width: 959px) {
+  .pb-user-info__avatar {
+    width: 88px;
+    height: 88px;
+  }
+
+  .pb-user-info__avatar-row {
+    gap: 12px;
+    align-items: center;
+  }
+
+  .pb-user-info__avatar-hint {
+    flex-basis: 100%;
+    margin-top: -2px;
+  }
+
+  /* H5: always show a light mask hint so tap affordance is obvious */
+  .pb-user-info__avatar-mask {
+    opacity: 1;
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.55) 0%, rgba(0, 0, 0, 0.12) 55%, transparent 100%);
+    justify-content: flex-end;
+    padding-bottom: 10px;
+    gap: 2px;
+  }
+
+  .pb-user-info__avatar-cam {
+    width: 16px;
+    height: 16px;
+  }
+
+  .pb-user-info__avatar-mask-text {
+    font-size: 11px;
+  }
+}

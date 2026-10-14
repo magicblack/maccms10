@@ -1,0 +1,38 @@
+{
+    "id": "pay_shell",
+    "label_key": "admin/themedesign/pb_block_pay_shell",
+    "category": "member",
+    "kind": "member",
+    "peer_styles": [],
+    "assets": {
+        "css": "style.css",
+        "js": "script.js"
+    },
+    "palette": false,
+    "props": {
+        "default_tab": {
+            "type": "enum",
+            "default": "recharge",
+            "values": [
+                "recharge",
+                "upgrade"
+            ],
+            "trait": "default_tab"
+        },
+        "variant": {
+            "type": "enum",
+            "default": "default",
+            "values": [
+                "default",
+                "minimal"
+            ],
+            "trait": "member_visual"
+        }
+    },
+    "context": {
+        "pageTypes": [
+            "member"
+        ],
+        "requires": []
+    }
+}

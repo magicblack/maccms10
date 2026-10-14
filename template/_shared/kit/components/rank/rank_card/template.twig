@@ -1,0 +1,76 @@
+{# 分类排行卡（首页 rank_modules）：#1 大图 + 2..n 行；无数据用 empty-state 插画 #}
+{% import "page-builder-components/_shared/macros.twig" as pb %}
+{% set _num = num|default(5) %}
+{% set _type = type_id|default(0) %}
+{% set _title = title|default('') %}
+{% if _title == '' and _type > 0 %}
+  {% for t in mac_type({ids: _type, mid: 1}).list|default([]) %}
+    {% set _title = t.type_name %}
+  {% endfor %}
+{% endif %}
+{% set _title_lang = '' %}
+{% if _title == '' %}
+  {% set _title = '本周排行' %}
+  {% set _title_lang = 'string_sec_rank' %}
+{% endif %}
+{% set _hide_title = hide_title|default(false) %}
+{% set _list = mac_vod({num: _num, type: _type, order: 'desc', by: 'hits_week'}).list|default([]) %}
+{% set _asset_base = maccms.path_tpl|default('') ~ 'page-builder-components/rank_card/' %}
+{% set _empty_art = _asset_base ~ 'empty-state.svg' %}
+{% set _loading = _asset_base ~ 'loading.svg' %}
+
+<div class="c-rankcard">
+  {% if not _hide_title %}
+  <h3 class="c-rankcard__head"{% if _title_lang and mac_i18n_key(_title, _title_lang) %} data-lang="{{ _title_lang }}"{% endif %}>{{ _title }}</h3>
+  {% endif %}
+  <div class="c-rankcard__list">
+    {% for vo in _list %}
+      {% set _tag = '' %}
+      {% if vo.vod_class %}{% set _tag = vo.vod_class|split(',')|first %}{% endif %}
+      {% set _meta = [] %}
+      {% if vo.vod_year %}{% set _meta = _meta|merge([vo.vod_year]) %}{% endif %}
+      {% if vo.vod_area %}{% set _meta = _meta|merge([vo.vod_area]) %}{% endif %}
+      {% if vo.vod_class %}{% set _meta = _meta|merge([vo.vod_class]) %}{% endif %}
+      {% if loop.first %}
+      <a class="c-rankcard__feat" href="{{ mac_url_vod_detail(vo) }}" title="{{ vo.vod_name }}">
+        <span class="c-rankcard__poster">
+          {% if vo.vod_pic %}
+          {{ pb.lazy_img(vo.vod_pic, vo.vod_name, {placeholder: _loading, fallback: _empty_art}) }}
+          {% else %}
+          <img class="c-rankcard__poster-empty" src="{{ _empty_art }}" alt="" loading="lazy" decoding="async">
+          {% endif %}
+          <span class="c-rankcard__no c-rankcard__no--1">1</span>
+          {% if _tag %}<span class="c-rankcard__cat">{{ _tag }}</span>{% endif %}
+          {% if vo.vod_isend is defined %}
+          <span class="c-rankcard__state" data-lang="{{ vo.vod_isend == 1 ? 'string_vod_close' : 'string_lianzai' }}">{% if vo.vod_isend == 1 %}已完结{% else %}连载中{% endif %}</span>
+          {% endif %}
+        </span>
+        <span class="c-rankcard__meta">
+          <span class="c-rankcard__row1">
+            <span class="c-rankcard__feat-name">{{ vo.vod_name }}</span>
+            {% if vo.vod_score and vo.vod_score != '0.0' and vo.vod_score != '0' %}
+            <span class="c-rankcard__score">{{ vo.vod_score }}<small data-lang="string_fen">分</small></span>
+            {% endif %}
+          </span>
+          {% if _meta|length %}<span class="c-rankcard__sub">{{ _meta|join(' / ') }}</span>{% endif %}
+          {% if vo.vod_remarks %}<span class="c-rankcard__sub"><span data-lang="string_vod_status">状态：</span>{% include "page-builder-components/_shared/episode_remarks.twig" with {remarks: vo.vod_remarks} only %}</span>{% endif %}
+        </span>
+      </a>
+      {% else %}
+      <a class="c-rankcard__item" href="{{ mac_url_vod_detail(vo) }}" title="{{ vo.vod_name }}">
+        <span class="c-rankcard__no c-rankcard__no--{{ loop.index }}">{{ loop.index }}</span>
+        <span class="c-rankcard__name">{{ vo.vod_name }}</span>
+        {% if vo.vod_score and vo.vod_score != '0.0' and vo.vod_score != '0' %}
+        <span class="c-rankcard__score">{{ vo.vod_score }}<small data-lang="string_fen">分</small></span>
+        {% endif %}
+      </a>
+      {% endif %}
+    {% endfor %}
+  </div>
+  {% if _list is empty %}
+  <div class="c-rankcard__empty">
+    <img class="c-rankcard__empty-art" src="{{ _empty_art }}" alt="" width="88" height="88" loading="lazy" decoding="async">
+    <span class="c-rankcard__empty-text" data-lang="string_rank_card_empty">暂无数据</span>
+  </div>
+  {% endif %}
+</div>

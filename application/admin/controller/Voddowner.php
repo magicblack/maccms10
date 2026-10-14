@@ -52,6 +52,8 @@ class VodDowner extends Base
             if($res===false){
                 return $this->ajaxErrorWithFreshToken(lang('save_err'));
             }
+            config($this->_pre, $list);
+            $this->_player_config_refresh();
             cache('cache_data','1');
             return $this->success(lang('save_ok'));
         }
@@ -103,6 +105,8 @@ class VodDowner extends Base
         if($res===false){
             return $this->error(lang('del_err'));
         }
+        config($this->_pre, $list);
+        $this->_player_config_refresh();
         cache('cache_data','1');
         return $this->success(lang('del_ok'));
     }
@@ -126,6 +130,8 @@ class VodDowner extends Base
             if($res===false){
                 return $this->error(lang('save_err'));
             }
+            config($this->_pre, $list);
+            $this->_player_config_refresh();
             return $this->success(lang('save_ok'));
         }
         return $this->error(lang('param_err'));

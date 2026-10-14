@@ -1,0 +1,50 @@
+{#
+  登录 / 注册 / 找回密码弹窗壳（组件）
+  参数：
+    modal_id      — data-auth-modal 值：login | reg | findpass
+    close_label   — 关闭按钮 aria-label
+    welcome, hint — 左侧/顶栏插画文案
+    title_id      — 标题 id（aria-labelledby）
+    title_lang    — data-lang key
+    title_text    — 标题默认文案
+    subtitle      — 可选副标题（注册）
+    head_compact  — 紧凑标题区（找回密码）
+    dialog_wide   — 宽弹窗（找回密码）
+    card_recovery — auth-card--recovery（找回密码）
+    body_partial  — 表单区 include 路径
+    body_vars     — 传给 body_partial 的变量（可选）
+    foot_mode     — auth_modal_foot 模式：login | reg | findpass
+#}
+{% set _modal_id = modal_id|default('login') %}
+{% set _title_id = title_id|default('auth-modal-' ~ _modal_id ~ '-title') %}
+{% set _body_vars = body_vars|default({}) %}
+<div class="auth-modal" data-auth-modal="{{ _modal_id }}" hidden aria-hidden="true">
+  <div class="auth-modal__backdrop" data-auth-close tabindex="-1" aria-hidden="true"></div>
+  <div class="auth-modal__dialog{% if dialog_wide|default(false) %} auth-modal__dialog--wide{% endif %}" role="dialog" aria-modal="true" aria-labelledby="{{ _title_id }}">
+    <div class="auth-card{% if card_recovery|default(false) %} auth-card--recovery{% endif %}">
+      <button type="button" class="auth-modal__close" data-auth-close data-lang-aria-label="{{ close_label_lang|default('string_close') }}" aria-label="{{ close_label|default('关闭') }}">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
+      </button>
+      {% include "page-builder-components/_shared/auth_card_visual.twig" with {
+        welcome: welcome|default('欢迎回来'),
+        welcome_lang: welcome_lang|default('string_auth_welcome'),
+        hint: hint|default(''),
+        hint_lang: hint_lang|default('string_auth_hint'),
+        hero_image: hero_image|default(''),
+        hero_image_mobile: hero_image_mobile|default('')
+      } %}
+      <div class="auth-card__body">
+        <header class="auth-card__head{% if head_compact|default(false) %} auth-card__head--compact{% endif %}">
+          <h2 class="auth-card__title" id="{{ _title_id }}" data-lang="{{ title_lang|default('') }}">{{ title_text|default('') }}</h2>
+          {% if subtitle|default('') %}
+          <p class="auth-card__sub"{% if subtitle_lang|default('') and mac_i18n_key(subtitle, subtitle_lang) %} data-lang="{{ subtitle_lang }}"{% endif %}>{{ subtitle }}</p>
+          {% endif %}
+        </header>
+        {% include body_partial with _body_vars %}
+        <footer class="auth-card__foot">
+          {% include "page-builder-components/_shared/auth_modal_foot.twig" with { mode: foot_mode|default(_modal_id) } %}
+        </footer>
+      </div>
+    </div>
+  </div>
+</div>

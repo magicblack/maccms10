@@ -1,0 +1,65 @@
+{# 轮播 · 拼贴宫格（bind=数据源，默认 manga） #}
+{% set p = props|default({}) %}
+{% set bind = p.bind|default('manga') %}
+{% set num = p.num|default(24) %}
+{% set by = p.by|default('hits_week') %}
+{% set type_id = p.type|default(0) %}
+{% set feed = mac_pb_feed({bind: bind, num: num, by: by, type: type_id}) %}
+{% set hero_list = feed.list|default([]) %}
+
+{% if hero_list is not empty %}
+<section class="mc-mosaic pb-manga-mosaic"{% if bind == 'art' %} data-cover-kind="book"{% endif %} data-component="manga_mosaic_hero" data-mc-mosaic aria-label="推荐拼贴" data-lang-aria-label="carousel_collage_aria">
+  <div class="mc-mosaic__viewport">
+    <div class="mc-mosaic__track">
+      {% for vo in hero_list %}
+        {% set pi = loop.index0 % 6 %}
+        {% set gi = (loop.index0 / 6)|round(0, 'floor') %}
+        {% if pi == 0 %}<div class="mc-mosaic__group{% if loop.first %} is-focus{% endif %}" data-group="{{ gi }}">{% endif %}
+        {% if pi == 1 %}<div class="mc-mosaic__stack">{% endif %}
+        {% if pi == 4 %}<div class="mc-mosaic__stack">{% endif %}
+        {% if pi == 0 %}
+          {% set shape = 'tall' %}
+        {% elseif pi == 3 %}
+          {% set shape = 'md' %}
+        {% else %}
+          {% set shape = 'sm' %}
+        {% endif %}
+        {% if pi == 3 %}<div class="mc-mosaic__slot">{% endif %}
+      <a class="mc-mosaic__card mc-mosaic__card--{{ shape }}"
+         href="{{ vo.url }}" data-i="{{ loop.index0 }}">
+        <span class="mc-mosaic__cover" data-cover-bg="{{ mac_url_img(vo.pic) }}" style="background-image:url('{{ mac_url_img(vo.pic) }}')"></span>
+        {% if shape == 'tall' %}
+        <span class="mc-mosaic__shade"></span>
+        <span class="mc-mosaic__meta">
+          <span class="mc-mosaic__thumb" data-cover-bg="{{ mac_url_img(vo.pic) }}" style="background-image:url('{{ mac_url_img(vo.pic) }}')"></span>
+          <span class="mc-mosaic__meta-body">
+            <strong>{{ vo.name }}</strong>
+            {% if vo.class %}
+            <span class="mc-mosaic__tag">{{ vo.class|split(',')|first }}</span>
+            {% endif %}
+            {% if vo.blurb %}
+            <em>{{ vo.blurb|slice(0, 36) }}{% if vo.blurb|length > 36 %}…{% endif %}</em>
+            {% endif %}
+          </span>
+        </span>
+        {% endif %}
+      </a>
+        {% if pi == 3 %}</div>{% endif %}
+        {% if pi == 2 or pi == 5 %}</div>{% endif %}
+        {% if pi == 5 or loop.last %}</div>{% endif %}
+      {% endfor %}
+    </div>
+  </div>
+  {% if hero_list|length > 6 %}
+  <button type="button" class="mc-mosaic__nav mc-mosaic__nav--prev" data-dir="-1" aria-label="上一张" data-lang-aria-label="carousel_prev_slide_aria">‹</button>
+  <button type="button" class="mc-mosaic__nav mc-mosaic__nav--next" data-dir="1" aria-label="下一张" data-lang-aria-label="carousel_next_slide_aria">›</button>
+  <div class="mc-mosaic__dots" role="tablist" aria-label="轮播指示" data-lang-aria-label="carousel_indicator_aria">
+    {% for vo in hero_list %}
+      {% if loop.index0 % 6 == 0 %}
+    <button type="button" class="mc-mosaic__dot{% if loop.first %} is-on{% endif %}" data-i="{{ loop.index0 }}" aria-label="第{{ loop.index }}组"></button>
+      {% endif %}
+    {% endfor %}
+  </div>
+  {% endif %}
+</section>
+{% endif %}

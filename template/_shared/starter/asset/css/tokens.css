@@ -1,0 +1,129 @@
+:root {
+  --c-bg: #f1f2f3;
+  --c-surface: #ffffff;
+  --c-surface-2: #f6f7f8;
+  --c-text: #18191c;
+  --c-text-muted: #9499a0;
+  --c-border: #e3e5e7;
+  --c-accent: #fb7299;
+  --c-accent-ink: #ffffff;
+  --c-accent-hover: #ff85a8;
+  --c-accent-soft: rgba(251, 114, 153, 0.12);
+  --c-accent-tint: rgba(251, 114, 153, 0.28);
+  --c-accent-glow: rgba(251, 114, 153, 0.25);
+  --c-accent-border: rgba(251, 114, 153, 0.18);
+  --c-accent-border-strong: rgba(251, 114, 153, 0.35);
+  --c-accent-focus-ring: rgba(251, 114, 153, 0.55);
+  --c-link: #00a1d6;
+  --c-link-hover: #00b5e5;
+  --c-link-soft: rgba(0, 161, 214, 0.12);
+  --c-success: #16a34a;
+  --c-danger: #e11d48;
+  --c-danger-soft: #fff1f0;
+  /* 封面/媒体上的字与遮罩（角标、scrim） */
+  --c-on-media: #ffffff;
+  --c-media-scrim: rgba(0, 0, 0, 0.62);
+
+  /* 语义化装饰（组件只引用这些，preset 可整组替换气质） */
+  --gradient-hero: radial-gradient(120% 140% at 100% 0%, var(--c-accent-glow), transparent 55%), linear-gradient(135deg, var(--c-surface) 0%, var(--c-accent-soft) 48%, var(--c-surface) 100%);
+  --gradient-hero-minimal: linear-gradient(135deg, var(--c-surface) 0%, var(--c-accent-soft) 52%, var(--c-surface-2) 100%);
+  --gradient-brand: linear-gradient(135deg, var(--c-accent), var(--c-accent-hover));
+  --gradient-tile-primary: linear-gradient(180deg, var(--c-surface) 0%, var(--c-accent-soft) 100%);
+  --gradient-tile-minimal: linear-gradient(180deg, var(--c-surface) 0%, var(--c-accent-soft) 72%);
+  --gradient-hero-band: linear-gradient(90deg, var(--c-accent-soft), var(--c-link-soft));
+  --shadow-interactive: 0 8px 20px var(--c-accent-glow);
+  --shadow-focus: 0 0 0 3px var(--c-accent-soft);
+  --radius-surface: 12px;
+  --radius-hero: 14px;
+
+  --font-base: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+  --font-head: var(--font-base);
+
+  --rank-1: #f77b7b;
+  --rank-2: #faa90e;
+  --rank-3: #faa90e;
+  --rank-n: #c9ccd0;
+
+  --pb-medal-1: linear-gradient(135deg, var(--rank-2), #e8a317);
+  --pb-medal-2: linear-gradient(135deg, var(--rank-n), var(--c-text-muted));
+  --pb-medal-3: linear-gradient(135deg, #e8b27a, #cd7f32);
+  --pb-dock-1: linear-gradient(135deg, var(--c-accent), var(--c-accent-hover));
+  --pb-dock-2: linear-gradient(135deg, var(--c-accent), var(--c-accent-hover));
+  --pb-dock-3: linear-gradient(135deg, #7c6cf0, #a78bfa);
+  --pb-dock-4: linear-gradient(135deg, var(--c-link), #5cc8ff);
+
+  --radius: 6px;
+  --radius-sm: 4px;
+  --radius-lg: 8px;
+  --radius-pill: 999px;
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 28px;
+  --space-7: 40px;
+
+  --cover-ratio: 16 / 9;
+  --cover-h-ratio: 16 / 9;
+  --nav-h: 64px;
+  --banner-h: 180px;
+  --wrap: 1400px;
+  --gutter: 8px;
+
+  --player-ratio: 16 / 9;
+  --player-min-h: 180px;
+
+  --ease: cubic-bezier(0.22, 0.61, 0.36, 1);
+  --dur: 200ms;
+
+  --bg-deep: #e8e9eb;
+  --shadow-card: 0 1px 2px rgba(0, 0, 0, 0.04);
+  --c-surface-muted: var(--c-surface-2);
+  --shadow-member-card: 0 1px 2px rgba(15, 23, 42, 0.04), 0 8px 24px rgba(15, 23, 42, 0.05);
+
+  /* 充值 / VIP 升级页 */
+  --gradient-vip-hero:
+    radial-gradient(90% 120% at 100% 0%, var(--c-accent-glow), transparent 50%),
+    linear-gradient(
+      135deg,
+      color-mix(in srgb, var(--c-accent) 72%, var(--bg-deep)) 0%,
+      color-mix(in srgb, var(--c-accent) 38%, var(--c-bg)) 52%,
+      color-mix(in srgb, var(--c-accent) 72%, var(--bg-deep)) 100%
+    );
+  --c-vip-hero-ink: var(--c-accent-ink);
+  --c-vip-hero-ink-muted: color-mix(in srgb, var(--c-vip-hero-ink) 88%, transparent);
+  --c-vip-metric-bg: color-mix(in srgb, var(--c-vip-hero-ink) 10%, transparent);
+  --c-vip-metric-border: color-mix(in srgb, var(--c-vip-hero-ink) 12%, transparent);
+  --c-vip-metric-icon: color-mix(in srgb, var(--c-vip-hero-ink) 90%, transparent);
+  --shadow-vip-hero: 0 10px 28px var(--c-accent-glow);
+  --c-plan-promo: var(--c-accent);
+  --c-plan-promo-ink: var(--c-accent-ink);
+  --gradient-plan-value: var(--pb-medal-1);
+  /* 金/琥珀角标底：始终用深色字，勿混 --c-text（暗色主题会变浅白字） */
+  --c-plan-value-ink: #2a1a06;
+
+  color-scheme: light;
+}
+
+/* 暗色（html.bstem 或主题 override 可复写 accent） */
+.bstem {
+  --c-bg: #0f1115;
+  --c-surface: #171a21;
+  --c-surface-2: #1e222b;
+  --c-text: #e8eaed;
+  --c-text-muted: #9aa0a8;
+  --c-border: #2a2f3a;
+  --c-danger-soft: rgba(251, 113, 133, 0.12);
+  --bg-deep: #0a0c10;
+  --shadow-card: 0 1px 2px rgba(0, 0, 0, 0.35);
+  --c-surface-muted: var(--c-surface-2);
+  --shadow-member-card: 0 1px 2px rgba(0, 0, 0, 0.28), 0 8px 24px rgba(0, 0, 0, 0.32);
+  color-scheme: dark;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --dur: 0.01ms;
+  }
+}

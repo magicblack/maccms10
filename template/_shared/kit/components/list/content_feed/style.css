@@ -1,0 +1,95 @@
+/* content_feed · 换一换：PC 自适应宽度居中，移动端通栏；图标用 mask SVG */
+.pb-content-feed__refresh-wrap {
+  display: flex;
+  justify-content: center;
+  margin-top: 16px;
+  box-sizing: border-box;
+}
+
+.pb-content-feed__refresh {
+  -webkit-appearance: none;
+  appearance: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  box-sizing: border-box;
+  width: auto;
+  min-height: 40px;
+  margin: 0;
+  padding: 10px 20px;
+  border: 1px solid var(--c-border);
+  border-radius: var(--radius-lg);
+  background: var(--c-surface-2);
+  color: var(--c-text-muted);
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1;
+  text-align: center;
+  cursor: pointer;
+  transition:
+    color var(--dur, 0.15s) ease,
+    border-color var(--dur, 0.15s) ease,
+    background var(--dur, 0.15s) ease;
+}
+
+.pb-content-feed__refresh:hover {
+  color: var(--c-accent);
+  border-color: var(--c-accent-border-strong);
+  background: var(--c-accent-soft);
+}
+
+.pb-content-feed__refresh:focus-visible {
+  outline: none;
+  box-shadow: var(--shadow-focus);
+}
+
+.pb-content-feed__refresh.is-loading {
+  opacity: 0.65;
+  pointer-events: none;
+}
+
+/* 圆形双向刷新（mask + currentColor，避免 inline SVG 被过滤/不显示） */
+.pb-content-feed__refresh-ico {
+  display: inline-block;
+  flex-shrink: 0;
+  width: 16px;
+  height: 16px;
+  background-color: currentColor;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8'/%3E%3Cpath d='M3 3v5h5'/%3E%3Cpath d='M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16'/%3E%3Cpath d='M16 16h5v5'/%3E%3C/svg%3E") center / contain no-repeat;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8'/%3E%3Cpath d='M3 3v5h5'/%3E%3Cpath d='M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16'/%3E%3Cpath d='M16 16h5v5'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+
+.pb-content-feed__refresh.is-loading .pb-content-feed__refresh-ico {
+  animation: pb-cf-spin 0.7s linear infinite;
+}
+
+@keyframes pb-cf-spin {
+  to { transform: rotate(360deg); }
+}
+
+.pb-content-feed.is-empty .pb-content-feed__refresh-wrap {
+  display: none;
+}
+
+@media (max-width: 640px) {
+  .pb-content-feed__refresh-wrap {
+    display: block;
+    width: 100%;
+  }
+
+  .pb-content-feed__refresh {
+    width: 100%;
+    min-height: 44px;
+    border-radius: var(--radius);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pb-content-feed__refresh,
+  .pb-content-feed__refresh.is-loading .pb-content-feed__refresh-ico {
+    transition: none;
+    animation: none;
+  }
+}

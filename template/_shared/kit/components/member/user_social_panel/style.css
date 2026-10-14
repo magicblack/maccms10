@@ -1,0 +1,1384 @@
+/* user_social_panel — bundled page CSS */
+/* user_social_panel — 圈子壳；全页样式见 _shared/assets/css/member/social.css */
+[data-component="user_social_panel"].mac-social {
+  min-width: 0;
+}
+
+[data-component="user_social_panel"] .mac-social__head {
+  margin-bottom: 14px;
+}
+
+[data-component="user_social_panel"] .mac-social__lead {
+  margin: 6px 0 0;
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--c-text-muted, #9499a0);
+}
+
+[data-component="user_social_panel"] .mac-social__tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 18px;
+}
+
+[data-component="user_social_panel"] .mac-social__tabs button {
+  appearance: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 36px;
+  padding: 0 16px;
+  border: 0;
+  border-radius: 999px;
+  background: var(--c-surface-2, #f6f7f8);
+  color: var(--c-text-muted, #9499a0);
+  font: inherit;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 180ms ease, color 180ms ease, transform 150ms ease;
+}
+
+[data-component="user_social_panel"] .mac-social__tabs button:hover {
+  color: var(--c-text, #18191c);
+  background: var(--c-surface, #eef0f3);
+}
+
+[data-component="user_social_panel"] .mac-social__tabs button:focus-visible {
+  outline: 2px solid var(--c-accent-focus-ring);
+  outline-offset: 2px;
+}
+
+[data-component="user_social_panel"] .mac-social__tabs button.is-active {
+  background: var(--c-accent);
+  color: var(--c-accent-ink, #fff);
+  font-weight: 600;
+}
+
+[data-component="user_social_panel"] .mac-social__tabs button:active {
+  transform: scale(0.97);
+}
+
+/* 空态：主色 inline SVG + 垂直居中（对齐 favs_list） */
+[data-component="user_social_panel"] .mac-social__empty.member-empty--social,
+[data-component="user_social_panel"] .member-empty--social {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  max-width: 100%;
+  margin: 0;
+  padding: 48px 20px 40px;
+  min-height: min(52vh, 400px);
+  box-sizing: border-box;
+  text-align: center;
+  border: 0;
+  border-radius: 14px;
+  background:
+    radial-gradient(120% 80% at 50% 0%, var(--c-accent-soft), transparent 55%),
+    transparent;
+  color: var(--c-text-muted, #9499a0);
+}
+
+[data-component="user_social_panel"] .mac-social__empty[hidden] {
+  display: none !important;
+}
+
+[data-component="user_social_panel"] .mac-social__empty-art,
+[data-component="user_social_panel"] .member-empty--social .pb-empty-state__art {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: auto;
+  max-width: 100%;
+  margin: 0 0 4px;
+  line-height: 0;
+  filter: drop-shadow(0 8px 24px rgba(15, 23, 42, 0.06));
+}
+
+[data-component="user_social_panel"] .member-empty--social .pb-empty-state__svg {
+  display: block;
+  width: 160px;
+  height: 160px;
+  max-width: min(56vw, 168px);
+  margin: 0 auto;
+  color: var(--c-accent);
+}
+
+[data-component="user_social_panel"] .mac-social__empty-title,
+[data-component="user_social_panel"] .member-empty--social .member-empty__title {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 650;
+  line-height: 1.4;
+  color: var(--c-text, #18191c);
+}
+
+[data-component="user_social_panel"] .mac-social__empty-copy,
+[data-component="user_social_panel"] .member-empty--social .member-empty__hint {
+  margin: 0;
+  max-width: 32ch;
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--c-text-muted, #9499a0);
+}
+
+[data-component="user_social_panel"] .mac-social__avatar-letter {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  font-size: inherit;
+  font-weight: 700;
+  line-height: 1;
+  color: var(--c-accent);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-component="user_social_panel"] .mac-social__tabs button {
+    transition: none;
+  }
+  [data-component="user_social_panel"] .mac-social__tabs button:active {
+    transform: none;
+  }
+}
+
+/* --- social.css --- */
+.page-member--dynamics .mac-social {
+  min-width: 0;
+}
+
+.page-member--dynamics .mac-social__head {
+  margin-bottom: 14px;
+}
+
+.page-member--dynamics .mac-social__lead {
+  margin: 6px 0 0;
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--c-text-muted);
+}
+
+.page-member--dynamics .mac-social__tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 18px;
+}
+
+.page-member--dynamics .mac-social__tabs button {
+  appearance: none;
+  display: inline-flex;
+  align-items: center;
+  min-height: 32px;
+  padding: 0 14px;
+  border: 0;
+  border-radius: 999px;
+  background: var(--c-surface-2);
+  color: var(--c-text-muted);
+  font: inherit;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background var(--dur) var(--ease), color var(--dur) var(--ease);
+}
+
+.page-member--dynamics .mac-social__tabs button:hover {
+  color: var(--c-accent);
+  background: var(--c-accent-soft);
+}
+
+.page-member--dynamics .mac-social__tabs button.is-active {
+  background: var(--c-accent);
+  color: #fff;
+  font-weight: 600;
+}
+
+.page-member--dynamics .mac-social__tabs button:focus-visible,
+.page-member--dynamics .mac-social__subtabs button:focus-visible,
+.page-member--dynamics .mac-social__profile-trigger:focus-visible,
+.page-member--dynamics .mac-social__action:focus-visible,
+.page-member--dynamics .mac-social__message-link:focus-visible,
+.page-member--dynamics .mac-social__send:focus-visible,
+.page-member--dynamics .mac-social__back:focus-visible,
+.page-member--dynamics .mac-social__pager button:focus-visible {
+  outline: 2px solid var(--c-accent);
+  outline-offset: 2px;
+}
+
+.page-member--dynamics .mac-social__workspace {
+  min-width: 0;
+}
+
+.page-member--dynamics .mac-social[data-page="conversation"] .mac-social__section-head {
+  display: none;
+}
+
+.page-member--dynamics .mac-social__section-head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 12px;
+  padding-bottom: 12px;
+  margin-bottom: 4px;
+  border-bottom: 1px solid var(--c-border);
+}
+
+.page-member--dynamics .mac-social__section-kicker {
+  display: block;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--c-accent);
+}
+
+.page-member--dynamics .mac-social__section-head h3 {
+  margin: 4px 0 0;
+  font-size: 16px;
+  font-weight: 650;
+  line-height: 1.35;
+  color: var(--c-text);
+}
+
+.page-member--dynamics .mac-social__subtabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  padding: 4px;
+  border-radius: var(--radius-lg);
+  background: var(--c-surface-2);
+}
+
+.page-member--dynamics .mac-social__subtabs:empty {
+  display: none;
+}
+
+.page-member--dynamics .mac-social__subtabs button {
+  appearance: none;
+  min-height: 28px;
+  padding: 0 12px;
+  border: 0;
+  border-radius: var(--radius);
+  background: transparent;
+  color: var(--c-text-muted);
+  font: inherit;
+  font-size: 13px;
+  cursor: pointer;
+  transition: background var(--dur) var(--ease), color var(--dur) var(--ease);
+}
+
+.page-member--dynamics .mac-social__subtabs button:hover {
+  color: var(--c-accent);
+}
+
+.page-member--dynamics .mac-social__subtabs button.is-active {
+  background: var(--c-surface);
+  color: var(--c-text);
+  font-weight: 600;
+  box-shadow: var(--shadow-card);
+}
+
+.page-member--dynamics .mac-social__list {
+  list-style: none;
+  margin: 0;
+  padding: 4px 0;
+}
+
+.page-member--dynamics .mac-social__item {
+  display: flex;
+  gap: 12px;
+  padding: 14px 8px;
+  border-bottom: 1px solid var(--c-border);
+  border-radius: var(--radius-lg);
+}
+
+.page-member--dynamics .mac-social__item:last-child {
+  border-bottom: 0;
+}
+
+.page-member--dynamics .mac-social__item:hover {
+  background: var(--c-accent-soft);
+}
+
+.page-member--dynamics .mac-social__profile-trigger {
+  appearance: none;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.page-member--dynamics .mac-social__avatar,
+.page-member--dynamics .mac-social__peer-avatar {
+  flex: 0 0 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  overflow: hidden;
+  border-radius: 50%;
+  background: var(--c-accent-soft);
+  color: var(--c-accent);
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.page-member--dynamics .mac-social__avatar img,
+.page-member--dynamics .mac-social__peer-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.page-member--dynamics .mac-social__body {
+  flex: 1;
+  min-width: 0;
+}
+
+.page-member--dynamics .mac-social__name,
+.page-member--dynamics .mac-social__peer-name {
+  font-size: 14px;
+  font-weight: 650;
+  line-height: 1.4;
+  color: var(--c-text);
+}
+
+.page-member--dynamics .mac-social__name:hover,
+.page-member--dynamics .mac-social__peer-name:hover {
+  color: var(--c-accent);
+}
+
+.page-member--dynamics .mac-social__text,
+.page-member--dynamics .mac-social__meta {
+  margin-top: 4px;
+  font-size: 13px;
+  line-height: 1.55;
+  color: var(--c-text-muted);
+}
+
+.page-member--dynamics .mac-social__meta {
+  font-size: 12px;
+  color: var(--c-text-muted);
+}
+
+.page-member--dynamics .mac-social__row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  width: 100%;
+}
+
+.page-member--dynamics .mac-social__people-actions {
+  display: flex;
+  flex-shrink: 0;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.page-member--dynamics .mac-social__action,
+.page-member--dynamics .mac-social__message-link,
+.page-member--dynamics .mac-social__send,
+.page-member--dynamics .mac-social__pager button {
+  appearance: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 32px;
+  padding: 0 14px;
+  border: 0;
+  border-radius: var(--radius);
+  background: var(--c-accent);
+  color: #fff;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background var(--dur) var(--ease), color var(--dur) var(--ease);
+}
+
+.page-member--dynamics .mac-social__action:hover,
+.page-member--dynamics .mac-social__message-link:hover,
+.page-member--dynamics .mac-social__send:hover {
+  background: var(--c-accent-hover);
+}
+
+.page-member--dynamics .mac-social__action.is-secondary,
+.page-member--dynamics .mac-social__pager button {
+  background: var(--c-surface-2);
+  color: var(--c-text);
+}
+
+.page-member--dynamics .mac-social__action.is-secondary:hover,
+.page-member--dynamics .mac-social__pager button:hover {
+  color: var(--c-accent);
+  background: var(--c-accent-soft);
+}
+
+.page-member--dynamics .mac-social__message-link {
+  background: var(--c-surface);
+  color: var(--c-accent);
+  box-shadow: inset 0 0 0 1px var(--c-border);
+}
+
+.page-member--dynamics .mac-social__message-link:hover {
+  background: var(--c-accent-soft);
+  color: var(--c-accent);
+}
+
+.page-member--dynamics .mac-moments__header {
+  display: flex;
+  align-items: center;
+  min-height: 22px;
+}
+
+.page-member--dynamics .mac-moments__text {
+  margin-top: 6px;
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--c-text);
+}
+
+.page-member--dynamics .mac-moments__attachment {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 10px;
+  padding: 10px 12px;
+  border: 1px solid var(--c-border);
+  border-radius: var(--radius-lg);
+  background: var(--c-surface-2);
+  color: inherit;
+  text-decoration: none;
+  transition: background var(--dur) var(--ease), border-color var(--dur) var(--ease);
+}
+
+.page-member--dynamics .mac-moments__attachment:hover {
+  background: var(--c-surface);
+  border-color: var(--c-accent-border-strong);
+}
+
+.page-member--dynamics .mac-moments__attachment-mark {
+  flex: 0 0 3px;
+  width: 3px;
+  height: 28px;
+  border-radius: 2px;
+  background: var(--c-accent);
+}
+
+.page-member--dynamics .mac-moments__attachment div {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.page-member--dynamics .mac-moments__attachment strong {
+  font-size: 13px;
+  font-weight: 650;
+  color: var(--c-text);
+}
+
+.page-member--dynamics .mac-moments__attachment span {
+  overflow: hidden;
+  font-size: 12px;
+  color: var(--c-text-muted);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.page-member--dynamics .mac-moments__attachment i {
+  flex-shrink: 0;
+  font-style: normal;
+  color: var(--c-text-muted);
+}
+
+.page-member--dynamics .mac-moments__content-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 8px;
+  color: var(--c-accent);
+  font-size: 13px;
+  font-weight: 500;
+  text-decoration: none;
+}
+
+.page-member--dynamics .mac-moments__content-link:hover {
+  text-decoration: underline;
+}
+
+.page-member--dynamics .mac-moments__footer {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin-top: 8px;
+  font-size: 12px;
+  color: var(--c-text-muted);
+}
+
+.page-member--dynamics .mac-moments__footer span {
+  display: inline-flex;
+  align-items: center;
+  padding: 1px 6px;
+  border-radius: var(--radius-sm);
+  background: var(--c-accent-soft);
+  color: var(--c-accent);
+  font-weight: 600;
+}
+
+.page-member--dynamics .mac-social__conversation-row .mac-social__row {
+  appearance: none;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.page-member--dynamics .mac-social__conversation-row .mac-social__meta {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 4px;
+  flex-shrink: 0;
+}
+
+.page-member--dynamics .mac-social__conversation-row .mac-social__meta strong {
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  border-radius: 999px;
+  background: var(--c-accent);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 18px;
+  text-align: center;
+}
+
+.page-member--dynamics .mac-social__conversation-row .mac-social__text {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.page-member--dynamics .mac-social__loading {
+  padding: 56px 16px;
+  text-align: center;
+  color: var(--c-text-muted);
+}
+
+.page-member--dynamics .mac-social__empty.member-empty--social,
+.page-member--dynamics .mac-social__empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  margin: 0;
+  padding: 48px 20px 40px;
+  min-height: min(52vh, 400px);
+  box-sizing: border-box;
+  text-align: center;
+  border: 0;
+  border-radius: 14px;
+  background:
+    radial-gradient(120% 80% at 50% 0%, var(--c-accent-soft, rgba(0, 161, 214, 0.12)), transparent 55%),
+    transparent;
+  color: var(--c-text-muted);
+}
+
+.page-member--dynamics .mac-social__empty-art,
+.page-member--dynamics .mac-social__empty .pb-empty-state__art {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 0 4px;
+  line-height: 0;
+  filter: drop-shadow(0 8px 24px rgba(15, 23, 42, 0.06));
+}
+
+.page-member--dynamics .mac-social__empty .pb-empty-state__svg {
+  display: block;
+  width: 160px;
+  height: 160px;
+  max-width: min(56vw, 168px);
+  margin: 0 auto;
+  color: var(--c-accent);
+}
+
+.page-member--dynamics .mac-social__empty-title,
+.page-member--dynamics .mac-social__empty .member-empty__title,
+.page-member--dynamics .mac-social__empty strong {
+  margin: 0;
+  display: block;
+  font-size: 16px;
+  font-weight: 650;
+  line-height: 1.4;
+  color: var(--c-text);
+}
+
+.page-member--dynamics .mac-social__empty-copy,
+.page-member--dynamics .mac-social__empty .member-empty__hint,
+.page-member--dynamics .mac-social__empty small {
+  margin: 0;
+  display: block;
+  max-width: 32ch;
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--c-text-muted);
+}
+
+.page-member--dynamics .mac-social__avatar-letter {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  font-size: inherit;
+  font-weight: 700;
+  line-height: 1;
+  color: var(--c-accent);
+}
+
+.page-member--dynamics .mac-social__pager {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding-top: 16px;
+  font-size: 13px;
+  color: var(--c-text-muted);
+}
+
+.page-member--dynamics .mac-social-pager__summary {
+  margin: 0;
+  font-size: 12px;
+  color: var(--c-text-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.page-member--dynamics .mac-social__pager .mac-social-pager__list {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.page-member--dynamics .mac-social__pager .mac-social-pager__list li {
+  list-style: none;
+}
+
+.page-member--dynamics .mac-social__pager .mac-social-pager__list a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 36px;
+  min-width: 36px;
+  padding: 0 10px;
+  border: 1px solid var(--c-border);
+  border-radius: 8px;
+  background: var(--c-surface);
+  color: var(--c-text);
+  font-size: 13px;
+  font-weight: 500;
+  text-decoration: none;
+}
+
+.page-member--dynamics .mac-social__pager .mac-social-pager__list a:hover {
+  color: var(--c-accent);
+  border-color: var(--c-accent);
+  background: var(--c-accent-soft);
+}
+
+.page-member--dynamics .mac-social__pager .mac-social-pager__list li.active a,
+.page-member--dynamics .mac-social__pager .mac-social-pager__list li.active span.num {
+  background: var(--c-accent);
+  border-color: var(--c-accent);
+  color: var(--c-accent-ink, #fff);
+}
+
+.page-member--dynamics .mac-social__pager .mac-social-pager__list a.btns-disad,
+.page-member--dynamics .mac-social__pager .mac-social-pager__list span.btns-disad {
+  opacity: 0.38;
+  pointer-events: none;
+}
+
+.page-member--dynamics .mac-social__pager .mac-social-pager__list span.num {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 36px;
+  padding: 0 10px;
+  font-size: 12px;
+  color: var(--c-text-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.page-member--dynamics .mac-social__empty[hidden],
+.page-member--dynamics .mac-social__loading[hidden],
+.page-member--dynamics .mac-social__pager[hidden],
+.page-member--dynamics .mac-social__content[hidden],
+.page-member--dynamics .mac-social__conversation[hidden],
+.page-member--dynamics .mac-social__infinite[hidden] {
+  display: none !important;
+}
+
+.page-member--dynamics .mac-social__infinite {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 16px 8px 8px;
+  color: var(--c-text-muted);
+  font-size: 12px;
+}
+
+.page-member--dynamics .mac-social__infinite span {
+  width: 14px;
+  height: 14px;
+  border: 2px solid var(--c-border);
+  border-top-color: var(--c-accent);
+  border-radius: 50%;
+}
+
+.page-member--dynamics .mac-social__infinite.is-loading span {
+  animation: mac-social-spin 0.7s linear infinite;
+}
+
+.page-member--dynamics .mac-social__infinite.is-end span {
+  display: none;
+}
+
+@keyframes mac-social-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.page-member--dynamics .mac-social__conversation {
+  display: flex;
+  flex-direction: column;
+  min-height: 420px;
+}
+
+.page-member--dynamics .mac-social__conversation-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding-bottom: 12px;
+  margin-bottom: 12px;
+  border-bottom: 1px solid var(--c-border);
+}
+
+.page-member--dynamics .mac-social__back {
+  appearance: none;
+  flex-shrink: 0;
+  min-height: 32px;
+  padding: 0 12px;
+  border: 0;
+  border-radius: var(--radius);
+  background: var(--c-surface-2);
+  color: var(--c-text-muted);
+  font: inherit;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.page-member--dynamics .mac-social__back:hover {
+  color: var(--c-accent);
+  background: var(--c-accent-soft);
+}
+
+.page-member--dynamics .mac-social__peer-copy {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.page-member--dynamics .mac-social__peer-copy small,
+.page-member--dynamics .mac-social__peer-hint {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  font: inherit;
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--c-text-muted);
+  text-align: left;
+}
+
+.page-member--dynamics .mac-social__peer-hint:hover {
+  color: var(--c-accent);
+}
+
+.page-member--dynamics .mac-social__messages {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-height: 240px;
+  max-height: 420px;
+  overflow-y: auto;
+  padding: 4px 2px 12px;
+}
+
+.page-member--dynamics .mac-social__message {
+  display: flex;
+  justify-content: flex-start;
+}
+
+.page-member--dynamics .mac-social__message.is-self {
+  justify-content: flex-end;
+}
+
+.page-member--dynamics .mac-social__bubble {
+  max-width: min(78%, 420px);
+  padding: 10px 12px;
+  border-radius: var(--radius-lg);
+  background: var(--c-surface-2);
+  color: var(--c-text);
+  font-size: 14px;
+  line-height: 1.55;
+  word-break: break-word;
+}
+
+.page-member--dynamics .mac-social__message.is-self .mac-social__bubble {
+  background: var(--c-accent);
+  color: #fff;
+}
+
+.page-member--dynamics .mac-social__bubble time {
+  display: block;
+  margin-top: 6px;
+  font-size: 11px;
+  color: var(--c-text-muted);
+}
+
+.page-member--dynamics .mac-social__message.is-self .mac-social__bubble time {
+  color: rgba(255, 255, 255, 0.78);
+}
+
+.page-member--dynamics .mac-social__conversation-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: min(40vh, 280px);
+  padding: 28px 16px;
+  color: var(--c-text-muted);
+  text-align: center;
+}
+
+.page-member--dynamics .mac-social__conversation-empty-art,
+.page-member--dynamics .mac-social__conversation-empty span {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 35% 30%, color-mix(in srgb, var(--c-accent, #00a1d6) 35%, #fff), transparent 55%),
+    var(--c-accent-soft);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--c-accent, #00a1d6) 18%, transparent);
+}
+
+.page-member--dynamics .mac-social__conversation-empty strong {
+  font-size: 15px;
+  font-weight: 650;
+  color: var(--c-text);
+}
+
+.page-member--dynamics .mac-social__conversation-empty small {
+  max-width: 28ch;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.page-member--dynamics .mac-social__composer {
+  display: flex;
+  align-items: flex-end;
+  gap: 10px;
+  padding-top: 12px;
+  border-top: 1px solid var(--c-border);
+}
+
+.page-member--dynamics .mac-social__composer textarea {
+  flex: 1;
+  min-height: 44px;
+  max-height: 120px;
+  margin: 0;
+  padding: 10px 12px;
+  border: 1px solid var(--c-border);
+  border-radius: var(--radius-lg);
+  background: var(--c-surface-2);
+  color: var(--c-text);
+  font: inherit;
+  font-size: 14px;
+  line-height: 1.5;
+  resize: vertical;
+}
+
+.page-member--dynamics .mac-social__composer textarea:focus {
+  outline: none;
+  border-color: rgba(251, 114, 153, 0.45);
+  background: var(--c-surface);
+}
+
+.page-member--dynamics .mac-social__send {
+  min-width: 72px;
+  min-height: 44px;
+  border-radius: var(--radius-lg);
+}
+
+@media (max-width: 720px) {
+  .page-member--dynamics .mac-social__tabs {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+
+  .page-member--dynamics .mac-social__tabs::-webkit-scrollbar {
+    display: none;
+  }
+
+  .page-member--dynamics .mac-social__section-head {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .page-member--dynamics .mac-social__row {
+    flex-wrap: wrap;
+  }
+
+  .page-member--dynamics .mac-social__people-actions {
+    width: 100%;
+    justify-content: flex-end;
+  }
+
+  .page-member--dynamics .mac-social__conversation {
+    min-height: 360px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .page-member--dynamics .mac-social__infinite.is-loading span {
+    animation: none;
+  }
+}
+/* —— PB 薄壳：圈子页触摸与层次 —— */
+body.page-member.pb-components-only .mac-social__empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: min(52vh, 400px);
+  padding: 48px 20px 40px;
+  border: 0;
+  border-radius: 14px;
+  background:
+    radial-gradient(120% 80% at 50% 0%, var(--c-accent-soft, rgba(0, 161, 214, 0.12)), transparent 55%),
+    transparent;
+  text-align: center;
+}
+
+body.page-member.pb-components-only .mac-social__send,
+body.page-member.pb-components-only .mac-social__pager button,
+body.page-member.pb-components-only .mac-social__back {
+  min-height: 40px;
+  cursor: pointer;
+  transition: background 180ms ease, color 180ms ease, opacity 180ms ease;
+}
+
+body.page-member.pb-components-only .mac-social__send:focus-visible,
+body.page-member.pb-components-only .mac-social__pager button:focus-visible,
+body.page-member.pb-components-only .mac-social__back:focus-visible {
+  outline: 2px solid rgba(251, 114, 153, 0.55);
+  outline-offset: 2px;
+}
+
+/* --- user-profile-card.css --- */
+/* 用户个人主页卡片 — 点击 [data-user-card] 打开 */
+.mac-user-card {
+  --user-card-accent: var(--c-accent, #4f46e5);
+  --user-card-bg: var(--c-surface, #fff);
+  --user-card-muted-bg: var(--c-surface-2, #f6f7f8);
+  --user-card-text: var(--c-text, #18191c);
+  --user-card-muted: var(--c-text-muted, #9499a0);
+  --user-card-border: var(--c-border, rgba(15, 23, 42, 0.08));
+  position: fixed;
+  inset: 0;
+  z-index: 100080;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  visibility: hidden;
+  opacity: 0;
+  transition: opacity 0.18s ease, visibility 0.18s ease;
+}
+
+.mac-user-card.is-open {
+  visibility: visible;
+  opacity: 1;
+}
+
+.mac-user-card__backdrop {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  cursor: default;
+  background: rgba(8, 14, 11, 0.58);
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+}
+
+.mac-user-card__sheet {
+  position: relative;
+  width: min(520px, 100%);
+  max-height: min(760px, calc(100vh - 28px));
+  padding: 12px 24px 24px;
+  border: 1px solid var(--user-card-border);
+  border-radius: 28px 28px 0 0;
+  background: var(--user-card-bg);
+  color: var(--user-card-text);
+  box-shadow: 0 -20px 60px rgba(7, 18, 12, 0.22);
+  overflow-y: auto;
+  transform: translateY(30px);
+  transition: transform 0.22s ease;
+}
+
+.mac-user-card.is-open .mac-user-card__sheet {
+  transform: translateY(0);
+}
+
+.mac-user-card__handle {
+  width: 42px;
+  height: 4px;
+  margin: 0 auto 18px;
+  border-radius: 2px;
+  background: var(--user-card-border);
+}
+
+.mac-user-card__close {
+  position: absolute;
+  top: 19px;
+  right: 20px;
+  width: 34px;
+  height: 34px;
+  padding: 0;
+  border: 0;
+  border-radius: 17px;
+  background: var(--user-card-muted-bg);
+  color: var(--user-card-muted);
+  font-size: 24px;
+  line-height: 28px;
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+}
+
+.mac-user-card__hero {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  padding: 8px 44px 22px 0;
+}
+
+.mac-user-card__avatar {
+  flex: 0 0 76px;
+  width: 76px;
+  height: 76px;
+  border: 3px solid var(--user-card-bg);
+  border-radius: 24px;
+  background: var(--user-card-accent);
+  color: #fff;
+  font-size: 26px;
+  overflow: hidden;
+  display: grid;
+  place-items: center;
+  box-shadow: 0 9px 24px color-mix(in srgb, var(--user-card-accent) 35%, transparent);
+}
+
+.mac-user-card__avatar img,
+.mac-user-card__avatar-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.mac-user-card__avatar-letter {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  font-size: 28px;
+  font-weight: 700;
+  line-height: 1;
+  color: #fff;
+  text-transform: uppercase;
+}
+
+.mac-user-card__identity {
+  min-width: 0;
+}
+
+.mac-user-card__identity > span {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.4px;
+  color: var(--user-card-accent);
+}
+
+.mac-user-card__identity h2 {
+  margin: 3px 0 0;
+  font-size: 24px;
+  font-weight: 650;
+  line-height: 34px;
+  color: var(--user-card-text);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.mac-user-card__identity p {
+  margin: 2px 0 0;
+  font-size: 12px;
+  line-height: 20px;
+  color: var(--user-card-muted);
+}
+
+.mac-user-card__stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  padding: 16px 0;
+  border-top: 1px solid var(--user-card-border);
+  border-bottom: 1px solid var(--user-card-border);
+}
+
+.mac-user-card__stats div {
+  text-align: center;
+}
+
+.mac-user-card__stats div + div {
+  border-left: 1px solid var(--user-card-border);
+}
+
+.mac-user-card__stats strong,
+.mac-user-card__stats span {
+  display: block;
+}
+
+.mac-user-card__stats strong {
+  font-size: 20px;
+  line-height: 26px;
+  color: var(--user-card-text);
+}
+
+.mac-user-card__stats span {
+  margin-top: 2px;
+  font-size: 11px;
+  color: var(--user-card-muted);
+}
+
+.mac-user-card__section {
+  padding-top: 20px;
+}
+
+.mac-user-card__section-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.mac-user-card__section-head strong {
+  font-size: 15px;
+  line-height: 24px;
+}
+
+.mac-user-card__section-head span {
+  font-size: 9px;
+  letter-spacing: 1px;
+  color: var(--user-card-muted);
+}
+
+.mac-user-card__recent {
+  overflow: hidden;
+  border: 1px solid var(--user-card-border);
+  border-radius: 16px;
+  background: var(--user-card-muted-bg);
+}
+
+.mac-user-card__recent-item {
+  display: grid;
+  grid-template-columns: 58px minmax(0, 1fr);
+  gap: 12px;
+  padding: 12px 14px;
+}
+
+.mac-user-card__recent-item + .mac-user-card__recent-item {
+  border-top: 1px solid var(--user-card-border);
+}
+
+.mac-user-card__recent-item span {
+  font-size: 11px;
+  line-height: 20px;
+  color: var(--user-card-accent);
+}
+
+.mac-user-card__recent-item p {
+  margin: 0;
+  font-size: 12px;
+  line-height: 20px;
+  color: var(--user-card-text);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.mac-user-card__empty {
+  padding: 28px 16px;
+  border-radius: 16px;
+  background: var(--user-card-muted-bg);
+  font-size: 12px;
+  text-align: center;
+  color: var(--user-card-muted);
+}
+
+.mac-user-card__actions {
+  display: flex;
+  gap: 10px;
+  padding-top: 20px;
+}
+
+.mac-user-card__action {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 46px;
+  padding: 0 18px;
+  border: 1px solid var(--user-card-border);
+  border-radius: 24px;
+  background: var(--user-card-muted-bg);
+  color: var(--user-card-text);
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.mac-user-card__action.is-primary {
+  border-color: var(--user-card-accent);
+  background: var(--user-card-accent);
+  color: #fff;
+}
+
+.mac-user-card__action:disabled {
+  opacity: 0.62;
+  cursor: wait;
+}
+
+.mac-user-card__loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 320px;
+  text-align: center;
+}
+
+.mac-user-card__loading span {
+  width: 34px;
+  height: 34px;
+  margin-bottom: 18px;
+  border: 3px solid var(--user-card-border);
+  border-top-color: var(--user-card-accent);
+  border-radius: 50%;
+  animation: mac-user-card-spin 0.75s linear infinite;
+}
+
+.mac-user-card__loading strong {
+  font-size: 16px;
+  line-height: 24px;
+}
+
+.mac-user-card__loading small {
+  margin-top: 4px;
+  font-size: 12px;
+  color: var(--user-card-muted);
+}
+
+.mac-user-card-open {
+  overflow: hidden;
+}
+
+[data-user-card] {
+  cursor: pointer;
+}
+
+@keyframes mac-user-card-spin {
+  to {
+    transform: rotate(1turn);
+  }
+}
+
+@media (min-width: 821px) {
+  .mac-user-card {
+    align-items: center;
+    padding: 24px;
+  }
+
+  .mac-user-card__sheet {
+    border-radius: 28px;
+  }
+}
+
+@media (max-width: 820px) {
+  .mac-user-card__sheet {
+    padding-left: 18px;
+    padding-right: 18px;
+    padding-bottom: calc(20px + env(safe-area-inset-bottom));
+  }
+
+  .mac-user-card__hero {
+    gap: 14px;
+  }
+
+  .mac-user-card__avatar {
+    flex-basis: 66px;
+    width: 66px;
+    height: 66px;
+    border-radius: 21px;
+  }
+
+  .mac-user-card__identity h2 {
+    font-size: 21px;
+    line-height: 30px;
+  }
+}

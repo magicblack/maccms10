@@ -1,0 +1,34 @@
+{#
+  用户头像（kit/shared 唯一真相）— sync → page-builder-components/_shared/user_avatar.twig
+  优先级：用户上传 > 主题设计 default_avatar > 站点 touxiang（发布 copy）> 内联 SVG。
+  仅读 mac_theme_design() + mac_get_user_portrait()，不新增 PHP 辅助函数。
+  参数：uid、size、class、alt
+#}
+{% set uid = uid|default(0) %}
+{% set size = size|default(36) %}
+{% set cls = class|default('') %}
+{% set _shared_avatar = maccms.path_tpl ~ 'page-builder-components/_shared/img/avatar-default.svg' %}
+{% set _avatar_td = mac_theme_design().default_avatar|default('')|trim %}
+{% set src = mac_get_user_portrait(uid) %}
+{% set _has_upload = uid > 0 and 'upload/user/' in src %}
+{% set _use_theme_avatar = false %}
+{% if not _has_upload and _avatar_td != '' %}
+  {% set src = (_avatar_td matches '/^(https?:)?\/\//' or _avatar_td starts with '/') ? _avatar_td : mac_url_img(_avatar_td) %}
+  {% set _use_theme_avatar = true %}
+{% elseif not _has_upload and 'touxiang.png' in src %}
+  {# 主题设计发布会 copy 到 static_new/images/touxiang.png；json 字段偶发为空时仍走此图 #}
+  {% set _use_theme_avatar = true %}
+{% elseif not _has_upload and (not src or 'avatar-default.' in src or 'avatar-placeholder.' in src) %}
+  {% set src = '' %}
+{% endif %}
+{% if src %}
+<img class="{{ cls }}" src="{{ src }}" alt="{{ alt|default('') }}" width="{{ size }}" height="{{ size }}" decoding="async"{% if _use_theme_avatar %} data-pb-theme-avatar="1"{% endif %} onerror="this.onerror=null;this.src='{{ _shared_avatar }}'">
+{% else %}
+<span class="{{ cls }} pb-avatar-fallback" style="width:{{ size }}px;height:{{ size }}px;" role="img" aria-label="{{ alt|default('') }}" data-pb-avatar-fallback="1">
+  <svg viewBox="0 0 96 96" width="{{ size }}" height="{{ size }}" aria-hidden="true" focusable="false">
+    <circle cx="48" cy="48" r="48" fill="color-mix(in srgb, var(--c-accent) 55%, #ffffff)"/>
+    <circle cx="48" cy="36" r="16" fill="#ffffff"/>
+    <path d="M16 84c6-18 20-28 32-28s26 10 32 28" fill="#ffffff"/>
+  </svg>
+</span>
+{% endif %}

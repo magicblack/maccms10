@@ -4,6 +4,7 @@
     <blockquote class="layui-elem-quote">{:lang('admin/coupon/info_desc')}</blockquote>
 
     <form class="layui-form" method="post" action="{:url('save')}">
+        <input type="hidden" name="__token__" value="{:mac_admin_csrf_token()}">
         <input type="hidden" name="coupon_id" value="{$info.coupon_id|default=''}">
 
         <div class="layui-form-item">

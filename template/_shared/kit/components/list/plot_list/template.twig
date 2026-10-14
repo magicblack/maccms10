@@ -1,0 +1,43 @@
+{% import "@shared/components.twig" as c %}
+{% set p = props|default({}) %}
+{% set num = p.num|default(30) %}
+{% set use_paging = p.paging is defined ? p.paging : true %}
+{% set pageurl = p.pageurl|default('plot/index') %}
+{% set args = {num: num, type: 'all', plot: 1, order: 'desc', by: 'time'} %}
+{% if use_paging %}
+  {% set args = args|merge({paging: true, pageurl: pageurl}) %}
+{% endif %}
+{% set res = mac_vod(args) %}
+{% set list = res.list|default([]) %}
+{% if use_paging %}
+  {% set pg = mac_paging(res) %}
+{% endif %}
+<div class="pb-plot-list" data-component="plot_list">
+  {% if list %}
+  <div class="pb-plot-list__grid">
+    {% for vo in list %}
+    <a class="pb-plot-list__card" href="{{ mac_url_plot_detail(vo) }}" title="{{ vo.vod_name }}">
+      <span class="pb-plot-list__thumb">
+        {{ c.lazy_img(vo.vod_pic, vo.vod_name) }}
+        {% if vo.vod_remarks %}<span class="pb-plot-list__badge">{% include "page-builder-components/_shared/episode_remarks.twig" with {remarks: vo.vod_remarks} only %}</span>{% endif %}
+      </span>
+      <h2 class="pb-plot-list__title">{{ vo.vod_name }}</h2>
+    </a>
+    {% endfor %}
+  </div>
+  {% if use_paging and pg is defined %}
+    {% include 'page-builder-components/paging/template.twig' with {props: {pg: pg}} %}
+  {% endif %}
+  {% else %}
+    {% include 'page-builder-components/empty_state/template.twig' with {
+      props: {
+        title: '暂无分集剧情',
+        title_lang: 'plot_list_empty_title',
+        cta_text: '回首页',
+        cta_text_lang: 'plot_back_home',
+        cta_url: maccms.path|default('/'),
+        show_art: true
+      }
+    } %}
+  {% endif %}
+</div>

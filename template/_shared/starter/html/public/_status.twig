@@ -1,0 +1,33 @@
+{# 状态页：404 / 403 / 500 / jump / msg #}
+{% extends "layout/base.twig" %}
+{% block title %}{% block status_title %}{{ msg|default(maccms.site_name) }}{% endblock %}{% endblock %}
+{% block meta %}<meta name="robots" content="noindex,nofollow">{% endblock %}
+{% block layout_mod %} solo{% endblock %}
+{% block head %}
+<link rel="stylesheet" href="{{ maccms.path_tpl|default('') }}page-builder-components/_shared/css/status-page.css">
+{% endblock %}
+{% block site_header %}
+  {% include 'page-builder-components/site_nav/template.twig' with {props: { max: 8, show_search: true, type_ids: [] }} %}
+{% endblock %}
+{% block content %}
+<div class="status-page">
+  <div class="status-page__art" aria-hidden="true">
+    {% include "page-builder-components/_shared/empty_state_art.twig" %}
+  </div>
+  <div class="status-page__code">{% block status_code %}{% endblock %}</div>
+  <h2 class="status-page__msg">{% block status_msg %}{{ msg|default('') }}{% endblock %}</h2>
+  <p class="status-page__sub">{% block status_sub %}{% endblock %}</p>
+  {% block status_actions %}
+  <p class="status-page__act">
+    <a class="btn" href="{{ maccms.path }}" data-lang="plot_back_home">回首页</a>
+    {% if url|default('') %}<a class="btn ghost" href="{{ url }}" data-lang="string_fh">返回</a>{% endif %}
+  </p>
+  {% endblock %}
+</div>
+{% if url|default('') and wait|default(0) %}
+<meta http-equiv="refresh" content="{{ wait }};url={{ url }}">
+{% endif %}
+{% endblock %}
+{% block footer %}
+  {% include 'page-builder-components/site_footer/template.twig' with {props: { variant: 'default', copyright: '', show_nav: true, show_friends: true, logo: '' }} %}
+{% endblock %}

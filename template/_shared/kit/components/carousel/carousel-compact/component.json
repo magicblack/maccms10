@@ -1,0 +1,43 @@
+{
+    "id": "carousel-compact",
+    "label_key": "admin/themedesign/pb_comp_carousel_compact",
+    "category": "carousel",
+    "kind": "carousel",
+    "styleMode": "component",
+    "peer_styles": [],
+    "assets": {
+        "css": "style.css",
+        "js": "script.js"
+    },
+    "props": {
+        "bind": {
+            "type": "enum",
+            "default": "vod",
+            "values": ["vod", "manga", "art"],
+            "trait": "bind"
+        },
+        "type": {
+            "type": "category",
+            "mid": 1,
+            "default": 0,
+            "trait": "category"
+        },
+        "num": {
+            "type": "number",
+            "default": 5,
+            "min": 1,
+            "max": 10,
+            "trait": "count"
+        },
+        "by": {
+            "type": "enum",
+            "default": "hits_day",
+            "values": ["time", "hits", "hits_day", "hits_week", "hits_month", "score"],
+            "trait": "sort"
+        }
+    },
+    "context": {
+        "pageTypes": ["home", "list", "detail"],
+        "requires": []
+    }
+}

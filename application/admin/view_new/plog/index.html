@@ -16,6 +16,8 @@
                         <option value="7" {if condition="$param['type'] eq '7'"}selected {/if}>{:lang('admin/plog/points_upgrade')}</option>
                         <option value="8" {if condition="$param['type'] eq '8'"}selected {/if}>{:lang('admin/plog/points_buy')}</option>
                         <option value="9" {if condition="$param['type'] eq '9'"}selected {/if}>{:lang('admin/plog/points_withdrawal')}</option>
+                        <option value="14" {if condition="$param['type'] eq '14'"}selected {/if}>{:lang('plog_invite_reward')}</option>
+                        <option value="15" {if condition="$param['type'] eq '15'"}selected {/if}>{:lang('plog_invite_vip')}</option>
                     </select>
                 </div>
                 <div class="layui-input-inline">
@@ -52,7 +54,7 @@
                 <td>{$vo.plog_id}</td>
                 <td>[{$vo.user_id}]{$vo.user_name}</td>
                 <td>{$vo.plog_type|mac_get_plog_type_text}</td>
-                <td>{if condition="in_array($vo.plog_type,[1,2,3,4,5,6,10,11])"}+{else/}-{/if}{$vo.plog_points}</td>
+                <td>{if condition="in_array($vo.plog_type,[1,2,3,4,5,6,10,11,14,15])"}+{else/}-{/if}{$vo.plog_points}</td>
                 <td>{$vo.plog_remarks}</td>
                 <td>{$vo.plog_time|mac_day='color'}</td>
                 <td>

@@ -1,0 +1,144 @@
+{% set p = props|default({}) %}
+{% set _layout = p.layout|default('grid2') %}
+{% set _num = p.num|default(12) %}
+{% set _by = p.by|default('hits') %}
+{% set _order = p.order|default('desc') %}
+{% set _type_pick = p.type_pick|default('all') %}
+{% set _type_id = 0 %}
+{% set _type_row = null %}
+{% if _type_pick == 'top_types' %}
+  {% set _idx = p.top_types_index|default(1) %}
+  {% set _types = mac_top_types(1, 24) %}
+  {% if _types is iterable and _types|length >= _idx %}
+    {% set _type_row = _types[_idx - 1] %}
+    {% set _type_id = _type_row.type_id|default(0) %}
+  {% endif %}
+{% elseif _type_pick == 'category' %}
+  {% set _type_raw = p.type|default(0) %}
+  {% set _type_id = (_type_raw == 'current') ? obj.type_id|default(0) : _type_raw %}
+{% endif %}
+{% set vod_args = {num: _num, order: _order, by: _by} %}
+{% if _type_id > 0 %}
+  {% set vod_args = vod_args|merge({type: _type_id}) %}
+{% endif %}
+{% set row = mac_vod(vod_args).list|default([]) %}
+{% if row is empty %}
+{% else %}
+{% set _title_mode = p.title_mode|default('custom') %}
+{% if _title_mode == 'type_name' and _type_row %}
+  {% set _title = _type_row.type_name|default('') %}
+{% else %}
+  {% set _title = p.title|default('热门推荐') %}
+{% endif %}
+{% if p.icon is defined %}
+  {% set _icon = p.icon %}
+{% else %}
+  {% set _icon = 'fire' %}
+{% endif %}
+{% if _icon != '' and _icon != 'none' and _icon == 'auto' %}
+  {% set _tn = _title|default('') %}
+  {% set _icon = 'fire' %}
+  {% if '电影' in _tn or '短片' in _tn %}
+    {% set _icon = 'film' %}
+  {% elseif '剧' in _tn %}
+    {% set _icon = 'clapper' %}
+  {% elseif '综艺' in _tn %}
+    {% set _icon = 'tv' %}
+  {% elseif '动漫' in _tn %}
+    {% set _icon = 'star' %}
+  {% elseif '伦理' in _tn %}
+    {% set _icon = 'heart' %}
+  {% endif %}
+{% endif %}
+{% set _show_more = p.show_more|default(true) %}
+{% set _show_shuffle = p.show_shuffle|default(true) and _layout == 'grid2' %}
+{% if _type_row %}
+  {% set _more_href = mac_url_type(_type_row, {}, 'type') %}
+{% elseif _type_id > 0 %}
+  {% set _more_href = mac_url_type({type_id: _type_id, type_mid: 1}, {}, 'type') %}
+{% else %}
+  {% set _more_href = mac_url('label/rank') %}
+  {% if _by != 'hits' %}
+    {% set _chips = mac_top_types(1, 12) %}
+    {% if _chips is iterable and _chips|length %}
+      {% set _more_href = mac_url_type(_chips|first, {}, 'type') %}
+    {% endif %}
+  {% endif %}
+{% endif %}
+{% set _type_label = _type_row.type_name|default('') %}
+{% if _layout == 'cols3' %}
+<section class="np2-row np2-row--cols3" data-component="vod_list_np2">
+  <div class="np2-row__head">
+    {% include 'page-builder-components/vod_list_np2/row_title.twig' with { title: _title, icon: _icon } %}
+    {% if _show_more %}{% include 'page-builder-components/vod_list_np2/row_more.twig' with { href: _more_href } %}{% endif %}
+  </div>
+  <div class="np2-cards">
+    {% set n3 = 0 %}
+    {% for vo in row %}
+    {% if vo.vod_pic and n3 < _num %}
+    <a class="np2-v3" href="{{ mac_url_vod_play(vo) }}">
+      <div class="np2-v3__pic">
+        <img data-cover src="{{ mac_url_img(vo.vod_pic) }}" alt="{{ vo.vod_name }}" loading="lazy">
+        {% include 'page-builder-components/vod_list_np2/card_paytag.twig' %}
+      </div>
+      <div class="np2-card__body">
+        <div class="np2-card__name">{{ vo.vod_name }}</div>
+        {% include 'page-builder-components/vod_list_np2/card_meta_grid2.twig' with { vo: vo, type_label: _type_label|default('') } %}
+      </div>
+    </a>
+    {% set n3 = n3 + 1 %}
+    {% endif %}
+    {% endfor %}
+  </div>
+</section>
+{% elseif _layout == 'hscroll' %}
+<section class="np2-row np2-row--hscroll" data-component="vod_list_np2">
+  <div class="np2-row__head">
+    {% include 'page-builder-components/vod_list_np2/row_title.twig' with { title: _title, icon: _icon } %}
+    {% if _show_more %}{% include 'page-builder-components/vod_list_np2/row_more.twig' with { href: _more_href } %}{% endif %}
+  </div>
+  <div class="np2-cards">
+    {% for vo in row %}
+    {% if vo.vod_pic %}
+    <a class="np2-hs" href="{{ mac_url_vod_play(vo) }}">
+      <div class="np2-hs__pic">
+        <img data-cover src="{{ mac_url_img(vo.vod_pic) }}" alt="{{ vo.vod_name }}" loading="lazy">
+        {% include 'page-builder-components/vod_list_np2/card_paytag.twig' %}
+      </div>
+      <div class="np2-card__body">
+        <div class="np2-card__name">{{ vo.vod_name }}</div>
+        {% include 'page-builder-components/vod_list_np2/card_meta_grid2.twig' with { vo: vo, type_label: _type_label|default('') } %}
+      </div>
+    </a>
+    {% endif %}
+    {% endfor %}
+  </div>
+</section>
+{% else %}
+<section class="np2-row np2-row--grid2" data-component="vod_list_np2">
+  <div class="np2-row__head">
+    {% include 'page-builder-components/vod_list_np2/row_title.twig' with { title: _title, icon: _icon } %}
+    {% if _show_more %}{% include 'page-builder-components/vod_list_np2/row_more.twig' with { href: _more_href } %}{% endif %}
+  </div>
+  <div class="np2-cards">
+    {% for vo in row %}
+    {% if vo.vod_pic %}
+    <a class="np2-card" href="{{ mac_url_vod_play(vo) }}">
+      <div class="np2-card__pic">
+        <img data-cover src="{{ mac_url_img(vo.vod_pic) }}" alt="{{ vo.vod_name }}" loading="lazy">
+        {% include 'page-builder-components/vod_list_np2/card_paytag.twig' %}
+      </div>
+      <div class="np2-card__body">
+        <div class="np2-card__name">{{ vo.vod_name }}</div>
+        {% include 'page-builder-components/vod_list_np2/card_meta_grid2.twig' with { vo: vo, type_label: _type_label|default('') } %}
+      </div>
+    </a>
+    {% endif %}
+    {% endfor %}
+  </div>
+  {% if _show_shuffle %}
+  <button type="button" class="np2-row__shuffle" data-np2-shuffle><img class="np2-row__shuffle-ico" src="{{ maccms.path_tpl }}asset/img/icons/refresh.svg" alt="" width="14" height="14" decoding="async">换一换</button>
+  {% endif %}
+</section>
+{% endif %}
+{% endif %}

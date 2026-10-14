@@ -1,0 +1,75 @@
+{# 轮播 · 主推位（大图+缩略条；bind=数据源，默认 manga） #}
+{% set p = props|default({}) %}
+{% set bind = p.bind|default('manga') %}
+{% set num = p.num|default(7) %}
+{% set by = p.by|default('hits_month') %}
+{% set type_id = p.type|default(0) %}
+{% set title = p.title|default('为你推荐') %}
+{% set title_lang = p.title_lang|default(title == '为你推荐' ? 'spotlight_title_default' : '') %}
+{% set subtitle = p.subtitle|default('Pick你的最爱！') %}
+{% set subtitle_lang = p.subtitle_lang|default(subtitle == 'Pick你的最爱！' ? 'spotlight_subtitle' : '') %}
+{% set cta = p.cta|default(bind == 'vod' ? '立即播放' : '立即阅读') %}
+{% set cta_lang = p.cta_lang|default(bind == 'vod' ? 'string_play' : 'manga_spot_read') %}
+{% set blurb_max = p.blurb_max|default(72) %}
+{% set show_hero = true %}
+{% if p.show_hero is defined and (p.show_hero == false or p.show_hero == 0 or p.show_hero == '0' or p.show_hero == 'false') %}
+  {% set show_hero = false %}
+{% endif %}
+{% set feed = mac_pb_feed({bind: bind, num: num, by: by, type: type_id}) %}
+{% set pick_list = feed.list|default([]) %}
+{% set pick_first = pick_list|first %}
+
+{% if pick_list is not empty and pick_first %}
+<section class="mc-sec mc-sec--pick pb-manga-spot{% if not show_hero %} pb-manga-spot--no-hero{% endif %}" id="mc-pick" aria-labelledby="mc-pick-h" data-component="manga_home_spotlight"{% if bind == 'art' %} data-cover-kind="book"{% endif %} data-mc-pick>
+  <header class="mc-sec__head">
+    <h2 class="mc-sec__title" id="mc-pick-h"{% if title_lang and mac_i18n_key(title, title_lang) %} data-lang="{{ title_lang }}"{% endif %}>{{ title }}</h2>
+    {% if subtitle %}<p class="mc-sec__sub"{% if subtitle_lang and mac_i18n_key(subtitle, subtitle_lang) %} data-lang="{{ subtitle_lang }}"{% endif %}>{{ subtitle }}</p>{% endif %}
+  </header>
+  <div class="mc-spot">
+    <div class="mc-spot__box">
+      <a class="mc-spot__bg-wrap" data-spot-art href="{{ pick_first.url }}" aria-label="{{ pick_first.name }}">
+        <img class="mc-spot__bg-img" data-spot-bg data-current="{{ mac_url_img(pick_first.pic) }}" data-original="{{ mac_url_img(pick_first.pic) }}" src="{{ mac_url_img(pick_first.pic) }}" alt="" width="255" height="340" decoding="async">
+      </a>
+      <div class="mc-spot__shade" aria-hidden="true"></div>
+      <div class="mc-spot__main">
+        <h3 class="mc-spot__name" data-spot-name>{{ pick_first.name }}</h3>
+        <div class="mc-spot__tags" data-spot-tags>
+          {% for tag in pick_first.class|default('')|split(',')|slice(0, 3) %}
+            {% if tag %}<span>{{ tag }}</span>{% endif %}
+          {% endfor %}
+          {% if not pick_first.class and pick_first.remarks %}<span>{{ pick_first.remarks }}</span>{% endif %}
+        </div>
+        {% set blurb_raw = pick_first.blurb|default('')|striptags|trim %}
+        <p class="mc-spot__desc" data-spot-desc>{% if blurb_raw %}{{ blurb_raw|slice(0, blurb_max) }}{% if blurb_raw|length > blurb_max %}…{% endif %}{% else %}暂无简介{% endif %}</p>
+        <div class="mc-spot__thumbs" role="tablist" aria-label="切换推荐" data-lang-aria-label="spotlight_switch_aria">
+          {% for vo in pick_list %}
+          <button type="button"
+            class="mc-spot__thumb{% if loop.first %} is-on{% endif %}"
+            data-i="{{ loop.index0 }}"
+            data-name="{{ vo.name }}"
+            data-desc="{{ vo.blurb|default('')|striptags|trim }}"
+            data-href="{{ vo.url }}"
+            data-img="{{ mac_url_img(vo.pic) }}"
+            data-cover-bg="{{ mac_url_img(vo.pic) }}"
+            data-tags="{{ vo.class|default(vo.remarks)|default('') }}"
+            style="background-image:url('{{ mac_url_img(vo.pic) }}')"
+            aria-label="{{ vo.name }}"
+            aria-selected="{% if loop.first %}true{% else %}false{% endif %}"></button>
+          {% endfor %}
+        </div>
+        {% if not show_hero %}
+        <a class="mc-spot__cta" data-spot-link href="{{ pick_first.url }}"{% if cta_lang and mac_i18n_key(cta, cta_lang) %} data-lang="{{ cta_lang }}"{% endif %}>{{ cta }}</a>
+        {% endif %}
+      </div>
+      {% if show_hero %}
+      <div class="mc-spot__hero-wrap">
+        <a class="mc-spot__hero" data-spot-art href="{{ pick_first.url }}">
+          <img data-spot-img data-original="{{ mac_url_img(pick_first.pic) }}" src="{{ mac_url_img(pick_first.pic) }}" alt="{{ pick_first.name }}" width="255" height="340" decoding="async">
+        </a>
+        <a class="mc-spot__cta" data-spot-link href="{{ pick_first.url }}"{% if cta_lang and mac_i18n_key(cta, cta_lang) %} data-lang="{{ cta_lang }}"{% endif %}>{{ cta }}</a>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+</section>
+{% endif %}

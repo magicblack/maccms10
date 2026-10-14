@@ -1,0 +1,32 @@
+/* preset-np2：H5 应用壳 — PC 安全区与顶栏 gutter（完整皮见主题 np2-app.css） */
+.pbs-wrap:has(> .layout.detail),
+.pbs-wrap:has(> .layout.play) {
+  max-width: none;
+  width: 100%;
+  margin: 0;
+  padding: 0 0 48px;
+  overflow: visible;
+  box-sizing: border-box;
+}
+
+@media (max-width: 960px) {
+  body.np2-app:has(.layout.detail),
+  body.np2-app:has(.layout.play),
+  body.np2-app.page-vod-detail,
+  body.np2-app.page-manga-detail,
+  body.np2-app.page-art-detail {
+    overflow-x: hidden;
+    max-width: 100%;
+  }
+
+  body.np2-app:has(.layout.detail) .pbs-wrap,
+  body.np2-app:has(.layout.play) .pbs-wrap,
+  body.np2-app.page-vod-detail .pbs-wrap,
+  body.np2-app.page-manga-detail .pbs-wrap,
+  body.np2-app.page-art-detail .pbs-wrap {
+    overflow-x: hidden;
+    max-width: 100%;
+  }
+}
+
+/* PC 左右安全区由主题 np2-app.css @961px 统一定义（--np2-pc-gutter），此处不再覆盖 */

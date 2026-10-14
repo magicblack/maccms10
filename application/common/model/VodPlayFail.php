@@ -103,12 +103,12 @@ class VodPlayFail extends Base {
 
         if($exist){
             $update = [
-                'fail_count'     => ['exp', 'fail_count+1'],
+                'fail_count'     => ['inc', 1],
                 'last_fail_time' => $time,
                 'last_fail_ip'   => $ip,
             ];
             if($switched){
-                $update['switch_count'] = ['exp', 'switch_count+1'];
+                $update['switch_count'] = ['inc', 1];
             }
             if($play_from !== ''){
                 $update['play_from'] = $play_from;

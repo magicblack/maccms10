@@ -1,0 +1,74 @@
+/* pay_shell — 收银台壳；全页样式见 _shared/assets/css/member/pay.css + upgrade.css */
+[data-component="pay_shell"].member-pay-root {
+  min-width: 0;
+  color: var(--c-text, #18191c);
+}
+
+.member-pay-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 16px;
+  margin: 0 0 16px;
+  font-size: 13px;
+}
+
+.member-pay-links a {
+  color: var(--c-text-muted, #61666d);
+  text-decoration: none;
+  min-height: 32px;
+  display: inline-flex;
+  align-items: center;
+  transition: color var(--dur, 180ms) var(--ease, ease);
+}
+
+.member-pay-links a:hover {
+  color: var(--c-accent);
+}
+
+.member-pay-root--minimal .member-pay-links a:hover {
+  color: var(--c-link, var(--c-accent));
+}
+
+.member-pay-links a:focus-visible {
+  outline: 2px solid var(--c-accent-focus-ring, var(--c-accent-soft));
+  outline-offset: 2px;
+  border-radius: var(--radius-sm, 4px);
+}
+
+.member-pay-service {
+  margin-top: 20px;
+  text-align: center;
+}
+
+.member-pay-service__link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 40px;
+  padding: 0 14px;
+  border-radius: var(--radius-pill, 999px);
+  background: var(--c-surface-2, #f6f7f8);
+  color: var(--c-text, #18191c);
+  text-decoration: none;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.member-pay-service__link:hover {
+  color: var(--c-accent);
+}
+
+.member-pay-root--minimal .member-pay-service__link {
+  border-radius: var(--radius, 6px);
+}
+
+.member-pay-root--minimal .member-pay-service__link:hover {
+  color: var(--c-link, var(--c-accent));
+}
+
+/* 充值中心页：右侧统一白卡内容区 */
+@media (min-width: 961px) {
+  .page-member--upgrade [data-component="pay_shell"] .member-pay-top__row {
+    align-items: center;
+  }
+}

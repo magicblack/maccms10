@@ -1,0 +1,14 @@
+{
+    "props": {
+        "bind": "vod",
+        "num": 12,
+        "type": 0,
+        "by": "time",
+        "order": "desc",
+        "render": "grid",
+        "paging": false,
+        "relation": false,
+        "refresh": false
+    },
+    "context": {}
+}

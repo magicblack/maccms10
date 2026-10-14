@@ -1,0 +1,114 @@
+/* member_filter_tabs — 通用底边指示；收藏/播放记录用胶囊 Chip */
+
+[data-component="member_filter_tabs"].member-tabs {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 4px;
+  margin: 0 0 14px;
+  padding: 0 0 1px;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  touch-action: manipulation;
+  border-bottom: 1px solid var(--c-border, rgba(0, 0, 0, 0.06));
+}
+
+[data-component="member_filter_tabs"].member-tabs::-webkit-scrollbar {
+  display: none;
+}
+
+[data-component="member_filter_tabs"] .member-tabs__link {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  min-width: 44px;
+  padding: 0 14px;
+  margin-bottom: -1px;
+  border: 0;
+  border-radius: 0;
+  border-bottom: 2px solid transparent;
+  background: transparent !important;
+  color: var(--c-text-muted, #61666d);
+  font-size: 14px;
+  font-weight: 500;
+  text-decoration: none;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: color 160ms ease, border-color 160ms ease, background 160ms ease, transform 120ms ease;
+}
+
+[data-component="member_filter_tabs"] .member-tabs__link:hover {
+  color: var(--c-accent);
+  background: transparent !important;
+}
+
+[data-component="member_filter_tabs"] .member-tabs__link:active {
+  transform: scale(0.97);
+}
+
+[data-component="member_filter_tabs"] .member-tabs__link.is-on,
+[data-component="member_filter_tabs"] .member-tabs__link.is-on:hover,
+[data-component="member_filter_tabs"] .member-tabs__link[aria-current="page"] {
+  color: var(--c-accent) !important;
+  font-weight: 650;
+  background: transparent !important;
+  border-bottom-color: var(--c-accent);
+}
+
+[data-component="member_filter_tabs"] .member-tabs__link:focus-visible {
+  outline: 2px solid var(--c-link, #008ac5);
+  outline-offset: 2px;
+  border-radius: 6px;
+}
+
+/* 收藏 / 播放记录 — 胶囊筛选（避免与页级 pill 规则打架） */
+[data-component="member_filter_tabs"].member-tabs--favs,
+[data-component="member_filter_tabs"].member-tabs--plays {
+  gap: 8px;
+  margin-bottom: 12px;
+  padding: 0;
+  border-bottom: 0;
+}
+
+[data-component="member_filter_tabs"].member-tabs--favs .member-tabs__link,
+[data-component="member_filter_tabs"].member-tabs--plays .member-tabs__link {
+  min-height: 36px;
+  margin-bottom: 0;
+  padding: 0 16px;
+  border-radius: 999px;
+  border-bottom: 0;
+  background: var(--c-surface-muted, var(--c-surface-2, #f1f2f3)) !important;
+  color: var(--c-text-muted, #61666d);
+  font-size: 14px;
+  font-weight: 500;
+}
+
+[data-component="member_filter_tabs"].member-tabs--favs .member-tabs__link:hover,
+[data-component="member_filter_tabs"].member-tabs--plays .member-tabs__link:hover {
+  color: var(--c-accent);
+  background: var(--c-accent-soft) !important;
+}
+
+[data-component="member_filter_tabs"].member-tabs--favs .member-tabs__link.is-on,
+[data-component="member_filter_tabs"].member-tabs--favs .member-tabs__link.is-on:hover,
+[data-component="member_filter_tabs"].member-tabs--favs .member-tabs__link[aria-current="page"],
+[data-component="member_filter_tabs"].member-tabs--plays .member-tabs__link.is-on,
+[data-component="member_filter_tabs"].member-tabs--plays .member-tabs__link.is-on:hover,
+[data-component="member_filter_tabs"].member-tabs--plays .member-tabs__link[aria-current="page"] {
+  color: var(--c-accent-ink, #fff) !important;
+  font-weight: 600;
+  background: var(--c-accent) !important;
+  box-shadow: 0 2px 8px var(--c-accent-glow);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-component="member_filter_tabs"] .member-tabs__link {
+    transition: none;
+  }
+
+  [data-component="member_filter_tabs"] .member-tabs__link:active {
+    transform: none;
+  }
+}

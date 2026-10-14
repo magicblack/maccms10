@@ -1,0 +1,60 @@
+{# twigspike art/index — 横滑书列（人气 / 新书 / 完本） #}
+{% set p = props|default({}) %}
+{% set preset = p.preset|default('hot') %}
+{% set presets = {
+  'hot': {title: '人气推荐', title_lang: 'string_nv_hot_title', subtitle: '', subtitle_lang: '', by: 'hits', num: 12, more: 'art/show', more_params: {by: 'hits'}, section_id: 'nv-hot'},
+  'new': {title: '新书速递', title_lang: 'string_nv_new_title', subtitle: '', subtitle_lang: '', by: 'time', num: 12, more: 'art/show', more_params: {by: 'time'}, section_id: 'nv-new'},
+  'finish': {title: '完本好书', title_lang: 'string_nv_finish_title', subtitle: '一口气追到大结局', subtitle_lang: 'string_nv_finish_sub', by: 'score', num: 12, more: 'art/show', more_params: {by: 'score'}, section_id: 'nv-finish'}
+} %}
+{% set cfg = presets[preset]|default(presets.hot) %}
+{% set title = p.title|default(cfg.title) %}
+{% set title_lang = p.title_lang|default(cfg.title_lang|default('')) %}
+{% set subtitle = p.subtitle is defined ? p.subtitle : cfg.subtitle %}
+{% set subtitle_lang = p.subtitle_lang|default(cfg.subtitle_lang|default('')) %}
+{% set num = p.num|default(cfg.num) %}
+{% set by = p.by|default(cfg.by) %}
+{% set section_id = p.section_id|default(cfg.section_id) %}
+{% set art_type_default = mac_top_types(2, 1)|first %}
+{% set art_more_base = art_type_default ? mac_url_type(art_type_default, {}, 'show') : mac_url('art/search') %}
+{% set list = mac_art({num: num, order: 'desc', by: by}).list|default([]) %}
+{% if list is empty and by != 'hits' %}
+  {% set list = mac_art({num: num, order: 'desc', by: 'hits'}).list|default([]) %}
+{% endif %}
+
+{% if list is not empty %}
+<section class="nv-sec pb-novel-home-row pb-novel-home-row--{{ preset }}" id="{{ section_id }}" aria-labelledby="{{ section_id }}-h" data-component="novel_home_row">
+  <header class="nv-sec__head">
+    <div class="nv-sec__intro">
+      <h2 class="nv-sec__title" id="{{ section_id }}-h"{% if title_lang and mac_i18n_key(title, title_lang) %} data-lang="{{ title_lang }}"{% endif %}>{{ title }}</h2>
+      {% if subtitle %}<p class="nv-sec__sub"{% if subtitle_lang and mac_i18n_key(subtitle, subtitle_lang) %} data-lang="{{ subtitle_lang }}"{% endif %}>{{ subtitle }}</p>{% endif %}
+    </div>
+    <a class="nv-sec__more" href="{{ art_more_base }}{% if '?' in art_more_base %}&{% else %}?{% endif %}by={{ cfg.more_params.by|default('hits') }}"><span data-lang="string_more">更多</span> ›</a>
+  </header>
+  <div class="nv-row" data-nv-row>
+    <button type="button" class="nv-row__btn nv-row__btn--prev" data-dir="-1" aria-label="向左" data-lang-aria-label="carousel_prev_aria">‹</button>
+    <div class="nv-row__viewport">
+      <div class="nv-row__track">
+        {% for a in list %}
+        <a class="nv-book nv-book--md" href="{{ mac_url_art_detail(a) }}" title="{{ a.art_name }}">
+          <span class="nv-book__cover" data-cover-kind="book">
+            {% if a.art_pic %}
+            <img data-cover class="nv-book__img" src="{{ mac_url_img(a.art_pic) }}" alt="{{ a.art_name }}" loading="lazy" decoding="async">
+            {% else %}
+            <span class="nv-book__img nv-book__img--empty" aria-hidden="true">{% include "page-builder-components/_shared/book_cover_empty.twig" %}</span>
+            {% endif %}
+            {% if a.art_remarks|default('') %}
+            <i class="nv-book__badge">{% include "page-builder-components/_shared/chapter_remarks.twig" with {remarks: a.art_remarks, rm_limit: 8} only %}</i>
+            {% endif %}
+          </span>
+          <strong class="nv-book__title">{{ a.art_name }}</strong>
+          <em class="nv-book__meta">
+            {% if a.art_author|default('') %}{{ a.art_author }}{% elseif a.art_class|default('') %}{{ a.art_class|split(',')|first }}{% endif %}
+          </em>
+        </a>
+        {% endfor %}
+      </div>
+    </div>
+    <button type="button" class="nv-row__btn nv-row__btn--next" data-dir="1" aria-label="向右" data-lang-aria-label="carousel_next_aria">›</button>
+  </div>
+</section>
+{% endif %}

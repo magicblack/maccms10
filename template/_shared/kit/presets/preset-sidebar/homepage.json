@@ -1,0 +1,98 @@
+{
+  "template": "index/index",
+  "layout": "base",
+  "page_title": "",
+  "chrome_opts": {
+    "header_decor": false,
+    "channel_strip": false
+  },
+  "chrome": [
+    {
+      "component": "site_nav",
+      "props": {
+        "max": 12,
+        "show_search": true,
+        "type_ids": []
+      }
+    }
+  ],
+  "blocks": [
+    {
+      "component": "carousel-fullbleed",
+      "props": {
+        "num": 8,
+        "by": "hits",
+        "type": 0
+      }
+    },
+    {
+      "component": "section",
+      "props": {
+        "variant": "plain",
+        "title": "重磅推荐",
+        "icon": "fire",
+        "more_url": "vod/index",
+        "title_key": "string_sec_featured"
+      },
+      "slots": {
+        "body": [
+          {
+            "component": "vod_list",
+            "props": {
+              "num": 12,
+              "by": "hits_month",
+              "order": "desc",
+              "type": 0,
+              "render": "grid"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "component": "section",
+      "props": {
+        "variant": "plain",
+        "title": "最新更新",
+        "more_url": "vod/index",
+        "title_key": "string_sec_latest"
+      },
+      "slots": {
+        "body": [
+          {
+            "component": "vod_list",
+            "props": {
+              "num": 12,
+              "by": "time",
+              "order": "desc",
+              "type": 0,
+              "render": "slider"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "component": "section",
+      "props": {
+        "variant": "plain",
+        "title": "专题推荐",
+        "icon": "collection",
+        "more_url": "topic/index",
+        "title_key": "string_sec_topic"
+      },
+      "slots": {
+        "body": [
+          {
+            "component": "topic_list",
+            "props": {
+              "num": 8,
+              "by": "hits",
+              "order": "desc"
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

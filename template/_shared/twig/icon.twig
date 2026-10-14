@@ -1,0 +1,18 @@
+{#
+  全站 SVG 图标
+  {% include "@shared/icon.twig" with { name: 'user', class: 'user-dd__ico' } %}
+#}
+{% set _name = name|default('user') %}
+{% set _label = label|default('') %}
+{% set _p = maccms.path|default('/')|trim('/') %}
+{% set _tpl = maccms.path_tpl|default('') %}
+{% if _tpl != '' %}
+{% set _svg_base = _tpl ~ 'page-builder-components/_shared/svg/' %}
+{% else %}
+{% set _svg_base = (_p ? '/' ~ _p : '') ~ '/template/_shared/kit/shared/svg/' %}
+{% endif %}
+<span
+  class="ts-icon ts-icon--current ts-icon--{{ _name }} {{ class|default('') }}"
+  style="--ts-icon: url('{{ _svg_base }}{{ _name }}.svg')"
+  {% if _label %}role="img" aria-label="{{ _label }}"{% else %}aria-hidden="true"{% endif %}
+></span>

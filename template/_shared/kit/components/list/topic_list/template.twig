@@ -1,0 +1,35 @@
+{% import "page-builder-components/_shared/macros.twig" as pb %}
+{% set render = props.render|default('grid') %}
+{% set num = props.num|default(6) %}
+{% set by = props.by|default('hits') %}
+{% set order = props.order|default('desc') %}
+{% set use_paging = props.paging|default(false) %}
+{% if use_paging or render == 'grid' %}
+  {% set num = (pb.pb_grid_topic_num(num) ~ '') + 0 %}
+{% endif %}
+{% set _cover_cls = pb.pb_cover_classes(props) %}
+{% set _cover_style = pb.pb_cover_style(props) %}
+{% set topic_args = {num: num, order: order, by: by} %}
+{% if use_paging %}
+  {% set topic_args = topic_args|merge({
+    paging: true,
+    pageurl: props.pageurl|default('topic/index')
+  }) %}
+{% endif %}
+{% set res = mac_topic(topic_args) %}
+{% set list = res.list|default([]) %}
+{% if use_paging %}
+  {% set pg = mac_paging(res) %}
+{% endif %}
+{% if list is not empty %}
+<div class="bili-grid pb-topic-list {{ _cover_cls }}"{% if _cover_style %} style="{{ _cover_style }}"{% endif %}>
+  {% for vo in list %}{% include "page-builder-components/_shared/topic_card.twig" %}{% endfor %}
+</div>
+{% endif %}
+{% include "page-builder-components/_shared/list_footer.twig" with {
+  use_paging: use_paging,
+  pg: pg|default(null),
+  empty_preset: use_paging ? 'filter' : '',
+  empty_title: use_paging ? '暂无专题' : '暂无内容',
+  empty_title_lang: use_paging ? 'string_topic_feed_empty' : ''
+} %}

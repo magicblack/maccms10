@@ -1,0 +1,7 @@
+{
+    "props": {
+        "variant": "auto",
+        "min": "280px"
+    },
+    "context": []
+}

@@ -1,0 +1,208 @@
+/* user_portrait_panel — large circle + dashed drop zone */
+
+
+.pb-user-portrait #mac-portrait-file,
+.pb-user-portrait input[type="file"][accept="image/*"] {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0, 0, 0, 0) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
+  display: none !important;
+}
+.pb-user-portrait__body {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px;
+  align-items: center;
+}
+
+.pb-user-portrait__preview {
+  width: 160px;
+  height: 160px;
+  flex: 0 0 auto;
+  border-radius: 50%;
+  overflow: hidden;
+  background: #f6f7f8;
+  border: 2px solid var(--c-border, #e3e5e7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+}
+
+.pb-user-portrait__img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* 无真实头像时 user_avatar 输出主色圆形 SVG 占位 */
+.pb-user-portrait__preview .pb-avatar-fallback,
+.pb-user-portrait__preview .pb-user-portrait__img.pb-avatar-fallback {
+  width: 100% !important;
+  height: 100% !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  overflow: hidden;
+  box-sizing: border-box;
+  line-height: 0;
+}
+.pb-user-portrait__preview .pb-avatar-fallback > svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.pb-user-portrait__panel {
+  flex: 1 1 260px;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.pb-user-portrait__drop {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 132px;
+  border: 1.5px dashed var(--c-border, #e3e5e7);
+  border-radius: 12px;
+  background: #f6f7f8;
+  padding: 22px 16px;
+  text-align: center;
+  color: var(--c-text-muted, #9499a0);
+  cursor: pointer;
+  transition: border-color .15s ease, color .15s ease, background .15s ease;
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.pb-user-portrait__drop:hover,
+.pb-user-portrait__drop.is-over {
+  border-color: var(--c-accent);
+  color: var(--c-accent);
+  background: color-mix(in srgb, var(--c-accent) 6%, #fff);
+}
+
+.pb-user-portrait__drop-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--c-accent) 10%, #fff);
+  color: var(--c-accent);
+}
+
+.pb-user-portrait__drop-icon svg {
+  display: block;
+}
+
+.pb-user-portrait__drop-text {
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.4;
+  color: inherit;
+}
+
+.pb-user-portrait__drop-hint {
+  font-size: 12px;
+  line-height: 1.3;
+  opacity: 0.8;
+  font-weight: 400;
+}
+
+.pb-user-portrait__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+}
+
+.pb-user-portrait__submit.member-form__submit,
+.pb-user-portrait__actions .member-form__submit {
+  appearance: none;
+  min-height: 40px;
+  padding: 0 22px;
+  border: 0;
+  border-radius: 8px;
+  background: var(--c-accent);
+  color: #fff;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.pb-user-portrait__submit.member-form__submit:hover:not(:disabled),
+.pb-user-portrait__actions .member-form__submit:hover:not(:disabled) {
+  background: var(--c-accent-hover, #0090bf);
+}
+
+.pb-user-portrait__actions .member-form__submit:disabled,
+.pb-user-portrait__submit:disabled {
+  opacity: .55;
+  cursor: not-allowed;
+}
+
+.pb-user-portrait__actions .member-form__linkbtn {
+  appearance: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 40px;
+  padding: 0 14px;
+  border: 1px solid var(--c-accent);
+  border-radius: 8px;
+  background: #fff;
+  color: var(--c-accent);
+  font: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  text-decoration: none;
+  box-sizing: border-box;
+}
+
+@media (max-width: 959px) {
+  .pb-user-portrait__body {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 16px;
+  }
+
+  .pb-user-portrait__preview {
+    width: 120px;
+    height: 120px;
+    margin: 0 auto;
+  }
+
+  .pb-user-portrait__panel {
+    flex-basis: auto;
+  }
+
+  .pb-user-portrait__drop {
+    min-height: 112px;
+    padding: 18px 14px;
+  }
+
+  .pb-user-portrait__actions {
+    width: 100%;
+  }
+
+  .pb-user-portrait__actions .member-form__submit,
+  .pb-user-portrait__actions .member-form__linkbtn {
+    flex: 1 1 auto;
+  }
+}

@@ -1,0 +1,50 @@
+{% import "@shared/components.twig" as c %}
+{% set p = props|default({}) %}
+{% set show_intro = p.show_intro is defined ? p.show_intro : true %}
+{% set downs = obj.vod_down_list|default([]) %}
+<div class="pb-vod-down" data-component="vod_down">
+  <div class="pb-vod-down__panel">
+    {% if downs %}
+      {% for src in downs %}
+      {% set src_label = src.player_info.show|default(src.from|default('')) %}
+      {% set src_label_lang = src_label ? '' : 'string_play_xl' %}
+      {% set src_label = src_label|default('线路', true) %}
+      <div class="pb-vod-down__src">
+        <h2 class="pb-vod-down__head" data-lang="{{ src_label_lang }}">{{ src_label }}</h2>
+        {% for u in src.urls|default([]) %}
+        {% set u_name = u.name|default('') %}
+        {% set u_name_lang = u_name ? '' : 'vod_down_resource_default' %}
+        {% set u_name = u_name|default('资源', true) %}
+        <div class="pb-vod-down__item">
+          <span class="pb-vod-down__name" title="{{ u.name|default('') }}" data-lang="{{ u_name_lang }}">{{ u_name }}</span>
+          <span class="pb-vod-down__url" title="{{ u.url|default('') }}">{{ u.url|default('') }}</span>
+          <a class="pb-vod-down__btn" href="{{ u.url|default('#') }}" rel="nofollow" data-lang="string_down_bd">本地下载</a>
+        </div>
+        {% endfor %}
+      </div>
+      {% endfor %}
+    {% else %}
+      {% include 'page-builder-components/empty_state/template.twig' with {
+        props: {
+          title: '暂无下载资源',
+          title_lang: 'vod_down_empty_title',
+          cta_text: '返回详情',
+          cta_text_lang: 'art_read_back_detail',
+          cta_url: mac_url_vod_detail(obj),
+          show_art: true
+        }
+      } %}
+    {% endif %}
+  </div>
+  {% if show_intro and obj.vod_pic|default('') %}
+  <div class="pb-vod-down__panel pb-vod-down__intro">
+    <div class="pb-vod-down__cover">{{ c.lazy_img(obj.vod_pic, obj.vod_name|default('')) }}</div>
+    <div>
+      <h2 class="pb-vod-down__panel-title" data-lang="string_vod_introduction">剧情介绍</h2>
+      <div class="pb-vod-down__body">{% set plot_txt = mac_plain_text(obj.vod_content|default('')) ?: mac_plain_text(obj.vod_blurb|default('')) %}{{ plot_txt|slice(0, 280) }}{% if plot_txt|length > 280 %}…{% endif %}</div>
+    </div>
+  </div>
+  {% else %}
+  <span class="is-sr-only" hidden aria-hidden="true">{{ c.lazy_img('', '') }}</span>
+  {% endif %}
+</div>

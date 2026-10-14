@@ -1,0 +1,36 @@
+{
+    "id": "filter_panel",
+    "label_key": "admin/themedesign/pb_block_filter_panel",
+    "category": "list",
+    "kind": "filter",
+    "peer_styles": [],
+    "assets": {
+        "css": "style.css",
+        "js": "script.js"
+    },
+    "palette": false,
+    "props": {
+        "preset": {
+            "type": "enum",
+            "default": "vod_show",
+            "values": [
+                "vod_show",
+                "art_show",
+                "manga_show",
+                "vod_type"
+            ],
+            "trait": "filter_preset"
+        },
+        "show_letter": {
+            "type": "boolean",
+            "default": false,
+            "trait": "filter_show_letter"
+        }
+    },
+    "context": {
+        "pageTypes": [
+            "list"
+        ],
+        "requires": []
+    }
+}

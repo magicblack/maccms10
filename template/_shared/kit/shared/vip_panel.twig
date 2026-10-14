@@ -1,0 +1,52 @@
+{# VIP 升级面板 #}
+{% set _pb_shared_img = maccms.path_tpl|default('') ~ 'page-builder-components/_shared/img/' %}
+{% set _tab = pay_default_tab|default('recharge') %}
+<div class="member-pay-panel member-pay-panel--upgrade user-buy-upgrade-panel user-buy-upgrade-panel--upgrade"{% if _tab != 'upgrade' %} hidden{% endif %}>
+  <div class="member-pay-vip-hero">
+    <div class="member-pay-vip-hero__copy">
+      <p class="member-pay-vip-hero__title">
+        <span data-lang="string_user_upgrade_hero_title_l1">解锁更多专属权益</span>
+        <span class="member-pay-vip-hero__title-sub" data-lang="string_user_upgrade_hero_title_l2">选择下方套餐立即升级</span>
+      </p>
+    </div>
+    <div class="member-pay-vip-hero__art" aria-hidden="true"></div>
+    <dl class="member-pay-vip-metrics">
+      <div class="member-pay-vip-metric member-pay-vip-metric--expire">
+        <dt data-lang="string_user_dqsj">到期时间</dt>
+        <dd class="js-upgrade-metric-expire" data-loading>--</dd>
+      </div>
+      <div class="member-pay-vip-metric member-pay-vip-metric--level">
+        <dt data-lang="string_user_hydj">会员等级</dt>
+        <dd class="js-upgrade-metric-level" data-loading>--</dd>
+      </div>
+    </dl>
+  </div>
+  <div class="member-pay-vip-plans">
+    <div id="mac-user-seckill" class="mac-user-seckill" data-mount="buy-upgrade" hidden></div>
+    <h3 class="member-pay-vip-section-title" data-lang="string_user_upgrade_pick_plan">选择适合您的会员套餐</h3>
+    <div class="upgrade-groups js-upgrade-groups">
+      <p class="upgrade-groups-loading js-upgrade-groups-loading member-pay-muted" data-lang="string_topic_feed_loading">加载中…</p>
+    </div>
+    <div class="member-pay-settle js-upgrade-settle" aria-live="polite">
+      {% include "page-builder-components/_shared/coupon_mount.twig" with { id: 'mac-user-coupon-panel-vip', scene: 'vip', mount: 'buy-upgrade' } %}
+      <div class="member-pay-checkout">
+        <div class="member-pay-checkout__lead">
+          <span class="member-pay-checkout__check" aria-hidden="true"></span>
+          <div class="member-pay-checkout__copy">
+            <strong class="member-pay-checkout__title" data-lang="string_user_confirm_pay">确认支付</strong>
+            <p class="member-pay-checkout__desc js-checkout-desc" data-lang="vip_choose_plan">请选择套餐</p>
+            <p class="member-pay-checkout__pricing js-checkout-pricing" hidden></p>
+            <p class="member-pay-checkout__hint js-checkout-hint" hidden data-lang="string_coupon_cash_only">金币仍按充值原价到账，券只减现金；实付以支付页为准</p>
+          </div>
+        </div>
+        <div class="member-pay-checkout__action">
+          <div class="member-pay-checkout__price">
+            <span class="member-pay-checkout__price-num js-checkout-pay">0</span>
+            <img class="member-pay-checkout__coin js-checkout-coin" src="{{ _pb_shared_img }}recharge/recharge-coin.png" width="20" height="20" alt="">
+          </div>
+          <div class="submit-vip member-pay-checkout__btn" data-lang="string_user_confirm_pay" role="button" tabindex="0">确认支付</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

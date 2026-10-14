@@ -1,0 +1,25 @@
+{#
+  评论列表条目（kit/shared）— 供 comment_block.twig 与 comment/ajax 共用
+  参数：res（mac_comment 返回值）
+#}
+{% for cm in res.list|default([]) %}
+<article class="cmt-item" data-comment-id="{{ cm.comment_id }}">
+  {% include "page-builder-components/_shared/user_avatar.twig" with {uid: cm.user_id, size: 40, class: 'cmt-avatar'} %}
+  <div class="cmt-body">
+    <div class="cmt-body__meta">
+      <span class="cmt-name">{{ cm.comment_name }}</span>
+      <span class="cmt-time">{{ mac_day(cm.comment_time)|raw }}</span>
+    </div>
+    <p class="cmt-text">{{ cm.comment_content }}</p>
+  </div>
+</article>
+{% else %}
+<div class="cmt-empty" data-cmt-empty role="status">
+  <div class="cmt-empty__art pb-empty-state__art" aria-hidden="true">
+    {% include "page-builder-components/_shared/empty_state_art.twig" %}
+  </div>
+  <p class="cmt-empty__title" data-lang="string_no_comment">暂无评论</p>
+  <p class="cmt-empty__hint" data-lang="comment_empty_msg">发表第一条评论，和大家一起讨论吧</p>
+  <button type="button" class="cmt-empty__cta" data-cmt-focus-input data-lang="comment_write_btn">写评论</button>
+</div>
+{% endfor %}

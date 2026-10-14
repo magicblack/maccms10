@@ -1,0 +1,125 @@
+{
+    "id": "art_list",
+    "label_key": "admin/themedesign/pb_block_art_list",
+    "category": "list",
+    "kind": "content",
+    "palette": false,
+    "styleMode": "component",
+    "peer_styles": [],
+    "assets": {
+        "css": "style.css",
+        "js": "script.js"
+    },
+    "props": {
+        "num": {
+            "type": "number",
+            "default": 8,
+            "min": 1,
+            "max": 50,
+            "trait": "count"
+        },
+        "type": {
+            "type": "category",
+            "mid": 2,
+            "default": 0,
+            "trait": "category"
+        },
+        "by": {
+            "type": "enum",
+            "default": "time",
+            "values": [
+                "time",
+                "hits",
+                "hits_day",
+                "hits_week",
+                "hits_month",
+                "score"
+            ],
+            "trait": "sort"
+        },
+        "order": {
+            "type": "enum",
+            "default": "desc",
+            "values": [
+                "desc",
+                "asc"
+            ]
+        },
+        "render": {
+            "type": "enum",
+            "default": "grid",
+            "values": [
+                "grid",
+                "list",
+                "slider"
+            ],
+            "trait": "layout"
+        },
+        "text_only": {
+            "type": "boolean",
+            "default": false
+        },
+        "list_variant": {
+            "type": "enum",
+            "default": "",
+            "values": [
+                "",
+                "novel-home"
+            ]
+        },
+        "paging": {
+            "type": "boolean",
+            "default": false,
+            "trait": "paging"
+        },
+        "pageurl": {
+            "type": "string",
+            "default": "art/show",
+            "trait": "pageurl"
+        },
+        "card": {
+            "type": "enum",
+            "default": "poster-h",
+            "values": [
+                "poster-h",
+                "poster-v"
+            ],
+            "trait": "card"
+        },
+        "ratio": {
+            "type": "string",
+            "default": "default",
+            "trait": "cover_ratio"
+        },
+        "empty_title": {
+            "type": "string",
+            "default": "",
+            "trait": "empty_title"
+        },
+        "empty_title_lang": {
+            "type": "string",
+            "default": "string_no_have",
+            "trait": "empty_title_lang"
+        }
+    },
+    "context": {
+        "pageTypes": [
+            "home",
+            "list",
+            "detail"
+        ],
+        "requires": []
+    },
+    "data": {
+        "source": "mac_art",
+        "listKey": "list",
+        "argsFromProps": [
+            "num",
+            "type",
+            "by",
+            "order",
+            "paging",
+            "pageurl"
+        ]
+    }
+}

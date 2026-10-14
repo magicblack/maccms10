@@ -1,0 +1,72 @@
+{# twigspike manga/index — 高能排行（三榜切换） #}
+{% set p = props|default({}) %}
+{% set num = p.num|default(6) %}
+{% set title = p.title|default('高能排行') %}
+{% set title_lang = p.title_lang|default('string_manga_rank_title') %}
+{% set hot_list = mac_manga({num: num, order: 'desc', by: 'hits_week'}).list|default([]) %}
+{% set rank_score_list = mac_manga({num: num, order: 'desc', by: 'score'}).list|default([]) %}
+{% set rank_new_list = mac_manga({num: num, order: 'desc', by: 'time_add'}).list|default([]) %}
+{% set fallback = mac_manga({num: num, order: 'desc', by: 'hits'}).list|default([]) %}
+{% if hot_list is empty %}{% set hot_list = fallback %}{% endif %}
+{% if rank_score_list is empty %}{% set rank_score_list = fallback %}{% endif %}
+{% if rank_new_list is empty %}{% set rank_new_list = fallback %}{% endif %}
+
+{% set manga_type_default = mac_top_types(12, 1)|first %}
+{% set more_href = manga_type_default ? mac_url_type(manga_type_default, {by: 'hits'}, 'show') : mac_url('manga/index') %}
+{% if hot_list is not empty %}
+<section class="mc-sec mc-sec--rank pb-manga-home-rank" id="mc-rank" aria-labelledby="mc-rank-h" data-component="manga_home_rank" data-mc-rank data-rankpage>
+  <header class="mc-sec__head">
+    <h2 class="mc-sec__title" id="mc-rank-h"{% if title_lang and mac_i18n_key(title, title_lang) %} data-lang="{{ title_lang }}"{% endif %}>{{ title }}</h2>
+    <div class="mc-rank-tabs" role="tablist" data-lang-aria-label="rank_type_aria" aria-label="排行榜类型">
+      <button type="button" class="is-on" data-rank-tab="hot" role="tab" aria-pressed="true" data-lang="string_manga_rank_hot_tab">热门榜</button>
+      <button type="button" data-rank-tab="score" role="tab" aria-pressed="false" data-lang="string_manga_rank_score_tab">评分榜</button>
+      <button type="button" data-rank-tab="new" role="tab" aria-pressed="false" data-lang="string_manga_rank_new_tab">新作榜</button>
+    </div>
+    <a class="mc-sec__more" href="{{ more_href }}"><span data-lang="string_more">更多</span> ›</a>
+  </header>
+  <div class="mc-rank-panels">
+    <ol class="mc-rank-grid is-on" data-rank-board="hot" role="tabpanel">
+      {% for vo in hot_list %}
+      <li>
+        <a class="mc-rank-card" href="{{ mac_url_manga_detail(vo) }}">
+          <span class="mc-rank-card__n" aria-hidden="true">{{ loop.index }}</span>
+          <span class="mc-rank-card__cover" data-cover-bg="{{ mac_url_img(vo.manga_pic) }}" style="background-image:url('{{ mac_url_img(vo.manga_pic) }}')"></span>
+          <span class="mc-rank-card__body">
+            <strong class="mc-rank-card__name">{{ vo.manga_name }}</strong>
+            <em class="mc-rank-card__meta">{% if vo.manga_class %}{{ vo.manga_class|split(',')|slice(0,2)|join(' ') }}{% elseif vo.manga_remarks %}{% include "page-builder-components/_shared/chapter_remarks.twig" with {remarks: vo.manga_remarks, kind: 'manga'} only %}{% else %}<span{% set _ml = mac_module_label(12) %}{% if _ml.lang %} data-lang="{{ _ml.lang }}"{% endif %}>{{ _ml.name }}</span>{% endif %}</em>
+          </span>
+        </a>
+      </li>
+      {% endfor %}
+    </ol>
+    <ol class="mc-rank-grid" data-rank-board="score" role="tabpanel" hidden>
+      {% for vo in rank_score_list %}
+      <li>
+        <a class="mc-rank-card" href="{{ mac_url_manga_detail(vo) }}">
+          <span class="mc-rank-card__n" aria-hidden="true">{{ loop.index }}</span>
+          <span class="mc-rank-card__cover" data-cover-bg="{{ mac_url_img(vo.manga_pic) }}" style="background-image:url('{{ mac_url_img(vo.manga_pic) }}')"></span>
+          <span class="mc-rank-card__body">
+            <strong class="mc-rank-card__name">{{ vo.manga_name }}</strong>
+            <em class="mc-rank-card__meta">{% if vo.manga_class %}{{ vo.manga_class|split(',')|slice(0,2)|join(' ') }}{% elseif vo.manga_remarks %}{% include "page-builder-components/_shared/chapter_remarks.twig" with {remarks: vo.manga_remarks, kind: 'manga'} only %}{% else %}<span{% set _ml = mac_module_label(12) %}{% if _ml.lang %} data-lang="{{ _ml.lang }}"{% endif %}>{{ _ml.name }}</span>{% endif %}</em>
+          </span>
+        </a>
+      </li>
+      {% endfor %}
+    </ol>
+    <ol class="mc-rank-grid" data-rank-board="new" role="tabpanel" hidden>
+      {% for vo in rank_new_list %}
+      <li>
+        <a class="mc-rank-card" href="{{ mac_url_manga_detail(vo) }}">
+          <span class="mc-rank-card__n" aria-hidden="true">{{ loop.index }}</span>
+          <span class="mc-rank-card__cover" data-cover-bg="{{ mac_url_img(vo.manga_pic) }}" style="background-image:url('{{ mac_url_img(vo.manga_pic) }}')"></span>
+          <span class="mc-rank-card__body">
+            <strong class="mc-rank-card__name">{{ vo.manga_name }}</strong>
+            <em class="mc-rank-card__meta">{% if vo.manga_class %}{{ vo.manga_class|split(',')|slice(0,2)|join(' ') }}{% elseif vo.manga_remarks %}{% include "page-builder-components/_shared/chapter_remarks.twig" with {remarks: vo.manga_remarks, kind: 'manga'} only %}{% else %}<span{% set _ml = mac_module_label(12) %}{% if _ml.lang %} data-lang="{{ _ml.lang }}"{% endif %}>{{ _ml.name }}</span>{% endif %}</em>
+          </span>
+        </a>
+      </li>
+      {% endfor %}
+    </ol>
+  </div>
+</section>
+{% endif %}

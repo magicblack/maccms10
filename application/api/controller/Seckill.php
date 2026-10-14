@@ -56,12 +56,24 @@ class Seckill extends Base
         $order = 'seckill_time desc';
         $res = model('Seckill')->listData($where, $order);
 
+        // 当前用户已参与过的秒杀 ID，供前端提前置灰按钮，避免只能在点击失败后才提示
+        $ids = array_column($res['list'], 'seckill_id');
+        $boughtIds = [];
+        if (!empty($ids)) {
+            $boughtIds = Db::name('seckill_user')
+                ->where('user_id', $auth['user_id'])
+                ->where('seckill_id', 'in', $ids)
+                ->column('seckill_id');
+            $boughtIds = array_map('intval', $boughtIds);
+        }
+
         // 附加倒计时
         $list = [];
         foreach ($res['list'] as $row) {
             $end = intval($row['seckill_end_time']);
             $row['countdown'] = ($end > 0 && $end > $now) ? ($end - $now) : 0;
             $row['stock_remaining'] = max(0, intval($row['seckill_total']) - intval($row['seckill_sold']));
+            $row['already_bought'] = in_array(intval($row['seckill_id']), $boughtIds, true) ? 1 : 0;
             $list[] = $row;
         }
 
@@ -89,6 +101,13 @@ class Seckill extends Base
             return json(['code' => 1001, 'msg' => lang('param_err')]);
         }
         $res = model('Seckill')->infoData(['seckill_id' => $seckillId]);
+        if (intval($res['code']) === 1 && !empty($res['info'])) {
+            $bought = Db::name('seckill_user')
+                ->where('user_id', $auth['user_id'])
+                ->where('seckill_id', $seckillId)
+                ->count();
+            $res['info']['already_bought'] = $bought > 0 ? 1 : 0;
+        }
         return json($res);
     }
 

@@ -1,0 +1,9 @@
+{
+    "props": {
+        "bind": "art",
+        "type": 0,
+        "num": 6,
+        "by": "hits_week"
+    },
+    "context": []
+}

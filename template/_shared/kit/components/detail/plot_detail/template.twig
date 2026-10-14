@@ -1,0 +1,36 @@
+{% import "@shared/components.twig" as c %}
+{% set plots = obj.vod_plot_list|default({}) %}
+{% set page = param.page|default(1) %}
+{% if page < 1 %}{% set page = 1 %}{% endif %}
+{% set cur = plots[page]|default(plots[1]|default({})) %}
+<div class="pb-plot-detail" data-component="plot_detail">
+  <div class="pb-plot-detail__panel pb-plot-detail__media">
+    <div class="pb-plot-detail__cover">{{ c.lazy_img(obj.vod_pic|default(''), obj.vod_name|default('')) }}</div>
+    <div>
+      <h2 class="pb-plot-detail__panel-title">{{ cur.name|default('本集剧情') }}</h2>
+      {% if cur.detail|default('') %}
+      <div class="pb-plot-detail__body">{{ cur.detail }}</div>
+      {% else %}
+      <p class="pb-plot-detail__empty" data-lang="plot_no_summary">本集暂无剧情简介</p>
+      {% endif %}
+      <div class="pb-plot-detail__nav">
+        {% if plots[page - 1] is defined %}
+        <a class="pb-plot-detail__btn pb-plot-detail__btn--ghost" href="{{ mac_url_plot_detail(obj, {page: page - 1}) }}">上一集</a>
+        {% endif %}
+        {% if plots[page + 1] is defined %}
+        <a class="pb-plot-detail__btn" href="{{ mac_url_plot_detail(obj, {page: page + 1}) }}">下一集</a>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+  {% if plots %}
+  <div class="pb-plot-detail__panel">
+    <h2 class="pb-plot-detail__panel-title" data-lang="string_vod_bfdz">选集</h2>
+    <div class="pb-plot-detail__eps">
+      {% for k, ep in plots %}
+      <a class="pb-plot-detail__ep{% if k == page %} is-active{% endif %}" href="{{ mac_url_plot_detail(obj, {page: k}) }}">{{ ep.name|default(k) }}</a>
+      {% endfor %}
+    </div>
+  </div>
+  {% endif %}
+</div>

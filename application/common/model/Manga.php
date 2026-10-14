@@ -81,6 +81,9 @@ class Manga extends Base {
         $vip_exclusive = mac_get_vip_exclusive_type_ids();
         foreach($list as $k=>$v){
             $list[$k]['type_is_vip_exclusive'] = in_array($v['type_id'] ?? 0, $vip_exclusive) ? 1 : 0;
+            if(isset($v['manga_remarks'], $v['manga_chapter_url'])) {
+                $list[$k]['manga_remarks'] = mac_manga_chapter_remarks($v['manga_remarks'], $v['manga_chapter_url']);
+            }
             if($addition==1){
 	            if(!empty($v['type_id'])) {
 	                $list[$k]['type'] = $type_list[$v['type_id']];
@@ -247,7 +250,8 @@ class Manga extends Base {
                 if($pageurl == 'manga/show'){
                     $flag='show';
                 }
-                $pageurl = mac_url_type($type_info,$param,$flag);
+                // 无分类 id 的跨分类列表页（如 manga/show.html）取不到 type_info，mac_url_type 会回落成 vod 分页链接
+                $pageurl = !empty($type_info) ? mac_url_type($type_info,$param,$flag) : mac_url('manga/'.$flag,$param);
             }
             else{
                 $pageurl = mac_url($pageurl,$param);
@@ -438,9 +442,12 @@ class Manga extends Base {
                 $res = $this->listData($where,$order,$page,$num,$start,'*',1,$totalshow);
             }
             if($GLOBALS['config']['app']['cache_core']==1 && !$use_rnd_order) {
-                Cache::set($cach_name, $res, $cachetime);
+                // 打上表名标签，写路径才能定点作废这一族列表缓存（见 Base::clearListCache()）
+                Cache::tag($this->name)->set($cach_name, $res, $cachetime);
             }
         }
+        // 缓存里的 type/type_1 是建缓存时的快照，按当前分类缓存重挂（见 Base::refreshTypeRelation()）
+        $res = $this->refreshListTypeRelation($res);
         $res['pageurl'] = $pageurl;
         $res['half'] = $half;
         return $res;
@@ -471,6 +478,7 @@ class Manga extends Base {
             if (!empty($info['manga_chapter_url'])) {
                 $info['manga_page_list'] = mac_manga_list($info['manga_chapter_from'], $info['manga_chapter_url'], $info['manga_play_server'], $info['manga_play_note']);
                 $info['manga_page_total'] = count($info['manga_page_list']);
+                $info['manga_remarks'] = mac_manga_chapter_remarks($info['manga_remarks'] ?? '', $info['manga_chapter_url']);
             }
             if(!empty($info['manga_pic_screenshot'])){
                 $info['manga_pic_screenshot_list'] = mac_screenshot_list($info['manga_pic_screenshot']);
@@ -493,6 +501,7 @@ class Manga extends Base {
                 Cache::set($key, $info);
             }
         }
+        $info = $this->refreshTypeRelation($info);
         $info = mac_content_lang_overlay('manga', $info);
         return ['code'=>1,'msg'=>lang('obtain_ok'),'info'=>$info];
     }
@@ -504,12 +513,7 @@ class Manga extends Base {
             return ['code'=>1001,'msg'=>lang('param_err').'：'.$validate->getError() ];
         }
 
-        $key = 'manga_detail_'.$data['manga_id'];
-        Cache::rm($key);
-        $key = 'manga_detail_'.$data['manga_en'];
-        Cache::rm($key);
-        $key = 'manga_detail_'.$data['manga_id'].'_'.$data['manga_en'];
-        Cache::rm($key);
+        $this->clearDetailCache($data['manga_id'], $data['manga_en']);
 
 
         $type_list = model('Type')->getCache('type_list');
@@ -552,6 +556,9 @@ class Manga extends Base {
 
         if(empty($data['manga_blurb'])){
             $data['manga_blurb'] = mac_substring( str_replace('$$$','', strip_tags($data['manga_content'])),100);
+        }
+        if(isset($data['manga_remarks']) && isset($data['manga_chapter_url']) && is_string($data['manga_chapter_url'])){
+            $data['manga_remarks'] = mac_manga_chapter_remarks($data['manga_remarks'], $data['manga_chapter_url']);
         }
 
         if($data['uptime']==1){
@@ -608,6 +615,7 @@ class Manga extends Base {
         $ixMid = !empty($data['manga_id']) ? intval($data['manga_id']) : intval($this->getLastInsID());
         MeilisearchSync::afterMangaSave($ixMid);
 
+        $this->clearListCache();
         return ['code'=>1,'msg'=>lang('save_ok'),'manga_id'=>$ixMid];
     }
 
@@ -647,6 +655,7 @@ class Manga extends Base {
         }
         \app\common\model\ContentLang::deleteByContent('manga', $delIds);
 
+        $this->clearListCache();
         return ['code'=>1,'msg'=>lang('del_ok')];
     }
 
@@ -662,12 +671,10 @@ class Manga extends Base {
 
         $list = $this->field('manga_id,manga_name,manga_en')->where($where)->select();
         foreach($list as $k=>$v){
-            $key = 'manga_detail_'.$v['manga_id'];
-            Cache::rm($key);
-            $key = 'manga_detail_'.$v['manga_en'];
-            Cache::rm($key);
+            $this->clearDetailCache($v['manga_id'], $v['manga_en']);
         }
 
+        $this->clearListCache();
         return ['code'=>1,'msg'=>lang('set_ok')];
     }
 

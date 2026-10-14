@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" role="img" aria-hidden="true">
+  <!-- 外链 <img> 时无法读页面 token；优先用 empty_state_art.twig 内联。此处用 currentColor / 中性色兜底。 -->
+  <ellipse fill="currentColor" opacity=".12" cx="100" cy="168" rx="62" ry="14"/>
+  <circle fill="currentColor" cx="42" cy="48" r="8" opacity=".2"/>
+  <circle fill="currentColor" cx="168" cy="56" r="10" opacity=".18"/>
+  <path fill="currentColor" d="M34 72l10-16 10 16z" opacity=".35"/>
+  <rect fill="currentColor" x="156" y="110" width="14" height="14" rx="3" transform="rotate(20 163 117)" opacity=".28"/>
+  <rect fill="currentColor" x="48" y="52" width="104" height="86" rx="16" opacity=".22"/>
+  <rect fill="currentColor" x="52" y="56" width="96" height="78" rx="13" opacity=".55"/>
+  <rect fill="currentColor" x="62" y="66" width="76" height="50" rx="8" opacity=".88"/>
+  <circle fill="currentColor" cx="78" cy="46" r="4" opacity=".9"/>
+  <circle fill="currentColor" cx="122" cy="46" r="4" opacity=".9"/>
+  <path d="M78 46c8-18 36-18 44 0" stroke="currentColor" stroke-width="3" fill="none" stroke-linecap="round" opacity=".9"/>
+  <rect fill="currentColor" x="88" y="138" width="24" height="8" rx="3" opacity=".55"/>
+  <rect fill="currentColor" x="78" y="146" width="44" height="8" rx="4" opacity=".22"/>
+  <path fill="currentColor" d="M28 148c18-4 28 10 24 22-16 2-28-8-24-22z" opacity=".2"/>
+  <path fill="currentColor" d="M172 148c-18-4-28 10-24 22 16 2 28-8 24-22z" opacity=".22"/>
+</svg>

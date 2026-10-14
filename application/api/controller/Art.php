@@ -59,9 +59,8 @@ class Art extends Base
             $where['art_letter'] = $param['letter'];
         }
 
-        if (isset($param['status'])) {
-            $where['art_status'] = (int)$param['status'];
-        }
+        // 前台接口只返回已上架内容，不允许通过 status 参数查询未上架 / 已停用的文章
+        $where['art_status'] = 1;
 
         if (isset($param['name']) && strlen($param['name']) > 0) {
             $where['art_name'] = ['like', '%' . $this->format_sql_string($param['name']) . '%'];
@@ -157,7 +156,7 @@ class Art extends Base
         }
 
         $aid = (int)$param['art_id'];
-        $data = model('Art')->infoData(['art_id' => ['eq', $aid]], '*', 0);
+        $data = model('Art')->infoData(['art_id' => ['eq', $aid], 'art_status' => ['eq', 1]], '*', 0);
         if ($data['code'] != 1 || empty($data['info'])) {
             return json(['code' => 1001, 'msg' => $data['msg'] ?? '数据不存在']);
         }
@@ -213,6 +212,7 @@ class Art extends Base
         $info['is_fav'] = $fav['is_fav'];
         $info['fav_ulog_id'] = $fav['fav_ulog_id'];
         $info['user_has_up'] = mac_user_has_digg(2, $aid);
+        $info = $this->maskContentPwd($info, 'art');
 
         return json([
             'code' => 1,
@@ -249,6 +249,10 @@ class Art extends Base
         if ((int) ($info['art_status'] ?? 0) != 1) {
             return json(['code' => 1002, 'msg' => '数据不存在']);
         }
+        // 与前台 Art::read() 同一访问密码门（session 由 index.php/ajax/pwd?mid=2&type=1 写入）
+        if ($this->contentPwdLocked($info['art_pwd'] ?? '', 2, $artId)) {
+            return json(['code' => 1003, 'msg' => lang('pass_empty'), 'info' => ['need_pwd' => 1, 'art_id' => $artId]]);
+        }
 
         $popParam = ['id' => $artId, 'page' => $page];
         $popedom  = $this->check_user_popedom($info['type_id'], 3, $popParam, 'art_read', $info);
@@ -282,6 +286,7 @@ class Art extends Base
             'points_hint'  => isset($popedom['points']) ? (int) $popedom['points'] : 0,
             'art_id'       => $artId,
             'art_name'     => (string) ($info['art_name'] ?? ''),
+            'art_jumpurl'  => (string) ($info['art_jumpurl'] ?? ''),
             'page'         => $page,
             'page_total'   => $pageTotal,
             'title'        => (string) ($cur['title'] ?? ''),
@@ -386,8 +391,7 @@ class Art extends Base
     public function get_hot(Request $request)
     {
         $param = $request->param();
-        $num = isset($param['num']) ? (int)$param['num'] : 6;
-        $start = isset($param['start']) ? (int)$param['start'] : 0;
+        list($num, $start) = $this->clampNumStart($param, 6);
         $typeId = isset($param['type_id']) ? (int)$param['type_id'] : 0;
         $by = isset($param['by']) ? trim($param['by']) : 'time';
 
@@ -415,6 +419,7 @@ class Art extends Base
             $v['art_link'] = mac_url_art_detail($v);
         }
         unset($v);
+        mac_art_rows_chapter_remarks($list);
 
         return json([
             'code' => 1,
@@ -440,9 +445,8 @@ class Art extends Base
     public function get_latest(Request $request)
     {
         $param = $request->param();
-        $num = isset($param['num']) ? (int)$param['num'] : 24;
+        list($num, $start) = $this->clampNumStart($param, 24);
         $typeId = isset($param['type_id']) ? (int)$param['type_id'] : 0;
-        $start = isset($param['start']) ? max(0, (int)$param['start']) : 0;
 
         $where = [];
         $where['art_status'] = ['eq', 1];
@@ -464,6 +468,7 @@ class Art extends Base
         }
         unset($v);
         mac_append_type_is_vip_exclusive_for_rows($list);
+        mac_art_rows_chapter_remarks($list);
 
         return json([
             'code' => 1,

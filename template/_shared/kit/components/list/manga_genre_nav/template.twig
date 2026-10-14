@@ -1,0 +1,29 @@
+{# twigspike manga/index — 深色胶囊题材条 #}
+{% set p = props|default({}) %}
+{% set num = p.num|default(16) %}
+{% set manga_types = mac_type({mid: 12, ids: 'child', num: num, by: 'sort', order: 'asc'}).list|default([]) %}
+{% if manga_types is empty %}
+  {% set manga_types = mac_type({mid: 12, ids: 'parent', num: num, by: 'sort', order: 'asc'}).list|default([]) %}
+{% endif %}
+{% set more_url = p.more_url|default('') %}
+{% set manga_type_default = mac_top_types(12, 1)|first %}
+{% if manga_type_default %}
+  {% set all_href = mac_url_type(manga_type_default, {}, 'show') %}
+{% elseif more_url %}
+  {% set all_href = mac_url(more_url) %}
+{% else %}
+  {% set all_href = mac_url('manga/index') %}
+{% endif %}
+
+{% if manga_types is not empty %}
+<nav class="mc-genre mc-genre--capsule pb-manga-genre" data-component="manga_genre_nav" aria-label="漫画题材">
+  <div class="mc-genre__inner">
+    <div class="mc-genre__scroll" role="list">
+      {% for t in manga_types %}
+      <a class="mc-genre__pill" role="listitem" href="{{ mac_url_type(t) }}">{{ t.type_name }}</a>
+      {% endfor %}
+    </div>
+    <a class="mc-genre__pill mc-genre__pill--more" href="{{ all_href }}">全部 ›</a>
+  </div>
+</nav>
+{% endif %}

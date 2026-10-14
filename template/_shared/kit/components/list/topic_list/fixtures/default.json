@@ -1,0 +1,9 @@
+{
+    "props": {
+        "num": 8,
+        "by": "hits",
+        "order": "desc",
+        "paging": false
+    },
+    "context": {}
+}

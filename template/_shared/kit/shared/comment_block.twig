@@ -1,0 +1,62 @@
+{#
+  评论区（kit/shared 唯一真相）— sync → page-builder-components/_shared/comment_block.twig
+  依赖：@shared/components.twig 的 captcha 宏 + page-builder-components/_shared/user_avatar.twig
+  参数：mid、rid、num、csrf_token、hide_list_head、in_play_tab
+#}
+{% import "@shared/components.twig" as _c %}
+{% set avatar_fallback = maccms.path_tpl ~ 'page-builder-components/_shared/img/avatar-default.svg' %}
+{% set res = comment_res|default(mac_comment({num: num|default(comment.pagesize|default(20)), paging: true})) %}
+{% set total = res.total|default(0) %}
+
+<section class="cmt{% if in_play_tab|default(false) %} cmt--play-tab{% endif %}" aria-labelledby="{% if hide_list_head|default(false) %}cmt-play-input{% else %}cmt-title{% endif %}">
+  <div class="cmt-card">
+    <div class="cmt-send">
+      <div class="cmt-send__face">
+        {% if user.user_id|default(0) %}
+          {% include "page-builder-components/_shared/user_avatar.twig" with {uid: user.user_id, size: 48, class: 'cmt-send__avatar'} %}
+        {% else %}
+          {% include "page-builder-components/_shared/user_avatar.twig" with {uid: 0, size: 48, class: 'cmt-send__avatar', alt: ''} %}
+        {% endif %}
+      </div>
+      <div class="cmt-send__main">
+        <form data-mac-comment-form class="cmt-form{% if mac_verify_on('comment') %} cmt-form--verify{% endif %}" method="post" action="">
+          <input type="hidden" name="mid" value="{{ mid }}">
+          <input type="hidden" name="rid" value="{{ rid }}">
+          <input type="hidden" name="__token__" value="{{ csrf_token|default('') }}">
+          <div class="cmt-form__wrap">
+            <label class="cmt-form__field">
+              <span class="cmt-form__label" id="cmt-play-input" data-lang="string_comment_input">说点什么…</span>
+              <textarea name="comment_content" class="cmt-form__input" id="cmt-input-{{ mid }}-{{ rid }}"
+                rows="2" maxlength="500"
+                data-placeholder="string_comment_input" placeholder="说点什么…"
+                autocomplete="off"></textarea>
+            </label>
+            <div class="cmt-form__bar">
+              {{ _c.captcha('comment', {
+                wrap_class: 'cmt-form__captcha',
+                input_class: 'cmt-form__captcha-input',
+                img_class: 'cmt-form__captcha-img'
+              }) }}
+              <button type="submit" class="cmt-form__btn" data-lang="string_pinglun_fabu">发布</button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <div class="cmt-list" data-comment-total="{{ total }}" data-cmt-list data-cmt-num="{{ num|default(comment.pagesize|default(20)) }}">
+      {% if not hide_list_head|default(false) %}
+      <header class="cmt-list__head" id="cmt-title">
+        <h2 class="cmt-list__title" data-lang="string_comment">评论</h2>
+        <span class="cmt-list__badge" aria-label="评论总数" data-lang-aria-label="comment_total_aria">
+          <span class="cmt-list__count" data-cmt-total>{{ total }}</span>
+        </span>
+      </header>
+      {% endif %}
+      <div class="cmt-list__body" data-cmt-items>
+        {% include "page-builder-components/_shared/comment_block_list.twig" with {res: res} %}
+      </div>
+    </div>
+  </div>
+</section>
+<script src="{{ maccms.path_tpl }}page-builder-components/_shared/js/comment_block.js" defer></script>

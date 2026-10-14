@@ -1,0 +1,75 @@
+.bili-columns {
+  container-type: inline-size;
+  container-name: pb-columns;
+  display: grid;
+  gap: var(--sp-4, 16px);
+  align-items: start;
+  grid-template-columns: 1fr;
+}
+
+.bili-columns__col {
+  container-type: inline-size;
+  container-name: pb-col;
+  min-width: 0;
+}
+
+/* 视口回退：PC 预览 iframe 1920px 等场景下 container query 可能不触发 */
+@media (min-width: 901px) {
+  .bili-columns {
+    grid-template-columns: var(--pb-cols, 1fr);
+  }
+}
+
+@container pb-columns (min-width: 900px) {
+  .bili-columns {
+    grid-template-columns: var(--pb-cols, 1fr);
+  }
+}
+
+@media (max-width: 900px) {
+  .bili-columns {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+@container pb-columns (max-width: 899px) {
+  .bili-columns {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* Page Builder 预览：空栏位占位（线上无 pb-preview-mode，不生效） */
+body.pb-preview-mode .pb-block-host[data-pb-component="columns"] {
+  display: block;
+  min-height: 160px;
+}
+
+body.pb-preview-mode .pb-block-host[data-pb-component="columns"] .bili-columns {
+  min-height: 148px;
+  align-items: stretch;
+}
+
+body.pb-preview-mode .bili-columns__col.pb-col-empty {
+  min-height: 140px;
+  border: 1px dashed rgba(64, 204, 146, 0.45);
+  border-radius: 8px;
+  background: rgba(64, 204, 146, 0.06);
+  position: relative;
+  box-sizing: border-box;
+}
+
+body.pb-preview-mode .bili-columns__col.pb-col-empty::after {
+  content: attr(data-pb-col-hint);
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px;
+  text-align: center;
+  font-size: 12px;
+  line-height: 1.45;
+  color: #64748b;
+  font-family: system-ui, sans-serif;
+  pointer-events: none;
+}

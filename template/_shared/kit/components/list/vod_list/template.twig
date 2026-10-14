@@ -1,0 +1,90 @@
+{% import "page-builder-components/_shared/macros.twig" as pb %}
+{% set render = props.render|default('grid') %}
+{% set use_paging = props.paging|default(false) %}
+{% set num = props.num|default(12) %}
+{% if use_paging and render == 'grid' %}
+  {% set num = (pb.pb_grid_paging_num(num) ~ '') + 0 %}
+{% elseif render == 'grid' %}
+  {% set num = (pb.pb_grid_section_num(num) ~ '') + 0 %}
+{% endif %}
+{% set by_raw = param.by|default('') %}
+{% set by = (by_raw is iterable) ? '' : by_raw|trim %}
+{% if by == '' %}{% set by = props.by|default('time') %}{% endif %}
+{% set order_raw = param.order|default('') %}
+{% set order = (order_raw is iterable) ? '' : order_raw|trim|lower %}
+{% if order != 'asc' and order != 'desc' %}{% set order = props.order|default('desc') %}{% endif %}
+{% set type_raw = props.type|default(0) %}
+{% set type_id = (type_raw == 'current') ? obj.type_id|default(0) : type_raw %}
+{% set use_relation = props.relation|default(false) %}
+{# 分类单独设置了封面比例（后台分类管理 type_extend.cover，如竖屏短剧）时，整块按该比例排版 #}
+{% set _type_cover = (not use_relation and (type_id ~ '') matches '/^[1-9][0-9]*$/') ? mac_type_cover(type_id) : [] %}
+{% set _cover_props = _type_cover ? props|merge({card: _type_cover.orient == 'h' ? 'poster-h' : 'poster-v', ratio: _type_cover.ratio, ratio_w: 0, ratio_h: 0}) : props %}
+{% set _cover_cls = pb.pb_cover_classes(_cover_props) %}
+{% set _cover_style = pb.pb_cover_style(_cover_props) %}
+{% set vod_args = {num: num, order: order, by: by} %}
+{% if use_relation and obj.vod_rel_vod|default('') %}
+  {% set vod_args = vod_args|merge({rel: obj.vod_rel_vod, not: obj.vod_id|default(0)}) %}
+{% else %}
+  {% set vod_args = vod_args|merge({type: type_id}) %}
+{% endif %}
+{% set time_prop = props.time|default('') %}
+{% if time_prop == 'today' %}
+  {% set vod_args = vod_args|merge({time: 'now'|date('Y-m-d')}) %}
+{% elseif time_prop != '' and time_prop != 'today' %}
+  {% set vod_args = vod_args|merge({time: time_prop}) %}
+{% endif %}
+{% if use_paging %}
+  {% set vod_args = vod_args|merge({
+    paging: true,
+    pageurl: props.pageurl|default('vod/show'),
+    class: param.class|default(''),
+    area: param.area|default(''),
+    lang: param.lang|default(''),
+    year: param.year|default(''),
+    letter: param.letter|default(''),
+    wd: param.wd|default(''),
+    actor: param.actor|default(''),
+    director: param.director|default('')
+  }) %}
+{% endif %}
+{% set res = mac_vod(vod_args) %}
+{% set list = res.list|default([]) %}
+{% if use_paging %}
+  {% set pg = mac_paging(res) %}
+{% endif %}
+{% if list is not empty %}
+  {% if render == 'slider' %}
+    <div class="{{ _cover_cls }}"{% if _cover_style %} style="{{ _cover_style }}"{% endif %}>
+      {% set row_content %}{% for vo in list %}{% include "page-builder-components/_shared/vod_card.twig" %}{% endfor %}{% endset %}
+      {% include "page-builder-components/_shared/scroll_row.twig" with {content: row_content} %}
+    </div>
+  {% elseif render == 'list' %}
+    <div class="rows">
+      {% for vo in list %}
+      <div class="row-line"><a href="{{ mac_url_vod_detail(vo) }}">{{ vo.vod_name }}</a></div>
+      {% endfor %}
+    </div>
+  {% elseif render == 'filmstrip' %}
+    <div class="{{ _cover_cls }}"{% if _cover_style %} style="{{ _cover_style }}"{% endif %}>
+      {% for vo in list %}{% include "page-builder-components/_shared/vod_card.twig" %}{% endfor %}
+    </div>
+  {% else %}
+    <div class="bili-grid pb-vod-list {{ _cover_cls }}"{% if _cover_style %} style="{{ _cover_style }}"{% endif %}>
+      {% for vo in list %}{% include "page-builder-components/_shared/vod_card.twig" %}{% endfor %}
+    </div>
+  {% endif %}
+  {% if use_paging and pg is defined %}
+    {% include 'page-builder-components/paging/template.twig' with {props: {pg: pg}} %}
+  {% endif %}
+{% else %}
+  {% include 'page-builder-components/empty_state/template.twig' with {props: {
+    preset: use_paging ? 'filter' : '',
+    title: use_paging ? '暂无符合条件的影片' : '暂无内容',
+    title_lang: use_paging ? 'vod_list_empty_filter_title' : '',
+    hint: use_paging ? '试试调整筛选条件，或换个分类看看' : '这里还没有影片，去别的分类逛逛吧',
+    hint_lang: use_paging ? 'vod_list_empty_filter_hint' : 'vod_list_empty_default_hint',
+    cta_text: '去首页看看',
+    cta_text_lang: 'string_goto_home',
+    cta_url: maccms.path|default('/')
+  }} %}
+{% endif %}

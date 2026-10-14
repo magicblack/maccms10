@@ -1,0 +1,109 @@
+{#
+  分页组件 — 读取页面上下文 pg（mac_paging 结果），或 props.pg 注入。
+#}
+{% set pg_data = props.pg|default(pg|default({})) %}
+{% if pg_data.record_total|default(0) > 0 and pg_data.page_total|default(0) > 1 %}
+{% set cur = pg_data.page_current|default(1) %}
+{% set total = pg_data.page_total|default(1) %}
+{% set prev = pg_data.page_prev|default(1) %}
+{% set next = pg_data.page_next|default(total) %}
+{% set num_min = pg_data.page_num_min|default(1) %}
+{% set num_max = pg_data.page_num_max|default(total) %}
+{% set page_url = pg_data.page_url|default('') %}
+{% set page_sp = pg_data.page_sp|default('') %}
+{% set wrapper_class = props.class|default('pg') %}
+{% set uid = 'pg-' ~ cur ~ '-' ~ total %}
+
+<nav class="bili-paging {{ wrapper_class }}"
+     data-mac-paging
+     data-page-url="{{ page_url|e('html_attr') }}"
+     data-page-sp="{{ page_sp|e('html_attr') }}"
+     data-page-total="{{ total }}"
+     data-page-current="{{ cur }}"
+     aria-label="分页导航" data-lang-aria-label="paging_nav_aria">
+  <p class="bili-paging__summary bili-paging__desk-only" aria-live="polite">
+    <span data-lang="string_is">第</span>
+    <em class="bili-paging__summary-cur">{{ cur }}</em>
+    <span class="bili-paging__summary-sep">/</span>
+    <span class="bili-paging__summary-total">{{ total }}</span>
+    <span data-lang="string_page">页</span>
+  </p>
+
+  <div class="bili-paging__controls">
+    <div class="bili-paging__nav" role="group" aria-label="页码" data-lang-aria-label="paging_page_number_aria">
+      <a class="bili-paging__edge bili-paging__desk-only{% if cur <= 1 %} is-disabled{% endif %}"
+         href="{{ cur <= 1 ? 'javascript:;' : mac_url_page(page_url, 1) }}"
+         {% if cur <= 1 %}aria-disabled="true" tabindex="-1"{% endif %}
+         data-lang="string_home">首页</a>
+
+      <a class="bili-paging__arrow{% if cur <= 1 %} is-disabled{% endif %}"
+         href="{{ cur <= 1 ? 'javascript:;' : mac_url_page(page_url, prev) }}"
+         {% if cur <= 1 %}aria-disabled="true" tabindex="-1"{% endif %}
+         aria-label="上一页" data-lang-aria-label="string_syy">
+        {% include "page-builder-components/_shared/component_icon.twig" with { component: 'paging', name: 'chevron-right', class: 'bili-paging__arrow-ico bili-paging__arrow-ico--prev', mode: 'current' } %}
+        <span class="bili-paging__arrow-text bili-paging__desk-only" data-lang="string_syy">上一页</span>
+      </a>
+
+      <p class="bili-paging__mob-summary bili-paging__mob-only" aria-live="polite">
+        <em class="bili-paging__summary-cur">{{ cur }}</em>
+        <span class="bili-paging__summary-sep">/</span>
+        <span class="bili-paging__summary-total">{{ total }}</span>
+      </p>
+
+      <div class="bili-paging__nums bili-paging__desk-only" role="list">
+        {% if num_min > 1 %}
+        <a class="bili-paging__num" role="listitem" href="{{ mac_url_page(page_url, 1) }}">1</a>
+        {% if num_min > 2 %}
+        <span class="bili-paging__ellipsis" aria-hidden="true">…</span>
+        {% endif %}
+        {% endif %}
+        {% for num in pg_data.page_num|default([]) %}
+        <a class="bili-paging__num{% if cur == num %} is-on{% endif %}"
+           role="listitem"
+           href="{{ mac_url_page(page_url, num) }}"
+           {% if cur == num %}aria-current="page"{% endif %}>{{ num }}</a>
+        {% endfor %}
+        {% if num_max < total %}
+        {% if num_max < total - 1 %}
+        <span class="bili-paging__ellipsis" aria-hidden="true">…</span>
+        {% endif %}
+        <a class="bili-paging__num" role="listitem" href="{{ mac_url_page(page_url, total) }}">{{ total }}</a>
+        {% endif %}
+      </div>
+
+      <a class="bili-paging__arrow{% if cur >= total %} is-disabled{% endif %}"
+         href="{{ cur >= total ? 'javascript:;' : mac_url_page(page_url, next) }}"
+         {% if cur >= total %}aria-disabled="true" tabindex="-1"{% endif %}
+         aria-label="下一页" data-lang-aria-label="string_xyy">
+        <span class="bili-paging__arrow-text bili-paging__desk-only" data-lang="string_xyy">下一页</span>
+        {% include "page-builder-components/_shared/component_icon.twig" with { component: 'paging', name: 'chevron-right', class: 'bili-paging__arrow-ico', mode: 'current' } %}
+      </a>
+
+      <a class="bili-paging__edge bili-paging__desk-only{% if cur >= total %} is-disabled{% endif %}"
+         href="{{ cur >= total ? 'javascript:;' : mac_url_page(page_url, total) }}"
+         {% if cur >= total %}aria-disabled="true" tabindex="-1"{% endif %}
+         data-lang="string_last_page">尾页</a>
+    </div>
+
+    <div class="bili-paging__jump">
+      <label class="bili-paging__jump-label" for="{{ uid }}">
+        <span data-lang="string_jump_to">跳至</span>
+      </label>
+      <div class="bili-paging__jump-field">
+        <input type="number"
+               class="bili-paging__jump-input"
+               id="{{ uid }}"
+               min="1"
+               max="{{ total }}"
+               value="{{ cur }}"
+               inputmode="numeric"
+               pattern="[0-9]*"
+               aria-label="页码" data-lang-aria-label="paging_page_number_aria">
+        <button type="button" class="bili-paging__jump-btn" data-mac-paging-jump>
+          <span data-lang="string_jump">跳转</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</nav>
+{% endif %}

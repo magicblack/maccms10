@@ -1,0 +1,25 @@
+{# 阅读/播放权限门栏（对齐 twigspike member/popedom_gate 精简版） #}
+{% set _popedom = popedom|default({}) %}
+{% set _mid = mid|default(obj.art_id is defined ? 2 : 12) %}
+{% set _id = obj.art_id|default(obj.manga_id|default(0)) %}
+{% set _sid = param.sid|default(1) %}
+{% set _nid = param.nid|default(param.page|default(1)) %}
+<div class="pb-player-gate member-popedom-gate" data-component="player_popedom_gate">
+  <div class="pb-player-gate__panel">
+    <h2 class="pb-player-gate__title">{{ _popedom.msg|default('这部分内容需要会员才能观看哦～') }}</h2>
+    <p class="pb-player-gate__hint" data-lang="user_upgrade_tip">开通会员即可畅享全部精彩内容，感谢您的支持</p>
+    <div class="pb-player-gate__actions">
+      {% if user.user_id|default(0) == 0 %}
+      <a class="pb-player-gate__btn" href="{{ mac_url('user/login') }}" data-lang="recharge_login_link">去登录</a>
+      {% endif %}
+      {% if _popedom.confirm|default(0) == 1 %}
+      <button type="button" class="pb-player-gate__btn pb-player-gate__btn--primary js-popedom-buy-btn"
+              data-id="{{ _id }}" data-mid="{{ _mid }}" data-sid="{{ _sid }}" data-nid="{{ _nid }}" data-type="4">
+        <span data-lang="play_qrgm">确认购买</span>
+        {% if _popedom.points|default(0) > 0 %}（{{ _popedom.points }} <span data-lang="string_points">金币</span>）{% endif %}
+      </button>
+      {% endif %}
+      <a class="pb-player-gate__btn pb-player-gate__btn--accent" href="{{ mac_url('user/upgrade') }}" data-lang="user_upgrade">升级会员</a>
+    </div>
+  </div>
+</div>

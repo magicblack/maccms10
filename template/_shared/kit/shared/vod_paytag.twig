@@ -1,0 +1,27 @@
+{# 封面右上角付费标：对齐 splash VideoPayTag（金币优先，否则 VIP） #}
+{% set _pts = vo.vod_points_play|default(0) %}
+{% if _pts|default(0) <= 0 %}{% set _pts = vo.vod_points|default(0) %}{% endif %}
+{% set _is_vip = (vo.type_is_vip_exclusive|default(0) == 1) %}
+{% if (_pts|default(0) > 0) or _is_vip %}
+<span class="np2-paytag" aria-hidden="true">
+  {% if _pts|default(0) > 0 %}
+  <span class="np2-paytag__coin" title="{{ _pts }}金币">
+    <span class="np2-paytag__coin-inner">
+      <svg class="np2-paytag__coin-ico" viewBox="0 0 10 10" width="10" height="10" focusable="false" aria-hidden="true">
+        <path fill="#bf790a" d="M5.05.09a4.956 4.956 0 1 0 0 9.912 4.956 4.956 0 0 0 0-9.912"/>
+        <path fill="#ffd96b" d="M4.928 9.857a4.93 4.93 0 0 0 4.928-4.928A4.93 4.93 0 0 0 4.928 0 4.93 4.93 0 0 0 0 4.929a4.93 4.93 0 0 0 4.928 4.928"/>
+        <path fill="#fdc223" d="M1.445 8.415a4.928 4.928 0 0 0 6.968-6.97z"/>
+        <path fill="#f9ab10" d="M4.926 8.513A3.585 3.585 0 0 0 8.51 4.93a3.584 3.584 0 1 0-3.583 3.583"/>
+        <path fill="#f9b721" d="M2.395 2.397a3.58 3.58 0 0 0-.07 4.99l5.06-5.06a3.58 3.58 0 0 0-4.99.07"/>
+        <path fill="#d3830d" d="M5.86 6.744a.281.281 0 1 0 .397-.288l-.105-.912a.28.28 0 0 1 .072-.223l.622-.677a.283.283 0 0 0-.152-.467l-.9-.181a.28.28 0 0 1-.19-.138l-.451-.8a.28.28 0 0 0-.491 0l-.451.8a.28.28 0 0 1-.19.138l-.9.181a.282.282 0 0 0-.152.467l.622.677a.28.28 0 0 1 .072.223l-.105.912a.282.282 0 0 0 .397.288l.835-.382a.28.28 0 0 1 .235 0z"/>
+      </svg>
+      <span class="np2-paytag__amt">{{ _pts }}</span>
+    </span>
+  </span>
+  {% else %}
+  <span class="np2-paytag__vip">
+    <span class="np2-paytag__vip-inner">VIP</span>
+  </span>
+  {% endif %}
+</span>
+{% endif %}

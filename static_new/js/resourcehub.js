@@ -2,6 +2,7 @@
     var $ = layui.jquery || jQuery, layer = layui.layer;
     if(!$ || !layer){ console.error('ResourceHub: layui.jquery or layui.layer not ready'); return; }
     if(typeof RH_LANG === 'undefined') RH_LANG = {};
+    var RH_TOK = (typeof RH_TOKEN !== 'undefined') ? RH_TOKEN : '';
 
     // 统一的请求失败提示
     function rhAjaxError(loading){
@@ -15,7 +16,7 @@
         var url = btn.data('url');
         var statusId = btn.data('status-id');
         btn.prop('disabled', true).text(RH_LANG.checking || 'Checking...');
-        $.post(RH_URLS.check, {url: url}, function(res){
+        $.post(RH_URLS.check, {url: url, __token__: RH_TOK}, function(res){
             btn.prop('disabled', false).text(RH_LANG.btn_check || 'Check');
             if(res.code == 1){
                 $('#'+statusId).removeClass('unknown offline').addClass('online');
@@ -53,7 +54,9 @@
         form.append($('<input>', {type:'hidden', name:'url', value: url}));
         form.append($('<input>', {type:'hidden', name:'type', value: type}));
         form.append($('<input>', {type:'hidden', name:'mid', value: mid}));
-        form.append($('<input>', {type:'hidden', name:'h', value: '24'}));
+        // 不带时间过滤，展示资源站全部数据，页数/数量与检测按钮显示的 total 保持一致
+        form.append($('<input>', {type:'hidden', name:'h', value: ''}));
+        form.append($('<input>', {type:'hidden', name:'__token__', value: RH_TOK}));
         form.appendTo('body').submit();
     });
 
@@ -86,13 +89,13 @@
                         if(names.length == 0){ layer.msg(RH_LANG.select_at_least_one||'Please select at least one'); return; }
                         btnSync.prop('disabled', true);
                         var loadingSync = layer.load(1);
-                        $.post(RH_URLS.syncTypes, {type_names: names, pid:0}, function(r){
+                        $.post(RH_URLS.syncTypes, {type_names: names, pid:0, __token__: RH_TOK}, function(r){
                             layer.close(loadingSync);
                             btnSync.prop('disabled', false);
                             layer.msg(r.msg, {icon: r.code==1?1:2});
                             if(r.code==1){
                                 var loadingBind = layer.load(1);
-                                $.post(RH_URLS.autoBind, {url:url, type:type}, function(r2){
+                                $.post(RH_URLS.autoBind, {url:url, type:type, __token__: RH_TOK}, function(r2){
                                     layer.close(loadingBind);
                                     if(r2.code==1) layer.msg(r2.msg, {icon:1});
                                 }, 'json').fail(function(){ rhAjaxError(loadingBind); });
@@ -114,8 +117,8 @@
         layer.confirm(RH_LANG.confirm_auto_config||'Auto-bind categories and add player config, continue?', function(idx){
             layer.close(idx);
             var loading = layer.load(1, {content: RH_LANG.processing || 'Processing...', shade: 0.3});
-            $.post(RH_URLS.autoBind, {url:url, type:type}, function(res1){
-                $.post(RH_URLS.autoPlayer, {url:url, type:type}, function(res2){
+            $.post(RH_URLS.autoBind, {url:url, type:type, __token__: RH_TOK}, function(res1){
+                $.post(RH_URLS.autoPlayer, {url:url, type:type, __token__: RH_TOK}, function(res2){
                     layer.close(loading);
                     layer.alert(res1.msg + '<br>' + res2.msg, {icon:1, title: RH_LANG.auto_config_result||'Auto Config Result'});
                 }, 'json').fail(function(){ rhAjaxError(loading); });
@@ -126,7 +129,7 @@
     // 添加到采集列表
     $(document).on('click', '.btn-add-collect', function(){
         var btn = $(this);
-        var d = {url: btn.data('url'), type: btn.data('type'), mid: btn.data('mid'), name: btn.data('name')};
+        var d = {url: btn.data('url'), type: btn.data('type'), mid: btn.data('mid'), name: btn.data('name'), __token__: RH_TOK};
         btn.prop('disabled', true);
         var loading = layer.load(1);
         $.post(RH_URLS.addToCollect, d, function(res){
@@ -151,7 +154,7 @@
                     var hours = layero.find('#timming_hours').val();
                     btnAdd.prop('disabled', true);
                     var loading = layer.load(1);
-                    $.post(RH_URLS.addTimming, {url:url, type:type, mid:mid, name:name, hours:hours}, function(res){
+                    $.post(RH_URLS.addTimming, {url:url, type:type, mid:mid, name:name, hours:hours, __token__: RH_TOK}, function(res){
                         layer.close(loading);
                         btnAdd.prop('disabled', false);
                         if(res.code==1){
@@ -177,7 +180,7 @@
             success: function(layero){
                 layero.find('#doAddCustom').on('click', function(){
                     var btnAdd = $(this);
-                    var d = {name: layero.find('#custom_name').val(), url: layero.find('#custom_url').val(), type: layero.find('#custom_type').val(), mid: layero.find('#custom_mid').val(), desc: layero.find('#custom_desc').val()};
+                    var d = {name: layero.find('#custom_name').val(), url: layero.find('#custom_url').val(), type: layero.find('#custom_type').val(), mid: layero.find('#custom_mid').val(), desc: layero.find('#custom_desc').val(), __token__: RH_TOK};
                     if(!d.name || !d.url){ layer.msg(RH_LANG.fill_complete||'Please fill in all fields'); return; }
                     btnAdd.prop('disabled', true);
                     var loading = layer.load(1);
@@ -204,7 +207,7 @@
         layer.confirm(RH_LANG.confirm_delete||'Are you sure?', function(idx){
             layer.close(idx);
             var loading = layer.load(1);
-            $.post(RH_URLS.delCustomSite, {index: index}, function(res){
+            $.post(RH_URLS.delCustomSite, {index: index, __token__: RH_TOK}, function(res){
                 layer.close(loading);
                 layer.msg(res.msg, {icon: res.code==1?1:2});
                 if(res.code==1) setTimeout(function(){ location.reload(); }, 1000);

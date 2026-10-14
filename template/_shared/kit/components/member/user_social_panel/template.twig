@@ -1,0 +1,52 @@
+{# 我的圈子 / 关系 / 私信 #}
+<div class="mac-social" data-component="user_social_panel" data-mac-social data-page="dynamics"
+     data-api-base="{{ maccms.path }}api.php"
+     data-current-uid="{{ user.user_id|default(0) }}">
+  <header class="member-card__head mac-social__head">
+    <h2 class="member-card__title" data-lang="social_circle">我的圈子</h2>
+    <p class="mac-social__lead" data-lang="social_circle_lead">分享近况，发现朋友的新动态</p>
+  </header>
+  <nav class="mac-social__tabs" data-lang-aria-label="social_features_aria" aria-label="社交功能">
+    <button type="button" class="is-active" data-social-view="dynamics" data-lang="social_circle">我的圈子</button>
+    <button type="button" data-social-view="following" data-lang="social_relationships">关系</button>
+    <button type="button" data-social-view="messages" data-lang="social_messages">私信</button>
+  </nav>
+  <section class="mac-social__workspace">
+    <header class="mac-social__section-head">
+      <div>
+        <span class="mac-social__section-kicker" data-social-section-kicker data-lang="social_circle">我的圈子</span>
+        <h3 data-social-section-title data-lang="social_friend_dynamics">好友动态</h3>
+      </div>
+      <nav class="mac-social__subtabs" data-social-subtabs data-lang-aria-label="social_content_filter_aria" aria-label="内容筛选"></nav>
+    </header>
+    <div class="mac-social__content" data-social-content>
+      <ul class="mac-social__list" data-social-list></ul>
+      <p class="mac-social__loading" data-social-loading data-lang="string_topic_feed_loading">加载中…</p>
+      <div class="mac-social__empty member-empty member-empty--social" data-social-empty hidden role="status">
+        <div class="member-empty__art pb-empty-state__art mac-social__empty-art" aria-hidden="true">
+          {% include "page-builder-components/_shared/empty_state_art.twig" %}
+        </div>
+        <p class="member-empty__title mac-social__empty-title" data-social-empty-title data-lang="social_empty_dynamics">暂时没有新动态</p>
+        <p class="member-empty__hint mac-social__empty-copy" data-social-empty-copy data-lang="social_empty_dynamics_copy">关注的人分享内容后，会出现在这里</p>
+      </div>
+      <nav class="mac-social__pager" data-social-pager hidden data-lang-aria-label="social_paging_aria" aria-label="分页"></nav>
+    </div>
+    <section class="mac-social__conversation" data-social-conversation hidden>
+      <header class="mac-social__conversation-head">
+        <button type="button" class="mac-social__back" data-social-chat-back data-lang="auth_back">返回</button>
+        <button type="button" class="mac-social__profile-trigger mac-social__peer-avatar" data-social-peer-avatar data-lang-aria-label="social_view_profile_aria" aria-label="查看个人主页">
+          <span class="mac-social__avatar-letter" aria-hidden="true">友</span>
+        </button>
+        <div class="mac-social__peer-copy">
+          <button type="button" class="mac-social__profile-trigger mac-social__peer-name" data-social-peer-name>私信会话</button>
+          <button type="button" class="mac-social__profile-trigger mac-social__peer-hint" data-social-peer-hint data-lang="social_mutual_follow_btn">互相关注 · 点击查看个人主页</button>
+        </div>
+      </header>
+      <div class="mac-social__messages" data-social-messages></div>
+      <div class="mac-social__composer">
+        <textarea maxlength="500" data-social-message-input data-lang-placeholder="social_message_placeholder" placeholder="输入私信内容"></textarea>
+        <button type="button" class="mac-social__send" data-social-send data-lang="social_send">发送</button>
+      </div>
+    </section>
+  </section>
+</div>

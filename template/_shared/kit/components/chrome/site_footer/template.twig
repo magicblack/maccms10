@@ -1,0 +1,178 @@
+{% import "page-builder-components/_shared/macros.twig" as pb %}
+{% set _variant = props.variant|default('default') %}
+{% if _variant != 'compact' %}{% set _variant = 'default' %}{% endif %}
+{% set _show_nav = props.show_nav is defined ? props.show_nav : true %}
+{% set _show_friends = props.show_friends is defined ? props.show_friends : true %}
+{% set _copyright_prop = props.copyright|default('')|trim %}
+{% set _td = mac_theme_design() %}
+{% set _copyright_global = _td.footer_copyright|default('')|trim %}
+{% set _copyright = _copyright_prop != '' ? _copyright_prop : _copyright_global %}
+{% if _copyright == '' %}
+  {% set _copyright = '© ' ~ (maccms.site_name|default('')) %}
+{% endif %}
+{% set _logo_prop = props.logo|default('')|trim %}
+{% set _logo_global = _td.logo|default('')|trim %}
+{% set _site_logo = maccms.site_logo|default('')|trim %}
+{% set _logo = _logo_prop ?: _logo_global ?: _site_logo %}
+{% set _ft = _td.footer|default({}) %}
+{% set _ft_type_ids = _ft.type_ids|default([]) %}
+{% set _ft_custom_links = _ft.links|default([]) %}
+{% set _type_limit = props.type_limit|default(6) + 0 %}
+{% if _type_limit < 1 %}{% set _type_limit = 6 %}{% endif %}
+{% if _ft_type_ids is not empty %}
+  {% set _ft_type_rows = mac_type({ids: _ft_type_ids|join(','), mid: 1, num: _ft_type_ids|length, order: 'asc', by: 'sort'}).list|default([]) %}
+{% else %}
+  {% set _ft_fetch_num = _type_limit + 1 %}
+  {% set _ft_type_rows = mac_type({mid: 1, parent: 0, num: _ft_fetch_num, order: 'asc', by: 'sort'}).list|default([]) %}
+  {% if _ft_type_rows|length > _type_limit %}
+    {% set _ft_has_more_types = true %}
+    {% set _ft_type_rows = _ft_type_rows|slice(0, _type_limit) %}
+  {% endif %}
+  {% set _ft_type_ids = [] %}
+  {% for t in _ft_type_rows %}
+    {% set _ft_type_ids = _ft_type_ids|merge([t.type_id]) %}
+  {% endfor %}
+{% endif %}
+{% set _ft_display_ids = _ft_type_ids|slice(0, _type_limit) %}
+{% if _ft_type_ids|length > _type_limit %}{% set _ft_has_more_types = true %}{% endif %}
+{% set _links = [] %}
+{% for l in mac_link({num: 50, order: 'asc', by: 'sort'}).list|default([]) %}
+  {% set _fl_name = l.link_name|default('')|trim %}
+  {% set _fl_url = l.link_url|default('')|trim %}
+  {% set _fl_type = l.link_type|default(0) + 0 %}
+  {% set _fl_logo = l.link_logo|default('')|trim %}
+  {% if _fl_url != '' and ((_fl_type == 1 and _fl_logo != '') or (_fl_type != 1 and _fl_name != '')) %}
+    {% set _links = _links|merge([l]) %}
+  {% endif %}
+{% endfor %}
+<link rel="stylesheet" href="{{ maccms.path_tpl }}page-builder-components/site_footer/style.css">
+<footer class="pb-site-footer pb-site-footer--{{ _variant }}" role="contentinfo">
+  <div class="pb-site-footer__accent" aria-hidden="true"></div>
+  <div class="pb-site-footer__shell">
+    {% if _variant == 'compact' %}
+    <div class="pb-site-footer__strip">
+      <a class="pb-site-footer__brand" href="{{ maccms.path }}" title="{{ maccms.site_name }}">
+        {% set _lg_raw = _logo|default('')|trim %}
+        {% set _is_default_logo = _lg_raw == '' or 'logo-transparent.png' in _lg_raw or 'logo.png' in _lg_raw or 'logo.jpg' in _lg_raw or 'logo-mark.' in _lg_raw or '7de625dc60a178366ac62eab6625b482' in _lg_raw or 'logo-wordmark.' in _lg_raw %}
+        {% if _lg_raw and not _is_default_logo %}
+          {% set _logo_src = (_lg_raw matches '/^(https?:)?\/\//' or _lg_raw starts with '/') ? _lg_raw : mac_url_img(_lg_raw) %}
+          <img class="pb-site-footer__logo" src="{{ _logo_src }}" alt="{{ maccms.site_name }}" decoding="async">
+        {% else %}
+          {% include "page-builder-components/_shared/brand_logo.twig" with { height: 36 } %}
+        {% endif %}
+      </a>
+      {% if _show_nav %}
+      <nav class="pb-site-footer__strip-nav" data-lang-aria-label="footer_nav_aria">
+        {% for id in _ft_display_ids %}
+          {% for t in _ft_type_rows %}
+            {% if t.type_id == id %}
+        <a href="{{ mac_url_type(t) }}">{{ t.type_name }}</a>
+            {% endif %}
+          {% endfor %}
+        {% endfor %}
+        <a href="{{ mac_url('map/index') }}" data-lang="string_foot_ditu">网站地图</a>
+        <a href="{{ mac_url('gbook/index') }}" data-lang="string_gbook">留言</a>
+        <a href="{{ mac_url('label/rank') }}" data-lang="string_rank">排行榜</a>
+        <a href="{{ mac_url('topic/index') }}" data-lang="string_topic">专题</a>
+      </nav>
+      {% endif %}
+    </div>
+    {% if _show_friends and (_links|length or _ft_custom_links|length) %}
+    <div class="pb-site-footer__friends">
+      <span class="pb-site-footer__friends-label" data-lang="string_friend_link">友情链接</span>
+      <ul class="pb-site-footer__chips">
+        {% for l in _links %}
+        {{ pb.friend_link_item(l, '', 'pb-site-footer__chip', 'nofollow', '') }}
+        {% endfor %}
+        {% for l in _ft_custom_links %}
+          {% set _lt = l.text|default('')|trim %}
+          {% set _lu = l.url|default('')|trim %}
+          {% if _lt != '' %}
+        <li><a class="pb-site-footer__chip" href="{{ _lu }}" rel="nofollow">{{ _lt }}</a></li>
+          {% endif %}
+        {% endfor %}
+      </ul>
+    </div>
+    {% endif %}
+    <p class="pb-site-footer__meta-line">{{ _copyright }}</p>
+    {% else %}
+    <div class="pb-site-footer__top">
+      <div class="pb-site-footer__brand-col">
+        <a class="pb-site-footer__brand" href="{{ maccms.path }}" title="{{ maccms.site_name }}">
+          {% set _lg_raw = _logo|default('')|trim %}
+          {% set _is_default_logo = _lg_raw == '' or 'logo-transparent.png' in _lg_raw or 'logo.png' in _lg_raw or 'logo.jpg' in _lg_raw or 'logo-mark.' in _lg_raw or '7de625dc60a178366ac62eab6625b482' in _lg_raw or 'logo-wordmark.' in _lg_raw %}
+          {% if _lg_raw and not _is_default_logo %}
+            {% set _logo_src = (_lg_raw matches '/^(https?:)?\/\//' or _lg_raw starts with '/') ? _lg_raw : mac_url_img(_lg_raw) %}
+            <img class="pb-site-footer__logo" src="{{ _logo_src }}" alt="{{ maccms.site_name }}" decoding="async">
+          {% else %}
+            {% include "page-builder-components/_shared/brand_logo.twig" with { height: 36 } %}
+          {% endif %}
+        </a>
+        <p class="pb-site-footer__tagline"{% if maccms.site_description|default('')|trim == '' %} data-lang="footer_tagline_default"{% endif %}>{{ maccms.site_description|default('精选影视，随时开播') }}</p>
+      </div>
+      {% if _show_nav %}
+      <nav class="pb-site-footer__nav" data-lang-aria-label="footer_nav_aria">
+        {% if _ft_type_rows is not empty %}
+        <div class="pb-site-footer__group">
+          <p class="pb-site-footer__heading" data-lang="footer_categories">分类</p>
+          <ul class="pb-site-footer__links">
+            {% for id in _ft_display_ids %}
+              {% for t in _ft_type_rows %}
+                {% if t.type_id == id %}
+            <li><a href="{{ mac_url_type(t) }}">{{ t.type_name }}</a></li>
+                {% endif %}
+              {% endfor %}
+            {% endfor %}
+            {% if _ft_has_more_types %}
+            <li><a class="pb-site-footer__more" href="{{ mac_url('map/index') }}" data-lang="footer_categories_more">全部分类</a></li>
+            {% endif %}
+          </ul>
+        </div>
+        {% endif %}
+        <div class="pb-site-footer__group">
+          <p class="pb-site-footer__heading" data-lang="footer_explore">探索</p>
+          <ul class="pb-site-footer__links">
+            <li><a href="{{ mac_url('vod/index') }}" data-lang="string_zuijingx">最近更新</a></li>
+            <li><a href="{{ mac_url('label/rank') }}" data-lang="string_rank">排行榜</a></li>
+            <li><a href="{{ mac_url('topic/index') }}" data-lang="string_topic">专题</a></li>
+          </ul>
+        </div>
+        <div class="pb-site-footer__group">
+          <p class="pb-site-footer__heading" data-lang="footer_about">关于</p>
+          <ul class="pb-site-footer__links">
+            <li><a href="{{ mac_url('gbook/index') }}" data-lang="string_gbook">留言</a></li>
+          </ul>
+        </div>
+        <div class="pb-site-footer__group">
+          <p class="pb-site-footer__heading" data-lang="footer_user">用户</p>
+          <ul class="pb-site-footer__links">
+            <li><a href="{{ mac_url('user/index') }}" data-lang="string_mac_hyzx">会员中心</a></li>
+            <li><a href="{{ mac_url('user/favs') }}" data-lang="string_fav">收藏</a></li>
+          </ul>
+        </div>
+      </nav>
+      {% endif %}
+    </div>
+    {% if _show_friends and (_links|length or _ft_custom_links|length) %}
+    <div class="pb-site-footer__friends">
+      <span class="pb-site-footer__friends-label" data-lang="string_friend_link">友情链接</span>
+      <ul class="pb-site-footer__chips">
+        {% for l in _links %}
+        {{ pb.friend_link_item(l, '', 'pb-site-footer__chip', 'nofollow', '') }}
+        {% endfor %}
+        {% for l in _ft_custom_links %}
+          {% set _lt = l.text|default('')|trim %}
+          {% set _lu = l.url|default('')|trim %}
+          {% if _lt != '' %}
+        <li><a class="pb-site-footer__chip" href="{{ _lu }}" rel="nofollow">{{ _lt }}</a></li>
+          {% endif %}
+        {% endfor %}
+      </ul>
+    </div>
+    {% endif %}
+    <div class="pb-site-footer__bottom">
+      <p class="pb-site-footer__copy">{{ _copyright }}</p>
+    </div>
+    {% endif %}
+  </div>
+</footer>

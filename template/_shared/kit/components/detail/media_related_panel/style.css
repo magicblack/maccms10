@@ -1,0 +1,242 @@
+/* media_related_panel — twigspike #media-related + bili-grid--related */
+
+.pb-media-related.media-panel--cinema {
+  border-radius: var(--radius-lg, 8px);
+  background: var(--c-surface, #fff);
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+  padding: 18px 20px 20px;
+  margin: 0 0 16px;
+  min-width: 0;
+}
+
+.pb-media-related .media-panel__title {
+  margin: 0 0 16px;
+  padding: 0;
+  font-size: 18px;
+  font-weight: 650;
+  color: var(--c-text, #18191c);
+  line-height: 1.3;
+  letter-spacing: -0.01em;
+}
+
+/* ── 推荐网格（对齐 twigspike vod-detail-cinema.css）── */
+.pb-media-related .bili-grid--related {
+  display: grid;
+  width: 100%;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.pb-media-related .pb-media-related__item,
+.pb-media-related .bili-grid--related > .pb-vod-card {
+  width: 100%;
+  min-width: 0;
+}
+
+/* ── 卡片在推荐区的排版微调 ── */
+.pb-media-related .pb-vod-card {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.pb-media-related .pb-vod-card__pic {
+  border-radius: var(--radius-lg, 8px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  transition: box-shadow var(--dur, 0.2s) var(--ease, ease), transform var(--dur, 0.2s) var(--ease, ease);
+}
+
+.pb-media-related .pb-vod-card__pic:focus-visible {
+  outline: 2px solid var(--c-accent);
+  outline-offset: 2px;
+}
+
+.pb-media-related .pb-vod-card:hover .pb-vod-card__pic {
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+}
+
+.pb-media-related .pb-vod-card__title {
+  margin-top: 10px;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.45;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  min-width: 0;
+}
+
+.pb-media-related .pb-vod-card__title a {
+  color: var(--c-text, #18191c);
+  transition: color var(--dur, 0.2s) var(--ease, ease);
+}
+
+.pb-media-related .pb-vod-card__title a:hover,
+.pb-media-related .pb-vod-card__title a:focus-visible {
+  color: var(--c-accent);
+  outline: none;
+}
+
+.pb-media-related .pb-vod-card__meta {
+  margin-top: 4px;
+  font-size: 12px;
+  line-height: 1.4;
+  color: var(--c-text-muted, #9499a0);
+}
+
+.pb-media-related .pb-vod-card__mask {
+  font-size: 11px;
+}
+
+.pb-media-related .pb-vod-card__stat {
+  font-variant-numeric: tabular-nums;
+}
+
+.pb-media-related__empty {
+  padding: 8px 0 4px;
+}
+
+/* 播放页：对齐 twigspike bili-play__card */
+.pb-media-related--play.media-panel--cinema {
+  padding: 14px 16px 16px;
+  margin-bottom: 12px;
+}
+
+.pb-media-related--play .media-panel__title {
+  margin-bottom: 12px;
+  font-size: 16px;
+  font-weight: 650;
+}
+
+.pb-media-related--play .bili-grid--play {
+  margin-top: 4px;
+}
+
+/* ── 响应式列数（design-system media-related.md）── */
+@media (max-width: 1280px) {
+  .pb-media-related .bili-grid--related {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 960px) {
+  .pb-media-related .bili-grid--related {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 14px 12px;
+  }
+}
+
+@media (max-width: 640px) {
+  .pb-media-related.media-panel--cinema {
+    padding: 16px 14px 18px;
+  }
+
+  .pb-media-related .media-panel__title {
+    margin-bottom: 14px;
+    font-size: 17px;
+  }
+
+  .pb-media-related .bili-grid--related {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 12px;
+    width: 100%;
+  }
+
+  .pb-media-related .pb-vod-card__title {
+    font-size: 13px;
+    margin-top: 8px;
+  }
+
+  .pb-media-related .pb-vod-card__meta {
+    font-size: 11px;
+  }
+}
+
+/* 文章相关：行列表 */
+.pb-media-related .rows--art-related {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.pb-media-related .pb-art-row {
+  border-radius: var(--radius-lg, 8px);
+  transition: box-shadow var(--dur, 0.2s) var(--ease, ease);
+}
+
+.pb-media-related .pb-art-row:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+}
+
+/* 漫画相关：竖版海报网格 */
+.pb-media-related--manga .bili-grid--poster {
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+}
+
+.pb-media-related--manga .pb-manga-card__pic {
+  aspect-ratio: 3 / 4;
+  border-radius: var(--radius-lg, 8px);
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+.pb-media-related--manga .pb-manga-card__title {
+  margin-top: 10px;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.45;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  min-width: 0;
+}
+
+@media (max-width: 1280px) {
+  .pb-media-related--manga .bili-grid--poster {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 960px) {
+  .pb-media-related--manga .bili-grid--poster {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 640px) {
+  .pb-media-related--manga .bili-grid--poster {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+
+  /* 奇数个结果时隐藏落单的最后一张卡片，避免两列网格底部出现空位 */
+  .pb-media-related--manga .bili-grid--poster > .pb-media-related__item:nth-child(odd):last-child {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pb-media-related .pb-vod-card__pic,
+  .pb-media-related .pb-vod-card__pic img,
+  .pb-media-related .pb-vod-card__title a {
+    transition: none;
+  }
+
+  .pb-media-related .pb-vod-card:hover .pb-vod-card__pic img {
+    transform: none;
+  }
+}
+
+
+@media (max-width: 860px) {
+  /* 与 vod_detail / NP2 顶栏同 12px 页边距 */
+  .pb-media-related.media-panel--cinema {
+    width: calc(100% - 24px);
+    margin-left: auto;
+    margin-right: auto;
+    box-sizing: border-box;
+  }
+}

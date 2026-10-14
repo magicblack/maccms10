@@ -1,0 +1,18 @@
+.pb-breadcrumb.mac-crumb {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 2px;
+  margin: 4px 0 16px;
+  padding: 10px 14px;
+  background: var(--c-surface, #fff);
+  border-radius: 8px;
+  font-size: 15px;
+  line-height: 1.45;
+  color: var(--c-text-muted, #888);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+}
+.pb-breadcrumb.mac-crumb a { color: var(--c-text-muted, #888); text-decoration: none; }
+.pb-breadcrumb.mac-crumb a:hover { color: var(--c-accent); }
+.pb-breadcrumb.mac-crumb > span:last-child { color: var(--c-text, #222); font-weight: 500; }
+.pb-breadcrumb__sep { margin: 0 4px; color: var(--c-text-muted, #aaa); }

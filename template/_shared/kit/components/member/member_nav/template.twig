@@ -1,0 +1,53 @@
+{# 会员中心侧栏导航 — props.active 当前页 key（index/notify/favs…） #}
+{% set p = props|default({}) %}
+{% set active = p.active|default(active|default('index')) %}
+<ul class="member-nav__list" data-component="member_nav">
+  <li>
+    <a href="{{ mac_url('user/index') }}" class="member-nav__link{% if active == 'index' %} is-on{% endif %}"{% if active == 'index' %} aria-current="page"{% endif %}>
+      <span class="member-nav__ico member-nav__ico--home" aria-hidden="true">{% include "page-builder-components/_shared/component_icon.twig" with { component: 'member_nav', name: 'icon-home', class: 'member-nav__svg', mode: 'current' } %}</span>
+      <span class="member-nav__label" data-lang="string_mac_hyzx">会员中心</span>
+    </a>
+  </li>
+  <li>
+    <a href="{{ mac_url('user/info') }}" class="member-nav__link{% if active == 'info' %} is-on{% endif %}"{% if active == 'info' %} aria-current="page"{% endif %}>
+      <span class="member-nav__ico member-nav__ico--profile" aria-hidden="true">{% include "page-builder-components/_shared/component_icon.twig" with { component: 'member_nav', name: 'icon-id-card', class: 'member-nav__svg', mode: 'current' } %}</span>
+      <span class="member-nav__label" data-lang="user_zlxg">资料修改</span>
+    </a>
+  </li>
+  <li>
+    <a href="{{ mac_url('user/notify') }}" class="member-nav__link{% if active == 'notify' %} is-on{% endif %}"{% if active == 'notify' %} aria-current="page"{% endif %}>
+      <span class="member-nav__ico member-nav__ico--bell" aria-hidden="true">{% include "page-builder-components/_shared/component_icon.twig" with { component: 'member_nav', name: 'icon-bell', class: 'member-nav__svg', mode: 'current' } %}</span>
+      <span class="member-nav__label" data-lang="notify_title">消息中心</span>
+    </a>
+  </li>
+  <li>
+    <a href="{{ mac_url('user/dynamics') }}" class="member-nav__link{% if active == 'dynamics' %} is-on{% endif %}"{% if active == 'dynamics' %} aria-current="page"{% endif %}>
+      <span class="member-nav__ico member-nav__ico--users" aria-hidden="true">{% include "page-builder-components/_shared/component_icon.twig" with { component: 'member_nav', name: 'icon-users', class: 'member-nav__svg', mode: 'current' } %}</span>
+      <span class="member-nav__label" data-lang="social_circle">我的圈子</span>
+    </a>
+  </li>
+  <li>
+    <a href="{{ mac_url('user/favs') }}" class="member-nav__link{% if active == 'favs' %} is-on{% endif %}"{% if active == 'favs' %} aria-current="page"{% endif %}>
+      <span class="member-nav__ico member-nav__ico--fav" aria-hidden="true">{% include "page-builder-components/_shared/component_icon.twig" with { component: 'member_nav', name: 'icon-fav', class: 'member-nav__svg', mode: 'current' } %}</span>
+      <span class="member-nav__label" data-lang="user_my_collection">我的收藏</span>
+    </a>
+  </li>
+  <li>
+    <a href="{{ mac_url('user/plays') }}" class="member-nav__link{% if active == 'plays' or active == 'downs' %} is-on{% endif %}"{% if active == 'plays' %} aria-current="page"{% endif %}>
+      <span class="member-nav__ico member-nav__ico--history" aria-hidden="true">{% include "page-builder-components/_shared/component_icon.twig" with { component: 'member_nav', name: 'icon-history', class: 'member-nav__svg', mode: 'current' } %}</span>
+      <span class="member-nav__label" data-lang="string_play_history">播放记录</span>
+    </a>
+  </li>
+  <li>
+    <a href="{{ mac_url('user/upgrade') }}" class="member-nav__link member-nav__link--vip{% if active in ['upgrade', 'buy', 'pay', 'cards', 'benefits'] %} is-on{% endif %}"{% if active in ['upgrade', 'buy', 'pay'] %} aria-current="page"{% endif %}>
+      <span class="member-nav__ico member-nav__ico--wallet" aria-hidden="true">{% include "page-builder-components/_shared/component_icon.twig" with { component: 'member_nav', name: 'icon-wallet', class: 'member-nav__svg', mode: 'current' } %}</span>
+      <span class="member-nav__label" data-lang="user_recharge">充值中心</span>
+    </a>
+  </li>
+  <li>
+    <a href="{{ mac_url('user/orders') }}" class="member-nav__link{% if active == 'orders' %} is-on{% endif %}"{% if active == 'orders' %} aria-current="page"{% endif %}>
+      <span class="member-nav__ico member-nav__ico--receipt" aria-hidden="true">{% include "page-builder-components/_shared/component_icon.twig" with { component: 'member_nav', name: 'icon-receipt', class: 'member-nav__svg', mode: 'current' } %}</span>
+      <span class="member-nav__label" data-lang="user_recharge_record">充值记录</span>
+    </a>
+  </li>
+</ul>

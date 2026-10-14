@@ -1,0 +1,256 @@
+{
+  "categories": [
+    {
+      "id": "layout",
+      "label_key": "admin/themedesign/pb_cat_layout",
+      "presets": [
+        {
+          "id": "section_empty",
+          "label_key": "admin/themedesign/pb_block_section",
+          "kind": "section",
+          "block": {
+            "component": "section",
+            "props": {
+              "variant": "plain",
+              "title_lang_key": "admin/themedesign/pb_block_section",
+              "more_url": "vod/index"
+            }
+          }
+        },
+        {
+          "id": "columns_2col",
+          "label_key": "admin/themedesign/pb_block_columns",
+          "kind": "columns",
+          "block": {
+            "component": "columns",
+            "props": { "cols": [8, 4], "stack_at": 720 },
+            "slots": {
+              "0": [
+                {
+                  "component": "section",
+                  "props": {
+                    "variant": "plain",
+                    "title_lang_key": "admin/themedesign/sec_vod_latest",
+                    "more_url": "vod/index"
+                  },
+                  "slots": {
+                    "body": [
+                      {
+                        "component": "content_feed",
+                        "props": {
+                          "bind": "vod",
+                          "num": 12,
+                          "by": "time",
+                          "type": 0,
+                          "render": "grid",
+                          "card": "poster-v"
+                        }
+                      }
+                    ]
+                  }
+                }
+              ],
+              "1": [
+                {
+                  "component": "section",
+                  "props": {
+                    "variant": "card",
+                    "title_lang_key": "admin/themedesign/sec_rank_week",
+                    "icon": "bar-chart"
+                  },
+                  "slots": {
+                    "body": [
+                      {
+                        "component": "rank_feed",
+                        "props": {
+                          "style": "panel",
+                          "num": 10,
+                          "type": 0,
+                          "period": "week"
+                        }
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          }
+        },
+        {
+          "id": "grid_auto",
+          "label_key": "admin/themedesign/pb_block_grid",
+          "kind": "grid",
+          "block": {
+            "component": "grid",
+            "props": { "variant": "auto", "min": "280px" }
+          }
+        },
+        {
+          "id": "spacer",
+          "label_key": "admin/themedesign/pb_block_spacer",
+          "kind": "spacer",
+          "block": {
+            "component": "spacer",
+            "props": {}
+          }
+        }
+      ]
+    },
+    {
+      "id": "carousel",
+      "label_key": "admin/themedesign/pb_cat_carousel",
+      "presets": [
+        {
+          "id": "preset_carousel_filmstrip",
+          "label_key": "admin/themedesign/pb_comp_carousel_filmstrip",
+          "kind": "carousel",
+          "block": {
+            "component": "carousel-filmstrip",
+            "props": { "num": 6, "by": "hits", "type": 0 }
+          }
+        },
+        {
+          "id": "preset_carousel_fullbleed",
+          "label_key": "admin/themedesign/pb_comp_carousel_fullbleed",
+          "kind": "carousel",
+          "block": {
+            "component": "carousel-fullbleed",
+            "props": { "num": 6, "by": "hits", "type": 0 }
+          }
+        },
+        {
+          "id": "preset_carousel_compact",
+          "label_key": "admin/themedesign/pb_comp_carousel_compact",
+          "kind": "carousel",
+          "block": {
+            "component": "carousel-compact",
+            "props": { "num": 5, "by": "hits_day", "type": 0 }
+          }
+        },
+        {
+          "id": "content_slider",
+          "label_key": "admin/themedesign/pb_block_content_slider",
+          "kind": "carousel",
+          "block": {
+            "component": "section",
+            "props": {
+              "variant": "plain",
+              "title_lang_key": "admin/themedesign/sec_vod_hot",
+              "more_url": "vod/index",
+              "icon": "fire"
+            },
+            "slots": {
+              "body": [
+                {
+                  "component": "content_feed",
+                  "props": {
+                    "bind": "vod",
+                    "render": "slider",
+                    "num": 12,
+                    "by": "hits_month",
+                    "type": 0,
+                    "card": "poster-v"
+                  }
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "list",
+      "label_key": "admin/themedesign/pb_cat_list",
+      "presets": [
+        {
+          "id": "content_grid",
+          "label_key": "admin/themedesign/pb_block_content_grid",
+          "kind": "content",
+          "block": {
+            "component": "section",
+            "props": {
+              "variant": "plain",
+              "title_lang_key": "admin/themedesign/sec_vod_latest",
+              "more_url": "vod/index"
+            },
+            "slots": {
+              "body": [
+                {
+                  "component": "content_feed",
+                  "props": {
+                    "bind": "vod",
+                    "render": "grid",
+                    "num": 12,
+                    "by": "time",
+                    "type": 0,
+                    "card": "poster-v"
+                  }
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "rank",
+      "label_key": "admin/themedesign/pb_cat_rank",
+      "presets": [
+        {
+          "id": "rank_feed_panel",
+          "label_key": "admin/themedesign/pb_block_rank_panel",
+          "kind": "rank",
+          "block": {
+            "component": "section",
+            "props": {
+              "variant": "card",
+              "title_lang_key": "admin/themedesign/sec_rank_week",
+              "more_url": "vod/index",
+              "icon": "bar-chart"
+            },
+            "slots": {
+              "body": [
+                {
+                  "component": "rank_feed",
+                  "props": {
+                    "style": "panel",
+                    "num": 10,
+                    "type": 0,
+                    "period": "week"
+                  }
+                }
+              ]
+            }
+          }
+        },
+        {
+          "id": "rank_feed_inline",
+          "label_key": "admin/themedesign/pb_block_rank_inline",
+          "kind": "rank",
+          "block": {
+            "component": "section",
+            "props": {
+              "variant": "plain",
+              "title_lang_key": "admin/themedesign/sec_rank_week",
+              "more_url": "vod/index",
+              "icon": "bar-chart"
+            },
+            "slots": {
+              "body": [
+                {
+                  "component": "rank_feed",
+                  "props": {
+                    "style": "inline",
+                    "num": 10,
+                    "type": 0,
+                    "period": "week"
+                  }
+                }
+              ]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

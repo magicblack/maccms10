@@ -1,0 +1,67 @@
+{
+    "id": "topic_detail",
+    "label_key": "admin/themedesign/pb_block_topic_detail",
+    "category": "detail",
+    "kind": "detail",
+    "palette": false,
+    "peer_styles": [],
+    "assets": {
+        "css": "style.css",
+        "js": "script.js"
+    },
+    "props": {
+        "show_intro": {
+            "type": "boolean",
+            "default": true,
+            "trait": "show_intro"
+        },
+        "num": {
+            "type": "number",
+            "default": 0,
+            "min": 0,
+            "max": 999,
+            "trait": "count"
+        },
+        "vod_title": {
+            "type": "string",
+            "default": "专题影片",
+            "trait": "title"
+        },
+        "vod_title_lang": {
+            "type": "string",
+            "default": "topic_vod_title",
+            "trait": "title_lang"
+        },
+        "art_title": {
+            "type": "string",
+            "default": "相关文章",
+            "trait": "title"
+        },
+        "art_title_lang": {
+            "type": "string",
+            "default": "string_topic_arts",
+            "trait": "title_lang"
+        },
+        "vod_sort": {
+            "type": "boolean",
+            "default": true,
+            "trait": "vod_sort"
+        },
+        "vod_sort_default": {
+            "type": "enum",
+            "default": "hits",
+            "values": [
+                "hits",
+                "time",
+                "duration"
+            ],
+            "trait": "vod_sort_default"
+        }
+    },
+    "context": {
+        "pageTypes": [
+            "detail"
+        ],
+        "requires": []
+    }
+}

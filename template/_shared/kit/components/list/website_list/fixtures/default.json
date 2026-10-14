@@ -1,0 +1,13 @@
+{
+    "props": {
+        "type": 0,
+        "num": 8,
+        "by": "hits",
+        "order": "desc",
+        "paging": false,
+        "pageurl": "vod\/show",
+        "card": "poster-h",
+        "ratio": "default"
+    },
+    "context": []
+}

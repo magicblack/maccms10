@@ -1,0 +1,12 @@
+{# 小说/漫画备注：章节数类（共N章|话 / 更新至N章|话 / 连载至N章|话，后端已按实际章节数改写）走多语文案，其余原样输出。
+   入参 remarks；kind 选填 art（默认，单位「章」）| manga（单位「话」）；rm_limit 选填，非章节数备注的截断长度。 #}
+{% set _rm = remarks|default('')|trim %}
+{% set _manga = kind|default('art') == 'manga' %}
+{% set _unit = _manga ? '话' : '章' %}
+{% set _kp = _manga ? 'manga_remarks_chapter_' : 'art_remarks_chapter_' %}
+{% set _key = '' %}
+{% if _rm matches '/^共\\d+' ~ _unit ~ '$/u' %}{% set _key = _kp ~ 'total' %}
+{% elseif _rm matches '/^更新至\\d+' ~ _unit ~ '$/u' %}{% set _key = _kp ~ 'upto' %}
+{% elseif _rm matches '/^连载至\\d+' ~ _unit ~ '$/u' %}{% set _key = _kp ~ 'serial' %}
+{% endif %}
+{% if _key %}{% set _n = _rm|replace({'共': '', '更新至': '', '连载至': '', (_unit): ''}) %}<span data-lang="{{ _key }}" data-lang-arg="{{ _n }}">{{ _rm }}</span>{% elseif rm_limit|default(0) > 0 %}{{ _rm|slice(0, rm_limit) }}{% else %}{{ _rm }}{% endif %}

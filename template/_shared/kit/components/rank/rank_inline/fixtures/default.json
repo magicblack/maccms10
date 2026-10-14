@@ -1,0 +1,8 @@
+{
+    "props": {
+        "type": 0,
+        "num": 10,
+        "period": "week"
+    },
+    "context": {}
+}

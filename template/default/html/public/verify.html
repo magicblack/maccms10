@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+	<meta name="robots" content="noindex,nofollow">
+	<title data-lang="string_safe_verify">安全验证</title>
+	<link rel="stylesheet" href="{$maccms.path}template/default/asset/css/hlstyle.css">
+	<script src="{$maccms.path}template/default/asset/js/hlhtml.js?v=202604161"></script>
+	<link rel="stylesheet" type="text/css" href="{$maccms.path_tpl}/asset/css/public-msg.css" />
+	<style>
+		.mac-verify{max-width:360px;margin:12vh auto;padding:24px;text-align:center}
+		.mac-verify h1{font-size:18px;margin:0 0 6px}
+		.mac-verify p.sub{font-size:13px;opacity:.7;margin:0 0 18px}
+		.mac-verify .row{display:flex;gap:8px;align-items:center;justify-content:center}
+		.mac-verify input{flex:1;min-width:0;height:38px;padding:0 10px;box-sizing:border-box}
+		.mac-verify img{height:38px;cursor:pointer}
+		.mac-verify button{margin-top:14px;width:100%;height:38px;cursor:pointer}
+		.mac-verify .msg{margin-top:10px;font-size:13px;min-height:18px}
+		.mac-verify .msg.err{color:#e54d42}
+		.mac-verify .msg.ok{color:#39b54a}
+	</style>
+</head>
+<body>
+<div class="mac-verify">
+	<h1 data-lang="string_safe_verify">安全验证</h1>
+	<p class="sub" data-lang="string_safe_verify_sub">请输入下方验证码后继续访问</p>
+	<form id="mac-verify-form" onsubmit="return false;">
+		<div class="row">
+				<input type="text" id="mac-verify-code" name="verify" autocomplete="off" maxlength="4"
+				placeholder="{:lang('verify')}" aria-label="{:lang('verify')}" />
+			<img id="mac-verify-img" src="{:mac_url('verify/index')}" alt="verify"
+				onclick="this.src='{:mac_url('verify/index')}?t='+Date.now();" />
+		</div>
+		<button type="submit" data-lang="string_submit">确认</button>
+		<p class="msg" id="mac-verify-msg"></p>
+	</form>
+</div>
+<script>
+(function () {
+	// type 由 Base::check_show / check_search 通过 assign('type', ...) 传入，
+	// 决定 ajax/verify_check 写哪个 session 标志（show_verify / search_verify）。
+	var TYPE = '{$type|default="show"}';
+	var ACT = '{:mac_url("ajax/verify_check")}';
+	var form = document.getElementById('mac-verify-form');
+	var code = document.getElementById('mac-verify-code');
+	var img = document.getElementById('mac-verify-img');
+	var msg = document.getElementById('mac-verify-msg');
+
+	// 与本主题其余 JS 同一取词写法：先问 MAC.GetLang（走 asset/language/strings_*.properties），
+	// 取不到再按 localStorage.lang 回落。这个闸门页可能在 MAC 初始化完成前就被交互，
+	// 所以回落分支必须留着。
+	function t(key, zh, en) {
+		if (typeof MAC !== 'undefined' && MAC.GetLang) {
+			var r = MAC.GetLang(key);
+			if (r) { return r; }
+		}
+		return String(localStorage.getItem('lang')) === '1' ? en : zh;
+	}
+
+	function show(text, ok) {
+		msg.className = 'msg ' + (ok ? 'ok' : 'err');
+		msg.innerHTML = text;
+	}
+	function refresh() {
+		img.src = img.src.split('?')[0] + '?t=' + Date.now();
+		code.value = '';
+		code.focus();
+	}
+
+	form.addEventListener('submit', function () {
+		var val = (code.value || '').replace(/^\s+|\s+$/g, '');
+		if (!val) {
+			show(t('verify_empty', '请输入验证码', 'Please enter the captcha'), false);
+			code.focus();
+			return false;
+		}
+		var xhr = new XMLHttpRequest();
+		xhr.open('POST', ACT, true);
+		xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+		xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+		xhr.onreadystatechange = function () {
+			if (xhr.readyState !== 4) { return; }
+			var res = null;
+			try { res = JSON.parse(xhr.responseText); } catch (e) { res = null; }
+			if (res && Number(res.code) === 1) {
+				show(res.msg || t('string_ok', '验证通过', 'Verification passed'), true);
+				window.location.reload();
+				return;
+			}
+			show((res && res.msg) ? res.msg : t('verify_fail', '验证失败，请重试', 'Verification failed, please try again'), false);
+			// 验证码是一次性的，校验失败后旧图已失效，必须换一张
+			refresh();
+		};
+		xhr.send('type=' + encodeURIComponent(TYPE) + '&verify=' + encodeURIComponent(val));
+		return false;
+	});
+
+	code.focus();
+})();
+</script>
+</body>
+</html>

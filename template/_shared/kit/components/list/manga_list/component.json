@@ -1,0 +1,112 @@
+{
+    "id": "manga_list",
+    "label_key": "admin/themedesign/pb_block_manga_list",
+    "category": "list",
+    "kind": "content",
+    "palette": false,
+    "styleMode": "component",
+    "peer_styles": [],
+    "assets": {
+        "css": "style.css",
+        "js": "script.js"
+    },
+    "props": {
+        "num": {
+            "type": "number",
+            "default": 10,
+            "min": 1,
+            "max": 50,
+            "trait": "count"
+        },
+        "type": {
+            "type": "category",
+            "mid": 12,
+            "default": 0,
+            "trait": "category"
+        },
+        "by": {
+            "type": "enum",
+            "default": "time",
+            "values": [
+                "time",
+                "hits",
+                "hits_day",
+                "hits_week",
+                "hits_month",
+                "score"
+            ],
+            "trait": "sort"
+        },
+        "order": {
+            "type": "enum",
+            "default": "desc",
+            "values": [
+                "desc",
+                "asc"
+            ]
+        },
+        "render": {
+            "type": "enum",
+            "default": "grid",
+            "values": [
+                "grid",
+                "slider"
+            ],
+            "trait": "layout"
+        },
+        "paging": {
+            "type": "boolean",
+            "default": false,
+            "trait": "paging"
+        },
+        "pageurl": {
+            "type": "string",
+            "default": "manga/show",
+            "trait": "pageurl"
+        },
+        "card": {
+            "type": "enum",
+            "default": "poster-v",
+            "values": [
+                "poster-h",
+                "poster-v"
+            ],
+            "trait": "card"
+        },
+        "ratio": {
+            "type": "string",
+            "default": "3-4",
+            "trait": "cover_ratio"
+        },
+        "empty_title": {
+            "type": "string",
+            "default": "",
+            "trait": "empty_title"
+        },
+        "empty_title_lang": {
+            "type": "string",
+            "default": "string_no_have",
+            "trait": "empty_title_lang"
+        }
+    },
+    "context": {
+        "pageTypes": [
+            "home",
+            "list",
+            "detail"
+        ],
+        "requires": []
+    },
+    "data": {
+        "source": "mac_manga",
+        "listKey": "list",
+        "argsFromProps": [
+            "num",
+            "type",
+            "by",
+            "order",
+            "paging",
+            "pageurl"
+        ]
+    }
+}

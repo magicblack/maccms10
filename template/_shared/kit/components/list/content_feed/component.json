@@ -1,0 +1,121 @@
+{
+    "id": "content_feed",
+    "label_key": "admin/themedesign/pb_block_content_feed",
+    "category": "list",
+    "kind": "content",
+    "styleMode": "own",
+    "peer_styles": [],
+    "assets": {
+        "css": "style.css",
+        "js": "script.js"
+    },
+    "props": {
+        "bind": {
+            "type": "enum",
+            "default": "vod",
+            "values": [
+                "vod",
+                "manga",
+                "art",
+                "topic",
+                "live",
+                "website",
+                "gbook",
+                "actor",
+                "role"
+            ],
+            "trait": "bind"
+        },
+        "title": {
+            "type": "string",
+            "default": "",
+            "trait": "title"
+        },
+        "render": {
+            "type": "enum",
+            "default": "grid",
+            "values": [
+                "grid",
+                "slider",
+                "filmstrip"
+            ],
+            "trait": "layout"
+        },
+        "num": {
+            "type": "number",
+            "default": 12,
+            "min": 1,
+            "max": 50,
+            "trait": "count"
+        },
+        "type": {
+            "type": "category",
+            "mid": 1,
+            "default": 0,
+            "trait": "category"
+        },
+        "by": {
+            "type": "enum",
+            "default": "time",
+            "values": [
+                "time",
+                "hits",
+                "hits_day",
+                "hits_week",
+                "hits_month",
+                "score"
+            ],
+            "trait": "sort"
+        },
+        "order": {
+            "type": "enum",
+            "default": "desc",
+            "values": [
+                "desc",
+                "asc"
+            ]
+        },
+        "paging": {
+            "type": "boolean",
+            "default": false,
+            "trait": "paging"
+        },
+        "pageurl": {
+            "type": "string",
+            "default": "vod/show",
+            "trait": "pageurl"
+        },
+        "relation": {
+            "type": "boolean",
+            "default": false,
+            "trait": "relation"
+        },
+        "refresh": {
+            "type": "boolean",
+            "default": false,
+            "trait": "refresh"
+        },
+        "card": {
+            "type": "enum",
+            "default": "poster-h",
+            "values": [
+                "poster-h",
+                "poster-v"
+            ],
+            "trait": "card"
+        },
+        "ratio": {
+            "type": "string",
+            "default": "default",
+            "trait": "cover_ratio"
+        }
+    },
+    "context": {
+        "pageTypes": [
+            "home",
+            "list",
+            "detail"
+        ],
+        "requires": []
+    }
+}

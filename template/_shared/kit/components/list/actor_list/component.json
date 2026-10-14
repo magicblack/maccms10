@@ -1,0 +1,80 @@
+{
+    "id": "actor_list",
+    "label_key": "admin/themedesign/pb_block_actor_list",
+    "category": "list",
+    "kind": "content",
+    "peer_styles": [],
+    "assets": {
+        "css": "style.css",
+        "js": "script.js"
+    },
+    "palette": false,
+    "props": {
+        "type": {
+            "type": "category",
+            "mid": 8,
+            "default": 0,
+            "trait": "category"
+        },
+        "num": {
+            "type": "number",
+            "default": 12,
+            "min": 1,
+            "max": 50,
+            "trait": "count"
+        },
+        "by": {
+            "type": "enum",
+            "default": "time",
+            "values": [
+                "time",
+                "hits",
+                "hits_day",
+                "hits_week",
+                "hits_month",
+                "score"
+            ],
+            "trait": "sort"
+        },
+        "order": {
+            "type": "enum",
+            "default": "desc",
+            "values": [
+                "desc",
+                "asc"
+            ]
+        },
+        "paging": {
+            "type": "boolean",
+            "default": false,
+            "trait": "paging"
+        },
+        "pageurl": {
+            "type": "string",
+            "default": "actor/show",
+            "trait": "pageurl"
+        },
+        "card": {
+            "type": "enum",
+            "default": "poster-h",
+            "values": [
+                "poster-h",
+                "poster-v"
+            ],
+            "trait": "card"
+        },
+        "ratio": {
+            "type": "string",
+            "default": "default",
+            "trait": "cover_ratio"
+        }
+    },
+    "context": {
+        "pageTypes": [
+            "home",
+            "list",
+            "detail"
+        ],
+        "requires": []
+    }
+}

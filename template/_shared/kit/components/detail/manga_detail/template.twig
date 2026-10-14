@@ -1,0 +1,166 @@
+{#
+  漫画详情（twigspike manga/detail：cinema hero + 章节 + 简介）
+  相关推荐请用 media_related_panel（bind: manga）
+#}
+{% import "page-builder-components/_shared/macros.twig" as pb %}
+{% set p = props|default({}) %}
+{% if p.card is not defined %}
+  {% set p = p|merge({card: 'poster-v', ratio: p.ratio|default('3-4')}) %}
+{% endif %}
+{% set _cover_cls = pb.pb_cover_classes(p) %}
+{% set _cover_style = pb.pb_cover_style(p) %}
+{% if obj.manga_id|default(0) %}
+{% set first = mac_url_manga_play(obj, 'first') %}
+{% set cover = mac_url_img(obj.manga_pic|default('')) %}
+{% set title = obj.manga_name|default('') %}
+{% set intro_raw = mac_plain_text(obj.manga_blurb|default('')) ?: mac_plain_text(obj.manga_content|default('')) %}
+{% set tag_src = mac_txt_merge(obj.manga_class|default(''), obj.manga_tag|default('')) %}
+{% set class_tags = tag_src ? tag_src|split(',') : [] %}
+{% set type_name = obj.type.type_name|default('')|trim %}
+{% set show_chapters = p.show_chapters is defined ? p.show_chapters : true %}
+{% set show_intro = p.show_intro is defined ? p.show_intro : true %}
+{% set hero_stats = [] %}
+{% if obj.manga_hits %}{% set hero_stats = hero_stats|merge([{key: 'hits', value: obj.manga_hits, label: '阅读', lang: 'string_stat_reads'}]) %}{% endif %}
+{% if obj.manga_hits_week %}{% set hero_stats = hero_stats|merge([{key: 'week', value: obj.manga_hits_week, label: '周榜', lang: 'string_stat_week_rank'}]) %}{% endif %}
+{% set hero_meta = [] %}
+{% if obj.manga_author %}{% set hero_meta = hero_meta|merge([obj.manga_author]) %}{% endif %}
+{# 备注以 {rm} 形式入列，渲染时走 chapter_remarks.twig（话数备注多语化） #}
+{% if obj.manga_remarks %}{% set hero_meta = hero_meta|merge([{rm: obj.manga_remarks}]) %}{% endif %}
+{% set detail_fav_id = mac_user_fav_id(obj.manga_id, 12) %}
+{% set detail_like_id = mac_user_like_id(obj.manga_id, 12) %}
+{% set detail_like_count = mac_content_like_count(obj.manga_id, 12) %}
+
+<div class="pb-manga-detail cinema-stage {{ _cover_cls }}" data-component="manga_detail" data-mac-manga-detail data-mac-manga-id="{{ obj.manga_id }}"{% if _cover_style %} style="{{ _cover_style }}"{% endif %}>
+  <header class="media-hero">
+    <div class="media-hero__bg" style="background-image:url('{{ cover }}')" aria-hidden="true"></div>
+    <div class="media-hero__shade" aria-hidden="true"></div>
+    <div class="media-hero__wrap">
+      <nav class="media-hero__crumb" aria-label="breadcrumb">
+        <a href="{{ maccms.path }}" data-lang="string_home">首页</a>
+        <span aria-hidden="true">›</span>
+        <a href="{{ mac_url('manga/index') }}"{% set _ml = mac_module_label(12) %}{% if _ml.lang %} data-lang="{{ _ml.lang }}"{% endif %}>{{ _ml.name }}</a>
+        <span aria-hidden="true">›</span>
+        {% if obj.type.type_name|default('') %}
+        <a href="{{ mac_url_type(obj.type) }}">{{ obj.type.type_name }}</a>
+        <span aria-hidden="true">›</span>
+        {% endif %}
+        <span class="media-hero__crumb-cur">{{ title }}</span>
+      </nav>
+
+      <div class="media-hero__inner">
+        <div class="media-hero__poster-box">
+          <a class="media-hero__poster{% if first %} is-playable{% endif %}"
+             {% if first %}href="{{ first }}" data-lang-aria-label="manga_read_now"{% else %}href="javascript:;" tabindex="-1"{% endif %}>
+            <img data-cover src="{{ cover }}" alt="{{ title }}" width="196" height="261" decoding="async" fetchpriority="high">
+            {% if first %}<span class="media-hero__poster-play media-hero__poster-play--read" aria-hidden="true"></span>{% endif %}
+          </a>
+        </div>
+
+        <div class="media-hero__body">
+          <div class="media-hero__title-row">
+            <h1 class="media-hero__title">{{ title }}</h1>
+            <div class="media-hero__tags">
+              {% if type_name %}
+              <a class="media-hero__tag media-hero__tag--type" href="{{ mac_url_type(obj.type) }}">{{ type_name }}</a>
+              {% endif %}
+              {% for tag in class_tags|slice(0, 4) %}
+                {% set t = tag|trim %}
+                {% if t and (not type_name or t != type_name) %}
+                <span class="media-hero__tag media-hero__tag--keyword">{{ t }}</span>
+                {% endif %}
+              {% endfor %}
+            </div>
+          </div>
+
+          {% if hero_stats|length > 0 %}
+          <ul class="media-hero__stats">
+            {% for stat in hero_stats %}
+            <li class="media-hero__stat media-hero__stat--{{ stat.key }}">
+              <span class="media-hero__stat-body"><em>{{ stat.value }}</em><span class="media-hero__stat-label"{% if stat.lang and mac_i18n_key(stat.label, stat.lang) %} data-lang="{{ stat.lang }}"{% endif %}>{{ stat.label }}</span></span>
+            </li>
+            {% endfor %}
+          </ul>
+          {% endif %}
+
+          {% if hero_meta|length > 0 or obj.manga_time|default(0) or obj.manga_time_add|default(0) %}
+          <p class="media-hero__meta">
+            {% if obj.manga_time|default(0) %}
+            <span><span data-lang="string_updated_prefix">更新</span> {{ obj.manga_time|date('Y-m-d') }}</span>
+            {% elseif obj.manga_time_add|default(0) %}
+            <span><span data-lang="string_updated_prefix">更新</span> {{ obj.manga_time_add|date('Y-m-d') }}</span>
+            {% endif %}
+            {% for span in hero_meta %}
+              {% if span is iterable %}<span>{% include "page-builder-components/_shared/chapter_remarks.twig" with {remarks: span.rm, kind: 'manga'} only %}</span>{% elseif span %}<span>{{ span }}</span>{% endif %}
+            {% endfor %}
+          </p>
+          {% endif %}
+
+          {% if intro_raw %}
+          <p class="media-hero__desc">{{ intro_raw|slice(0, 200) }}{% if intro_raw|length > 200 %}…{% endif %}</p>
+          {% endif %}
+
+          {% if first %}
+          <p class="media-hero__read-progress" data-mac-manga-read-progress hidden>
+            <span data-lang="string_recent_read">最近阅读</span>：
+            <span data-mac-manga-read-progress-text></span>
+          </p>
+          {% endif %}
+
+          <div class="media-hero__actions">
+            {% if first %}
+            <a class="media-hero__play" href="{{ first }}" data-mac-manga-read-btn>
+              {% include "page-builder-components/_shared/component_icon.twig" with { component: 'manga_detail', name: 'play', class: 'media-hero__play-ico', mode: 'img' } %}
+              <span data-lang="manga_read_now" data-mac-manga-read-btn-label>开始阅读</span>
+            </a>
+            {% endif %}
+            <div class="media-hero__follow mac_ulog{% if detail_fav_id %} is_fav{% endif %}"
+                 data-type="2" data-mid="12" data-id="{{ obj.manga_id }}"
+                 data-uid="{{ detail_fav_id ?: '' }}" role="button" tabindex="0">
+              {% if detail_fav_id %}<span data-lang="string_isfav">已收藏</span>
+              {% else %}<span data-lang="string_fav">收藏</span>{% endif %}
+            </div>
+            <div class="media-hero__follow media-hero__like mac_ulog{% if detail_like_id %} is_fav{% endif %}"
+                 data-type="6" data-mid="12" data-id="{{ obj.manga_id }}"
+                 data-uid="{{ detail_like_id ?: '' }}"
+                 data-lang-on="string_detail_up_done" data-lang-off="string_stat_likes"
+                 role="button" tabindex="0">
+              {% if detail_like_id %}<span data-lang="string_detail_up_done">已赞</span>
+              {% else %}<span data-lang="string_stat_likes">点赞</span>{% endif %}
+              <em class="mac_ulog_count">{{ detail_like_count }}</em>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  {% if show_chapters and obj.manga_page_list|default({})|length > 0 %}
+  <section class="media-panel media-panel--cinema pb-manga-detail__eps" id="media-eps">
+    <h2 class="media-panel__title" data-lang="string_manga_chapter">章节</h2>
+    <div class="eps eps--media">
+      {% for sid, group in obj.manga_page_list|default([]) %}
+      <div class="eps-g" data-mac-manga-eps-group data-sid="{{ sid }}">
+        {% if group.from_name|default(group.from) %}
+        <div class="pb-manga-detail__eps-from">{{ group.from_name|default(group.from) }}</div>
+        {% endif %}
+        <ul class="pb-manga-detail__eps-list">
+          {% for nid, ep in group.urls|default([]) %}
+          <li class="pb-manga-detail__eps-item" data-mac-manga-eps-item data-nid="{{ nid }}">
+            <a href="{{ mac_url_manga_play(obj, {sid: sid, nid: nid}) }}">{{ ep.name|default(nid) }}</a>
+          </li>
+          {% endfor %}
+        </ul>
+      </div>
+      {% endfor %}
+    </div>
+  </section>
+  {% endif %}
+
+  {% if show_intro and obj.manga_content|default('') %}
+  <section class="media-panel media-panel--cinema pb-manga-detail__intro" id="media-intro">
+    <h2 class="media-panel__title" data-lang="string_play_jj">简介</h2>
+    <div class="media-panel__body prose">{{ obj.manga_content|raw }}</div>
+  </section>
+  {% endif %}
+</div>
+{% endif %}

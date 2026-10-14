@@ -78,7 +78,12 @@
 .td-sec-pf input.td-sec-num { width:84px; height:32px; }
 .td-sec-pf input.td-sec-title { width:160px; height:32px; }
 .td-sec-pf select { height:32px; border:1px solid #e0e4e3; border-radius:4px; padding:0 8px; background:#fff; outline:none; max-width:170px; }
-.td-sec-pf select:focus { border-color:#40CC92; }
+.td-block-add select { max-width: 360px; }
+.td-block-json-toggle { font-size: 13px; color: #1f9d6e; }
+.td-block-item[data-depth="1"] .td-sec-row { padding-left: 28px; }
+.td-block-item[data-depth="2"] .td-sec-row { padding-left: 44px; }
+.td-block-item[data-depth="3"] .td-sec-row { padding-left: 60px; }
+.td-block-item[data-depth="4"] .td-sec-row { padding-left: 76px; }
 #addBlock { margin-top:10px; }
 .td-link-row { display:flex; gap:8px; margin-bottom:8px; align-items:center; }
 .td-link-row .layui-input { flex:1; min-width:0; }
@@ -101,23 +106,54 @@
 .td-field-label { font-size:13px; color:#555; font-weight:600; margin-bottom:8px; }
 
 /* theme picker (overview step) */
-.td-theme-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(220px,1fr)); gap:12px; margin-bottom:8px; }
-.td-theme-card { position:relative; display:flex; align-items:center; gap:12px; border:2px solid #e6e6e6; border-radius:10px; padding:14px 16px; cursor:pointer; background:#fff; transition:all .15s; }
+.td-theme-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(260px,1fr)); gap:12px; margin-bottom:8px; }
+.td-theme-card { position:relative; display:flex; align-items:flex-start; gap:14px; border:2px solid #e6e6e6; border-radius:12px; padding:16px 40px 16px 16px; cursor:pointer; background:#fff; transition:all .15s; min-height:88px; }
 .td-theme-card:hover { border-color:#40CC92; box-shadow:0 4px 14px rgba(64,204,146,.14); transform:translateY(-1px); }
-.td-theme-card.active { border-color:#40CC92; background:#f1fbf6; box-shadow:0 0 0 2px rgba(64,204,146,.18); }
-.td-theme-ico { font-size:26px; color:#40CC92; flex:0 0 auto; }
+.td-theme-card.active { border-color:#40CC92; background:linear-gradient(180deg,#f1fbf6 0%,#fff 100%); box-shadow:0 0 0 2px rgba(64,204,146,.18); }
+.td-theme-ico { font-size:22px; color:#1f9d6e; flex:0 0 auto; width:40px; height:40px; display:flex; align-items:center; justify-content:center; background:#e7f8ef; border-radius:10px; }
 .td-theme-meta { flex:1; min-width:0; }
-.td-theme-name { font-size:14px; color:#222; font-weight:600; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-.td-theme-dir { font-size:12px; color:#9aa; font-weight:400; margin-left:4px; }
-.td-theme-tags { margin-top:4px; display:flex; gap:6px; }
+.td-theme-name { font-size:14px; color:#222; font-weight:600; line-height:1.35; word-break:break-word; }
+.td-theme-dir { display:block; margin-top:3px; font-size:12px; color:#8a939e; font-weight:400; font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace; letter-spacing:-.02em; }
+.td-theme-tags { margin-top:8px; display:flex; flex-wrap:wrap; gap:6px; align-items:center; }
 .td-theme-tags:empty { display:none; }
-.td-tag { display:inline-block; padding:1px 8px; border-radius:10px; font-size:11px; line-height:18px; }
-.td-tag.green { background:#e7f8ef; color:#1f9d6e; }
-.td-tag.muted { background:#f0f1f3; color:#9098a3; }
-.td-theme-check { font-size:18px; color:#40CC92; opacity:0; flex:0 0 auto; transition:opacity .15s; }
+.td-tag { display:inline-flex; align-items:center; gap:4px; padding:3px 10px; border-radius:999px; font-size:11px; line-height:1.4; white-space:nowrap; }
+.td-tag.green { background:#e7f8ef; color:#1f9d6e; border:1px solid #c5ebd8; }
+.td-tag.muted { background:#f0f1f3; color:#9098a3; border:1px solid #e4e6ea; }
+.td-theme-check { position:absolute; top:14px; right:14px; font-size:18px; color:#40CC92; opacity:0; transition:opacity .15s; }
 .td-theme-card.active .td-theme-check { opacity:1; }
 
-/* refined footer-bar buttons */
+/* preset choice modal (layui layer) */
+.td-preset-layer .layui-layer-title { font-size:15px; font-weight:600; color:#28323a; border-bottom:1px solid #eef2f0; background:#fafcfb; }
+.td-preset-layer .layui-layer-content { padding:0; overflow:visible; }
+.td-preset-modal { padding:20px 22px 18px; }
+.td-preset-modal__lead { margin:0 0 14px; font-size:13px; color:#5a6270; line-height:1.65; }
+.td-preset-modal__preset { display:flex; align-items:center; gap:10px; flex-wrap:wrap; margin-bottom:14px; padding:10px 12px; border-radius:10px; background:#f6f9f8; border:1px solid #e3ebe7; }
+.td-preset-modal__preset-label { font-size:12px; color:#6a7a76; font-weight:600; }
+.td-preset-modal__preset code { font-size:13px; color:#1f9d6e; background:#e7f8ef; border:1px solid #c5ebd8; padding:3px 10px; border-radius:999px; font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace; }
+.td-preset-modal__check { display:flex; align-items:flex-start; gap:10px; margin:0 0 16px; padding:12px 14px; border-radius:10px; background:#fafdfb; border:1px dashed #d8e0df; cursor:pointer; font-size:13px; color:#444; line-height:1.5; }
+.td-preset-modal__check input { margin-top:3px; accent-color:#40CC92; width:15px; height:15px; flex:0 0 auto; }
+.td-preset-modal__actions { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:12px; }
+.td-preset-modal__actions--triple { grid-template-columns:1fr 1fr 1fr; }
+@media (max-width:720px) { .td-preset-modal__actions--triple { grid-template-columns:1fr; } }
+@media (max-width:520px) { .td-preset-modal__actions { grid-template-columns:1fr; } }
+.td-preset-modal__btn { display:flex; flex-direction:column; align-items:flex-start; gap:4px; width:100%; min-height:72px; padding:14px 16px; border-radius:12px; border:2px solid #e6e6e6; background:#fff; cursor:pointer; text-align:left; transition:all .15s; }
+.td-preset-modal__btn:hover { border-color:#40CC92; box-shadow:0 4px 14px rgba(64,204,146,.12); transform:translateY(-1px); }
+.td-preset-modal__btn b { font-size:14px; color:#28323a; font-weight:600; line-height:1.35; }
+.td-preset-modal__btn em { font-style:normal; font-size:12px; color:#9098a3; line-height:1.45; }
+.td-preset-modal__btn.is-primary { border-color:#40CC92; background:linear-gradient(180deg,#f1fbf6 0%,#fff 100%); }
+.td-preset-modal__btn.is-primary b { color:#1f9d6e; }
+.td-preset-modal__btn.is-secondary:hover { border-color:#ffb84d; box-shadow:0 4px 14px rgba(255,184,77,.14); }
+.td-preset-modal__btn.is-warn { border-color:#f0d0d0; background:linear-gradient(180deg,#fff8f8 0%,#fff 100%); }
+.td-preset-modal__btn.is-warn b { color:#c44; }
+.td-preset-modal__btn.is-warn:hover { border-color:#e07070; box-shadow:0 4px 14px rgba(224,112,112,.14); }
+.td-preset-modal__later { display:block; width:100%; margin:0; padding:8px 0 0; border:none; background:none; color:#8a939e; font-size:13px; text-align:center; cursor:pointer; transition:color .15s; }
+.td-preset-modal__later:hover { color:#40CC92; text-decoration:underline; }
+.td-create-theme-modal .td-create-field { margin-bottom:14px; }
+.td-create-theme-modal .td-create-field label { display:block; font-size:13px; font-weight:600; color:#444; margin-bottom:6px; }
+.td-create-theme-modal .td-create-field .layui-input { height:38px; border-radius:8px; }
+.td-create-theme-modal .td-create-help { margin:-6px 0 14px; font-size:12px; color:#9098a3; line-height:1.5; }
+
+/* injected into top window when preset modal opens in parent frame */
 .td-footer-bar .td-next {
   background:linear-gradient(135deg,#54d6a1,#40CC92); border:none; color:#fff;
   height:40px; line-height:40px; padding:0 24px; border-radius:8px;
@@ -254,7 +290,66 @@
 .td-cov-req { flex:1; min-width:0; }
 .td-cov-req b { display:block; color:#333; }
 .td-cov-req span { color:#999; font-size:12px; }
-.td-ai-actions { margin-top:12px; display:flex; gap:8px; }
+.td-preset-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(160px,1fr)); gap:10px; margin-top:8px; }
+.td-preset-card { border:2px solid #e6e6e6; border-radius:10px; padding:12px; cursor:pointer; background:#fff; transition:all .15s; }
+.td-preset-card:hover { border-color:#40CC92; }
+.td-preset-card.active { border-color:#40CC92; background:#f1fbf6; box-shadow:0 0 0 2px rgba(64,204,146,.18); }
+.td-preset-card b { display:block; font-size:14px; color:#222; }
+.td-preset-card em { display:block; font-size:12px; color:#999; font-style:normal; margin-top:4px; }
+.td-preset-swatch { height:36px; border-radius:6px; margin-bottom:8px; }
+.td-preset-swatch.is-clean { background:linear-gradient(90deg,#f4f6f9 70%,#f4f6f9 70%); }
+.td-preset-swatch.is-nav { background:linear-gradient(90deg,#dbe7f1 22%,#eef1f6 22%); }
+.td-preset-swatch.is-np2 { background:linear-gradient(180deg,#121214 0%,#1a1c1d 55%,#f5a623 100%); }
+.td-callout { margin:8px 0 12px; padding:10px 12px; border-radius:8px; background:#f6f8fa; border:1px solid #e8ecf0; color:#5a6270; font-size:12px; line-height:1.65; }
+.td-callout-warn { background:#fff7e6; border-color:#ffd591; color:#ad6800; }
+.td-preset-actions { margin-top:14px; }
+.td-preset-actions .layui-btn { margin-right:8px; margin-bottom:6px; min-height:44px; }
+.td-preset-section.is-disabled { opacity:.72; }
+.td-draft-banner { margin:12px 0; padding:10px 12px; border-radius:8px; background:#fff8e6; border:1px solid #f0d78c; color:#8a6d1d; font-size:13px; line-height:1.5; }
+.td-draft-banner code { background:rgba(0,0,0,.05); padding:1px 4px; border-radius:3px; }
+.td-wizard-steps { display:flex; gap:8px; margin:0 0 14px; flex-wrap:wrap; }
+.td-wizard-steps span { font-size:12px; padding:4px 10px; border-radius:999px; background:#eee; color:#666; }
+.td-wizard-steps span.on { background:#40CC92; color:#fff; }
+.td-wizard-pane { display:none; }
+.td-wizard-pane.on { display:block; }
+.td-status-row { font-size:12px; color:#888; margin-top:8px; }
+
+.td-fold { margin-top:18px; border:1px solid #e8ecf0; border-radius:8px; padding:12px; background:#fafbfc; }
+.td-fold > summary { cursor:pointer; padding:12px 4px; font-size:13px; color:#5a6270; font-weight:600; }
+.td-fold__title { margin:0 0 10px; font-size:13px; color:#5a6270; font-weight:600; }
+.td-link-btn { background:none; border:none; color:#5a8f7a; cursor:pointer; font-size:12px; padding:4px 0; text-decoration:underline; }
+.td-ai-card summary { cursor:pointer; font-size:16px; color:#333; font-weight:600; padding-bottom:8px; }
+</style>
+<style id="td-preset-modal-style-src" type="text/css">
+.td-preset-layer .layui-layer-title { font-size:15px; font-weight:600; color:#28323a; border-bottom:1px solid #eef2f0; background:#fafcfb; }
+.td-preset-layer .layui-layer-content { padding:0; overflow:visible; }
+.td-preset-modal { padding:20px 22px 18px; }
+.td-preset-modal__lead { margin:0 0 14px; font-size:13px; color:#5a6270; line-height:1.65; }
+.td-preset-modal__preset { display:flex; align-items:center; gap:10px; flex-wrap:wrap; margin-bottom:14px; padding:10px 12px; border-radius:10px; background:#f6f9f8; border:1px solid #e3ebe7; }
+.td-preset-modal__preset-label { font-size:12px; color:#6a7a76; font-weight:600; }
+.td-preset-modal__preset code { font-size:13px; color:#1f9d6e; background:#e7f8ef; border:1px solid #c5ebd8; padding:3px 10px; border-radius:999px; font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace; }
+.td-preset-modal__check { display:flex; align-items:flex-start; gap:10px; margin:0 0 16px; padding:12px 14px; border-radius:10px; background:#fafdfb; border:1px dashed #d8e0df; cursor:pointer; font-size:13px; color:#444; line-height:1.5; }
+.td-preset-modal__check input { margin-top:3px; accent-color:#40CC92; width:15px; height:15px; flex:0 0 auto; }
+.td-preset-modal__actions { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:12px; }
+.td-preset-modal__actions--triple { grid-template-columns:1fr 1fr 1fr; }
+@media (max-width:720px) { .td-preset-modal__actions--triple { grid-template-columns:1fr; } }
+@media (max-width:520px) { .td-preset-modal__actions { grid-template-columns:1fr; } }
+.td-preset-modal__btn { display:flex; flex-direction:column; align-items:flex-start; gap:4px; width:100%; min-height:72px; padding:14px 16px; border-radius:12px; border:2px solid #e6e6e6; background:#fff; cursor:pointer; text-align:left; transition:all .15s; font:inherit; }
+.td-preset-modal__btn:hover { border-color:#40CC92; box-shadow:0 4px 14px rgba(64,204,146,.12); transform:translateY(-1px); }
+.td-preset-modal__btn b { font-size:14px; color:#28323a; font-weight:600; line-height:1.35; }
+.td-preset-modal__btn em { font-style:normal; font-size:12px; color:#9098a3; line-height:1.45; }
+.td-preset-modal__btn.is-primary { border-color:#40CC92; background:linear-gradient(180deg,#f1fbf6 0%,#fff 100%); }
+.td-preset-modal__btn.is-primary b { color:#1f9d6e; }
+.td-preset-modal__btn.is-secondary:hover { border-color:#ffb84d; box-shadow:0 4px 14px rgba(255,184,77,.14); }
+.td-preset-modal__btn.is-warn { border-color:#f0d0d0; background:linear-gradient(180deg,#fff8f8 0%,#fff 100%); }
+.td-preset-modal__btn.is-warn b { color:#c44; }
+.td-preset-modal__btn.is-warn:hover { border-color:#e07070; box-shadow:0 4px 14px rgba(224,112,112,.14); }
+.td-preset-modal__later { display:block; width:100%; margin:0; padding:8px 0 0; border:none; background:none; color:#8a939e; font-size:13px; text-align:center; cursor:pointer; transition:color .15s; }
+.td-preset-modal__later:hover { color:#40CC92; text-decoration:underline; }
+.td-create-theme-modal .td-create-field { margin-bottom:14px; }
+.td-create-theme-modal .td-create-field label { display:block; font-size:13px; font-weight:600; color:#444; margin-bottom:6px; }
+.td-create-theme-modal .td-create-field .layui-input { height:38px; border-radius:8px; }
+.td-create-theme-modal .td-create-help { margin:-6px 0 14px; font-size:12px; color:#9098a3; line-height:1.5; }
 </style>
 
 <div class="page-container p10" id="td-app">
@@ -269,61 +364,21 @@
         <!-- left step nav -->
         <div class="td-nav" id="tdNav">
             <div class="td-nav-item active" data-step="0"><span class="td-no">1</span> {:lang('admin/themedesign/step_overview')}</div>
-            <div class="td-nav-item" data-step="1"><span class="td-no">2</span> {:lang('admin/themedesign/step_appearance')}</div>
-            <div class="td-nav-item" data-step="2"><span class="td-no">3</span> {:lang('admin/themedesign/step_navbar')}</div>
-            <div class="td-nav-item" data-step="3"><span class="td-no">4</span> {:lang('admin/themedesign/step_footer')}</div>
-            <div class="td-nav-item" data-step="4"><span class="td-no">5</span> {:lang('admin/themedesign/step_homepage')}</div>
-            <div class="td-nav-item" data-step="5"><span class="td-no">6</span> {:lang('admin/themedesign/step_publish')}</div>
+            <div class="td-nav-item" data-step="1"><span class="td-no">2</span> {:lang('admin/themedesign/step_site_chrome')}</div>
+            <div class="td-nav-item" data-step="2"><span class="td-no">3</span> {:lang('admin/themedesign/step_appearance')}</div>
+            <div class="td-nav-item" data-step="3"><span class="td-no">4</span> {:lang('admin/themedesign/step_homepage')}</div>
+            <div class="td-nav-item" data-step="4"><span class="td-no">5</span> {:lang('admin/themedesign/step_publish')}</div>
         </div>
 
         <!-- right content -->
         <div class="td-main td-content">
             <form class="layui-form" lay-filter="tdForm">
 
-            <!-- STEP 1: Overview -->
+            <!-- STEP 1: Overview — AI generate + layout preset -->
             <div class="td-step-panel active" data-step="0">
-                <div class="td-card">
-                    <h3>{:lang('admin/themedesign/overview')}</h3>
-
-                    <div class="td-field">
-                        <div class="td-field-label">{:lang('admin/themedesign/select_theme')}</div>
-                        <div class="td-theme-grid">
-                            {volist name="themes" id="th"}
-                            <div class="td-theme-card{if condition="$th.selected"} active{/if}" data-theme="{$th.dir}">
-                                <i class="layui-icon td-theme-ico">&#xe620;</i>
-                                <div class="td-theme-meta">
-                                    <div class="td-theme-name">{$th.label}<span class="td-theme-dir">{$th.dir}/</span></div>
-                                    <div class="td-theme-tags">{if condition="$th.active"}<span class="td-tag green">{:lang('admin/themedesign/theme_active')}</span>{/if}{empty name="th.designable"}<span class="td-tag muted">{:lang('admin/themedesign/theme_basic')}</span>{/empty}</div>
-                                </div>
-                                <i class="layui-icon td-theme-check">&#xe605;</i>
-                            </div>
-                            {/volist}
-                        </div>
-                        <div class="td-tip">{:lang('admin/themedesign/theme_select_tip')}</div>
-                    </div>
-
-                    <div class="td-field">
-                        <div class="td-field-label">{:lang('admin/themedesign/pub_status')}</div>
-                        {if condition="$has_published"}
-                        <span class="td-badge-pub yes">{:lang('admin/themedesign/published')}</span>
-                        {else /}
-                        <span class="td-badge-pub no">{:lang('admin/themedesign/no_published')}</span>
-                        {/if}
-                    </div>
-                    <blockquote class="layui-elem-quote td-tip" style="margin-top:14px;">
-                        {:lang('admin/themedesign/flow_title')}<br>
-                        1. <b>{:lang('admin/themedesign/step_appearance')}</b> — {:lang('admin/themedesign/flow_appearance')}<br>
-                        2. <b>{:lang('admin/themedesign/step_navbar')}</b> — {:lang('admin/themedesign/flow_navbar')}<br>
-                        3. <b>{:lang('admin/themedesign/step_footer')}</b> — {:lang('admin/themedesign/flow_footer')}<br>
-                        4. <b>{:lang('admin/themedesign/step_homepage')}</b> — {:lang('admin/themedesign/flow_homepage')}<br>
-                        5. <b>{:lang('admin/themedesign/step_publish')}</b> — {:lang('admin/themedesign/flow_publish')}<br>
-                        {:lang('admin/themedesign/flow_note')}
-                    </blockquote>
-                </div>
-
                 <div class="td-card td-ai-card">
-                    <h3>{:lang('admin/themedesign/ai_generate')}</h3>
-                    <div class="td-tip">{:lang('admin/themedesign/ai_generate_tip')}</div>
+                    <h3>{:lang('admin/themedesign/ai_help_title')}</h3>
+                    <div class="td-tip">{:lang('admin/themedesign/ai_help_tip')}</div>
 
                     <div class="td-ai-modes" id="tdAiModes">
                         <button type="button" class="td-ai-mode is-active" data-mode="text">{:lang('admin/themedesign/ai_mode_text')}</button>
@@ -351,15 +406,16 @@
 
                     <div class="td-ai-names">
                         <div class="td-ai-field">
-                            <label>{:lang('admin/themedesign/new_name')}</label>
+                            <label for="tdAiName">{:lang('admin/themedesign/new_name')}</label>
                             <input type="text" id="tdAiName" class="layui-input" placeholder="{:lang('admin/themedesign/new_name_ph')}">
                         </div>
                         <div class="td-ai-field">
-                            <label>{:lang('admin/themedesign/new_dir')}</label>
+                            <label for="tdAiDir">{:lang('admin/themedesign/new_dir')}</label>
                             <input type="text" id="tdAiDir" class="layui-input" placeholder="{:lang('admin/themedesign/new_dir_ph')}">
                         </div>
                     </div>
-                    <div class="td-tip" style="margin-top:4px;">{:lang('admin/themedesign/new_dir_help')}</div>
+                    <div class="td-tip" style="margin-top:6px;">{:lang('admin/themedesign/new_dir_help')}</div>
+
                     <div class="td-ai-toolbar">
                         <label class="layui-btn layui-btn-sm layui-btn-primary td-ai-filebtn td-ai-mdfile">
                             <i class="layui-icon">&#xe67c;</i> {:lang('admin/themedesign/ai_upload_file')}
@@ -374,14 +430,207 @@
                     <div id="tdAiResult" class="td-ai-result" style="display:none;"></div>
                 </div>
 
+                <div class="td-card">
+                    <h3>{:lang('admin/themedesign/preset_layout_title')}</h3>
+                    <div class="td-tip">{:lang('admin/themedesign/overview_lead')}</div>
+                    <div class="td-preset-grid" id="overviewPresetGrid">
+                        {volist name="pb_presets" id="pp"}
+                        <div class="td-preset-card{if condition='$pp.selected'} active{/if}" data-preset="{$pp.id}">
+                            <div class="td-preset-swatch is-{$pp.swatch}"></div>
+                            <b>{$pp.label}</b>
+                            {notempty name="pp.desc"}<em>{$pp.desc}</em>{/notempty}
+                        </div>
+                        {/volist}
+                    </div>
+                    <input type="hidden" id="overviewPreset" value="{$cur_pb_preset}">
+                    <div class="td-tip">{:lang('admin/themedesign/preset_select_tip')}</div>
+                    {if condition="$preset_mismatch"}
+                    <div class="td-draft-banner" id="tdPresetMismatchBanner">{:lang('admin/themedesign/preset_mismatch_banner', [$draft_pb_preset, $published_pb_preset])}</div>
+                    {/if}
+
+                    <div class="td-fold">
+                        <h4 class="td-fold__title">{:lang('admin/themedesign/manage_existing_themes')}</h4>
+                        <div class="td-tip">{:lang('admin/themedesign/theme_select_tip')}</div>
+                        <div class="td-theme-grid">
+                            {volist name="themes" id="th"}
+                            <div class="td-theme-card{if condition="$th.selected"} active{/if}" data-theme="{$th.dir}">
+                                <i class="layui-icon td-theme-ico">&#xe620;</i>
+                                <div class="td-theme-meta">
+                                    <div class="td-theme-name">{$th.label}</div>
+                                    <div class="td-theme-dir">{$th.dir}/</div>
+                                    <div class="td-theme-tags">{if condition="$th.active"}<span class="td-tag green">{:lang('admin/themedesign/theme_active')}</span>{/if}{empty name="th.designable"}<span class="td-tag muted">{:lang('admin/themedesign/theme_basic')}</span>{/empty}</div>
+                                </div>
+                                <i class="layui-icon td-theme-check">&#xe605;</i>
+                            </div>
+                            {/volist}
+                        </div>
+                        {if condition="!$theme_is_site_active && $pb_theme_enabled"}
+                        <div class="td-callout td-callout-warn">{:lang('admin/themedesign/theme_not_site_active', [$cur_theme, $site_template_dir])}</div>
+                        {/if}
+                    </div>
+                </div>
+
                 <div class="td-footer-bar">
                     <span></span>
                     <button type="button" class="layui-btn td-next" data-go="1">{:lang('admin/themedesign/next')} <i class="layui-icon">&#xe65b;</i></button>
                 </div>
             </div>
 
-            <!-- STEP 2: Appearance -->
+            <!-- STEP 2: Site chrome (global top bar + footer) -->
             <div class="td-step-panel" data-step="1">
+                <div class="td-card">
+                    <h3>{:lang('admin/themedesign/step_site_chrome')}</h3>
+                    <div class="td-tip">{:lang('admin/themedesign/site_chrome_tip')}</div>
+                </div>
+
+                <div class="td-card">
+                    <h3>{:lang('admin/themedesign/header_chrome_title')}</h3>
+                    <div class="td-tip">{:lang('admin/themedesign/header_chrome_tip')}</div>
+                    <div class="layui-form" id="tdHeaderChromeForm">
+                        <input type="radio" name="td_header_chrome" value="site_nav" title="{:lang('admin/themedesign/header_chrome_site_nav')}" lay-filter="tdHeaderChrome">
+                        <input type="radio" name="td_header_chrome" value="app_top_chrome" title="{:lang('admin/themedesign/header_chrome_np2')}" lay-filter="tdHeaderChrome">
+                    </div>
+                </div>
+
+                <div class="td-card">
+                    <h3>{:lang('admin/themedesign/logo')}</h3>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:lang('admin/themedesign/logo')}</label>
+                        <div class="layui-input-block">
+                            <div class="td-img-uploader">
+                                <img class="td-img-preview" id="logoPreview" alt="{:lang('admin/themedesign/logo')}" style="display:none">
+                                <div class="td-img-ctrls">
+                                    <div class="td-img-ctrls-row">
+                                        <button type="button" class="layui-btn layui-btn-sm" id="logoUpload"><i class="layui-icon">&#xe67c;</i> {:lang('admin/themedesign/upload')}</button>
+                                        <button type="button" class="layui-btn layui-btn-sm layui-btn-primary" id="logoClear">{:lang('admin/themedesign/clear')}</button>
+                                        <input type="text" class="layui-input" id="logoPath" placeholder="{:lang('admin/themedesign/image_path_ph')}" style="width:280px;">
+                                    </div>
+                                    <div class="td-img-airow">
+                                        <input type="text" class="layui-input td-img-aimsg" id="logoAiMsg" placeholder="{:lang('admin/themedesign/img_ai_msg_ph')}">
+                                        <button type="button" class="layui-btn layui-btn-sm td-img-aigen" id="logoAiGen"><i class="layui-icon">&#xe63d;</i> {:lang('admin/themedesign/img_ai_gen')}</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="td-card">
+                    <h3>{:lang('admin/themedesign/navbar_cats')}</h3>
+                    <div class="td-tip">{:lang('admin/themedesign/navbar_tip')}</div>
+                    <div class="td-tree-tools">
+                        <a href="javascript:;" class="td-tree-act" id="navCheckAll">{:lang('admin/themedesign/check_all')}</a>
+                        <a href="javascript:;" class="td-tree-act" id="navCheckTops">{:lang('admin/themedesign/check_tops')}</a>
+                        <a href="javascript:;" class="td-tree-act" id="navCheckNone">{:lang('admin/themedesign/check_none')}</a>
+                    </div>
+                    <div class="td-catpick" id="navPick">
+                        {volist name="type_tree_full" id="p"}
+                        <div class="td-pick-group">
+                            <input type="checkbox" lay-skin="primary" lay-filter="navType" name="td_nav_type" value="{$p.id}" data-pid="0" title="{$p.name}">
+                            {notempty name="p.children"}
+                            <div class="td-pick-children">
+                                {volist name="p.children" id="c"}
+                                <input type="checkbox" lay-skin="primary" lay-filter="navType" name="td_nav_type" value="{$c.id}" data-pid="{$p.id}" title="{$c.name}">
+                                {/volist}
+                            </div>
+                            {/notempty}
+                        </div>
+                        {/volist}
+                    </div>
+                    {empty name="type_tree_full"}
+                    <div class="td-tip" style="color:#d9534f;">{:lang('admin/themedesign/navbar_empty')}</div>
+                    {/empty}
+                    <div class="td-order-wrap">
+                        <div class="td-order-label">{:lang('admin/themedesign/selected_order')}</div>
+                        <div class="td-order" id="navOrder"></div>
+                    </div>
+                </div>
+
+                <div class="td-card">
+                    <h3>{:lang('admin/themedesign/footer_cats')}</h3>
+                    <div class="td-tip">{:lang('admin/themedesign/footer_cats_tip')}</div>
+                    <div class="td-tree-tools">
+                        <a href="javascript:;" class="td-tree-act" id="ftCheckAll">{:lang('admin/themedesign/check_all')}</a>
+                        <a href="javascript:;" class="td-tree-act" id="ftCheckTops">{:lang('admin/themedesign/check_tops')}</a>
+                        <a href="javascript:;" class="td-tree-act" id="ftCheckNone">{:lang('admin/themedesign/check_none')}</a>
+                    </div>
+                    <div class="td-catpick" id="footerPick">
+                        {volist name="type_tree_full" id="p"}
+                        <div class="td-pick-group">
+                            <input type="checkbox" lay-skin="primary" lay-filter="ftType" name="td_ft_type" value="{$p.id}" data-pid="0" title="{$p.name}">
+                            {notempty name="p.children"}
+                            <div class="td-pick-children">
+                                {volist name="p.children" id="c"}
+                                <input type="checkbox" lay-skin="primary" lay-filter="ftType" name="td_ft_type" value="{$c.id}" data-pid="{$p.id}" title="{$c.name}">
+                                {/volist}
+                            </div>
+                            {/notempty}
+                        </div>
+                        {/volist}
+                    </div>
+                    <div class="td-order-wrap">
+                        <div class="td-order-label">{:lang('admin/themedesign/selected_order')}</div>
+                        <div class="td-order" id="footerOrder"></div>
+                    </div>
+                    <h3 style="margin-top:16px;">{:lang('admin/themedesign/footer_links')}</h3>
+                    <div class="td-tip">{:lang('admin/themedesign/footer_tip')}</div>
+                    <div id="footerLinks"></div>
+                    <button type="button" class="layui-btn layui-btn-sm layui-btn-primary" id="addFooterLink"><i class="layui-icon">&#xe654;</i> {:lang('admin/themedesign/add_link')}</button>
+                </div>
+
+                <div class="td-card">
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:lang('admin/themedesign/footer_copyright')}</label>
+                        <div class="layui-input-inline" style="width:420px;">
+                            <input type="text" class="layui-input" id="footerCopyright" placeholder="{$footer_copyright_ph}">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:lang('admin/themedesign/default_avatar')}</label>
+                        <div class="layui-input-block">
+                            <div class="td-img-uploader">
+                                <img class="td-img-preview avatar" id="avatarPreview" alt="{:lang('admin/themedesign/default_avatar')}" style="display:none">
+                                <div class="td-img-ctrls">
+                                    <div class="td-img-ctrls-row">
+                                        <button type="button" class="layui-btn layui-btn-sm" id="avatarUpload"><i class="layui-icon">&#xe67c;</i> {:lang('admin/themedesign/upload')}</button>
+                                        <button type="button" class="layui-btn layui-btn-sm layui-btn-primary" id="avatarClear">{:lang('admin/themedesign/clear')}</button>
+                                        <input type="text" class="layui-input" id="avatarPath" placeholder="{:lang('admin/themedesign/image_path_ph')}" style="width:280px;">
+                                    </div>
+                                    <div class="td-img-airow">
+                                        <input type="text" class="layui-input td-img-aimsg" id="avatarAiMsg" placeholder="{:lang('admin/themedesign/img_ai_msg_ph')}">
+                                        <button type="button" class="layui-btn layui-btn-sm td-img-aigen" id="avatarAiGen"><i class="layui-icon">&#xe63d;</i> {:lang('admin/themedesign/img_ai_gen')}</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="td-card td-livecard">
+                    <h3>{:lang('admin/themedesign/live_preview')}</h3>
+                    <div class="td-tip">{:lang('admin/themedesign/preview_save_hint')}</div>
+                    <div class="td-live-toolbar">
+                        <button type="button" class="layui-btn layui-btn-sm td-live-refresh" data-step="site_chrome"><i class="layui-icon">&#xe669;</i> {:lang('admin/themedesign/refresh_preview')}</button>
+                        <a href="javascript:;" class="layui-btn layui-btn-sm layui-btn-primary td-live-open" target="_blank">{:lang('admin/themedesign/open_new_window')}</a>
+                        <span class="td-view-toggle">
+                            <button type="button" class="td-view-btn active" data-view="desktop"><svg class="td-view-ico" width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><rect x="1.5" y="2.5" width="13" height="9" rx="1"/><path d="M6 14h4M8 11.5V14"/></svg> {:lang('admin/themedesign/view_desktop')}</button>
+                            <button type="button" class="td-view-btn" data-view="mobile"><svg class="td-view-ico" width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><rect x="4.5" y="1.5" width="7" height="13" rx="1.5"/><path d="M7 12.7h2"/></svg> {:lang('admin/themedesign/view_mobile')}</button>
+                        </span>
+                    </div>
+                    <iframe class="td-live-frame" src="about:blank"></iframe>
+                </div>
+
+                <div class="td-footer-bar">
+                    <button type="button" class="layui-btn layui-btn-primary td-prev" data-go="0"><i class="layui-icon">&#xe65c;</i> {:lang('admin/themedesign/prev')}</button>
+                    <span>
+                        <button type="button" class="layui-btn layui-btn-normal td-save" data-step="site_chrome">{:lang('admin/themedesign/save')}</button>
+                        <button type="button" class="layui-btn td-next" data-go="2">{:lang('admin/themedesign/next')} <i class="layui-icon">&#xe65b;</i></button>
+                    </span>
+                </div>
+            </div>
+
+            <!-- STEP 3: Appearance (colors & typography) -->
+            <div class="td-step-panel" data-step="2">
                 <div class="td-card">
                     <h3>{:lang('admin/themedesign/color_scheme')}</h3>
                     <div class="td-tip">{:lang('admin/themedesign/color_scheme_tip')}</div>
@@ -442,54 +691,6 @@
                     </div>
                 </div>
 
-                <div class="td-card">
-                    <h3>{:lang('admin/themedesign/assets')}</h3>
-                    <div class="layui-form-item">
-                        <label class="layui-form-label">{:lang('admin/themedesign/logo')}</label>
-                        <div class="layui-input-block">
-                            <div class="td-img-uploader">
-                                <img class="td-img-preview" id="logoPreview" alt="{:lang('admin/themedesign/logo')}" style="display:none">
-                                <div class="td-img-ctrls">
-                                    <div class="td-img-ctrls-row">
-                                        <button type="button" class="layui-btn layui-btn-sm" id="logoUpload"><i class="layui-icon">&#xe67c;</i> {:lang('admin/themedesign/upload')}</button>
-                                        <button type="button" class="layui-btn layui-btn-sm layui-btn-primary" id="logoClear">{:lang('admin/themedesign/clear')}</button>
-                                        <input type="text" class="layui-input" id="logoPath" placeholder="{:lang('admin/themedesign/image_path_ph')}" style="width:280px;">
-                                    </div>
-                                    <div class="td-img-airow">
-                                        <input type="text" class="layui-input td-img-aimsg" id="logoAiMsg" placeholder="{:lang('admin/themedesign/img_ai_msg_ph')}">
-                                        <button type="button" class="layui-btn layui-btn-sm td-img-aigen" id="logoAiGen"><i class="layui-icon">&#xe63d;</i> {:lang('admin/themedesign/img_ai_gen')}</button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="layui-form-item">
-                        <label class="layui-form-label">{:lang('admin/themedesign/footer_copyright')}</label>
-                        <div class="layui-input-inline" style="width:420px;">
-                            <input type="text" class="layui-input" id="footerCopyright" placeholder="{$footer_copyright_ph}">
-                        </div>
-                    </div>
-                    <div class="layui-form-item">
-                        <label class="layui-form-label">{:lang('admin/themedesign/default_avatar')}</label>
-                        <div class="layui-input-block">
-                            <div class="td-img-uploader">
-                                <img class="td-img-preview avatar" id="avatarPreview" alt="{:lang('admin/themedesign/default_avatar')}" style="display:none">
-                                <div class="td-img-ctrls">
-                                    <div class="td-img-ctrls-row">
-                                        <button type="button" class="layui-btn layui-btn-sm" id="avatarUpload"><i class="layui-icon">&#xe67c;</i> {:lang('admin/themedesign/upload')}</button>
-                                        <button type="button" class="layui-btn layui-btn-sm layui-btn-primary" id="avatarClear">{:lang('admin/themedesign/clear')}</button>
-                                        <input type="text" class="layui-input" id="avatarPath" placeholder="{:lang('admin/themedesign/image_path_ph')}" style="width:280px;">
-                                    </div>
-                                    <div class="td-img-airow">
-                                        <input type="text" class="layui-input td-img-aimsg" id="avatarAiMsg" placeholder="{:lang('admin/themedesign/img_ai_msg_ph')}">
-                                        <button type="button" class="layui-btn layui-btn-sm td-img-aigen" id="avatarAiGen"><i class="layui-icon">&#xe63d;</i> {:lang('admin/themedesign/img_ai_gen')}</button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
                 <div class="td-card td-livecard">
                     <h3>{:lang('admin/themedesign/live_preview')}</h3>
                     <div class="td-tip">{:lang('admin/themedesign/preview_save_hint')}</div>
@@ -505,132 +706,30 @@
                 </div>
 
                 <div class="td-footer-bar">
-                    <button type="button" class="layui-btn layui-btn-primary td-prev" data-go="0"><i class="layui-icon">&#xe65c;</i> {:lang('admin/themedesign/prev')}</button>
-                    <span>
-                        <button type="button" class="layui-btn layui-btn-normal td-save" data-step="attributes">{:lang('admin/themedesign/save')}</button>
-                        <button type="button" class="layui-btn td-next" data-go="2">{:lang('admin/themedesign/next')} <i class="layui-icon">&#xe65b;</i></button>
-                    </span>
-                </div>
-            </div>
-
-            <!-- STEP 3: Navbar -->
-            <div class="td-step-panel" data-step="2">
-                <div class="td-card">
-                    <h3>{:lang('admin/themedesign/navbar_cats')}</h3>
-                    <div class="td-tip">{:lang('admin/themedesign/navbar_tip')}</div>
-                    <div class="td-tree-tools">
-                        <a href="javascript:;" class="td-tree-act" id="navCheckAll">{:lang('admin/themedesign/check_all')}</a>
-                        <a href="javascript:;" class="td-tree-act" id="navCheckTops">{:lang('admin/themedesign/check_tops')}</a>
-                        <a href="javascript:;" class="td-tree-act" id="navCheckNone">{:lang('admin/themedesign/check_none')}</a>
-                    </div>
-                    <div class="td-catpick" id="navPick">
-                        {volist name="type_tree_full" id="p"}
-                        <div class="td-pick-group">
-                            <input type="checkbox" lay-skin="primary" lay-filter="navType" name="td_nav_type" value="{$p.id}" data-pid="0" title="{$p.name}">
-                            {notempty name="p.children"}
-                            <div class="td-pick-children">
-                                {volist name="p.children" id="c"}
-                                <input type="checkbox" lay-skin="primary" lay-filter="navType" name="td_nav_type" value="{$c.id}" data-pid="{$p.id}" title="{$c.name}">
-                                {/volist}
-                            </div>
-                            {/notempty}
-                        </div>
-                        {/volist}
-                    </div>
-                    {empty name="type_tree_full"}
-                    <div class="td-tip" style="color:#d9534f;">{:lang('admin/themedesign/navbar_empty')}</div>
-                    {/empty}
-                    <div class="td-order-wrap">
-                        <div class="td-order-label">{:lang('admin/themedesign/selected_order')}</div>
-                        <div class="td-order" id="navOrder"></div>
-                    </div>
-                </div>
-                <div class="td-card td-livecard">
-                    <h3>{:lang('admin/themedesign/live_preview')}</h3>
-                    <div class="td-tip">{:lang('admin/themedesign/preview_save_hint')}</div>
-                    <div class="td-live-toolbar">
-                        <button type="button" class="layui-btn layui-btn-sm td-live-refresh" data-step="navbar"><i class="layui-icon">&#xe669;</i> {:lang('admin/themedesign/refresh_preview')}</button>
-                        <a href="javascript:;" class="layui-btn layui-btn-sm layui-btn-primary td-live-open" target="_blank">{:lang('admin/themedesign/open_new_window')}</a>
-                        <span class="td-view-toggle">
-                            <button type="button" class="td-view-btn active" data-view="desktop"><svg class="td-view-ico" width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><rect x="1.5" y="2.5" width="13" height="9" rx="1"/><path d="M6 14h4M8 11.5V14"/></svg> {:lang('admin/themedesign/view_desktop')}</button>
-                            <button type="button" class="td-view-btn" data-view="mobile"><svg class="td-view-ico" width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><rect x="4.5" y="1.5" width="7" height="13" rx="1.5"/><path d="M7 12.7h2"/></svg> {:lang('admin/themedesign/view_mobile')}</button>
-                        </span>
-                    </div>
-                    <iframe class="td-live-frame" src="about:blank"></iframe>
-                </div>
-                <div class="td-footer-bar">
                     <button type="button" class="layui-btn layui-btn-primary td-prev" data-go="1"><i class="layui-icon">&#xe65c;</i> {:lang('admin/themedesign/prev')}</button>
                     <span>
-                        <button type="button" class="layui-btn layui-btn-normal td-save" data-step="navbar">{:lang('admin/themedesign/save')}</button>
+                        <button type="button" class="layui-btn layui-btn-normal td-save" data-step="attributes">{:lang('admin/themedesign/save')}</button>
                         <button type="button" class="layui-btn td-next" data-go="3">{:lang('admin/themedesign/next')} <i class="layui-icon">&#xe65b;</i></button>
                     </span>
                 </div>
             </div>
 
-            <!-- STEP 4: Footer -->
+            <!-- STEP 4: Page content -->
             <div class="td-step-panel" data-step="3">
-                <div class="td-card">
-                    <h3>{:lang('admin/themedesign/footer_cats')}</h3>
-                    <div class="td-tip">{:lang('admin/themedesign/footer_cats_tip')}</div>
-                    <div class="td-tree-tools">
-                        <a href="javascript:;" class="td-tree-act" id="ftCheckAll">{:lang('admin/themedesign/check_all')}</a>
-                        <a href="javascript:;" class="td-tree-act" id="ftCheckTops">{:lang('admin/themedesign/check_tops')}</a>
-                        <a href="javascript:;" class="td-tree-act" id="ftCheckNone">{:lang('admin/themedesign/check_none')}</a>
-                    </div>
-                    <div class="td-catpick" id="footerPick">
-                        {volist name="type_tree_full" id="p"}
-                        <div class="td-pick-group">
-                            <input type="checkbox" lay-skin="primary" lay-filter="ftType" name="td_ft_type" value="{$p.id}" data-pid="0" title="{$p.name}">
-                            {notempty name="p.children"}
-                            <div class="td-pick-children">
-                                {volist name="p.children" id="c"}
-                                <input type="checkbox" lay-skin="primary" lay-filter="ftType" name="td_ft_type" value="{$c.id}" data-pid="{$p.id}" title="{$c.name}">
-                                {/volist}
-                            </div>
-                            {/notempty}
-                        </div>
-                        {/volist}
-                    </div>
-                    <div class="td-order-wrap">
-                        <div class="td-order-label">{:lang('admin/themedesign/selected_order')}</div>
-                        <div class="td-order" id="footerOrder"></div>
-                    </div>
-                </div>
-                <div class="td-card">
-                    <h3>{:lang('admin/themedesign/footer_links')}</h3>
-                    <div class="td-tip">{:lang('admin/themedesign/footer_tip')}</div>
-                    <div id="footerLinks"></div>
-                    <button type="button" class="layui-btn layui-btn-sm layui-btn-primary" id="addFooterLink"><i class="layui-icon">&#xe654;</i> {:lang('admin/themedesign/add_link')}</button>
-                </div>
-                <div class="td-card td-livecard">
-                    <h3>{:lang('admin/themedesign/live_preview')}</h3>
-                    <div class="td-tip">{:lang('admin/themedesign/preview_save_hint')}</div>
-                    <div class="td-live-toolbar">
-                        <button type="button" class="layui-btn layui-btn-sm td-live-refresh" data-step="footer"><i class="layui-icon">&#xe669;</i> {:lang('admin/themedesign/refresh_preview')}</button>
-                        <a href="javascript:;" class="layui-btn layui-btn-sm layui-btn-primary td-live-open" target="_blank">{:lang('admin/themedesign/open_new_window')}</a>
-                        <span class="td-view-toggle">
-                            <button type="button" class="td-view-btn active" data-view="desktop"><svg class="td-view-ico" width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><rect x="1.5" y="2.5" width="13" height="9" rx="1"/><path d="M6 14h4M8 11.5V14"/></svg> {:lang('admin/themedesign/view_desktop')}</button>
-                            <button type="button" class="td-view-btn" data-view="mobile"><svg class="td-view-ico" width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><rect x="4.5" y="1.5" width="7" height="13" rx="1.5"/><path d="M7 12.7h2"/></svg> {:lang('admin/themedesign/view_mobile')}</button>
-                        </span>
-                    </div>
-                    <iframe class="td-live-frame" src="about:blank"></iframe>
-                </div>
-                <div class="td-footer-bar">
-                    <button type="button" class="layui-btn layui-btn-primary td-prev" data-go="2"><i class="layui-icon">&#xe65c;</i> {:lang('admin/themedesign/prev')}</button>
-                    <span>
-                        <button type="button" class="layui-btn layui-btn-normal td-save" data-step="footer">{:lang('admin/themedesign/save')}</button>
-                        <button type="button" class="layui-btn td-next" data-go="4">{:lang('admin/themedesign/next')} <i class="layui-icon">&#xe65b;</i></button>
-                    </span>
-                </div>
-            </div>
-
-            <!-- STEP 5: Homepage -->
-            <div class="td-step-panel" data-step="4">
                 <div class="td-card">
                     <h3>{:lang('admin/themedesign/homepage_sections')}</h3>
                     <div class="td-tip">{:lang('admin/themedesign/homepage_tip')}</div>
+                    {if condition="$pb_theme_enabled"}
+                    <p class="td-tip" style="margin-bottom:14px;">{:lang('admin/themedesign/pb_content_only_hint')}</p>
+                    <p style="margin-bottom:4px;">
+                        <button type="button" class="layui-btn layui-btn-normal" id="tdOpenPageBuilder">
+                            <i class="layui-icon">&#xe642;</i> {:lang('admin/themedesign/pb_advanced_builder')}
+                        </button>
+                    </p>
+                    {else /}
                     <ul class="td-section-list" id="sectionList"></ul>
                     <button type="button" class="layui-btn layui-btn-sm layui-btn-primary" id="addBlock"><i class="layui-icon">&#xe654;</i> {:lang('admin/themedesign/add_block')}</button>
+                    {/if}
                 </div>
                 <div class="td-card td-livecard">
                     <h3>{:lang('admin/themedesign/live_preview')}</h3>
@@ -646,16 +745,16 @@
                     <iframe class="td-live-frame" src="about:blank"></iframe>
                 </div>
                 <div class="td-footer-bar">
-                    <button type="button" class="layui-btn layui-btn-primary td-prev" data-go="3"><i class="layui-icon">&#xe65c;</i> {:lang('admin/themedesign/prev')}</button>
+                    <button type="button" class="layui-btn layui-btn-primary td-prev" data-go="2"><i class="layui-icon">&#xe65c;</i> {:lang('admin/themedesign/prev')}</button>
                     <span>
                         <button type="button" class="layui-btn layui-btn-normal td-save" data-step="homepage">{:lang('admin/themedesign/save')}</button>
-                        <button type="button" class="layui-btn td-next" data-go="5">{:lang('admin/themedesign/next')} <i class="layui-icon">&#xe65b;</i></button>
+                        <button type="button" class="layui-btn td-next" data-go="4">{:lang('admin/themedesign/next')} <i class="layui-icon">&#xe65b;</i></button>
                     </span>
                 </div>
             </div>
 
-            <!-- STEP 6: Preview & Publish -->
-            <div class="td-step-panel" data-step="5">
+            <!-- STEP 5: Preview & Publish -->
+            <div class="td-step-panel" data-step="4">
                 <div class="td-card">
                     <h3>{:lang('admin/themedesign/preview')}</h3>
                     <div class="td-tip">{:lang('admin/themedesign/preview_tip')}</div>
@@ -673,31 +772,71 @@
                 <div class="td-card">
                     <h3>{:lang('admin/themedesign/publish')}</h3>
                     <div class="td-tip">{:lang('admin/themedesign/publish_tip')}</div>
-                    <div class="td-pubmode">
+                    {if condition="$has_published"}
+                    <span class="td-badge-pub yes">{:lang('admin/themedesign/published')}</span>
+                    {else /}
+                    <span class="td-badge-pub no">{:lang('admin/themedesign/no_published')}</span>
+                    {/if}
+                    {if condition="$preset_mismatch"}
+                    <div class="td-draft-banner" style="margin-top:10px;">{:lang('admin/themedesign/preset_mismatch_banner', [$draft_pb_preset, $published_pb_preset])}</div>
+                    {/if}
+                    {if condition="!$theme_is_site_active"}
+                    <div class="td-callout td-callout-warn" style="margin-top:12px;">{:lang('admin/themedesign/theme_not_site_active', [$cur_theme, $site_template_dir])}</div>
+                    <button type="button" class="layui-btn layui-btn-normal" id="btnActivateSite" style="margin-top:8px;">{:lang('admin/themedesign/preset_set_site_template')}</button>
+                    {/if}
+                    <div class="td-pubmode" style="margin-top:14px;">
                         <label class="td-pubopt active">
                             <input type="radio" name="pub_mode" value="update" checked>
                             <span class="td-pubopt-body"><b>{:lang('admin/themedesign/pub_update')}</b><em>{:lang('admin/themedesign/pub_update_tip')} — <code>{$cur_theme}</code></em></span>
                         </label>
-                        <label class="td-pubopt">
+                    </div>
+                    <details class="td-fold" style="margin-bottom:14px;" id="pubNewFold">
+                        <summary>{:lang('admin/themedesign/pub_new')}</summary>
+                        <div class="td-tip">{:lang('admin/themedesign/pub_new_tip')}</div>
+                        <label class="td-pubopt" style="margin-bottom:10px;">
                             <input type="radio" name="pub_mode" value="new">
-                            <span class="td-pubopt-body"><b>{:lang('admin/themedesign/pub_new')}</b><em>{:lang('admin/themedesign/pub_new_tip')}</em></span>
+                            <span class="td-pubopt-body"><b>{:lang('admin/themedesign/pub_new')}</b><em>{:lang('admin/themedesign/publish_new_preset_note')}</em></span>
                         </label>
-                    </div>
-                    <div id="newThemeFields" class="td-newfields" style="display:none;">
-                        <div class="layui-form-item">
-                            <label class="layui-form-label">{:lang('admin/themedesign/new_name')}</label>
-                            <div class="layui-input-inline" style="width:300px;"><input type="text" id="newThemeName" class="layui-input" placeholder="{:lang('admin/themedesign/new_name_ph')}"></div>
+                        <div id="newThemeFields" class="td-newfields">
+                            <div class="td-wizard-steps" id="newThemeWizardSteps">
+                                <span class="on" data-wstep="1">1. {:lang('admin/themedesign/wizard_base_title')}</span>
+                                <span data-wstep="2">2. {:lang('admin/themedesign/wizard_name_title')}</span>
+                                <span data-wstep="3">3. {:lang('admin/themedesign/wizard_confirm_title')}</span>
+                            </div>
+                            <div class="td-wizard-pane on" data-wstep="1">
+                                <label class="td-pubopt active" style="margin-bottom:8px;">
+                                    <input type="radio" name="new_base" value="draft" checked>
+                                    <span class="td-pubopt-body"><b>{:lang('admin/themedesign/wizard_base_draft')}</b><em>{:lang('admin/themedesign/wizard_base_draft_tip')}</em></span>
+                                </label>
+                                <label class="td-pubopt" style="margin-bottom:8px;">
+                                    <input type="radio" name="new_base" value="preset">
+                                    <span class="td-pubopt-body"><b>{:lang('admin/themedesign/wizard_base_preset')}</b><em>{:lang('admin/themedesign/wizard_base_preset_tip')}</em></span>
+                                </label>
+                                <button type="button" class="layui-btn layui-btn-sm" id="btnWizardNext1">{:lang('admin/themedesign/wizard_next')}</button>
+                            </div>
+                            <div class="td-wizard-pane" data-wstep="2">
+                                <div class="layui-form-item">
+                                    <label class="layui-form-label">{:lang('admin/themedesign/new_name')}</label>
+                                    <div class="layui-input-inline" style="width:300px;"><input type="text" id="newThemeName" class="layui-input" placeholder="{:lang('admin/themedesign/new_name_ph')}"></div>
+                                </div>
+                                <div class="layui-form-item">
+                                    <label class="layui-form-label">{:lang('admin/themedesign/new_dir')}</label>
+                                    <div class="layui-input-inline" style="width:300px;"><input type="text" id="newThemeDir" class="layui-input" placeholder="{:lang('admin/themedesign/new_dir_ph')}"></div>
+                                    <div class="layui-form-mid layui-word-aux">{:lang('admin/themedesign/new_dir_help')}</div>
+                                </div>
+                                <div class="layui-form-item">
+                                    <label class="layui-form-label">{:lang('admin/themedesign/new_intro')}</label>
+                                    <div class="layui-input-inline" style="width:420px;"><input type="text" id="newThemeIntro" class="layui-input" placeholder="{:lang('admin/themedesign/new_intro_ph')}"></div>
+                                </div>
+                                <button type="button" class="layui-btn layui-btn-primary layui-btn-sm" id="btnWizardBack2">{:lang('admin/themedesign/wizard_back')}</button>
+                                <button type="button" class="layui-btn layui-btn-sm" id="btnWizardNext2">{:lang('admin/themedesign/wizard_next')}</button>
+                            </div>
+                            <div class="td-wizard-pane" data-wstep="3">
+                                <div class="td-tip" id="wizardConfirmSummary"></div>
+                                <button type="button" class="layui-btn layui-btn-primary layui-btn-sm" id="btnWizardBack3">{:lang('admin/themedesign/wizard_back')}</button>
+                            </div>
                         </div>
-                        <div class="layui-form-item">
-                            <label class="layui-form-label">{:lang('admin/themedesign/new_dir')}</label>
-                            <div class="layui-input-inline" style="width:300px;"><input type="text" id="newThemeDir" class="layui-input" placeholder="{:lang('admin/themedesign/new_dir_ph')}"></div>
-                            <div class="layui-form-mid layui-word-aux">{:lang('admin/themedesign/new_dir_help')}</div>
-                        </div>
-                        <div class="layui-form-item">
-                            <label class="layui-form-label">{:lang('admin/themedesign/new_intro')}</label>
-                            <div class="layui-input-inline" style="width:420px;"><input type="text" id="newThemeIntro" class="layui-input" placeholder="{:lang('admin/themedesign/new_intro_ph')}"></div>
-                        </div>
-                    </div>
+                    </details>
                     <button type="button" class="layui-btn layui-btn-danger" id="btnPublish"><i class="layui-icon">&#xe605;</i> {:lang('admin/themedesign/publish_draft')}</button>
                 </div>
 
@@ -708,7 +847,7 @@
                 </div>
 
                 <div class="td-footer-bar">
-                    <button type="button" class="layui-btn layui-btn-primary td-prev" data-go="4"><i class="layui-icon">&#xe65c;</i> {:lang('admin/themedesign/prev')}</button>
+                    <button type="button" class="layui-btn layui-btn-primary td-prev" data-go="3"><i class="layui-icon">&#xe65c;</i> {:lang('admin/themedesign/prev')}</button>
                     <span></span>
                 </div>
             </div>
@@ -725,6 +864,8 @@ var CFG = {:json_encode($cfg, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES)};
 var TD_DEFAULTS = {:json_encode($defaults, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES)};
 var TD_SCHEMES  = {:json_encode($schemes, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES)};
 var TD_SECTIONS = {:json_encode($section_catalog, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES)};
+var TD_BLOCK_CATALOG = {:json_encode($block_catalog, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES)};
+var TD_DEFAULT_PAGE = {:json_encode($default_homepage_page, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES)};
 var TD_CATS = {:json_encode($cats_flat, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES)};
 var TD_URLS = {
     design:    "{:url('theme_design/design')}",
@@ -738,12 +879,22 @@ var TD_URLS = {
     generate:  "{:url('theme_design/generate')}",
     detect:    "{:url('theme_design/detect')}",
     generateApply: "{:url('theme_design/generate_apply')}",
-    genImage:  "{:url('theme_design/gen_image')}"
+    genImage:  "{:url('theme_design/gen_image')}",
+    createFromPreset: "{:url('theme_design/create_from_preset')}",
+    activateSiteTheme: "{:url('theme_design/activate_site_theme')}",
+    pageBuilder: "{$page_builder_url}"
 };
 var TD_COLOR_KEYS = ['accent','accent_ink','bg','surface','surface_2','text','text_muted','border'];
 var TD_FONTS = {:json_encode($fonts, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES)};
 var TD_THEME = "{$cur_theme}";
-var TD_TOKEN = "{$Request.token}";
+var TD_PB_ENABLED = {if condition="$pb_theme_enabled"}true{else /}false{/if};
+var TD_CUR_PRESET = "{$cur_pb_preset}";
+var TD_PUB_PRESET = "{$published_pb_preset}";
+var TD_PRESET_MISMATCH = {if condition="$preset_mismatch"}true{else /}false{/if};
+// 会话级稳定令牌（与 admin_common.js 的 meta 同源）：不要换回 {$Request.token}，
+// 那是每次渲染轮换的旧令牌，多标签页下会失效——readSubmittedToken 优先读表单值，
+// 过期表单 token 会压过本来有效的 X-CSRF-Token 头造成 403。
+var TD_TOKEN = "{:mac_admin_csrf_token()}";
 var TD_PREVIEW_URL = "{$preview_url}";
 var TD_DEFAULT_AVATAR = "{$default_avatar_url}";
 var TD_THEME_LOGO = "{$theme_logo_url}";
@@ -789,6 +940,7 @@ var LANG = {
     content_type:     "{:lang('admin/themedesign/content_type')}",
     category:         "{:lang('admin/themedesign/category')}",
     block_title:      "{:lang('admin/themedesign/block_title')}",
+    more_url:         "{:lang('admin/themedesign/more_url')}",
     cat_all:          "{:lang('admin/themedesign/cat_all')}",
     ct_vod:           "{:lang('admin/themedesign/ct_vod')}",
     ct_art:           "{:lang('admin/themedesign/ct_art')}",
@@ -821,6 +973,7 @@ var LANG = {
     ai_f_font:        "{:lang('admin/themedesign/font')}",
     ai_f_size:        "{:lang('admin/themedesign/font_size')}",
     ai_f_sections:    "{:lang('admin/themedesign/homepage_sections')}",
+    ai_f_blocks:      "{:lang('admin/themedesign/homepage_blocks')}",
     ai_f_nav:         "{:lang('admin/themedesign/navbar_cats')}",
     new_created:      "{:lang('admin/themedesign/new_created')}",
     ai_preview:       "{:lang('admin/themedesign/preview')}",
@@ -837,7 +990,46 @@ var LANG = {
     ai_detect_notes:      "{:lang('admin/themedesign/ai_detect_notes')}",
     img_ai_generating:    "{:lang('admin/themedesign/img_ai_generating')}",
     img_ai_done:          "{:lang('admin/themedesign/img_ai_done')}",
-    img_ai_failed:        "{:lang('admin/themedesign/img_ai_failed')}"
+    img_ai_failed:        "{:lang('admin/themedesign/img_ai_failed')}",
+    preset_applied:       "{:lang('admin/themedesign/preset_applied')}",
+    preset_preview_btn:   "{:lang('admin/themedesign/preset_preview_btn')}",
+    preset_open_preview_confirm: "{:lang('admin/themedesign/preset_open_preview_confirm')}",
+    preset_current:       "{:lang('admin/themedesign/preset_current')}",
+    preset_create_theme:  "{:lang('admin/themedesign/preset_create_theme')}",
+    preset_create_section: "{:lang('admin/themedesign/preset_create_section')}",
+    preset_apply_current: "{:lang('admin/themedesign/preset_apply_current')}",
+    preset_apply_current_hint: "{:lang('admin/themedesign/preset_apply_current_hint')}",
+    preset_create_tip:    "{:lang('admin/themedesign/preset_create_tip')}",
+    preset_create_intro:  "{:lang('admin/themedesign/preset_create_intro')}",
+    preset_created_ok:    "{:lang('admin/themedesign/preset_created_ok')}",
+    preset_activate_confirm: "{:lang('admin/themedesign/preset_activate_confirm')}",
+    preset_set_site_template: "{:lang('admin/themedesign/preset_set_site_template')}",
+    later:                "{:lang('admin/themedesign/later')}",
+    next:                 "{:lang('admin/themedesign/next')}",
+    next_preset_choice_title: "{:lang('admin/themedesign/next_preset_choice_title')}",
+    preset_draft_only_toast: "{:lang('admin/themedesign/preset_draft_only_toast')}",
+    preset_apply_overwrite_title: "{:lang('admin/themedesign/preset_apply_overwrite_title')}",
+    preset_apply_overwrite_tip: "{:lang('admin/themedesign/preset_apply_overwrite_tip')}",
+    keep_homepage_draft: "{:lang('admin/themedesign/keep_homepage_draft')}",
+    preset_reset_current: "{:lang('admin/themedesign/preset_reset_current')}",
+    preset_reset_current_hint: "{:lang('admin/themedesign/preset_reset_current_hint')}",
+    confirm_preset_reset: "{:lang('admin/themedesign/confirm_preset_reset')}",
+    confirm_preset_reset_title: "{:lang('admin/themedesign/confirm_preset_reset_title')}",
+    preset_reset_ok: "{:lang('admin/themedesign/preset_reset_ok')}",
+    wizard_base_title: "{:lang('admin/themedesign/wizard_base_title')}",
+    wizard_next: "{:lang('admin/themedesign/wizard_next')}",
+    wizard_back: "{:lang('admin/themedesign/wizard_back')}",
+    wizard_generate: "{:lang('admin/themedesign/wizard_generate')}",
+    wizard_success: "{:lang('admin/themedesign/wizard_success')}",
+    wizard_open_new: "{:lang('admin/themedesign/wizard_open_new')}",
+    wizard_stay: "{:lang('admin/themedesign/wizard_stay')}",
+    wizard_base_draft: "{:lang('admin/themedesign/wizard_base_draft')}",
+    wizard_base_preset: "{:lang('admin/themedesign/wizard_base_preset')}",
+    new_name:           "{:lang('admin/themedesign/new_name')}",
+    new_dir:            "{:lang('admin/themedesign/new_dir')}",
+    new_name_ph:        "{:lang('admin/themedesign/new_name_ph')}",
+    new_dir_ph:         "{:lang('admin/themedesign/new_dir_ph')}",
+    new_dir_help:       "{:lang('admin/themedesign/new_dir_help')}",
 };
 </script>
 <script type="text/javascript">
@@ -879,6 +1071,7 @@ layui.use(['jquery', 'layer'], function () {
         if (ap.font) { chips.push(t('ai_f_font', 'Font') + ' ✓'); }
         if (ap.font_size) { chips.push(t('ai_f_size', 'Font size') + ': ' + ap.font_size + 'px'); }
         if (ap.sections) { chips.push(t('ai_f_sections', 'Sections') + ': ' + ap.sections); }
+        if (ap.blocks) { chips.push(t('ai_f_blocks', 'Blocks') + ': ' + ap.blocks); }
         if (ap.nav) { chips.push(t('ai_f_nav', 'Nav') + ': ' + ap.nav); }
 
         var h = '';
@@ -920,7 +1113,7 @@ layui.use(['jquery', 'layer'], function () {
         $('#tdAiResult').hide().empty();
         $('#tdAiGen').addClass('is-loading');
         setStatus(t('ai_generating', 'Generating with AI, please wait...'), false);
-        $.post(TD_URLS.generate, { theme: TD_THEME, spec: spec, new_name: String($('#tdAiName').val() || ''), new_dir: String($('#tdAiDir').val() || ''), __token__: TD_TOKEN }, function (res) {
+        $.post(TD_URLS.generate, { theme: TD_THEME, spec: spec, new_name: String($('#tdAiName').val() || ''), new_dir: String($('#tdAiDir').val() || ''), preset_id: String($('#overviewPreset').val() || 'preset-clean'), __token__: TD_TOKEN }, function (res) {
             $('#tdAiGen').removeClass('is-loading');
             if (res && res.code === 1) {
                 setStatus('');
@@ -1085,7 +1278,9 @@ layui.use(['jquery', 'layer'], function () {
         h += '<div class="td-ai-actions"><button type="button" class="layui-btn layui-btn-sm td-ai-gen" id="tdAiApply">'
             + '<i class="layui-icon">&#xe63d;</i> ' + esc(t('ai_detect_apply', 'Create theme with these')) + '</button></div>';
         $('#tdAiDetected').html(h).show();
-        if (d.theme_name && !String($('#tdAiName').val() || '').trim()) { $('#tdAiName').val(d.theme_name); }
+        if (d.theme_name && !String($('#tdAiName').val() || '').trim()) {
+            $('#tdAiName').val(d.theme_name);
+        }
     }
 
     // keep the color picker and the hex text field in sync
@@ -1147,13 +1342,49 @@ layui.use(['form','layer','upload','element'], function () {
     CFG.footer.links = CFG.footer.links || [];
     CFG.footer.type_ids = CFG.footer.type_ids || [];
     CFG.homepage = CFG.homepage || {};
-    CFG.homepage.sections = CFG.homepage.sections || [];
+    CFG.homepage.page = CFG.homepage.page || TD_DEFAULT_PAGE || { template: 'index/index', layout: 'base', blocks: [] };
+    if (!CFG.homepage.page.blocks || !CFG.homepage.page.blocks.length) {
+        CFG.homepage.page.blocks = (TD_DEFAULT_PAGE && TD_DEFAULT_PAGE.blocks) ? TD_DEFAULT_PAGE.blocks.slice() : [];
+    }
 
     /* =========================================================
        Step navigation
     ========================================================= */
-    var totalSteps = 6;
+    var totalSteps = 5;
     var curStep = 0;
+
+    /** 后台 Tab 在 iframe 内时，弹层挂到顶层以免被裁切或看不见 */
+    function tdLayer() {
+        try {
+            var topWin = window.top;
+            if (topWin && topWin !== window && topWin.layui && topWin.layui.layer) {
+                return topWin.layui.layer;
+            }
+        } catch (e) {}
+        return layer;
+    }
+
+    var TOP_PRESET_STYLE_ID = 'td-preset-modal-style';
+    function ensureTopPresetModalStyles(doc) {
+        if (!doc || doc.getElementById(TOP_PRESET_STYLE_ID)) { return; }
+        var src = document.getElementById('td-preset-modal-style-src');
+        if (!src || !src.textContent) { return; }
+        var s = doc.createElement('style');
+        s.id = TOP_PRESET_STYLE_ID;
+        s.textContent = src.textContent;
+        (doc.head || doc.documentElement).appendChild(s);
+    }
+
+    function tdLayerDoc() {
+        try {
+            var topWin = window.top;
+            if (topWin && topWin !== window && topWin.document) {
+                return topWin.document;
+            }
+        } catch (e) {}
+        return document;
+    }
+
     function gotoStep(n) {
         if (n < 0 || n >= totalSteps) return;
         curStep = n;
@@ -1164,9 +1395,9 @@ layui.use(['form','layer','upload','element'], function () {
         $('.td-nav-item[data-step="' + n + '"]').addClass('active');
         $('.td-step-panel').removeClass('active');
         $('.td-step-panel[data-step="' + n + '"]').addClass('active');
-        if (n === 5) {
+        if (n === 4) {
             loadHistory();
-            // auto-load the step-6 preview iframe (no click needed)
+            // auto-load the publish-step preview iframe (no click needed)
             var s6 = previewSrc();
             $('#previewFrame').attr('src', s6);
             $('#openPreviewNew').attr('href', s6);
@@ -1174,10 +1405,342 @@ layui.use(['form','layer','upload','element'], function () {
         lazyLoadPreview(n);
         $('html,body').scrollTop(0);
     }
+    var stepQ = /[?&]step=(\d+)/.exec(String(location.search || ''));
+    if (stepQ) {
+        var stepFromUrl = parseInt(stepQ[1], 10);
+        // legacy 6-step URLs → 5-step wizard
+        if (stepFromUrl === 2 || stepFromUrl === 3) { stepFromUrl = 1; }
+        else if (stepFromUrl === 4) { stepFromUrl = 3; }
+        else if (stepFromUrl === 5) { stepFromUrl = 4; }
+        else if (stepFromUrl > 4) { stepFromUrl = 4; }
+        gotoStep(stepFromUrl);
+    }
     $('#tdNav').on('click', '.td-nav-item', function () {
         gotoStep(parseInt($(this).data('step'), 10));
     });
-    $(document).on('click', '.td-next', function () { gotoStep(parseInt($(this).data('go'), 10)); });
+
+    function appendQuery(url, key, val) {
+        var u = String(url || '');
+        var sep = u.indexOf('?') >= 0 ? '&' : '?';
+        return u + sep + encodeURIComponent(key) + '=' + encodeURIComponent(String(val));
+    }
+
+    var TOP_EMBED_STYLE_ID = 'td-pb-embed-style';
+    var TOP_EMBED_OVERLAY_ID = 'tdPbEmbedOverlay';
+    var TOP_EMBED_FRAME_ID = 'tdPbEmbedFrame';
+
+    function topWinSafe() {
+        try {
+            if (window.top) { return window.top; }
+        } catch (e) {}
+        return window;
+    }
+
+    function topDocSafe() {
+        try {
+            if (window.top && window.top.document) { return window.top.document; }
+        } catch (e) {}
+        return document;
+    }
+
+    function ensureTopEmbedStyles(doc) {
+        if (!doc || doc.getElementById(TOP_EMBED_STYLE_ID)) { return; }
+        var s = doc.createElement('style');
+        s.id = TOP_EMBED_STYLE_ID;
+        s.textContent = ''
+            + '.td-pb-embed-overlay{position:fixed;inset:0;z-index:20000000;background:#1a1d23;display:none;margin:0;padding:0}'
+            + '.td-pb-embed-overlay.is-open{display:block}'
+            + 'body.td-pb-embed-active{overflow:hidden!important}'
+            + '.td-pb-embed-frame{width:100%;height:100%;border:0;display:block;background:#1a1d23}';
+        (doc.head || doc.documentElement).appendChild(s);
+    }
+
+    function ensureTopEmbedOverlay(doc) {
+        ensureTopEmbedStyles(doc);
+        var el = doc.getElementById(TOP_EMBED_OVERLAY_ID);
+        if (el) { return el; }
+        el = doc.createElement('div');
+        el.id = TOP_EMBED_OVERLAY_ID;
+        el.className = 'td-pb-embed-overlay';
+        el.setAttribute('aria-hidden', 'true');
+        var frame = doc.createElement('iframe');
+        frame.id = TOP_EMBED_FRAME_ID;
+        frame.className = 'td-pb-embed-frame';
+        frame.title = '{:addslashes(lang("admin/themedesign/page_builder"))}';
+        frame.setAttribute('src', 'about:blank');
+        el.appendChild(frame);
+        doc.body.appendChild(el);
+        return el;
+    }
+
+    function openPageBuilderEmbed() {
+        if (!TD_PB_ENABLED) { return; }
+        var base = (TD_URLS && TD_URLS.pageBuilder) ? TD_URLS.pageBuilder : '';
+        if (!base) { return; }
+        var url = appendQuery(appendQuery(base, 'embed', '1'), 'return_step', '4');
+        var doc = topDocSafe();
+        var win = topWinSafe();
+        ensureTopEmbedOverlay(doc);
+        var frame = doc.getElementById(TOP_EMBED_FRAME_ID);
+        if (frame) { frame.setAttribute('src', url); }
+        var overlay = doc.getElementById(TOP_EMBED_OVERLAY_ID);
+        if (overlay) {
+            overlay.classList.add('is-open');
+            overlay.setAttribute('aria-hidden', 'false');
+        }
+        doc.body.classList.add('td-pb-embed-active');
+        if (!win.__tdPbEmbedListener) {
+            win.__tdPbEmbedListener = true;
+            win.addEventListener('message', function (ev) {
+                var data = ev && ev.data;
+                if (!data || data.type !== 'td-pb-close') { return; }
+                closePageBuilderEmbed(!!data.refresh);
+            });
+        }
+    }
+
+    /**
+     * 搭建器关闭后把服务端草稿同步进向导内存 CFG。
+     * 切勿再用 autoPreview('homepage')：那会把打开搭建器前的旧 CFG.homepage
+     * 再 save_step 写回草稿，覆盖刚保存的区块 props（如排行榜 num）。
+     * 此处只更新内存，不调用 renderBlocks/autoPreview（后者会再次 save）。
+     */
+    function syncHomepageCfgFromDraft(draft) {
+        if (!draft || typeof draft !== 'object') {
+            return;
+        }
+        CFG.homepage = CFG.homepage || {};
+        if (draft.homepage && draft.homepage.page && typeof draft.homepage.page === 'object') {
+            CFG.homepage.page = draft.homepage.page;
+        } else if (draft.pages && draft.pages['index/index'] && typeof draft.pages['index/index'] === 'object') {
+            CFG.homepage.page = draft.pages['index/index'];
+        }
+        if (draft.pages && typeof draft.pages === 'object') {
+            CFG.pages = draft.pages;
+        }
+        if ($('#blockJsonEditor').length) {
+            try {
+                $('#blockJsonEditor').val(JSON.stringify(CFG.homepage.page, null, 2));
+            } catch (err) { /* ignore */ }
+        }
+    }
+
+    function closePageBuilderEmbed(refreshPreview) {
+        var doc = topDocSafe();
+        var overlay = doc.getElementById(TOP_EMBED_OVERLAY_ID);
+        var frame = doc.getElementById(TOP_EMBED_FRAME_ID);
+        if (overlay) {
+            overlay.classList.remove('is-open');
+            overlay.setAttribute('aria-hidden', 'true');
+        }
+        if (frame) { frame.setAttribute('src', 'about:blank'); }
+        doc.body.classList.remove('td-pb-embed-active');
+        gotoStep(3);
+        if (!refreshPreview) {
+            return;
+        }
+        var $card = $('.td-step-panel[data-step="3"] .td-livecard');
+        var finishPreview = function () {
+            if ($card.length) {
+                loadPreviewInto($card);
+            }
+        };
+        $.get(TD_URLS.load, { theme: TD_THEME }, function (res) {
+            if (res && res.code == 1 && res.draft) {
+                syncHomepageCfgFromDraft(res.draft);
+            }
+            finishPreview();
+        }, 'json').fail(finishPreview);
+    }
+
+    $('#tdOpenPageBuilder').on('click', function () {
+        if (!TD_PB_ENABLED) { return; }
+        openPageBuilderEmbed();
+    });
+    function buildPresetChoiceModalHtml(id, mode) {
+        mode = mode || 'next';
+        var applyHint = escAttr(LANG.preset_apply_current_hint || '');
+        var createHint = escAttr(LANG.preset_create_tip || '');
+        var lead = mode === 'new_only'
+            ? escAttr(LANG.preset_create_intro || LANG.preset_create_tip || '')
+            : escAttr(LANG.preset_apply_overwrite_tip || '');
+        var html = '<div class="td-preset-modal">'
+            + '<p class="td-preset-modal__lead">' + lead + '</p>';
+        if (mode !== 'new_only') {
+            html += '<label class="td-preset-modal__check">'
+                + '<input type="checkbox" id="' + (mode === 'apply' ? 'tdKeepHomepage' : 'tdKeepHomepageNext') + '" checked>'
+                + '<span>' + escAttr(LANG.keep_homepage_draft || '') + '</span></label>';
+        }
+        if (mode === 'next') {
+            html += '<div class="td-preset-modal__actions td-preset-modal__actions--triple">'
+                + '<button type="button" class="td-preset-modal__btn is-primary" data-action="apply">'
+                + '<b>' + escAttr(LANG.preset_apply_current || '') + '</b>'
+                + '<em>' + applyHint + '</em></button>'
+                + '<button type="button" class="td-preset-modal__btn is-secondary" data-action="new">'
+                + '<b>' + escAttr(LANG.preset_create_theme || '') + '</b>'
+                + '<em>' + createHint + '</em></button>'
+                + '<button type="button" class="td-preset-modal__btn is-warn" data-action="reset">'
+                + '<b>' + escAttr(LANG.preset_reset_current || '') + '</b>'
+                + '<em>' + escAttr(LANG.preset_reset_current_hint || '') + '</em></button>'
+                + '</div>';
+        } else if (mode === 'new_only') {
+            html += '<div class="td-preset-modal__actions" style="grid-template-columns:1fr;">'
+                + '<button type="button" class="td-preset-modal__btn is-primary" data-action="new">'
+                + '<b>' + escAttr(LANG.preset_create_theme || '') + '</b>'
+                + '<em>' + createHint + '</em></button>'
+                + '</div>';
+        } else {
+            html += '<div class="td-preset-modal__actions td-preset-modal__actions--triple">'
+                + '<button type="button" class="td-preset-modal__btn is-primary" data-action="apply">'
+                + '<b>' + escAttr(LANG.preset_apply_current || '') + '</b>'
+                + '<em>' + applyHint + '</em></button>'
+                + '<button type="button" class="td-preset-modal__btn is-warn" data-action="reset">'
+                + '<b>' + escAttr(LANG.preset_reset_current || '') + '</b>'
+                + '<em>' + escAttr(LANG.preset_reset_current_hint || '') + '</em></button>'
+                + '</div>';
+        }
+        html += '</div>';
+        return html;
+    }
+
+    function bindPresetChoiceModal(layero, idx, go, id, mode) {
+        mode = mode || 'next';
+        var keepSel = mode === 'apply' ? '#tdKeepHomepage' : '#tdKeepHomepageNext';
+        if (mode !== 'new_only') {
+            layero.find('[data-action="apply"]').on('click', function () {
+                var keep = layero.find(keepSel).is(':checked');
+                tdLayer().close(idx);
+                applyPresetToCurrent(id, keep, function (ok) {
+                    if (!ok) return;
+                    tdLayer().msg(LANG.preset_draft_only_toast || LANG.preset_applied, { icon: 0, time: 1800 });
+                    if (mode === 'next') {
+                        gotoStep(go);
+                        var $card = $('.td-step-panel[data-step="' + go + '"] .td-livecard');
+                        if ($card.length) { loadPreviewInto($card); }
+                    }
+                });
+            });
+        }
+        layero.find('[data-action="new"]').on('click', function () {
+            tdLayer().close(idx);
+            openCreateThemeFromPreset(id);
+        });
+        layero.find('[data-action="reset"]').on('click', function () {
+            tdLayer().close(idx);
+            resetPresetOnCurrent(id, function (ok) {
+                if (!ok) return;
+                if (mode === 'next') {
+                    gotoStep(go);
+                    var $card = $('.td-step-panel[data-step="' + go + '"] .td-livecard');
+                    if ($card.length) { loadPreviewInto($card); }
+                }
+            });
+        });
+    }
+
+    function openCreateThemeFromPreset(presetId) {
+        presetId = presetId || $('#overviewPreset').val() || 'preset-clean';
+        var defaultDir = String(presetId).replace(/^preset-/, 'site-');
+        var html = '<div class="td-preset-modal td-create-theme-modal">'
+            + '<p class="td-preset-modal__lead">' + escAttr(LANG.preset_create_intro || LANG.preset_create_tip || '') + '</p>'
+            + '<div class="td-create-field"><label>' + escAttr(LANG.new_name || '') + '</label>'
+            + '<input type="text" id="tdCreateThemeName" class="layui-input" placeholder="' + escAttr(LANG.new_name_ph || '') + '"></div>'
+            + '<div class="td-create-field"><label>' + escAttr(LANG.new_dir || '') + '</label>'
+            + '<input type="text" id="tdCreateThemeDir" class="layui-input" placeholder="' + escAttr(LANG.new_dir_ph || '') + '" value="' + escAttr(defaultDir) + '"></div>'
+            + '<p class="td-create-help">' + escAttr(LANG.new_dir_help || '') + '</p>'
+            + '<div class="td-preset-modal__actions" style="grid-template-columns:1fr;margin-bottom:0;">'
+            + '<button type="button" class="td-preset-modal__btn is-primary" data-action="create">'
+            + '<b>' + escAttr(LANG.wizard_generate || LANG.preset_create_theme || '') + '</b>'
+            + '<em>' + escAttr(LANG.preset_create_tip || '') + '</em></button>'
+            + '</div></div>';
+        ensureTopPresetModalStyles(tdLayerDoc());
+        tdLayer().open({
+            type: 1,
+            title: LANG.preset_create_section || LANG.preset_create_theme || '',
+            area: ['480px', 'auto'],
+            shade: 0.35,
+            shadeClose: false,
+            zIndex: 19999999,
+            skin: 'td-preset-layer',
+            content: html,
+            btn: false,
+            success: function (layero, layerIdx) {
+                layero.find('[data-action="create"]').on('click', function () {
+                    var name = layero.find('#tdCreateThemeName').val().trim();
+                    var dir = layero.find('#tdCreateThemeDir').val().trim().toLowerCase();
+                    if (!name) { tdLayer().msg(LANG.need_name, { icon: 2 }); return; }
+                    if (!/^[a-z][a-z0-9_-]{1,31}$/.test(dir)) { tdLayer().msg(LANG.bad_dir, { icon: 2 }); return; }
+                    tdLayer().close(layerIdx);
+                    var load = tdLayer().load(1, { shade: 0.35 });
+                    $.post(TD_URLS.createFromPreset, {
+                        preset_id: presetId,
+                        new_name: name,
+                        new_dir: dir,
+                        new_intro: '',
+                        activate: 0,
+                        __token__: TD_TOKEN
+                    }, function (res) {
+                        tdLayer().close(load);
+                        if (res && res.code == 1) {
+                            var pathMsg = 'template/' + (res.new_theme || dir);
+                            tdLayer().open({
+                                title: LANG.wizard_success || LANG.preset_created_ok || LANG.new_created,
+                                content: '<div style="padding:12px 8px;font-size:13px;line-height:1.6;"><code>'
+                                    + $('<div>').text(pathMsg).html() + '</code></div>',
+                                btn: [LANG.wizard_open_new || 'OK', LANG.wizard_stay || LANG.later],
+                                yes: function (i2) {
+                                    tdLayer().close(i2);
+                                    if (res.design_url) {
+                                        location.href = res.design_url;
+                                    } else {
+                                        var u = TD_URLS.design + (TD_URLS.design.indexOf('?') >= 0 ? '&' : '?') + 'theme=' + encodeURIComponent(res.new_theme || dir);
+                                        location.href = u;
+                                    }
+                                }
+                            });
+                        } else {
+                            tdLayer().msg((res && res.msg) ? res.msg : LANG.save_err, { icon: 2 });
+                        }
+                    }, 'json').fail(function () {
+                        tdLayer().close(load);
+                        tdLayer().msg(LANG.save_err_net, { icon: 2 });
+                    });
+                });
+            }
+        });
+    }
+
+    function openNextPresetChoice(go) {
+        var id = $('#overviewPreset').val() || 'preset-clean';
+        var mode = TD_PB_ENABLED ? 'next' : 'new_only';
+        var title = mode === 'new_only'
+            ? (LANG.preset_create_section || LANG.preset_create_theme || LANG.next)
+            : (LANG.next_preset_choice_title || LANG.next || '下一步');
+        ensureTopPresetModalStyles(tdLayerDoc());
+        tdLayer().open({
+            type: 1,
+            title: title,
+            area: ['680px', 'auto'],
+            shade: 0.35,
+            shadeClose: false,
+            zIndex: 19999999,
+            skin: 'td-preset-layer',
+            content: buildPresetChoiceModalHtml(id, mode),
+            btn: false,
+            success: function (layero, idx) {
+                bindPresetChoiceModal(layero, idx, go, id, mode);
+            }
+        });
+    }
+    $(document).on('click', '.td-next', function () {
+        var go = parseInt($(this).data('go'), 10);
+        // 概览步点「下一步」：PB 主题双选；非 PB 主题仅「另存为新主题」
+        if (curStep === 0 && go === 1) {
+            openNextPresetChoice(go);
+            return;
+        }
+        gotoStep(go);
+    });
     $(document).on('click', '.td-prev', function () { gotoStep(parseInt($(this).data('go'), 10)); });
 
     /* =========================================================
@@ -1249,10 +1812,17 @@ layui.use(['form','layer','upload','element'], function () {
        STEP 2 — Appearance
     ========================================================= */
     var a = CFG.attributes;
+    a.header_chrome = a.header_chrome || ((a.preset_id === 'preset-np2') ? 'app_top_chrome' : 'site_nav');
+    $('input[name=td_header_chrome][value="' + a.header_chrome + '"]').prop('checked', true);
+    form.render('radio');
+    form.on('radio(tdHeaderChrome)', function (data) {
+        a.header_chrome = data.value;
+    });
 
     // any appearance/homepage change auto-saves to draft + reloads the real-site preview.
     // (kept as the old render* names so all existing call sites just work.)
     function renderAppearancePreview() { autoPreview('attributes'); }
+    function renderSiteChromePreview() { autoPreview('site_chrome'); }
 
     // native <input type="color"> only accepts #rrggbb; keep a safe value for it
     function hex6(v) {
@@ -1341,20 +1911,20 @@ layui.use(['form','layer','upload','element'], function () {
         $('#logoPath').val(a.logo);
         // empty = use the selected theme's own built-in logo (shown as a hint)
         showImg($('#logoPreview'), a.logo ? rootedSrc(a.logo) : TD_THEME_LOGO);
-        renderAppearancePreview();
+        renderSiteChromePreview();
     }
     function setAvatar(p) {
         a.default_avatar = p || '';
         $('#avatarPath').val(a.default_avatar);
         // empty = use the theme's built-in default avatar (so the circle isn't blank)
         showImg($('#avatarPreview'), a.default_avatar ? rootedSrc(a.default_avatar) : TD_DEFAULT_AVATAR);
-        autoPreview('attributes');
+        renderSiteChromePreview();
     }
     $('#logoPath').on('change', function () { setLogo($(this).val().trim()); });
     $('#avatarPath').on('change', function () { setAvatar($(this).val().trim()); });
     $('#logoClear').on('click', function () { setLogo(''); });
     $('#avatarClear').on('click', function () { setAvatar(''); });
-    $('#footerCopyright').on('change', function () { a.footer_copyright = $(this).val(); autoPreview('attributes'); });
+    $('#footerCopyright').on('change', function () { a.footer_copyright = $(this).val(); renderSiteChromePreview(); });
 
     // upload (contract: returns {code:1, file:"<path>"})
     function bindUpload(elemId, cb) {
@@ -1369,8 +1939,14 @@ layui.use(['form','layer','upload','element'], function () {
             error: function () { layer.closeAll(); layer.msg(LANG.upload_err, { icon: 2 }); }
         });
     }
-    bindUpload('logoUpload', setLogo);
-    bindUpload('avatarUpload', setAvatar);
+    bindUpload('logoUpload', function (path) {
+        setLogo(path);
+        saveStep('site_chrome', null, true);
+    });
+    bindUpload('avatarUpload', function (path) {
+        setAvatar(path);
+        saveStep('site_chrome', null, true);
+    });
 
     // AI-generate logo / avatar with an optional extra prompt (same {code,file} contract as upload)
     function bindImgAi(kind, msgId, btnId, cb) {
@@ -1403,7 +1979,7 @@ layui.use(['form','layer','upload','element'], function () {
     setLogo(a.logo || '');
     setAvatar(a.default_avatar || '');
     $('#footerCopyright').val(a.footer_copyright || '');
-    renderAppearancePreview();
+    renderSiteChromePreview();
 
     /* =========================================================
        Category selector (maccms-style layui checkboxes) with a
@@ -1476,7 +2052,7 @@ layui.use(['form','layer','upload','element'], function () {
     var navSel = setupCatSelector({
         pick: '#navPick', order: '#navOrder', name: 'td_nav_type', filter: 'navType',
         getIds: function () { return CFG.navbar.type_ids; },
-        change: function () { autoPreview('navbar'); }
+        change: function () { renderSiteChromePreview(); }
     });
     function collectNavbar() { var ids = navSel.order(); CFG.navbar.type_ids = ids; return { type_ids: ids }; }
     $('#navCheckAll').on('click', navSel.checkAll);
@@ -1500,8 +2076,8 @@ layui.use(['form','layer','upload','element'], function () {
         $('#footerLinks').html(html);
     })();
     $('#addFooterLink').on('click', function () { $('#footerLinks').append(footerRowHtml('', '')); });
-    $('#footerLinks').on('click', '.td-link-del', function () { $(this).closest('.td-link-row').remove(); autoPreview('footer'); });
-    $('#footerLinks').on('input change', '.td-link-text, .td-link-url', function () { autoPreview('footer'); });
+    $('#footerLinks').on('click', '.td-link-del', function () { $(this).closest('.td-link-row').remove(); renderSiteChromePreview(); });
+    $('#footerLinks').on('input change', '.td-link-text, .td-link-url', function () { renderSiteChromePreview(); });
     // footer category selector (maccms-style checkboxes + drag-order chips)
     var ftSel = setupCatSelector({
         pick: '#footerPick', order: '#footerOrder', name: 'td_ft_type', filter: 'ftType',
@@ -1513,7 +2089,7 @@ layui.use(['form','layer','upload','element'], function () {
             $('#footerPick input[name="td_ft_type"][data-pid="0"]').each(function () { tops.push(parseInt($(this).val(), 10)); });
             return tops;
         },
-        change: function () { autoPreview('footer'); }
+        change: function () { renderSiteChromePreview(); }
     });
     $('#ftCheckAll').on('click', ftSel.checkAll);
     $('#ftCheckNone').on('click', ftSel.checkNone);
@@ -1532,207 +2108,423 @@ layui.use(['form','layer','upload','element'], function () {
     }
 
     /* =========================================================
-       STEP 5 — Homepage sections
+       STEP 5 — Homepage: sections (legacy Think) OR page.blocks (PB)
     ========================================================= */
-    function sectionLabel(key) {
-        for (var i = 0; i < TD_SECTIONS.length; i++) { if (TD_SECTIONS[i].key === key) return TD_SECTIONS[i].label; }
-        return key;
-    }
-    // predefined sections whose category/count/method are editable (wired in the front components)
-    var LAYOUT_SECTIONS = { vod_hot: 1, vod_latest: 1, art_list: 1, manga_list: 1 };
+    CFG.homepage = CFG.homepage || {};
     var LAYOUT_OPTS = ['slider', 'grid', 'list'];
-    var CONTENT_TYPES = ['vod', 'art', 'manga', 'rank'];
-    var SORT_OPTS = ['hits', 'time', 'score'];
+    var SORT_OPTS = ['hits', 'hits_month', 'hits_week', 'hits_day', 'time', 'score'];
     var PERIOD_OPTS = ['day', 'week', 'month', 'all'];
+    var CONTENT_TYPES = ['vod', 'art', 'manga', 'rank'];
+    var DATA_MIDS = { vod_list: 1, art_list: 2, manga_list: 12, rank_list: 1, rank_inline: 1, rank_card: 1, hero: 1, website_list: 1, topic_list: 1 };
     function layoutLabel(o) { return o === 'slider' ? LANG.layout_slider : o === 'grid' ? LANG.layout_grid : (o === 'list' ? LANG.layout_list : o); }
     function ctypeLabel(t) { return t === 'art' ? LANG.ct_art : t === 'manga' ? LANG.ct_manga : (t === 'rank' ? LANG.ct_rank : LANG.ct_vod); }
     function sortLabel(o) { return o === 'time' ? LANG.sort_time : o === 'score' ? LANG.sort_score : LANG.sort_hits; }
     function periodLabel(o) { return o === 'day' ? LANG.period_day : o === 'month' ? LANG.period_month : (o === 'all' ? LANG.period_all : LANG.period_week); }
-    // editable "kind": null = not editable, 'hero' (sort), 'list' (layout), 'rank' (period)
-    function sectionKind(s) {
-        if (s.custom) { return s.content_type === 'rank' ? 'rank' : 'list'; }
-        if (s.key === 'hero') { return 'hero'; }
-        if (LAYOUT_SECTIONS[s.key]) { return 'list'; }
-        return null;
-    }
     function catName(id) {
         for (var i = 0; i < TD_CATS.length; i++) { if (String(TD_CATS[i].id) === String(id)) { return TD_CATS[i].name.replace(/^[\s　├]+/, ''); } }
         return id;
     }
-    // content mid for a section (so the category list only shows matching-type categories):
-    // vod / rank -> 1, art -> 2, manga -> 12.
-    function sectionMid(s) {
-        if (s.custom) { return s.content_type === 'art' ? 2 : (s.content_type === 'manga' ? 12 : 1); }
-        if (s.key === 'art_list') { return 2; }
-        if (s.key === 'manga_list') { return 12; }
-        return 1; // hero / vod_hot / vod_latest
-    }
     function catOptions(sel, mid) {
         var h = '<option value="">' + escAttr(LANG.cat_all) + '</option>';
         TD_CATS.forEach(function (c) {
-            if (mid && c.mid && c.mid !== mid) { return; } // only categories of the block's content type
+            if (mid && c.mid && c.mid !== mid) { return; }
             h += '<option value="' + c.id + '"' + (String(sel) === String(c.id) ? ' selected' : '') + '>' + escAttr(c.name) + '</option>';
         });
         return h;
     }
-    function metaText(s) {
-        var parts = [];
-        if (s.type_id) { parts.push(catName(s.type_id)); }
-        if (s.num) { parts.push(s.num); }
-        if (s.layout) { parts.push(layoutLabel(s.layout)); }
-        if (s.by) { parts.push(sortLabel(s.by)); }
-        if (s.period) { parts.push(periodLabel(s.period)); }
-        return parts.join(' · ');
-    }
-    function blockLabel(s) { return s.custom ? (s.title || LANG.custom_block) : sectionLabel(s.key); }
-    function buildSectionModel() {
-        var saved = CFG.homepage.sections || [];
-        var seen = {};
-        var model = [];
-        saved.forEach(function (s) {
-            if (!s || !s.key || seen[s.key]) return;
-            seen[s.key] = true;
-            model.push({ key: s.key, enabled: !!s.enabled, num: s.num || null, layout: s.layout || null,
-                type_id: s.type_id || null, by: s.by || null, period: s.period || null,
-                custom: !!s.custom, content_type: s.content_type || 'vod', title: s.title || '' });
-        });
-        TD_SECTIONS.forEach(function (c) {
-            if (!seen[c.key]) { seen[c.key] = true; model.push({ key: c.key, enabled: true, num: null, layout: null, type_id: null, custom: false }); }
-        });
-        return model;
-    }
-    function propsPanel(s) {
-        var kind = sectionKind(s);
-        var h = '<div class="td-sec-props" style="display:none;">';
-        if (s.custom) {
-            h += '<label class="td-sec-pf"><span>' + escAttr(LANG.block_title) + '</span><input type="text" class="layui-input td-sec-title" value="' + escAttr(s.title || '') + '" placeholder="' + escAttr(LANG.custom_block) + '"></label>';
-            h += '<label class="td-sec-pf"><span>' + escAttr(LANG.content_type) + '</span><select class="td-sec-ctype" lay-ignore>' +
-                CONTENT_TYPES.map(function (t) { return '<option value="' + t + '"' + (s.content_type === t ? ' selected' : '') + '>' + escAttr(ctypeLabel(t)) + '</option>'; }).join('') + '</select></label>';
-        }
-        h += '<label class="td-sec-pf"><span>' + escAttr(LANG.category) + '</span><select class="td-sec-cat" lay-ignore>' + catOptions(s.type_id, sectionMid(s)) + '</select></label>';
-        h += '<label class="td-sec-pf"><span>' + escAttr(LANG.items_count) + '</span><input type="number" class="layui-input td-sec-num" min="1" max="30" value="' + escAttr(s.num || '') + '" placeholder="' + escAttr(LANG.items_default) + '"></label>';
-        if (kind === 'hero') {
-            h += '<label class="td-sec-pf"><span>' + escAttr(LANG.sort_by) + '</span><select class="td-sec-by" lay-ignore>' +
-                SORT_OPTS.map(function (o) { return '<option value="' + o + '"' + (s.by === o ? ' selected' : '') + '>' + escAttr(sortLabel(o)) + '</option>'; }).join('') + '</select></label>';
-        } else if (kind === 'rank') {
-            h += '<label class="td-sec-pf"><span>' + escAttr(LANG.period) + '</span><select class="td-sec-period" lay-ignore>' +
-                PERIOD_OPTS.map(function (o) { return '<option value="' + o + '"' + (s.period === o ? ' selected' : '') + '>' + escAttr(periodLabel(o)) + '</option>'; }).join('') + '</select></label>';
-        } else {
-            h += '<label class="td-sec-pf"><span>' + escAttr(LANG.display_method) + '</span><select class="td-sec-layout" lay-ignore><option value="">' + escAttr(LANG.layout_default) + '</option>' +
-                LAYOUT_OPTS.map(function (o) { return '<option value="' + o + '"' + (s.layout === o ? ' selected' : '') + '>' + escAttr(layoutLabel(o)) + '</option>'; }).join('') + '</select></label>';
-        }
-        return h + '</div>';
-    }
-    function sectionLi(s) {
-        var hp = sectionKind(s) !== null;
-        var keyTag = s.custom ? '' : ' <span class="td-sec-key">(' + escAttr(s.key) + ')</span>';
-        return '<li class="td-sec-item' + (s.custom ? ' td-sec-custom' : '') + '" data-key="' + escAttr(s.key) + '" draggable="true">' +
-            '<div class="td-sec-row">' +
-              '<span class="td-sec-drag" title="' + escAttr(LANG.drag_hint) + '">&#8942;&#8942;</span>' +
-              '<span class="td-sec-label' + (hp ? ' has-props' : '') + '"><span class="td-sec-name">' + escAttr(blockLabel(s)) + '</span>' + keyTag +
-                (hp ? ' <i class="layui-icon td-sec-gear">&#xe620;</i>' : '') + '</span>' +
-              '<span class="td-sec-meta">' + escAttr(hp ? metaText(s) : '') + '</span>' +
-              (s.custom ? '<i class="layui-icon td-sec-del" title="' + escAttr(LANG.remove) + '">&#xe640;</i>' : '') +
-              '<input type="checkbox" lay-skin="switch" lay-filter="tdSecSwitch" lay-text="' + escAttr(LANG.section_switch) + '" class="td-sec-switch" ' + (s.enabled ? 'checked' : '') + '>' +
-            '</div>' + (hp ? propsPanel(s) : '') + '</li>';
-    }
-    function renderSections() {
-        $('#sectionList').html(buildSectionModel().map(sectionLi).join(''));
-        form.render('checkbox');
-        renderHomePreview();
-    }
+    function deepClone(o) { return JSON.parse(JSON.stringify(o)); }
     function renderHomePreview() { autoPreview('homepage'); }
-    renderSections();
 
-    // unique counter for custom blocks
-    var customSeq = 0;
-    (CFG.homepage.sections || []).forEach(function (s) {
-        var m = s && s.key ? String(s.key).match(/^custom_(\d+)$/) : null;
-        if (m) { customSeq = Math.max(customSeq, parseInt(m[1], 10)); }
-    });
-    // add a custom block
-    $('#addBlock').on('click', function () {
-        customSeq++;
-        var s = { key: 'custom_' + customSeq, enabled: true, custom: true, content_type: 'vod', type_id: null, num: null, layout: 'grid', title: '' };
-        $('#sectionList').append(sectionLi(s));
-        form.render('checkbox');
-        $('#sectionList li[data-key="custom_' + customSeq + '"] .td-sec-props').show();
-        autoPreview('homepage');
-    });
-    // remove a custom block
-    $('#sectionList').on('click', '.td-sec-del', function () { $(this).closest('li').remove(); autoPreview('homepage'); });
-    // expand/collapse a block's property panel
-    $('#sectionList').on('click', '.td-sec-label.has-props', function () { $(this).closest('li').find('.td-sec-props').slideToggle(120); });
-    // edit any property -> update label/meta + preview
-    $('#sectionList').on('change input', '.td-sec-num, .td-sec-layout, .td-sec-cat, .td-sec-ctype, .td-sec-title, .td-sec-by, .td-sec-period', function () {
-        var $li = $(this).closest('li');
-        if ($(this).hasClass('td-sec-title')) { $li.find('.td-sec-name').text($(this).val() || LANG.custom_block); }
-        // content_type change on a custom block -> swap the kind-specific field (layout<->period)
-        if ($(this).hasClass('td-sec-ctype')) {
-            var s2 = { custom: true, content_type: $(this).val(),
-                title: $li.find('.td-sec-title').val(), type_id: $li.find('.td-sec-cat').val(),
-                num: $li.find('.td-sec-num').val(), layout: $li.find('.td-sec-layout').val(),
-                by: $li.find('.td-sec-by').val(), period: $li.find('.td-sec-period').val() };
-            $li.find('.td-sec-props').replaceWith(propsPanel(s2));
-            $li.find('.td-sec-props').show();
+    var collectHomepage;
+
+    if (!TD_PB_ENABLED) {
+        /* ---- Legacy sections mode (prism / Think themes) ---- */
+        if (!CFG.homepage.sections) { CFG.homepage.sections = []; }
+        var LAYOUT_SECTIONS = { vod_hot: 1, vod_latest: 1, art_list: 1, manga_list: 1 };
+        function sectionLabel(key) {
+            for (var i = 0; i < TD_SECTIONS.length; i++) { if (TD_SECTIONS[i].key === key) return TD_SECTIONS[i].label; }
+            return key;
         }
-        $li.find('.td-sec-meta').text(metaText({ type_id: $li.find('.td-sec-cat').val(), num: $li.find('.td-sec-num').val(),
-            layout: $li.find('.td-sec-layout').val(), by: $li.find('.td-sec-by').val(), period: $li.find('.td-sec-period').val() }));
-        autoPreview('homepage');
-    });
-    // switch on/off
-    form.on('switch(tdSecSwitch)', function () { renderHomePreview(); });
-
-    // drag-and-drop reorder (HTML5)
-    var dragEl = null;
-    $('#sectionList').on('dragstart', 'li', function (e) {
-        dragEl = this;
-        $(this).addClass('td-dragging');
-        try { e.originalEvent.dataTransfer.effectAllowed = 'move'; e.originalEvent.dataTransfer.setData('text/plain', ''); } catch (_) {}
-    });
-    $('#sectionList').on('dragend', 'li', function () {
-        $('#sectionList li').removeClass('td-dragging td-drop-before td-drop-after');
-        dragEl = null;
-        autoPreview('homepage');
-    });
-    $('#sectionList').on('dragover', 'li', function (e) {
-        e.preventDefault();
-        if (!dragEl || dragEl === this) return;
-        var rect = this.getBoundingClientRect();
-        var after = (e.originalEvent.clientY - rect.top) > rect.height / 2;
-        $('#sectionList li').removeClass('td-drop-before td-drop-after');
-        $(this).addClass(after ? 'td-drop-after' : 'td-drop-before');
-    });
-    $('#sectionList').on('drop', 'li', function (e) {
-        e.preventDefault();
-        if (!dragEl || dragEl === this) return;
-        var rect = this.getBoundingClientRect();
-        var after = (e.originalEvent.clientY - rect.top) > rect.height / 2;
-        if (after) { $(dragEl).insertAfter(this); } else { $(dragEl).insertBefore(this); }
-        $('#sectionList li').removeClass('td-drop-before td-drop-after');
-    });
-
-    function collectHomepage() {
-        var sections = [];
-        $('#sectionList li').each(function () {
-            var $li = $(this);
-            var custom = $li.hasClass('td-sec-custom');
-            var item = { key: String($li.data('key')), enabled: $li.find('.td-sec-switch').prop('checked') };
-            var $cat = $li.find('.td-sec-cat'), $num = $li.find('.td-sec-num'), $lay = $li.find('.td-sec-layout');
-            if ($cat.length) { var c = parseInt($cat.val(), 10); if (c > 0) { item.type_id = c; } }
-            if ($num.length) { var n = parseInt($num.val(), 10); if (n > 0) { item.num = n; } }
-            if ($lay.length) { var l = $lay.val(); if (l) { item.layout = l; } }
-            var $by = $li.find('.td-sec-by'); if ($by.length) { var b = $by.val(); if (b) { item.by = b; } }
-            var $per = $li.find('.td-sec-period'); if ($per.length) { var p = $per.val(); if (p) { item.period = p; } }
-            if (custom) {
-                item.custom = true;
-                item.content_type = $li.find('.td-sec-ctype').val() || 'vod';
-                item.title = $li.find('.td-sec-title').val().trim();
+        function sectionKind(s) {
+            if (s.custom) { return s.content_type === 'rank' ? 'rank' : 'list'; }
+            if (s.key === 'hero') { return 'hero'; }
+            if (LAYOUT_SECTIONS[s.key]) { return 'list'; }
+            return null;
+        }
+        function sectionMid(s) {
+            if (s.custom) { return s.content_type === 'art' ? 2 : (s.content_type === 'manga' ? 12 : 1); }
+            if (s.key === 'art_list') { return 2; }
+            if (s.key === 'manga_list') { return 12; }
+            return 1;
+        }
+        function metaText(s) {
+            var parts = [];
+            if (s.type_id) { parts.push(catName(s.type_id)); }
+            if (s.num) { parts.push(s.num); }
+            if (s.layout) { parts.push(layoutLabel(s.layout)); }
+            if (s.by) { parts.push(sortLabel(s.by)); }
+            if (s.period) { parts.push(periodLabel(s.period)); }
+            return parts.join(' · ');
+        }
+        function blockLabel(s) { return s.custom ? (s.title || LANG.custom_block) : sectionLabel(s.key); }
+        function buildSectionModel() {
+            var saved = CFG.homepage.sections || [];
+            var seen = {};
+            var model = [];
+            saved.forEach(function (s) {
+                if (!s || !s.key || seen[s.key]) return;
+                seen[s.key] = true;
+                model.push({ key: s.key, enabled: !!s.enabled, num: s.num || null, layout: s.layout || null,
+                    type_id: s.type_id || null, by: s.by || null, period: s.period || null,
+                    custom: !!s.custom, content_type: s.content_type || 'vod', title: s.title || '' });
+            });
+            TD_SECTIONS.forEach(function (c) {
+                if (!seen[c.key]) { seen[c.key] = true; model.push({ key: c.key, enabled: true, num: null, layout: null, type_id: null, custom: false }); }
+            });
+            return model;
+        }
+        function secPropsPanel(s) {
+            var kind = sectionKind(s);
+            var h = '<div class="td-sec-props" style="display:none;">';
+            if (s.custom) {
+                h += '<label class="td-sec-pf"><span>' + escAttr(LANG.block_title) + '</span><input type="text" class="layui-input td-sec-title" value="' + escAttr(s.title || '') + '" placeholder="' + escAttr(LANG.custom_block) + '"></label>';
+                h += '<label class="td-sec-pf"><span>' + escAttr(LANG.content_type) + '</span><select class="td-sec-ctype" lay-ignore>' +
+                    CONTENT_TYPES.map(function (t) { return '<option value="' + t + '"' + (s.content_type === t ? ' selected' : '') + '>' + escAttr(ctypeLabel(t)) + '</option>'; }).join('') + '</select></label>';
             }
-            sections.push(item);
+            h += '<label class="td-sec-pf"><span>' + escAttr(LANG.category) + '</span><select class="td-sec-cat" lay-ignore>' + catOptions(s.type_id, sectionMid(s)) + '</select></label>';
+            h += '<label class="td-sec-pf"><span>' + escAttr(LANG.items_count) + '</span><input type="number" class="layui-input td-sec-num" min="1" max="30" value="' + escAttr(s.num || '') + '" placeholder="' + escAttr(LANG.items_default) + '"></label>';
+            if (kind === 'hero') {
+                h += '<label class="td-sec-pf"><span>' + escAttr(LANG.sort_by) + '</span><select class="td-sec-by" lay-ignore>' +
+                    ['hits', 'time', 'score'].map(function (o) { return '<option value="' + o + '"' + (s.by === o ? ' selected' : '') + '>' + escAttr(sortLabel(o)) + '</option>'; }).join('') + '</select></label>';
+            } else if (kind === 'rank') {
+                h += '<label class="td-sec-pf"><span>' + escAttr(LANG.period) + '</span><select class="td-sec-period" lay-ignore>' +
+                    PERIOD_OPTS.map(function (o) { return '<option value="' + o + '"' + (s.period === o ? ' selected' : '') + '>' + escAttr(periodLabel(o)) + '</option>'; }).join('') + '</select></label>';
+            } else {
+                h += '<label class="td-sec-pf"><span>' + escAttr(LANG.display_method) + '</span><select class="td-sec-layout" lay-ignore><option value="">' + escAttr(LANG.layout_default) + '</option>' +
+                    LAYOUT_OPTS.map(function (o) { return '<option value="' + o + '"' + (s.layout === o ? ' selected' : '') + '>' + escAttr(layoutLabel(o)) + '</option>'; }).join('') + '</select></label>';
+            }
+            return h + '</div>';
+        }
+        function sectionLi(s) {
+            var hp = sectionKind(s) !== null;
+            var keyTag = s.custom ? '' : ' <span class="td-sec-key">(' + escAttr(s.key) + ')</span>';
+            return '<li class="td-sec-item' + (s.custom ? ' td-sec-custom' : '') + '" data-key="' + escAttr(s.key) + '" draggable="true">' +
+                '<div class="td-sec-row">' +
+                  '<span class="td-sec-drag" title="' + escAttr(LANG.drag_hint) + '">&#8942;&#8942;</span>' +
+                  '<span class="td-sec-label' + (hp ? ' has-props' : '') + '"><span class="td-sec-name">' + escAttr(blockLabel(s)) + '</span>' + keyTag +
+                    (hp ? ' <i class="layui-icon td-sec-gear">&#xe620;</i>' : '') + '</span>' +
+                  '<span class="td-sec-meta">' + escAttr(hp ? metaText(s) : '') + '</span>' +
+                  (s.custom ? '<i class="layui-icon td-sec-del" title="' + escAttr(LANG.remove) + '">&#xe640;</i>' : '') +
+                  '<input type="checkbox" lay-skin="switch" lay-filter="tdSecSwitch" lay-text="' + escAttr(LANG.section_switch) + '" class="td-sec-switch" ' + (s.enabled ? 'checked' : '') + '>' +
+                '</div>' + (hp ? secPropsPanel(s) : '') + '</li>';
+        }
+        function renderSections() {
+            $('#sectionList').html(buildSectionModel().map(sectionLi).join(''));
+            form.render('checkbox');
+            renderHomePreview();
+        }
+        renderSections();
+
+        var customSeq = 0;
+        (CFG.homepage.sections || []).forEach(function (s) {
+            var m = s && s.key ? String(s.key).match(/^custom_(\d+)$/) : null;
+            if (m) { customSeq = Math.max(customSeq, parseInt(m[1], 10)); }
         });
-        CFG.homepage.sections = sections;
-        return { sections: sections };
+        $('#addBlock').on('click', function () {
+            customSeq++;
+            var s = { key: 'custom_' + customSeq, enabled: true, custom: true, content_type: 'vod', type_id: null, num: null, layout: 'grid', title: '' };
+            $('#sectionList').append(sectionLi(s));
+            form.render('checkbox');
+            $('#sectionList li[data-key="custom_' + customSeq + '"] .td-sec-props').show();
+            autoPreview('homepage');
+        });
+        $('#sectionList').on('click', '.td-sec-del', function () { $(this).closest('li').remove(); autoPreview('homepage'); });
+        $('#sectionList').on('click', '.td-sec-label.has-props', function () { $(this).closest('li').find('.td-sec-props').slideToggle(120); });
+        $('#sectionList').on('change input', '.td-sec-num, .td-sec-layout, .td-sec-cat, .td-sec-ctype, .td-sec-title, .td-sec-by, .td-sec-period', function () {
+            var $li = $(this).closest('li');
+            if ($(this).hasClass('td-sec-title')) { $li.find('.td-sec-name').text($(this).val() || LANG.custom_block); }
+            if ($(this).hasClass('td-sec-ctype')) {
+                var s2 = { custom: true, content_type: $(this).val(),
+                    title: $li.find('.td-sec-title').val(), type_id: $li.find('.td-sec-cat').val(),
+                    num: $li.find('.td-sec-num').val(), layout: $li.find('.td-sec-layout').val(),
+                    by: $li.find('.td-sec-by').val(), period: $li.find('.td-sec-period').val() };
+                $li.find('.td-sec-props').replaceWith(secPropsPanel(s2));
+                $li.find('.td-sec-props').show();
+            }
+            $li.find('.td-sec-meta').text(metaText({ type_id: $li.find('.td-sec-cat').val(), num: $li.find('.td-sec-num').val(),
+                layout: $li.find('.td-sec-layout').val(), by: $li.find('.td-sec-by').val(), period: $li.find('.td-sec-period').val() }));
+            autoPreview('homepage');
+        });
+        form.on('switch(tdSecSwitch)', function () { renderHomePreview(); });
+
+        var dragElSec = null;
+        $('#sectionList').on('dragstart', 'li', function (e) {
+            dragElSec = this;
+            $(this).addClass('td-dragging');
+            try { e.originalEvent.dataTransfer.effectAllowed = 'move'; e.originalEvent.dataTransfer.setData('text/plain', ''); } catch (_) {}
+        });
+        $('#sectionList').on('dragend', 'li', function () {
+            $('#sectionList li').removeClass('td-dragging td-drop-before td-drop-after');
+            dragElSec = null;
+            autoPreview('homepage');
+        });
+        $('#sectionList').on('dragover', 'li', function (e) {
+            e.preventDefault();
+            if (!dragElSec || dragElSec === this) return;
+            var rect = this.getBoundingClientRect();
+            var after = (e.originalEvent.clientY - rect.top) > rect.height / 2;
+            $('#sectionList li').removeClass('td-drop-before td-drop-after');
+            $(this).addClass(after ? 'td-drop-after' : 'td-drop-before');
+        });
+        $('#sectionList').on('drop', 'li', function (e) {
+            e.preventDefault();
+            if (!dragElSec || dragElSec === this) return;
+            var rect = this.getBoundingClientRect();
+            var after = (e.originalEvent.clientY - rect.top) > rect.height / 2;
+            if (after) { $(dragElSec).insertAfter(this); } else { $(dragElSec).insertBefore(this); }
+            $('#sectionList li').removeClass('td-drop-before td-drop-after');
+        });
+
+        collectHomepage = function () {
+            var sections = [];
+            $('#sectionList li').each(function () {
+                var $li = $(this);
+                var custom = $li.hasClass('td-sec-custom');
+                var item = { key: String($li.data('key')), enabled: $li.find('.td-sec-switch').prop('checked') };
+                var $cat = $li.find('.td-sec-cat'), $num = $li.find('.td-sec-num'), $lay = $li.find('.td-sec-layout');
+                if ($cat.length) { var c = parseInt($cat.val(), 10); if (c > 0) { item.type_id = c; } }
+                if ($num.length) { var n = parseInt($num.val(), 10); if (n > 0) { item.num = n; } }
+                if ($lay.length) { var l = $lay.val(); if (l) { item.layout = l; } }
+                var $by = $li.find('.td-sec-by'); if ($by.length) { var b = $by.val(); if (b) { item.by = b; } }
+                var $per = $li.find('.td-sec-period'); if ($per.length) { var p = $per.val(); if (p) { item.period = p; } }
+                if (custom) {
+                    item.custom = true;
+                    item.content_type = $li.find('.td-sec-ctype').val() || 'vod';
+                    item.title = $li.find('.td-sec-title').val().trim();
+                }
+                sections.push(item);
+            });
+            CFG.homepage.sections = sections;
+            return { sections: sections };
+        };
+    } else {
+        /* ---- Page Builder page.blocks mode ---- */
+        if (!CFG.homepage.page) {
+            CFG.homepage.page = { template: 'index/index', layout: 'base', blocks: [] };
+        }
+        if (!CFG.homepage.page.blocks) { CFG.homepage.page.blocks = []; }
+
+        function blockMeta(block) {
+            var p = block.props || {}, parts = [];
+            if (p.title) { parts.push(p.title); }
+            if (p.num) { parts.push(p.num); }
+            if (p.render) { parts.push(layoutLabel(p.render)); }
+            if (p.by) { parts.push(sortLabel(p.by)); }
+            if (p.period) { parts.push(periodLabel(p.period)); }
+            if (p.type) { parts.push(catName(p.type)); }
+            return parts.join(' · ');
+        }
+        function walkBlocks(arr, pathPrefix, depth, out) {
+            if (!arr || !arr.length) { return; }
+            arr.forEach(function (b, i) {
+                var path = pathPrefix ? (pathPrefix + '/' + i) : String(i);
+                out.push({ path: path, block: b, depth: depth });
+                if (b.slots) {
+                    Object.keys(b.slots).forEach(function (sk) {
+                        walkBlocks(b.slots[sk], path + '/' + sk, depth + 1, out);
+                    });
+                }
+            });
+        }
+        function getBlockRef(path) {
+            if (!path || path.indexOf('/') === -1) {
+                return { arr: CFG.homepage.page.blocks, index: parseInt(path, 10) };
+            }
+            var segs = path.split('/');
+            var cur = CFG.homepage.page.blocks[parseInt(segs[0], 10)];
+            var i = 1;
+            while (i < segs.length - 2) {
+                var slotKey = segs[i];
+                var childIdx = parseInt(segs[i + 1], 10);
+                if (!cur.slots || !cur.slots[slotKey] || !cur.slots[slotKey][childIdx]) { return null; }
+                cur = cur.slots[slotKey][childIdx];
+                i += 2;
+            }
+            var slotKey2 = segs[i];
+            var childIdx2 = parseInt(segs[i + 1], 10);
+            if (!cur.slots || !cur.slots[slotKey2]) { return null; }
+            return { arr: cur.slots[slotKey2], index: childIdx2 };
+        }
+        function propsPanel(block) {
+            var comp = block.component, p = block.props || {}, mid = DATA_MIDS[comp] || 1;
+            var h = '<div class="td-sec-props" style="display:none;">';
+            if (comp === 'section') {
+                h += '<label class="td-sec-pf"><span>' + escAttr(LANG.block_title) + '</span><input type="text" class="layui-input td-bp-title" value="' + escAttr(p.title || '') + '"></label>';
+                h += '<label class="td-sec-pf"><span>' + escAttr(LANG.more_url) + '</span><input type="text" class="layui-input td-bp-more" value="' + escAttr(p.more_url || '') + '" placeholder="vod/index"></label>';
+            }
+            if (comp === 'hero' || comp === 'vod_list' || comp === 'art_list' || comp === 'manga_list' || comp === 'website_list') {
+                h += '<label class="td-sec-pf"><span>' + escAttr(LANG.category) + '</span><select class="td-bp-type" lay-ignore>' + catOptions(p.type || 0, mid) + '</select></label>';
+                h += '<label class="td-sec-pf"><span>' + escAttr(LANG.items_count) + '</span><input type="number" class="layui-input td-bp-num" min="1" max="50" value="' + escAttr(p.num || '') + '" placeholder="' + escAttr(LANG.items_default) + '"></label>';
+            }
+            if (comp === 'hero' || comp === 'vod_list' || comp === 'art_list' || comp === 'manga_list') {
+                h += '<label class="td-sec-pf"><span>' + escAttr(LANG.sort_by) + '</span><select class="td-bp-by" lay-ignore>' +
+                    SORT_OPTS.map(function (o) { return '<option value="' + o + '"' + (p.by === o ? ' selected' : '') + '>' + escAttr(sortLabel(o)) + '</option>'; }).join('') + '</select></label>';
+            }
+            if (comp === 'vod_list' || comp === 'art_list' || comp === 'manga_list') {
+                h += '<label class="td-sec-pf"><span>' + escAttr(LANG.display_method) + '</span><select class="td-bp-render" lay-ignore><option value="">' + escAttr(LANG.layout_default) + '</option>' +
+                    LAYOUT_OPTS.map(function (o) { return '<option value="' + o + '"' + (p.render === o ? ' selected' : '') + '>' + escAttr(layoutLabel(o)) + '</option>'; }).join('') + '</select></label>';
+            }
+            if (comp === 'live_list' || comp === 'topic_list' || comp === 'gbook_list') {
+                h += '<label class="td-sec-pf"><span>' + escAttr(LANG.items_count) + '</span><input type="number" class="layui-input td-bp-num" min="1" max="50" value="' + escAttr(p.num || '') + '"></label>';
+            }
+            if (comp === 'rank_list' || comp === 'rank_inline') {
+                h += '<label class="td-sec-pf"><span>' + escAttr(LANG.category) + '</span><select class="td-bp-type" lay-ignore>' + catOptions(p.type || 0, 1) + '</select></label>';
+                h += '<label class="td-sec-pf"><span>' + escAttr(LANG.items_count) + '</span><input type="number" class="layui-input td-bp-num" min="1" max="50" value="' + escAttr(p.num || '') + '"></label>';
+                if (comp === 'rank_inline') {
+                    h += '<label class="td-sec-pf"><span>' + escAttr(LANG.period) + '</span><select class="td-bp-period" lay-ignore>' +
+                        PERIOD_OPTS.map(function (o) { return '<option value="' + o + '"' + (p.period === o ? ' selected' : '') + '>' + escAttr(periodLabel(o)) + '</option>'; }).join('') + '</select></label>';
+                }
+            }
+            if (comp === 'rank_card') {
+                h += '<label class="td-sec-pf"><span>' + escAttr(LANG.block_title) + '</span><input type="text" class="layui-input td-bp-title" value="' + escAttr(p.title || '') + '"></label>';
+                h += '<label class="td-sec-pf"><span>' + escAttr(LANG.category) + '</span><select class="td-bp-type" lay-ignore>' + catOptions(p.type || 0, 1) + '</select></label>';
+                h += '<label class="td-sec-pf"><span>' + escAttr(LANG.items_count) + '</span><input type="number" class="layui-input td-bp-num" min="1" max="50" value="' + escAttr(p.num || '') + '"></label>';
+            }
+            return h + '</div>';
+        }
+        function hasProps(block) {
+            var c = block.component;
+            return c === 'section' || c === 'hero' || c === 'vod_list' || c === 'art_list' || c === 'manga_list' ||
+                c === 'live_list' || c === 'topic_list' || c === 'gbook_list' || c === 'rank_list' || c === 'rank_inline' || c === 'rank_card';
+        }
+        function blockLi(item) {
+            var b = item.block, hp = hasProps(b);
+            var drag = item.depth === 0 ? '<span class="td-sec-drag" title="' + escAttr(LANG.drag_hint) + '">&#8942;&#8942;</span>' : '<span class="td-sec-drag" style="opacity:.3">&#8942;</span>';
+            return '<li class="td-sec-item td-block-item" data-path="' + escAttr(item.path) + '" data-depth="' + item.depth + '"' + (item.depth === 0 ? ' draggable="true"' : '') + '>' +
+                '<div class="td-sec-row">' + drag +
+                '<span class="td-sec-label' + (hp ? ' has-props' : '') + '"><span class="td-sec-name">' + escAttr(b.component) + '</span> <span class="td-sec-key">(' + escAttr(item.path) + ')</span>' +
+                (hp ? ' <i class="layui-icon td-sec-gear">&#xe620;</i>' : '') + '</span>' +
+                '<span class="td-sec-meta">' + escAttr(blockMeta(b)) + '</span>' +
+                '<i class="layui-icon td-sec-del" title="' + escAttr(LANG.remove) + '">&#xe640;</i>' +
+                '</div>' + (hp ? propsPanel(b) : '') + '</li>';
+        }
+        function syncJsonEditor() {
+            $('#blockJsonEditor').val(JSON.stringify(CFG.homepage.page, null, 2));
+        }
+        function renderBlocks() {
+            if (!$('#blockList').length) {
+                renderHomePreview();
+                return;
+            }
+            var flat = [];
+            walkBlocks(CFG.homepage.page.blocks, '', 0, flat);
+            $('#blockList').html(flat.map(blockLi).join(''));
+            syncJsonEditor();
+            renderHomePreview();
+        }
+        function applyPropsFromRow($li) {
+            var ref = getBlockRef(String($li.data('path')));
+            if (!ref || !ref.arr[ref.index]) { return; }
+            var b = ref.arr[ref.index];
+            if (!b.props) { b.props = {}; }
+            var $t = $li.find('.td-bp-title'); if ($t.length) { b.props.title = $t.val().trim(); }
+            var $m = $li.find('.td-bp-more'); if ($m.length) { b.props.more_url = $m.val().trim(); }
+            var $n = $li.find('.td-bp-num'); if ($n.length) { var n = parseInt($n.val(), 10); if (n > 0) { b.props.num = n; } else { delete b.props.num; } }
+            var $ty = $li.find('.td-bp-type'); if ($ty.length) { var t = parseInt($ty.val(), 10); b.props.type = t > 0 ? t : 0; }
+            var $by = $li.find('.td-bp-by'); if ($by.length) { b.props.by = $by.val(); }
+            var $r = $li.find('.td-bp-render'); if ($r.length) { var rv = $r.val(); if (rv) { b.props.render = rv; } else { delete b.props.render; } }
+            var $p = $li.find('.td-bp-period'); if ($p.length) { b.props.period = $p.val(); }
+            $li.find('.td-sec-meta').text(blockMeta(b));
+        }
+        if ($('#blockList').length) {
+            TD_BLOCK_CATALOG.forEach(function (c) {
+                $('#blockAddSelect').append('<option value="' + escAttr(c.id) + '">' + escAttr(c.label) + '</option>');
+            });
+        }
+        renderBlocks();
+        $('#addBlock').on('click', function () {
+            var id = $('#blockAddSelect').val();
+            var preset = null;
+            TD_BLOCK_CATALOG.forEach(function (c) { if (c.id === id) { preset = c.block; } });
+            if (!preset) { return; }
+            CFG.homepage.page.blocks.push(deepClone(preset));
+            renderBlocks();
+        });
+        $('#blockList').on('click', '.td-sec-del', function () {
+            var ref = getBlockRef(String($(this).closest('li').data('path')));
+            if (!ref) { return; }
+            ref.arr.splice(ref.index, 1);
+            renderBlocks();
+        });
+        $('#blockList').on('click', '.td-sec-label.has-props', function () {
+            $(this).closest('li').find('.td-sec-props').slideToggle(120);
+        });
+        $('#blockList').on('change input', '.td-bp-title, .td-bp-more, .td-bp-num, .td-bp-type, .td-bp-by, .td-bp-render, .td-bp-period', function () {
+            applyPropsFromRow($(this).closest('li'));
+            autoPreview('homepage');
+        });
+        $('#toggleBlockJson').on('click', function () {
+            var $ta = $('#blockJsonEditor');
+            if ($ta.is(':visible')) { $ta.slideUp(120); return; }
+            syncJsonEditor();
+            $ta.slideDown(120);
+        });
+        $('#blockJsonEditor').on('change', function () {
+            try {
+                var parsed = JSON.parse($(this).val());
+                if (parsed && parsed.blocks && parsed.blocks.length) {
+                    CFG.homepage.page = parsed;
+                    renderBlocks();
+                }
+            } catch (e) {
+                layer.msg(LANG.save_err || 'JSON error');
+            }
+        });
+        var dragEl = null;
+        $('#blockList').on('dragstart', 'li[draggable="true"]', function (e) {
+            dragEl = this;
+            $(this).addClass('td-dragging');
+            try { e.originalEvent.dataTransfer.effectAllowed = 'move'; e.originalEvent.dataTransfer.setData('text/plain', ''); } catch (_) {}
+        });
+        $('#blockList').on('dragend', 'li[draggable="true"]', function () {
+            $('#blockList li').removeClass('td-dragging td-drop-before td-drop-after');
+            dragEl = null;
+            autoPreview('homepage');
+        });
+        $('#blockList').on('dragover', 'li[draggable="true"]', function (e) {
+            e.preventDefault();
+            if (!dragEl || dragEl === this) { return; }
+            var rect = this.getBoundingClientRect();
+            var after = (e.originalEvent.clientY - rect.top) > rect.height / 2;
+            $('#blockList li[draggable="true"]').removeClass('td-drop-before td-drop-after');
+            $(this).addClass(after ? 'td-drop-after' : 'td-drop-before');
+        });
+        $('#blockList').on('drop', 'li[draggable="true"]', function (e) {
+            e.preventDefault();
+            if (!dragEl || dragEl === this) { return; }
+            var from = parseInt($(dragEl).data('path'), 10);
+            var to = parseInt($(this).data('path'), 10);
+            if (isNaN(from) || isNaN(to)) { return; }
+            var rect = this.getBoundingClientRect();
+            var after = (e.originalEvent.clientY - rect.top) > rect.height / 2;
+            var list = CFG.homepage.page.blocks;
+            var item = list.splice(from, 1)[0];
+            var insertAt = to + (after ? 1 : 0);
+            if (from < insertAt) { insertAt--; }
+            list.splice(insertAt, 0, item);
+            renderBlocks();
+        });
+
+        collectHomepage = function () {
+            try {
+                var raw = $('#blockJsonEditor').val();
+                if ($('#blockJsonEditor').is(':visible') && raw) {
+                    var parsed = JSON.parse(raw);
+                    if (parsed && parsed.blocks) { CFG.homepage.page = parsed; }
+                }
+            } catch (e) { /* keep CFG */ }
+            return { page: deepClone(CFG.homepage.page) };
+        };
     }
 
     /* =========================================================
@@ -1740,6 +2532,18 @@ layui.use(['form','layer','upload','element'], function () {
     ========================================================= */
     function collectStep(step) {
         if (step === 'attributes') { return a; }
+        if (step === 'site_chrome') {
+            return {
+                attributes: {
+                    logo: a.logo || '',
+                    footer_copyright: a.footer_copyright || '',
+                    default_avatar: a.default_avatar || '',
+                    header_chrome: a.header_chrome || 'site_nav'
+                },
+                navbar: collectNavbar(),
+                footer: collectFooter()
+            };
+        }
         if (step === 'navbar') { return collectNavbar(); }
         if (step === 'footer') { return collectFooter(); }
         if (step === 'homepage') { return collectHomepage(); }
@@ -1748,7 +2552,8 @@ layui.use(['form','layer','upload','element'], function () {
     function saveStep(step, done, quiet) {
         var data = collectStep(step);
         var load = layer.load(1);
-        $.post(TD_URLS.saveStep, { theme: TD_THEME, step: step, data: JSON.stringify(data) }, function (res) {
+        // security_csrf_admin 开启后所有后台 POST 必须带 __token__（与同页 applyPreset 等一致）
+        $.post(TD_URLS.saveStep, { theme: TD_THEME, step: step, data: JSON.stringify(data), __token__: TD_TOKEN }, function (res) {
             layer.close(load);
             if (res && res.code == 1) {
                 if (!quiet) { layer.msg(res.msg || LANG.saved, { icon: 1 }); }
@@ -1780,25 +2585,226 @@ layui.use(['form','layer','upload','element'], function () {
         }, 'json').fail(function () { layer.close(load); layer.msg(LANG.preview_err, { icon: 2 }); });
     });
 
+    $(document).on('click', '.td-preset-card', function () {
+        var $card = $(this);
+        var grid = $card.closest('.td-preset-grid');
+        grid.find('.td-preset-card').removeClass('active');
+        $card.addClass('active');
+        $('#overviewPreset').val($card.data('preset') || 'preset-clean');
+    });
+
+    function applyPresetToCurrent(id, keepHomepage, after) {
+        if (!TD_PB_ENABLED) {
+            if (after) { after(false); }
+            return;
+        }
+        if (typeof keepHomepage === 'function') { after = keepHomepage; keepHomepage = true; }
+        if (typeof keepHomepage === 'undefined') { keepHomepage = true; }
+        var load = layer.load(1);
+        var payload = { preset_id: id, keep_homepage: keepHomepage ? 1 : 0, keep_draft: keepHomepage ? 1 : 0 };
+        $.post(TD_URLS.saveStep, {
+            theme: TD_THEME,
+            step: 'preset',
+            data: JSON.stringify(payload),
+            keep_homepage: keepHomepage ? 1 : 0,
+            __token__: TD_TOKEN
+        }, function (res) {
+            layer.close(load);
+            if (res && res.code == 1) {
+                TD_CUR_PRESET = id;
+                TD_PRESET_MISMATCH = true;
+                if (res.preview_url) {
+                    TD_PREVIEW_URL = res.preview_url;
+                }
+                if (after) { after(true, res); }
+            } else {
+                layer.msg((res && res.msg) ? res.msg : LANG.save_err, { icon: 2 });
+                if (after) { after(false); }
+            }
+        }, 'json').fail(function () {
+            layer.close(load);
+            layer.msg(LANG.save_err_net, { icon: 2 });
+            if (after) { after(false); }
+        });
+    }
+
+    function resetPresetOnCurrent(id, after) {
+        if (!TD_PB_ENABLED) {
+            if (after) { after(false); }
+            return;
+        }
+        layer.confirm(LANG.confirm_preset_reset || '', {
+            icon: 3,
+            title: LANG.confirm_preset_reset_title || LANG.preset_reset_current
+        }, function (cidx) {
+            layer.close(cidx);
+            var load = layer.load(1);
+            $.post(TD_URLS.saveStep, {
+                theme: TD_THEME,
+                step: 'preset_reset',
+                data: JSON.stringify({ preset_id: id }),
+                __token__: TD_TOKEN
+            }, function (res) {
+                layer.close(load);
+                if (res && res.code == 1) {
+                    TD_CUR_PRESET = id;
+                    TD_PRESET_MISMATCH = true;
+                    if (res.preview_url) {
+                        TD_PREVIEW_URL = res.preview_url;
+                    }
+                    if (res.draft && typeof res.draft === 'object') {
+                        CFG = res.draft;
+                    }
+                    layer.msg(LANG.preset_reset_ok || LANG.saved, { icon: 1, time: 1800 }, function () {
+                        location.reload();
+                    });
+                    if (after) { after(true, res); }
+                } else {
+                    layer.msg((res && res.msg) ? res.msg : LANG.save_err, { icon: 2 });
+                    if (after) { after(false); }
+                }
+            }, 'json').fail(function () {
+                layer.close(load);
+                layer.msg(LANG.save_err_net, { icon: 2 });
+                if (after) { after(false); }
+            });
+        });
+    }
+
+    function openApplyPresetModal() {
+        var id = $('#overviewPreset').val() || 'preset-clean';
+        ensureTopPresetModalStyles(tdLayerDoc());
+        tdLayer().open({
+            type: 1,
+            title: LANG.preset_apply_overwrite_title || LANG.preset_apply_current,
+            area: ['680px', 'auto'],
+            shade: 0.35,
+            zIndex: 19999999,
+            skin: 'td-preset-layer',
+            content: buildPresetChoiceModalHtml(id, 'apply'),
+            btn: false,
+            success: function (layero, idx) {
+                bindPresetChoiceModal(layero, idx, 0, id, 'apply');
+            }
+        });
+    }
+
+    $('#btnPresetApply').on('click', function () {
+        openApplyPresetModal();
+    });
+
+    function setWizardStep(n) {
+        $('#newThemeWizardSteps span').removeClass('on').filter('[data-wstep="' + n + '"]').addClass('on');
+        $('#newThemeFields .td-wizard-pane').removeClass('on').filter('[data-wstep="' + n + '"]').addClass('on');
+        if (n === 3) {
+            var base = $('input[name="new_base"]:checked').val() || 'draft';
+            var name = ($('#newThemeName').val() || '').trim();
+            var dir = ($('#newThemeDir').val() || '').trim().toLowerCase();
+            var baseLabel = base === 'draft' ? (LANG.wizard_base_draft || 'draft') : (LANG.wizard_base_preset || 'preset');
+            $('#wizardConfirmSummary').html(
+                '<div>' + baseLabel + '</div>'
+                + '<div><b>' + $('<div>').text(name).html() + '</b> / <code>' + $('<div>').text(dir).html() + '</code></div>'
+            );
+        }
+    }
+    function goPublishNewWizard() {
+        // jump to publish step and open save-as-new fold
+        $('.td-nav-item[data-step="4"]').trigger('click');
+        $('input[name="pub_mode"][value="new"]').prop('checked', true).trigger('change');
+        var fold = document.getElementById('pubNewFold');
+        if (fold) { fold.open = true; }
+        setWizardStep(1);
+        var id = $('#overviewPreset').val() || 'preset-clean';
+        if (!$('#newThemeDir').val()) {
+            $('#newThemeDir').val(String(id).replace(/^preset-/, 'site-'));
+        }
+    }
+    $('#btnWizardNext1').on('click', function () { setWizardStep(2); });
+    $('#btnWizardBack2').on('click', function () { setWizardStep(1); });
+    $('#btnWizardNext2').on('click', function () {
+        var name = ($('#newThemeName').val() || '').trim();
+        var dir = ($('#newThemeDir').val() || '').trim().toLowerCase();
+        if (!name) { layer.msg(LANG.need_name, { icon: 2 }); return; }
+        if (!/^[a-z][a-z0-9_-]{1,31}$/.test(dir)) { layer.msg(LANG.bad_dir, { icon: 2 }); return; }
+        setWizardStep(3);
+    });
+    $('#btnWizardBack3').on('click', function () { setWizardStep(2); });
+    $(document).on('change', 'input[name="new_base"]', function () {
+        $('.td-wizard-pane[data-wstep="1"] .td-pubopt').removeClass('active');
+        $(this).closest('.td-pubopt').addClass('active');
+    });
+
+    $('#btnPresetCreate').on('click', function () {
+        openCreateThemeFromPreset($('#overviewPreset').val() || 'preset-clean');
+    });
+
+    $('#btnPresetPreview').on('click', function () {
+        if (!TD_PB_ENABLED) {
+            layer.msg(LANG.preset_pb_only || LANG.preview_err, { icon: 0 });
+            return;
+        }
+        var load = layer.load(1);
+        $.post(TD_URLS.preview, { theme: TD_THEME, route: 'index/index', __token__: TD_TOKEN }, function (res) {
+            layer.close(load);
+            if (res && res.code == 1 && res.url) {
+                TD_PREVIEW_URL = res.url;
+                window.open(res.url, '_blank');
+            } else {
+                layer.msg((res && res.msg) ? res.msg : LANG.preview_err, { icon: 2 });
+            }
+        }, 'json').fail(function () {
+            layer.close(load);
+            layer.msg(LANG.preview_err, { icon: 2 });
+        });
+    });
+
+    $('#btnActivateSite').on('click', function () {
+        layer.confirm((LANG.preset_activate_confirm || '').replace('%s', TD_THEME), {
+            icon: 3,
+            title: LANG.preset_set_site_template
+        }, function (idx) {
+            layer.close(idx);
+            var load = layer.load(1);
+            $.post(TD_URLS.activateSiteTheme, { theme_dir: TD_THEME, __token__: TD_TOKEN }, function (res) {
+                layer.close(load);
+                layer.msg((res && res.msg) ? res.msg : LANG.save_err, { icon: (res && res.code == 1) ? 1 : 2 }, function () {
+                    if (res && res.code == 1) {
+                        location.reload();
+                    }
+                });
+            }, 'json').fail(function () {
+                layer.close(load);
+                layer.msg(LANG.save_err_net, { icon: 2 });
+            });
+        });
+    });
+
     // publish-mode: toggle the "new theme" fields + active styling
     $(document).on('change', 'input[name="pub_mode"]', function () {
         var mode = $('input[name="pub_mode"]:checked').val();
         $('#newThemeFields').toggle(mode === 'new');
-        $('.td-pubopt').removeClass('active');
+        $('input[name="pub_mode"]').closest('.td-pubopt').removeClass('active');
         $(this).closest('.td-pubopt').addClass('active');
+        if (mode === 'new') { setWizardStep(1); }
     });
+    // default: hide wizard fields until mode=new
+    $('#newThemeFields').hide();
+
 
     $('#btnPublish').on('click', function () {
         var mode = $('input[name="pub_mode"]:checked').val() || 'update';
-        var post = { theme: TD_THEME, mode: mode };
+        var post = { theme: TD_THEME, mode: mode, __token__: TD_TOKEN };
         var confirmMsg = LANG.confirm_publish;
         if (mode === 'new') {
             post.new_name = $('#newThemeName').val().trim();
             post.new_dir = $('#newThemeDir').val().trim().toLowerCase();
             post.new_intro = $('#newThemeIntro').val().trim();
-            if (!post.new_name) { layer.msg(LANG.need_name, { icon: 2 }); return; }
-            if (!/^[a-z][a-z0-9_-]{1,31}$/.test(post.new_dir)) { layer.msg(LANG.bad_dir, { icon: 2 }); return; }
+            post.preset_id = $('#overviewPreset').val() || 'preset-clean';
+            post.base = $('input[name="new_base"]:checked').val() || 'draft';
+            if (!post.new_name) { layer.msg(LANG.need_name, { icon: 2 }); setWizardStep(2); return; }
+            if (!/^[a-z][a-z0-9_-]{1,31}$/.test(post.new_dir)) { layer.msg(LANG.bad_dir, { icon: 2 }); setWizardStep(2); return; }
             confirmMsg = LANG.confirm_publish_new;
+            setWizardStep(3);
         }
         layer.confirm(confirmMsg, { icon: 3, title: LANG.confirm_publish_title }, function (idx) {
             layer.close(idx);
@@ -1808,12 +2814,21 @@ layui.use(['form','layer','upload','element'], function () {
                 layer.msg((res && res.msg) ? res.msg : (res && res.code == 1 ? LANG.publish_ok : LANG.publish_err), { icon: res && res.code == 1 ? 1 : 2 });
                 if (res && res.code == 1) {
                     loadHistory();
+                    TD_PRESET_MISMATCH = false;
                     if (mode === 'new' && res.new_theme) {
-                        // switch the wizard to the newly created theme
-                        setTimeout(function () {
-                            var u = TD_URLS.design + (TD_URLS.design.indexOf('?') >= 0 ? '&' : '?') + 'theme=' + encodeURIComponent(res.new_theme);
-                            location.href = u;
-                        }, 1200);
+                        var pathMsg = (res.new_path || ('template/' + res.new_theme));
+                        layer.open({
+                            title: LANG.wizard_success || LANG.new_created,
+                            content: '<div style="padding:8px 4px;"><code>' + $('<div>').text(pathMsg).html() + '</code></div>',
+                            btn: [LANG.wizard_open_new || 'OK', LANG.wizard_stay || LANG.later],
+                            yes: function (i2) {
+                                layer.close(i2);
+                                var u = TD_URLS.design + (TD_URLS.design.indexOf('?') >= 0 ? '&' : '?') + 'theme=' + encodeURIComponent(res.new_theme);
+                                location.href = u;
+                            }
+                        });
+                    } else if (mode === 'update') {
+                        setTimeout(function () { location.reload(); }, 900);
                     }
                 }
             }, 'json').fail(function () { layer.close(load); layer.msg(LANG.publish_err, { icon: 2 }); });
@@ -1842,7 +2857,7 @@ layui.use(['form','layer','upload','element'], function () {
         layer.confirm(LANG.confirm_rollback, { icon: 3, title: LANG.confirm_rollback_title }, function (idx) {
             layer.close(idx);
             var load = layer.load(1);
-            $.post(TD_URLS.rollback, { theme: TD_THEME, ts: ts }, function (res) {
+            $.post(TD_URLS.rollback, { theme: TD_THEME, ts: ts, __token__: TD_TOKEN }, function (res) {
                 layer.close(load);
                 layer.msg((res && res.msg) ? res.msg : (res && res.code == 1 ? LANG.rollback_ok : LANG.rollback_err), { icon: res && res.code == 1 ? 1 : 2 });
                 if (res && res.code == 1) {

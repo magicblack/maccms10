@@ -60,6 +60,7 @@ class Role extends Base {
             }
             $where2=[];
             $where2['vod_id'] = ['in', array_values(array_map('intval', $vod_ids))];
+            $where2['vod_status'] = ['eq', 1];
             $tmp_list = model('Vod')->listData($where2,'vod_id desc',1,999,0);
             //$tmp_list = Db::name('Vod')->field('vod_id,vod_name,vod_en,type_id,type_id_1')->where($where2)->select();
             foreach($tmp_list['list'] as $k=>$v){
@@ -68,7 +69,7 @@ class Role extends Base {
         }
         foreach($list as $k=>$v){
             if($addition==1){
-                $list[$k]['data'] = $vod_list[$v['role_rid']];
+                $list[$k]['data'] = isset($vod_list[$v['role_rid']]) ? $vod_list[$v['role_rid']] : [];
             }
         }
         return ['code'=>1,'msg'=>lang('data_list'),'page'=>$page,'pagecount'=>ceil($total/$limit),'limit'=>$limit,'total'=>$total,'list'=>$list];
@@ -294,7 +295,8 @@ class Role extends Base {
                 $res = $this->listData($where,$order,$page,$num,$start,'*',1,$totalshow);
             }
             if($GLOBALS['config']['app']['cache_core']==1 && !$use_rnd_order) {
-                Cache::set($cach_name, $res, $cachetime);
+                // 打上表名标签，写路径才能定点作废这一族列表缓存（见 Base::clearListCache()）
+                Cache::tag($this->name)->set($cach_name, $res, $cachetime);
             }
         }
         $res['pageurl'] = $pageurl;
@@ -325,6 +327,7 @@ class Role extends Base {
             if(!empty($info['role_rid'])){
                 $where2=[];
                 $where2['vod_id'] = ['eq', $info['role_rid']];
+                $where2['vod_status'] = ['eq', 1];
                 $vod_info = model('Vod')->infoData($where2);
                 if($vod_info['code'] == 1){
                     $info['data'] = $vod_info['info'];
@@ -344,12 +347,7 @@ class Role extends Base {
             return ['code'=>1001,'msg'=>lang('param_err').'：'.$validate->getError() ];
         }
 
-        $key = 'role_detail_'.$data['role_id'];
-        Cache::rm($key);
-        $key = 'role_detail_'.$data['role_en'];
-        Cache::rm($key);
-        $key = 'role_detail_'.$data['role_id'].'_'.$data['role_en'];
-        Cache::rm($key);
+        $this->clearDetailCache($data['role_id'], $data['role_en']);
 
 
         if(empty($data['role_en'])){
@@ -393,6 +391,7 @@ class Role extends Base {
         $ixRoleId = !empty($data['role_id']) ? intval($data['role_id']) : intval($this->getLastInsID());
         MeilisearchSync::afterRoleSave($ixRoleId);
 
+        $this->clearListCache();
         return ['code'=>1,'msg'=>lang('save_ok')];
     }
 
@@ -413,6 +412,7 @@ class Role extends Base {
         foreach($list as $k=>$v){
             mac_safe_unlink_upload($v['role_pic']);
         }
+        $this->clearListCache();
         return ['code'=>1,'msg'=>lang('del_ok')];
     }
 
@@ -431,12 +431,10 @@ class Role extends Base {
 
         $list = $this->field('role_id,role_name,role_en')->where($where)->select();
         foreach($list as $k=>$v){
-            $key = 'role_detail_'.$v['role_id'];
-            Cache::rm($key);
-            $key = 'role_detail_'.$v['role_en'];
-            Cache::rm($key);
+            $this->clearDetailCache($v['role_id'], $v['role_en']);
         }
 
+        $this->clearListCache();
         return ['code'=>1,'msg'=>lang('set_ok')];
     }
 

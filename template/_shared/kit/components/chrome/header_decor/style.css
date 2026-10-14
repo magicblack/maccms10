@@ -1,0 +1,45 @@
+.pb-header-decor {
+  display: block;
+  box-sizing: border-box;
+  overflow: hidden;
+  margin-bottom: 8px;
+  flex-shrink: 0;
+}
+
+.pb-header-decor:not(.pb-header-decor--image) {
+  background: linear-gradient(135deg, var(--c-accent-soft), var(--c-link-soft, rgba(0, 161, 214, 0.1)));
+}
+
+.pb-header-decor--image {
+  background-color: var(--c-surface-2, #f6f7f8);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+/* width=100%：铺满视口，不受 --wrap 内容区限制 */
+.pb-header-decor--full {
+  width: 100%;
+  max-width: none;
+  margin-left: 0;
+  margin-right: 0;
+  border-radius: 0;
+}
+
+/* 非 100%：限制在主题内容安全区内并居中 */
+.pb-header-decor:not(.pb-header-decor--full) {
+  max-width: var(--wrap, 1400px);
+  margin-left: auto;
+  margin-right: auto;
+  border-radius: var(--radius-lg, 8px);
+}
+
+@media (max-width: 960px) {
+  .pb-header-decor {
+    margin-bottom: 0 !important;
+  }
+  .pb-header-decor:not(.pb-header-decor--full) {
+    max-width: none;
+    border-radius: 0;
+  }
+}

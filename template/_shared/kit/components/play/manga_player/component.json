@@ -1,0 +1,18 @@
+{
+    "id": "manga_player",
+    "label_key": "admin/themedesign/pb_block_manga_player",
+    "category": "play",
+    "kind": "player",
+    "palette": false,
+    "styleMode": "component",
+    "peer_styles": [],
+    "assets": {
+        "css": "style.css",
+        "js": "script.js"
+    },
+    "props": {},
+    "context": {
+        "pageTypes": ["play", "read"],
+        "requires": ["obj.manga_id"]
+    }
+}

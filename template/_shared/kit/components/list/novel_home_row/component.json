@@ -1,0 +1,50 @@
+{
+    "id": "novel_home_row",
+    "label_key": "admin/themedesign/pb_block_novel_home_row",
+    "category": "list",
+    "kind": "list",
+    "peer_styles": [],
+    "assets": {
+        "css": "style.css",
+        "js": "script.js"
+    },
+    "palette": false,
+    "palette_inject": true,
+    "props": {
+        "preset": {
+            "type": "enum",
+            "default": "hot",
+            "values": [
+                "hot",
+                "new",
+                "finish"
+            ],
+            "trait": "preset"
+        },
+        "title": {
+            "type": "string",
+            "default": "",
+            "trait": "title"
+        },
+        "subtitle": {
+            "type": "string",
+            "default": "",
+            "trait": "subtitle"
+        },
+        "num": {
+            "type": "number",
+            "default": 12,
+            "min": 4,
+            "max": 20,
+            "trait": "count"
+        }
+    },
+    "context": {
+        "pageTypes": [
+            "home",
+            "list",
+            "detail"
+        ],
+        "requires": []
+    }
+}

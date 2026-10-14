@@ -1,0 +1,17 @@
+{
+    "id": "novel_home_dock",
+    "label_key": "admin/themedesign/pb_block_novel_home_dock",
+    "category": "list",
+    "kind": "content",
+    "styleMode": "component",
+    "peer_styles": [],
+    "assets": {
+        "css": "style.css",
+        "js": "script.js"
+    },
+    "props": {},
+    "context": {
+        "pageTypes": ["home", "list"],
+        "requires": []
+    }
+}

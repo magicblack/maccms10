@@ -99,6 +99,24 @@ class Base extends All
             }
         }
 
+        // 主题设计：切换站点前台模板（activate_site_theme，或按版式新建时 activate=1）与「发布」同权；
+        // 仅有设计入口权限（theme_design/design）只能按版式新建、不启用，不能改动线上前台
+        if ($c === 'theme_design' && in_array($a, array('create_from_preset', 'activate_site_theme'), true)
+            && (string)$this->_admin['admin_id'] !== '1') {
+            $authStr = ',' . strtolower((string)$this->_admin['admin_auth']) . ',';
+            $canGoLive = strpos($authStr, ',theme_design/activate_site_theme,') !== false
+                || strpos($authStr, ',theme_design/publish,') !== false;
+            if ($a === 'activate_site_theme') {
+                return $canGoLive;
+            }
+            if ($canGoLive) {
+                return true;
+            }
+            $canCreate = strpos($authStr, ',theme_design/create_from_preset,') !== false
+                || strpos($authStr, ',theme_design/design,') !== false;
+            return $canCreate && (int)input('post.activate', 0) !== 1;
+        }
+
         // 内容级多语言“自动翻译”ajax 助手：授权了对应模块 info 编辑权的子管理员即可调用，
         // 无需为 14 个控制器各自单列一条权限点（与 safety/fix、database/uploadstorage 同思路）。
         if ($a === 'contentlangtranslate') {
@@ -121,54 +139,71 @@ class Base extends All
         }
     }
 
+    /**
+     * 重写 static/js/playerconfig.js 的“//缓存开始…//缓存结束”段（前台 player.js 读的
+     * player_list / downer_list / server_list）。
+     *
+     * 前台判断“是否走解析接口”（ps / parse）和线路名称都只看这份快照，不读 extra/vodplayer.php。
+     * 以前只有“清理缓存”才会重写它，所以新增/修改播放器、导入播放器、资源站自动配置播放器之后，
+     * 解析地址、解析开关一律不生效，直到管理员手动清缓存——看起来就是“配好了还是播不了”。
+     * 现在各写入点保存后立刻调用本方法。
+     *
+     * 同一请求里刚用 mac_arr2file 写过的配置，config() 仍是旧值，调用方需先 config($name, $list) 覆盖。
+     *
+     * @return bool 写入成功返回 true；文件缺失/不可写返回 false（不抛异常，不影响调用方主流程）
+     */
+    protected function _player_config_refresh()
+    {
+        $player = [];
+        foreach ((array)config('vodplayer') as $k => $v) {
+            $player[$k] = [
+                'show' => (string)$v['show'],
+                'des' => (string)$v['des'],
+                'ps' => (string)$v['ps'],
+                'parse' => (string)$v['parse'],
+            ];
+        }
+        $downer = [];
+        foreach ((array)config('voddowner') as $k => $v) {
+            $downer[$k] = [
+                'show' => (string)$v['show'],
+                'des' => (string)$v['des'],
+                'ps' => (string)$v['ps'],
+                'parse' => (string)$v['parse'],
+            ];
+        }
+        $server = [];
+        foreach ((array)config('vodserver') as $k => $v) {
+            $server[$k] = [
+                'show' => (string)$v['show'],
+                'des' => (string)$v['des']
+            ];
+        }
+        $content = 'MacPlayerConfig.player_list=' . json_encode($player) . ',MacPlayerConfig.downer_list=' . json_encode($downer) . ',MacPlayerConfig.server_list=' . json_encode($server) . ';';
+        $path = './static/js/playerconfig.js';
+        if (!file_exists($path)) {
+            $path .= '.bak';
+        }
+        $fc = @file_get_contents($path);
+        if (empty($fc)) {
+            return true;
+        }
+        $jsb = mac_get_body($fc, '//缓存开始', '//缓存结束');
+        $fc = str_replace($jsb, "\r\n" . $content . "\r\n", $fc);
+        // 用 file_put_contents（返回写入字节数，且不会泄漏文件句柄）
+        $writeResult = @file_put_contents('./static/js/playerconfig.js', $fc, LOCK_EX);
+        return !($writeResult === false || $writeResult !== strlen($fc));
+    }
+
     public function _cache_clear()
     {
+        // 播放器配置快照（写 static/js/playerconfig.js）只是性能优化，不是这个函数的
+        // 目的——之前这一步写失败（比如该文件权限/属主不对）会直接 return false，
+        // 连下面真正要做的“清缓存”都不会执行，管理员点了清缓存却什么都没清掉，
+        // 还看不出原因。改成失败只记一下，缓存该清的还是照清。
+        $playerConfigOk = true;
         if(ENTRANCE=='admin') {
-            //播放器配置缓存
-            $vodplayer = config('vodplayer');
-            $voddowner = config('voddowner');
-            $vodserver = config('vodserver');
-            $player = [];
-            foreach ($vodplayer as $k => $v) {
-                $player[$k] = [
-                    'show' => (string)$v['show'],
-                    'des' => (string)$v['des'],
-                    'ps' => (string)$v['ps'],
-                    'parse' => (string)$v['parse'],
-                ];
-            }
-            $downer = [];
-            foreach ($voddowner as $k => $v) {
-                $downer[$k] = [
-                    'show' => (string)$v['show'],
-                    'des' => (string)$v['des'],
-                    'ps' => (string)$v['ps'],
-                    'parse' => (string)$v['parse'],
-                ];
-            }
-
-            $server = [];
-            foreach ($vodserver as $k => $v) {
-                $server[$k] = [
-                    'show' => (string)$v['show'],
-                    'des' => (string)$v['des']
-                ];
-            }
-            $content = 'MacPlayerConfig.player_list=' . json_encode($player) . ',MacPlayerConfig.downer_list=' . json_encode($downer) . ',MacPlayerConfig.server_list=' . json_encode($server) . ';';
-            $path = './static/js/playerconfig.js';
-            if (!file_exists($path)) {
-                $path .= '.bak';
-            }
-            $fc = @file_get_contents($path);
-            if(!empty($fc)){
-	            $jsb = mac_get_body($fc, '//缓存开始', '//缓存结束');
-	            $fc = str_replace($jsb, "\r\n" . $content . "\r\n", $fc);
-	            // 用 file_put_contents（返回写入字节数，且不会泄漏文件句柄）
-	            $writeResult = @file_put_contents('./static/js/playerconfig.js', $fc, LOCK_EX);
-	            if ($writeResult === false || $writeResult !== strlen($fc)) {
-	                return false;
-	            }
-            }
+            $playerConfigOk = $this->_player_config_refresh();
         }
 
         Dir::delDir(RUNTIME_PATH.'cache/');
@@ -177,7 +212,7 @@ class Base extends All
 
         Cache::clear();
 
-        return true;
+        return $playerConfigOk;
     }
 
     public function batch_replace($field,$model,$search,$replace,$type='vod')
@@ -304,6 +339,25 @@ class Base extends All
     {
         $t = \think\Request::instance()->token('__token__');
         return $this->error($msg, null, array_merge($data, ['__token__' => $t]));
+    }
+
+    /**
+     * 敏感写接口强制 CSRF 校验，不依赖全局开关 security_csrf_admin。
+     * 前端无需改动：public/head.html 的 ajax 钩子已给同源 POST 带上 X-CSRF-Token 头和 body __token__。
+     * 只认会话级稳定令牌 / 旧 __token__，且不消费它们（与 CsrfGuard 行为一致）。
+     *
+     * @return bool
+     */
+    protected function adminCsrfOk()
+    {
+        $req = \think\Request::instance();
+        $submitted = $req->post('__token__');
+        if (!is_string($submitted) || $submitted === '') {
+            $submitted = (string)$req->header('X-CSRF-Token');
+        }
+        $stable = (string)\think\Session::get('admin_csrf');
+        $legacy = \think\Session::has('__token__') ? (string)\think\Session::get('__token__') : '';
+        return \app\common\behavior\CsrfGuard::tokenAccepted($submitted, $stable, $legacy);
     }
 
 }

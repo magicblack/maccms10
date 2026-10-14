@@ -1,0 +1,458 @@
+.hd-notify,
+.mac-notify-bell {
+  position: relative;
+  flex: 0 0 auto;
+}
+
+.hd-notify__btn,
+.mac-notify-bell__btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+  min-width: 44px;
+  min-height: 36px;
+  padding: 6px 10px;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+  line-height: 0;
+  flex: 0 0 auto;
+  transition: border-color var(--dur, 200ms) var(--ease, ease), background var(--dur, 200ms) var(--ease, ease), color var(--dur, 200ms) var(--ease, ease);
+}
+
+.hd-notify__btn:hover,
+.hd-notify__btn[aria-expanded="true"],
+.mac-notify-bell__btn:hover,
+.mac-notify-bell__btn[aria-expanded="true"] {
+  border-color: var(--c-accent, #fb7299);
+  color: var(--c-accent, #fb7299);
+  background: var(--c-accent-soft, rgba(251, 114, 153, 0.12));
+}
+
+.hd-notify__btn:focus-visible,
+.mac-notify-bell__btn:focus-visible {
+  outline: 2px solid var(--c-link, #00a1d6);
+  outline-offset: 2px;
+}
+
+.hd-notify__btn .hd-notify__ico,
+.hd-notify__btn .ts-icon,
+.mac-notify-bell__btn .hd-notify__ico,
+.mac-notify-bell__btn .ts-icon {
+  width: 20px;
+  height: 20px;
+  flex: 0 0 20px;
+  opacity: 0.9;
+}
+
+.mac-notify-bell__badge {
+  position: absolute;
+  top: -2px;
+  right: -2px;
+  z-index: 2;
+  min-width: 16px;
+  height: 16px;
+  padding: 0 4px;
+  border-radius: 999px;
+  background: #e54d42;
+  color: #fff;
+  font-size: 10px;
+  font-weight: 600;
+  line-height: 16px;
+  text-align: center;
+  box-sizing: border-box;
+}
+
+.mac-notify-bell__dropdown {
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  z-index: 10050;
+  width: min(320px, calc(100vw - 24px));
+  overflow: hidden;
+  border-radius: 10px;
+  background: var(--c-surface);
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.16);
+  line-height: normal;
+}
+
+.mac-notify-bell__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--c-border);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.mac-notify-bell__all {
+  flex-shrink: 0;
+  color: var(--c-accent);
+  font-size: 12px;
+  font-weight: 500;
+  text-decoration: none;
+}
+
+.mac-notify-bell__list {
+  max-height: 280px;
+  overflow-y: auto;
+}
+
+.mac-notify-bell__item {
+  display: block;
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--c-border);
+  color: inherit;
+  text-decoration: none;
+}
+
+.mac-notify-bell__item:hover {
+  background: var(--c-accent-soft);
+}
+
+.mac-notify-bell__item.is-unread .mac-notify-bell__item-title {
+  font-weight: 700;
+}
+
+.mac-notify-bell__item-title {
+  display: block;
+  font-size: 13px;
+  line-height: 1.4;
+  color: var(--c-text);
+}
+
+.mac-notify-bell__item-time {
+  display: block;
+  margin-top: 4px;
+  font-size: 11px;
+  color: var(--c-text-muted);
+}
+
+.mac-notify-bell__empty {
+  padding: 24px 14px;
+  text-align: center;
+  font-size: 13px;
+  color: var(--c-text-muted);
+}
+
+.page-member--notify [data-mac-notify-page] {
+  display: flex;
+  flex-direction: column;
+  min-height: 420px;
+}
+
+.page-member--notify .mac-notify-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  margin-bottom: 4px;
+  padding: 0 2px 14px;
+  border-bottom: 1px solid var(--c-border);
+}
+
+.page-member--notify .mac-notify-tabs {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 8px;
+  max-width: 100%;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.page-member--notify .mac-notify-tabs::-webkit-scrollbar {
+  display: none;
+}
+
+.page-member--notify .mac-notify-tabs a {
+  flex: 0 0 auto;
+  padding: 0 14px;
+  min-height: 32px;
+  display: inline-flex;
+  align-items: center;
+  border-radius: 999px;
+  background: #f6f7f8;
+  color: var(--c-text-muted);
+  font-size: 13px;
+  font-weight: 500;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: background var(--dur) var(--ease), color var(--dur) var(--ease);
+}
+
+.page-member--notify .mac-notify-tabs a:hover {
+  color: var(--c-accent);
+  background: var(--c-accent-soft);
+}
+
+.page-member--notify .mac-notify-tabs a.is-active {
+  background: var(--c-accent);
+  color: #fff;
+  font-weight: 600;
+}
+
+.page-member--notify .mac-notify-mark-all {
+  color: var(--c-accent);
+  font-size: 13px;
+  font-weight: 500;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.page-member--notify .mac-notify-mark-all:hover {
+  text-decoration: underline;
+}
+
+.page-member--notify .mac-notify-list {
+  flex: 1 1 auto;
+  list-style: none;
+  margin: 0;
+  padding: 8px 0;
+}
+
+.page-member--notify .mac-notify-item {
+  position: relative;
+  padding: 14px 14px 14px 18px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background var(--dur) var(--ease);
+}
+
+.page-member--notify .mac-notify-item:hover,
+.page-member--notify .mac-notify-item.is-unread {
+  background: var(--c-accent-soft);
+}
+
+.page-member--notify .mac-notify-item.is-unread::before {
+  content: "";
+  position: absolute;
+  top: 18px;
+  bottom: 18px;
+  left: 6px;
+  width: 3px;
+  border-radius: 2px;
+  background: var(--c-accent);
+}
+
+.page-member--notify .mac-notify-item__meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 6px;
+}
+
+.page-member--notify .mac-notify-item__type {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 7px;
+  border-radius: 4px;
+  background: var(--c-accent-soft);
+  color: var(--c-accent);
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.page-member--notify .mac-notify-item__time {
+  font-size: 12px;
+  color: var(--c-text-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.page-member--notify .mac-notify-item__title {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1.35;
+  color: var(--c-text);
+}
+
+.page-member--notify .mac-notify-item__body {
+  margin-top: 8px;
+  font-size: 13px;
+  line-height: 1.55;
+  color: var(--c-text-muted);
+  white-space: pre-line;
+  overflow-wrap: anywhere;
+}
+
+.page-member--notify .mac-notify-item__toggle {
+  display: inline;
+  margin-left: 6px;
+  padding: 0;
+  border: 0;
+  background: none;
+  font: inherit;
+  font-weight: 600;
+  color: var(--c-accent);
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.page-member--notify .mac-notify-item__toggle:hover,
+.page-member--notify .mac-notify-item__toggle:focus-visible {
+  text-decoration: underline;
+}
+
+.page-member--notify .mac-notify-item__body.is-expanded .mac-notify-item__toggle {
+  display: inline-block;
+  margin-left: 0;
+  margin-top: 4px;
+}
+
+.page-member--notify .mac-notify-empty,
+.page-member--notify .mac-notify-loading {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 220px;
+  padding: 40px 20px;
+  text-align: center;
+  font-size: 14px;
+  color: var(--c-text-muted);
+}
+
+.page-member--notify .mac-notify-pager {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-top: auto;
+  padding: 12px 0 4px;
+}
+
+.page-member--notify .mac-notify-pager__summary {
+  margin: 0;
+  font-size: 12px;
+  color: var(--c-text-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.page-member--notify .mac-notify-pager .mac-notify-pager__list {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.page-member--notify .mac-notify-pager .mac-notify-pager__list li {
+  list-style: none;
+}
+
+.page-member--notify .mac-notify-pager .mac-notify-pager__list a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 36px;
+  min-width: 36px;
+  padding: 0 10px;
+  border: 1px solid var(--c-border);
+  border-radius: 8px;
+  background: var(--c-surface);
+  color: var(--c-text);
+  font-size: 13px;
+  font-weight: 500;
+  text-decoration: none;
+}
+
+.page-member--notify .mac-notify-pager .mac-notify-pager__list a:hover {
+  color: var(--c-accent);
+  border-color: var(--c-accent);
+  background: var(--c-accent-soft);
+}
+
+.page-member--notify .mac-notify-pager .mac-notify-pager__list li.active a,
+.page-member--notify .mac-notify-pager .mac-notify-pager__list li.active span.num {
+  background: var(--c-accent);
+  border-color: var(--c-accent);
+  color: var(--c-accent-ink, #fff);
+}
+
+.page-member--notify .mac-notify-pager .mac-notify-pager__list a.btns-disad,
+.page-member--notify .mac-notify-pager .mac-notify-pager__list span.btns-disad {
+  opacity: 0.38;
+  pointer-events: none;
+}
+
+.page-member--notify .mac-notify-pager .mac-notify-pager__list span.num {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 36px;
+  padding: 0 10px;
+  font-size: 12px;
+  color: var(--c-text-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.page-member--notify .mac-notify-empty[hidden],
+.page-member--notify .mac-notify-list[hidden],
+.page-member--notify .mac-notify-loading[hidden],
+.page-member--notify .mac-notify-pager[hidden] {
+  display: none !important;
+}
+
+
+/* empty_state 插画空态（#js-notify-empty） */
+.page-member--notify .mac-notify-empty.pb-empty-state {
+  gap: 10px;
+  color: var(--c-text-muted);
+}
+
+.page-member--notify .mac-notify-empty .pb-empty-state__art {
+  display: flex;
+  justify-content: center;
+  line-height: 0;
+}
+
+.page-member--notify .mac-notify-empty .pb-empty-state__svg {
+  width: 140px;
+  height: 140px;
+  max-width: 56vw;
+}
+
+.page-member--notify .mac-notify-empty .pb-empty-state__title {
+  margin: 4px 0 0;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--c-text, #18191c);
+}
+
+[data-component="user_notify_panel"] .mac-notify-empty.pb-empty-state {
+  gap: 10px;
+}
+
+[data-component="user_notify_panel"] .mac-notify-empty .pb-empty-state__art {
+  display: flex;
+  justify-content: center;
+  line-height: 0;
+}
+
+[data-component="user_notify_panel"] .mac-notify-empty .pb-empty-state__svg {
+  width: 140px;
+  height: 140px;
+  max-width: 56vw;
+}
+
+[data-component="user_notify_panel"] .mac-notify-empty .pb-empty-state__title {
+  margin: 4px 0 0;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--c-text, #18191c);
+}

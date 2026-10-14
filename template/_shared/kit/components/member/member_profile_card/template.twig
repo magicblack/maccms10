@@ -1,0 +1,14 @@
+{# 会员侧栏身份卡 — 依赖登录态 user #}
+{% if user.user_id|default(0) %}
+<a class="member-profile" data-component="member_profile_card" href="{{ mac_url('user/info') }}" data-lang-title="user_zlxg" title="资料修改">
+  {% include "page-builder-components/_shared/user_avatar.twig" with {uid: user.user_id, class: 'member-profile__avatar', size: 44} %}
+  <span class="member-profile__meta">
+    <strong class="member-profile__name">{{ user.user_name }}</strong>
+    <span class="member-profile__group">{{ user.group.group_name|default('') }}</span>
+  </span>
+</a>
+{% else %}
+<div class="member-profile member-profile--guest" data-component="member_profile_card">
+  <p class="member-profile__guest" data-lang="user_please_login">请先登录</p>
+</div>
+{% endif %}

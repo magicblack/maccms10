@@ -1,0 +1,68 @@
+{#
+  演员详情（twigspike actor/detail：头像 + 资料 + 介绍 + 相关影片）
+#}
+{% import "page-builder-components/_shared/macros.twig" as pb %}
+{% set p = props|default({}) %}
+{% if obj.actor_id|default(0) %}
+{% set cover = mac_url_img(obj.actor_pic|default('')) %}
+{% set title = obj.actor_name|default('') %}
+{% set show_intro = p.show_intro is defined ? p.show_intro : true %}
+{% set num = p.num|default(12) %}
+{% set vod_title = p.vod_title|default('相关推荐') %}
+{% set vod_title_lang = p.vod_title_lang|default('string_xgtj') %}
+{% set _cover_cls = pb.pb_cover_classes(p) %}
+{% set _cover_style = pb.pb_cover_style(p) %}
+{% set vod_list = mac_vod({num: num, actor: title, order: 'desc', by: 'time'}).list|default([]) %}
+
+<div class="pb-entity-detail" data-component="actor_detail">
+  <nav class="pb-entity-detail__crumb mac-crumb" aria-label="breadcrumb">
+    <a href="{{ maccms.path }}" data-lang="string_home">首页</a>
+    <span class="pb-entity-detail__crumb-sep" aria-hidden="true">/</span>
+    <a href="{{ mac_url('actor/index') }}" data-lang="string_actor">明星</a>
+    <span class="pb-entity-detail__crumb-sep" aria-hidden="true">/</span>
+    <span class="pb-entity-detail__crumb-cur">{{ title }}</span>
+  </nav>
+
+  <header class="pb-entity-detail__head">
+    <div class="pb-entity-detail__pic">
+      <img data-cover src="{{ cover }}" alt="{{ title }}" width="160" height="160" decoding="async" fetchpriority="high">
+    </div>
+    <div class="pb-entity-detail__body">
+      <h1 class="pb-entity-detail__title">{{ title }}</h1>
+      <dl class="pb-entity-detail__meta-dl">
+        {% if obj.actor_area|default('') %}
+        <dt data-lang="string_show_dq">地区</dt><dd>{{ obj.actor_area }}</dd>
+        {% endif %}
+        {% if obj.actor_sex|default('') %}
+        <dt data-lang="string_actor_sex">性别</dt><dd>{{ obj.actor_sex }}</dd>
+        {% endif %}
+        {% if obj.actor_birthday|default('') %}
+        <dt data-lang="string_actor_birthday">生日</dt><dd>{{ obj.actor_birthday }}</dd>
+        {% endif %}
+        {% if obj.actor_height|default('') %}
+        <dt data-lang="string_actor_height">身高</dt><dd>{{ obj.actor_height }}</dd>
+        {% endif %}
+        {% if obj.actor_works|default('') %}
+        <dt data-lang="string_actor_works">代表作</dt><dd>{{ obj.actor_works }}</dd>
+        {% endif %}
+      </dl>
+    </div>
+  </header>
+
+  {% if show_intro and obj.actor_content|default('')|trim %}
+  <section class="pb-entity-detail__panel" id="actor-intro">
+    <h2 class="pb-entity-detail__panel-title" data-lang="string_intro_short">介绍</h2>
+    <div class="pb-entity-detail__panel-body prose">{{ obj.actor_content|raw }}</div>
+  </section>
+  {% endif %}
+
+  {% if vod_list is not empty %}
+  <section class="pb-entity-detail__panel pb-entity-detail__vod {{ _cover_cls }}" id="actor-vod"{% if _cover_style %} style="{{ _cover_style }}"{% endif %}>
+    <h2 class="pb-entity-detail__panel-title"{% if vod_title_lang and mac_i18n_key(vod_title, vod_title_lang) %} data-lang="{{ vod_title_lang }}"{% endif %}>{{ vod_title }}</h2>
+    <div class="bili-grid pb-entity-detail__grid">
+      {% for vo in vod_list %}{% include "page-builder-components/_shared/vod_card.twig" %}{% endfor %}
+    </div>
+  </section>
+  {% endif %}
+</div>
+{% endif %}

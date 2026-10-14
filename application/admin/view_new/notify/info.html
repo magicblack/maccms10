@@ -21,6 +21,7 @@
     <blockquote class="layui-elem-quote">{:lang('admin/notify/broadcast_desc')}</blockquote>
 
     <form class="layui-form" method="post" action="{:url('broadcast')}">
+        <input type="hidden" name="__token__" value="{:mac_admin_csrf_token()}">
         <input type="hidden" name="notify_id" value="{$info.notify_id|default=''}">
 
         <div class="layui-form-item">

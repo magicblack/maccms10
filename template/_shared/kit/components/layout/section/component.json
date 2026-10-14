@@ -1,0 +1,101 @@
+{
+    "id": "section",
+    "label_key": "admin/themedesign/pb_block_section",
+    "category": "layout",
+    "kind": "section",
+    "palette": false,
+    "styleMode": "component",
+    "peer_styles": [],
+    "slots": {
+        "body": []
+    },
+    "assets": {
+        "css": "style.css",
+        "js": "script.js"
+    },
+    "props": {
+        "title": {
+            "type": "string",
+            "default": "",
+            "trait": "title"
+        },
+        "title_mode": {
+            "type": "enum",
+            "default": "custom",
+            "values": [
+                "custom",
+                "type_name"
+            ],
+            "trait": "title_mode"
+        },
+        "title_key": {
+            "type": "string",
+            "default": ""
+        },
+        "icon": {
+            "type": "enum",
+            "default": "",
+            "values": [
+                "",
+                "fire",
+                "book",
+                "collection",
+                "bar-chart",
+                "newspaper",
+                "broadcast"
+            ],
+            "trait": "icon"
+        },
+        "variant": {
+            "type": "enum",
+            "default": "plain",
+            "values": [
+                "plain",
+                "card"
+            ],
+            "trait": "variant"
+        },
+        "more_url": {
+            "type": "string",
+            "default": ""
+        },
+        "show_more": {
+            "type": "boolean",
+            "default": true
+        },
+        "head_sort": {
+            "type": "enum",
+            "default": "",
+            "values": [
+                "",
+                "vod_show",
+                "vod_index",
+                "content_show"
+            ],
+            "trait": "section_head_sort"
+        },
+        "sort_route": {
+            "type": "enum",
+            "default": "show",
+            "values": [
+                "index",
+                "type",
+                "show"
+            ],
+            "trait": "section_sort_route"
+        }
+    },
+    "context": {
+        "pageTypes": [
+            "home",
+            "list",
+            "detail",
+            "member",
+            "rank",
+            "gbook",
+            "play",
+            "special"
+        ],
+        "requires": []
+    }
+}

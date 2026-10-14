@@ -1,0 +1,34 @@
+{# 登录 / 注册一体化表单 — props.expand_invite #}
+{% set p = props|default({}) %}
+{% set expand_invite = p.expand_invite|default(expand_invite|default(false)) %}
+<form class="auth-page-form" data-component="auth_form" data-auth-unified-form method="post" action="" novalidate>
+  <input type="hidden" name="__token__" value="{{ csrf_token|default('') }}">
+  <input type="hidden" name="uid" value="" data-auth-unified-uid>
+  <label class="auth-page-form__field">
+    <input type="text" name="user_name" class="auth-page-form__input" data-auth-unified-name data-placeholder="user_account_phone_or_name" placeholder="手机号或用户名" autocomplete="username" data-lang-aria-label="user_zhanghao" aria-label="账号" required>
+  </label>
+  <label class="auth-page-form__field auth-page-form__field--pwd">
+    <span class="auth-page-form__pwd">
+      <input type="password" name="user_pwd" class="auth-page-form__input" data-auth-unified-pwd data-placeholder="user_place_mm" placeholder="输入您的登录密码" autocomplete="current-password" data-lang-aria-label="user_mima" aria-label="密码" required>
+      <button type="button" class="auth-page-form__eye" data-auth-pwd-toggle data-lang-aria-label="auth_pwd_toggle_aria" aria-label="显示或隐藏密码" aria-pressed="false">
+        <svg class="auth-page-form__eye-ico" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" aria-hidden="true"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
+      </button>
+    </span>
+  </label>
+  <div class="auth-page-form__meta">
+    <a href="javascript:;" class="auth-page-form__forgot" data-auth-switch-findpass data-lang="user_wjmm2">忘记密码?</a>
+  </div>
+  <p class="auth-page-form__error" data-auth-unified-error hidden role="alert"></p>
+  <button type="submit" class="auth-page-form__submit" data-auth-unified-submit data-lang="btn_login_or_register">登录 / 注册</button>
+  <div class="auth-page-form__invite{% if expand_invite %} is-open{% endif %}" data-auth-invite>
+    <button type="button" class="auth-page-form__invite-toggle" data-auth-invite-toggle aria-expanded="{{ expand_invite ? 'true' : 'false' }}">
+      <span class="auth-page-form__invite-label" data-lang-collapsed="string_auth_invite_expand" data-lang-expanded="string_auth_invite_collapse" data-lang="{{ expand_invite ? 'string_auth_invite_collapse' : 'string_auth_invite_expand' }}">{{ expand_invite ? '收起邀请码' : '填写邀请码' }}</span>
+      {% include "page-builder-components/_shared/component_icon.twig" with { component: 'auth_form', name: 'chevron-down', class: 'auth-page-form__invite-chev', mode: 'current' } %}
+    </button>
+    <div class="auth-page-form__invite-panel"{% if not expand_invite %} hidden{% endif %}>
+      <label class="auth-page-form__field auth-page-form__field--invite">
+        <input type="text" name="invite_code" class="auth-page-form__input" data-auth-invite-input data-placeholder="user_yqm" placeholder="邀请码" autocomplete="off" data-lang-aria-label="user_yqm" aria-label="邀请码">
+      </label>
+    </div>
+  </div>
+</form>

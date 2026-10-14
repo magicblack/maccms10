@@ -1,0 +1,508 @@
+[data-component="novel_home_rank"].nv-sec {
+  margin: 16px 0 0;
+  padding: 16px 14px;
+  border-radius: 12px;
+  border: 1px solid var(--c-border);
+  background: var(--c-surface);
+  box-shadow: 0 2px 12px rgba(15, 23, 42, 0.04);
+}
+
+[data-component="novel_home_rank"].nv-sec--rank {
+  background: var(--c-surface, #fff);
+}
+
+[data-component="novel_home_rank"] .nv-sec__head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+[data-component="novel_home_rank"] .nv-sec__intro {
+  flex: 1 1 auto;
+  min-width: 0;
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+[data-component="novel_home_rank"] .nv-sec__ico {
+  flex: 0 0 32px;
+  width: 32px;
+  height: 32px;
+  border-radius: 10px;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 18px 18px;
+}
+
+[data-component="novel_home_rank"] .nv-sec__ico--hot {
+  background-color: #fff0e8;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23ff6b35'%3E%3Cpath d='M12 23c-3.9 0-7-3.1-7-7 0-2.8 1.6-5.2 4-6.4-.5 2.2.8 4.4 3 5.1.2-3.4 2.4-6.4 5.6-7.9C16.2 4.6 14 2 14 2c4.4 3.3 7 8.3 7 14 0 3.9-3.1 7-9 7z'/%3E%3C/svg%3E");
+}
+
+[data-component="novel_home_rank"] .nv-sec__titles {
+  min-width: 0;
+}
+
+[data-component="novel_home_rank"] .nv-sec__title {
+  margin: 0;
+  display: block;
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--c-text);
+}
+
+[data-component="novel_home_rank"] .nv-sec__title::before {
+  content: none;
+  display: none;
+}
+
+[data-component="novel_home_rank"] .nv-sec__more {
+  flex: 0 0 auto;
+  align-self: flex-start;
+  min-height: 32px;
+  padding: 4px 0;
+  font-size: 13px;
+  color: var(--c-text-muted, #9499a0);
+  text-decoration: none;
+  white-space: nowrap;
+  transition: color var(--dur, 0.2s) var(--ease, ease);
+}
+
+[data-component="novel_home_rank"] .nv-sec__more:hover {
+  color: var(--c-accent);
+}
+
+[data-component="novel_home_rank"] .nv-sec__more:focus-visible {
+  outline: 2px solid var(--c-accent);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+[data-component="novel_home_rank"] .nv-sec__sub {
+  margin: 4px 0 0;
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--c-text-muted);
+}
+
+[data-component="novel_home_rank"] .nv-rank-tabs {
+  display: flex;
+  flex: 0 0 auto;
+  flex-wrap: wrap;
+  gap: 0;
+  padding: 3px;
+  border-radius: 10px;
+  background: var(--c-surface-2, #f0f2f5);
+}
+
+[data-component="novel_home_rank"] .nv-rank-tabs button {
+  min-height: 34px;
+  padding: 6px 14px;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--c-text-muted);
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1.2;
+  cursor: pointer;
+  transition: background var(--dur) var(--ease), color var(--dur) var(--ease), box-shadow var(--dur) var(--ease);
+}
+
+[data-component="novel_home_rank"] .nv-rank-tabs button:hover {
+  color: var(--c-text);
+}
+
+[data-component="novel_home_rank"] .nv-rank-tabs button.is-on {
+  background: var(--c-surface, #fff);
+  color: var(--c-accent);
+  font-weight: 600;
+  box-shadow: 0 1px 4px rgba(15, 23, 42, 0.08);
+}
+
+[data-component="novel_home_rank"] .nv-rank-tabs button:focus-visible {
+  outline: 2px solid var(--c-accent);
+  outline-offset: 2px;
+}
+
+[data-component="novel_home_rank"] .nv-rank-board {
+  display: none;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 12px;
+}
+
+[data-component="novel_home_rank"] .nv-rank-board.is-on {
+  display: grid;
+}
+
+[data-component="novel_home_rank"] .nv-rank-hero {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 12px;
+  border-radius: 10px;
+  border: 1px solid var(--c-border);
+  background: var(--c-surface, #fff);
+  text-decoration: none;
+  color: inherit;
+  transition: transform var(--dur) var(--ease), box-shadow var(--dur) var(--ease), border-color var(--dur) var(--ease);
+}
+
+[data-component="novel_home_rank"] .nv-rank-hero:hover {
+  transform: translateY(-1px);
+  border-color: var(--c-accent-border);
+  box-shadow: 0 6px 18px rgba(15, 23, 42, 0.08);
+}
+
+[data-component="novel_home_rank"] .nv-rank-hero__cover {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 3 / 4;
+  max-height: 220px;
+  border-radius: 10px;
+  background-color: var(--c-surface-2);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.08);
+  overflow: hidden;
+}
+
+[data-component="novel_home_rank"] .nv-rank-hero__n {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  background: var(--pb-medal-1);
+  color: var(--c-accent-ink);
+  font-size: 14px;
+  font-weight: 800;
+  font-style: normal;
+}
+
+[data-component="novel_home_rank"] .nv-rank-hero__body {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+  flex: 1 1 auto;
+}
+
+[data-component="novel_home_rank"] .nv-rank-hero__body strong {
+  display: block;
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1.35;
+  color: var(--c-text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+[data-component="novel_home_rank"] .nv-rank-hero__tag {
+  display: inline-block;
+  margin-top: 8px;
+  padding: 2px 8px;
+  border-radius: 6px;
+  background: var(--c-accent-soft);
+  color: var(--c-accent);
+  font-size: 11px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 1.4;
+}
+
+[data-component="novel_home_rank"] .nv-rank-hero__blurb {
+  display: -webkit-box;
+  margin: 0;
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--c-text-muted);
+  font-style: normal;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+[data-component="novel_home_rank"] .nv-rank-hero__meta {
+  display: block;
+  margin: 0;
+  margin-top: auto;
+  padding-top: 2px;
+  font-size: 11px;
+  line-height: 1.4;
+  color: var(--c-text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-variant-numeric: tabular-nums;
+}
+
+[data-component="novel_home_rank"] .nv-rank-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+[data-component="novel_home_rank"] .nv-rank-item {
+  display: grid;
+  grid-template-columns: 32px 72px minmax(0, 1fr);
+  align-items: center;
+  gap: 12px;
+  min-height: 76px;
+  padding: 10px 8px;
+  border-radius: 10px;
+  border: 1px solid transparent;
+  text-decoration: none;
+  color: inherit;
+  transition: background var(--dur) var(--ease), border-color var(--dur) var(--ease);
+}
+
+[data-component="novel_home_rank"] .nv-rank-item:hover {
+  background: var(--c-surface-2, #f6f7f8);
+  border-color: var(--c-border, rgba(15, 23, 42, 0.06));
+}
+
+[data-component="novel_home_rank"] .nv-rank-item:focus-visible {
+  outline: 2px solid var(--c-accent);
+  outline-offset: 2px;
+}
+
+[data-component="novel_home_rank"] .nv-rank-item__n {
+  font-size: 18px;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+  color: var(--c-text-muted);
+  text-align: center;
+  line-height: 1;
+}
+
+[data-component="novel_home_rank"] .nv-rank-item__n[data-rank="2"] {
+  color: var(--c-text-muted);
+}
+
+[data-component="novel_home_rank"] .nv-rank-item__n[data-rank="3"] {
+  color: var(--c-accent);
+}
+
+[data-component="novel_home_rank"] .nv-rank-item__cover {
+  width: 72px;
+  aspect-ratio: 3 / 4;
+  border-radius: 10px;
+  background-color: var(--c-surface-2);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.06);
+  flex-shrink: 0;
+}
+
+[data-component="novel_home_rank"] .nv-rank-item__body strong {
+  display: block;
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1.35;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+[data-component="novel_home_rank"] .nv-rank-item__body em {
+  display: block;
+  margin-top: 4px;
+  font-size: 12px;
+  color: var(--c-text-muted);
+  font-style: normal;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+@media (min-width: 821px) {
+  [data-component="novel_home_rank"].nv-sec {
+    margin-top: 20px;
+    padding: 18px 16px;
+  }
+
+  [data-component="novel_home_rank"] .nv-sec__title {
+    font-size: 22px;
+  }
+
+  [data-component="novel_home_rank"] .nv-sec--rank .nv-sec__head {
+    flex-direction: row;
+    align-items: center;
+  }
+
+  [data-component="novel_home_rank"] .nv-rank-board.is-on {
+    grid-template-columns: 240px minmax(0, 1fr);
+    gap: 24px;
+    align-items: start;
+  }
+
+  [data-component="novel_home_rank"] .nv-rank-hero {
+    position: sticky;
+    top: 72px;
+  }
+
+  [data-component="novel_home_rank"] .nv-rank-hero__cover {
+    max-height: 280px;
+  }
+
+  [data-component="novel_home_rank"] .nv-rank-list {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-auto-flow: row;
+    gap: 8px 20px;
+  }
+
+  [data-component="novel_home_rank"] .nv-rank-item {
+    grid-template-columns: 36px 80px minmax(0, 1fr);
+    min-height: 84px;
+    padding: 12px 10px;
+  }
+
+  [data-component="novel_home_rank"] .nv-rank-item__cover {
+    width: 80px;
+  }
+}
+
+@media (max-width: 820px) {
+  [data-component="novel_home_rank"] .nv-sec--rank .nv-sec__head {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  [data-component="novel_home_rank"] .nv-rank-tabs {
+    justify-content: flex-start;
+  }
+
+  [data-component="novel_home_rank"] .nv-rank-hero {
+    flex-direction: row;
+    align-items: stretch;
+    gap: 14px;
+    padding: 14px;
+  }
+
+  [data-component="novel_home_rank"] .nv-rank-hero__cover {
+    flex: 0 0 120px;
+    width: 120px;
+    max-height: none;
+  }
+
+  [data-component="novel_home_rank"] .nv-rank-hero__body {
+    flex: 1;
+    min-width: 0;
+    justify-content: center;
+    gap: 5px;
+    padding-right: 2px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-component="novel_home_rank"] .nv-rank-hero,
+  [data-component="novel_home_rank"] .nv-rank-item {
+    transition: none;
+  }
+}
+
+/* 纯文字榜（无封面 / PC 双列） */
+[data-component="novel_home_rank"].nv-sec--text-only .nv-rank-list--text {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+[data-component="novel_home_rank"] .nv-rank-item--text {
+  display: grid;
+  grid-template-columns: 32px minmax(0, 1fr);
+  gap: 12px;
+  align-items: center;
+  padding: 11px 0;
+  border-bottom: 1px solid var(--c-border, rgba(0, 0, 0, 0.06));
+  text-decoration: none;
+  color: inherit;
+  transition: background var(--dur, 0.2s) var(--ease, ease);
+}
+
+[data-component="novel_home_rank"] .nv-rank-list--text > li:last-child .nv-rank-item--text {
+  border-bottom: 0;
+}
+
+[data-component="novel_home_rank"] .nv-rank-item--text:hover {
+  background: var(--c-surface-2, rgba(15, 23, 42, 0.02));
+}
+
+[data-component="novel_home_rank"] .nv-rank-item--text .nv-rank-item__n {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  background: var(--c-surface-2, #f0f2f5);
+  color: var(--c-text-muted, #9499a0);
+  font-size: 13px;
+  font-weight: 700;
+  font-style: normal;
+  font-variant-numeric: tabular-nums;
+}
+
+[data-component="novel_home_rank"] .nv-rank-item--text[data-rank="1"] .nv-rank-item__n,
+[data-component="novel_home_rank"] .nv-rank-list--text > li:first-child .nv-rank-item__n {
+  background: #ffb800;
+  color: #fff;
+}
+
+[data-component="novel_home_rank"] .nv-rank-item--text .nv-rank-item__body {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+}
+
+[data-component="novel_home_rank"] .nv-rank-item--text .nv-rank-item__body strong {
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1.4;
+  color: var(--c-text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+[data-component="novel_home_rank"] .nv-rank-item--text .nv-rank-item__body em {
+  font-size: 12px;
+  font-style: normal;
+  color: var(--c-text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+@media (min-width: 821px) {
+  [data-component="novel_home_rank"].nv-sec--text-only .nv-rank-list--text {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: 28px;
+    row-gap: 0;
+  }
+
+  [data-component="novel_home_rank"] .nv-rank-list--text > li:nth-last-child(-n+2) .nv-rank-item--text {
+    border-bottom: 0;
+  }
+}

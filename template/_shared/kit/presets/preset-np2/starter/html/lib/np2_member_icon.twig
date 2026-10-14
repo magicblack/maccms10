@@ -1,0 +1,7 @@
+{# NP2 会员区彩色 webp 图标（与 H5 np2_mine_hub 同源 asset/img/icons/） #}
+{% set _file = file|default('') %}
+{% set _class = class|default('np2-member-ico__img') %}
+{% set _size = size|default(22) %}
+{% if _file != '' %}
+<img src="{{ maccms.path_tpl }}asset/img/icons/{{ _file }}" class="{{ _class }}" alt="" width="{{ _size }}" height="{{ _size }}" decoding="async" aria-hidden="true">
+{% endif %}

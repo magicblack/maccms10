@@ -1,0 +1,43 @@
+{
+    "id": "carousel-fullbleed",
+    "label_key": "admin/themedesign/pb_comp_carousel_fullbleed",
+    "category": "carousel",
+    "kind": "carousel",
+    "styleMode": "component",
+    "peer_styles": [],
+    "assets": {
+        "css": "style.css",
+        "js": "script.js"
+    },
+    "props": {
+        "bind": {
+            "type": "enum",
+            "default": "vod",
+            "values": ["vod", "manga", "art"],
+            "trait": "bind"
+        },
+        "type": {
+            "type": "category",
+            "mid": 1,
+            "default": 0,
+            "trait": "category"
+        },
+        "num": {
+            "type": "number",
+            "default": 6,
+            "min": 1,
+            "max": 12,
+            "trait": "count"
+        },
+        "by": {
+            "type": "enum",
+            "default": "hits",
+            "values": ["time", "hits", "hits_day", "hits_week", "hits_month", "score"],
+            "trait": "sort"
+        }
+    },
+    "context": {
+        "pageTypes": ["home", "list", "detail"],
+        "requires": []
+    }
+}

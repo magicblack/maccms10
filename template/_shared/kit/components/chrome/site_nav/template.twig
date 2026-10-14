@@ -1,0 +1,14 @@
+{% set _logo_prop = props.logo|default('')|trim %}
+{% set _logo_global = mac_theme_design().logo|default('')|trim %}
+{% set _site_logo = maccms.site_logo|default('')|trim %}
+{% set _logo = _logo_prop ?: _logo_global ?: _site_logo %}
+{% set _type_ids = props.type_ids|default([]) %}
+{% if _type_ids is empty %}
+  {% set _type_ids = mac_theme_design().navbar.type_ids|default([]) %}
+{% endif %}
+{% include "page-builder-components/_shared/site_header_bar.twig" with {
+  type_ids: _type_ids,
+  max: props.max|default(8),
+  show_search: props.show_search|default(true),
+  logo: _logo
+} %}

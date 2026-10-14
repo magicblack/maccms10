@@ -1,0 +1,25 @@
+{
+    "id": "plays_list",
+    "label_key": "admin/themedesign/pb_block_plays_list",
+    "category": "member",
+    "kind": "member",
+    "peer_styles": [],
+    "assets": {
+        "css": "style.css",
+        "js": "script.js"
+    },
+    "palette": false,
+    "props": {
+        "show_clear": {
+            "type": "boolean",
+            "default": true,
+            "trait": "show_clear"
+        }
+    },
+    "context": {
+        "pageTypes": [
+            "member"
+        ],
+        "requires": []
+    }
+}

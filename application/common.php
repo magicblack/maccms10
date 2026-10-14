@@ -37,6 +37,42 @@ if (!function_exists('str_contains')) {
         return $needle !== '' && mb_strpos($haystack, $needle) !== false;
     }
 }
+if (!function_exists('mb_ord')) {
+    /**
+     * PHP 7.2+ 才有 mb_ord；Twig EscaperExtension 在 7.0/7.1 上会致命。
+     * vendor/twig 依赖 symfony/polyfill-mbstring，但主库未随 composer 安装该包。
+     */
+    function mb_ord($string, $encoding = null)
+    {
+        $string = (string) $string;
+        $encoding = $encoding === null ? 'UTF-8' : (string) $encoding;
+        if ($encoding !== 'UTF-8' && function_exists('mb_convert_encoding')) {
+            $string = mb_convert_encoding($string, 'UTF-8', $encoding);
+        }
+        if ($string === '') {
+            return 0;
+        }
+        if (strlen($string) === 1) {
+            return ord($string);
+        }
+        $s = unpack('C*', substr($string, 0, 4));
+        if (!$s) {
+            return 0;
+        }
+        $code = $s[1];
+        if ($code >= 0xF0) {
+            return (($code - 0xF0) << 18) + (($s[2] - 0x80) << 12) + (($s[3] - 0x80) << 6) + $s[4] - 0x80;
+        }
+        if ($code >= 0xE0) {
+            return (($code - 0xE0) << 12) + (($s[2] - 0x80) << 6) + $s[3] - 0x80;
+        }
+        if ($code >= 0xC0) {
+            return (($code - 0xC0) << 6) + $s[2] - 0x80;
+        }
+
+        return $code;
+    }
+}
 
 /**
  * 视频分类封面方向：使用后台「页面配置」theme[list_cover][vod]；子分类沿父链查找。
@@ -121,6 +157,152 @@ function mac_tpl_art_cover()
 }
 
 /**
+ * 分类封面比例可选值（后台「分类管理」type_extend[cover]）。空串 = 跟随模板/组件设置。
+ *
+ * @return array ratio => [w, h]
+ */
+function mac_type_cover_options()
+{
+    return [
+        '3-4'   => [3, 4],
+        '2-3'   => [2, 3],
+        '9-16'  => [9, 16],
+        '20-29' => [20, 29],
+        '1-1'   => [1, 1],
+        '16-9'  => [16, 9],
+        '69-40' => [69, 40],
+    ];
+}
+
+/**
+ * 分类单独设置的封面比例：type_extend.cover，子分类未设置时沿父链继承。
+ * 用于竖屏短剧等分类在列表/播放记录/收藏/详情页按自身比例显示封面（spike 主题）。
+ *
+ * @param int $typeId 分类 ID
+ * @return array 未设置返回 []；否则 ['ratio' => '3-4', 'w' => 3, 'h' => 4, 'orient' => 'v'|'h']
+ */
+function mac_type_cover($typeId)
+{
+    static $memo = [];
+    $typeId = (int) $typeId;
+    if ($typeId < 1) {
+        return [];
+    }
+    if (isset($memo[$typeId])) {
+        return $memo[$typeId];
+    }
+    $options = mac_type_cover_options();
+    $typeList = model('Type')->getCache('type_list');
+    if (!is_array($typeList)) {
+        $typeList = [];
+    }
+    $out = [];
+    $tid = $typeId;
+    $guard = 0;
+    while ($tid > 0 && isset($typeList[$tid]) && $guard++ < 10) {
+        $ext = $typeList[$tid]['type_extend'] ?? [];
+        if (!is_array($ext)) {
+            $ext = json_decode((string) $ext, true) ?: [];
+        }
+        $raw = isset($ext['cover']) ? trim((string) $ext['cover']) : '';
+        if ($raw !== '' && isset($options[$raw])) {
+            list($w, $h) = $options[$raw];
+            $out = ['ratio' => $raw, 'w' => $w, 'h' => $h, 'orient' => ($w > $h) ? 'h' : 'v'];
+            break;
+        }
+        $tid = (int) ($typeList[$tid]['type_pid'] ?? 0);
+    }
+    $memo[$typeId] = $out;
+
+    return $out;
+}
+
+/**
+ * vod_duration 自由文本 → 秒；无法识别返回 0。
+ * 各采集源格式不一：爬虫 "1:46:46" / "36:24"，资源站 "81分钟" / "USA: 105 分" / "1小时30分钟" /
+ * "90 min" / "45分钟/集"，后台手填纯数字按分钟。播放进度（播放记录进度条）以此为片长兜底。
+ *
+ * @param string $raw
+ * @return int
+ */
+function mac_vod_duration_seconds($raw)
+{
+    $s = trim(str_replace(['：', '　'], [':', ' '], (string) $raw));
+    if ($s === '') {
+        return 0;
+    }
+    $sec = 0;
+    if (preg_match('/(?<!\d)(\d{1,2}):(\d{1,2}):(\d{1,2})(?!\d)/', $s, $m)) {
+        $sec = $m[1] * 3600 + $m[2] * 60 + $m[3];
+    } elseif (preg_match('/^(\d{1,3}):(\d{1,2})$/', $s, $m)) {
+        $sec = $m[1] * 60 + $m[2];
+    } elseif (preg_match('/^\d{1,4}$/', $s)) {
+        $sec = intval($s) * 60;
+    } else {
+        $h = preg_match('/(\d+(?:\.\d+)?)\s*(?:小时|小時|时|時|hours?|hrs?|h)(?![a-z])/iu', $s, $m) ? floatval($m[1]) : 0;
+        $mi = preg_match('/(\d+(?:\.\d+)?)\s*(?:分钟|分鐘|分|minutes?|mins?|m)(?![a-z])/iu', $s, $m) ? floatval($m[1]) : 0;
+        $se = preg_match('/(\d+)\s*(?:秒|seconds?|secs?|s)(?![a-z])/iu', $s, $m) ? intval($m[1]) : 0;
+        $sec = (int) round($h * 3600 + $mi * 60 + $se);
+    }
+    // 过滤 "Germany: 1" 之类残缺值与离谱值
+    return ($sec >= 10 && $sec <= 86400) ? (int) $sec : 0;
+}
+
+/**
+ * 播放页进度记忆的片长依据（kit/shared/js/vod-play-progress.js 读取）：
+ * - durationSec：vod_duration 解析出的秒数
+ * - probe：片长未知时，同一集在其他线路的 m3u8 地址（资源站常见「分享页线路 + m3u8 线路」成对出现），
+ *   前端读 m3u8 累加 EXTINF 得到真实片长，跨域分享页线路的估算进度才能换算成百分比
+ *
+ * @param array $vod 含 vod_duration / vod_play_list 的影片信息
+ * @param int   $sid 当前线路
+ * @param int   $nid 当前集
+ * @return array ['durationSec' => int, 'probe' => string[]]
+ */
+function mac_vod_progress_meta($vod, $sid, $nid)
+{
+    $out = ['durationSec' => 0, 'probe' => []];
+    if (!is_array($vod)) {
+        return $out;
+    }
+    $out['durationSec'] = mac_vod_duration_seconds($vod['vod_duration'] ?? '');
+    if ($out['durationSec'] > 0) {
+        return $out;
+    }
+    $sid = intval($sid);
+    $nid = intval($nid);
+    $lines = $vod['vod_play_list'] ?? [];
+    if (!is_array($lines) || $nid < 1) {
+        return $out;
+    }
+    $cur = $lines[$sid] ?? [];
+    $curName = trim((string) ($cur['urls'][$nid]['name'] ?? ''));
+    $curCount = intval($cur['url_count'] ?? 0);
+    // 当前线路本身是 m3u8（第三方解析页线路）优先，其次其他线路的同一集
+    $order = [$sid => $cur] + $lines;
+    foreach ($order as $k => $line) {
+        if (empty($line['urls'][$nid]['url'])) {
+            continue;
+        }
+        $ep = $line['urls'][$nid];
+        // 只认同一集：集名一致，或集名缺失时两条线路集数相同
+        $name = trim((string) ($ep['name'] ?? ''));
+        if (intval($k) !== $sid
+            && ($curName !== '' && $name !== '' ? $name !== $curName : intval($line['url_count'] ?? 0) !== $curCount)) {
+            continue;
+        }
+        $url = trim((string) $ep['url']);
+        if (preg_match('#^(https?:)?//[^\s"\'<>]+\.m3u8(\?[^\s"\'<>]*)?$#i', $url)) {
+            $out['probe'][] = $url;
+            if (count($out['probe']) >= 2) {
+                break;
+            }
+        }
+    }
+    return $out;
+}
+
+/**
  * 主题「视频卡片/列表点击进播放页」是否开启（theme.playlink.btn）。
  * 与 $GLOBALS['mctheme'] / assign('tplconfig') 同源，避免模板里多层数组判断不一致。
  */
@@ -191,39 +373,7 @@ function mac_vod_play_tagwall_payload($info)
  */
 function mac_theme_index_hotvod_tabs(array $theme)
 {
-    $tabsCfg = isset($theme['hotvod']['tabs']) && is_array($theme['hotvod']['tabs']) ? $theme['hotvod']['tabs'] : [];
-    if (count($tabsCfg) === 0) {
-        return [];
-    }
-
-    $typeModel = model('Type');
-    $out = [];
-
-    for ($i = 0; $i < 4; $i++) {
-        if (!isset($tabsCfg[$i]) || !is_array($tabsCfg[$i])) {
-            continue;
-        }
-        $row = $tabsCfg[$i];
-        $id = isset($row['id']) ? trim((string) $row['id']) : '';
-        if ($id === '') {
-            continue;
-        }
-
-        $name = isset($row['name']) ? trim((string) $row['name']) : '';
-        if ($name === '') {
-            $vo2 = $typeModel->getCacheInfo((int) $id);
-            $name = !empty($vo2['type_name']) ? (string) $vo2['type_name'] : '';
-        }
-
-        $out[] = [
-            'id' => $id,
-            'name' => $name,
-            'icon_l' => isset($row['icon_l']) ? trim((string) $row['icon_l']) : '',
-            'icon_b' => isset($row['icon_b']) ? trim((string) $row['icon_b']) : '',
-        ];
-    }
-
-    return $out;
+    return \app\common\util\ThemeTemplateHelper::indexHotvodTabs($theme);
 }
 
 //访问日志记录，根目录创建log目录
@@ -643,7 +793,7 @@ function mac_alert_url($str,$url)
 
 function mac_jump($url,$sec=0)
 {
-    echo '<script>setTimeout(function (){location.href="'.$url.'";},'.($sec*1000).');</script><span>'.lang('pause').''.$sec.''.lang('continue_in_second').'  >>>  </span><a href="'.$url.'" >'.lang('browser_jump').'</a><br>';
+    echo '<script>window.__macJumped=1;setTimeout(function (){location.href="'.$url.'";},'.($sec*1000).');</script><span>'.lang('pause').''.$sec.''.lang('continue_in_second').'  >>>  </span><a href="'.$url.'" >'.lang('browser_jump').'</a><br>';
 }
 
 function mac_echo($str)
@@ -820,6 +970,32 @@ function mac_send_sms($to,$code,$type_flag,$type_des,$msg)
     }
 }
 
+/**
+ * 邮箱 / 短信验证码通道是否可用（前台绑定、找回密码入口据此显隐，#272）。
+ * 邮件出厂配置自带占位账号 test@qq.com，只看 type 非空会误判为已配置。
+ *
+ * @return array ['email' => bool, 'phone' => bool]
+ */
+function mac_msg_channels()
+{
+    static $res = null;
+    if ($res !== null) {
+        return $res;
+    }
+    $email = isset($GLOBALS['config']['email']) ? $GLOBALS['config']['email'] : [];
+    $email_ok = false;
+    if (!empty($email['type'])) {
+        $conf = isset($email[strtolower($email['type'])]) ? $email[strtolower($email['type'])] : [];
+        $user = isset($conf['username']) ? trim($conf['username']) : '';
+        $email_ok = !empty($conf['host']) && $user !== '' && !empty($conf['password']) && strtolower($user) !== 'test@qq.com';
+    }
+    $res = [
+        'email' => $email_ok,
+        'phone' => !empty($GLOBALS['config']['sms']['type']),
+    ];
+    return $res;
+}
+
 function mac_send_mail($to,$title,$body,$conf=[])
 {
     if(empty($GLOBALS['config']['email']['type'])){
@@ -975,13 +1151,56 @@ function mac_buildregx($regstr,$regopt)
     return '/'.str_replace('/','\/',$regstr).'/'.$regopt;
 }
 
+/**
+ * 当前生效主题的模板引擎（think|twig）。
+ *
+ * 主题目录从 $GLOBALS['MAC_ROOT_TEMPLATE'] 反推而不是直接读 config：
+ * 后台生成 WAP 静态页时 admin/Make 会把这个全局改指向 mob_template_dir，
+ * 只有跟着它走才不会拿 PC 主题的引擎去渲染手机主题的模板。
+ *
+ * @return string
+ */
+function mac_tpl_engine()
+{
+    $root = isset($GLOBALS['MAC_ROOT_TEMPLATE']) ? (string)$GLOBALS['MAC_ROOT_TEMPLATE'] : '';
+    if ($root === '') {
+        return 'think';
+    }
+    $parts = preg_split('#[\\\\/]+#', trim(str_replace('\\', '/', $root), '/'));
+    $count = count($parts);
+    if ($count < 2) {
+        return 'think';
+    }
+    // 形状是 template/<主题>/<html_dir>/，主题名取倒数第二段
+    return \app\common\behavior\Init::themeEngine($parts[$count - 2]);
+}
+
+/**
+ * 当前主题的模板后缀（含点）。供「模板不存在」一类提示使用，
+ * 别再对 Twig 主题固定报 .html 误导站长。
+ *
+ * @return string
+ */
+function mac_tpl_suffix()
+{
+    return mac_tpl_engine() === 'twig' ? '.twig' : '.html';
+}
+
 function mac_tpl_file($templateFile)
 {
     if (empty($templateFile)) {
         return '';
     }
     $templateFile = str_replace('.html', '', $templateFile);
-    return $GLOBALS['MAC_ROOT_TEMPLATE'] . $templateFile . '.html';
+    $base = $GLOBALS['MAC_ROOT_TEMPLATE'] . $templateFile;
+
+    // Twig 主题（info.ini 宣告 engine=twig）的模板是 .twig。旧的静态生成链路
+    // 只认 .html，会把 PB 主题的 RSS/SiteMap/网站地图判成「模板不存在」。
+    // 仍保留 .html 回落：主题可以为「生成专用」页单独放一份 Think 语法模板。
+    if (mac_tpl_engine() === 'twig' && is_file($base . '.twig')) {
+        return $base . '.twig';
+    }
+    return $base . '.html';
 }
 
 function mac_tpl_exists($templateFile)
@@ -1805,6 +2024,578 @@ function mac_user_fav_state($userId, $ulogMid, $rid)
     return ['is_fav' => 0, 'fav_ulog_id' => 0];
 }
 
+/**
+ * 當前登入用戶的收藏映射：[ulog_rid => ulog_id]，按請求快取。
+ *
+ * 存在的理由：template/default 的卡片組件（widget/vod_box.html、vod_box_show.html、
+ * vod_box_banner.html）各自在**卡片迴圈內**用 {php} 直接查 ulog，
+ * 一頁 24 張卡片就是 24 次全量查詢。Twig 主題沒有 {php} 逃生口，
+ * 這個資料必須由這裡以「一次查詢 + 請求級快取」的方式提供。
+ *
+ * 只讀當前登入用戶自己的收藏，不接受外部 user_id，避免變成越權查詢入口。
+ *
+ * @param int $ulogMid 內容模型 id（1=視頻 2=文章 8=漫畫…）
+ * @return array [rid => ulog_id]
+ */
+function mac_user_fav_map($ulogMid = 1)
+{
+    static $cache = [];
+
+    $ulogMid = (int) $ulogMid;
+    $userId = 0;
+    if (!empty($GLOBALS['user']['user_id'])) {
+        $userId = (int) $GLOBALS['user']['user_id'];
+    }
+    if ($userId < 1 || $ulogMid < 1) {
+        return [];
+    }
+
+    $key = $userId . '-' . $ulogMid;
+    if (isset($cache[$key])) {
+        return $cache[$key];
+    }
+
+    $map = [];
+    try {
+        $map = model('Ulog')->where([
+            'user_id'   => $userId,
+            'ulog_mid'  => $ulogMid,
+            'ulog_type' => 2,
+        ])->column('ulog_id', 'ulog_rid');
+    } catch (\Exception $e) {
+        $map = [];
+    }
+    if (!is_array($map)) {
+        $map = [];
+    }
+
+    $cache[$key] = $map;
+    return $map;
+}
+
+/**
+ * 某條內容的收藏記錄 id；未收藏或未登入回 0。
+ * 模板用它決定收藏按鈕的狀態與 data-uid。
+ *
+ * @param int $rid
+ * @param int $ulogMid
+ * @return int
+ */
+function mac_user_fav_id($rid, $ulogMid = 1)
+{
+    $rid = (int) $rid;
+    if ($rid < 1) {
+        return 0;
+    }
+    $map = mac_user_fav_map($ulogMid);
+    return isset($map[$rid]) ? (int) $map[$rid] : 0;
+}
+
+/**
+ * 當前登入用戶的點讚映射：[ulog_rid => ulog_id]，按請求快取。
+ * 與 mac_user_fav_map 同構（ulog_type=6=點讚），供卡片/清單頁一次查詢。
+ *
+ * @param int $ulogMid 內容模型 id（1=視頻 2=文章 8=漫畫…）
+ * @return array [rid => ulog_id]
+ */
+function mac_user_like_map($ulogMid = 1)
+{
+    static $cache = [];
+
+    $ulogMid = (int) $ulogMid;
+    $userId = 0;
+    if (!empty($GLOBALS['user']['user_id'])) {
+        $userId = (int) $GLOBALS['user']['user_id'];
+    }
+    if ($userId < 1 || $ulogMid < 1) {
+        return [];
+    }
+
+    $key = $userId . '-' . $ulogMid;
+    if (isset($cache[$key])) {
+        return $cache[$key];
+    }
+
+    $map = [];
+    try {
+        $map = model('Ulog')->where([
+            'user_id'   => $userId,
+            'ulog_mid'  => $ulogMid,
+            'ulog_type' => 6,
+        ])->column('ulog_id', 'ulog_rid');
+    } catch (\Exception $e) {
+        $map = [];
+    }
+    if (!is_array($map)) {
+        $map = [];
+    }
+
+    $cache[$key] = $map;
+    return $map;
+}
+
+/**
+ * 某條內容目前登入用戶的點讚記錄 id；未點讚或未登入回 0。
+ * 模板用它決定點讚按鈕的狀態與 data-uid。
+ *
+ * @param int $rid
+ * @param int $ulogMid
+ * @return int
+ */
+function mac_user_like_id($rid, $ulogMid = 1)
+{
+    $rid = (int) $rid;
+    if ($rid < 1) {
+        return 0;
+    }
+    $map = mac_user_like_map($ulogMid);
+    return isset($map[$rid]) ? (int) $map[$rid] : 0;
+}
+
+/**
+ * 某條內容目前的點讚總數（不分是誰按的，未登入訪客也看得到這個數字）。
+ * 直接對 ulog 表做 COUNT，與收藏一樣不額外維護冗餘計數欄位（見 mac_user_fav_map 的設計說明）。
+ *
+ * @param int $rid
+ * @param int $ulogMid
+ * @return int
+ */
+function mac_content_like_count($rid, $ulogMid = 1)
+{
+    $rid = (int) $rid;
+    $ulogMid = (int) $ulogMid;
+    if ($rid < 1 || $ulogMid < 1) {
+        return 0;
+    }
+    try {
+        return (int) model('Ulog')->where([
+            'ulog_mid'  => $ulogMid,
+            'ulog_type' => 6,
+            'ulog_rid'  => $rid,
+        ])->count();
+    } catch (\Exception $e) {
+        return 0;
+    }
+}
+
+/**
+ * 取某個廣告位裡「當前有效」的投放列表。
+ *
+ * template/default 的 ads/ads_banner1.html、ads_banner_swiper.html、ads_bottom.html、
+ * ads_icon1.html 各自用 {php} 重複了同一段過濾邏輯（active=on + 未過期 + 必填欄位齊全）。
+ * 這裡收斂成一份，Twig 主題直接 {% for ad in mac_ad_slot('banner1') %}。
+ *
+ * @param string $slot     廣告位 key，如 banner1 / banner_swiper / bottom / icon1
+ * @param array  $required 必填欄位，缺任一則該條不展示（預設不限制）
+ * @return array
+ */
+function mac_ad_slot($slot, array $required = [])
+{
+    return \app\common\util\ThemeTemplateHelper::adSlot($slot, $required);
+}
+
+/**
+ * 解析主題資產的 URL，依 子主題 → 父主題 → template/_shared/kit/shared/ 的順序回落。
+ *
+ * 為什麼需要它：模板可以靠 loader 的搜尋路徑自動回落到父主題，但資產不行 ——
+ * CSS/JS/圖片是 web server 直接服務的 HTTP 路徑，沒有「找不到就換一個目錄」這回事。
+ * 子主題若只想換 logo，其餘沿用底座的圖，就得有個東西幫它算出正確的 URL。
+ *
+ * 找不到時回傳子主題的路徑（而不是空字串）：讓它在瀏覽器裡以 404 現形，
+ * 比靜默輸出 src="" 好查 —— 後者在頁面上看起來只是「圖沒出來」。
+ *
+ * @param string $rel 相對 asset/ 的路徑，如 'img/logo.png'、'css/theme.css'
+ * @return string 可直接放進 src/href 的 URL
+ */
+function mac_theme_asset($rel)
+{
+    return \app\common\util\ThemeTemplateHelper::themeAsset($rel);
+}
+
+/**
+ * 某內容模型下「啟用中的頂級分類」，按 type_sort 升序。
+ *
+ * module/art_index_vars.html 用 {php} 對 mid=2 做了這件事，
+ * index/controller/Label.php::labelRankTypesForPage() 對 mid=1 又做了一次。
+ * 收斂成一份供 Twig 主題直接取用。
+ *
+ * @param int $mid   內容模型 id（1=視頻 2=文章 8=漫畫…）
+ * @param int $limit 取前幾個，0=不限
+ * @return array
+ */
+
+/**
+ * Page Builder 轮播/卡片共用取数：bind 决定数据源，返回归一化 list。
+ * 字段：name / pic / pic_wide / url / blurb / class / remarks / bind / type_id
+ *
+ * @param array $args bind(vod|manga|art) num by type order
+ * @return array{list: array<int,array>, bind: string, total?: int}
+ */
+function mac_pb_feed($args = [])
+{
+    return \app\common\util\PageBuilderFeed::fetch($args);
+}
+
+/**
+ * 文案仍为 i18n key 默认中文时返回 key，否则返回空串（自定义文案不挂 data-lang）。
+ * 见 ThemeTemplateHelper::i18nKey()。
+ */
+function mac_i18n_key($text, $key)
+{
+    return \app\common\util\ThemeTemplateHelper::i18nKey($text, $key);
+}
+
+/**
+ * 内容模块入口名 {name, lang, type_id}：唯一顶级分类被改名时跟随分类名。
+ * 见 ThemeTemplateHelper::moduleLabel()。
+ */
+function mac_module_label($mid)
+{
+    return \app\common\util\ThemeTemplateHelper::moduleLabel($mid);
+}
+
+function mac_top_types($mid, $limit = 0)
+{
+    $mid = (int) $mid;
+    $limit = (int) $limit;
+    if ($mid < 1) {
+        return [];
+    }
+
+    $list = model('Type')->getCache('type_list');
+    if (!is_array($list)) {
+        return [];
+    }
+
+    $out = [];
+    foreach ($list as $info) {
+        if (!is_array($info)) {
+            continue;
+        }
+        if ((int) (isset($info['type_mid']) ? $info['type_mid'] : 0) !== $mid) {
+            continue;
+        }
+        if ((int) (isset($info['type_pid']) ? $info['type_pid'] : -1) !== 0) {
+            continue;
+        }
+        if (isset($info['type_status']) && (int) $info['type_status'] !== 1) {
+            continue;
+        }
+        $out[] = $info;
+    }
+
+    usort($out, function ($a, $b) {
+        $sa = (int) (isset($a['type_sort']) ? $a['type_sort'] : 0);
+        $sb = (int) (isset($b['type_sort']) ? $b['type_sort'] : 0);
+        if ($sa === $sb) {
+            return 0;
+        }
+        return $sa < $sb ? -1 : 1;
+    });
+
+    if ($limit > 0) {
+        $out = array_slice($out, 0, $limit);
+    }
+    return $out;
+}
+
+/**
+ * 直播頻道列表。
+ *
+ * 為什麼需要這個：直播是唯一沒有 taglib 資料標籤的前台內容型別
+ * （application/common/taglib/Maccms.php 沒有 {maccms:live}），
+ * template/default 的 live/show 因此是**純前端**的 —— 靠
+ * template/default/asset/js/live-show.js 打 api.php 再拼 DOM，
+ * 並且綁死 .live-show__* 這組 class。那套 JS 屬於 default 主題資產，
+ * 換主題就失效，所以無法作為「共用契約」提供給其它主題。
+ *
+ * 這裡補一個伺服器端資料函式，讓任何主題都能直出直播列表，
+ * 條件與排序對齊 application/api/controller/Live.php 的既有行為。
+ *
+ * @param array $args cate/limit/page/order/level
+ * @return array ['list'=>[], 'total'=>int, 'page'=>int, 'limit'=>int, 'pageurl'=>string]
+ */
+function mac_live_list($args = [])
+{
+    if (!is_array($args)) {
+        $args = [];
+    }
+    $where = [];
+    $where['live_status'] = ['eq', 1];
+    if (!empty($args['cate'])) {
+        $where['cate_id'] = ['eq', (int) $args['cate']];
+    }
+    if (!empty($args['name'])) {
+        $where['live_name'] = ['like', '%' . htmlspecialchars($args['name']) . '%'];
+    }
+
+    $orderMap = [
+        'sort'      => 'live_sort desc, live_id asc',
+        'hits'      => 'live_hits desc',
+        'hits_day'  => 'live_hits_day desc',
+        'hits_week' => 'live_hits_week desc',
+        'time'      => 'live_time desc',
+        'id'        => 'live_id desc',
+    ];
+    $by    = isset($args['by']) ? (string) $args['by'] : 'sort';
+    $order = isset($orderMap[$by]) ? $orderMap[$by] : $orderMap['sort'];
+
+    $limit = isset($args['num']) && (int) $args['num'] > 0 ? (int) $args['num'] : 24;
+    $page  = isset($args['page']) && (int) $args['page'] > 0 ? (int) $args['page'] : 1;
+
+    $res = model('Live')->listData($where, $order, $page, $limit);
+    $list = isset($res['list']) ? $res['list'] : [];
+    if (!is_array($list)) {
+        $list = [];
+    }
+    // 每個頻道的播放地址是 `名稱$地址#名稱$地址` 串，模板不該自己 split
+    $live = model('Live');
+    foreach ($list as $k => $row) {
+        $raw = isset($row['live_url']) ? $row['live_url'] : '';
+        $list[$k]['urls'] = $live->parseUrlList($raw);
+    }
+
+    return [
+        'list'    => $list,
+        'total'   => isset($res['total']) ? (int) $res['total'] : 0,
+        'page'    => $page,
+        'limit'   => $limit,
+        'pageurl' => mac_url(
+            !empty($args['pageurl']) ? (string) $args['pageurl'] : 'live/show',
+            array_merge(
+                array('page' => 'PAGELINK'),
+                !empty($args['cate']) ? array('cate_id' => (int) $args['cate']) : array()
+            )
+        ),
+    ];
+}
+
+/**
+ * 排行榜多榜單解析：讀後台 TplConfig 的 theme.rank.boards（每個榜單自帶分類/標題/數量/
+ * 啟停），供 spike 主題的 rank_theme_boards page-builder 元件直出。刻意獨立於
+ * app\index\controller\Label::labelRankTypesForPage() ——後者是 default 主題舊格式
+ * （type_id + type_name，全榜統一數量），兩邊資料形狀不同，共用會連帶改到 default
+ * 的輸出，不想承擔那個回歸風險。
+ *
+ * 每個榜單依所選分類的 type_mid 解析出內容類型（1=視頻 2=文章/小說 12=漫畫），一併
+ * 回傳供 rank_theme_boards → np2_rank_board → rank_list 逐層透傳；分類留空（全站）時
+ * 沿用舊行為視為視頻榜。後台分類選擇器（type-picker）本就支援跨 mid 選分類，這裡不再
+ * 把非視頻分類擋掉。
+ *
+ * 未設定過 boards（新裝或尚未保存過一次配置）時，依序退回視頻／文章／漫畫各自的一級
+ * 分類（每類最多 6 個，每個 6 條），確保新裝站點排行榜頁預設就能看到三種內容類型。
+ *
+ * @return array [{type_id:int, title:string, num:int, mid:int}]
+ */
+function mac_rank_boards()
+{
+    $mc = isset($GLOBALS['mctheme']) && is_array($GLOBALS['mctheme'])
+        ? $GLOBALS['mctheme']
+        : (config('mctheme') ?: ['theme' => []]);
+    $rankCfg = (isset($mc['theme']['rank']) && is_array($mc['theme']['rank'])) ? $mc['theme']['rank'] : [];
+    $pageTitle = trim((string) ($rankCfg['title'] ?? ''));
+    if ($pageTitle === '') {
+        $pageTitle = '排行榜';
+    }
+
+    $typeModel = model('Type');
+    $allowedMids = [1, 2, 12];
+    $boardsCfg = (isset($rankCfg['boards']) && is_array($rankCfg['boards'])) ? $rankCfg['boards'] : [];
+    $out = [];
+    foreach ($boardsCfg as $row) {
+        if (!is_array($row)) {
+            continue;
+        }
+        if (isset($row['status']) && (string) $row['status'] === '0') {
+            continue;
+        }
+        $typeId = isset($row['type_id']) ? max(0, (int) $row['type_id']) : 0;
+        $typeName = lang('all');
+        $mid = 1;
+        if ($typeId > 0) {
+            $info = $typeModel->getCacheInfo($typeId);
+            $infoMid = (int) ($info['type_mid'] ?? 0);
+            if (empty($info) || !in_array($infoMid, $allowedMids, true)) {
+                // 分类已被删除或不属于可排行的内容类型（视频/文章/漫画），跳过该榜单
+                continue;
+            }
+            $mid = $infoMid;
+            $typeName = (string) ($info['type_name'] ?? $typeName);
+        }
+        $title = trim((string) ($row['title'] ?? ''));
+        if ($title === '') {
+            $title = $typeName . $pageTitle;
+        }
+        $num = isset($row['num']) ? (int) $row['num'] : 6;
+        $num = max(2, min(30, $num ?: 6));
+        $out[] = [
+            'type_id' => $typeId,
+            'title'   => $title,
+            'num'     => $num,
+            'mid'     => $mid,
+        ];
+        if (count($out) >= 20) {
+            break;
+        }
+    }
+
+    if (!empty($out)) {
+        return $out;
+    }
+
+    // 兜底：未配置过 boards（如尚未在后台保存过一次）时，依次取视频/文章/漫画的一级分类
+    $typeListCache = $typeModel->getCache('type_list');
+    $fallbackByMid = [1 => [], 2 => [], 12 => []];
+    if (is_array($typeListCache)) {
+        foreach ($typeListCache as $typeInfo) {
+            if (!is_array($typeInfo)) {
+                continue;
+            }
+            if ((int) ($typeInfo['type_pid'] ?? 0) !== 0) {
+                continue;
+            }
+            $mid = (int) ($typeInfo['type_mid'] ?? 0);
+            if (!in_array($mid, $allowedMids, true)) {
+                continue;
+            }
+            if (isset($typeInfo['type_status']) && (int) $typeInfo['type_status'] !== 1) {
+                continue;
+            }
+            $fallbackByMid[$mid][] = $typeInfo;
+        }
+        foreach ($fallbackByMid as $mid => &$list) {
+            usort($list, function ($a, $b) {
+                return ((int) ($a['type_sort'] ?? 0)) <=> ((int) ($b['type_sort'] ?? 0));
+            });
+            $list = array_slice($list, 0, 6);
+        }
+        unset($list);
+    }
+
+    if (count($fallbackByMid[1]) + count($fallbackByMid[2]) + count($fallbackByMid[12]) < 1) {
+        return [['type_id' => 0, 'title' => $pageTitle, 'num' => 6, 'mid' => 1]];
+    }
+    foreach ($allowedMids as $mid) {
+        foreach ($fallbackByMid[$mid] as $typeInfo) {
+            $out[] = [
+                'type_id' => (int) ($typeInfo['type_id'] ?? 0),
+                'title'   => (string) ($typeInfo['type_name'] ?? '') . $pageTitle,
+                'num'     => 6,
+                'mid'     => $mid,
+            ];
+        }
+    }
+    return $out;
+}
+
+/**
+ * 直播分類（頻道分組）列表。
+ *
+ * @return array
+ */
+function mac_live_cates()
+{
+    $list = model('Live')->categoryList(['cate_status' => ['eq', 1]]);
+    return is_array($list) ? $list : [];
+}
+
+/**
+ * 單一直播頻道詳情，含解析好的播放地址清單。
+ *
+ * @param int $id
+ * @return array 找不到時回傳空陣列
+ */
+function mac_live_info($id)
+{
+    $id = (int) $id;
+    if ($id < 1) {
+        return [];
+    }
+    $res = model('Live')->infoData(['live_id' => ['eq', $id], 'live_status' => ['eq', 1]]);
+    if (empty($res['code']) || $res['code'] != 1 || empty($res['info'])) {
+        return [];
+    }
+    $info = $res['info'];
+    $info['urls'] = model('Live')->parseUrlList(isset($info['live_url']) ? $info['live_url'] : '');
+    return $info;
+}
+
+/**
+ * 頁面級 SEO 結構資料：canonical / og / twitter。
+ *
+ * 覆蓋範圍說明（v1）：只產出**與頁面結構有關**的部分。
+ * 標題與描述本身走既有管道 —— 詳情頁由 All::mergeDetailSeoIntoMaccms() 寫進
+ * $maccms['page_detail_*']，其餘頁面用 $maccms['site_*']，模板直接讀即可。
+ *
+ * ⚠️ template/default/html/widget/seos.html 另有一套按 aid 分支的 32 種
+ * keywords/description 文案矩陣與完整 JSON-LD，**不在本函式範圍內**，
+ * 見 docs/theme-contract-v1.md 的「已知缺口」。
+ *
+ * @param array|null $obj 詳情頁的內容物件（列表頁傳 null）
+ * @return array
+ */
+function mac_seo_meta($obj = null)
+{
+    $site = isset($GLOBALS['config']['site']) ? $GLOBALS['config']['site'] : [];
+    $siteName = isset($site['site_name']) ? (string) $site['site_name'] : '';
+
+    $canonical = '';
+    if (function_exists('request')) {
+        try {
+            $req = request();
+            if (is_object($req) && method_exists($req, 'url')) {
+                $canonical = (string) $req->url(true);
+            }
+        } catch (\Exception $e) {
+            $canonical = '';
+        }
+    }
+
+    $title = $siteName;
+    $desc = isset($site['site_description']) ? (string) $site['site_description'] : '';
+    $image = '';
+    $ogType = 'website';
+
+    if (is_array($obj)) {
+        foreach (['vod_name', 'art_name', 'manga_name', 'topic_name', 'actor_name'] as $f) {
+            if (!empty($obj[$f])) {
+                $title = (string) $obj[$f] . ($siteName !== '' ? ' - ' . $siteName : '');
+                $ogType = 'article';
+                break;
+            }
+        }
+        foreach (['vod_blurb', 'art_blurb', 'manga_blurb', 'topic_blurb'] as $f) {
+            if (!empty($obj[$f])) {
+                $desc = trim(strip_tags((string) $obj[$f]));
+                break;
+            }
+        }
+        foreach (['vod_pic', 'art_pic', 'manga_pic', 'topic_pic', 'actor_pic'] as $f) {
+            if (!empty($obj[$f])) {
+                $image = mac_url_img($obj[$f]);
+                break;
+            }
+        }
+    }
+
+    return [
+        'canonical' => $canonical,
+        'og' => [
+            'og:type'        => $ogType,
+            'og:title'       => $title,
+            'og:description' => $desc,
+            'og:url'         => $canonical,
+            'og:image'       => $image,
+        ],
+        'twitter' => [
+            'twitter:card'        => $image !== '' ? 'summary_large_image' : 'summary',
+            'twitter:title'       => $title,
+            'twitter:description' => $desc,
+            'twitter:image'       => $image,
+        ],
+    ];
+}
+
 function mac_get_aid($controller,$action='')
 {
     $controller=strtolower($controller);
@@ -1858,6 +2649,7 @@ function mac_get_ulog_type_text($data)
         3 => lang('want_see'),
         4 => lang('play'),
         5 => lang('down'),
+        6 => lang('like'),
     ];
     return $arr[$data];
 }
@@ -1878,6 +2670,8 @@ function mac_get_plog_type_text($data)
         11 => lang('plog_task_sign_reward'),
         12 => lang('plog_mall_exchange'),
         13 => lang('plog_seckill'),
+        14 => lang('plog_invite_reward'),
+        15 => lang('plog_invite_vip'),
     ];
     return isset($arr[$data]) ? $arr[$data] : '';
 }
@@ -1952,6 +2746,36 @@ function mac_filter_html($str)
 {
     $str = mac_scalar_string($str);
     return strip_tags($str);
+}
+
+/**
+ * 简介等纯文本字段：还原 HTML 实体、去标签、合并空白。
+ *
+ * 资源站自己也跑过 mac_filter_xss（htmlspecialchars），正文里的 &nbsp; 进简介后
+ * 变成 &amp;nbsp;，采集过来原样入库；本站后台保存同样会把 & " ' 转成实体。
+ * 模板再 autoescape 一次，前台就显示成「&amp;nbsp;Petch…」这种乱码。
+ * 实体可能叠了多层，循环解码到不再变化为止（上限 3 层）。
+ * 返回值是未转义的纯文本，输出时交给 Twig 自动转义。
+ */
+function mac_plain_text($str)
+{
+    $str = mac_scalar_string($str);
+    if ($str === '') {
+        return '';
+    }
+    for ($i = 0; $i < 3; $i++) {
+        $dec = html_entity_decode($str, ENT_QUOTES | ENT_HTML5, 'UTF-8');
+        if ($dec === $str) {
+            break;
+        }
+        $str = $dec;
+    }
+    // 只去掉形如 HTML 的标签；strip_tags 会把解码出来的「<速度与激情>」这类书名号文本也吞掉
+    $str = preg_replace('#<!--.*?-->|</?[a-zA-Z][a-zA-Z0-9-]*(?:\s[^<>]*)?/?>#s', ' ', $str);
+    // NBSP / 全角空格（中文段首缩进）一并视为空白
+    $str = str_replace(["\xC2\xA0", "\xE3\x80\x80"], ' ', $str);
+    $str = preg_replace('/\s+/u', ' ', $str);
+    return trim((string)$str);
 }
 
 function mac_filter_xss($str)
@@ -2105,6 +2929,228 @@ function mac_art_list($art_title,$art_note,$art_content)
         ];
     }
     return $res_list;
+}
+
+/**
+ * 小说备注中的章节数（「共N章」「更新至N章」）与实际入库章节对齐。
+ * 采集源备注是源站全本章数，但接口往往只下发部分章节，导致备注与目录不符；
+ * 章节以 art_content 的 $$$ 分段计（与 mac_art_list 一致）。非章节数类备注原样返回。
+ */
+function mac_art_chapter_remarks($art_remarks, $art_content)
+{
+    if ((string)$art_content === '') {
+        return (string)$art_remarks;
+    }
+    return mac_art_chapter_remarks_by_total($art_remarks, substr_count($art_content, '$$$') + 1);
+}
+
+function mac_art_chapter_remarks_by_total($art_remarks, $chapter_total)
+{
+    return mac_chapter_remarks_by_total($art_remarks, $chapter_total, '章');
+}
+
+/** 章节数类备注（共/更新至/连载至 N 章|话）改写为实际章节数；$unit 为 章（小说）或 话（漫画） */
+function mac_chapter_remarks_by_total($remarks, $chapter_total, $unit)
+{
+    $remarks = (string)$remarks;
+    $chapter_total = (int)$chapter_total;
+    if ($chapter_total < 1 || !preg_match('/^\s*(共|更新至|连载至)\s*\d+\s*' . preg_quote($unit, '/') . '\s*$/u', $remarks, $m)) {
+        return $remarks;
+    }
+    return $m[1] . $chapter_total . $unit;
+}
+
+/** 漫画实际话数：manga_chapter_url 按 $$$ 分来源、# 分章节，取各来源最大话数（空段不计，与 mac_play_list_one 一致） */
+function mac_manga_chapter_total($manga_chapter_url)
+{
+    $max = 0;
+    foreach (explode('$$$', (string)$manga_chapter_url) as $group) {
+        $n = 0;
+        foreach (explode('#', $group) as $one) {
+            if ($one !== '') {
+                $n++;
+            }
+        }
+        $max = max($max, $n);
+    }
+    return $max;
+}
+
+/**
+ * 漫画备注中的话数（「共N话」「更新至N话」）与实际入库章节对齐。
+ * 采集源备注是源站全本话数，但接口往往只下发部分章节，导致备注与章节列表不符。
+ */
+function mac_manga_chapter_remarks($manga_remarks, $manga_chapter_url)
+{
+    return mac_chapter_remarks_by_total($manga_remarks, mac_manga_chapter_total($manga_chapter_url), '话');
+}
+
+/**
+ * 列表行章节数缓存（mac_art_rows_chapter_remarks / mac_manga_rows_chapter_remarks 共用）。
+ * 库内计数要扫整段正文/章节地址（单本小说可达十几 MB），公开接口每次请求都现算会被放大成 DoS；
+ * 按「ID + 更新时间」缓存，内容更新后键自然失效，TTL 兜底管理员改内容但不刷新时间的情况。
+ * @return array [已命中的 [id => total], 未命中的 [id => cache_key]]
+ */
+function mac_rows_chapter_total_cache_get($m, array $rows, array $ids)
+{
+    $want = array_flip($ids);
+    $flag = isset($GLOBALS['config']['app']['cache_flag']) ? $GLOBALS['config']['app']['cache_flag'] : 'maccms';
+    $hit = [];
+    $miss = [];
+    foreach ($rows as $row) {
+        $id = isset($row[$m . '_id']) ? (int)$row[$m . '_id'] : 0;
+        if ($id < 1 || !isset($want[$id]) || isset($hit[$id]) || isset($miss[$id])) {
+            continue;
+        }
+        $key = $flag . '_' . $m . '_chapter_total_' . $id . '_' . (isset($row[$m . '_time']) ? (int)$row[$m . '_time'] : 0);
+        $v = \think\Cache::get($key);
+        if ($v === false || $v === null) {
+            $miss[$id] = $key;
+        } elseif ((int)$v > 0) {
+            $hit[$id] = (int)$v;
+        }
+    }
+    return [$hit, $miss];
+}
+
+/**
+ * 回写未命中的章节数；查不到正文的也写 0，避免同一条反复回库
+ * @return array [id => total]（仅 total > 0 的）
+ */
+function mac_rows_chapter_total_cache_set(array $miss, array $found)
+{
+    $out = [];
+    foreach ($miss as $id => $key) {
+        $n = isset($found[$id]) ? (int)$found[$id] : 0;
+        \think\Cache::set($key, $n, 3600);
+        if ($n > 0) {
+            $out[$id] = $n;
+        }
+    }
+    return $out;
+}
+
+/** 列表行（未取章节地址的轻量查询）批量对齐漫画话数备注 */
+function mac_manga_rows_chapter_remarks(array &$rows)
+{
+    $ids = [];
+    foreach ($rows as $row) {
+        if (!empty($row['manga_id']) && isset($row['manga_remarks']) && preg_match('/^\s*(共|更新至|连载至)\s*\d+\s*话\s*$/u', (string)$row['manga_remarks'])) {
+            $ids[] = (int)$row['manga_id'];
+        }
+    }
+    if (empty($ids)) {
+        return;
+    }
+    list($totals, $miss) = mac_rows_chapter_total_cache_get('manga', $rows, $ids);
+    if (!empty($miss)) {
+        $found = [];
+        try {
+            // 单来源直接在库内数 #；多来源（含 $$$）才取回地址在 PHP 里逐组计数
+            $sql = "SELECT manga_id, IF(LOCATE('$$$', manga_chapter_url) > 0, manga_chapter_url, NULL) AS multi, "
+                . "CHAR_LENGTH(TRIM(BOTH '#' FROM manga_chapter_url)) - CHAR_LENGTH(REPLACE(TRIM(BOTH '#' FROM manga_chapter_url), '#', '')) + 1 AS n FROM "
+                . config('database.prefix') . "manga WHERE manga_chapter_url <> '' AND manga_id IN (" . implode(',', array_keys($miss)) . ")";
+            foreach (\think\Db::query($sql) as $r) {
+                $found[$r['manga_id']] = $r['multi'] !== null ? mac_manga_chapter_total($r['multi']) : (int)$r['n'];
+            }
+        } catch (\Exception $e) {
+            return;
+        }
+        $totals += mac_rows_chapter_total_cache_set($miss, $found);
+    }
+    foreach ($rows as $k => $row) {
+        if (!empty($row['manga_id']) && isset($totals[$row['manga_id']])) {
+            $rows[$k]['manga_remarks'] = mac_chapter_remarks_by_total($row['manga_remarks'], $totals[$row['manga_id']], '话');
+        }
+    }
+}
+
+/**
+ * 列表行（未取 art_content 的轻量查询）批量对齐章节数备注：仅对章节数类备注在库内计数，不传正文。
+ */
+function mac_art_rows_chapter_remarks(array &$rows)
+{
+    $ids = [];
+    foreach ($rows as $row) {
+        if (!empty($row['art_id']) && isset($row['art_remarks']) && preg_match('/^\s*(共|更新至|连载至)\s*\d+\s*章\s*$/u', (string)$row['art_remarks'])) {
+            $ids[] = (int)$row['art_id'];
+        }
+    }
+    if (empty($ids)) {
+        return;
+    }
+    list($totals, $miss) = mac_rows_chapter_total_cache_get('art', $rows, $ids);
+    if (!empty($miss)) {
+        $found = [];
+        try {
+            $sql = "SELECT art_id, (CHAR_LENGTH(art_content) - CHAR_LENGTH(REPLACE(art_content, '$$$', ''))) / 3 + 1 AS n FROM "
+                . config('database.prefix') . "art WHERE art_content <> '' AND art_id IN (" . implode(',', array_keys($miss)) . ")";
+            foreach (\think\Db::query($sql) as $r) {
+                $found[$r['art_id']] = (int)$r['n'];
+            }
+        } catch (\Exception $e) {
+            return;
+        }
+        $totals += mac_rows_chapter_total_cache_set($miss, $found);
+    }
+    foreach ($rows as $k => $row) {
+        if (!empty($row['art_id']) && isset($totals[$row['art_id']])) {
+            $rows[$k]['art_remarks'] = mac_art_chapter_remarks_by_total($row['art_remarks'], $totals[$row['art_id']]);
+        }
+    }
+}
+
+/** 集数类视频备注：全/共/更新至/连载至 [第] N 集 */
+function mac_vod_episode_remarks_match($vod_remarks, &$m = null)
+{
+    return (bool)preg_match('/^\s*(全|共|更新至|连载至)\s*(第?)\s*(\d+)\s*集\s*$/u', (string)$vod_remarks, $m);
+}
+
+/**
+ * 视频备注中的集数（「全N集」「更新至N集」）与实际播放地址对齐。
+ * 采集源备注常是源站全集数，接口却只下发部分剧集；二次采集更新了地址却未更新备注时也会落后。
+ * 集数取 vod_play_url 各播放组非空集数的最大值（与 mac_manga_chapter_total 同口径）。数字一致时原样返回（保留 第06集 这类补零）。
+ */
+function mac_vod_episode_remarks($vod_remarks, $vod_play_url)
+{
+    $vod_remarks = (string)$vod_remarks;
+    if (!mac_vod_episode_remarks_match($vod_remarks, $m)) {
+        return $vod_remarks;
+    }
+    $total = mac_manga_chapter_total($vod_play_url);
+    if ($total < 1 || (int)$m[3] === $total) {
+        return $vod_remarks;
+    }
+    return $m[1] . $m[2] . $total . '集';
+}
+
+/** 列表行（未取播放地址的轻量查询）批量对齐视频集数备注；行内已带 vod_play_url 时直接计数 */
+function mac_vod_rows_episode_remarks(array &$rows)
+{
+    $ids = [];
+    foreach ($rows as $k => $row) {
+        if (empty($row['vod_id']) || !isset($row['vod_remarks']) || !mac_vod_episode_remarks_match($row['vod_remarks'])) {
+            continue;
+        }
+        if (isset($row['vod_play_url'])) {
+            $rows[$k]['vod_remarks'] = mac_vod_episode_remarks($row['vod_remarks'], $row['vod_play_url']);
+        } else {
+            $ids[] = (int)$row['vod_id'];
+        }
+    }
+    if (empty($ids)) {
+        return;
+    }
+    try {
+        $urls = \think\Db::name('Vod')->where('vod_id', 'in', array_unique($ids))->column('vod_play_url', 'vod_id');
+    } catch (\Exception $e) {
+        return;
+    }
+    foreach ($rows as $k => $row) {
+        if (!empty($row['vod_id']) && !isset($row['vod_play_url']) && isset($urls[$row['vod_id']])) {
+            $rows[$k]['vod_remarks'] = mac_vod_episode_remarks($row['vod_remarks'], $urls[$row['vod_id']]);
+        }
+    }
 }
 
 function mac_plot_list($vod_plot_name,$vod_plot_detail)
@@ -2489,70 +3535,99 @@ function mac_url_img($url)
 }
 
 /**
- * 读取「主题设计」（Theme Design）配置覆盖文件。
- * 由后台「主题设计」工具发布，用于在不修改原始模板的前提下重新配置前台主题。
- * - 预览模式（前台 URL ?td_preview=1）读取草稿版本 theme-design.draft.json，否则读取已发布版 theme-design.json。
- * - 文件位于：ROOT_PATH . 'template/' . <当前模板目录> . '/theme-design[.draft].json'
- * - 缺失/解析失败时返回空数组 []，保证前台与未配置时表现完全一致（向后兼容、绝不致命）。
+ * 读取「主题设计」配置（Twig 兼容壳 → ThemeDesignRuntime）。
  * @return array
  */
 function mac_theme_design()
 {
-    static $cache = [];
-
-    $preview = 0;
-    // request() 在某些上下文（如 CLI）可能不可用，做空安全处理
-    if (function_exists('request')) {
-        $req = request();
-        if (is_object($req)) {
-            $preview = !empty($req->param('td_preview')) ? 1 : 0;
-        }
-    }
-
-    $key = $preview ? 'draft' : 'pub';
-    if (isset($cache[$key])) {
-        return $cache[$key];
-    }
-
-    $data = [];
-    $tpl = isset($GLOBALS['config']['site']['template_dir']) ? $GLOBALS['config']['site']['template_dir'] : '';
-    if ($tpl !== '' && defined('ROOT_PATH')) {
-        $file = ROOT_PATH . 'template/' . $tpl . '/theme-design' . ($preview ? '.draft' : '') . '.json';
-        if (is_file($file)) {
-            $json = @file_get_contents($file);
-            if ($json !== false && $json !== '') {
-                $arr = json_decode($json, true);
-                if (is_array($arr)) {
-                    $data = $arr;
-                }
-            }
-        }
-    }
-
-    $cache[$key] = $data;
-    return $data;
+    return \app\common\util\ThemeDesignRuntime::config();
 }
 
 /**
- * 取首页某板块（section key）的设计属性，如 num / layout。
- * 用于前台数据组件在渲染时按主题设计覆盖默认的「数量 / 展示方式」。
- * 找不到返回空数组（组件即回退到自身默认）。
+ * 是否处于主题设计预览模式（Twig 兼容壳 → ThemePreviewAuth）。
+ * @return bool
  */
+function mac_td_preview_mode()
+{
+    return \app\common\util\ThemePreviewAuth::isActive();
+}
+
+function mac_pb_resolve_template($tpl)
+{
+    return \app\common\util\ThemePreviewRuntime::resolveTemplate($tpl);
+}
+
+function mac_pb_theme_has_page_tpl($themeDir, $tpl, $htmlDir = 'html')
+{
+    return \app\common\util\ThemePreviewRuntime::themeHasPageTpl($themeDir, $tpl, $htmlDir);
+}
+
+function mac_pb_should_use_site_theme($tpl)
+{
+    return \app\common\util\ThemePreviewRuntime::shouldUseSiteTheme($tpl);
+}
+
+function mac_pb_site_theme_view_path()
+{
+    return \app\common\util\ThemePreviewRuntime::siteThemeViewPath();
+}
+
+function mac_pb_ensure_page_scaffold($tpl)
+{
+    return \app\common\util\ThemePreviewRuntime::ensurePageScaffold($tpl);
+}
+
+function mac_page_view($route)
+{
+    return \app\common\util\ThemePreviewRuntime::pageView($route);
+}
+
+function mac_homepage_index_view()
+{
+    return \app\common\util\ThemePreviewRuntime::homepageIndexView();
+}
+
+function mac_pb_preview_stub_website($param = array())
+{
+    return \app\common\util\ThemeDesignRuntime::previewStubWebsite($param);
+}
+
 function mac_td_section($key)
 {
-    static $map = null;
-    if ($map === null) {
-        $map = array();
-        $td = mac_theme_design();
-        if (!empty($td['homepage']['sections']) && is_array($td['homepage']['sections'])) {
-            foreach ($td['homepage']['sections'] as $s) {
-                if (!empty($s['key'])) {
-                    $map[$s['key']] = $s;
-                }
-            }
-        }
-    }
-    return isset($map[$key]) ? $map[$key] : array();
+    return \app\common\util\ThemeDesignRuntime::homepageSection($key);
+}
+
+function mac_homepage_default_page()
+{
+    $kit = new \app\common\util\PageBuilderKit();
+    return $kit->defaultHomepagePage();
+}
+
+function mac_homepage_blocks()
+{
+    return \app\common\util\ThemeDesignRuntime::homepageBlocks();
+}
+
+function mac_pb_theme_template_dir()
+{
+    return \app\common\util\ThemePreviewRuntime::themeTemplateDir();
+}
+
+function mac_pb_is_packaged_component($componentId)
+{
+    $kit = new \app\common\util\PageBuilderKit();
+    return $kit->isPackagedInActiveTheme($componentId);
+}
+
+function mac_pb_collect_block_assets($blocks)
+{
+    $kit = new \app\common\util\PageBuilderKit();
+    return $kit->collectBlockAssetsForActiveTheme($blocks);
+}
+
+function mac_theme_override_css_href()
+{
+    return \app\common\util\ThemeDesignRuntime::overrideCssHref();
 }
 
 function mac_url_content_img($content)
@@ -2715,6 +3790,7 @@ function mac_url($model,$param=[],$info=[])
             break;
         case 'vod/show':
         case 'art/show':
+        case 'manga/show':
         case 'actor/show':
         case 'website/show':
             switch($config['rewrite']['type_id'])
@@ -2761,7 +3837,8 @@ function mac_url($model,$param=[],$info=[])
                         $id = $info['type_id'];
                         break;
                 }
-                $url = url($model,['id'=>$id,'page'=>$param['page']]);
+                $param['id'] = $id;
+                $url = url($model, $param);
             }
             break;
         case 'vod/detail':
@@ -3029,7 +4106,8 @@ function mac_url($model,$param=[],$info=[])
                         $id = $info['type_id'];
                         break;
                 }
-                $url = url($model,['id'=>$id,'page'=>$param['page']]);
+                $param['id'] = $id;
+                $url = url($model, $param);
             }
             break;
         case 'art/detail':
@@ -3565,7 +4643,7 @@ function mac_url_art_search($param)
 }
 function mac_url_vod_index($param=[])
 {
-    return mac_url('vod/index',['page'=>$param['page']]);
+    return mac_url('vod/index', $param);
 }
 function mac_url_vod_detail($info)
 {
@@ -3695,6 +4773,22 @@ function mac_label_website_detail($param)
     }
     $where['website_status'] = ['eq',1];
     $res = model('Website')->infoData($where,'*',1);
+    if ($res['code'] > 1 && function_exists('mac_td_preview_mode') && mac_td_preview_mode()) {
+        $row = model('Website')->where('website_status', 1)->order('website_id asc')->find();
+        if (!empty($row)) {
+            $wid = is_array($row) ? (int) $row['website_id'] : (int) $row->getData('website_id');
+            if ($wid > 0) {
+                $res = model('Website')->infoData(array('website_id' => array('eq', $wid)), '*', 0);
+            }
+        }
+        if ($res['code'] > 1 && function_exists('mac_pb_preview_stub_website')) {
+            $res = array('code' => 1, 'msg' => lang('obtain_ok'), 'info' => mac_pb_preview_stub_website($param));
+        }
+    }
+
+    if (!isset($res['info']) || !is_array($res['info'])) {
+        return $res;
+    }
 
     $GLOBALS['type_id'] = $res['info']['type_id'];
     $GLOBALS['type_pid'] = $res['info']['type']['type_pid'];
@@ -3753,6 +4847,15 @@ function mac_label_topic_detail($param)
     }
     $where['topic_status'] = ['eq',1];
     $res = model('Topic')->infoData($where,'*',1);
+    if ($res['code'] > 1 && function_exists('mac_td_preview_mode') && mac_td_preview_mode()) {
+        $row = model('Topic')->where('topic_status', 1)->order('topic_id asc')->find();
+        if (!empty($row)) {
+            $tid = is_array($row) ? (int) $row['topic_id'] : (int) $row->getData('topic_id');
+            if ($tid > 0) {
+                $res = model('Topic')->infoData(array('topic_id' => array('eq', $tid)), '*', 0);
+            }
+        }
+    }
     return $res;
 }
 

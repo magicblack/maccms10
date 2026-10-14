@@ -1,0 +1,139 @@
+{#
+  全站顶栏（kit 共享片段）— 发布时同步到各主题 page-builder-components/_shared/。
+  site_nav 组件与主题 base.twig 均通过 kit 组件引用，勿在单主题 html/components 维护副本。
+
+  主题壳层需提供：
+  - @shared/icon.twig（全站 SVG mask 图标）
+
+  已迁 kit：
+  - page-builder-components/_shared/user_avatar.twig
+  - page-builder-components/notify_bell/（消息铃铛）
+
+  可选参数：type_ids、max、show_search、logo、is_home、nav_types、cur_type_id
+#}
+{% set _is_home = is_home|default(maccms.aid|default(0) == 1) %}
+{% set _cur_type = cur_type_id|default(obj.type_id|default(param.id|default(0))) %}
+{% set _max = max|default(8) %}
+{% set _ids = type_ids|default([]) %}
+{% if _ids is not empty %}
+  {% set _type_rows = mac_type({ids: _ids|join(','), mid: 1, num: _ids|length}).list|default([]) %}
+  {% set _nav_ids = _ids|slice(0, _max) %}
+{% elseif nav_types|default([]) is not empty %}
+  {% set _nav_types = nav_types %}
+{% else %}
+  {% set _nav_types = mac_top_types(1, _max) %}
+{% endif %}
+{% set _show_search = show_search|default(true) %}
+{% set _logo_prop = logo|default('')|trim %}
+{% set _logo_global = mac_theme_design().logo|default('')|trim %}
+{% set _site_logo = maccms.site_logo|default('')|trim %}
+{% set _logo = _logo_prop ?: _logo_global ?: _site_logo %}
+<header class="hd{% if not _is_home %} is-solid{% endif %}" role="banner" data-hd>
+  <div class="wrap">
+    <div class="hd-main">
+            <a class="brand" href="{{ maccms.path }}" title="{{ maccms.site_name }}">
+        {% set _lg_raw = _logo|default('')|trim %}
+        {% set _is_default_logo = _lg_raw == '' or 'logo-transparent.png' in _lg_raw or 'logo.png' in _lg_raw or 'logo.jpg' in _lg_raw or 'logo-mark.' in _lg_raw or '7de625dc60a178366ac62eab6625b482' in _lg_raw or 'logo-wordmark.' in _lg_raw %}
+        {% if _lg_raw and not _is_default_logo %}
+          {% set _lg = (_lg_raw matches '/^(https?:)?\/\//' or _lg_raw starts with '/') ? _lg_raw : mac_url_img(_lg_raw) %}
+          <img class="brand__logo" src="{{ _lg }}" alt="{{ maccms.site_name }}" height="40" decoding="async">
+        {% else %}
+          {% include "page-builder-components/_shared/brand_logo.twig" with { height: 40 } %}
+        {% endif %}
+      </a>
+      <nav class="nav" id="hd-primary-nav" data-lang-aria-label="string_primary_nav">
+        {% if _ids is not empty %}
+        {% for id in _nav_ids %}
+          {% for t in _type_rows %}
+            {% if t.type_id == id %}
+        <a href="{{ mac_url_type(t) }}"{% if _cur_type == t.type_id %} class="on" aria-current="page"{% endif %}>{{ t.type_name }}</a>
+            {% endif %}
+          {% endfor %}
+        {% endfor %}
+        {% else %}
+        {% for t in _nav_types %}
+        <a href="{{ mac_url_type(t) }}"{% if _cur_type == t.type_id %} class="on" aria-current="page"{% endif %}>{{ t.type_name }}</a>
+        {% endfor %}
+        {% endif %}
+      </nav>
+      <div class="hd-end">
+        {% if _show_search %}
+        <form class="sbox" method="get" action="{{ mac_url('vod/search') }}" role="search">
+          <input type="search" name="wd" value="{{ param.wd|default('') }}" data-placeholder="string_search_input" placeholder="搜索" autocomplete="off" aria-label="search" enterkeyhint="search">
+          <button type="submit" data-lang="string_search">搜索</button>
+        </form>
+        {% endif %}
+        <div class="hd-trailing">
+          <div class="lang-dd" data-lang-dd>
+          <button type="button" class="lang-dd__btn" data-lang-aria-label="string_switch_lang" aria-haspopup="listbox" aria-expanded="false">
+            <svg class="lang-dd__ico" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+              <circle cx="12" cy="12" r="9"/>
+              <path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/>
+            </svg>
+            <span class="lang-dd__cur" data-lang-dd-cur>中文</span>
+            <span class="lang-dd__caret" aria-hidden="true"></span>
+          </button>
+          <ul class="lang-dd__menu" role="listbox" hidden>
+            <li role="option"><button type="button" data-mac-lang="zh" data-lang="string_lang_zh">中文</button></li>
+            <li role="option"><button type="button" data-mac-lang="en" data-lang="string_lang_en">English</button></li>
+          </ul>
+        </div>
+        {% if user.user_id %}
+        {% include "page-builder-components/notify_bell/template.twig" %}
+        <div class="user-dd" data-user-dd>
+          <button type="button" class="user-dd__btn" aria-haspopup="menu" aria-expanded="false" aria-label="用户菜单 {{ user.user_name }}" data-lang-aria-label="string_user_menu">
+            {% include "page-builder-components/_shared/user_avatar.twig" with {uid: user.user_id, class: 'user-dd__avatar', size: 36} %}
+            <span class="user-dd__name">{{ user.user_name }}</span>
+            <span class="user-dd__caret" aria-hidden="true"></span>
+          </button>
+          <div class="user-dd__menu" role="menu" hidden>
+            <div class="user-dd__head">
+              {% include "page-builder-components/_shared/user_avatar.twig" with {uid: user.user_id, class: 'user-dd__head-avatar', size: 32} %}
+              <div class="user-dd__head-text">
+                <span class="user-dd__head-name user-dd__name" data-user-name>{{ user.user_name }}</span>
+                {% if user.group.group_name|default('') %}
+                <span class="user-dd__head-meta">{{ user.group.group_name }}</span>
+                {% endif %}
+              </div>
+            </div>
+            <div class="user-dd__menu-group">
+              <a role="menuitem" class="user-dd__item" href="{{ mac_url('user/index') }}">
+                {% include "@shared/icon.twig" with { name: 'user', class: 'user-dd__ico' } %}
+                <span class="user-dd__label" data-lang="string_mac_hyzx">会员中心</span>
+              </a>
+              <a role="menuitem" class="user-dd__item" href="{{ mac_url('user/favs') }}">
+                {% include "@shared/icon.twig" with { name: 'icon-fav', class: 'user-dd__ico' } %}
+                <span class="user-dd__label" data-lang="user_my_collection">我的收藏</span>
+              </a>
+              <a role="menuitem" class="user-dd__item" href="{{ mac_url('user/plays') }}">
+                {% include "@shared/icon.twig" with { name: 'icon-play-line', class: 'user-dd__ico' } %}
+                <span class="user-dd__label" data-lang="string_play_history">播放记录</span>
+              </a>
+              <a role="menuitem" class="user-dd__item" href="{{ mac_url('user/info') }}">
+                {% include "@shared/icon.twig" with { name: 'icon-settings', class: 'user-dd__ico' } %}
+                <span class="user-dd__label" data-lang="user_zlxg">资料修改</span>
+              </a>
+            </div>
+            <div class="user-dd__menu-foot">
+              <a role="menuitem" class="user-dd__item user-dd__item--logout" href="{{ mac_url('user/logout') }}">
+                {% include "@shared/icon.twig" with { name: 'icon-logout', class: 'user-dd__ico' } %}
+                <span class="user-dd__label" data-lang="string_user_logout">退出登录</span>
+              </a>
+            </div>
+          </div>
+        </div>
+        {% else %}
+        <button type="button" class="hd-login" data-auth-open="login" aria-haspopup="dialog" data-lang-aria-label="string_login">
+          {% include "page-builder-components/_shared/user_avatar.twig" with {uid: 0, class: 'hd-login__avatar user-dd__avatar', size: 36, alt: ''} %}
+        </button>
+        {% endif %}
+          <button type="button" class="hd-menu" data-hd-menu aria-expanded="false" aria-controls="hd-primary-nav" data-lang-aria-label="string_open_nav_menu">
+            <span class="hd-menu__bar" aria-hidden="true"></span>
+            <span class="hd-menu__bar" aria-hidden="true"></span>
+            <span class="hd-menu__bar" aria-hidden="true"></span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>

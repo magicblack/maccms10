@@ -1,0 +1,26 @@
+{
+    "id": "site_map",
+    "label_key": "admin/themedesign/pb_block_site_map",
+    "category": "list",
+    "kind": "list",
+    "palette": false,
+    "peer_styles": [],
+    "assets": {
+        "css": "style.css",
+        "js": "script.js"
+    },
+    "props": {
+        "recent_num": {
+            "type": "number",
+            "default": 24
+        }
+    },
+    "context": {
+        "pageTypes": [
+            "list",
+            "home",
+            "special"
+        ],
+        "requires": []
+    }
+}

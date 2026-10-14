@@ -1,0 +1,52 @@
+{# NP2 会员侧栏 — 与 H5 我的页同款 webp 图标 #}
+{% set p = props|default({}) %}
+{% set active = p.active|default(active|default('index')) %}
+<ul class="member-nav__list np2-member-nav" data-component="member_nav">
+  <li>
+    <a href="{{ mac_url('user/index') }}" class="member-nav__link{% if active == 'index' %} is-on{% endif %}"{% if active == 'index' %} aria-current="page"{% endif %}>
+      <span class="member-nav__ico member-nav__ico--home np2-member-ico" aria-hidden="true">
+        <svg class="np2-member-ico__svg" viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" focusable="false">
+          <circle cx="12" cy="9" r="3.2" fill="none" stroke="currentColor" stroke-width="1.8"/>
+          <path d="M5.8 19c1.4-3 3.6-4.4 6.2-4.4s4.8 1.4 6.2 4.4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+        </svg>
+      </span>
+      <span class="member-nav__label" data-lang="string_mac_hyzx">会员中心</span>
+    </a>
+  </li>
+  <li>
+    <a href="{{ mac_url('user/info') }}" class="member-nav__link{% if active == 'info' %} is-on{% endif %}"{% if active == 'info' %} aria-current="page"{% endif %}>
+      <span class="member-nav__ico member-nav__ico--profile np2-member-ico" aria-hidden="true">{% include 'lib/np2_member_icon.twig' with { file: 'service.webp' } %}</span>
+      <span class="member-nav__label" data-lang="user_zlxg">资料修改</span>
+    </a>
+  </li>
+  <li>
+    <a href="{{ mac_url('user/notify') }}" class="member-nav__link{% if active == 'notify' %} is-on{% endif %}"{% if active == 'notify' %} aria-current="page"{% endif %}>
+      <span class="member-nav__ico member-nav__ico--bell np2-member-ico" aria-hidden="true">{% include 'lib/np2_member_icon.twig' with { file: 'bell.webp' } %}</span>
+      <span class="member-nav__label" data-lang="notify_title">消息中心</span>
+    </a>
+  </li>
+  <li>
+    <a href="{{ mac_url('user/favs') }}" class="member-nav__link{% if active == 'favs' %} is-on{% endif %}"{% if active == 'favs' %} aria-current="page"{% endif %}>
+      <span class="member-nav__ico member-nav__ico--fav np2-member-ico" aria-hidden="true">{% include 'lib/np2_member_icon.twig' with { file: 'hot.webp' } %}</span>
+      <span class="member-nav__label" data-lang="user_my_collection">我的收藏</span>
+    </a>
+  </li>
+  <li>
+    <a href="{{ mac_url('user/plays') }}" class="member-nav__link{% if active == 'plays' or active == 'downs' %} is-on{% endif %}"{% if active == 'plays' %} aria-current="page"{% endif %}>
+      <span class="member-nav__ico member-nav__ico--history np2-member-ico" aria-hidden="true">{% include 'lib/np2_member_icon.twig' with { file: 'newest.webp' } %}</span>
+      <span class="member-nav__label" data-lang="string_play_history">播放记录</span>
+    </a>
+  </li>
+  <li>
+    <a href="{{ mac_url('user/upgrade') }}" class="member-nav__link member-nav__link--vip{% if active in ['upgrade', 'buy', 'pay', 'cards', 'benefits'] %} is-on{% endif %}"{% if active in ['upgrade', 'buy', 'pay'] %} aria-current="page"{% endif %}>
+      <span class="member-nav__ico member-nav__ico--wallet np2-member-ico" aria-hidden="true">{% include 'lib/np2_member_icon.twig' with { file: 'cny.webp' } %}</span>
+      <span class="member-nav__label" data-lang="user_recharge">充值中心</span>
+    </a>
+  </li>
+  <li>
+    <a href="{{ mac_url('user/orders') }}" class="member-nav__link{% if active == 'orders' %} is-on{% endif %}"{% if active == 'orders' %} aria-current="page"{% endif %}>
+      <span class="member-nav__ico member-nav__ico--receipt np2-member-ico" aria-hidden="true">{% include 'lib/np2_member_icon.twig' with { file: 'coin-batch.webp' } %}</span>
+      <span class="member-nav__label" data-lang="user_recharge_record">充值记录</span>
+    </a>
+  </li>
+</ul>

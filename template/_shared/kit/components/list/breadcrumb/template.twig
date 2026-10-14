@@ -1,0 +1,25 @@
+{% set p = props|default({}) %}
+{% set sep = p.sep|default('›') %}
+{% set items = p.items|default([]) %}
+{% if p.auto|default(false) and items is empty %}
+  {% set items = [{name: '首页', url: maccms.path, lang: 'string_home'}] %}
+  {% if obj.type_name|default('') %}
+    {% set items = items|merge([{name: obj.type_name}]) %}
+  {% elseif obj.vod_name|default('') %}
+    {% set items = items|merge([{name: obj.vod_name}]) %}
+  {% elseif param.wd|default('') %}
+    {% set items = items|merge([{name: param.wd, name_prefix: '搜索：', name_prefix_lang: 'breadcrumb_search_prefix'}]) %}
+  {% endif %}
+{% endif %}
+{% if items is not empty %}
+<nav class="pb-breadcrumb mac-crumb" aria-label="breadcrumb">
+  {% for it in items %}
+    {% if it.url|default('') %}
+      <a href="{{ it.url }}"{% if it.lang|default('') %} data-lang="{{ it.lang }}"{% endif %}>{% if it.name_prefix|default('') %}<span data-lang="{{ it.name_prefix_lang|default('') }}">{{ it.name_prefix }}</span>{% endif %}{{ it.name }}</a>
+    {% else %}
+      <span>{% if it.name_prefix|default('') %}<span data-lang="{{ it.name_prefix_lang|default('') }}">{{ it.name_prefix }}</span>{% endif %}{{ it.name }}</span>
+    {% endif %}
+    {% if not loop.last %}<span class="pb-breadcrumb__sep">{{ sep }}</span>{% endif %}
+  {% endfor %}
+</nav>
+{% endif %}

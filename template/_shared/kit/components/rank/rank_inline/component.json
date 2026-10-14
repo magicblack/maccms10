@@ -1,0 +1,47 @@
+{
+    "id": "rank_inline",
+    "label_key": "admin/themedesign/pb_block_rank_inline",
+    "category": "rank",
+    "kind": "rank",
+    "styleMode": "component",
+    "peer_styles": [],
+    "assets": {
+        "css": "style.css",
+        "js": "script.js"
+    },
+    "props": {
+        "type": {
+            "type": "category",
+            "mid": 1,
+            "default": 0,
+            "trait": "category"
+        },
+        "num": {
+            "type": "number",
+            "default": 10,
+            "min": 1,
+            "max": 50,
+            "trait": "count"
+        },
+        "period": {
+            "type": "enum",
+            "default": "week",
+            "values": [
+                "day",
+                "week",
+                "month",
+                "all"
+            ],
+            "trait": "period"
+        }
+    },
+    "context": {
+        "pageTypes": [
+            "home",
+            "list",
+            "sidebar",
+            "rank"
+        ],
+        "requires": []
+    }
+}

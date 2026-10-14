@@ -32,13 +32,13 @@ class Make extends Base
         }
         if(!mac_tpl_exists($templateFile)){
             mac_echo('<style type="text/css">body{font-size:12px;color: #333333;line-height:21px;}span{font-weight:bold;color:#FF0000}</style>');
-            mac_echo(lang('admin/make/template_not_exists', [$templateFile . '.html']));
+            mac_echo(lang('admin/make/template_not_exists', [$templateFile . mac_tpl_suffix()]));
             if(ENTRANCE=='admin'){
                 mac_jump(url('make/opt'), 3);
             }
             exit;
         }
-        $content    =   $this->label_fetch($templateFile);
+        $content    =   $this->label_fetch_theme($templateFile);
         $htmlfile = reset_html_filename($htmlfile);
         $dir   =  dirname($htmlfile);
         if(!is_dir($dir)){
@@ -48,6 +48,44 @@ class Make extends Base
             return false;
         } else {
             return true;
+        }
+    }
+
+    /**
+     * 用主题自己的引擎渲染前台模板。
+     *
+     * Init 只在 ENTRANCE=index 时把 template.type 切到 Twig —— 后台 view_new
+     * 全是 taglib 的 .html，全局切会把后台打成白屏。但静态生成跑在 admin 入口
+     * 下渲染的却是前台主题模板，于是 Twig 主题的 RSS/SiteMap/网站地图一直生成
+     * 不出来。这里只在渲染的那一小段换掉视图引擎，渲染完立刻还原。
+     *
+     * 换的是 $this->view->engine 而不是整个 view 实例：assign() 进去的模板变量
+     * 挂在 view 上，换实例会把 label_maccms() 赋的值全丢掉。
+     *
+     * @param string $templateFile
+     * @return string
+     */
+    protected function label_fetch_theme($templateFile)
+    {
+        // 判据是「这次实际解析到的文件是不是 .twig」，不是「主题是不是 twig 主题」。
+        // mac_tpl_file() 允许 Twig 主题为生成专用页放一份 .html 回落，只看主题引擎
+        // 就切 Twig 的话，那份 .html 会被 Twig loader 当成 .twig 去找，直接找不到。
+        if(substr(mac_tpl_file($templateFile), -5) !== '.twig' || !\app\common\view\Twig::available()){
+            return $this->label_fetch($templateFile);
+        }
+
+        $cfg = config('template');
+        $cfg['type'] = 'app\\common\\view\\Twig';
+        $cfg['view_suffix'] = 'twig';
+
+        $engine = $this->view->engine;
+        $this->view->engine($cfg);
+        $prev = \app\common\view\Twig::setThemeRender(true);
+        try {
+            return $this->label_fetch($templateFile);
+        } finally {
+            \app\common\view\Twig::setThemeRender($prev);
+            $this->view->engine = $engine;
         }
     }
 

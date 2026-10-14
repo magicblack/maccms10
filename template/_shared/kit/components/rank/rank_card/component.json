@@ -1,0 +1,44 @@
+{
+    "id": "rank_card",
+    "label_key": "admin/themedesign/pb_block_rank_card",
+    "category": "rank",
+    "kind": "rank",
+    "styleMode": "component",
+    "peer_styles": [],
+    "assets": {
+        "css": "style.css",
+        "js": "script.js",
+        "img": [
+            "empty-state.svg",
+            "loading.svg"
+        ]
+    },
+    "props": {
+        "title": {
+            "type": "string",
+            "default": "",
+            "trait": "title"
+        },
+        "type": {
+            "type": "category",
+            "mid": 1,
+            "default": 0,
+            "trait": "category"
+        },
+        "num": {
+            "type": "number",
+            "default": 5,
+            "min": 1,
+            "max": 50,
+            "trait": "count"
+        }
+    },
+    "context": {
+        "pageTypes": [
+            "home",
+            "list",
+            "sidebar"
+        ],
+        "requires": []
+    }
+}

@@ -1,0 +1,7 @@
+{% extends "public/_status.twig" %}
+{% block status_code %}⏸{% endblock %}
+{% block status_msg %}{{ close_tip|default(msg|default('站点已关闭')) }}{% endblock %}
+{% block site_header %}{% endblock %}
+{% block footer %}{% endblock %}
+{% block shell_nav %}{% endblock %}
+{% block status_actions %}{% endblock %}

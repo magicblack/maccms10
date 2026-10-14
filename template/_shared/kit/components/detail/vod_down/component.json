@@ -1,0 +1,27 @@
+{
+    "id": "vod_down",
+    "label_key": "admin/themedesign/pb_block_vod_down",
+    "category": "detail",
+    "kind": "detail",
+    "palette": false,
+    "peer_styles": [],
+    "assets": {
+        "css": "style.css",
+        "js": "script.js"
+    },
+    "props": {
+        "show_intro": {
+            "type": "boolean",
+            "default": true
+        }
+    },
+    "context": {
+        "pageTypes": [
+            "detail",
+            "play"
+        ],
+        "requires": [
+            "vod"
+        ]
+    }
+}

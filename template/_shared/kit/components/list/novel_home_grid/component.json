@@ -1,0 +1,60 @@
+{
+    "id": "novel_home_grid",
+    "label_key": "admin/themedesign/pb_block_novel_home_grid",
+    "category": "list",
+    "kind": "list",
+    "peer_styles": [],
+    "assets": {
+        "css": "style.css",
+        "js": "script.js"
+    },
+    "palette": false,
+    "palette_inject": true,
+    "props": {
+        "title": {
+            "type": "string",
+            "default": "猜你喜欢",
+            "trait": "title"
+        },
+        "title_art": {
+            "type": "boolean",
+            "default": false,
+            "trait": "title_art"
+        },
+        "subtitle": {
+            "type": "string",
+            "default": "为你精选好书",
+            "trait": "subtitle"
+        },
+        "num": {
+            "type": "number",
+            "default": 9,
+            "min": 4,
+            "max": 18,
+            "trait": "count"
+        },
+        "by": {
+            "type": "enum",
+            "default": "hits_month",
+            "values": [
+                "hits_month",
+                "hits",
+                "time"
+            ],
+            "trait": "by"
+        },
+        "exclude_ids": {
+            "type": "array",
+            "default": [],
+            "trait": "exclude_ids"
+        }
+    },
+    "context": {
+        "pageTypes": [
+            "home",
+            "list",
+            "detail"
+        ],
+        "requires": []
+    }
+}

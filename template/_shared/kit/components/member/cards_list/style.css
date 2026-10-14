@@ -1,0 +1,71 @@
+/* cards_list — 卡密充值表单 + 记录列表 */
+[data-component="cards_list"] {
+  min-width: 0;
+}
+
+[data-component="cards_list"] .muted {
+  color: var(--c-text-muted, #9499a0);
+  font-size: 13px;
+}
+
+[data-component="cards_list"] .mac-cards__form {
+  display: grid;
+  gap: 12px;
+  margin: 0 0 20px;
+  padding: 16px;
+  border-radius: 12px;
+  border: 1px solid var(--c-border, rgba(0, 0, 0, 0.06));
+  background: var(--c-surface-2, #f6f7f8);
+}
+
+[data-component="cards_list"] .mac-cards__field {
+  display: grid;
+  gap: 6px;
+  margin: 0;
+  font-size: 13px;
+  color: var(--c-text-muted, #9499a0);
+}
+
+[data-component="cards_list"] .mac-cards__field input {
+  box-sizing: border-box;
+  width: 100%;
+  min-height: 42px;
+  padding: 0 12px;
+  border: 1px solid var(--c-border, rgba(0, 0, 0, 0.08));
+  border-radius: 10px;
+  background: var(--c-surface, #fff);
+  color: var(--c-text, #18191c);
+  font: inherit;
+  font-size: 14px;
+}
+
+[data-component="cards_list"] .mac-cards__field input:focus {
+  outline: none;
+  border-color: var(--c-accent-border-strong);
+}
+
+[data-component="cards_list"] .mac-cards__submit {
+  appearance: none;
+  min-height: 42px;
+  margin: 0;
+  border: 0;
+  border-radius: 10px;
+  background: var(--c-accent);
+  color: #fff;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+[data-component="cards_list"] .mac-cards__submit:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+[data-component="cards_list"] .mac-cards__list-title {
+  margin: 0 0 12px;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--c-text, #18191c);
+}

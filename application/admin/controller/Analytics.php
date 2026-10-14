@@ -2,6 +2,7 @@
 namespace app\admin\controller;
 
 use app\common\util\BulkTableIo;
+use think\Cache;
 use think\Db;
 
 class Analytics extends Base
@@ -88,7 +89,24 @@ class Analytics extends Base
         exit;
     }
 
+    // 每次点开/切换筛选都会触发一整套聚合查询（含 buildZeroExposureItems 里对
+    // vod/art/manga 的 NOT EXISTS 扫描），短 TTL 缓存避免同一组参数被并发/连续
+    // 请求反复重算，减少压垮数据库进而 504 的概率。数据源本身是按小时/按天聚合
+    // 写入的，5 分钟内不刷新对准确性没有影响。
     private function buildReportData($startDate, $endDate, $dimType)
+    {
+        $flag = isset($GLOBALS['config']['app']['cache_flag']) ? (string)$GLOBALS['config']['app']['cache_flag'] : 'mac';
+        $cacheKey = $flag . '_analytics_report_' . md5($startDate . '|' . $endDate . '|' . $dimType);
+        $cached = Cache::get($cacheKey);
+        if (!empty($cached) && is_array($cached)) {
+            return $cached;
+        }
+        $data = $this->buildReportDataUncached($startDate, $endDate, $dimType);
+        Cache::set($cacheKey, $data, 300);
+        return $data;
+    }
+
+    private function buildReportDataUncached($startDate, $endDate, $dimType)
     {
         $overviewRows = Db::name('AnalyticsDayOverview')
             ->where('stat_date', 'between', [$startDate, $endDate])
@@ -169,9 +187,12 @@ class Analytics extends Base
             ->limit(15)
             ->select();
 
+        // 会话聚合此前用管理员选择的完整范围，未像上面 pageview 查询那样封顶，
+        // 自定义大范围时会对 mac_analytics_session 做无上限的 count/sum 扫描。
+        // 统一用同一个 31 天封顶窗口，保持与上面路径漏斗查询一致的保护策略。
         $sessionAgg = Db::name('AnalyticsSession')
             ->field('count(*) as session_cnt,sum(duration_sec) as duration_sum,sum(is_bounce) as bounce_cnt')
-            ->where('started_at', 'between', [$startTs, $endTs])
+            ->where('started_at', 'between', [$funnelStartTs, $endTs])
             ->find();
 
         $sessionCnt = intval($sessionAgg['session_cnt']);

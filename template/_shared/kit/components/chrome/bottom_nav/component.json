@@ -1,0 +1,30 @@
+{
+    "id": "bottom_nav",
+    "label_key": "admin/themedesign/pb_block_bottom_nav",
+    "category": "chrome",
+    "kind": "chrome",
+    "palette": false,
+    "styleMode": "component",
+    "peer_styles": [],
+    "assets": {
+        "css": "style.css",
+        "js": "script.js"
+    },
+    "props": {
+        "items": {
+            "type": "array",
+            "trait": "bottom_nav_items",
+            "default": [
+                {"id": "home", "label": "首页", "href": "", "icon": "home"},
+                {"id": "video", "label": "视频", "href": "", "icon": "video"},
+                {"id": "novel", "label": "小说", "href": "", "icon": "book"},
+                {"id": "manga", "label": "漫画", "href": "", "icon": "manga"},
+                {"id": "me", "label": "会员", "href": "", "icon": "user"}
+            ]
+        }
+    },
+    "context": {
+        "pageTypes": ["home", "list", "detail", "play", "member", "rank", "gbook"],
+        "requires": ["maccms"]
+    }
+}

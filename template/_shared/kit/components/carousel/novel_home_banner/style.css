@@ -1,0 +1,295 @@
+@media (min-width: 961px) {
+.novel-home-channel-mob {
+    display: none;
+  }
+}
+
+.layout.novel-home {
+  /* 必须 minmax(0,1fr)：裸 1fr = minmax(auto,1fr)，横向 max-content 子项会撑破整页 */
+  grid-template-columns: minmax(0, 1fr) !important;
+  max-width: 1160px;
+  margin: 0 auto;
+  width: 100%;
+  min-width: 0;
+  padding-top: 0 !important;
+  gap: 0;
+}
+
+.layout.novel-home .pbs-main {
+  min-width: 0;
+  max-width: 100%;
+}
+
+.page-novel-home {
+  background: var(--c-surface-2);
+  overflow-x: hidden;
+}
+
+.page-novel-home .mac-crumb {
+  display: none;
+}
+
+/* 分类条保持内容宽；Banner PC 全宽见下方 media */
+.page-novel-home .nv-genre {
+  max-width: 1160px;
+  width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 12px;
+  padding-right: 12px;
+  box-sizing: border-box;
+  min-width: 0;
+}
+
+.page-novel-home .nv-banner {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+}
+
+.page-novel-home .pbs-wrap,
+.page-novel-home .wrap {
+  padding-left: 12px;
+  padding-right: 12px;
+  min-width: 0;
+  overflow-x: hidden;
+}
+
+@media (max-width: 960px) {
+.novel-home-channel-mob {
+    display: block;
+    position: sticky;
+    top: var(--nav-h);
+    z-index: 850;
+    width: 100%;
+    max-width: 100%;
+    overflow-x: visible;
+    background: var(--c-surface);
+    border-bottom: 1px solid var(--c-border);
+  }
+
+.novel-home-channel-mob .bili-channel {
+    position: static;
+    top: auto;
+    z-index: auto;
+    width: 100%;
+    max-width: 100%;
+    margin: 0;
+    border-bottom: 0;
+    background: transparent;
+    box-shadow: none;
+  }
+
+.novel-home-channel-mob .bili-channel__tab-scroll {
+    padding-left: 12px;
+    max-width: 100%;
+  }
+
+.page-novel-home .nv-banner,
+  .page-novel-home .nv-genre,
+  .page-novel-home .nv-row,
+  .page-novel-home .nv-sec {
+    max-width: 100%;
+    min-width: 0;
+  }
+
+.page-novel-home .nv-banner__viewport,
+  .page-novel-home .nv-genre__inner,
+  .page-novel-home .nv-row__viewport {
+    overscroll-behavior-x: contain;
+  }
+}
+
+.nv-banner {
+  position: relative;
+  margin: 12px 0 0;
+  padding: 0 12px;
+}
+
+.nv-banner__viewport {
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  max-width: 100%;
+  min-width: 0;
+}
+
+.nv-banner__viewport::-webkit-scrollbar {
+  display: none;
+}
+
+.nv-banner__track {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  width: max-content;
+  padding: 2px 0 8px;
+}
+
+/* 内容超出可滚动时靠左，方便从左往右滑 */
+.nv-banner.is-scrollable .nv-banner__track {
+  justify-content: flex-start;
+}
+
+.nv-banner__slide {
+  flex: 0 0 108px;
+  scroll-snap-align: start;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  text-decoration: none;
+  color: var(--c-text);
+  min-width: 0;
+}
+
+.nv-banner__cover {
+  display: block;
+  aspect-ratio: 3 / 4;
+  border-radius: 8px;
+  overflow: hidden;
+  background: var(--c-surface-2);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.nv-banner__cover img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: center;
+}
+
+.nv-banner__body {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-height: 0;
+  padding: 0 2px;
+}
+
+.nv-banner__body strong {
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.35;
+  color: var(--c-text);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.nv-banner__body em {
+  font-size: 11px;
+  line-height: 1.45;
+  color: var(--c-text-muted);
+  font-style: normal;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.nv-banner__cta {
+  display: none;
+}
+
+/* 圆点已废弃：不展示 */
+.nv-banner__dots,
+.nv-banner__dot {
+  display: none !important;
+}
+
+.nv-banner__btn {
+  display: none;
+}
+
+@media (min-width: 821px) {
+.page-novel-home .nv-genre,
+.page-novel-home .pbs-wrap,
+.page-novel-home .wrap {
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+
+/* PC：Banner 铺满主栏全宽（不用 100vw，避免滚动条导致横向溢出） */
+.page-novel-home .nv-banner {
+    width: 100%;
+    max-width: none;
+    margin-left: 0;
+    margin-right: 0;
+    margin-top: 16px;
+    padding: 0 48px;
+    box-sizing: border-box;
+  }
+
+.nv-banner__track {
+    gap: 20px;
+    padding: 4px 4px 12px;
+  }
+
+.nv-banner__slide {
+    /* 全宽下一屏约 5.5 本，保证可滚动 + 箭头有用 */
+    flex: 0 0 clamp(168px, 16vw, 220px);
+  }
+
+.nv-banner__body strong {
+    font-size: 14px;
+  }
+
+.nv-banner__btn {
+    display: inline-flex;
+    position: absolute;
+    top: 42%;
+    z-index: 3;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    margin-top: -20px;
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    border-radius: 10px;
+    background: var(--c-surface);
+    color: var(--c-text-muted);
+    font-size: 22px;
+    line-height: 1;
+    cursor: pointer;
+    box-shadow: 0 2px 10px rgba(15, 23, 42, 0.1);
+    opacity: 1;
+    pointer-events: auto;
+    transition: color 0.2s var(--ease, ease), border-color 0.2s var(--ease, ease), opacity 0.2s var(--ease, ease);
+  }
+
+.nv-banner__btn:disabled {
+    opacity: 0.35;
+    cursor: default;
+  }
+
+/* 内容不够滚动时：居中展示，隐藏左右箭头 */
+.nv-banner:not(.is-scrollable) .nv-banner__btn {
+    display: none;
+  }
+
+.nv-banner__btn--prev {
+    left: 8px;
+  }
+
+.nv-banner__btn--next {
+    right: 8px;
+  }
+
+.nv-banner__btn:hover:not(:disabled) {
+    color: var(--c-accent);
+    border-color: var(--c-accent-border-strong);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+.nv-banner__viewport,
+  .nv-book__cover,
+  .nv-banner__btn {
+    transition: none;
+  }
+}

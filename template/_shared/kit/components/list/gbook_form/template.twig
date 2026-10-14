@@ -1,0 +1,68 @@
+{% set p = props|default({}) %}
+{% set show_hint = p.show_hint is not defined ? true : p.show_hint %}
+{% set login_required = gbook.login|default(0) %}
+{% set avatar_hues = ['var(--c-accent)', 'var(--c-link)', '#ff7f24', '#9c6ade', '#6bcf7f'] %}
+<div class="pb-gbook-compose" data-component="gbook_form">
+  <div class="pb-gbook-panel pb-gbook-panel--compose">
+    <div class="pb-gbook-compose__inner">
+      <div class="pb-gbook-compose__face" aria-hidden="true">
+        {% if user.user_id|default(0) and user.user_portrait|default('') %}
+        <img class="pb-gbook-compose__avatar" src="{{ mac_url_img(user.user_portrait) }}" alt="" width="48" height="48" decoding="async">
+        {% elseif user.user_id|default(0) %}
+        <span class="pb-gbook-compose__avatar pb-gbook-compose__avatar--letter" style="--pb-gbook-avatar-bg: {{ avatar_hues[0] }}">{{ user.user_name|default('会')|slice(0, 1) }}</span>
+        {% else %}
+        <span class="pb-gbook-compose__avatar pb-gbook-compose__avatar--guest" aria-hidden="true"></span>
+        {% endif %}
+      </div>
+      <div class="pb-gbook-compose__main">
+        <h2 class="pb-gbook-compose__title" id="pb-gbook-compose-label" data-lang="string_gbook_wyly">我要留言</h2>
+        {% if show_hint %}
+        <p class="pb-gbook-compose__hint" data-lang="gbook_welcome_msg">欢迎反馈建议与问题，我们会尽快回复</p>
+        {% endif %}
+        <form data-mac-gbook-form
+              class="pb-gbook-form"
+              method="post"
+              action="{{ mac_url('gbook/index') }}"
+              aria-labelledby="pb-gbook-compose-label"
+              {% if login_required %}data-gbook-login="1"{% endif %}>
+          <input type="hidden" name="__token__" value="{{ csrf_token|default('') }}">
+          <div class="pb-gbook-form__field">
+            <label class="pb-gbook-form__label" for="pb-gbook-content-{{ props._uid|default('0') }}" data-lang="gbook_content_label">留言内容</label>
+            <textarea id="pb-gbook-content-{{ props._uid|default('0') }}"
+                      name="gbook_content"
+                      class="pb-gbook-form__input pb-gbook-form__textarea"
+                      rows="4"
+                      required
+                      placeholder="写下你的留言…"
+                      data-lang-placeholder="gbook_content_placeholder"></textarea>
+          </div>
+          <div class="pb-gbook-form__actions">
+            {% if mac_verify_on('gbook') %}
+            <div class="pb-gbook-form__captcha">
+              <label class="pb-gbook-form__label" for="pb-gbook-verify-{{ props._uid|default('0') }}" data-lang="string_yzm">验证码</label>
+              <div class="pb-gbook-form__captcha-row">
+                <input id="pb-gbook-verify-{{ props._uid|default('0') }}"
+                       type="text"
+                       name="verify"
+                       class="pb-gbook-form__input pb-gbook-form__captcha-input"
+                       autocomplete="off"
+                       placeholder="验证码"
+                       data-lang-placeholder="string_yzm">
+                <img class="pb-gbook-form__captcha-img"
+                     src="{{ mac_url('verify/index') }}"
+                     alt="验证码"
+                     title="看不清楚? 换一张！"
+                     data-lang-title="string_pinglun_kan"
+                     width="120"
+                     height="44"
+                     decoding="async">
+              </div>
+            </div>
+            {% endif %}
+            <button type="submit" class="pb-gbook-form__btn" data-lang="string_tj">提交</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

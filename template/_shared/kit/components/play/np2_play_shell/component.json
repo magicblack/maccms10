@@ -1,0 +1,17 @@
+{
+    "id": "np2_play_shell",
+    "label_key": "admin/themedesign/pb_block_np2_play_shell",
+    "category": "play",
+    "kind": "np2_play_shell",
+    "palette": false,
+    "peer_styles": [],
+    "assets": {
+        "css": "style.css",
+        "js": "script.js"
+    },
+    "props": {},
+    "context": {
+        "pageTypes": ["play"],
+        "requires": ["vod"]
+    }
+}

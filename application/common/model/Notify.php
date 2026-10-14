@@ -49,7 +49,7 @@ class Notify extends Base {
 
     public function saveData($data)
     {
-        $validate = \think\Loader::validate('Notify');
+        $validate = \think\Loader::validate('common/Notify');
         if(!$validate->check($data)){
             return ['code'=>1001,'msg'=>lang('param_err').'：'.$validate->getError() ];
         }
@@ -136,6 +136,38 @@ class Notify extends Base {
             );
         } catch (\Exception $e) {
             Log::error('Notify::sendReplyNotify parent=' . $parentId . ' err=' . $e->getMessage());
+            return ['code' => 1002, 'msg' => $e->getMessage()];
+        }
+    }
+
+    /**
+     * 给被回复的留言作者发通知。游客留言（user_id=0）无法登录查看消息中心，静默跳过。
+     * 通知失败不影响留言回复主流程，仅写日志。
+     */
+    public function sendGbookReplyNotify($gbookId)
+    {
+        $gbookId = intval($gbookId);
+        if ($gbookId < 1) {
+            return ['code' => 1001, 'msg' => lang('param_err')];
+        }
+        $gbook = Db::name('Gbook')->where('gbook_id', $gbookId)->find();
+        if (empty($gbook)) {
+            return ['code' => 1002, 'msg' => lang('obtain_err')];
+        }
+        $userId = intval($gbook['user_id']);
+        if ($userId < 1) {
+            return ['code' => 1, 'msg' => lang('obtain_ok')];
+        }
+        try {
+            return $this->send(
+                $userId,
+                'reply',
+                lang('notify/gbook_reply_title'),
+                lang('notify/gbook_reply_content'),
+                'gbook/index'
+            );
+        } catch (\Exception $e) {
+            Log::error('Notify::sendGbookReplyNotify gbook=' . $gbookId . ' err=' . $e->getMessage());
             return ['code' => 1002, 'msg' => $e->getMessage()];
         }
     }

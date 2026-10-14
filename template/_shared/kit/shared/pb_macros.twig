@@ -1,0 +1,57 @@
+{# Page Builder 资源宏（由 kit 同步到各主题 html/lib/pb_bundles.twig，勿手改） #}
+{% macro pb_shared_bundle() %}
+{% set _tpl = _context.maccms.path_tpl|default('') %}
+<link rel="stylesheet" href="{{ _tpl }}page-builder-components/_shared/css/peers.css?v=pb-row-2">
+<link rel="stylesheet" href="{{ _tpl }}page-builder-components/_shared/css/comment.css">
+<script src="{{ _tpl }}page-builder-components/_shared/js/scroll-row.js?v=pb-row-2" defer></script>
+{% endmacro %}
+
+{% macro pb_component_bundle(id) %}
+{% set _tpl = _context.maccms.path_tpl|default('') %}
+<link rel="stylesheet" href="{{ _tpl }}page-builder-components/{{ id }}/style.css">
+<script src="{{ _tpl }}page-builder-components/{{ id }}/script.js" defer></script>
+{% endmacro %}
+
+{% macro pb_cover_classes(props) %}
+{% set _card = props.card|default('poster-h') %}
+{% if _card != 'poster-v' and _card != 'poster-h' %}{% set _card = 'poster-h' %}{% endif %}
+{% set _ratio = props.ratio|default('default') %}
+{% set _known = ['16-9', '4-3', '3-4', '2-3', '69-40', '20-29', '1-1'] %}
+{% set _landscape_presets = ['16-9', '4-3', '69-40'] %}
+{% set _rw = props.ratio_w|default(0) + 0 %}
+{% set _rh = props.ratio_h|default(0) + 0 %}
+{% if _rw < 1 or _rh < 1 %}
+  {% if _ratio != 'default' and _ratio and _ratio not in _known %}
+    {% set _parts = _ratio|split('-') %}
+    {% if _parts|length == 2 %}
+      {% set _rw = _parts[0] + 0 %}
+      {% set _rh = _parts[1] + 0 %}
+    {% endif %}
+  {% elseif _ratio != 'default' and _ratio in _known %}
+    {% set _parts = _ratio|split('-') %}
+    {% if _parts|length == 2 %}
+      {% set _rw = _parts[0] + 0 %}
+      {% set _rh = _parts[1] + 0 %}
+    {% endif %}
+  {% endif %}
+{% endif %}
+{% set _landscape = (_card == 'poster-h' and _ratio == 'default') or (_rw > 0 and _rh > 0 and _rw > _rh) or (_ratio in _landscape_presets) %}
+pb-cover pb-cover--{{ _card }}{% if _ratio != 'default' and _ratio and _ratio in _known %} pb-cover--ratio-{{ _ratio }}{% endif %}{% if _landscape %} pb-cover--landscape{% endif %}
+{% endmacro %}
+
+{% macro pb_cover_style(props) %}
+{% set _ratio = props.ratio|default('default') %}
+{% set _known = ['16-9', '4-3', '3-4', '2-3', '69-40', '20-29', '1-1'] %}
+{% set _rw = props.ratio_w|default(0) + 0 %}
+{% set _rh = props.ratio_h|default(0) + 0 %}
+{% if _rw < 1 or _rh < 1 %}
+  {% if _ratio != 'default' and _ratio and _ratio not in _known %}
+    {% set _parts = _ratio|split('-') %}
+    {% if _parts|length == 2 %}
+      {% set _rw = _parts[0] + 0 %}
+      {% set _rh = _parts[1] + 0 %}
+    {% endif %}
+  {% endif %}
+{% endif %}
+{% if _rw > 0 and _rh > 0 %}--pb-cover-ratio: {{ _rw }} / {{ _rh }}{% endif %}
+{% endmacro %}

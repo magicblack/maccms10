@@ -1,0 +1,58 @@
+{# 会员权益面板 — 影院感 Hero + 内嵌数据条 #}
+{% set variant = props.variant|default('default') %}
+{% if variant != 'minimal' %}{% set variant = 'default' %}{% endif %}
+{% if user.user_id|default(0) %}
+{% set group_name = user.group.group_name|default('默认会员') %}
+{% set _end = user.user_end_time|default(0) %}
+{% set points = user.user_points|default(0) %}
+<div class="pb-benefits pb-benefits--{{ variant }}" data-component="benefits_panel">
+  <section class="pb-benefits__hero" aria-labelledby="pb-benefits-title">
+    <div class="pb-benefits__hero-glow" aria-hidden="true"></div>
+    <div class="pb-benefits__hero-head">
+      <div class="pb-benefits__hero-copy">
+        <p class="pb-benefits__eyebrow" data-lang="user_hyqy">会员权益</p>
+        <h2 id="pb-benefits-title" class="pb-benefits__name">{{ group_name }}</h2>
+        <p class="pb-benefits__desc" data-lang="benefits_desc">查看当前会员身份与金币，升级可解锁更多专属内容</p>
+      </div>
+      <div class="pb-benefits__badge" aria-hidden="true">
+        {% include "page-builder-components/_shared/component_icon.twig" with { component: 'benefits_panel', name: 'star', class: 'pb-benefits__badge-svg', mode: 'current' } %}
+      </div>
+    </div>
+
+    <div class="pb-benefits__stats" role="list">
+      <div class="pb-benefits__stat" role="listitem">
+        <span class="pb-benefits__stat-val">{{ points }}</span>
+        <span class="pb-benefits__stat-label" data-lang="user_jf">金币</span>
+      </div>
+      <div class="pb-benefits__stat" role="listitem">
+        <span class="pb-benefits__stat-val pb-benefits__stat-val--text">{{ group_name }}</span>
+        <span class="pb-benefits__stat-label" data-lang="string_user_group">会员组</span>
+      </div>
+      <div class="pb-benefits__stat" role="listitem">
+        <span class="pb-benefits__stat-val pb-benefits__stat-val--date">{% if _end and _end > 0 %}{{ _end|date('Y-m-d') }}{% else %}—{% endif %}</span>
+        <span class="pb-benefits__stat-label" data-lang="user_dqsj">到期时间</span>
+      </div>
+    </div>
+  </section>
+
+  <nav class="pb-benefits__actions" data-lang-aria-label="benefits_actions_aria" aria-label="会员权益操作">
+    <a class="pb-benefits__cta" href="{{ mac_url('user/upgrade') }}">
+      <span class="pb-benefits__cta-ico" aria-hidden="true">
+        {% include "page-builder-components/_shared/component_icon.twig" with { component: 'benefits_panel', name: 'star', class: 'pb-benefits__cta-svg', mode: 'current' } %}
+      </span>
+      <span class="pb-benefits__cta-body">
+        <span class="pb-benefits__cta-label" data-lang="play_mssj">马上升级</span>
+        <span class="pb-benefits__cta-hint" data-lang="benefits_vip_cta">开通 VIP，解锁更多权益</span>
+      </span>
+      <span class="pb-benefits__cta-arrow" aria-hidden="true">
+        {% include "page-builder-components/_shared/component_icon.twig" with { component: 'member_hub_menu', name: 'chevron-right', class: 'pb-benefits__cta-arrow-ico', mode: 'current' } %}
+      </span>
+    </a>
+  </nav>
+</div>
+{% else %}
+<div class="pb-benefits pb-benefits--guest pb-benefits--{{ variant }}" data-component="benefits_panel">
+  <p class="pb-benefits__guest" data-lang="user_login_to_view_benefits">请先登录后查看会员权益</p>
+  <a class="pb-benefits__login" href="{{ mac_url('user/login') }}" data-lang="string_login">登录</a>
+</div>
+{% endif %}

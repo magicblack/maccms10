@@ -1,0 +1,35 @@
+{
+    "id": "member_filter_tabs",
+    "label_key": "admin/themedesign/pb_block_member_filter_tabs",
+    "category": "member",
+    "kind": "member",
+    "peer_styles": [],
+    "assets": {
+        "css": "style.css",
+        "js": "script.js"
+    },
+    "palette": false,
+    "props": {
+        "preset": {
+            "type": "enum",
+            "default": "favs",
+            "values": [
+                "favs",
+                "plays"
+            ],
+            "trait": "preset"
+        },
+        "active_mid": {
+            "type": "number",
+            "default": 0,
+            "min": 0,
+            "max": 99
+        }
+    },
+    "context": {
+        "pageTypes": [
+            "member"
+        ],
+        "requires": []
+    }
+}

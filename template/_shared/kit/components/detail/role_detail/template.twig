@@ -1,0 +1,59 @@
+{#
+  角色详情
+#}
+{% import "page-builder-components/_shared/macros.twig" as pb %}
+{% set p = props|default({}) %}
+{% if obj.role_id|default(0) %}
+{% set cover = mac_url_img(obj.role_pic|default('')) %}
+{% set title = obj.role_name|default('') %}
+{% set show_intro = p.show_intro is defined ? p.show_intro : true %}
+{% set num = p.num|default(12) %}
+{% set vod_title = p.vod_title|default('相关推荐') %}
+{% set vod_title_lang = p.vod_title_lang|default('string_xgtj') %}
+{% set _cover_cls = pb.pb_cover_classes(p) %}
+{% set _cover_style = pb.pb_cover_style(p) %}
+{% set vod_list = mac_vod({num: num, order: 'desc', by: 'hits'}).list|default([]) %}
+
+<div class="pb-entity-detail" data-component="role_detail">
+  <nav class="pb-entity-detail__crumb mac-crumb" aria-label="breadcrumb">
+    <a href="{{ maccms.path }}" data-lang="string_home">首页</a>
+    <span class="pb-entity-detail__crumb-sep" aria-hidden="true">/</span>
+    <a href="{{ mac_url('role/index') }}" data-lang="string_role">角色</a>
+    <span class="pb-entity-detail__crumb-sep" aria-hidden="true">/</span>
+    <span class="pb-entity-detail__crumb-cur">{{ title }}</span>
+  </nav>
+
+  <header class="pb-entity-detail__head">
+    <div class="pb-entity-detail__pic" data-label="{{ title }}">
+      <img src="{{ cover }}" alt="{{ title }}" width="180" height="180" decoding="async" fetchpriority="high" loading="eager" onerror="this.classList.add('is-broken'); this.removeAttribute('src');">
+    </div>
+    <div class="pb-entity-detail__body">
+      <h1 class="pb-entity-detail__title">{{ title }}</h1>
+      <dl class="pb-entity-detail__meta-dl">
+        {% if obj.role_actor|default('') %}
+        <dt data-lang="site_map_actor">演员</dt><dd>{{ mac_url_create(obj.role_actor, 'actor') }}</dd>
+        {% endif %}
+        {% if obj.role_remarks|default('') %}
+        <dt data-lang="mall_remarks">备注</dt><dd>{{ obj.role_remarks }}</dd>
+        {% endif %}
+      </dl>
+    </div>
+  </header>
+
+  {% if show_intro and obj.role_content|default('')|trim %}
+  <section class="pb-entity-detail__panel" id="role-intro">
+    <h2 class="pb-entity-detail__panel-title" data-lang="string_intro_short">介绍</h2>
+    <div class="pb-entity-detail__panel-body prose">{{ obj.role_content|raw }}</div>
+  </section>
+  {% endif %}
+
+  {% if vod_list is not empty %}
+  <section class="pb-entity-detail__panel pb-entity-detail__vod {{ _cover_cls }}" id="role-vod"{% if _cover_style %} style="{{ _cover_style }}"{% endif %}>
+    <h2 class="pb-entity-detail__panel-title"{% if vod_title_lang and mac_i18n_key(vod_title, vod_title_lang) %} data-lang="{{ vod_title_lang }}"{% endif %}>{{ vod_title }}</h2>
+    <div class="bili-grid pb-entity-detail__grid">
+      {% for vo in vod_list %}{% include "page-builder-components/_shared/vod_card.twig" %}{% endfor %}
+    </div>
+  </section>
+  {% endif %}
+</div>
+{% endif %}

@@ -1,0 +1,20 @@
+{
+    "id": "user_bind_panel",
+    "label_key": "admin/themedesign/pb_block_user_bind_panel",
+    "category": "member",
+    "kind": "member",
+    "peer_styles": [],
+    "assets": {
+        "css": "style.css",
+        "js": "script.js"
+    },
+    "palette": false,
+    "styleMode": "component",
+    "props": {},
+    "context": {
+        "pageTypes": [
+            "member"
+        ],
+        "requires": []
+    }
+}

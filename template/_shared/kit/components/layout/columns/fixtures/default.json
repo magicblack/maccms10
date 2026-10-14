@@ -1,0 +1,8 @@
+{
+    "props": {
+        "col_left": 8,
+        "col_right": 4,
+        "stack_at": 720
+    },
+    "context": {}
+}

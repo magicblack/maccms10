@@ -1,0 +1,6 @@
+{#
+  评论列表主体（kit/shared 唯一真相）— 条目 + 分页，供 comment_block.twig 首屏渲染与 comment/ajax 翻页刷新共用
+  参数：res（mac_comment 返回值）
+#}
+{% include "page-builder-components/_shared/comment_block_items.twig" with {res: res} %}
+{% include "page-builder-components/_shared/comment_block_pager.twig" with {res: res} %}

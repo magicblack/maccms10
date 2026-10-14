@@ -16,6 +16,60 @@ class Ulog extends Base {
     protected $update     = [];
 
 
+    /**
+     * 排除已下架内容的条件（视频 mid=1 / 文章 mid=2 / 漫画 mid=12）
+     * @return string
+     */
+    public static function activeOnlySql()
+    {
+        $pre = config('database.prefix');
+        $parts = [];
+        foreach ([1 => 'vod', 2 => 'art', 12 => 'manga'] as $mid => $m) {
+            $parts[] = "(ulog_mid = {$mid} AND ulog_rid NOT IN (SELECT {$m}_id FROM {$pre}{$m} WHERE {$m}_status = 1 AND {$m}_recycle_time = 0))";
+        }
+        return 'NOT (' . implode(' OR ', $parts) . ')';
+    }
+
+    /**
+     * 播放记录对应的集名（线路 sid 的第 nid 集；该线路已不存在时取第一条有该集的线路）
+     * @return array|null ['name'=>集名, 'count'=>该线路集数]；只有一集的视频返回 null
+     */
+    public static function vodEpisodeInfo($vod, $sid, $nid)
+    {
+        $lines = isset($vod['vod_play_list']) && is_array($vod['vod_play_list']) ? $vod['vod_play_list'] : [];
+        if (empty($lines) || $nid <= 0) {
+            return null;
+        }
+        $line = isset($lines[$sid]['urls'][$nid]) ? $lines[$sid] : null;
+        if ($line === null) {
+            foreach ($lines as $l) {
+                if (isset($l['urls'][$nid])) {
+                    $line = $l;
+                    break;
+                }
+            }
+        }
+        if ($line === null) {
+            return null;
+        }
+        $count = count($line['urls']);
+        $name = trim((string)$line['urls'][$nid]['name']);
+        if ($count <= 1 || $name === '') {
+            return null;
+        }
+        // 「第01集」「01」「EP1」这类纯集序号的集名给出数字，前端按语言输出（第N集 / Ep. N）
+        $num = 0;
+        if (preg_match('/^(?:第\s*(\d+)\s*[集话話期]|(\d+)|EP?\.?\s*(\d+))$/iu', $name, $m)) {
+            for ($i = 1; $i <= 3; $i++) {
+                if (isset($m[$i]) && $m[$i] !== '') {
+                    $num = intval($m[$i]);
+                    break;
+                }
+            }
+        }
+        return ['name' => $name, 'count' => $count, 'num' => $num];
+    }
+
     public function listData($where,$order,$page=1,$limit=20,$start=0)
     {
         $page = $page > 0 ? (int)$page : 1;
@@ -25,8 +79,19 @@ class Ulog extends Base {
             $where = json_decode($where,true);
         }
         $limit_str = ($limit * ($page-1) + $start) .",".$limit;
-        $total = $this->where($where)->count();
-        $list = Db::name('Ulog')->where($where)->order($order)->limit($limit_str)->select();
+        // 前台（收藏 / 播放记录 / 购买记录）传 _active_only：隐藏已下架（status!=1 或在回收站）的视频 / 文章 / 漫画，
+        // 在 SQL 里排除以保证总数与分页一致；后台日志列表不传，仍显示全部
+        $active = '';
+        if (!empty($where['_active_only'])) {
+            $active = self::activeOnlySql();
+        }
+        unset($where['_active_only']);
+        $total = $active !== '' ? $this->where($where)->where($active)->count() : $this->where($where)->count();
+        $q = Db::name('Ulog')->where($where);
+        if ($active !== '') {
+            $q->where($active);
+        }
+        $list = $q->order($order)->limit($limit_str)->select();
 
         $user_ids=[];
         foreach($list as $k=>&$v){
@@ -86,6 +151,20 @@ class Ulog extends Base {
                     ],
 
                 ];
+                // 跨域线路估算的旧记录没存片长（vod_duration 为 "81分钟" 等格式时前端曾解析失败），
+                // 按影片片长补算，播放记录才有进度条
+                if (intval($v['ulog_type']) === 4 && intval($v['ulog_duration']) <= 0 && intval($v['ulog_point']) > 0) {
+                    $v['ulog_duration'] = mac_vod_duration_seconds($vod_info['info']['vod_duration'] ?? '');
+                }
+                // 分集视频每集一条播放记录，标题相同；带上集名供播放记录区分（单集/正片不带）
+                if (intval($v['ulog_type']) === 4 && intval($v['ulog_nid']) > 0) {
+                    $ep = self::vodEpisodeInfo($vod_info['info'], intval($v['ulog_sid']), intval($v['ulog_nid']));
+                    if (!empty($ep)) {
+                        $v['data']['ep_name'] = $ep['name'];
+                        $v['data']['ep_count'] = $ep['count'];
+                        $v['data']['ep_num'] = $ep['num'];
+                    }
+                }
             }
             elseif($v['ulog_mid']==2){
                 $art_info = model('Art')->infoData(['art_id'=>['eq',$v['ulog_rid']]],'*',1);
@@ -201,9 +280,10 @@ class Ulog extends Base {
                 $vod_ids[intval($v['ulog_rid'])] = intval($v['ulog_rid']);
             }
             $vod_list = Db::name('Vod')
-                ->field('vod_id,type_id,type_id_1,vod_name,vod_en,vod_letter,vod_pic,vod_remarks,vod_play_from,vod_play_url,vod_time')
+                ->field('vod_id,type_id,type_id_1,vod_name,vod_en,vod_letter,vod_pic,vod_remarks,vod_duration,vod_play_from,vod_play_url,vod_time')
                 ->where('vod_id', 'in', array_values($vod_ids))
                 ->select();
+            mac_vod_rows_episode_remarks($vod_list);
             $vod_list = mac_array_rekey($vod_list, 'vod_id');
 
             $type_list = model('Type')->getCache('type_list');
@@ -219,6 +299,9 @@ class Ulog extends Base {
                 $nid = intval($v['ulog_nid']);
                 $point = intval($v['ulog_point']);
                 $duration = intval($v['ulog_duration']);
+                if ($duration <= 0 && $point > 0) {
+                    $duration = mac_vod_duration_seconds($vod['vod_duration']);
+                }
 
                 $percent = 0;
                 if ($duration > 0) {
@@ -303,6 +386,33 @@ class Ulog extends Base {
         $info = $info->toArray();
 
         return ['code'=>1,'msg'=>lang('obtain_ok'),'info'=>$info];
+    }
+
+    /**
+     * 免费视频播放历史（mid=1,type=4,ulog_points=0）按 user+rid+nid 定位，不分 sid，
+     * 与 api/ulog/progress 的 saveProgress 同键：换源时更新原记录的 sid，
+     * 避免另起一条 0 进度记录导致「播放记录」里同一集有的显示进度有的不显示。
+     * 命中返回与 infoData 相同结构（ulog_sid/ulog_time 已更新），否则返回 null。
+     */
+    public function touchFreeVodPlay($userId, $rid, $sid, $nid)
+    {
+        $where = [
+            'user_id'     => intval($userId),
+            'ulog_mid'    => 1,
+            'ulog_type'   => 4,
+            'ulog_rid'    => intval($rid),
+            'ulog_nid'    => intval($nid),
+            'ulog_points' => 0,
+        ];
+        $info = Db::name('ulog')->where($where)->order('ulog_point desc,ulog_time desc')->find();
+        if (empty($info)) {
+            return null;
+        }
+        $update = ['ulog_sid' => intval($sid), 'ulog_time' => time()];
+        if (Db::name('ulog')->where('ulog_id', intval($info['ulog_id']))->update($update) === false) {
+            return null;
+        }
+        return ['code' => 1, 'msg' => lang('obtain_ok'), 'info' => array_merge($info, $update)];
     }
 
     /**
@@ -508,7 +618,7 @@ class Ulog extends Base {
             return ['code'=>1001,'msg'=>lang('param_err').'：'.$validate->getError() ];
         }
 
-        if($data['user_id']==0 || !in_array($data['ulog_mid'],['1','2','3','8','12']) || !in_array($data['ulog_type'],['1','2','3','4','5']) ) {
+        if($data['user_id']==0 || !in_array($data['ulog_mid'],['1','2','3','8','12']) || !in_array($data['ulog_type'],['1','2','3','4','5','6']) ) {
             return ['code'=>1002,'msg'=>lang('param_err')];
         }
 

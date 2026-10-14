@@ -1,0 +1,21 @@
+{
+    "id": "plot_detail",
+    "label_key": "admin/themedesign/pb_block_plot_detail",
+    "category": "detail",
+    "kind": "detail",
+    "palette": false,
+    "peer_styles": [],
+    "assets": {
+        "css": "style.css",
+        "js": "script.js"
+    },
+    "props": {},
+    "context": {
+        "pageTypes": [
+            "detail"
+        ],
+        "requires": [
+            "vod"
+        ]
+    }
+}

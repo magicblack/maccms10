@@ -1,0 +1,16 @@
+{
+    "id": "preset-sidebar",
+    "version": 2,
+    "name_key": "admin/themedesign/preset_sidebar",
+    "shell_mode": "thin",
+    "scaffold": {
+        "list_sidebar_rank": false,
+        "detail_sidebar_rank": false,
+        "home_sidebar_rank": false,
+        "shell_left_nav": true
+    },
+    "assets": {
+        "shell_css": "pb-shell.css",
+        "homepage": "homepage.json"
+    }
+}

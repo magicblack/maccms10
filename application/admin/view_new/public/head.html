@@ -2,6 +2,9 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    {include file="../../../application/admin/view_new/public/browser_ie_block" /}
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
     <meta name="mac-admin-csrf" content="{:mac_admin_csrf_token()}">
     <title>{$title} - {:lang('admin/public/head/title')}</title>
@@ -13,6 +16,146 @@
     <script type="text/javascript" src="__STATIC__/layui/layui.js"></script>
     <script>
         var ROOT_PATH="__ROOT__",ADMIN_PATH="{$_SERVER['SCRIPT_NAME']}", MAC_VERSION="v10";
+    </script>
+    <script>
+        // 后台 CSRF：给同源写请求自动带 X-CSRF-Token 头和 body __token__。
+        // 必须留在 head 内联执行——放进 admin_common.js 的 layui.define 里会
+        // 等 element/form 异步到货才注册，首页 window.onload 里的 botlist 等
+        // 请求会抢在它前面发出，被 CsrfGuard 拦成 403。
+        // jQuery 未就绪时仍要装表单隐藏域；ajax 钩子等到 jQuery / layui.jquery 再挂。
+        // body __token__ 是头的兜底：CloudFront→ALB 可能丢掉自定义头。
+        (function () {
+            var meta = document.querySelector('meta[name="mac-admin-csrf"]');
+            var t = meta ? meta.getAttribute('content') : '';
+            if (!t) {
+                return;
+            }
+            window.__MAC_ADMIN_CSRF__ = t;
+            // 给所有 POST 表单补 __token__ 隐藏域。原生表单提交拿不到请求头，
+            // 会被 CsrfGuard 拦成 token_err。放在 head 而不是 admin_common.js：
+            // vod/batch、art/batch、website/batch、manga/batch、cj/col_url、
+            // themegen、themedesign/page_builder 这几页只 include head、不 include
+            // foot，放在 foot 里对它们不生效。
+            function injectForms() {
+                var fs = document.querySelectorAll('form');
+                for (var i = 0; i < fs.length; i++) {
+                    var f = fs[i];
+                    if ((f.getAttribute('method') || 'get').toLowerCase() !== 'post') {
+                        continue;
+                    }
+                    var inp = f.querySelector('input[name="__token__"]');
+                    if (inp) {
+                        // 已有值的不动：部分控制器仍用 Loader::validate('Token')
+                        // 比对 Session __token__，覆盖成会话级令牌会把它们改坏。
+                        if (!inp.value) {
+                            inp.value = t;
+                        }
+                        continue;
+                    }
+                    inp = document.createElement('input');
+                    inp.type = 'hidden';
+                    inp.name = '__token__';
+                    inp.value = t;
+                    f.appendChild(inp);
+                }
+            }
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', injectForms);
+            } else {
+                injectForms();
+            }
+
+            function macCsrfHasToken(data) {
+                if (!data) {
+                    return false;
+                }
+                if (typeof data === 'string') {
+                    return /(^|&)__token__=/.test(data);
+                }
+                if (typeof FormData !== 'undefined' && data instanceof FormData) {
+                    if (typeof data.has === 'function') {
+                        return data.has('__token__');
+                    }
+                    if (typeof data.get === 'function') {
+                        var cur = data.get('__token__');
+                        return cur !== null && cur !== '';
+                    }
+                    return false;
+                }
+                if (typeof data === 'object') {
+                    return data.__token__ !== undefined && data.__token__ !== null && data.__token__ !== '';
+                }
+                return false;
+            }
+
+            function macCsrfAppendToken(data) {
+                if (typeof data === 'string') {
+                    return data + (data ? '&' : '') + '__token__=' + encodeURIComponent(t);
+                }
+                if (typeof FormData !== 'undefined' && data instanceof FormData) {
+                    data.append('__token__', t);
+                    return data;
+                }
+                if (!data || typeof data !== 'object') {
+                    return { __token__: t };
+                }
+                data.__token__ = t;
+                return data;
+            }
+
+            function hookAjax($) {
+                if (!$ || typeof $.ajaxPrefilter !== 'function' || $.__macCsrfHooked) {
+                    return;
+                }
+                $.__macCsrfHooked = true;
+                $.ajaxPrefilter(function (options, originalOptions, jqXHR) {
+                    if (options.crossDomain) {
+                        return;
+                    }
+                    var type = (options.type || 'GET').toUpperCase();
+                    if (type !== 'POST' && type !== 'PUT' && type !== 'PATCH' && type !== 'DELETE') {
+                        return;
+                    }
+                    jqXHR.setRequestHeader('X-CSRF-Token', t);
+                    var ctype = String(options.contentType || '');
+                    if (ctype.indexOf('application/json') !== -1) {
+                        return;
+                    }
+                    if (options.processData === false && !(typeof FormData !== 'undefined' && options.data instanceof FormData)) {
+                        return;
+                    }
+                    if (typeof options.data === 'string') {
+                        var lead = options.data.replace(/^\s+/, '').charAt(0);
+                        if (lead === '{' || lead === '[') {
+                            return;
+                        }
+                    }
+                    if (macCsrfHasToken(options.data) || macCsrfHasToken(originalOptions.data)) {
+                        return;
+                    }
+                    options.data = macCsrfAppendToken(options.data);
+                });
+            }
+
+            function tryHook() {
+                if (typeof jQuery !== 'undefined') {
+                    hookAjax(jQuery);
+                }
+                if (typeof layui !== 'undefined' && layui.jquery) {
+                    hookAjax(layui.jquery);
+                }
+            }
+
+            tryHook();
+            var n = 0;
+            var timer = setInterval(function () {
+                tryHook();
+                n += 1;
+                if (n >= 50) {
+                    clearInterval(timer);
+                }
+            }, 100);
+        })();
     </script>  
 </head>
 <body>

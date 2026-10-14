@@ -1,0 +1,63 @@
+{
+    "template": "art\/search",
+    "layout": "base",
+    "page_type": "list",
+    "layout_mod": "list",
+    "regions": {
+        "site_header": [
+            {
+                "component": "site_nav",
+                "props": {
+                    "max": 8,
+                    "show_search": true,
+                    "type_ids": []
+                }
+            }
+        ],
+        "hero": [],
+        "channel": [],
+        "content": [
+            {
+                "component": "section",
+                "props": {
+                    "title": "搜索结果",
+                    "variant": "plain",
+                    "icon": "newspaper",
+                    "more_url": "art\/index",
+                    "title_key": "string_search_results"
+                },
+                "slots": {
+                    "body": [
+                        {
+                            "component": "art_list",
+                            "props": {
+                                "num": 24,
+                                "by": "time",
+                                "order": "desc",
+                                "type": 0,
+                                "render": "grid",
+                                "card": "poster-v",
+                                "ratio": "3-4",
+                                "paging": true,
+                                "pageurl": "art\/search"
+                            }
+                        }
+                    ]
+                }
+            }
+        ],
+        "sidebar": [],
+        "footer": [
+            {
+                "component": "site_footer",
+                "props": {
+                    "variant": "default",
+                    "copyright": "",
+                    "show_nav": true,
+                    "show_friends": true,
+                    "logo": ""
+                }
+            }
+        ]
+    }
+}

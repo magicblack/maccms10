@@ -1,0 +1,10 @@
+{
+    "props": {
+        "variant": "default",
+        "copyright": "",
+        "show_nav": true,
+        "show_friends": true,
+        "logo": ""
+    },
+    "context": []
+}

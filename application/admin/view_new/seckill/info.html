@@ -4,6 +4,7 @@
     <blockquote class="layui-elem-quote">{:lang('admin/seckill/info_desc')}</blockquote>
 
     <form class="layui-form" method="post" action="{:url('save')}">
+        <input type="hidden" name="__token__" value="{:mac_admin_csrf_token()}">
         <input type="hidden" name="seckill_id" value="{$info.seckill_id|default=''}">
 
         <div class="layui-form-item">

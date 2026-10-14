@@ -1,0 +1,63 @@
+{
+    "id": "rank_feed",
+    "label_key": "admin/themedesign/pb_block_rank_feed",
+    "category": "rank",
+    "kind": "rank",
+    "styleMode": "peer_only",
+    "peer_styles": [
+        "rank_list",
+        "rank_inline"
+    ],
+    "assets": {
+        "css": "style.css",
+        "js": "script.js"
+    },
+    "props": {
+        "title": {
+            "type": "string",
+            "default": "",
+            "trait": "title"
+        },
+        "style": {
+            "type": "enum",
+            "default": "panel",
+            "values": [
+                "panel",
+                "inline"
+            ],
+            "trait": "rank_style"
+        },
+        "type": {
+            "type": "category",
+            "mid": 1,
+            "default": 0,
+            "trait": "category"
+        },
+        "num": {
+            "type": "number",
+            "default": 10,
+            "min": 1,
+            "max": 50,
+            "trait": "count"
+        },
+        "period": {
+            "type": "enum",
+            "default": "week",
+            "values": [
+                "day",
+                "week",
+                "month",
+                "all"
+            ],
+            "trait": "period"
+        }
+    },
+    "context": {
+        "pageTypes": [
+            "home",
+            "list",
+            "sidebar"
+        ],
+        "requires": []
+    }
+}

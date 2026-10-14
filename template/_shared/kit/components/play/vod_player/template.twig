@@ -1,0 +1,168 @@
+{# player_data / player_js 必须原样输出，由控制器注入 #}
+{% set _show_eps = props.show_episodes is not defined ? true : props.show_episodes %}
+{% set _show_nav = props.show_nav is not defined ? true : props.show_nav %}
+{% set _pdata = player_data|default('') %}
+{% set _pjs = player_js|default('') %}
+{% set _popedom = popedom|default({}) %}
+{% set _sid_cur = param.sid|default(1) %}
+{% set _nid_cur = param.nid|default(1) %}
+{% set _play_group = obj.vod_play_list[_sid_cur]|default({}) %}
+{% set _ep_name = _play_group.urls[_nid_cur].name|default(_nid_cur) %}
+{% set _play_from = _play_group.player_info.from|default('') %}
+{% set _report_msg = 'ID:' ~ obj.vod_id|default('') ~ ' -【名称：' ~ obj.vod_name|default('') ~ ' - ' ~ _ep_name ~ '】无法观看请检查修复' %}
+{% set _gbook_login = gbook.login|default(0) %}
+
+<section class="pbs-vod-player" data-component="vod_player" data-mid="1" data-id="{{ obj.vod_id|default('') }}">
+  {% if _pdata or _pjs %}
+  <div class="mac-player pbs-vod-player__host player_video" id="pbs-mac-player-host">
+    {# _pjs must render inside #pbs-mac-player-mount, not as a sibling: the host box is overflow:hidden with
+       a fixed aspect-ratio, so plain-HTML output (e.g. the pwd-gate iframe) placed after this empty div gets
+       pushed below it in flow and clipped out of view, leaving only the empty mount's black background visible #}
+    <div id="pbs-mac-player-mount" class="pbs-mac-player-mount">{{ _pdata|raw }}{{ _pjs|raw }}</div>
+    <script>
+    (function (w) {
+      w.__macPlayerScriptFail = null;
+      w.addEventListener('error', function (ev) {
+        var t = ev && ev.target;
+        if (!t || !t.tagName || String(t.tagName).toUpperCase() !== 'SCRIPT') return;
+        var src = String(t.src || '');
+        if (src.indexOf('/static/player/') === -1) return;
+        w.__macPlayerScriptFail = { src: src, at: Date.now() };
+      }, true);
+    })(window);
+    </script>
+    <script>
+    (function () {
+      var mount = document.getElementById('pbs-mac-player-mount');
+      if (!mount || mount.getAttribute('data-write-bridged') === '1') return;
+      mount.setAttribute('data-write-bridged', '1');
+      var nativeWrite = document.write.bind(document);
+      document.write = function (html) {
+        if (!mount || typeof html !== 'string') {
+          return nativeWrite(html);
+        }
+        var box = document.createElement('div');
+        box.innerHTML = html;
+        var nodes = [];
+        while (box.firstChild) nodes.push(box.removeChild(box.firstChild));
+        for (var i = 0; i < nodes.length; i++) {
+          var node = nodes[i];
+          if (node.nodeName === 'SCRIPT') {
+            var s = document.createElement('script');
+            if (node.src) s.src = node.src;
+            else s.text = node.text || node.textContent || '';
+            if (node.type) s.type = node.type;
+            if (node.charset) s.charset = node.charset;
+            mount.appendChild(s);
+          } else {
+            mount.appendChild(node);
+          }
+        }
+      };
+    })();
+    </script>
+    <script type="application/json" id="vod-play-failover-config">{"enabled":true,"apiBase":"{{ maccms.path|trim('/') }}/api.php","vodId":{{ obj.vod_id|default(0) }},"vodName":"{{ obj.vod_name|default('')|e('js') }}","sid":{{ _sid_cur }},"nid":{{ _nid_cur }},"canplayTimeoutMs":15000,"playFrom":"{{ _play_from|e('js') }}","sources":[{% for sid, group in obj.vod_play_list|default([]) %}{% if not loop.first %},{% endif %}{"sid":{{ sid }},"show":"{{ group.from_name|default(group.from)|default('线路' ~ sid)|e('js') }}","href":"{{ mac_url_vod_play(obj, {sid: sid, nid: _nid_cur})|e('js') }}"}{% endfor %}]}</script>
+  </div>
+  {% elseif _popedom.code|default(1) <= 1 %}
+  <div class="mac-player pbs-vod-player__empty" data-lang="string_play_wfgk">因特殊原因，该视频暂时无法观看</div>
+  {% endif %}
+
+  {% if _popedom.code|default(1) > 1 %}
+  <div class="pbs-vod-player__gate" data-popedom-code="{{ _popedom.code|default(1) }}">
+    <p{% if not _popedom.msg|default('') %} data-lang="vod_no_permission"{% endif %}>{{ _popedom.msg|default('暂无播放权限') }}</p>
+  </div>
+  {% endif %}
+
+  {% if (_pdata or _pjs) and _popedom.code|default(1) <= 1 %}
+  <div class="pbs-vod-player__actions" role="toolbar" data-lang-aria-label="vod_play_actions_aria" aria-label="播放操作">
+    <button type="button" class="pbs-vod-player__action" data-vod-player-report>
+      <span class="pbs-vod-player__action-ico" aria-hidden="true">!</span>
+      <span data-lang="string_play_bc">报错</span>
+    </button>
+    <button type="button" class="pbs-vod-player__action" data-vod-player-refresh>
+      <span class="pbs-vod-player__action-ico" aria-hidden="true">↻</span>
+      <span data-lang="string_play_sx">刷新</span>
+    </button>
+  </div>
+
+  <div class="pbs-vod-player__report" id="pbs-vod-player-report" hidden aria-hidden="true">
+    <div class="pbs-vod-player__report-backdrop" data-vod-player-report-close tabindex="-1" aria-hidden="true"></div>
+    <div class="pbs-vod-player__report-dialog" role="dialog" aria-modal="true" aria-labelledby="pbs-vod-player-report-title">
+      <header class="pbs-vod-player__report-head">
+        <h2 class="pbs-vod-player__report-title" id="pbs-vod-player-report-title" data-lang="string_play_bc">报错</h2>
+        <button type="button" class="pbs-vod-player__report-close" data-vod-player-report-close data-lang-aria-label="string_close" aria-label="关闭">×</button>
+      </header>
+      <form data-mac-gbook-form
+            class="pbs-vod-player__report-form"
+            method="post"
+            action="{{ mac_url('gbook/index') }}"
+            {% if _gbook_login %}data-gbook-login="1"{% endif %}>
+        <input type="hidden" name="__token__" value="{{ csrf_token|default('') }}">
+        <label class="pbs-vod-player__report-label" for="pbs-vod-player-report-content" data-lang="vod_report_desc_label">问题描述</label>
+        <textarea id="pbs-vod-player-report-content"
+                  name="gbook_content"
+                  class="pbs-vod-player__report-textarea"
+                  rows="4"
+                  required>{{ _report_msg }}</textarea>
+        {% if mac_verify_on('gbook') %}
+        <div class="pbs-vod-player__report-captcha">
+          <label class="pbs-vod-player__report-label" for="pbs-vod-player-report-verify" data-lang="user_yanzhengma">验证码</label>
+          <div class="pbs-vod-player__report-captcha-row">
+            <input id="pbs-vod-player-report-verify"
+                   type="text"
+                   name="verify"
+                   class="pbs-vod-player__report-input"
+                   autocomplete="off"
+                   data-lang-placeholder="user_yanzhengma"
+                   placeholder="验证码">
+            <img class="gbook-form__captcha-img"
+                 src="{{ mac_url('verify/index') }}"
+                 alt="验证码"
+                 data-lang-title="string_pinglun_kan"
+                 title="看不清楚? 换一张！"
+                 width="120"
+                 height="44"
+                 decoding="async"
+                 data-vod-player-report-captcha>
+          </div>
+        </div>
+        {% endif %}
+        <div class="pbs-vod-player__report-actions">
+          <button type="button" class="pbs-vod-player__report-btn pbs-vod-player__report-btn--ghost" data-vod-player-report-close data-lang="string_cancel">取消</button>
+          <button type="submit" class="pbs-vod-player__report-btn" data-lang="string_gbook_tjly">提交留言</button>
+        </div>
+      </form>
+    </div>
+  </div>
+  {% endif %}
+
+  {% if _show_eps and obj.vod_play_list is defined and obj.vod_play_list %}
+  <div class="pbs-vod-player__eps">
+
+    <h2 class="pbs-vod-player__eps-title" data-lang="string_vod_bfdz">选集</h2>
+    {% for sid, group in obj.vod_play_list|default([]) %}
+      <div class="pbs-vod-player__eps-group" data-sid="{{ sid }}">
+        {% if group.from_name|default(group.from) %}
+        <div class="pbs-vod-player__eps-from">{{ group.from_name|default(group.from) }}</div>
+        {% endif %}
+        <ul class="pbs-vod-player__eps-list">
+        {% for nid, ep in group.urls|default([]) %}
+          <li class="pbs-vod-player__eps-item{% if param.sid|default(0) == sid and param.nid|default(0) == nid %} is-cur{% endif %}">
+            <a href="{{ mac_url_vod_play(obj, {sid: sid, nid: nid}) }}">{{ ep.name|default(nid) }}</a>
+          </li>
+        {% endfor %}
+        </ul>
+      </div>
+    {% endfor %}
+  </div>
+  {% endif %}
+  {% if (_pdata or _pjs) and _popedom.code|default(1) <= 1 %}
+  <span class="mac_ulog_set hide"
+        data-type="4"
+        data-mid="{{ maccms.mid|default(1) }}"
+        data-id="{{ obj.vod_id|default(0) }}"
+        data-sid="{{ param.sid|default(1) }}"
+        data-nid="{{ param.nid|default(1) }}"
+        aria-hidden="true"></span>
+  {% endif %}
+</section>

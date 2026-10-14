@@ -1,0 +1,34 @@
+{
+    "id": "app_top_chrome",
+    "label_key": "admin/themedesign/pb_block_app_top_chrome",
+    "category": "chrome",
+    "kind": "chrome",
+    "palette": false,
+    "palette_inject": true,
+    "styleMode": "peer",
+    "peer_styles": [],
+    "assets": {
+        "css": "style.css",
+        "js": "script.js"
+    },
+    "props": {
+        "tab": {
+            "type": "string",
+            "default": "home",
+            "trait": "select",
+            "options": ["home", "short", "art", "manga", "rank", "mine"]
+        },
+        "embed_search": {
+            "type": "boolean",
+            "default": false
+        },
+        "logo": {
+            "type": "string",
+            "default": ""
+        }
+    },
+    "context": {
+        "pageTypes": ["home", "list", "detail", "play", "member", "rank", "search"],
+        "requires": ["maccms", "user"]
+    }
+}

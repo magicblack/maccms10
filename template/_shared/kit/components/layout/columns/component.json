@@ -1,0 +1,49 @@
+{
+    "id": "columns",
+    "label_key": "admin/themedesign/pb_block_columns",
+    "category": "layout",
+    "kind": "columns",
+    "styleMode": "component",
+    "peer_styles": [],
+    "slots": {
+        "0": [],
+        "1": []
+    },
+    "assets": {
+        "css": "style.css",
+        "js": "script.js"
+    },
+    "props": {
+        "col_left": {
+            "type": "number",
+            "default": 8,
+            "min": 1,
+            "max": 12,
+            "trait": "col_left"
+        },
+        "col_right": {
+            "type": "number",
+            "default": 4,
+            "min": 1,
+            "max": 12,
+            "trait": "col_right"
+        },
+        "stack_at": {
+            "type": "number",
+            "default": 720,
+            "min": 320,
+            "max": 1600,
+            "trait": "stack_at"
+        }
+    },
+    "context": {
+        "pageTypes": ["home", "list", "detail", "sidebar"],
+        "requires": []
+    },
+    "data": {
+        "persist": {
+            "editorProps": ["col_left", "col_right", "stack_at"],
+            "runtimeProps": ["cols", "stack_at"]
+        }
+    }
+}

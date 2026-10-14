@@ -1,0 +1,393 @@
+/* benefits_panel — 会员权益；与个人中心 user_member_hub 视觉体系对齐 */
+[data-component="benefits_panel"].pb-benefits {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 0 0 8px;
+}
+
+/* —— Hero：影院渐变 + 标题 + 内嵌数据条 —— */
+.pb-benefits__hero {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  padding: 20px 18px 0;
+  border-radius: 18px;
+  overflow: hidden;
+  color: #fff;
+  background:
+    radial-gradient(120% 80% at 100% 0%, rgba(255, 255, 255, 0.14) 0%, transparent 55%),
+    linear-gradient(
+      145deg,
+      color-mix(in srgb, var(--c-accent) 88%, #0f172a) 0%,
+      color-mix(in srgb, var(--c-accent) 52%, #1e1b4b) 48%,
+      #0f172a 100%
+    );
+  box-shadow:
+    0 1px 2px rgba(15, 23, 42, 0.08),
+    0 16px 40px color-mix(in srgb, var(--c-accent) 22%, transparent);
+}
+
+.pb-benefits--minimal .pb-benefits__hero {
+  background:
+    linear-gradient(145deg, var(--c-surface-2, #f6f7f8) 0%, var(--c-surface, #fff) 100%);
+  color: var(--c-text, #18191c);
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04), 0 8px 24px rgba(15, 23, 42, 0.06);
+  border: 1px solid var(--c-border, rgba(15, 23, 42, 0.08));
+}
+
+.pb-benefits__hero-glow {
+  position: absolute;
+  top: -40%;
+  right: -20%;
+  width: 70%;
+  height: 90%;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.16) 0%, transparent 68%);
+  pointer-events: none;
+}
+
+.pb-benefits--minimal .pb-benefits__hero-glow {
+  display: none;
+}
+
+.pb-benefits__hero-head {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 14px;
+  padding-bottom: 18px;
+}
+
+.pb-benefits__hero-copy {
+  min-width: 0;
+  flex: 1 1 auto;
+}
+
+.pb-benefits__eyebrow {
+  margin: 0 0 8px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.72);
+}
+
+.pb-benefits--minimal .pb-benefits__eyebrow {
+  color: var(--c-accent);
+}
+
+.pb-benefits__name {
+  margin: 0 0 8px;
+  font-size: clamp(22px, 5vw, 28px);
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+  color: #fff;
+}
+
+.pb-benefits--minimal .pb-benefits__name {
+  color: var(--c-text, #18191c);
+}
+
+.pb-benefits__desc {
+  margin: 0;
+  max-width: 28em;
+  font-size: 13px;
+  line-height: 1.55;
+  color: rgba(255, 255, 255, 0.78);
+}
+
+.pb-benefits--minimal .pb-benefits__desc {
+  color: var(--c-text-muted, #6b7280);
+}
+
+.pb-benefits__badge {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 52px;
+  height: 52px;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.14);
+  color: #fde68a;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+}
+
+.pb-benefits--minimal .pb-benefits__badge {
+  background: var(--c-accent-soft);
+  color: var(--c-accent);
+  border-color: transparent;
+}
+
+.pb-benefits__badge-svg {
+  width: 26px;
+  height: 26px;
+}
+
+/* Hero 内数据条 */
+.pb-benefits__stats {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0;
+  margin: 0 -18px;
+  padding: 2px 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.14);
+  background: rgba(0, 0, 0, 0.14);
+}
+
+.pb-benefits--minimal .pb-benefits__stats {
+  border-top-color: var(--c-border, rgba(15, 23, 42, 0.08));
+  background: var(--c-surface-2, #f6f7f8);
+}
+
+.pb-benefits__stat {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  padding: 14px 8px;
+  text-align: center;
+}
+
+.pb-benefits__stat + .pb-benefits__stat::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 20%;
+  bottom: 20%;
+  width: 1px;
+  background: rgba(255, 255, 255, 0.16);
+}
+
+.pb-benefits--minimal .pb-benefits__stat + .pb-benefits__stat::before {
+  background: var(--c-border, rgba(15, 23, 42, 0.08));
+}
+
+.pb-benefits__stat-val {
+  font-size: 22px;
+  font-weight: 700;
+  line-height: 1.2;
+  font-variant-numeric: tabular-nums;
+  color: #fff;
+  word-break: break-word;
+}
+
+.pb-benefits--minimal .pb-benefits__stat-val {
+  color: var(--c-text, #18191c);
+}
+
+.pb-benefits__stat-val--text {
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+}
+
+.pb-benefits__stat-val--date {
+  font-size: 13px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.01em;
+}
+
+.pb-benefits__stat-label {
+  font-size: 11px;
+  line-height: 1.3;
+  color: rgba(255, 255, 255, 0.72);
+}
+
+.pb-benefits--minimal .pb-benefits__stat-label {
+  color: var(--c-text-muted, #9499a0);
+}
+
+/* —— 升级 CTA —— */
+.pb-benefits__actions {
+  margin: 0;
+}
+
+.pb-benefits__cta {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 72px;
+  padding: 14px 16px;
+  border-radius: 16px;
+  background: var(--c-surface, #fff);
+  border: 1px solid var(--c-border, rgba(15, 23, 42, 0.08));
+  color: inherit;
+  text-decoration: none;
+  cursor: pointer;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04), 0 8px 24px rgba(15, 23, 42, 0.06);
+  transition:
+    border-color var(--dur, 0.2s) var(--ease, ease),
+    box-shadow var(--dur, 0.2s) var(--ease, ease),
+    transform var(--dur, 0.15s) var(--ease, ease),
+    background var(--dur, 0.2s) var(--ease, ease);
+  -webkit-tap-highlight-color: transparent;
+}
+
+.pb-benefits__cta:hover,
+.pb-benefits__cta:focus-visible {
+  border-color: color-mix(in srgb, var(--c-accent) 30%, transparent);
+  box-shadow: 0 4px 16px rgba(15, 23, 42, 0.08);
+  outline: none;
+}
+
+.pb-benefits__cta:active {
+  transform: scale(0.99);
+}
+
+.pb-benefits__cta-ico {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #fde68a 0%, #f59e0b 100%);
+  color: #422006;
+  box-shadow: 0 4px 12px rgba(245, 158, 11, 0.35);
+}
+
+.pb-benefits__cta-svg {
+  width: 22px;
+  height: 22px;
+}
+
+.pb-benefits__cta-body {
+  min-width: 0;
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.pb-benefits__cta-label {
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1.3;
+  color: var(--c-text, #18191c);
+}
+
+.pb-benefits__cta-hint {
+  font-size: 12px;
+  line-height: 1.4;
+  color: var(--c-text-muted, #9499a0);
+}
+
+.pb-benefits__cta-arrow {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--c-surface-2, #f6f7f8);
+  color: var(--c-text-muted, #9499a0);
+}
+
+.pb-benefits__cta-arrow-ico {
+  width: 16px;
+  height: 16px;
+}
+
+.pb-benefits__cta:hover .pb-benefits__cta-arrow {
+  color: var(--c-accent);
+  background: var(--c-accent-soft);
+}
+
+/* —— 未登录 —— */
+.pb-benefits--guest {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  padding: 36px 24px;
+  text-align: center;
+  border-radius: 18px;
+  border: 1px dashed var(--c-border, rgba(0, 0, 0, 0.1));
+  background: var(--c-surface, #fff);
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.06);
+}
+
+.pb-benefits__guest {
+  margin: 0;
+  font-size: 15px;
+  color: var(--c-text-muted, #9499a0);
+}
+
+.pb-benefits__login {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  padding: 0 28px;
+  border-radius: var(--radius-pill, 999px);
+  background: var(--c-accent);
+  color: var(--c-accent-ink, #fff);
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+  transition: opacity var(--dur, 0.2s) var(--ease, ease);
+}
+
+.pb-benefits__login:hover {
+  opacity: 0.92;
+}
+
+.pb-benefits__login:focus-visible {
+  outline: 2px solid var(--c-accent);
+  outline-offset: 2px;
+}
+
+@media (max-width: 560px) {
+  .pb-benefits__hero {
+    padding: 18px 16px 0;
+  }
+
+  .pb-benefits__stats {
+    margin-left: -16px;
+    margin-right: -16px;
+  }
+
+  .pb-benefits__stat-val {
+    font-size: 20px;
+  }
+
+  .pb-benefits__stat-val--text,
+  .pb-benefits__stat-val--date {
+    font-size: 12px;
+  }
+
+  .pb-benefits__badge {
+    width: 44px;
+    height: 44px;
+  }
+
+  .pb-benefits__badge-svg {
+    width: 22px;
+    height: 22px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pb-benefits__cta {
+    transition: none;
+  }
+
+  .pb-benefits__cta:active {
+    transform: none;
+  }
+}

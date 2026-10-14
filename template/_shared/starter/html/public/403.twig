@@ -1,0 +1,4 @@
+{% extends "public/_status.twig" %}
+{% block status_code %}403{% endblock %}
+{% block status_msg %}{{ msg|default('禁止访问') }}{% endblock %}
+{% block status_sub %}<span data-lang="string_403">您没有权限访问该页面</span>{% endblock %}

@@ -198,15 +198,35 @@ class Extend extends Base {
         $num = abs(intval($lp['num']));
         $tid = intval($lp['tid']);
 
+        $mid = isset($lp['mid']) ? intval($lp['mid']) : 0;
+
         $config = config('maccms.app');
-        $data_str = $config['vod_extend_class'];
+        $type_class = '';
         if($tid>0){
-            $type_list = model('Type')->getCache('tree_list');
-            $type_info = $type_list[$tid];
+            // 原先读 getCache('tree_list')，但 Type 只缓存 type_list/type_tree，这里永远取不到分类，
+            // 结果任何分类都回落成视频的 vod_extend_class（小说/漫画分类页显示成视频类型）
+            $type_info = model('Type')->getCacheInfo($tid);
             if(!empty($type_info)){
-                $type_extend = json_decode($type_info['type_extend'],true);
-                $data_str = $type_extend['class'];
+                $mid = intval($type_info['type_mid']);
+                $type_extend = $type_info['type_extend'];
+                if(!is_array($type_extend)){
+                    $type_extend = json_decode((string)$type_extend,true);
+                }
+                $type_class = isset($type_extend['class']) ? trim((string)$type_extend['class']) : '';
             }
+        }
+        // 分类未配置扩展分类或未指定分类时按模型回落：视频 vod_extend_class，文章/小说 art_extend_class，其它模型没有全局扩展分类
+        if($type_class!==''){
+            $data_str = $type_class;
+        }
+        elseif($mid<=1){
+            $data_str = $config['vod_extend_class'];
+        }
+        elseif($mid==2){
+            $data_str = $config['art_extend_class'];
+        }
+        else{
+            $data_str = '';
         }
 
         if(empty($num)){

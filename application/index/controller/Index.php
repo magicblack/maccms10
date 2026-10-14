@@ -138,7 +138,7 @@ class Index extends Base
             $this->assign_publish_enter_href();
             return $this->fetch_site_publish_view('publish');
         }
-        return $this->label_fetch('index/index');
+        return $this->label_fetch(mac_homepage_index_view());
     }
 
     /**

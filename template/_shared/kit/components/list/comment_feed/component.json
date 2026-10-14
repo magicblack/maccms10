@@ -1,0 +1,34 @@
+{
+    "id": "comment_feed",
+    "label_key": "admin/themedesign/pb_block_comment_feed",
+    "category": "list",
+    "kind": "list",
+    "palette": false,
+    "peer_styles": [],
+    "assets": {
+        "css": "style.css",
+        "js": "script.js"
+    },
+    "props": {
+        "num": {
+            "type": "number",
+            "default": 20
+        },
+        "paging": {
+            "type": "boolean",
+            "default": true
+        },
+        "pageurl": {
+            "type": "string",
+            "default": "comment/index"
+        }
+    },
+    "context": {
+        "pageTypes": [
+            "list",
+            "detail",
+            "gbook"
+        ],
+        "requires": []
+    }
+}

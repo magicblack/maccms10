@@ -42,6 +42,8 @@ class Provide extends Base
         $html = Cache::get($cach_name);
         if(empty($html) || $cache_time==0) {
             $where = [];
+            // 只输出已上架内容（下架 / 资源检测停用的不对外提供）
+            $where['vod_status'] = ['eq', 1];
             if (!empty($this->_param['ids'])) {
                 $where['vod_id'] = ['in', $this->_param['ids']];
             }
@@ -363,6 +365,8 @@ class Provide extends Base
         $html = Cache::get($cach_name);
         if(empty($html) || $cache_time==0) {
             $where = [];
+            // 只输出已上架内容（下架 / 资源检测停用的不对外提供）
+            $where['art_status'] = ['eq', 1];
             if (!empty($this->_param['ids'])) {
                 $where['art_id'] = ['in', $this->_param['ids']];
             }
@@ -688,6 +692,8 @@ class Provide extends Base
         $html = Cache::get($cach_name);
         if(empty($html) || $cache_time==0) {
             $where = [];
+            // 只输出已上架内容（下架 / 资源检测停用的不对外提供）
+            $where['manga_status'] = ['eq', 1];
             if (!empty($this->_param['ids'])) {
                 $where['manga_id'] = ['in', $this->_param['ids']];
             }

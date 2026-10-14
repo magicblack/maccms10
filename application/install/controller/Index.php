@@ -434,7 +434,7 @@ class Index extends Controller
 				],
 				'content_quality' => [
 					'id'      => 'content_quality',
-					'status'  => '0',
+					'status'  => '1',
 					'name'    => 'content_quality',
 					'des'     => '内容质量分批量计算',
 					'file'    => 'content_quality',
@@ -445,7 +445,7 @@ class Index extends Controller
 				],
 				'content_quality_art' => [
 					'id'      => 'content_quality_art',
-					'status'  => '0',
+					'status'  => '1',
 					'name'    => 'content_quality_art',
 					'des'     => '内容质量分批量计算-文章',
 					'file'    => 'content_quality',
@@ -646,6 +646,8 @@ class Index extends Controller
             ['xml', lang('install/support'), 'yes', lang('install/function')],
             ['file_get_contents', lang('install/support'), 'yes', lang('install/function')],
             ['mb_strlen', lang('install/support'), 'yes', lang('install/function')],
+            // 前台 Twig 模板引擎（vendor/twig/twig 2.12.5）依赖 ctype 扩展，仓库未附带 symfony polyfill
+            ['ctype_digit', lang('install/support'), 'yes', lang('install/function')],
         ];
 
         if(version_compare(PHP_VERSION,'5.6.0','ge') && version_compare(PHP_VERSION,'5.7.0','lt')){

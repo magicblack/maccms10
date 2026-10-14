@@ -1,0 +1,27 @@
+{% set p = props|default({}) %}
+{% set kicker = p.kicker|default('') %}
+{% set kicker_lang = p.kicker_lang|default('') %}
+{% set title = p.title|default('') %}
+{% set title_lang = p.title_lang|default('') %}
+{% set title_id = p.title_id|default('') %}
+{% set desc = p.desc|default('') %}
+{% set actions = p.actions|default([]) %}
+<header class="pb-page-hero" data-component="page_hero">
+  {% if kicker %}
+  <p class="pb-page-hero__kicker"{% if kicker_lang and mac_i18n_key(kicker, kicker_lang) %} data-lang="{{ kicker_lang }}"{% endif %}>{{ kicker }}</p>
+  {% endif %}
+  {% if title %}
+  <h1 class="pb-page-hero__title"{% if title_id %} id="{{ title_id }}"{% endif %}{% if title_lang and mac_i18n_key(title, title_lang) %} data-lang="{{ title_lang }}"{% endif %}>{{ title }}</h1>
+  {% endif %}
+  {% if desc %}
+  <p class="pb-page-hero__desc">{{ desc }}</p>
+  {% endif %}
+  {% if actions %}
+  <div class="pb-page-hero__actions">
+    {% for a in actions %}
+      {% set variant = a.variant|default('primary') %}
+      <a class="pb-page-hero__btn{% if variant == 'ghost' %} pb-page-hero__btn--ghost{% endif %}" href="{{ a.href|default('#') }}"{% if a.lang|default('') %} data-lang="{{ a.lang }}"{% endif %}{% if a.rel|default('') %} rel="{{ a.rel }}"{% endif %}>{{ a.label|default('') }}</a>
+    {% endfor %}
+  </div>
+  {% endif %}
+</header>

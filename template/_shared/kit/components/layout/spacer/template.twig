@@ -1,0 +1,3 @@
+{% set size = props.size|default('md') %}
+{% set heights = {'sm': '12px', 'md': '24px', 'lg': '48px'} %}
+<div class="pb-spacer" style="height: {{ heights[size]|default('24px') }};"></div>

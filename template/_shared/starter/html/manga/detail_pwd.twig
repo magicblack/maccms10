@@ -1,0 +1,56 @@
+{# Starter T0: 漫画详情页访问密码门 — Manga::detail() 在 manga_pwd 未过 session 校验时渲染 #}
+{% extends "layout/base.twig" %}
+{% import "@shared/components.twig" as c %}
+{% block layout_mod %} detail{% endblock %}
+{% block page_class %} pb-components-only page-manga-pwd{% endblock %}
+{% block theme_styles %}
+<link rel="stylesheet" href="{{ maccms.path_tpl }}asset/css/tokens.css">
+{% set _pb_td_override = mac_theme_override_css_href() %}
+{% if _pb_td_override %}<link rel="stylesheet" href="{{ _pb_td_override }}">{% endif %}
+<link rel="stylesheet" href="{{ maccms.path_tpl }}asset/css/pb-shell.css">
+{% endblock %}
+{% block title %}{{ obj.manga_name|default('') }} - {{ maccms.site_name|default('') }}{% endblock %}
+{% block meta %}<meta name="robots" content="noindex,nofollow">{% endblock %}
+{% block head %}
+<link rel="stylesheet" href="{{ maccms.path_tpl }}page-builder-components/_shared/css/peers.css">
+<link rel="stylesheet" href="{{ maccms.path_tpl }}asset/css/pb-t0.css?v=2">
+
+<link rel="stylesheet" href="{{ maccms.path_tpl }}page-builder-components/site_nav/style.css">
+<script src="{{ maccms.path_tpl }}page-builder-components/site_nav/script.js" defer></script>
+<link rel="stylesheet" href="{{ maccms.path_tpl }}page-builder-components/notify_bell/style.css">
+<script src="{{ maccms.path_tpl }}page-builder-components/notify_bell/script.js" defer></script>
+<link rel="stylesheet" href="{{ maccms.path_tpl }}page-builder-components/header_decor/style.css">
+<script src="{{ maccms.path_tpl }}page-builder-components/header_decor/script.js" defer></script>
+<link rel="stylesheet" href="{{ maccms.path_tpl }}page-builder-components/channel_strip/style.css">
+<script src="{{ maccms.path_tpl }}page-builder-components/channel_strip/script.js" defer></script>
+{% endblock %}
+
+{% block site_header %}
+  {% include 'page-builder-components/site_nav/template.twig' with {props: { max: 8, show_search: true, type_ids: [] }} %}
+{% endblock %}
+{% block channel %}
+  {% include 'page-builder-components/channel_strip/template.twig' with {props: { compact: false, chip_limit: 11, show_icons: true, show_more: true, type_ids: [] }} %}
+{% endblock %}
+{% block content %}
+<section class="pb-t0">
+  <nav class="pb-t0__crumb" aria-label="breadcrumb">
+    <a href="{{ maccms.path|default('/') }}" data-lang="string_home">首页</a>
+    <span class="pb-t0__sep">/</span>
+    <a href="{{ mac_url_manga_detail(obj) }}" class="clamp-1">{{ obj.manga_name|default('') }}</a>
+    <span class="pb-t0__sep">/</span>
+    <span data-lang="string_password">密码</span>
+  </nav>
+  <div class="pb-t0__panel">
+    <h1 class="pb-t0__panel-title" data-lang="dear_password">亲爱的访问此数据需要密码哦</h1>
+    {{ c.pwd_form(8, obj.manga_id|default(0), 1, {
+      class: 'pb-t0-pwd__form',
+      input_class: 'pb-t0-pwd__input',
+      button_class: 'pb-t0__btn pb-t0-pwd__btn',
+      tip_class: 'pb-t0-pwd__tip',
+      tip_url: obj.manga_pwd_url|default('')
+    }) }}
+  </div>
+</section>
+{% endblock %}
+{% block sidebar %}{% endblock %}
+{% block footer %}{% endblock %}

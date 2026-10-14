@@ -1,0 +1,40 @@
+{# twigspike art/index — 分类专区（多栏目横滑） #}
+{% set p = props|default({}) %}
+{% set type_num = p.type_num|default(4) %}
+{% set row_num = p.row_num|default(10) %}
+{% set by = p.by|default('hits') %}
+
+{% for t in mac_top_types(2, type_num) %}
+  {% set zone_rows = mac_art({num: row_num, type: t.type_id, order: 'desc', by: by}).list|default([]) %}
+  {% if zone_rows is not empty %}
+  <section class="nv-sec nv-sec--zone" data-component="novel_home_zone" aria-labelledby="nv-zone-{{ t.type_id }}">
+    <header class="nv-sec__head">
+      <h2 class="nv-sec__title" id="nv-zone-{{ t.type_id }}">{{ t.type_name }}</h2>
+      <a class="nv-sec__more" href="{{ mac_url_type(t) }}">更多 ›</a>
+    </header>
+    <div class="nv-row" data-nv-row>
+      <button type="button" class="nv-row__btn nv-row__btn--prev" data-dir="-1" aria-label="向左">‹</button>
+      <div class="nv-row__viewport">
+        <div class="nv-row__track">
+          {% for a in zone_rows %}
+          <a class="nv-book nv-book--md" href="{{ mac_url_art_detail(a) }}" title="{{ a.art_name }}">
+            <span class="nv-book__cover" data-cover-kind="book">
+              {% if a.art_pic %}
+              <img data-cover class="nv-book__img" src="{{ mac_url_img(a.art_pic) }}" alt="{{ a.art_name }}" loading="lazy" decoding="async">
+              {% else %}
+              <span class="nv-book__img nv-book__img--empty" aria-hidden="true">{% include "page-builder-components/_shared/book_cover_empty.twig" %}</span>
+              {% endif %}
+            </span>
+            <strong class="nv-book__title">{{ a.art_name }}</strong>
+            <em class="nv-book__meta">
+              {% if a.art_author|default('') %}{{ a.art_author }}{% elseif a.art_class|default('') %}{{ a.art_class|split(',')|first }}{% endif %}
+            </em>
+          </a>
+          {% endfor %}
+        </div>
+      </div>
+      <button type="button" class="nv-row__btn nv-row__btn--next" data-dir="1" aria-label="向右">›</button>
+    </div>
+  </section>
+  {% endif %}
+{% endfor %}

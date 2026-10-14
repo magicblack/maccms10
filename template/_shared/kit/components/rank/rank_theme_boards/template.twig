@@ -1,0 +1,8 @@
+{# 排行榜页多榜单：循环后台 TplConfig 配置的 theme.rank.boards（mac_rank_boards()），
+   每个榜单一个 np2_rank_board（自带日/周/月切换）。新增/删除/排序/数量均在后台
+   「模板配置 - 排行榜」页管理，本组件不暴露可编辑 props。 #}
+<div class="rank-theme-boards" data-component="rank_theme_boards">
+{% for board in mac_rank_boards() %}
+  {% include 'page-builder-components/np2_rank_board/template.twig' with {props: { title: board.title, type: board.type_id, num: board.num, mid: board.mid|default(1) }} %}
+{% endfor %}
+</div>

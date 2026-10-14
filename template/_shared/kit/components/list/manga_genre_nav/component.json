@@ -1,0 +1,34 @@
+{
+    "id": "manga_genre_nav",
+    "label_key": "admin/themedesign/pb_block_manga_genre_nav",
+    "category": "list",
+    "kind": "list",
+    "peer_styles": [],
+    "assets": {
+        "css": "style.css",
+        "js": "script.js"
+    },
+    "palette": false,
+    "palette_inject": true,
+    "props": {
+        "num": {
+            "type": "number",
+            "default": 16,
+            "min": 4,
+            "max": 24,
+            "trait": "count"
+        },
+        "more_url": {
+            "type": "string",
+            "default": "manga/show"
+        }
+    },
+    "context": {
+        "pageTypes": [
+            "home",
+            "list",
+            "detail"
+        ],
+        "requires": []
+    }
+}

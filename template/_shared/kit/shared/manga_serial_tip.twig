@@ -1,0 +1,24 @@
+{# 连载状态角标（twigspike manga/index macro）。
+   话数优先取备注（共/更新至/连载至 N话，后端已按实际入库章节改写），manga_total 为源站全本话数，仅作兜底。 #}
+{% set serial = vo.manga_serial|default('') %}
+{% set remarks = vo.manga_remarks|default('')|trim %}
+{% set ep = '' %}
+{% if remarks matches '/^(共|更新至|连载至)\\d+话$/u' %}
+{% set ep = remarks|replace({'共': '', '更新至': '', '连载至': '', '话': ''}) %}
+{% endif %}
+{% if serial == '完结' or serial == '已完结' or '已完结' in remarks %}
+<span data-lang="manga_serial_done">已完结</span>
+{% elseif ep != '' %}
+<span data-lang="manga_serial_upto" data-lang-arg="{{ ep }}">连载到{{ ep }}话</span>
+{% elseif '更新至' in remarks %}
+{% set tail = remarks|split('更新至')|last|trim %}
+{% if '话' in tail %}
+连载到{{ tail }}
+{% else %}
+连载到{{ tail }}话
+{% endif %}
+{% elseif vo.manga_total|default(0) > 0 %}
+<span data-lang="manga_serial_upto" data-lang-arg="{{ vo.manga_total }}">连载到{{ vo.manga_total }}话</span>
+{% else %}
+<span data-lang="string_lianzai">连载中</span>
+{% endif %}

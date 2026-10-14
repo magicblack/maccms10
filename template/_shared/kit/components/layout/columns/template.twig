@@ -1,0 +1,17 @@
+{# 多列布局：props.cols 如 [8,4] → grid-template-columns #}
+{% set cols = props.cols|default([8, 4]) %}
+{% set tpl_parts = [] %}
+{% for c in cols %}
+  {% set tpl_parts = tpl_parts|merge([c ~ 'fr']) %}
+{% endfor %}
+{% set stack_at = props.stack_at|default(720) %}
+<div class="bili-columns" style="--pb-cols: {{ tpl_parts|join(' ') }}; --pb-stack-at: {{ stack_at }}px;">
+  {% for i in 0..(cols|length - 1) %}
+  <div class="bili-columns__col">
+    {% set col_children = slots[i]|default(slots['' ~ i]|default([])) %}
+    {% for j, child in col_children %}
+      {% include "page_builder/block.twig" with {block: child, pb_path: pb_path ~ '/' ~ i ~ '/' ~ j, pb_preview: pb_preview} %}
+    {% endfor %}
+  </div>
+  {% endfor %}
+</div>

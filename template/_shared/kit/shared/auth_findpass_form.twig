@@ -1,0 +1,35 @@
+<form data-mac-findpass-form class="auth-form auth-form--dense" method="post" action="">
+  <input type="hidden" name="__token__" value="{{ csrf_token|default('') }}">
+  <label class="auth-field auth-field--full">
+    <span class="auth-field__label" data-lang="string_user_name">用户名</span>
+    <input type="text" name="user_name" class="auth-field__input" data-placeholder="user_place_dlzh" placeholder="输入您的登录账号" autocomplete="username">
+  </label>
+  <div class="auth-form__row">
+    <label class="auth-field">
+      <span class="auth-field__label" data-lang="user_mbwenti">密保问题</span>
+      <input type="text" name="user_question" class="auth-field__input" data-placeholder="user_place_mbwentyi" placeholder="请输入您的密保问题" autocomplete="off">
+    </label>
+    <label class="auth-field">
+      <span class="auth-field__label" data-lang="user_mbdaan">密保答案</span>
+      <input type="text" name="user_answer" class="auth-field__input" data-placeholder="user_place_mbdaan" placeholder="请输入您的密保答案" autocomplete="off">
+    </label>
+  </div>
+  <div class="auth-form__row">
+    <label class="auth-field">
+      <span class="auth-field__label" data-lang="user_xmm">新密码</span>
+      <input type="password" name="user_pwd" class="auth-field__input" data-placeholder="user_place_xmm" placeholder="请输入新密码" autocomplete="new-password">
+    </label>
+    <label class="auth-field">
+      <span class="auth-field__label" data-lang="user_qrmm">确认密码</span>
+      <input type="password" name="user_pwd2" class="auth-field__input" data-placeholder="user_place_querenmm" placeholder="请输入您的确认密码" autocomplete="new-password">
+    </label>
+  </div>
+  <div class="auth-field auth-field--captcha auth-field--full">
+    <span class="auth-field__label" data-lang="string_yzm">验证码</span>
+    <div class="auth-captcha">
+      <input type="text" name="verify" class="auth-field__input" data-placeholder="user_place_yanzm" placeholder="请输入您的验证码" autocomplete="off">
+      <img class="auth-captcha__img" src="{{ mac_url('verify/index') }}" alt="验证码" data-lang-title="string_click_refresh" title="单击刷新" data-mac-findpass-captcha onclick="this.src=this.src.split('?')[0]+'?v='+(new Date()).getTime()">
+    </div>
+  </div>
+  <button type="submit" class="auth-form__submit" data-lang="btn_ljzh">立即找回</button>
+</form>

@@ -1,0 +1,27 @@
+{# 品牌 logo；hero/banner 走 auth_page 组件 assets #}
+{% set _p = maccms.path|default('/')|trim('/') %}
+{% set _tpl = maccms.path_tpl|default('') %}
+{% set _auth_img = _tpl ~ 'page-builder-components/auth_page/assets/img/' %}
+{% if _tpl != '' %}
+{% set _logo_base = _tpl ~ 'page-builder-components/_shared/img/' %}
+{% else %}
+{% set _logo_base = (_p ? '/' ~ _p : '') ~ '/template/_shared/kit/shared/img/' %}
+{% endif %}
+{% set _welcome = welcome|default('欢迎回来') %}
+{% set _hint = hint|default('登录即可收藏、评论与同步观看记录') %}
+{% set _hero = hero_image|default('') %}
+{% set _hero_m = hero_image_mobile|default('') %}
+{% set _hero_src = _hero != '' ? _hero : (_auth_img ~ 'auth-login-hero.png') %}
+{% set _hero_m_src = _hero_m != '' ? _hero_m : (_auth_img ~ 'auth-login-banner.png') %}
+<div class="auth-card__visual" aria-hidden="true">
+  <picture>
+    <source media="(max-width: 640px)" srcset="{{ _hero_m_src }}">
+    <img class="auth-card__art" src="{{ _hero_src }}" alt="" width="512" height="768" decoding="async">
+  </picture>
+  <div class="auth-card__visual-shade"></div>
+  <div class="auth-card__brand">
+    <img class="auth-card__logo" src="{{ _logo_base }}logo-mark.svg" alt="" width="40" height="40" decoding="async">
+    <p class="auth-card__welcome" data-lang="{{ welcome_lang|default('string_auth_welcome') }}">{{ _welcome }}</p>
+    <p class="auth-card__hint" data-lang="{{ hint_lang|default('string_auth_hint') }}">{{ _hint }}</p>
+  </div>
+</div>

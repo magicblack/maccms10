@@ -1,0 +1,202 @@
+{#
+  视频详情一体块（twigspike cinema_detail_stage + media_intro_panel 合并）
+  封面 / 标题 / 元信息 / 播放 / 简介 — 相关推荐请用独立 media_related_panel 组件。
+#}
+{% import "page-builder-components/_shared/macros.twig" as pb %}
+{% set p = props|default({}) %}
+{# 分类单独设置了封面比例（后台分类管理 type_extend.cover，如竖屏短剧）时覆盖组件比例 #}
+{% set _type_cover = mac_type_cover(obj.type_id|default(0)) %}
+{% if _type_cover %}
+  {% set p = p|merge({card: _type_cover.orient == 'h' ? 'poster-h' : 'poster-v', ratio: _type_cover.ratio, ratio_w: 0, ratio_h: 0}) %}
+{% endif %}
+{% set _cover_cls = pb.pb_cover_classes(p) %}
+{% set _cover_style = pb.pb_cover_style(p) %}
+{% if obj.vod_id|default(0) %}
+{% set _tpl = maccms.path_tpl|default('') %}
+{% set cover = mac_url_img(obj.vod_pic|default('')) %}
+{% set title = obj.vod_name|default('') %}
+{% set intro_raw = mac_plain_text(obj.vod_blurb|default('')) ?: mac_plain_text(obj.vod_content|default('')) %}
+{% set tag_src = mac_txt_merge(obj.vod_class|default(''), obj.vod_tag|default('')) %}
+{% set class_tags = tag_src ? tag_src|split(',') : [] %}
+{% set type_name = obj.type.type_name|default('')|trim %}
+{% set first = obj.vod_play_list|default({})|length > 0 ? mac_url_vod_play(obj, 'first') : '' %}
+{% set show_intro = p.show_intro is defined ? p.show_intro : true %}
+{% set hero_stats = [] %}
+{% if obj.vod_hits %}{% set hero_stats = hero_stats|merge([{key: 'hits', value: obj.vod_hits, label: '播放', lang: 'string_stat_plays'}]) %}{% endif %}
+{% if obj.vod_hits_week %}{% set hero_stats = hero_stats|merge([{key: 'week', value: obj.vod_hits_week, label: '周榜', lang: 'string_stat_week_rank'}]) %}{% endif %}
+{% set hero_meta = [] %}
+{% if obj.vod_area %}{% set hero_meta = hero_meta|merge([obj.vod_area]) %}{% endif %}
+{% if obj.vod_lang %}{% set hero_meta = hero_meta|merge([obj.vod_lang]) %}{% endif %}
+{# 备注以 {rm} 形式入列，渲染时走 episode_remarks.twig（集数备注多语化） #}
+{% if obj.vod_remarks %}{% set hero_meta = hero_meta|merge([{rm: obj.vod_remarks}]) %}{% endif %}
+{% set play_fav_id = mac_user_fav_id(obj.vod_id, 1) %}
+{% set play_like_id = mac_user_like_id(obj.vod_id, 1) %}
+{% set play_like_count = mac_content_like_count(obj.vod_id, 1) %}
+
+{# data-cover-auto="shape"：runtime 按海报实际尺寸写 data-cover-natural，竖版封面（各资源站短剧等）自动换竖版海报版式 #}
+<div class="pb-vod-detail cinema-stage {{ _cover_cls }}" data-component="vod_detail" data-cover-auto="shape"{% if _cover_style %} style="{{ _cover_style }}"{% endif %}>
+  <header class="media-hero">
+    <div class="media-hero__bg" style="background-image:url('{{ cover }}')" aria-hidden="true"></div>
+    <div class="media-hero__shade" aria-hidden="true"></div>
+    <div class="media-hero__wrap">
+      <nav class="media-hero__crumb" aria-label="breadcrumb">
+        <a href="{{ maccms.path }}" data-lang="string_home">首页</a>
+        <span aria-hidden="true">›</span>
+        {% if obj.type.type_name|default('') %}
+        <a href="{{ mac_url_type(obj.type) }}">{{ obj.type.type_name }}</a>
+        <span aria-hidden="true">›</span>
+        {% endif %}
+        <span class="media-hero__crumb-cur">{{ title }}</span>
+      </nav>
+
+      <div class="media-hero__inner">
+        <div class="media-hero__poster-box">
+          <a class="media-hero__poster{% if first %} is-playable{% endif %}"
+             {% if first %}href="{{ first }}" data-lang-aria-label="string_play"{% else %}href="javascript:;" tabindex="-1"{% endif %}>
+            <img data-cover src="{{ cover }}" alt="{{ title }}" width="320" height="180" decoding="async" fetchpriority="high">
+            {% if first %}
+            <span class="media-hero__poster-play" aria-hidden="true"></span>
+            {% endif %}
+          </a>
+          {# 首帧前定版式：runtime 要等海报 load 才写 data-cover-natural，刷新时会先出横版再跳竖版。
+             这里同步取已解码的图或上次记住的方向（localStorage，按封面地址）；都没有则先隐藏 hero 正文到海报载入 #}
+          <script>
+          (function (s) {
+            var host = s.parentNode;
+            while (host && !(host.getAttribute && host.hasAttribute('data-cover-auto'))) { host = host.parentNode; }
+            var img = s.previousElementSibling && s.previousElementSibling.querySelector('img[data-cover]');
+            if (!host || !img) { return; }
+            var src = img.getAttribute('src') || '', KEY = 'mac_cover_shape', map = {};
+            if (!src || src.indexOf('data:') === 0) { return; }
+            try { map = JSON.parse(localStorage.getItem(KEY) || '{}') || {}; } catch (e) {}
+            function apply(r) {
+              host.setAttribute('data-cover-natural', r < 0.87 ? 'v' : (r > 1.15 ? 'h' : 's'));
+              host.style.setProperty('--mac-cover-ar', String(Math.round(Math.min(Math.max(r, 9 / 16), 16 / 9) * 1e4) / 1e4));
+            }
+            function done() { host.removeAttribute('data-cover-pending'); }
+            function measure() {
+              if (!img.naturalWidth || !img.naturalHeight || img.classList.contains('mac-cover-fallback')) { return false; }
+              var r = img.naturalWidth / img.naturalHeight;
+              apply(r);
+              if (map[src] !== r) {
+                delete map[src];
+                map[src] = r;
+                var keys = Object.keys(map);
+                while (keys.length > 200) { delete map[keys.shift()]; }
+                try { localStorage.setItem(KEY, JSON.stringify(map)); } catch (e) {}
+              }
+              return true;
+            }
+            if (img.complete && measure()) { return; }
+            if (typeof map[src] === 'number' && map[src] > 0) { apply(map[src]); }
+            else { host.setAttribute('data-cover-pending', ''); setTimeout(done, 2500); }
+            img.addEventListener('load', function () { measure(); done(); });
+            img.addEventListener('error', done);
+          })(document.currentScript);
+          </script>
+        </div>
+
+        <div class="media-hero__body">
+          <div class="media-hero__title-row">
+            <h1 class="media-hero__title">{{ title }}</h1>
+            <div class="media-hero__tags">
+              {% if type_name %}
+              <a class="media-hero__tag media-hero__tag--type" href="{{ mac_url_type(obj.type) }}">{{ type_name }}</a>
+              {% endif %}
+              {% for tag in class_tags|slice(0, 4) %}
+                {% set t = tag|trim %}
+                {% if t and (not type_name or t != type_name) %}
+                <span class="media-hero__tag media-hero__tag--keyword">{{ t }}</span>
+                {% endif %}
+              {% endfor %}
+            </div>
+          </div>
+
+          {% if hero_stats|length > 0 %}
+          <ul class="media-hero__stats">
+            {% for stat in hero_stats %}
+            <li class="media-hero__stat media-hero__stat--{{ stat.key }}">
+              <span class="media-hero__stat-body">
+                <em>{{ stat.value }}</em>
+                <span class="media-hero__stat-label"{% if stat.lang and mac_i18n_key(stat.label, stat.lang) %} data-lang="{{ stat.lang }}"{% endif %}>{{ stat.label }}</span>
+              </span>
+            </li>
+            {% endfor %}
+          </ul>
+          {% endif %}
+
+          {% if hero_meta|length > 0 or obj.vod_time|default(0) or obj.vod_time_add|default(0) %}
+          <p class="media-hero__meta">
+            {% if obj.vod_time|default(0) %}
+            <span><span data-lang="string_updated_prefix">更新</span> {{ obj.vod_time|date('Y-m-d') }}</span>
+            {% elseif obj.vod_time_add|default(0) %}
+            <span><span data-lang="string_updated_prefix">更新</span> {{ obj.vod_time_add|date('Y-m-d') }}</span>
+            {% endif %}
+            {% for span in hero_meta %}
+              {% if span is iterable %}<span>{% include "page-builder-components/_shared/episode_remarks.twig" with {remarks: span.rm} only %}</span>{% elseif span %}<span>{{ span }}</span>{% endif %}
+            {% endfor %}
+          </p>
+          {% endif %}
+
+          {% if intro_raw %}
+          <p class="media-hero__desc">{{ intro_raw|slice(0, 200) }}{% if intro_raw|length > 200 %}…{% endif %}</p>
+          {% endif %}
+
+          <div class="media-hero__actions">
+            {% if first %}
+            <a class="media-hero__play" href="{{ first }}">
+              {% include "page-builder-components/_shared/component_icon.twig" with { component: 'vod_detail', name: 'play', class: 'media-hero__play-ico', mode: 'img' } %}
+              <span data-lang="string_play">立即播放</span>
+            </a>
+            {% endif %}
+            <div class="media-hero__follow mac_ulog{% if play_fav_id %} is_fav{% endif %}"
+                 data-type="2" data-mid="1" data-id="{{ obj.vod_id }}"
+                 data-uid="{{ play_fav_id ?: '' }}" role="button" tabindex="0">
+              {% if play_fav_id %}<span data-lang="string_isfav">已收藏</span>
+              {% else %}<span data-lang="string_fav">收藏</span>{% endif %}
+            </div>
+            <div class="media-hero__follow media-hero__like mac_ulog{% if play_like_id %} is_fav{% endif %}"
+                 data-type="6" data-mid="1" data-id="{{ obj.vod_id }}"
+                 data-uid="{{ play_like_id ?: '' }}"
+                 data-lang-on="string_detail_up_done" data-lang-off="string_stat_likes"
+                 role="button" tabindex="0">
+              {% if play_like_id %}<span data-lang="string_detail_up_done">已赞</span>
+              {% else %}<span data-lang="string_stat_likes">点赞</span>{% endif %}
+              <em class="mac_ulog_count">{{ play_like_count }}</em>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  {% if show_intro and obj.vod_content|default('') %}
+  <section class="media-panel media-panel--cinema pb-vod-detail__intro" id="media-intro">
+    <h2 class="media-panel__title" data-lang="string_vod_synopsis">剧情简介</h2>
+    <div class="media-panel__body">{{ obj.vod_content|raw }}</div>
+  </section>
+  {% endif %}
+
+  {% import "@shared/components.twig" as _sh %}
+  {% if obj.vod_play_list|default([])|length > 0 %}
+  <section class="media-panel media-panel--cinema pb-vod-detail__eps" id="media-eps">
+    <h2 class="media-panel__title" data-lang="string_vod_bfdz">选集</h2>
+    {{ _sh.episodes(obj, obj.vod_play_list, 'play', param|default({}), {
+        class: 'eps eps--media', group_class: 'eps-g', item_class: '', active_class: 'is-cur'}) }}
+  </section>
+  {% endif %}
+
+  {% if obj.vod_down_list|default([])|length > 0 %}
+  <section class="media-panel media-panel--cinema pb-vod-detail__down">
+    <h2 class="media-panel__title" data-lang="string_vod_xzdz">下载</h2>
+    {{ _sh.episodes(obj, obj.vod_down_list, 'down', param|default({}), {
+        class: 'eps eps--media', group_class: 'eps-g'}) }}
+  </section>
+  {% endif %}
+
+  {% set _cmt_mid = maccms.mid|default(1) %}
+  <section class="media-panel media-panel--cinema pb-vod-detail__cmt" id="media-cmt">
+    {% include "page-builder-components/_shared/comment_block.twig" with {mid: _cmt_mid, rid: obj.vod_id, csrf_token: csrf_token|default('')} %}
+  </section>
+</div>
+{% endif %}

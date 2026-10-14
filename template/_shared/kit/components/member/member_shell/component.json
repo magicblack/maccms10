@@ -1,0 +1,43 @@
+{
+    "id": "member_shell",
+    "label_key": "admin/themedesign/pb_block_member_shell",
+    "category": "member",
+    "kind": "member",
+    "peer_styles": [],
+    "slots": {
+        "body": []
+    },
+    "assets": {
+        "css": "style.css",
+        "js": "script.js"
+    },
+    "palette": false,
+    "props": {
+        "title": {
+            "type": "string",
+            "default": "个人中心",
+            "trait": "title"
+        },
+        "show_hub": {
+            "type": "boolean",
+            "default": true,
+            "trait": "show_hub"
+        },
+        "require_login": {
+            "type": "boolean",
+            "default": true,
+            "trait": "require_login"
+        },
+        "active": {
+            "type": "string",
+            "default": "index",
+            "trait": "member_active"
+        }
+    },
+    "context": {
+        "pageTypes": [
+            "member"
+        ],
+        "requires": []
+    }
+}

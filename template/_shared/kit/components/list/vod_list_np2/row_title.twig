@@ -1,0 +1,25 @@
+{# 首页区块标题：emoji 风格改 SVG（橙强调色）；icon 为空或 none 时不显示 #}
+{% set ico = icon is defined ? icon : 'fire' %}
+<h2 class="np2-row__title">
+  {% if ico != '' and ico != 'none' %}
+  <span class="np2-row__ico" aria-hidden="true">
+    {% if ico == 'film' %}
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M7 5v14M17 5v14M2 10h20M2 14h20"/></svg>
+    {% elseif ico == 'clapper' %}
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11h16v8a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-8Z"/><path d="m4 11 2.5-6.5 3.5 1.5L7.5 11"/><path d="m10 6.5 3.5 1.5L11 13"/><path d="m15.5 8.5 3.5 1.5L16.5 15"/><path d="M4 15h16"/></svg>
+    {% elseif ico == 'spark' %}
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M18.4 5.6l-2.1 2.1M7.7 16.3l-2.1 2.1"/><circle cx="12" cy="12" r="3.2"/></svg>
+    {% elseif ico == 'star' %}
+    <svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12 2.6l2.7 6.1 6.6.6-5 4.5 1.5 6.5L12 16.8 6.2 20.3l1.5-6.5-5-4.5 6.6-.6L12 2.6z"/></svg>
+    {% elseif ico == 'tv' %}
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="6" width="18" height="12" rx="2"/><path d="M8 20h8M12 6V3"/></svg>
+    {% elseif ico == 'heart' %}
+    <svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12 20.4S3.5 15.2 3.5 9.6A4.6 4.6 0 0 1 12 7.2a4.6 4.6 0 0 1 8.5 2.4c0 5.6-8.5 10.8-8.5 10.8z"/></svg>
+    {% else %}
+    {# fire — 对标原先热门 emoji / hot.webp #}
+    <svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12.2 2.2c.4 2.2-.2 3.9-1.4 5.3-1.1 1.2-1.7 2.2-1.6 3.5.1 1.4.9 2.4 1.9 3.1-.9-.2-1.7-.7-2.3-1.5-.7-1-1-2.2-.7-3.6C7.5 6.6 6 8.1 5.2 10c-1.2 2.8-.4 6 2.2 7.9 2.4 1.8 5.7 1.9 8.1.2 2.5-1.8 3.5-5 2.4-7.8-.6-1.6-1.7-2.9-2.6-3.9-.9-1-1.5-2-1.6-3.3-.1-.7.1-1.4.5-2z"/></svg>
+    {% endif %}
+  </span>
+  {% endif %}
+  <span class="np2-row__title-txt">{{ title }}</span>
+</h2>

@@ -1,0 +1,76 @@
+{% import "@shared/components.twig" as c %}
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="utf-8">
+{# IE/360 兼容模式自动拦截（纯前端，须在 PB CSS 之前） #}
+<script src="{{ maccms.path_tpl }}page-builder-components/_shared/js/browser-ie-detect.js"></script>
+{# 强制 360/搜狗/QQ 等双核浏览器使用高速内核，避免被兼容模式(IE内核)渲染导致前端异常 #}
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="renderer" content="webkit">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{% block title %}{{ maccms.site_name }}{% endblock %}</title>
+{% block meta %}
+<meta name="keywords" content="{{ maccms.site_keywords }}">
+<meta name="description" content="{{ maccms.site_description }}">
+{% endblock %}
+{% block theme_styles %}
+<link rel="stylesheet" href="{{ maccms.path_tpl }}asset/css/tokens.css">
+{% set _pb_td_override = mac_theme_override_css_href() %}
+{% if _pb_td_override %}<link rel="stylesheet" href="{{ _pb_td_override }}">
+{% endif %}
+<link rel="stylesheet" href="{{ maccms.path_tpl }}asset/css/pb-shell.css">
+{% endblock %}
+<link rel="stylesheet" href="{{ maccms.path_tpl }}asset/css/pb-responsive.css">
+{# 顶栏/页脚/铃铛：薄壳全局兜底，避免漏编译或嵌套 include 丢样式 #}
+<link rel="stylesheet" href="{{ maccms.path_tpl }}page-builder-components/site_nav/style.css">
+<link rel="stylesheet" href="{{ maccms.path_tpl }}page-builder-components/site_footer/style.css">
+<link rel="stylesheet" href="{{ maccms.path_tpl }}page-builder-components/notify_bell/style.css">
+{# macro 内无调用方 context，须显式带 path_tpl，避免相对路径打到站点根变成 HTML #}
+<link rel="stylesheet" href="{{ maccms.path_tpl }}page-builder-components/auth_modals/style.css">
+<script src="{{ maccms.path_tpl }}page-builder-components/auth_modals/script.js" defer></script>
+<link rel="stylesheet" href="{{ maccms.path_tpl }}page-builder-components/auth_form/style.css">
+<script src="{{ maccms.path_tpl }}page-builder-components/auth_form/script.js" defer></script>
+{{ c.jsvar(maccms, csrf_token|default(''), user.user_id|default(0)) }}
+{% if maccms.path_tpl|default('') != '' %}
+<link rel="stylesheet" href="{{ maccms.path_tpl }}page-builder-components/_shared/css/share-sheet.css">
+<script src="{{ maccms.path_tpl }}page-builder-components/_shared/js/list-utils.js" defer></script>
+{% endif %}
+{% block head %}{% endblock %}
+</head>
+<body class="pbs-body{% block page_class %}{% endblock %}" data-mid="{{ maccms.mid|default(0) }}" data-aid="{{ maccms.aid|default(0) }}">
+<div class="pbs-shell{% block shell_class %}{% endblock %}">
+  <aside class="pbs-shell__nav" aria-label="站点导航" data-lang-aria-label="string_sec_channels">
+    {% block shell_nav %}{% endblock %}
+  </aside>
+  <div class="pbs-shell__main">
+    {% block site_header %}{% endblock %}
+
+    {% block hero %}{% endblock %}
+
+    <div class="pbs-wrap">
+      {% block channel %}{% endblock %}
+      <div class="layout{% block layout_mod %} solo{% endblock %}">
+        <main id="main" class="pbs-main">{% block content %}{% endblock %}</main>
+        {% block sidebar %}{% endblock %}
+      </div>
+    </div>
+
+    {% block footer %}{% endblock %}
+  </div>
+</div>
+
+{# 预览登录弹窗时即使已登录也要挂载，否则 open_auth_modal=1 无 DOM 可开 #}
+{% if not user.user_id or mac_td_preview_mode() %}
+{% include "page-builder-components/auth_modals/template.twig" %}
+{% endif %}
+{% include "page-builder-components/_shared/share_sheet.twig" %}
+{% include "page-builder-components/_shared/confirm_dialog.twig" %}
+{% include "page-builder-components/_shared/recharge_sheet.twig" %}
+
+{# 行为 JS / 顶栏交互一律走 template/_shared，勿拷进主题 asset #}
+{{ c.runtime(maccms.path, '', '', maccms.path_tpl|default('')) }}
+{{ c.chrome(maccms.path, maccms.path_tpl|default('')) }}
+{% block foot %}{% endblock %}
+</body>
+</html>

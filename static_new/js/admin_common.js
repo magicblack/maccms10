@@ -14,39 +14,8 @@ String.prototype.replaceAll = function (s1, s2) {
 layui.define(['element', 'form'], function (exports) {
     var $ = layui.jquery, element = layui.element, layer = layui.layer, form = layui.form;
 
-    (function () {
-        var meta = document.querySelector('meta[name="mac-admin-csrf"]');
-        var t = (typeof window.__MAC_ADMIN_CSRF__ === 'string' && window.__MAC_ADMIN_CSRF__)
-            ? window.__MAC_ADMIN_CSRF__
-            : (meta && meta.getAttribute('content')) ? meta.getAttribute('content') : '';
-        if (!t) {
-            return;
-        }
-        window.__MAC_ADMIN_CSRF__ = t;
-        $.ajaxSetup({
-            beforeSend: function (xhr, settings) {
-                if (settings.crossDomain) {
-                    return;
-                }
-                var type = (settings.type || 'GET').toUpperCase();
-                if (type === 'POST' || type === 'PUT' || type === 'PATCH' || type === 'DELETE') {
-                    xhr.setRequestHeader('X-CSRF-Token', t);
-                }
-            }
-        });
-        $(function () {
-            var f = $('#pageListForm');
-            if (!f.length) {
-                return;
-            }
-            var inp = f.find('input[name="__token__"]');
-            if (inp.length) {
-                inp.val(t);
-                return;
-            }
-            f.append($('<input/>', { type: 'hidden', name: '__token__', value: t }));
-        });
-    })();
+    // 后台 CSRF（请求头 + 表单隐藏域）统一在 view_new/public/head.html 内联处理：
+    // 那里执行得更早，且覆盖只 include head、不 include foot 的页面。
 
     $(function () {
         if (typeof (MAC_VERSION) != 'undefined' && typeof (PHP_VERSION) != 'undefined' && typeof (THINK_VERSION) != 'undefined') {
@@ -498,8 +467,10 @@ layui.define(['element', 'form'], function (exports) {
 
     $('.j-search').click(function () {
         var that = $(this);
-        that.parents('form').attr('method', 'get');
-        that.parents('form').submit();
+        var f = that.parents('form');
+        f.attr('method', 'get');
+        f.find('input[name="__token__"]').remove();
+        f.submit();
     });
 
     /* 列表按钮组 */

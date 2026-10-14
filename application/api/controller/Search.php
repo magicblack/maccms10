@@ -45,7 +45,7 @@ class Search extends Base
             'recycle'     => 'vod_recycle_time',
             'like'        => 'vod_name|vod_en|vod_actor|vod_director',
             'order'       => 'vod_time desc',
-            'field'       => 'vod_id,vod_name,vod_en,vod_sub,vod_pic,vod_actor,vod_director,vod_remarks,vod_score,vod_area,vod_year,vod_class,vod_blurb,vod_time,vod_hits,type_id,type_id_1',
+            'field'       => 'vod_id,vod_name,vod_en,vod_sub,vod_pic,vod_actor,vod_director,vod_remarks,vod_duration,vod_score,vod_area,vod_year,vod_class,vod_blurb,vod_time,vod_hits,type_id,type_id_1',
             'lang_key'    => 'vod',
         ],
         'art' => [
@@ -238,7 +238,7 @@ class Search extends Base
         // 1) Meilisearch 路径：与单模块 listData 同一套过滤规则
         $meiliRows = null;
         $meiliTotal = 0;
-        if (MeilisearchService::enabled()) {
+        if (MeilisearchService::enabled() && !\app\common\model\VodSearch::skipMeiliForWd($kind, $wd)) {
             $filter = MeilisearchService::filterPublishedKind($kind);
             if ($filter !== '') {
                 $sr = MeilisearchService::search($wd, $filter, $limit, $offset);
@@ -274,20 +274,24 @@ class Search extends Base
         // 2) MySQL LIKE 回退
         $where = [
             $meta['status'] => ['eq', 1],
-            $meta['like']   => ['like', '%' . $wd . '%'],
         ];
+        // 视频：短英文词（如 SM）不在拼音 / 演员等字段里做包含匹配，规则见 VodSearch::wdSql
+        $whereWd = $kind === 'vod' ? \app\common\model\VodSearch::wdSql($meta['like'], $wd) : '';
+        if ($whereWd === '') {
+            $where[$meta['like']] = ['like', '%' . $wd . '%'];
+        }
         if (!empty($meta['recycle'])) {
             try {
-                $total = Db::name($meta['table'])->where($where)->where($meta['recycle'], 0)->count();
+                $total = Db::name($meta['table'])->where($where)->where($whereWd)->where($meta['recycle'], 0)->count();
             } catch (\Throwable $e) {
-                $total = Db::name($meta['table'])->where($where)->count();
+                $total = Db::name($meta['table'])->where($where)->where($whereWd)->count();
             }
         } else {
-            $total = Db::name($meta['table'])->where($where)->count();
+            $total = Db::name($meta['table'])->where($where)->where($whereWd)->count();
         }
         $list = [];
         if ($total > 0) {
-            $q = Db::name($meta['table'])->field($meta['field'])->where($where);
+            $q = Db::name($meta['table'])->field($meta['field'])->where($where)->where($whereWd);
             if (!empty($meta['recycle'])) {
                 try {
                     $q->where($meta['recycle'], 0);
@@ -365,6 +369,7 @@ class Search extends Base
         if ($kind === 'vod') {
             // 追加 VIP 标识
             mac_append_type_is_vip_exclusive_for_rows($rows);
+            mac_vod_rows_episode_remarks($rows);
             foreach ($rows as $v) {
                 $list[] = [
                     'id'                    => (int)$v['vod_id'],

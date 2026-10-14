@@ -1,0 +1,35 @@
+{% import "page-builder-components/_shared/macros.twig" as pb %}
+{% set _ph = 'data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==' %}
+{% set _hits = vo.vod_hits|default(0) %}
+{# 封面方向与区块封面框不一致的卡片（竖屏短剧放进横版列表等）在框内完整显示（contain + 模糊底图），
+   见 peers.css「封面方向」：data-cover-auto="fit" 由 runtime 按图片实际尺寸判断（各资源站同分类横竖混杂），
+   data-cover-orient 是分类单独设置比例（type_extend.cover）时的首屏提示 #}
+{% set _vc_cover = mac_type_cover(vo.type_id|default(0)) %}
+<article class="pb-vod-card" data-cover-auto="fit"{% if _vc_cover %} data-cover-orient="{{ _vc_cover.orient }}"{% endif %} data-mid="1" data-id="{{ vo.vod_id }}">
+  <a class="pb-vod-card__pic" href="{{ mac_url_vod_detail(vo) }}" title="{{ vo.vod_name }}">
+    {% if vo.vod_pic|default('') %}<span class="pb-vod-card__backdrop" data-cover-backdrop{% if _vc_cover %} style="background-image:url('{{ mac_url_img(vo.vod_pic)|e('css') }}')"{% endif %} aria-hidden="true"></span>{% endif %}
+    {{ pb.lazy_img(vo.vod_pic, vo.vod_name, {placeholder: _ph}) }}
+    {% include "page-builder-components/_shared/vod_paytag.twig" %}
+    <span class="pb-vod-card__play" aria-hidden="true"></span>
+    {% if vo.vod_remarks %}
+    <span class="pb-vod-card__rm">{% include "page-builder-components/_shared/episode_remarks.twig" with {remarks: vo.vod_remarks} only %}</span>
+    {% endif %}
+    {% if vo.vod_duration|default('') %}
+    <span class="pb-vod-card__duration">{{ vo.vod_duration }}</span>
+    {% endif %}
+    {% if _hits %}
+    <span class="pb-vod-card__mask">
+      <span class="pb-vod-card__stats">
+        <span class="pb-vod-card__stat pb-vod-card__stat--hits">
+          <i class="pb-vod-card__ico pb-vod-card__ico--play" aria-hidden="true"></i>{{ _hits }}
+        </span>
+      </span>
+    </span>
+    {% endif %}
+  </a>
+  <div class="pb-vod-card__title"><a href="{{ mac_url_vod_detail(vo) }}">{{ vo.vod_name }}</a></div>
+  <div class="pb-vod-card__meta">
+    {% if vo.type.type_name %}{{ vo.type.type_name }}{% elseif vo.vod_year %}{{ vo.vod_year }}{% else %}—{% endif %}
+    {% if vo.vod_area %} · {{ vo.vod_area }}{% endif %}
+  </div>
+</article>

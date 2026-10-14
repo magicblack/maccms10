@@ -1,0 +1,221 @@
+{
+  "template": "index/index",
+  "layout": "base",
+  "page_type": "home",
+  "layout_mod": "home",
+  "regions": {
+    "site_header": [],
+    "hero": [
+      {
+        "component": "header_decor",
+        "props": {
+          "width": "100%",
+          "height": 72,
+          "image": ""
+        }
+      }
+    ],
+    "channel": [
+      {
+        "component": "channel_strip",
+        "props": {
+          "compact": false,
+          "chip_limit": 11,
+          "show_icons": true,
+          "show_more": true,
+          "type_ids": []
+        }
+      }
+    ],
+    "content": [
+      {
+        "component": "filmstrip_layout",
+        "slots": {
+          "banner": [
+            {
+              "component": "vod_carousel",
+              "props": {
+                "num": 6,
+                "by": "hits_month",
+                "type": 0,
+                "fill_by": "hits_month"
+              }
+            }
+          ],
+          "feed": [
+            {
+              "component": "vod_list",
+              "props": {
+                "num": 12,
+                "by": "hits_day",
+                "order": "desc",
+                "type": 0,
+                "render": "filmstrip"
+              }
+            }
+          ]
+        }
+      },
+      {
+        "component": "section",
+        "props": {
+          "variant": "plain",
+          "title": "热门推荐",
+          "icon": "fire",
+          "more_url": "vod/index",
+          "title_key": "string_sec_hot"
+        },
+        "slots": {
+          "body": [
+            {
+              "component": "vod_list",
+              "props": {
+                "num": 12,
+                "by": "hits_month",
+                "order": "desc",
+                "type": 0,
+                "render": "slider"
+              }
+            }
+          ]
+        }
+      },
+      {
+        "component": "columns",
+        "props": {
+          "cols": [
+            8,
+            4
+          ],
+          "stack_at": 720
+        },
+        "slots": {
+          "0": [
+            {
+              "component": "section",
+              "props": {
+                "variant": "plain",
+                "title": "最新更新",
+                "more_url": "vod/index",
+                "title_key": "string_sec_latest"
+              },
+              "slots": {
+                "body": [
+                  {
+                    "component": "vod_list",
+                    "props": {
+                      "num": 12,
+                      "by": "time",
+                      "order": "desc",
+                      "type": 0,
+                      "render": "grid"
+                    }
+                  }
+                ]
+              }
+            }
+          ],
+          "1": [
+            {
+              "component": "section",
+              "props": {
+                "variant": "card",
+                "title": "本周排行",
+                "icon": "bar-chart",
+                "title_key": "string_sec_rank"
+              },
+              "slots": {
+                "body": [
+                  {
+                    "component": "rank_list",
+                    "props": {
+                      "period": "week",
+                      "num": 5,
+                      "type": 0
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      },
+      {
+        "component": "section",
+        "props": {
+          "variant": "plain",
+          "title": "专题推荐",
+          "icon": "collection",
+          "more_url": "topic/index",
+          "title_key": "string_sec_topic"
+        },
+        "slots": {
+          "body": [
+            {
+              "component": "topic_list",
+              "props": {
+                "num": 8,
+                "by": "hits",
+                "order": "desc"
+              }
+            }
+          ]
+        }
+      },
+      {
+        "component": "section",
+        "props": {
+          "variant": "plain",
+          "title": "热门漫画",
+          "icon": "book",
+          "more_url": "manga/index",
+          "title_key": "string_sec_manga"
+        },
+        "slots": {
+          "body": [
+            {
+              "component": "manga_list",
+              "props": {
+                "num": 10,
+                "by": "time",
+                "order": "desc",
+                "type": 0,
+                "render": "grid",
+                "card": "poster-v",
+                "ratio": "3-4"
+              }
+            }
+          ]
+        }
+      },
+      {
+        "component": "section",
+        "props": {
+          "variant": "plain",
+          "title": "最新资讯",
+          "icon": "newspaper",
+          "more_url": "art/index",
+          "title_key": "string_sec_news"
+        },
+        "slots": {
+          "body": [
+            {
+              "component": "art_list",
+              "props": {
+                "num": 8,
+                "by": "time",
+                "order": "desc",
+                "type": 0,
+                "render": "grid",
+                "card": "poster-v",
+                "ratio": "3-4"
+              }
+            }
+          ]
+        }
+      }
+    ],
+    "sidebar": [],
+    "footer": []
+  }
+}

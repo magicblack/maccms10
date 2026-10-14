@@ -1,0 +1,32 @@
+{
+    "id": "friend_links",
+    "label_key": "admin/themedesign/pb_block_friend_links",
+    "category": "chrome",
+    "kind": "chrome",
+    "palette": true,
+    "peer_styles": [],
+    "assets": {
+        "css": "style.css",
+        "js": "script.js"
+    },
+    "props": {
+        "num": {
+            "type": "number",
+            "default": 50,
+            "min": 1,
+            "max": 100,
+            "trait": "count"
+        }
+    },
+    "context": {
+        "pageTypes": [
+            "home",
+            "list",
+            "detail",
+            "member",
+            "rank",
+            "gbook"
+        ],
+        "requires": []
+    }
+}

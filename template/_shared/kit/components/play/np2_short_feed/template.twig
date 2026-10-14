@@ -1,0 +1,41 @@
+{# NP2 短视频竖滑 feed（HLS + IntersectionObserver 自动播） #}
+{% set p = props|default({}) %}
+{% set num = p.num|default(24) %}
+{% set by = p.by|default('hits') %}
+{% set order = p.order|default('desc') %}
+{% set list = mac_vod({num: num, order: order, by: by}).list|default([]) %}
+{% set hls_src = maccms.path|default('/') ~ 'static_new/player/dplayer/hls.min.js' %}
+
+{% if list is empty %}
+<div class="np2-short-feed__empty" data-component="np2_short_feed">
+  <img class="np2-short-feed__empty-art" src="{{ maccms.path_tpl }}asset/img/ui/empty.webp" alt="" width="96" height="96" decoding="async">
+  <p data-lang="short_feed_empty">暂无短视频</p>
+</div>
+{% else %}
+<div class="np2-short" id="np2-short" data-component="np2_short_feed" data-np2-short data-hls="{{ hls_src }}">
+  {% for vo in list %}
+  <section class="np2-short__item" data-play="{{ vo.vod_play_url|default('')|e('html_attr') }}" data-play-page="{{ mac_url_vod_play(vo) }}">
+    <div class="np2-short__stage">
+      <video class="np2-short__video" playsinline webkit-playsinline muted loop preload="none" poster="{{ mac_url_img(vo.vod_pic) }}"></video>
+      <div class="np2-short__shade"></div>
+      <aside class="np2-short__rail" data-lang-aria-label="short_feed_actions_aria" aria-label="操作">
+        <a class="np2-short__rail-btn" href="{{ mac_url_vod_detail(vo) }}" data-lang-aria-label="art_read_detail" aria-label="详情">
+          <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M12 8v5M12 16.5h.01" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+          <span data-lang="art_read_detail">详情</span>
+        </a>
+        <a class="np2-short__rail-btn" href="{{ mac_url_vod_play(vo) }}" data-lang-aria-label="string_vod_bofang" aria-label="播放">
+          <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path fill="currentColor" d="M8 6.5v11l9-5.5z"/></svg>
+          <span data-lang="short_feed_full_version">完整版</span>
+        </a>
+      </aside>
+      <div class="np2-short__meta">
+        <span class="np2-short__live" hidden data-lang="short_feed_playing">播放中</span>
+        <h2 class="np2-short__name">{{ vo.vod_name }}</h2>
+        <p class="np2-short__sub">{{ vo.type.type_name|default('') }}{% if vo.vod_remarks %} · {% include "page-builder-components/_shared/episode_remarks.twig" with {remarks: vo.vod_remarks} only %}{% endif %}{% if vo.vod_hits %} · {{ vo.vod_hits }}<span data-lang="short_feed_view_count_suffix">次观看</span>{% endif %}</p>
+        <a class="np2-short__open" href="{{ mac_url_vod_detail(vo) }}" data-lang="art_read_detail">详情</a>
+      </div>
+    </div>
+  </section>
+  {% endfor %}
+</div>
+{% endif %}

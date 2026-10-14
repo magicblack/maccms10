@@ -1,0 +1,17 @@
+{# 充值 / VIP Tab #}
+{% set _pb_shared_img = maccms.path_tpl|default('') ~ 'page-builder-components/_shared/img/' %}
+{% set _tab = pay_default_tab|default('recharge') %}
+<div class="member-pay-top">
+  <div class="member-pay-top__row">
+    <div class="member-pay-balance">
+      <img class="member-pay-balance__ico" src="{{ _pb_shared_img }}recharge/recharge-coin.png" width="24" height="24" alt="" decoding="async">
+      <p class="member-pay-balance__txt">
+        <span data-lang="user_syjf">剩余金币</span>：<strong id="buy_user_points">{% if user.user_id|default(0) %}{{ user.user_points|default(0) }}{% else %}--{% endif %}</strong>
+      </p>
+    </div>
+    <nav class="member-pay-tabs user-buy-upgrade-tabs" role="tablist" aria-label="充值与会员" data-lang-aria-label="pay_tabs_aria">
+      <button type="button" role="tab" class="member-pay-tabs__tab user-buy-upgrade-tabs__tab{% if _tab == 'recharge' %} is-active{% endif %}" data-mac-buy-upgrade-tab="recharge" aria-selected="{{ _tab == 'recharge' ? 'true' : 'false' }}" data-lang="string_user_tab_recharge">充值</button>
+      <button type="button" role="tab" class="member-pay-tabs__tab user-buy-upgrade-tabs__tab member-pay-tabs__tab--vip{% if _tab == 'upgrade' %} is-active{% endif %}" data-mac-buy-upgrade-tab="upgrade" aria-selected="{{ _tab == 'upgrade' ? 'true' : 'false' }}" data-lang="string_user_tab_upgrade_vip">升级VIP</button>
+    </nav>
+  </div>
+</div>

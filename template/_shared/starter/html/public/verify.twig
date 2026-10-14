@@ -1,0 +1,135 @@
+{# 列表/搜索验证码门 — Base::check_show / check_search 渲染；type=show|search #}
+{% extends "layout/base.twig" %}
+{% block title %}<span data-lang="string_safe_verify">安全验证</span>{% endblock %}
+{% block meta %}<meta name="robots" content="noindex,nofollow">{% endblock %}
+{% block layout_mod %} solo{% endblock %}
+{% block head %}
+<link rel="stylesheet" href="{{ maccms.path_tpl|default('') }}page-builder-components/_shared/css/status-page.css">
+{% endblock %}
+{% block site_header %}
+  {% include 'page-builder-components/site_nav/template.twig' with {props: { max: 8, show_search: true, type_ids: [] }} %}
+{% endblock %}
+{% block content %}
+<div class="status-page status-page--verify">
+  <div class="status-page__art status-page__art--verify" aria-hidden="true">
+    {% include "page-builder-components/_shared/empty_state_art.twig" %}
+  </div>
+  <div class="status-page__code" aria-hidden="true">🔒</div>
+  <h1 class="status-page__msg" data-lang="string_safe_verify">安全验证</h1>
+  <p class="status-page__sub" data-lang="string_safe_verify_sub">请输入下方验证码后继续访问</p>
+
+  <form class="pb-verify-form"
+        id="pb-verify-form"
+        data-type="{{ type|default('show') }}"
+        data-action="{{ mac_url('ajax/verify_check') }}"
+        data-msg-empty="请输入验证码"
+        data-msg-fail="验证失败，请重试"
+        data-msg-net="网络错误，请重试"
+        data-msg-ok="验证通过"
+        data-lang-empty="verify_empty"
+        data-lang-fail="verify_fail"
+        data-lang-net="string_load_err"
+        data-lang-ok="string_ok">
+    <div class="pb-verify-form__row">
+      <input class="pb-verify-form__input"
+             type="text"
+             id="pb-verify-code"
+             name="verify"
+             autocomplete="off"
+             inputmode="numeric"
+             maxlength="6"
+             data-placeholder="user_yanzhengma"
+             placeholder="验证码">
+      <img class="pb-verify-form__img"
+           id="pb-verify-img"
+           src="{{ mac_url('verify/index') }}"
+           data-lang-title="string_click_refresh"
+           data-lang-aria-label="user_yanzhengma"
+           title="单击刷新"
+           alt="">
+    </div>
+    <button class="pb-verify-form__btn btn" type="submit" data-lang="string_submit">确认</button>
+    <p class="pb-verify-form__msg" id="pb-verify-msg" role="alert" hidden></p>
+  </form>
+
+  <p class="status-page__act">
+    <a class="btn ghost" href="{{ maccms.path }}" data-lang="plot_back_home">回首页</a>
+  </p>
+</div>
+<script>
+(function () {
+  var form = document.getElementById('pb-verify-form');
+  if (!form) return;
+  var img = document.getElementById('pb-verify-img');
+  var code = document.getElementById('pb-verify-code');
+  var msg = document.getElementById('pb-verify-msg');
+  var TYPE = form.getAttribute('data-type') || 'show';
+  var ACT = form.getAttribute('data-action') || '';
+  function t(key, fallback) {
+    var langKey = form.getAttribute('data-lang-' + key);
+    if (langKey && window.MacTheme && MacTheme.i18n && typeof MacTheme.i18n.t === 'function') {
+      var translated = MacTheme.i18n.t(langKey);
+      if (translated) return translated;
+    }
+    var v = form.getAttribute('data-msg-' + key);
+    return v || fallback || '';
+  }
+  function showMsg(text, ok) {
+    if (!msg) return;
+    msg.textContent = text || '';
+    msg.hidden = !text;
+    msg.classList.toggle('is-ok', !!ok);
+  }
+  function refresh() {
+    if (!img) return;
+    img.src = img.src.split('?')[0] + '?' + Date.now();
+  }
+  if (img) img.addEventListener('click', refresh);
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+    showMsg('', false);
+    if (!code || !code.value.trim()) {
+      showMsg(t('empty', '请输入验证码'), false);
+      if (code) code.focus();
+      return;
+    }
+    var btn = form.querySelector('[type=submit]');
+    if (btn) btn.disabled = true;
+    var fd = new FormData();
+    fd.append('type', TYPE);
+    fd.append('verify', code.value.trim());
+    fetch(ACT, {
+      method: 'POST',
+      headers: { 'X-Requested-With': 'XMLHttpRequest' },
+      credentials: 'same-origin',
+      body: fd
+    })
+      .then(function (r) { return r.json(); })
+      .then(function (res) {
+        if (res && Number(res.code) === 1) {
+          showMsg((res && res.msg) ? res.msg : t('ok', '验证通过'), true);
+          window.location.reload();
+          return;
+        }
+        if (btn) btn.disabled = false;
+        showMsg((res && res.msg) ? res.msg : t('fail', '验证失败，请重试'), false);
+        refresh();
+        if (code) { code.value = ''; code.focus(); }
+      })
+      .catch(function () {
+        if (btn) btn.disabled = false;
+        showMsg(t('net', '网络错误，请重试'), false);
+      });
+  });
+  if (code) code.focus();
+  if (window.MacTheme && MacTheme.i18n && typeof MacTheme.i18n.t === 'function') {
+    var pageTitle = MacTheme.i18n.t('string_safe_verify');
+    if (pageTitle) { document.title = pageTitle; }
+    if (typeof MacTheme.i18n.apply === 'function') { MacTheme.i18n.apply(form); }
+  }
+})();
+</script>
+{% endblock %}
+{% block footer %}
+  {% include 'page-builder-components/site_footer/template.twig' with {props: { variant: 'default', copyright: '', show_nav: true, show_friends: true, logo: '' }} %}
+{% endblock %}

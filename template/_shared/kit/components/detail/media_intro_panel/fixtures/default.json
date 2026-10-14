@@ -1,0 +1,7 @@
+{
+    "props": {
+        "title": "剧情简介",
+        "title_lang": "string_vod_synopsis"
+    },
+    "context": []
+}

@@ -1,0 +1,19 @@
+{% import "page-builder-components/_shared/macros.twig" as pb %}
+{% set _loading = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="48" height="48"%3E%3C/svg%3E' %}
+{% set _pic = a.art_pic|default('')|trim %}
+<a class="pb-art-book" href="{{ mac_url_art_detail(a) }}" title="{{ a.art_name }}">
+  {# 封面为空或加载失败（源站失效）时统一回退书形占位，避免空白格 #}
+  <span class="pb-art-book__cover{% if not _pic %} is-empty{% endif %}" data-cover-kind="book">
+    {% if _pic %}
+    {{ pb.lazy_img(_pic, a.art_name, {class: 'pb-art-book__img', placeholder: _loading, broken_class: 'is-empty'}) }}
+    {% endif %}
+    <span class="pb-art-book__ph" aria-hidden="true">{% include "page-builder-components/_shared/book_cover_empty.twig" %}</span>
+    {% if a.art_remarks|default('') %}
+    <i class="pb-art-book__badge">{% include "page-builder-components/_shared/chapter_remarks.twig" with {remarks: a.art_remarks, rm_limit: 8} only %}</i>
+    {% endif %}
+  </span>
+  <strong class="pb-art-book__title">{{ a.art_name }}</strong>
+  <em class="pb-art-book__meta">
+    {% if a.art_author|default('') %}{{ a.art_author }}{% elseif a.art_class|default('') %}{{ a.art_class|split(',')|first }}{% elseif a.type.type_name|default('') %}{{ a.type.type_name }}{% else %}<span{% set _ml = mac_module_label(2) %}{% if _ml.lang %} data-lang="{{ _ml.lang }}"{% endif %}>{{ _ml.name }}</span>{% endif %}
+  </em>
+</a>

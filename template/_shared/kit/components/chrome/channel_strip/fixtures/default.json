@@ -1,0 +1,9 @@
+{
+    "props": {
+        "compact": false,
+        "chip_limit": 11,
+        "show_icons": true,
+        "show_more": true
+    },
+    "context": []
+}

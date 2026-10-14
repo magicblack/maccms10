@@ -1,0 +1,29 @@
+{
+    "id": "benefits_panel",
+    "label_key": "admin/themedesign/pb_block_benefits_panel",
+    "category": "member",
+    "kind": "member",
+    "peer_styles": [],
+    "assets": {
+        "css": "style.css",
+        "js": "script.js"
+    },
+    "palette": false,
+    "props": {
+        "variant": {
+            "type": "enum",
+            "default": "default",
+            "values": [
+                "default",
+                "minimal"
+            ],
+            "trait": "member_visual"
+        }
+    },
+    "context": {
+        "pageTypes": [
+            "member"
+        ],
+        "requires": []
+    }
+}

@@ -1,0 +1,9 @@
+{% set title = props.title|default('') %}
+{% set unit = props.unit|default('条') %}
+{% set unit_lang = props.unit_lang|default('string_gbook_t') %}
+{% set title_lang = props.title_lang|default('') %}
+{# key 挂在标题 span 上（挂 h2 会被 i18n 连同 <small> 一起覆盖）；站长改过的标题不挂 key #}
+<h2 class="pb-sec-heading">
+  <span{% if title_lang and mac_i18n_key(title, title_lang) %} data-lang="{{ title_lang }}"{% endif %}>{{ title }}</span>
+  {% if props.total is defined and props.total != '' %}<small>{{ props.total }} <span{% if unit_lang and mac_i18n_key(unit, unit_lang) %} data-lang="{{ unit_lang }}"{% endif %}>{{ unit }}</span></small>{% endif %}
+</h2>

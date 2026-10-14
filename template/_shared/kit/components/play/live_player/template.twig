@@ -1,0 +1,150 @@
+{#
+  直播播放器 — m3u8/HLS + 线路切换 + 选台
+  控制器 assign：live_id；频道用 mac_live_info()
+#}
+{% set p = props|default({}) %}
+{% set lv = mac_live_info(live_id|default(0)) %}
+{% set urls = lv.urls|default([]) %}
+{% set first_url = urls[0].url|default('') %}
+{% set list_url = mac_url('live/show') %}
+{% set intro_raw = mac_plain_text(lv.live_blurb|default('')) ?: mac_plain_text(lv.live_content|default('')) %}
+{% set same_cate = lv.cate_id|default(0) ? mac_live_list({num: 60, cate: lv.cate_id, by: 'sort'}) : {list: []} %}
+{% set channels = same_cate.list|default([]) %}
+{% set hls_lib = (maccms.path|default('/')) ~ 'static_new/player/dplayer/hls.min.js' %}
+{% set live_pic = mac_url_img(lv.live_pic|default('')) %}
+
+{% if not lv.live_id|default(0) %}
+  {% include 'page-builder-components/empty_state/template.twig' with {props: {
+    title: '频道不存在',
+    title_lang: 'string_live_not_found',
+    hint: '该直播频道可能已下线，去看看其他频道吧',
+    hint_lang: 'live_offline_hint',
+    cta_text: '返回直播列表',
+    cta_text_lang: 'live_back_to_list',
+    cta_url: list_url
+  }} %}
+{% else %}
+<div class="pb-live-player" data-component="live_player">
+  <div class="pb-live-player__cinema">
+    <div class="pb-live-player__cinema-inner">
+      <nav class="pb-live-player__crumb" aria-label="breadcrumb">
+        <a class="pb-live-player__crumb-link" href="{{ maccms.path }}" data-lang="string_home">首页</a>
+        <span class="pb-live-player__crumb-sep" aria-hidden="true">›</span>
+        <a class="pb-live-player__crumb-link" href="{{ list_url }}" data-lang="live/show_title">直播</a>
+        <span class="pb-live-player__crumb-sep" aria-hidden="true">›</span>
+        <span class="pb-live-player__crumb-cur">{{ lv.live_name|default('播放') }}</span>
+      </nav>
+
+      <div class="live-player" data-mac-live-player
+           data-mac-live-id="{{ lv.live_id }}"
+           data-mac-live-from="{{ lv.live_play_from|default('') }}"
+           data-mac-live-name="{{ lv.live_name|default('') }}"
+           data-hls-lib="{{ hls_lib }}"
+           data-initial-url="{{ first_url }}">
+        <div class="live-player__stage">
+          <video class="live-player__video" controls playsinline poster="{{ live_pic }}"></video>
+          <div class="live-player__stage-glow" aria-hidden="true"></div>
+          <span class="live-player__badge" aria-hidden="true">
+            <span class="live-player__badge-dot"></span>
+            LIVE
+          </span>
+          <div class="live-player__fail" data-mac-live-fail hidden>
+            <p class="live-player__fail-text" data-lang="live/load_fail_refresh">如加载失败请刷新</p>
+            <button type="button" class="live-player__fail-btn" data-mac-live-retry data-lang="string_play_sx">刷新</button>
+          </div>
+        </div>
+
+        {% if channels|length %}
+        <aside class="live-player__channels" data-mac-live-channels hidden aria-hidden="true">
+          <div class="live-player__channels-mask" data-mac-live-channels-close tabindex="-1"></div>
+          <div class="live-player__channels-panel" role="dialog" aria-modal="true" aria-label="选台器" data-lang-aria-label="live/picker_title">
+            <div class="live-player__channels-head">
+              <div>
+                <h2 class="live-player__channels-title" data-lang="live/picker_title">选台器</h2>
+                <p class="live-player__channels-sub">{{ lv.live_name }}</p>
+              </div>
+              <button type="button" class="live-player__channels-close" data-mac-live-channels-close aria-label="关闭" data-lang-aria-label="string_close">×</button>
+            </div>
+            <div class="live-player__channels-list">
+              {% for ch in channels %}
+              <a class="live-player__channel{% if ch.live_id == lv.live_id %} is-cur{% endif %}"
+                 href="{{ mac_url('live/play', {id: ch.live_id}) }}">
+                <span class="live-player__channel-logo">
+                  <img data-cover src="{{ mac_url_img(ch.live_pic|default('')) }}" alt="" loading="lazy" decoding="async">
+                </span>
+                <span class="live-player__channel-name">{{ ch.live_name }}</span>
+                {% if ch.live_id == lv.live_id %}
+                <span class="live-player__channel-now" data-lang="live/now_playing">正在播放</span>
+                {% endif %}
+              </a>
+              {% endfor %}
+            </div>
+          </div>
+        </aside>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
+  <div class="pb-live-player__deck">
+    <div class="pb-live-player__info">
+      <div class="pb-live-player__brand">
+        {% if live_pic %}
+        <div class="pb-live-player__logo">
+          <img data-cover src="{{ live_pic }}" alt="" loading="lazy" decoding="async">
+        </div>
+        {% endif %}
+        <div class="pb-live-player__head">
+          <div class="pb-live-player__meta">
+            <span class="pb-live-player__tag">
+              {% include "page-builder-components/_shared/component_icon.twig" with { component: 'live_player', name: 'channel-live', class: 'pb-live-player__tag-ico', mode: 'current' } %}
+              <span data-lang="string_live_on_air">直播中</span>
+            </span>
+            {% if lv.live_hits %}<span class="pb-live-player__hits">{{ lv.live_hits }} <span data-lang="string_live_watching">观看</span></span>{% endif %}
+          </div>
+          <h1 class="pb-live-player__title">
+            {{ lv.live_name }}
+            {% if lv.live_sub %}<span class="pb-live-player__sub">{{ lv.live_sub }}</span>{% endif %}
+          </h1>
+          {% if intro_raw %}
+          <p class="pb-live-player__intro">{{ intro_raw|slice(0, 240) }}{% if intro_raw|length > 240 %}…{% endif %}</p>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+
+    <div class="pb-live-player__controls">
+      {% if urls|length > 1 %}
+      <div class="live-player__lines" role="group" aria-label="播放线路" data-lang-aria-label="live/play_lines">
+        <span class="live-player__lines-label" data-lang="string_play_xl">线路</span>
+        <div class="live-player__lines-chips">
+          {% for u in urls %}
+          <button type="button"
+                  class="live-player__line{% if loop.first %} is-on{% endif %}"
+                  data-mac-live-line="{{ loop.index0 }}"
+                  data-mac-live-url="{{ u.url }}">{{ u.name|default('HD') }}</button>
+          {% endfor %}
+        </div>
+      </div>
+      {% endif %}
+
+      <nav class="live-player__bar" aria-label="直播操作" data-lang-aria-label="live_actions_aria">
+        <a class="live-player__bar-item" href="{{ list_url }}">
+          {% include "page-builder-components/_shared/component_icon.twig" with { component: 'live_player', name: 'list', class: 'live-player__bar-ico', mode: 'current' } %}
+          <span data-lang="live/list_title">直播列表</span>
+        </a>
+        <button type="button" class="live-player__bar-item" data-mac-live-retry>
+          {% include "page-builder-components/_shared/component_icon.twig" with { component: 'live_player', name: 'refresh', class: 'live-player__bar-ico', mode: 'current' } %}
+          <span data-lang="string_play_sx">刷新</span>
+        </button>
+        {% if channels|length %}
+        <button type="button" class="live-player__bar-item live-player__bar-item--accent" data-mac-live-channels-open aria-expanded="false">
+          {% include "page-builder-components/_shared/component_icon.twig" with { component: 'live_player', name: 'grid', class: 'live-player__bar-ico', mode: 'current' } %}
+          <span data-lang="live/picker_title">选台器</span>
+        </button>
+        {% endif %}
+      </nav>
+    </div>
+  </div>
+</div>
+{% endif %}

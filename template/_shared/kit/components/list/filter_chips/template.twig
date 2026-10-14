@@ -1,0 +1,6 @@
+{% include 'page-builder-components/filter_panel/template.twig' with {
+  props: {
+    preset: 'vod_type',
+    flag: props.flag|default('show')
+  }
+} %}

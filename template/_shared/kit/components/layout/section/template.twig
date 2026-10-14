@@ -1,0 +1,125 @@
+{# section 容器 + 标题（props 来自 page.blocks JSON） #}
+{% import "page-builder-components/_shared/macros.twig" as pb %}
+{% set variant = props.variant|default('plain') %}
+{% set _title_mode = props.title_mode|default('custom') %}
+{% set _sec_title = props.title|default('') %}
+{% if _title_mode == 'type_name' %}
+  {% set _sec_title = obj.type_name|default(_sec_title != '' ? _sec_title : '分类内容') %}
+{% endif %}
+{% set sec_id = 'pb-' ~ (_title_mode == 'type_name' ? 'type' : (_sec_title|default(props.title_key|default('sec'))|replace({' ': '-'})|lower)) %}
+{% set body = slots.body|default([]) %}
+{% set more_href = '' %}
+{% set _show_more = props.show_more is defined ? props.show_more : true %}
+{% if _show_more and body|length and body[0].component is defined and props.head_sort|default('') == '' %}
+  {% set more_href = pb.pb_section_more_url(body[0])|trim %}
+{% endif %}
+{% if _show_more and not more_href and props.more_url|default('') and props.head_sort|default('') == '' %}
+  {% if props.more_url in ['art/show', 'art/type'] %}
+    {% set art_top = mac_top_types(2, 1)|first %}
+    {% set more_href = art_top ? mac_url_type(art_top, {by: 'time'}, 'show') : mac_url('art/search') %}
+  {% else %}
+    {% set more_href = mac_url(props.more_url) %}
+  {% endif %}
+{% endif %}
+{% set sort_links = [] %}
+{% if props.head_sort|default('') in ['vod_show', 'vod_index', 'content_show'] %}
+  {% set cur_by_raw = param.by|default('') %}
+  {% set cur_by = (cur_by_raw is iterable) ? '' : cur_by_raw|trim %}
+  {% set cur_order_raw = param.order|default('') %}
+  {% set cur_order = (cur_order_raw is iterable) ? '' : cur_order_raw|trim|lower %}
+  {% if cur_order != 'asc' and cur_order != 'desc' %}{% set cur_order = 'desc' %}{% endif %}
+  {% set sort_carry = {
+    state: param.state|default(''),
+    area: param.area|default(''),
+    year: param.year|default(''),
+    lang: param.lang|default(''),
+    letter: param.letter|default(''),
+    class: param.class|default(''),
+    version: param.version|default(''),
+    wd: param.wd|default(''),
+    type: param.type|default(''),
+    cate: param.cate|default(''),
+    page: 1
+  } %}
+  {% set _type_for_url = {
+    type_id: obj.type_id|default(0),
+    type_mid: obj.type_mid|default(maccms.mid|default(1))
+  } %}
+  {% set sort_route = props.sort_route|default('show') %}
+  {% if props.head_sort == 'vod_index' %}
+  {% set sort_defs = [
+    { value: 'hits_week', label: '周热度', lang: 'string_sort_hits_week', icon: 'sort-hits-week' },
+    { value: 'hits_month', label: '月热度', lang: 'string_sort_hits_month', icon: 'sort-hits-month' },
+    { value: 'duration', label: '时长排序', lang: 'string_sort_duration', icon: 'sort-duration' }
+  ] %}
+  {% elseif props.head_sort == 'vod_show' %}
+  {% set sort_defs = [
+    { value: 'hits_week', label: '周热度', lang: 'string_sort_hits_week', icon: 'sort-hits-week' },
+    { value: 'hits_month', label: '月热度', lang: 'string_sort_hits_month', icon: 'sort-hits-month' },
+    { value: 'hits', label: '总热度', lang: 'string_sort_hits', icon: 'sort-hits' },
+    { value: 'duration', label: '时长排序', lang: 'string_sort_duration', icon: 'sort-duration' }
+  ] %}
+  {% else %}
+  {% set sort_defs = [
+    { value: 'hits_week', label: '周热度', lang: 'string_sort_hits_week', icon: 'sort-hits-week' },
+    { value: 'hits_month', label: '月热度', lang: 'string_sort_hits_month', icon: 'sort-hits-month' },
+    { value: 'hits', label: '总热度', lang: 'string_sort_hits', icon: 'sort-hits' }
+  ] %}
+  {% endif %}
+  {% for opt in sort_defs %}
+    {% set is_active = cur_by == opt.value %}
+    {# 首次点某字段默认 desc；再点同一字段在 desc ↔ asc 间切换 #}
+    {% set next_order = (is_active and cur_order == 'desc') ? 'asc' : 'desc' %}
+    {% set sort_href = sort_route == 'index'
+      ? mac_url('vod/index', sort_carry|merge({by: opt.value, order: next_order}))
+      : mac_url_type(_type_for_url, sort_carry|merge({by: opt.value, order: next_order}), sort_route) %}
+    {% set sort_links = sort_links|merge([{
+      href: sort_href,
+      label: opt.label,
+      lang: opt.lang,
+      icon: opt.icon,
+      icon_component: 'section',
+      active: is_active,
+      order: is_active ? cur_order : ''
+    }]) %}
+  {% endfor %}
+{% endif %}
+{% set show_icon = props.icon|default('') != '' %}
+{% set icon_name = 'film' %}
+{% set icon_mod = 'type' %}
+{% if show_icon %}
+{% if props.icon == 'fire' %}
+  {% set icon_name = 'star' %}{% set icon_mod = 'hot' %}
+{% elseif props.icon == 'book' %}
+  {% set icon_name = 'channel-manga' %}{% set icon_mod = 'art' %}
+{% elseif props.icon == 'collection' %}
+  {% set icon_name = 'channel-topic' %}{% set icon_mod = 'c2' %}
+{% elseif props.icon == 'bar-chart' %}
+  {% set icon_name = 'channel-rank' %}{% set icon_mod = 'hot' %}
+{% elseif props.icon == 'newspaper' %}
+  {% set icon_name = 'channel-gbook' %}{% set icon_mod = 'art' %}
+{% elseif props.icon == 'broadcast' %}
+  {% set icon_name = 'channel-live' %}{% set icon_mod = 'hot' %}
+{% endif %}
+{% endif %}
+{# 标题与 icon 均可为空：都空时不渲染分区头 #}
+<section class="bili-sec{% if variant == 'card' %} bili-sec--card{% endif %}"{% if _sec_title or show_icon %} aria-labelledby="{{ sec_id }}"{% endif %}>
+  {% if _sec_title or show_icon %}
+  {% include "page-builder-components/_shared/sec_head.twig" with {
+    id: sec_id,
+    title: _sec_title,
+    lang: props.title_key|default(''),
+    more_url: more_href,
+    sort_links: sort_links,
+    sort_aria: props.sort_aria|default('排序'),
+    icon_mod: icon_mod,
+    icon_name: icon_name,
+    show_icon: show_icon
+  } only %}
+  {% endif %}
+  <div class="bili-sec__body">
+    {% for j, child in slots.body|default([]) %}
+      {% include "page_builder/block.twig" with {block: child, pb_path: pb_path ~ '/body/' ~ j, pb_preview: pb_preview} %}
+    {% endfor %}
+  </div>
+</section>

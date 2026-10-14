@@ -1,0 +1,144 @@
+{# 资料修改 + 密码修改 — 对齐经典会员页 / User::info 可写字段；PC 两列，H5 上下堆叠 #}
+{% set u = user|default({}) %}
+{% set email = u.user_email|default('') %}
+{% set phone = u.user_phone|default('') %}
+{# 邮箱/短信未配置时隐藏对应绑定行；已绑定的仍显示以便解绑（#272） #}
+{% set msg_ch = mac_msg_channels() %}
+<div class="pb-user-info" data-component="user_info_panel" id="mac-user-info-root"
+     data-url-info="{{ mac_url('user/info') }}"
+     data-url-unbind="{{ mac_url('user/unbind') }}"
+     data-url-portrait="{{ mac_url('user/portrait') }}">
+  <div class="pb-user-info__grid">
+    <section class="pb-user-info__col pb-user-info__col--profile">
+      <header class="member-card__head">
+        <h2 class="member-card__title" data-lang="user_zlxg">资料修改</h2>
+      </header>
+
+      <form class="member-form" id="mac-user-info-form" method="post" action="{{ mac_url('user/info') }}" novalidate>
+        <input type="hidden" name="__token__" value="{{ csrf_token|default('') }}">
+
+        <div class="member-form__field member-form__field--avatar" id="mac-user-portrait">
+          <span class="member-form__label" data-lang="user_avatar_label">头像</span>
+          <div class="pb-user-info__avatar-row">
+            <label class="pb-user-info__avatar" for="mac-info-portrait-file" title="更换头像">
+              <span class="pb-user-info__avatar-preview" id="mac-info-portrait-preview" aria-hidden="false">
+                {% include "page-builder-components/_shared/user_avatar.twig" with {
+                  uid: u.user_id|default(0),
+                  class: 'pb-user-info__avatar-img',
+                  size: 96,
+                  alt: u.user_nick_name|default(u.user_name|default(''))
+                } %}
+              </span>
+              <span class="pb-user-info__avatar-mask" aria-hidden="true">
+                <svg class="pb-user-info__avatar-cam" viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M4 8.5h3.2l1.3-2h7l1.3 2H20a1.5 1.5 0 0 1 1.5 1.5v8A1.5 1.5 0 0 1 20 19.5H4A1.5 1.5 0 0 1 2.5 18v-8A1.5 1.5 0 0 1 4 8.5z"/>
+                  <circle cx="12" cy="13.2" r="3.2"/>
+                </svg>
+                <span class="pb-user-info__avatar-mask-text" data-lang="user_change_portrait">更换</span>
+              </span>
+            </label>
+            <input type="file" id="mac-info-portrait-file" name="file" accept="image/*" hidden>
+            <p class="pb-user-info__avatar-hint" data-lang="user_portrait_formats">支持 jpg / png / gif</p>
+          </div>
+        </div>
+
+        <div class="member-form__field member-form__field--static">
+          <span class="member-form__label" data-lang="user_name">用户名</span>
+          <p class="member-form__static">{{ u.user_name|default('') }}</p>
+        </div>
+
+        <label class="member-form__field">
+          <span class="member-form__label" data-lang="user_nickname">昵称</span>
+          <input type="text" name="user_nick_name" value="{{ u.user_nick_name|default('') }}" placeholder="请输入昵称" autocomplete="nickname" data-placeholder="user_place_nc">
+        </label>
+
+        <label class="member-form__field">
+          <span class="member-form__label" data-lang="string_qq">QQ</span>
+          <input type="text" name="user_qq" value="{{ u.user_qq|default('') }}" placeholder="请输入QQ号码" inputmode="numeric" autocomplete="off" data-placeholder="user_place_qq">
+        </label>
+
+        <label class="member-form__field">
+          <span class="member-form__label" data-lang="user_mbwt">密保问题</span>
+          <input type="text" name="user_question" value="{{ u.user_question|default('') }}" placeholder="请输入您的密保问题" autocomplete="off" data-placeholder="user_place_mbwentyi">
+        </label>
+
+        <label class="member-form__field">
+          <span class="member-form__label" data-lang="user_mbda">密保答案</span>
+          <input type="text" name="user_answer" value="{{ u.user_answer|default('') }}" placeholder="请输入您的密保答案" autocomplete="off" data-placeholder="user_place_mbdaan">
+        </label>
+
+        {% if msg_ch.email or email %}
+        <div class="member-form__field member-form__field--bind">
+          <span class="member-form__label" data-lang="user_place_email1">邮箱</span>
+          <div class="member-form__bindrow">
+            {% if email %}
+              <span class="member-form__static">{{ email }}</span>
+              <button type="button" class="member-form__linkbtn js-unbind" data-ac="email" data-lang="user_unbound">解绑</button>
+            {% else %}
+              <span class="member-form__static member-form__static--empty" data-lang="user_not_bound">未绑定</span>
+              <a class="member-form__linkbtn" href="{{ mac_url('user/bind') }}?ac=email" data-lang="user_binding">绑定</a>
+            {% endif %}
+          </div>
+        </div>
+        {% endif %}
+
+        {% if msg_ch.phone or phone %}
+        <div class="member-form__field member-form__field--bind">
+          <span class="member-form__label" data-lang="user_phone">手机</span>
+          <div class="member-form__bindrow">
+            {% if phone %}
+              <span class="member-form__static">{{ phone }}</span>
+              <button type="button" class="member-form__linkbtn js-unbind" data-ac="phone" data-lang="user_unbound">解绑</button>
+            {% else %}
+              <span class="member-form__static member-form__static--empty" data-lang="user_not_bound">未绑定</span>
+              <a class="member-form__linkbtn" href="{{ mac_url('user/bind') }}?ac=phone" data-lang="user_binding">绑定</a>
+            {% endif %}
+          </div>
+        </div>
+        {% endif %}
+
+        <div class="member-form__actions">
+          <button type="submit" class="member-form__submit" id="btn_info_submit" data-lang="string_save">保存</button>
+        </div>
+      </form>
+    </section>
+
+    <section class="pb-user-info__col pb-user-info__col--pwd">
+      <header class="member-card__head member-card__head--section" id="mac-user-pwd">
+        <h2 class="member-card__title" data-lang="user_change_pwd">修改密码</h2>
+      </header>
+
+      <form class="member-form" id="mac-user-pwd-form" method="post" action="{{ mac_url('user/info') }}" novalidate>
+        <input type="hidden" name="__token__" value="{{ csrf_token|default('') }}">
+
+        <label class="member-form__field">
+          <span class="member-form__label" data-lang="user_ysmm">原始密码</span>
+          <span class="member-form__pwd">
+            <input type="password" id="info_user_pwd" name="user_pwd" placeholder="请输入原始密码" autocomplete="current-password" data-placeholder="user_place_ysmm">
+            <button type="button" class="member-form__eye js-pwd-eye" data-target="#info_user_pwd" data-lang-aria-label="auth_pwd_toggle_aria" aria-label="显示或隐藏密码"></button>
+          </span>
+        </label>
+
+        <label class="member-form__field">
+          <span class="member-form__label" data-lang="user_xmm">新密码</span>
+          <span class="member-form__pwd">
+            <input type="password" id="info_user_pwd1" name="user_pwd1" placeholder="请输入新密码" autocomplete="new-password" data-placeholder="user_place_xmm">
+            <button type="button" class="member-form__eye js-pwd-eye" data-target="#info_user_pwd1" data-lang-aria-label="auth_pwd_toggle_aria" aria-label="显示或隐藏密码"></button>
+          </span>
+        </label>
+
+        <label class="member-form__field">
+          <span class="member-form__label" data-lang="user_qrmm">确认密码</span>
+          <span class="member-form__pwd">
+            <input type="password" id="info_user_pwd2" name="user_pwd2" placeholder="请重复新密码" autocomplete="new-password" data-placeholder="user_place_cfmm">
+            <button type="button" class="member-form__eye js-pwd-eye" data-target="#info_user_pwd2" data-lang-aria-label="auth_pwd_toggle_aria" aria-label="显示或隐藏密码"></button>
+          </span>
+        </label>
+
+        <div class="member-form__actions">
+          <button type="submit" class="member-form__submit" id="btn_pwd_submit" data-lang="user_change_pwd">修改密码</button>
+        </div>
+      </form>
+    </section>
+  </div>
+</div>

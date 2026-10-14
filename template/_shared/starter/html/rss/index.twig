@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+	<channel>
+		<title>{{ maccms.site_name }}</title>
+		<language>zh-cn</language>
+		<pubDate>{{ 'now'|date('Y-m-d H:i:s') }}</pubDate>
+		<generator>Rss Powered By {{ maccms.site_url }}</generator>
+		<description>{{ maccms.site_description }}</description>
+		<link>{{ maccms.http_type }}{{ maccms.site_url }}</link>
+{% for v in mac_vod({num: 100, order: 'desc', by: 'time'}).list|default([]) %}		<item>
+			<title>{{ v.vod_name }} {{ v.vod_remarks }}</title>
+			<link>{{ maccms.http_type }}{{ maccms.site_url }}{{ mac_url_vod_detail(v) }}</link>
+			<guid>{{ maccms.http_type }}{{ maccms.site_url }}{{ mac_url_vod_detail(v) }}</guid>
+			<description>
+				<![CDATA[{{ mac_filter_html(v.vod_content) }}]]>
+			</description>
+			<pubDate>{{ v.vod_time|date('Y-m-d H:i:s') }}</pubDate>
+		</item>
+{% endfor %}{% for a in mac_art({num: 100, order: 'desc', by: 'time'}).list|default([]) %}		<item>
+			<title>{{ a.art_name }} {{ a.art_remarks }}</title>
+			<link>{{ maccms.http_type }}{{ maccms.site_url }}{{ mac_url_art_detail(a) }}</link>
+			<guid>{{ maccms.http_type }}{{ maccms.site_url }}{{ mac_url_art_detail(a) }}</guid>
+			<description>
+				<![CDATA[{{ mac_filter_html(a.art_content) }}]]>
+			</description>
+			<pubDate>{{ a.art_time|date('Y-m-d H:i:s') }}</pubDate>
+		</item>
+{% endfor %}	</channel>
+</rss>

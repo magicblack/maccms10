@@ -1,0 +1,7 @@
+{
+    "props": {
+        "show_episodes": true,
+        "show_nav": false
+    },
+    "context": []
+}

@@ -1,0 +1,11 @@
+{
+    "props": {
+        "bind": "manga",
+        "type": 0,
+        "num": 7,
+        "by": "hits_month",
+        "title": "为你推荐",
+        "subtitle": "Pick你的最爱！"
+    },
+    "context": []
+}

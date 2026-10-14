@@ -156,6 +156,7 @@ class User extends Base
                 'limit' => $limit,
                 'total' => intval($total),
                 'list'  => $invitees ?: [],
+                'rules' => model('User')->getInviteRewardRules($user_id),
             ],
         ]);
     }
@@ -336,6 +337,7 @@ class User extends Base
             return json(['code' => 1001, 'msg' => lang('api/user_name_pwd_empty')]);
         }
 
+        $param = model('User')->fillInviteCodeFromUid($param);
         $res = model('User')->loginOrRegister($param);
 
         if ($res['code'] > 1) {
@@ -588,6 +590,7 @@ class User extends Base
         if (!empty($param['type'])) $where['ulog_type'] = intval($param['type']);
         if (!empty($param['mid'])) $where['ulog_mid'] = intval($param['mid']);
         $order = 'ulog_time desc';
+        $where['_active_only'] = 1;
         $res = model('Ulog')->listData($where, $order, $page, $limit);
         return json(['code' => 1, 'msg' => lang('obtain_ok'), 'info' => $res]);
     }
@@ -670,6 +673,20 @@ class User extends Base
         }
         $data['ulog_points'] = intval($data['ulog_points']);
         $__ualMap = [2 => 'fav', 3 => 'want', 4 => 'play', 5 => 'down'];
+        // 免费视频播放历史不分 sid（与 ulog/progress 同键），换源更新原记录
+        if ($data['ulog_mid'] == 1 && $data['ulog_type'] === 4 && $data['ulog_points'] == 0) {
+            $touched = model('Ulog')->touchFreeVodPlay($uid, $data['ulog_rid'], $data['ulog_sid'], $data['ulog_nid']);
+            if ($touched !== null) {
+                \app\common\model\UserAccessLog::record($__ualMap[4], [
+                    'user_id' => $uid,
+                    'mid'     => 1,
+                    'rid'     => $data['ulog_rid'],
+                ]);
+                $touched['ulog_id'] = intval($touched['info']['ulog_id']);
+                $touched['msg'] = lang('update_ok');
+                return json($touched);
+            }
+        }
         // 已存在则更新时间
         $existing = model('Ulog')->infoData($data);
         if ($existing['code'] == 1) {
@@ -753,9 +770,9 @@ class User extends Base
         $where = ['user_id' => $uid];
         $filter = isset($param['filter']) ? trim($param['filter']) : '';
         if ($filter === 'income') {
-            $where['plog_type'] = ['in', [1, 2, 3, 4, 5, 6, 10, 11]];
+            $where['plog_type'] = ['in', [1, 2, 3, 4, 5, 6, 10, 11, 14, 15]];
         } elseif ($filter === 'expense') {
-            $where['plog_type'] = ['in', [7, 8, 9]];
+            $where['plog_type'] = ['in', [7, 8, 9, 12, 13]];
         }
         $order = 'plog_id desc';
         $res = model('Plog')->listData($where, $order, $page, $limit);
@@ -764,7 +781,7 @@ class User extends Base
         foreach ($list as $row) {
             $r = is_array($row) ? $row : (method_exists($row, 'toArray') ? $row->toArray() : []);
             $pt = isset($r['plog_type']) ? intval($r['plog_type']) : 0;
-            $r['plog_type_text'] = ($pt >= 1 && $pt <= 11) ? mac_get_plog_type_text($pt) : '';
+            $r['plog_type_text'] = mac_get_plog_type_text($pt);
             $r['order_status'] = isset($r['order_status']) ? intval($r['order_status']) : 0;
             $out[] = $r;
         }

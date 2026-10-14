@@ -1,0 +1,168 @@
+{% set compact = props.compact|default(false) %}
+{% set chip_limit = props.chip_limit|default(11) %}
+{% set show_icons = props.show_icons|default(true) %}
+{% set show_more = props.show_more|default(true) %}
+{# 直播入口默认隐藏（暂无直播源，#271）；有源后 props.show_live: true 打开 #}
+{% set show_live = props.show_live|default(false) %}
+{% set _ids = props.type_ids|default([]) %}
+{% set cur_mid = maccms.mid|default(0) %}
+{% set cur_aid = maccms.aid|default(0) %}
+{% set cur_type = obj.type_id|default(param.id|default(0)) %}
+{% if _ids is not empty %}
+  {% set _type_rows = mac_type({ids: _ids|join(','), mid: 1, num: _ids|length}).list|default([]) %}
+  {% set _chip_ids = _ids|slice(0, chip_limit) %}
+{% else %}
+  {% set _chip_types = mac_top_types(1, chip_limit) %}
+{% endif %}
+<nav class="bili-channel{% if compact %} bili-channel--compact{% endif %}" aria-label="频道" data-lang-aria-label="string_type_channel" data-channel-nav>
+  <div class="bili-channel__desk">
+    {% if show_icons %}
+    <div class="bili-channel__icons">
+      <a class="bili-channel__ico" href="{{ mac_url('vod/index') }}">
+        <span class="bili-channel__ico-bg bili-channel__ico-bg--hot" aria-hidden="true">
+          {% include "page-builder-components/_shared/component_icon.twig" with { component: 'channel_strip', name: 'channel-hot', class: 'bili-channel__ico-svg', mode: 'img' } %}
+        </span>
+        <span data-lang="string_home_today_new">最近更新</span>
+      </a>
+      <a class="bili-channel__ico{% if cur_aid == 7 %} on{% endif %}" href="{{ mac_url('label/rank') }}">
+        <span class="bili-channel__ico-bg bili-channel__ico-bg--rank" aria-hidden="true">
+          {% include "page-builder-components/_shared/component_icon.twig" with { component: 'channel_strip', name: 'channel-rank', class: 'bili-channel__ico-svg', mode: 'img' } %}
+        </span>
+        <span data-lang="string_rank">排行榜</span>
+      </a>
+      <a class="bili-channel__ico{% if cur_mid == 12 or (cur_aid >= 120 and cur_aid < 130) %} on{% endif %}" href="{{ mac_url('manga/index') }}">
+        <span class="bili-channel__ico-bg bili-channel__ico-bg--manga" aria-hidden="true">
+          {% include "page-builder-components/_shared/component_icon.twig" with { component: 'channel_strip', name: 'channel-manga', class: 'bili-channel__ico-svg', mode: 'img' } %}
+        </span>
+        <span{% set _ml = mac_module_label(12) %}{% if _ml.lang %} data-lang="{{ _ml.lang }}"{% endif %}>{{ _ml.name }}</span>
+      </a>
+      <a class="bili-channel__ico{% if cur_mid == 2 or (cur_aid >= 20 and cur_aid < 30) %} on{% endif %}" href="{{ mac_url('art/index') }}">
+        <span class="bili-channel__ico-bg bili-channel__ico-bg--art" aria-hidden="true">
+          {% include "page-builder-components/_shared/component_icon.twig" with { component: 'channel_strip', name: 'channel-art', class: 'bili-channel__ico-svg', mode: 'img' } %}
+        </span>
+        <span{% set _ml = mac_module_label(2) %}{% if _ml.lang %} data-lang="{{ _ml.lang }}"{% endif %}>{{ _ml.name }}</span>
+      </a>
+      <a class="bili-channel__ico{% if cur_aid >= 30 and cur_aid < 40 %} on{% endif %}" href="{{ mac_url('topic/index') }}">
+        <span class="bili-channel__ico-bg bili-channel__ico-bg--topic" aria-hidden="true">
+          {% include "page-builder-components/_shared/component_icon.twig" with { component: 'channel_strip', name: 'channel-topic', class: 'bili-channel__ico-svg', mode: 'img' } %}
+        </span>
+        <span data-lang="string_topic">专题</span>
+      </a>
+    </div>
+    {% endif %}
+    <div class="bili-channel__chips">
+      {% if _ids is not empty %}
+      {% for id in _chip_ids %}
+        {% for t in _type_rows %}
+          {% if t.type_id == id %}
+      <a class="bili-channel__chip{% if cur_type == t.type_id %} on{% endif %}" href="{{ mac_url_type(t) }}">{{ t.type_name }}</a>
+          {% endif %}
+        {% endfor %}
+      {% endfor %}
+      {% else %}
+      {% for t in _chip_types %}
+      <a class="bili-channel__chip{% if cur_type == t.type_id %} on{% endif %}" href="{{ mac_url_type(t) }}">{{ t.type_name }}</a>
+      {% endfor %}
+      {% endif %}
+    </div>
+    {% if show_more %}
+    <div class="bili-channel__more">
+      {% if show_live %}
+      <a href="{{ mac_url('live/show') }}"{% if cur_aid >= 130 and cur_aid < 140 %} class="on"{% endif %}>
+        {% include "page-builder-components/_shared/component_icon.twig" with { component: 'channel_strip', name: 'channel-live', class: 'bili-channel__more-ico', mode: 'current' } %}
+        <span data-lang="string_live">直播</span>
+      </a>
+      {% endif %}
+      <a href="{{ mac_url('gbook/index') }}"{% if cur_aid == 4 %} class="on"{% endif %}>
+        {% include "page-builder-components/_shared/component_icon.twig" with { component: 'channel_strip', name: 'channel-gbook', class: 'bili-channel__more-ico', mode: 'current' } %}
+        <span data-lang="string_gbook">留言</span>
+      </a>
+      <a href="{{ mac_url('map/index') }}">
+        {% include "page-builder-components/_shared/component_icon.twig" with { component: 'channel_strip', name: 'channel-map', class: 'bili-channel__more-ico', mode: 'current' } %}
+        <span data-lang="string_map">地图</span>
+      </a>
+    </div>
+    {% endif %}
+  </div>
+
+  <div class="bili-channel__mob" data-channel-mob>
+    <div class="bili-channel__tabbar">
+      <div class="bili-channel__tab-scroll" data-channel-tab-scroll role="tablist" aria-label="频道分类" data-lang-aria-label="nav_channel_categories_aria">
+        <a class="bili-channel__tab{% if cur_aid == 1 and cur_type == 0 %} on{% endif %}" href="{{ maccms.path }}" role="tab"{% if cur_aid == 1 and cur_type == 0 %} aria-current="page"{% endif %}>
+          <span data-lang="string_home">首页</span>
+        </a>
+        <a class="bili-channel__tab{% if cur_aid == 7 %} on{% endif %}" href="{{ mac_url('label/rank') }}" role="tab"{% if cur_aid == 7 %} aria-current="page"{% endif %}>
+          <span data-lang="string_rank">排行榜</span>
+        </a>
+        {% if show_icons %}
+        <a class="bili-channel__tab{% if cur_aid == 10 %} on{% endif %}" href="{{ mac_url('vod/index') }}" role="tab"{% if cur_aid == 10 %} aria-current="page"{% endif %}>
+          <span data-lang="string_home_today_new">最近更新</span>
+        </a>
+        <a class="bili-channel__tab{% if cur_mid == 12 or (cur_aid >= 120 and cur_aid < 130) %} on{% endif %}" href="{{ mac_url('manga/index') }}" role="tab"{% if cur_mid == 12 or (cur_aid >= 120 and cur_aid < 130) %} aria-current="page"{% endif %}>
+          <span{% set _ml = mac_module_label(12) %}{% if _ml.lang %} data-lang="{{ _ml.lang }}"{% endif %}>{{ _ml.name }}</span>
+        </a>
+        <a class="bili-channel__tab{% if cur_mid == 2 or (cur_aid >= 20 and cur_aid < 30) %} on{% endif %}" href="{{ mac_url('art/index') }}" role="tab"{% if cur_mid == 2 or (cur_aid >= 20 and cur_aid < 30) %} aria-current="page"{% endif %}>
+          <span{% set _ml = mac_module_label(2) %}{% if _ml.lang %} data-lang="{{ _ml.lang }}"{% endif %}>{{ _ml.name }}</span>
+        </a>
+        <a class="bili-channel__tab{% if cur_aid >= 30 and cur_aid < 40 %} on{% endif %}" href="{{ mac_url('topic/index') }}" role="tab"{% if cur_aid >= 30 and cur_aid < 40 %} aria-current="page"{% endif %}>
+          <span data-lang="string_topic">专题</span>
+        </a>
+        {% endif %}
+        {% if _ids is not empty %}
+        {% for id in _chip_ids %}
+          {% for t in _type_rows %}
+            {% if t.type_id == id %}
+        <a class="bili-channel__tab{% if cur_type == t.type_id %} on{% endif %}" href="{{ mac_url_type(t) }}" role="tab"{% if cur_type == t.type_id %} aria-current="page"{% endif %}>{{ t.type_name }}</a>
+            {% endif %}
+          {% endfor %}
+        {% endfor %}
+        {% else %}
+        {% for t in _chip_types %}
+        <a class="bili-channel__tab{% if cur_type == t.type_id %} on{% endif %}" href="{{ mac_url_type(t) }}" role="tab"{% if cur_type == t.type_id %} aria-current="page"{% endif %}>{{ t.type_name }}</a>
+        {% endfor %}
+        {% endif %}
+      </div>
+      <button type="button" class="bili-channel__tab-toggle" data-channel-panel-toggle aria-expanded="false" aria-controls="channel-panel-{{ compact ? 'compact' : 'home' }}" aria-label="展开全部分类" data-lang-aria-label="nav_channel_expand_aria">
+        {% include "page-builder-components/_shared/component_icon.twig" with { component: 'channel_strip', name: 'chevron-down', class: 'bili-channel__tab-toggle-ico', mode: 'current' } %}
+      </button>
+    </div>
+    <div class="bili-channel__overlay" data-channel-overlay hidden>
+      <button type="button" class="bili-channel__overlay-backdrop" data-channel-panel-backdrop aria-label="关闭分类菜单" data-lang-aria-label="nav_channel_close_aria" tabindex="-1"></button>
+      <div class="bili-channel__tab-panel" id="channel-panel-{{ compact ? 'compact' : 'home' }}" data-channel-panel role="dialog" aria-modal="true" aria-label="全部分类" data-lang-aria-label="all_types">
+        <div class="bili-channel__panel-grid">
+          {% if _ids is not empty %}
+          {% for id in _chip_ids %}
+            {% for t in _type_rows %}
+              {% if t.type_id == id %}
+          <a class="bili-channel__panel-chip{% if cur_type == t.type_id %} on{% endif %}" href="{{ mac_url_type(t) }}">{{ t.type_name }}</a>
+              {% endif %}
+            {% endfor %}
+          {% endfor %}
+          {% else %}
+          {% for t in _chip_types %}
+          <a class="bili-channel__panel-chip{% if cur_type == t.type_id %} on{% endif %}" href="{{ mac_url_type(t) }}">{{ t.type_name }}</a>
+          {% endfor %}
+          {% endif %}
+        </div>
+        {% if show_more %}
+        <div class="bili-channel__panel-more">
+          {% if show_live %}
+          <a href="{{ mac_url('live/show') }}"{% if cur_aid >= 130 and cur_aid < 140 %} class="on"{% endif %}>
+            {% include "page-builder-components/_shared/component_icon.twig" with { component: 'channel_strip', name: 'channel-live', class: 'bili-channel__panel-ico', mode: 'current' } %}
+            <span data-lang="string_live">直播</span>
+          </a>
+          {% endif %}
+          <a href="{{ mac_url('gbook/index') }}"{% if cur_aid == 4 %} class="on"{% endif %}>
+            {% include "page-builder-components/_shared/component_icon.twig" with { component: 'channel_strip', name: 'channel-gbook', class: 'bili-channel__panel-ico', mode: 'current' } %}
+            <span data-lang="string_gbook">留言</span>
+          </a>
+          <a href="{{ mac_url('map/index') }}">
+            {% include "page-builder-components/_shared/component_icon.twig" with { component: 'channel_strip', name: 'channel-map', class: 'bili-channel__panel-ico', mode: 'current' } %}
+            <span data-lang="string_map">地图</span>
+          </a>
+        </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</nav>

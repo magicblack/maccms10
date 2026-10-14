@@ -8,6 +8,7 @@
             <a data-href="{:url('info')}" class="layui-btn layui-btn-primary j-iframe" data-width="800px" data-height="610px"><i class="layui-icon">&#xe654;</i>{:lang('add')}</a>
             <a data-href="{:url('del')}" class="layui-btn layui-btn-primary j-page-btns confirm"><i class="layui-icon">&#xe640;</i>{:lang('del')}</a>
             <a data-href="{:url('clearbind')}" class="layui-btn layui-btn-primary j-page-btns confirm" data-checkbox="false" data-ajax="yes"><i class="layui-icon">&#xe640;</i>{:lang('admin/collect/clear_bind')}</a>
+            <a href="{:url('healthlog')}" class="layui-btn layui-btn-primary"><i class="layui-icon">&#xe60e;</i>{:lang('admin/collect_health/log_title')}</a>
 
                 {if condition="$collect_break_vod neq ''"}
                 <a href="{:url('load')}?flag=vod" class="layui-btn layui-btn-danger ">【进入视频断点采集】</a>
@@ -41,8 +42,9 @@
                 <th width="100">接口类型</th>
                 <th width="100">资源类型</th>
                 <th>资源站</th>
+                <th width="120">{:lang('admin/collect_health/col_status')}</th>
                 <th width="260">采集选项</th>
-                <th width="180">{:lang('opt')}</th>
+                <th width="200">{:lang('opt')}</th>
             </tr>
             </thead>
 
@@ -54,12 +56,25 @@
                 <td>{$vo.collect_mid|mac_get_mid_text}</td>
                 <td><a class="layui-badge-rim" href="{:url('api')}?{:http_build_query(['ac'=>'list','cjflag'=>md5($vo.collect_url),'cjurl'=>$vo.collect_url,'h'=>'','t'=>'','ids'=>'','wd'=>'','type'=>$vo.collect_type,'mid'=>$vo.collect_mid,'opt'=>$vo.collect_opt,'sync_pic_opt'=>$vo.collect_sync_pic_opt,'filter'=>$vo.collect_filter,'filter_from'=>$vo.collect_filter_from,'filter_year'=>$vo.collect_filter_year,'param'=>base64_encode($vo.collect_param)])}" title="进入资源库">【{$vo.collect_name}】{$vo.collect_url}</a></td>
                 <td>
+                    {if condition="$vo['health'] && $vo['health']['status'] neq '1'"}
+                    <a class="layui-badge" href="{:url('healthlog',['key'=>$vo['health_key']])}" title="{$vo['health']['reason']|mac_filter_xss}">{:lang('admin/collect_health/st_disabled')}{if condition="$vo['health']['disabled_by'] eq 'auto'"}({:lang('admin/collect_health/by_auto')}){/if}</a>
+                    {else/}
+                    <a class="layui-badge layui-bg-green" href="{:url('healthlog',['key'=>$vo['health_key']])}" title="{if condition="$vo['health'] && $vo['health']['last_check']"}{:lang('admin/collect_health/last_check')}：{$vo['health']['last_check']|date='Y-m-d H:i',###}{if condition="$vo['health']['last_error'] neq ''"} / {$vo['health']['last_error']|mac_filter_xss}{/if}{/if}">{:lang('admin/collect_health/st_enabled')}</a>
+                    {/if}
+                    {if condition="$vo['health'] && $vo['health']['status'] eq '1' && $vo['health']['fail_count'] gt 0"}<span class="layui-badge layui-bg-orange" title="{$vo['health']['last_error']|mac_filter_xss}">{:lang('admin/collect_health/fail_n', [$vo['health']['fail_count']])}</span>{/if}
+                </td>
+                <td>
                     <a class="layui-badge-rim" href="{:url('api')}?{:http_build_query(['ac'=>'cj','cjflag'=>md5($vo.collect_url),'cjurl'=>$vo.collect_url,'h'=>'24','t'=>'','ids'=>'','wd'=>'','type'=>$vo.collect_type,'mid'=>$vo.collect_mid,'opt'=>$vo.collect_opt,'sync_pic_opt'=>$vo.collect_sync_pic_opt,'filter'=>$vo.collect_filter,'filter_from'=>$vo.collect_filter_from,'filter_year'=>$vo.collect_filter_year,'param'=>base64_encode($vo.collect_param)])}" title="采集当天">采集当天</a>
                     <a class="layui-badge-rim" href="{:url('api')}?{:http_build_query(['ac'=>'cj','cjflag'=>md5($vo.collect_url),'cjurl'=>$vo.collect_url,'h'=>'168','t'=>'','ids'=>'','wd'=>'','type'=>$vo.collect_type,'mid'=>$vo.collect_mid,'opt'=>$vo.collect_opt,'sync_pic_opt'=>$vo.collect_sync_pic_opt,'filter'=>$vo.collect_filter,'filter_from'=>$vo.collect_filter_from,'filter_year'=>$vo.collect_filter_year,'param'=>base64_encode($vo.collect_param)])}" title="采集本周">采集本周</a>
                     <a class="layui-badge-rim" href="{:url('api')}?{:http_build_query(['ac'=>'cj','cjflag'=>md5($vo.collect_url),'cjurl'=>$vo.collect_url,'h'=>'','t'=>'','ids'=>'','wd'=>'','type'=>$vo.collect_type,'mid'=>$vo.collect_mid,'opt'=>$vo.collect_opt,'sync_pic_opt'=>$vo.collect_sync_pic_opt,'filter'=>$vo.collect_filter,'filter_from'=>$vo.collect_filter_from,'filter_year'=>$vo.collect_filter_year,'param'=>base64_encode($vo.collect_param)])}" title="采集所有">采集所有</a>
                 </td>
                 <td>
                     <a class="layui-badge-rim j-iframe" data-href="{:url('info?id='.$vo['collect_id'])}" data-width="800px" data-height="610px" href="javascript:;" title="{:lang('edit')}">{:lang('edit')}</a>
+                    {if condition="$vo['health'] && $vo['health']['status'] neq '1'"}
+                    <a class="layui-badge-rim j-health-toggle" href="javascript:;" data-url="{$vo.collect_url|mac_filter_xss}" data-name="{$vo.collect_name|mac_filter_xss}" data-source="custom" data-status="1" style="color:#16b777">{:lang('admin/collect_health/btn_enable')}</a>
+                    {else/}
+                    <a class="layui-badge-rim j-health-toggle" href="javascript:;" data-url="{$vo.collect_url|mac_filter_xss}" data-name="{$vo.collect_name|mac_filter_xss}" data-source="custom" data-status="0" style="color:#ff5722">{:lang('admin/collect_health/btn_disable')}</a>
+                    {/if}
                     <a class="layui-badge-rim j-tr-del" data-href="{:url('del?ids='.$vo['collect_id'])}" href="javascript:;" title="{:lang('del')}">{:lang('del')}</a>
                 </td>
             </tr>
@@ -71,6 +86,11 @@
 </div>
 
 {include file="../../../application/admin/view_new/public/foot" /}
+<script type="text/javascript">
+    var CH_TOGGLE_URL = '{:url("collect/healthtoggle")}';
+    var CH_LANG = {confirm_disable: '{:lang("admin/collect_health/confirm_disable")}', confirm_enable: '{:lang("admin/collect_health/confirm_enable")}'};
+</script>
+<script type="text/javascript" src="__STATIC__/js/collect_health.js?v={:time()}"></script>
 <script type="text/javascript">
     layui.use(['laypage', 'layer'], function() {
         var laypage = layui.laypage

@@ -1,0 +1,33 @@
+{
+    "id": "plot_list",
+    "label_key": "admin/themedesign/pb_block_plot_list",
+    "category": "list",
+    "kind": "list",
+    "palette": false,
+    "peer_styles": [],
+    "assets": {
+        "css": "style.css",
+        "js": "script.js"
+    },
+    "props": {
+        "num": {
+            "type": "number",
+            "default": 30
+        },
+        "paging": {
+            "type": "boolean",
+            "default": true
+        },
+        "pageurl": {
+            "type": "string",
+            "default": "plot/index"
+        }
+    },
+    "context": {
+        "pageTypes": [
+            "list",
+            "home"
+        ],
+        "requires": []
+    }
+}

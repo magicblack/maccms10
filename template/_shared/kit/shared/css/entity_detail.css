@@ -1,0 +1,268 @@
+/* 演员 / 网址等轻量详情页共用布局（依赖主题 tokens） */
+
+.pb-entity-detail {
+  min-width: 0;
+}
+
+/* layout.detail 影视头图通栏时，实体详情在 NP2 PC 由 np2-app.css 与 wrap gutter 对齐 */
+@media (min-width: 961px) {
+  body:not(.np2-app) .layout.detail .pbs-main > .pb-entity-detail,
+  body:not(.np2-app) .layout.detail .pbs-main > .pb-block-host:has(> .pb-entity-detail),
+  body:not(.np2-app) .layout.detail .pbs-main [data-component="role_detail"],
+  body:not(.np2-app) .layout.detail .pbs-main [data-component="actor_detail"],
+  body:not(.np2-app) .layout.detail .pbs-main [data-component="website_detail"] {
+    max-width: var(--wrap, 1400px);
+    margin-inline: auto;
+    width: calc(100% - 2 * var(--gutter, 16px));
+    box-sizing: border-box;
+  }
+}
+
+/* 对齐站点 mac-crumb：白底卡片 + 分隔符，避免通栏灰底上看起来「掉样式」 */
+.pb-entity-detail__crumb {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 2px;
+  margin: 4px 0 16px;
+  padding: 10px 14px;
+  border-radius: var(--radius-lg, 8px);
+  border: 1px solid var(--c-border, rgba(0, 0, 0, 0.06));
+  background: var(--c-surface, #fff);
+  box-shadow: var(--shadow-card, 0 1px 2px rgba(0, 0, 0, 0.03));
+  font-size: 13px;
+  line-height: 1.4;
+  color: var(--c-text-muted);
+  box-sizing: border-box;
+}
+
+.pb-entity-detail__crumb a {
+  color: var(--c-text-muted);
+  text-decoration: none;
+  transition: color var(--dur, 0.2s) var(--ease, ease);
+}
+
+.pb-entity-detail__crumb a:hover,
+.pb-entity-detail__crumb a:focus-visible {
+  color: var(--c-accent);
+  outline: none;
+}
+
+.pb-entity-detail__crumb a:focus-visible {
+  outline: 2px solid var(--c-accent);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+.pb-entity-detail__crumb-sep {
+  margin: 0 6px;
+  color: var(--c-text-muted);
+  opacity: 0.55;
+  user-select: none;
+}
+
+.pb-entity-detail__crumb-cur {
+  color: var(--c-text);
+  font-weight: 500;
+  max-width: min(48vw, 320px);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.pb-entity-detail__head {
+  display: flex;
+  gap: 24px;
+  align-items: center;
+  margin-bottom: 16px;
+  padding: 20px 24px;
+  border-radius: var(--radius-lg, 8px);
+  border: 1px solid var(--c-border);
+  background: var(--c-surface);
+  box-shadow: var(--shadow-card, 0 1px 2px rgba(0, 0, 0, 0.04));
+}
+
+.pb-entity-detail__pic {
+  flex: 0 0 180px;
+  max-width: 220px;
+  border-radius: var(--radius-lg, 8px);
+  overflow: hidden;
+  background: var(--c-surface-2);
+}
+
+.pb-entity-detail__pic--logo {
+  flex-basis: 120px;
+}
+
+.pb-entity-detail__pic img {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+}
+
+.pb-entity-detail__pic--logo img {
+  aspect-ratio: 1 / 1;
+  object-fit: contain;
+  padding: 8px;
+  background: var(--c-surface);
+}
+
+.pb-entity-detail__body {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.pb-entity-detail__title {
+  margin: 0;
+  font-size: 28px;
+  font-weight: 650;
+  line-height: 1.25;
+  color: var(--c-text);
+  letter-spacing: -0.02em;
+}
+
+.pb-entity-detail__meta-dl {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 6px 14px;
+  margin: 14px 0 0;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.pb-entity-detail__meta-dl dt {
+  margin: 0;
+  color: var(--c-text-muted);
+  font-weight: 500;
+}
+
+.pb-entity-detail__meta-dl dd {
+  margin: 0;
+  color: var(--c-text);
+}
+
+.pb-entity-detail__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 16px;
+}
+
+.pb-entity-detail__cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: 44px;
+  padding: 0 18px;
+  border-radius: var(--radius-pill, 999px);
+  border: 1px solid transparent;
+  background: var(--c-accent);
+  color: var(--c-on-accent, #fff);
+  font-size: 15px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: background var(--dur, 0.2s) var(--ease, ease), transform var(--dur, 0.2s) var(--ease, ease);
+}
+
+.pb-entity-detail__cta:hover {
+  background: var(--c-accent-hover, var(--c-accent));
+}
+
+.pb-entity-detail__cta:focus-visible {
+  outline: 2px solid var(--c-accent);
+  outline-offset: 2px;
+}
+
+.pb-entity-detail__cta-ico {
+  width: 18px;
+  height: 18px;
+}
+
+.pb-entity-detail__panel {
+  margin-bottom: 16px;
+  padding: 20px 24px 24px;
+  border-radius: var(--radius-lg, 8px);
+  border: 1px solid var(--c-border);
+  background: var(--c-surface);
+  box-shadow: var(--shadow-card, 0 1px 2px rgba(0, 0, 0, 0.04));
+}
+
+.pb-entity-detail__panel-title {
+  margin: 0 0 14px;
+  font-size: 18px;
+  font-weight: 650;
+  line-height: 1.3;
+  color: var(--c-text);
+}
+
+.pb-entity-detail__panel-body {
+  font-size: 14px;
+  line-height: 1.75;
+  color: var(--c-text);
+  word-break: break-word;
+}
+.pb-entity-detail__panel-body > :first-child { margin-top: 0; }
+.pb-entity-detail__panel-body > :last-child { margin-bottom: 0; }
+.pb-entity-detail__panel-body p { margin: 0 0 0.75em; }
+.pb-entity-detail__meta-dl a {
+  color: var(--c-accent);
+  text-decoration: none;
+}
+.pb-entity-detail__meta-dl a:hover { text-decoration: underline; }
+
+.pb-entity-detail__grid {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 16px;
+}
+
+@media (max-width: 1100px) {
+  .pb-entity-detail__grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 860px) {
+  .pb-entity-detail__head {
+    flex-direction: column;
+  }
+
+  .pb-entity-detail__pic,
+  .pb-entity-detail__pic--logo {
+    flex: 0 0 auto;
+    max-width: 100%;
+    width: 160px;
+  }
+  .pb-entity-detail__head {
+    align-items: flex-start;
+    padding: 16px;
+  }
+  .pb-entity-detail__panel {
+    padding: 16px;
+  }
+
+  .pb-entity-detail__title {
+    font-size: 22px;
+  }
+
+  .pb-entity-detail__grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 12px;
+  }
+}
+
+@media (max-width: 560px) {
+  .pb-entity-detail__grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pb-entity-detail__crumb a,
+  .pb-entity-detail__cta {
+    transition: none;
+  }
+}

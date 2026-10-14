@@ -1,0 +1,35 @@
+{
+    "id": "grid",
+    "label_key": "admin/themedesign/pb_block_grid",
+    "category": "layout",
+    "kind": "grid",
+    "peer_styles": [],
+    "assets": {
+        "css": "style.css",
+        "js": "script.js"
+    },
+    "props": {
+        "variant": {
+            "type": "enum",
+            "default": "auto",
+            "values": [
+                "auto",
+                "rankmods"
+            ],
+            "trait": "grid_variant"
+        },
+        "min": {
+            "type": "string",
+            "default": "280px",
+            "trait": "grid_min"
+        }
+    },
+    "context": {
+        "pageTypes": [
+            "home",
+            "list",
+            "detail"
+        ],
+        "requires": []
+    }
+}

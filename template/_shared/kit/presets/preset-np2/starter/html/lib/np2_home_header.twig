@@ -1,0 +1,160 @@
+{% set _logo_global = mac_theme_design().logo|default('')|trim %}
+{% set _logo_raw = _logo_global %}
+{% set _logo_default = maccms.path_tpl ~ 'asset/img/logo.webp' %}
+{% if _logo_raw %}
+  {% set _logo_src = (_logo_raw matches '/^(https?:)?\/\//' or _logo_raw starts with '/') ? _logo_raw : mac_url_img(_logo_raw) %}
+{% else %}
+  {% set _logo_src = _logo_default %}
+{% endif %}
+{% set _brand = maccms.site_name|default('NP2') %}
+{% if ' - ' in _brand %}
+  {% set _brand = _brand|split(' - ')|first %}
+{% endif %}
+{% set _mark = _brand|slice(0, 1) %}
+{% set _short = _brand %}
+{% if _brand|length > 6 %}{% set _short = _brand|slice(0, 4) %}{% endif %}
+{% set _tab = np2_tab|default('home') %}
+{% set _chips = np2_chips|default(chips|default([])) %}
+{% if np2_chip_on is defined %}
+  {% set _chip_on = np2_chip_on %}
+{% elseif _tab == 'rank' %}
+  {% set _chip_on = 'rank' %}
+{% else %}
+  {% set _chip_on = obj.type_id|default(param.id|default(0)) %}
+{% endif %}
+{# 漫画/小说：若未传 chips，自动取一级分类下的子分类作频道条 #}
+{% if _chips is not iterable or _chips|length == 0 %}
+{% if _tab == 'manga' or _tab == 'art' %}
+  {% set _chip_mid = _tab == 'manga' ? 12 : 2 %}
+  {% set _chip_root = mac_top_types(_chip_mid, 1)|first %}
+  {% if _chip_root %}
+    {% set _chips = mac_type({parent: _chip_root.type_id, mid: _chip_mid, order: 'asc', by: 'sort', num: 16}).list|default([]) %}
+  {% endif %}
+{% endif %}
+{% endif %}
+{% set _with_chips = (_chips is iterable and _chips|length > 0) %}
+{% set _chip_home = np2_chip_home|default('') %}
+{% if _chip_home == '' %}
+  {% if _tab == 'manga' %}
+    {% set _chip_home = mac_url('manga/index') %}
+  {% elseif _tab == 'art' %}
+    {% set _chip_home = mac_url('art/index') %}
+  {% else %}
+    {% set _chip_home = maccms.path|default('/') %}
+  {% endif %}
+{% endif %}
+<header class="np2-top{% if _with_chips %} np2-top--with-chips{% endif %}">
+  <a class="np2-top__logo" href="{{ maccms.path|default('/') }}" aria-label="{{ _brand }}">
+    <img class="np2-top__logo-img" src="{{ _logo_src }}" alt="{{ _brand }}" width="100" height="46" decoding="async">
+  </a>
+
+  <nav class="np2-top__channels" aria-label="频道">
+    <a href="{{ maccms.path|default('/') }}" class="{% if _tab == 'home' %}is-on{% endif %}"{% if _tab == 'home' %} aria-current="page"{% endif %}>首页</a>
+    <a href="{{ mac_url('label/short') }}" class="{% if _tab == 'short' %}is-on{% endif %}"{% if _tab == 'short' %} aria-current="page"{% endif %}>短视频</a>
+    <a href="{{ mac_url('art/index') }}" class="{% if _tab == 'art' %}is-on{% endif %}"{% if _tab == 'art' %} aria-current="page"{% endif %}>小说</a>
+    <a href="{{ mac_url('manga/index') }}" class="{% if _tab == 'manga' %}is-on{% endif %}"{% if _tab == 'manga' %} aria-current="page"{% endif %}>漫画</a>
+    <a href="{{ mac_url('label/rank') }}" class="{% if _tab == 'rank' %}is-on{% endif %}"{% if _tab == 'rank' %} aria-current="page"{% endif %}>排行</a>
+  </nav>
+
+  {% if _with_chips %}
+  <nav class="np2-chips np2-top__chips" aria-label="分类">
+    <a href="{{ _chip_home }}"{% if _chip_on == 0 and _tab != 'rank' %} class="is-on"{% endif %}>推荐</a>
+    {% if _tab == 'home' or _tab == 'rank' %}
+    <a href="{{ mac_url('label/rank') }}"{% if _chip_on == 'rank' or _tab == 'rank' %} class="is-on"{% endif %}>排行</a>
+    {% endif %}
+    {% for t in _chips %}
+    <a href="{{ mac_url_type(t, {}, 'type') }}"{% if _chip_on == t.type_id %} class="is-on"{% endif %}>{{ t.type_name }}</a>
+    {% endfor %}
+  </nav>
+  {% endif %}
+
+  {% if np2_embed_search|default(false) %}
+  {% set _wd = param.wd|default('')|trim %}
+  <form class="np2-top__search-form" method="get" action="{{ mac_url('vod/search') }}" role="search">
+    <span class="np2-top__search-ico-wrap" aria-hidden="true">
+      <img class="np2-top__search-ico" src="{{ maccms.path_tpl }}asset/img/icons/search.webp" alt="" width="16" height="16" decoding="async">
+    </span>
+    <input
+      class="np2-top__search-input"
+      type="search"
+      name="wd"
+      value="{{ _wd }}"
+      placeholder="搜影片、演员、导演"
+      enterkeyhint="search"
+      autocomplete="off"
+      aria-label="搜索关键词"
+      {% if not _wd %}autofocus{% endif %}
+    >
+    {% if _wd %}
+    <a class="np2-top__search-clear" href="{{ mac_url('vod/search') }}" aria-label="清除">清除</a>
+    {% endif %}
+    <button class="np2-top__search-go" type="submit">搜索</button>
+  </form>
+  {% else %}
+  <a class="np2-top__search" href="{{ mac_url('vod/search') }}">
+    <img class="np2-top__search-ico" src="{{ maccms.path_tpl }}asset/img/icons/search.webp" alt="" width="16" height="16" decoding="async">
+    <span>搜索</span>
+  </a>
+  {% endif %}
+
+  <div class="np2-top__actions">
+    <a class="np2-top__gift" href="{{ mac_url('user/buy') }}" aria-label="福利" title="福利">
+      <img src="{{ maccms.path_tpl }}asset/img/icons/gift.webp" alt="" width="22" height="22" decoding="async">
+    </a>
+    {% if user.user_id|default(0) %}
+    {% set _uname = user.user_nick_name|default('')|trim %}
+    {% if _uname == '' %}{% set _uname = user.user_name|default('') %}{% endif %}
+    {# PC：用户下拉（含退出）；H5 顶栏隐藏，走「我的」页退出 #}
+    <div class="np2-top__user-dd user-dd" data-user-dd>
+      <button type="button" class="np2-top__user user-dd__btn" aria-haspopup="menu" aria-expanded="false" aria-label="用户菜单 {{ _uname }}">
+        <svg class="np2-top__user-ico" viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" focusable="false">
+          <circle cx="12" cy="9" r="3.2" fill="none" stroke="currentColor" stroke-width="1.8"/>
+          <path d="M5.8 19c1.4-3 3.6-4.4 6.2-4.4s4.8 1.4 6.2 4.4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+        </svg>
+      </button>
+      <div class="user-dd__menu np2-user-dd__menu" role="menu" hidden>
+        <div class="user-dd__head">
+          {% include "page-builder-components/_shared/user_avatar.twig" with { uid: user.user_id, class: 'user-dd__head-avatar', size: 32, alt: _uname } %}
+          <div class="user-dd__head-text">
+            <span class="user-dd__head-name">{{ _uname }}</span>
+            {% if user.group.group_name|default('') %}
+            <span class="user-dd__head-meta">{{ user.group.group_name }}</span>
+            {% endif %}
+          </div>
+        </div>
+        <div class="user-dd__menu-group">
+          <a role="menuitem" class="user-dd__item" href="{{ mac_url('user/index') }}">
+            {% include "@shared/icon.twig" with { name: 'user', class: 'user-dd__ico' } %}
+            <span class="user-dd__label">会员中心</span>
+          </a>
+          <a role="menuitem" class="user-dd__item" href="{{ mac_url('user/favs') }}">
+            {% include "@shared/icon.twig" with { name: 'icon-fav', class: 'user-dd__ico' } %}
+            <span class="user-dd__label">我的收藏</span>
+          </a>
+          <a role="menuitem" class="user-dd__item" href="{{ mac_url('user/plays') }}">
+            {% include "@shared/icon.twig" with { name: 'icon-play-line', class: 'user-dd__ico' } %}
+            <span class="user-dd__label">播放记录</span>
+          </a>
+          <a role="menuitem" class="user-dd__item" href="{{ mac_url('user/info') }}">
+            {% include "@shared/icon.twig" with { name: 'icon-settings', class: 'user-dd__ico' } %}
+            <span class="user-dd__label">资料修改</span>
+          </a>
+        </div>
+        <div class="user-dd__menu-foot">
+          <a role="menuitem" class="user-dd__item user-dd__item--logout" href="{{ mac_url('user/logout') }}">
+            {% include "@shared/icon.twig" with { name: 'icon-logout', class: 'user-dd__ico' } %}
+            <span class="user-dd__label">退出登录</span>
+          </a>
+        </div>
+      </div>
+    </div>
+    {% else %}
+    <a class="np2-top__user" href="#login" data-auth-open="login" aria-label="登录" title="登录">
+      <svg class="np2-top__user-ico" viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" focusable="false">
+        <circle cx="12" cy="9" r="3.2" fill="none" stroke="currentColor" stroke-width="1.8"/>
+        <path d="M5.8 19c1.4-3 3.6-4.4 6.2-4.4s4.8 1.4 6.2 4.4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+      </svg>
+    </a>
+    {% endif %}
+  </div>
+</header>

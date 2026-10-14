@@ -1,0 +1,81 @@
+{
+    "id": "empty_state",
+    "label_key": "admin/themedesign/pb_block_empty_state",
+    "category": "list",
+    "kind": "empty",
+    "palette": false,
+    "styleMode": "component",
+    "peer_styles": [],
+    "assets": {
+        "css": "style.css",
+        "js": "script.js"
+    },
+    "props": {
+        "title": {
+            "type": "string",
+            "default": "暂无内容",
+            "trait": "title"
+        },
+        "title_lang": {
+            "type": "string",
+            "default": ""
+        },
+        "hint": {
+            "type": "string",
+            "default": "",
+            "trait": "hint"
+        },
+        "preset": {
+            "type": "enum",
+            "default": "",
+            "values": [
+                "",
+                "filter",
+                "member",
+                "compact",
+                "developing",
+                "maintain"
+            ],
+            "trait": "empty_preset"
+        },
+        "show_art": {
+            "type": "boolean",
+            "default": true
+        },
+        "cta_text": {
+            "type": "string",
+            "default": ""
+        },
+        "cta_url": {
+            "type": "string",
+            "default": ""
+        },
+        "illustration": {
+            "type": "enum",
+            "default": "svg",
+            "values": [
+                "svg",
+                "image"
+            ],
+            "trait": "illustration"
+        },
+        "image": {
+            "type": "string",
+            "default": "",
+            "trait": "empty_image"
+        }
+    },
+    "context": {
+        "pageTypes": [
+            "home",
+            "list",
+            "detail",
+            "member",
+            "rank",
+            "gbook",
+            "play",
+            "special"
+        ],
+        "requires": []
+    }
+}

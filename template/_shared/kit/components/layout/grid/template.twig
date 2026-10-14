@@ -1,0 +1,18 @@
+{% set variant = props.variant|default('auto') %}
+{% set min_w = props.min|default('280px') %}
+{% set children = slots.children|default([]) %}
+{% if variant == 'rankmods' %}
+<div class="bili-rankmods pb-grid--rankmods" style="--pb-grid-min: {{ min_w }};">
+  {% for j, child in children %}
+  <div class="bili-rankmods__item">
+    {% include "page_builder/block.twig" with {block: child, pb_path: pb_path ~ '/children/' ~ j, pb_preview: pb_preview} %}
+  </div>
+  {% endfor %}
+</div>
+{% else %}
+<div class="pb-grid--auto" style="--pb-grid-min: {{ min_w }};">
+  {% for j, child in children %}
+    {% include "page_builder/block.twig" with {block: child, pb_path: pb_path ~ '/children/' ~ j, pb_preview: pb_preview} %}
+  {% endfor %}
+</div>
+{% endif %}

@@ -1,0 +1,13 @@
+/* preset-np2 暗色 token 覆盖（建站默认；站长可在主题设计向导调整 scheme） */
+:root {
+  --c-bg: #121214;
+  --c-surface: #1a1c1d;
+  --c-surface-2: #222426;
+  --c-text: #f2f3f5;
+  --c-text-muted: #8b8e93;
+  --c-border: #2c2e31;
+  --c-accent: #f5a623;
+  --c-accent-ink: #121214;
+  --c-link: #ffc14d;
+  --c-link-hover: #00b5e5;
+}

@@ -1,0 +1,41 @@
+{
+    "id": "ads_grid",
+    "label_key": "admin/themedesign/pb_block_ads_grid",
+    "category": "chrome",
+    "kind": "content",
+    "palette": true,
+    "styleMode": "component",
+    "peer_styles": [],
+    "assets": {
+        "css": "style.css",
+        "js": "script.js"
+    },
+    "props": {
+        "variant": {
+            "type": "string",
+            "default": "default",
+            "trait": "select",
+            "options": ["default", "splash"]
+        },
+        "items": {
+            "type": "array",
+            "trait": "ads_grid_items",
+            "default": [
+                {"id": "ad_vip", "label": "会员福利", "href": "", "cover": "/upload/images/20260824-1/ec798fdebb7e11fce71abd4a0f85135a.jpg"},
+                {"id": "ad_hot", "label": "热播推荐", "href": "", "cover": "/upload/images/20260816-1/f92f968e8462ea96e0ac7a3bd7b7eb5f.jpg"},
+                {"id": "ad_new", "label": "新片速递", "href": "", "cover": "/upload/images/20260816-1/fb53083c113cf64522a09a9067034f19.jpg"},
+                {"id": "ad_rank", "label": "排行榜", "href": "", "cover": "/upload/images/20260816-1/c19344077e9658606e6b7d0933922f11.jpg"},
+                {"id": "ad_coin", "label": "充值有礼", "href": "", "cover": "/upload/images/20260824-1/43a021b33a25035b30c170d55db63b27.jpg"},
+                {"id": "ad_topic", "label": "精选专题", "href": "", "cover": "/upload/images/20260825-1/4bc50c7e1671ba0b486b062ff414b560.jpg"},
+                {"id": "ad_manga", "label": "漫画专区", "href": "", "cover": "/upload/art/20260303-1/a0c736c4564c367ce1604777b1ea0d1b.png"},
+                {"id": "ad_novel", "label": "小说专区", "href": "", "cover": "/upload/art/20260303-1/eacbc602204dc0900686df5f7a8e11eb.png"},
+                {"id": "ad_live", "label": "限时活动", "href": "", "cover": "/upload/images/20260824-1/469fc9a6f1e960af7c38ebea4d00d881.png"},
+                {"id": "ad_more", "label": "更多精彩", "href": "", "cover": "/upload/images/20260822-1/17b61e4b1625f3f88079586e9b04560b.png"}
+            ]
+        }
+    },
+    "context": {
+        "pageTypes": ["home", "list", "detail", "play", "member", "rank", "gbook"],
+        "requires": ["maccms"]
+    }
+}

@@ -218,7 +218,8 @@ class Type extends Base {
                 $res['list'] = mac_list_to_tree($res['list'],'type_id','type_pid');
             }
             if($GLOBALS['config']['app']['cache_core']==1) {
-                Cache::set($cach_name, $res, $cachetime);
+                // 打上表名标签，写路径才能定点作废这一族列表缓存（见 Base::clearListCache()）
+                Cache::tag($this->name)->set($cach_name, $res, $cachetime);
             }
         }
 
@@ -304,6 +305,7 @@ class Type extends Base {
         }
 
         $this->setCache();
+        $this->clearListCache();
         return ['code'=>1,'msg'=>lang('save_ok'),'type_id'=>$data['type_id']];
     }
 
@@ -329,6 +331,7 @@ class Type extends Base {
         \app\common\model\ContentLang::deleteByContent('type', $delIds);
 
         $this->setCache();
+        $this->clearListCache();
         return ['code'=>1,'msg'=>lang('del_ok')];
     }
 
@@ -348,6 +351,7 @@ class Type extends Base {
         }
 
         $this->setCache();
+        $this->clearListCache();
         return ['code'=>1,'msg'=>lang('set_ok')];
     }
 
@@ -423,7 +427,15 @@ class Type extends Base {
                 if ($tr === null || $tr === '') {
                     continue;
                 }
+                $orig = $row[$f] ?? null;
                 $row[$f] = ($f === 'type_extend' && !is_array($tr)) ? json_decode($tr, true) : $tr;
+                // cover（封面比例）是非翻译的展示设置，译文里没有这个键，保留原值
+                if ($f === 'type_extend' && is_array($orig) && isset($orig['cover'])) {
+                    if (!is_array($row[$f])) {
+                        $row[$f] = [];
+                    }
+                    $row[$f]['cover'] = $orig['cover'];
+                }
             }
             return $row;
         };

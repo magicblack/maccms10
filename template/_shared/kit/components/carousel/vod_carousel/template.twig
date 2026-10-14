@@ -1,0 +1,74 @@
+{# 轮播 · 标准大图（bind=数据源）
+   推荐 level（默认 9）优先；不足槽位按 by/fill_by（默认 hits_month）补齐，排除已入选 URL。 #}
+{% set bind = props.bind|default('vod') %}
+{% set num = props.num|default(6) %}
+{% if num < 1 %}{% set num = 1 %}{% endif %}
+{% set by = props.by|default('hits_month') %}
+{% set type_id = props.type|default(0) %}
+{% set level = props.level|default('9') %}
+{% set fill_by = props.fill_by|default(by) %}
+{% if fill_by == 'hits' or fill_by == 'time' %}
+  {% set fill_by = 'hits_month' %}
+{% endif %}
+
+{% set items = [] %}
+{% if level != '' %}
+  {% set primary = mac_pb_feed({bind: bind, num: num, by: by, type: type_id, level: level}) %}
+  {% set items = primary.list|default([]) %}
+{% else %}
+  {% set primary = mac_pb_feed({bind: bind, num: num, by: by, type: type_id}) %}
+  {% set items = primary.list|default([]) %}
+{% endif %}
+
+{% if level != '' and items|length < num %}
+  {% set fill = mac_pb_feed({bind: bind, num: num, by: fill_by, type: type_id}) %}
+  {% set seen = '' %}
+  {% for vo in items %}
+    {% set seen = seen ~ '|' ~ (vo.url|default('')) ~ '|' %}
+  {% endfor %}
+  {% for vo in fill.list|default([]) %}
+    {% if items|length < num %}
+      {% set u = vo.url|default('') %}
+      {% if u != '' and ('|' ~ u ~ '|') not in seen %}
+        {% set items = items|merge([vo]) %}
+        {% set seen = seen ~ '|' ~ u ~ '|' %}
+      {% endif %}
+    {% endif %}
+  {% endfor %}
+{% endif %}
+
+{% if items is not empty %}
+<div class="bili-feed__carousel pb-cf__carousel"{% if bind == 'art' %} data-cover-kind="book"{% endif %} data-pb-vc-root data-bili-banner aria-label="轮播" data-lang-aria-label="vod_carousel_aria">
+  <div class="bili-feed__slides">
+    {% for vo in items %}
+    {# 竖版封面（短剧 / 漫画 / 小说）：横版轮播框里 runtime 按封面实际尺寸写 data-cover-fit="contain"，
+       完整显示并垫同图模糊底；图片载入前用 data-cover-orient 做首屏提示（专用横版幻灯图 pic_wide 不提示） #}
+    {% set vo_orient = '' %}
+    {% if vo.pic_wide|default('') == vo.pic|default('') %}
+      {% if bind == 'manga' or bind == 'art' %}
+        {% set vo_orient = 'v' %}
+      {% else %}
+        {% set vo_cover = mac_type_cover(vo.type_id|default(0)) %}
+        {% if vo_cover and vo_cover.orient == 'v' %}{% set vo_orient = 'v' %}{% endif %}
+      {% endif %}
+    {% endif %}
+    <a class="bili-feed__slide{% if loop.first %} is-on{% endif %}" href="{{ vo.url }}" data-i="{{ loop.index0 }}" data-cover-auto="fit"{% if vo_orient %} data-cover-orient="{{ vo_orient }}"{% endif %}>
+      <span class="bili-feed__backdrop" data-cover-backdrop aria-hidden="true"></span>
+      <img data-cover src="{{ mac_url_img(vo.pic_wide|default(vo.pic)) }}" alt="{{ vo.name }}"{% if loop.first %} fetchpriority="high"{% endif %}>
+      <span class="bili-feed__cap">{{ vo.name }}</span>
+    </a>
+    {% endfor %}
+  </div>
+  <div class="bili-feed__tools">
+    <div class="bili-feed__dots" role="tablist" aria-label="轮播指示" data-lang-aria-label="carousel_indicator_aria">
+      {% for vo in items %}
+      <button type="button" class="bili-feed__dot{% if loop.first %} is-on{% endif %}" data-i="{{ loop.index0 }}" aria-label="第{{ loop.index }}张"></button>
+      {% endfor %}
+    </div>
+    <div class="bili-feed__btns">
+      <button type="button" class="bili-feed__btn" data-dir="-1" aria-label="上一张" data-lang-aria-label="carousel_prev_slide_aria">‹</button>
+      <button type="button" class="bili-feed__btn" data-dir="1" aria-label="下一张" data-lang-aria-label="carousel_next_slide_aria">›</button>
+    </div>
+  </div>
+</div>
+{% endif %}

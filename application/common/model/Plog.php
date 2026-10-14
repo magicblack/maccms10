@@ -75,7 +75,7 @@ class Plog extends Base {
         }
 
         $plogType = (int)$data['plog_type'];
-        if ($data['user_id'] == 0 || $plogType < 1 || $plogType > 13) {
+        if ($data['user_id'] == 0 || $plogType < 1 || $plogType > 15) {
             return ['code'=>1002,'msg'=>lang('param_err')];
         }
 

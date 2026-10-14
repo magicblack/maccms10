@@ -1,0 +1,61 @@
+.pb-live-list {
+  display: grid;
+  gap: 12px 10px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+@container pb-sec-body (min-width: 560px) {
+  .pb-live-list {
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  }
+}
+
+@container pb-sec-body (min-width: 900px) {
+  .pb-live-list {
+    grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+    gap: 20px 16px !important;
+  }
+}
+
+@media (max-width: 560px) {
+  .pb-live-list {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+}
+
+/* 直播分类 Tab（live/index、live/show 共用） */
+.pb-live-cate-nav {
+  margin: 0 0 14px;
+}
+
+.pb-live-cate-nav__inner {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.pb-live-cate-nav__item {
+  display: inline-flex;
+  align-items: center;
+  min-height: 34px;
+  padding: 0 14px;
+  border-radius: 999px;
+  border: 1px solid var(--c-border, #e5e8ee);
+  background: var(--c-surface, #fff);
+  color: var(--c-text-muted, #6b7280);
+  font-size: 13px;
+  font-weight: 500;
+  text-decoration: none;
+  transition: background 0.18s ease, color 0.18s ease, border-color 0.18s ease;
+}
+
+.pb-live-cate-nav__item:hover {
+  color: var(--c-text, #1a1d23);
+  border-color: var(--c-accent-soft, rgba(79, 70, 229, 0.25));
+}
+
+.pb-live-cate-nav__item.is-active {
+  background: var(--c-accent-soft, rgba(79, 70, 229, 0.12));
+  border-color: var(--c-accent, #4f46e5);
+  color: var(--c-accent, #4f46e5);
+}

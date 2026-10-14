@@ -1,0 +1,30 @@
+{# NP2 排行榜：标题 + 日/周/月切换 + rank_list 封面榜 #}
+{% set p = props|default({}) %}
+{% set num = p.num|default(20) %}
+{% set type_id = p.type|default(0) %}
+{% set mid = p.mid|default(1) %}
+{% set title = p.title|default('排行榜') %}
+{# title_lang only defaults when the caller passed no explicit title — board.title
+   from rank_theme_boards is per-board dynamic text (e.g. "全站"/category name) and
+   must never be overwritten by the generic "排行榜" translation. #}
+{% set title_lang = p.title_lang|default(p.title is defined ? '' : 'string_rank') %}
+{% set default_period = p.period|default('week') %}
+{% if default_period != 'day' and default_period != 'month' %}
+  {% set default_period = 'week' %}
+{% endif %}
+
+<section class="np2-rank" data-component="np2_rank_board" data-default-period="{{ default_period }}">
+  <div class="np2-rank__head">
+    <h2 class="np2-row__title"><span class="np2-row__title-txt"{% if title_lang and mac_i18n_key(title, title_lang) %} data-lang="{{ title_lang }}"{% endif %}>{{ title }}</span></h2>
+    <div class="np2-rank__periods" role="tablist" data-lang-aria-label="rank_period_aria" aria-label="排行榜周期">
+      <button type="button" class="np2-rank__period{% if default_period == 'day' %} is-on{% endif %}" data-period="day" role="tab" aria-selected="{{ default_period == 'day' ? 'true' : 'false' }}" data-lang="string_ribang">日榜</button>
+      <button type="button" class="np2-rank__period{% if default_period == 'week' %} is-on{% endif %}" data-period="week" role="tab" aria-selected="{{ default_period == 'week' ? 'true' : 'false' }}" data-lang="string_zhoub">周榜</button>
+      <button type="button" class="np2-rank__period{% if default_period == 'month' %} is-on{% endif %}" data-period="month" role="tab" aria-selected="{{ default_period == 'month' ? 'true' : 'false' }}" data-lang="string_yueb">月榜</button>
+    </div>
+  </div>
+  {% for period in ['day', 'week', 'month'] %}
+  <div class="np2-rank__panel" data-np2-rank-panel="{{ period }}"{% if period != default_period %} hidden{% endif %}>
+    {% include 'page-builder-components/rank_list/template.twig' with {props: { num: num, type: type_id, mid: mid, period: period, hide_title: true, title: '' }} %}
+  </div>
+  {% endfor %}
+</section>

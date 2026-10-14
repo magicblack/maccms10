@@ -1,0 +1,6337 @@
+/* np2 H5 app chrome — slice 1
+ * 壳层 / 手写页皮肤在此；组件专属皮见同目录 np2-pb-skin.css（在组件 style 之后加载）。
+ */
+
+.np2-app,
+.np2-app .pbs-body,
+.np2-app .pbs-shell,
+.np2-app .pbs-shell__main,
+.np2-app .pbs-wrap,
+.np2-app .layout,
+.np2-app .pbs-main {
+  background: #121214 !important;
+  color: #f2f3f5 !important;
+}
+.np2-age__sub { color: #f5a623 !important; }
+.np2-tabbar a.is-active { color: #f5a623 !important; }
+.np2-top__search { background: #2a2c2e !important; color: #8b8e93 !important; }
+
+/* 覆盖 theme-override（PB preset-clean）对 :root 的浅色 token，全站 NP2 暗色 */
+html:has(body.np2-app) {
+  background: #121214;
+  scroll-padding-bottom: calc(56px + env(safe-area-inset-bottom, 0px));
+}
+
+body.np2-app {
+  --c-bg: #121214;
+  --np2-gutter: 12px;
+  --c-surface: #1a1c1d;
+  --c-surface-2: #222426;
+  --c-text: #f2f3f5;
+  --c-text-muted: #8b8e93;
+  --c-border: #2c2e31;
+  --c-accent: #f5a623;
+  --c-accent-ink: #121214;
+  --c-plan-promo-ink: #121214;
+  --c-plan-value-ink: #2a1a06;
+  --c-accent-hover: #ffc14d;
+  --c-accent-soft: rgba(245, 166, 35, 0.16);
+  --c-accent-tint: rgba(245, 166, 35, 0.28);
+  --c-accent-glow: rgba(245, 166, 35, 0.32);
+  --c-accent-border: rgba(245, 166, 35, 0.28);
+  --c-accent-border-strong: rgba(245, 166, 35, 0.45);
+  --c-accent-focus-ring: rgba(245, 166, 35, 0.55);
+  --c-link: #ffc14d;
+  --c-link-hover: #00b5e5;
+  --c-link-soft: rgba(0, 161, 214, 0.12);
+  --c-page-muted: #121214;
+  --c-bg-soft: #2a2c2e;
+  --c-surface-muted: #222426;
+  --bg-deep: #0a0c10;
+  /* 字面金色，避免嵌套 var 回落到 theme-override 的 indigo glow */
+  --shadow-interactive: 0 8px 20px rgba(245, 166, 35, 0.28);
+  --shadow-vip-hero: 0 10px 28px rgba(245, 166, 35, 0.3);
+  --gradient-vip-hero:
+    radial-gradient(90% 120% at 100% 0%, rgba(245, 166, 35, 0.38), transparent 52%),
+    linear-gradient(
+      135deg,
+      #f0b84a 0%,
+      #8a5a12 52%,
+      #f0b84a 100%
+    );
+  --c-vip-hero-ink: #121214;
+  --c-vip-hero-ink-muted: rgba(18, 18, 20, 0.78);
+  --c-vip-metric-bg: rgba(18, 18, 20, 0.1);
+  --c-vip-metric-border: rgba(18, 18, 20, 0.12);
+  --c-vip-metric-icon: rgba(18, 18, 20, 0.9);
+  --gradient-hero: radial-gradient(120% 140% at 100% 0%, rgba(245, 166, 35, 0.28), transparent 55%), linear-gradient(135deg, var(--c-surface) 0%, var(--c-accent-soft) 48%, var(--c-surface) 100%);
+}
+
+.np2-app {
+  min-height: 100dvh;
+  background: var(--c-bg, #121214);
+  color: var(--c-text, #f2f3f5);
+  padding-bottom: calc(56px + env(safe-area-inset-bottom, 0px));
+}
+.np2-app__main { min-height: 100%; }
+.np2-age-lock { overflow: hidden; }
+
+.np2-app .pbs-shell__nav,
+.np2-app .pb-site-footer,
+.np2-app [data-component="site_footer"],
+.np2-app .site-footer { display: none !important; }
+.np2-app .pbs-wrap {
+  max-width: none;
+  /* 铁律：外层不留水平 gutter，由内容块自己留一层 12px */
+  padding-top: 0;
+  padding-bottom: 0;
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+  margin: 0;
+}
+.np2-app .layout,
+.np2-app .pbs-main { margin: 0; padding: 0; max-width: none; }
+
+/* wrap 已归零时，频道条禁止再用负 margin 破栏（否则左右溢出） */
+.np2-app .pbs-wrap > .bili-channel,
+.np2-app .bili-channel,
+.np2-app [data-component="channel_strip"] {
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+/* 列表页（漫画/小说分类、筛选等）：内容块自留一层 12px，避免贴边 */
+.np2-app .layout.list .pbs-main > .bili-sec,
+.np2-app .layout.list .pbs-main > .pb-block-host {
+  padding-left: var(--np2-gutter, 12px);
+  padding-right: var(--np2-gutter, 12px);
+  box-sizing: border-box;
+}
+
+/* 排行榜页：标题 + 榜单自留 gutter（不依赖 np2-rank-page 也能对齐） */
+.np2-app .layout.rank .pbs-main > .pb-sec-heading,
+.np2-app .layout.rank .pbs-main > [data-component="sec_heading"],
+.np2-app .layout.rank .pbs-main > [data-component="rank_list"] {
+  padding-left: var(--np2-gutter, 12px);
+  padding-right: var(--np2-gutter, 12px);
+  box-sizing: border-box;
+}
+
+/* 漫/小说首页 feed 兜底：凡 manga_home_* / novel_home_* 统一 gutter，防组件 ID 漏绑 */
+body.np2-app.page-manga-home .pbs-main [data-component^="manga_home_"] > .mc-sec__head,
+body.np2-app.page-manga-home .pbs-main [data-component^="manga_home_"] .mc-rank-panels,
+body.np2-app.page-manga-home .pbs-main [data-component^="manga_home_"] .mc-rank-grid,
+body.np2-app.page-manga-home .pbs-main [data-component^="manga_home_"] .mc-row__viewport {
+  padding-left: var(--np2-gutter, 12px);
+  padding-right: var(--np2-gutter, 12px);
+  box-sizing: border-box;
+}
+
+/* 分类页：标题/列表安全区（用 page_class，不单靠 :has） */
+.np2-type-page .pbs-wrap {
+  padding-left: 12px !important;
+  padding-right: 12px !important;
+  box-sizing: border-box;
+}
+.np2-type-page .pbs-main > .bili-sec {
+  padding-left: 0;
+  padding-right: 0;
+  box-sizing: border-box;
+}
+.np2-type-page .bili-sec__head {
+  margin-top: 8px;
+  margin-bottom: 16px;
+  padding-left: 0;
+  padding-right: 0;
+}
+
+.np2-app .layout.list .pb-manga-card__title,
+.np2-app .layout.list .pb-art-book__title {
+  white-space: normal;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+}
+
+/* 详情 / 播放：H5 无底栏（与旧 np2-detail-page 一致），避免 fixed tab 挡住选集/评论 */
+@media (max-width: 960px) {
+  body.np2-app:has(.layout.detail) .np2-tabbar,
+  body.np2-app.page-vod-detail .np2-tabbar,
+  body.np2-app.page-manga-detail .np2-tabbar,
+  body.np2-app.page-art-detail .np2-tabbar {
+    display: none !important;
+  }
+  html:has(body.np2-app:has(.layout.detail)),
+  html:has(body.np2-app.page-vod-detail) {
+    scroll-padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+  body.np2-app:has(.layout.detail),
+  body.np2-app.page-vod-detail {
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+  body.np2-app:has(.layout.detail) .pbs-main,
+  body.np2-app:has(.layout.play) .pbs-main {
+    padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 20px);
+    box-sizing: border-box;
+  }
+  body.np2-app:has(.layout.play) {
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+  body.np2-app:has(.layout.detail) .pbs-wrap,
+  body.np2-app:has(.layout.play) .pbs-wrap {
+    padding-bottom: 0 !important;
+  }
+  /* 列表：相关推荐卡片内边距收紧 */
+  .np2-app .pbs-wrap:has(> .layout.list) {
+    padding-bottom: 24px !important;
+  }
+  .np2-app [data-component="media_related_panel"].media-panel--cinema,
+  .np2-app:has(.layout.detail) .media-panel.media-panel--cinema,
+  .np2-app:has(.layout.play) .media-panel.media-panel--cinema {
+    width: calc(100% - 24px) !important;
+    max-width: none !important;
+    margin-left: 12px !important;
+    margin-right: 12px !important;
+    padding: 12px !important;
+    box-sizing: border-box !important;
+  }
+  .np2-app .pb-manga-detail .media-hero__wrap,
+  .np2-app .pb-art-detail .media-hero__wrap,
+  .np2-app .pb-vod-detail .media-hero__wrap {
+    padding-left: 12px !important;
+    padding-right: 12px !important;
+  }
+}
+
+/* age gate */
+.np2-age {
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #0e0e10;
+  padding: 24px;
+}
+.np2-age[hidden] { display: none !important; }
+.np2-age__card { text-align: center; max-width: 280px; }
+.np2-age__title {
+  margin: 0 0 12px;
+  font-size: 28px;
+  font-weight: 700;
+  color: #fff;
+  letter-spacing: 0.04em;
+}
+.np2-age__sub {
+  margin: 0 0 28px;
+  font-size: 15px;
+  color: var(--c-accent, #f5a623);
+}
+.np2-age__btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 168px;
+  min-height: 44px;
+  border: 0;
+  border-radius: 999px;
+  background: #fff;
+  color: #121214;
+  font-size: 16px;
+  font-weight: 650;
+  cursor: pointer;
+}
+
+/* tabbar */
+.np2-tabbar {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 950;
+  height: calc(56px + env(safe-area-inset-bottom, 0px));
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  background: #161618;
+  color: var(--c-text-muted, #8b8e93);
+  border-top: 1px solid #2c2e31;
+}
+.np2-tabbar a {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  text-decoration: none;
+  color: inherit;
+  font-size: 10px;
+}
+.np2-tabbar a.is-active { color: var(--c-accent, #f5a623); }
+.np2-tabbar__ico {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 22px;
+  line-height: 1;
+}
+.np2-tabbar__ico svg { display: block; }
+
+/* home */
+.np2-home { padding: 0 0 16px; }
+.np2-top {
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px 10px;
+  background: rgba(18, 18, 20, 0.96);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+/* sticky 祖先勿裁切，否则 H5 吸顶失效 */
+.np2-home-page .pbs-shell,
+.np2-home-page .pbs-shell__main,
+.np2-home-page .np2-app__main,
+.np2-home-page .pbs-wrap,
+.np2-home-page .layout,
+.np2-home-page .pbs-main,
+.np2-home-page .np2-home,
+.np2-rank-page .pbs-shell,
+.np2-rank-page .pbs-shell__main,
+.np2-rank-page .np2-app__main,
+.np2-rank-page .pbs-wrap,
+.np2-rank-page .layout,
+.np2-rank-page .pbs-main,
+.np2-search-page .pbs-shell,
+.np2-search-page .pbs-shell__main,
+.np2-search-page .np2-app__main,
+.np2-search-page .pbs-wrap,
+.np2-search-page .layout,
+.np2-search-page .pbs-main {
+  overflow: visible;
+}
+.np2-top__logo {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  text-decoration: none;
+  min-width: 0;
+  max-width: 110px;
+  padding: 0;
+}
+.np2-top__logo-img {
+  display: block;
+  height: 23px;
+  width: auto;
+  max-width: 100px;
+  object-fit: contain;
+}
+.np2-top__mark { display: none; }
+.np2-top__logo-txt { display: none; }
+.np2-top__brand-wrap { display: none; }
+.np2-top__brand { display: none; }
+.np2-top__search {
+  flex: 1 1 0;
+  min-width: 96px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  height: 34px;
+  padding: 0 12px;
+  border-radius: 999px;
+  background: #2a2c2e;
+  color: var(--c-text-muted);
+  font-size: 13px;
+  text-decoration: none;
+}
+.np2-top__search-ico {
+  flex: 0 0 auto;
+  width: 16px;
+  height: 16px;
+  object-fit: contain;
+  opacity: .9;
+}
+/* 搜索页：顶栏内嵌真实表单，替代「搜索」跳转链，避免双搜索框 */
+.np2-top__search-form {
+  flex: 1 1 0;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  height: 34px;
+  padding: 0 4px 0 10px;
+  border-radius: 999px;
+  background: #2a2c2e;
+  box-shadow: inset 0 0 0 1px transparent;
+  transition: background 160ms ease, box-shadow 160ms ease;
+}
+.np2-top__search-form:focus-within {
+  background: #323438;
+  box-shadow: inset 0 0 0 1px rgba(245, 166, 35, 0.45), 0 0 0 3px rgba(245, 166, 35, 0.14);
+}
+.np2-top__search-ico-wrap {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  pointer-events: none;
+}
+.np2-top__search-input {
+  flex: 1 1 auto;
+  min-width: 0;
+  height: 100%;
+  margin: 0;
+  border: 0;
+  outline: none;
+  background: transparent;
+  color: #f2f3f5;
+  font-size: 13px;
+  font-weight: 550;
+  letter-spacing: -0.01em;
+  -webkit-appearance: none;
+  appearance: none;
+}
+.np2-top__search-input::placeholder {
+  color: #8b8e93;
+  font-weight: 400;
+}
+.np2-top__search-input::-webkit-search-decoration,
+.np2-top__search-input::-webkit-search-cancel-button {
+  -webkit-appearance: none;
+}
+.np2-top__search-clear {
+  flex: 0 0 auto;
+  padding: 4px 6px;
+  border-radius: 8px;
+  color: #8b8e93;
+  font-size: 11px;
+  font-weight: 650;
+  text-decoration: none;
+  white-space: nowrap;
+}
+.np2-top__search-clear:hover,
+.np2-top__search-clear:focus-visible {
+  color: #fff;
+  background: rgba(255, 255, 255, 0.08);
+  outline: none;
+}
+.np2-top__search-go {
+  flex: 0 0 auto;
+  height: 26px;
+  min-width: 44px;
+  padding: 0 10px;
+  border: 0;
+  border-radius: 999px;
+  background: #f5a623;
+  color: #141316;
+  font-size: 12px;
+  font-weight: 800;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: transform 140ms ease, filter 140ms ease;
+}
+.np2-top__search-go:hover {
+  filter: brightness(1.05);
+}
+.np2-top__search-go:active {
+  transform: scale(0.98);
+}
+.np2-top__search-go:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 1px;
+}
+.np2-home-page .np2-top__search-form {
+  flex: 1 1 auto;
+  min-width: 0;
+  height: 32px;
+}
+.np2-top__icon,
+.np2-top__gift {
+  flex: 0 0 32px;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  background: transparent;
+}
+.np2-top__gift svg,
+.np2-top__gift img { display: block; width: 22px; height: 22px; object-fit: contain; }
+.np2-top__channels { display: none; }
+.np2-top__actions {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.np2-top__user,
+.np2-top__user-dd { display: none; }
+.np2-top--with-chips { flex-wrap: wrap; }
+.np2-top__chips {
+  order: 5;
+  flex: 0 0 100%;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.np2-chips {
+  display: flex;
+  gap: 10px;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  padding: 4px 12px 12px;
+  scrollbar-width: none;
+}
+.np2-chips::-webkit-scrollbar,
+.np2-grid::-webkit-scrollbar,
+.np2-cards::-webkit-scrollbar { display: none; }
+.np2-chips a {
+  flex: 0 0 auto;
+  color: var(--c-text-muted);
+  text-decoration: none;
+  font-size: 13px;
+  padding: 4px 2px;
+  white-space: nowrap;
+}
+.np2-chips a.is-on { color: #f5a623; font-weight: 800; }
+
+.np2-grid {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 10px 8px;
+  padding: 0 12px 12px;
+  overflow: visible;
+}
+.np2-grid a,
+.np2-grid__ad {
+  min-width: 0;
+  width: auto;
+  text-decoration: none;
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+.np2-grid__tile {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  height: auto;
+  border-radius: 14px;
+  margin: 0;
+  overflow: hidden;
+  background: #2a2c30;
+  box-shadow: 0 1px 0 rgba(255,255,255,.04) inset;
+}
+.np2-grid__tile--c1 { background: linear-gradient(145deg, #ff6b9d, #c41e6a); }
+.np2-grid__tile--c2 { background: linear-gradient(145deg, #60a5fa, #1d4ed8); }
+.np2-grid__tile--c3 { background: linear-gradient(145deg, #f5a623, #c2410c); }
+.np2-grid__tile--c4 { background: linear-gradient(145deg, #34d399, #047857); }
+.np2-grid__tile--c5 { background: linear-gradient(145deg, #a78bfa, #6d28d9); }
+.np2-grid__tile::after { display: none; }
+.np2-grid__tile img,
+.np2-grid__tile svg {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.np2-grid__cap {
+  display: block;
+  width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 11px;
+  font-weight: 650;
+  line-height: 1.2;
+  text-align: center;
+  color: #f2f3f5;
+}
+.np2-grid__tile span { display: none; }
+
+.np2-notice {
+  margin: 0 12px 14px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: #2a2418;
+  color: #ffd789;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+}
+.np2-notice[hidden] { display: none !important; }
+.np2-notice button {
+  margin-left: auto;
+  border: 0;
+  background: var(--c-accent);
+  color: #121214;
+  border-radius: 999px;
+  padding: 4px 10px;
+  font-size: 12px;
+  font-weight: 650;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.np2-row { margin: 0 0 18px; }
+.np2-row__head {
+  display: flex;
+  align-items: center;
+  padding: 0 12px 8px;
+  gap: 8px;
+}
+.np2-row__title {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+  font-size: 16px;
+  font-weight: 700;
+  color: #fff;
+}
+.np2-row__ico {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  color: #f5a623;
+}
+.np2-row__ico svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+.np2-row__title-txt {
+  min-width: 0;
+}
+.np2-row__more {
+  margin-left: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: var(--c-text-muted);
+  text-decoration: none;
+}
+.np2-row__shuffle {
+  border: 0;
+  background: transparent;
+  color: var(--c-text-muted);
+  font-size: 12px;
+  cursor: pointer;
+}
+.np2-cards {
+  display: flex;
+  gap: 10px;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  padding: 0 12px;
+}
+.np2-card { flex: 0 0 46%; min-width: 140px; text-decoration: none; color: inherit; }
+.np2-card__pic { position: relative; }
+.np2-card img {
+  width: 100%;
+  aspect-ratio: 100 / 65.116;
+  object-fit: cover;
+  border-radius: 8px;
+  background: #2a2c2e;
+  display: block;
+}
+/* splash VideoPayTag：右上角胶囊（金币 / VIP 互斥） */
+.np2-paytag {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  z-index: 2;
+  pointer-events: none;
+  line-height: 0;
+}
+.np2-paytag__vip {
+  display: flex;
+  height: 14px;
+  min-width: 30px;
+  padding: 0.5px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #fff7ec 0%, #ffb78e 100%);
+  box-sizing: border-box;
+}
+.np2-paytag__vip-inner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-width: 30px;
+  padding: 0 3px;
+  border-radius: 999px;
+  font-size: 10px;
+  font-weight: 500;
+  line-height: 12px;
+  height: 13px;
+  color: #000;
+  text-shadow: 0 1px 1px rgba(255, 255, 255, 0.25);
+  background-image: linear-gradient(to right, #fee2ba 13%, #e69167 100%);
+  box-sizing: border-box;
+}
+.np2-paytag__coin {
+  display: flex;
+  height: 14px;
+  min-width: 28px;
+  padding: 0.5px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #fb8749 0%, #ed4e2e 100%);
+  box-sizing: border-box;
+}
+.np2-paytag__coin-inner {
+  display: flex;
+  align-items: center;
+  gap: 1px;
+  height: 100%;
+  flex: 1;
+  padding: 0 3px 0 2px;
+  border-radius: 999px;
+  background-image: linear-gradient(105deg, #ff5e00 11%, #e12810 100%);
+  box-sizing: border-box;
+}
+.np2-paytag__coin-ico {
+  flex: 0 0 10px;
+  width: 10px;
+  height: 10px;
+  display: block;
+}
+.np2-paytag__amt {
+  font-size: 10px;
+  font-weight: 700;
+  line-height: 1;
+  color: #000;
+  text-align: center;
+}
+.np2-card__name {
+  margin-top: 6px;
+  font-size: 13px;
+  line-height: 1.35;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: #fff;
+}
+.np2-card__meta {
+  font-size: 11px;
+  color: var(--c-text-muted);
+  margin-top: 2px;
+  display: flex;
+  justify-content: space-between;
+  gap: 6px;
+}
+
+.np2-empty {
+  padding: 80px 24px;
+  text-align: center;
+  color: var(--c-text-muted);
+  font-size: 15px;
+}
+
+/* PB empty_state 与首页 np2-empty 对齐（去白卡片/虚线框，换 splash 空态图） */
+.np2-app .pb-empty-state {
+  width: 100%;
+  box-sizing: border-box;
+  background: transparent !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  min-height: 0;
+  padding: 80px 24px;
+  gap: 0;
+  color: #8b8e93;
+}
+.np2-app .pb-empty-state__art {
+  width: 96px;
+  height: 96px;
+  max-width: none;
+  margin: 0 auto 10px;
+  opacity: 1;
+  filter: none;
+}
+.np2-app .pb-empty-state__art > svg {
+  display: none !important;
+}
+.np2-app .pb-empty-state__img {
+  display: block;
+  width: 96px;
+  height: 96px;
+  object-fit: contain;
+  margin: 0 auto;
+}
+.np2-app .pb-empty-state__title {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 400;
+  line-height: 1.4;
+  color: #8b8e93;
+}
+.np2-app .pb-empty-state__hint {
+  margin: 8px 0 0;
+  font-size: 13px;
+  color: #8b8e93;
+}
+.np2-app .pb-empty-state__cta {
+  margin-top: 16px;
+  min-height: 40px;
+  padding: 0 20px;
+  border-radius: 999px;
+  background: #f5a623;
+  color: #121214;
+  font-weight: 700;
+}
+.np2-app .pb-empty-state__cta:hover {
+  background: #ffc14d;
+  color: #121214;
+  filter: none;
+}
+
+/* tabs 3–4
+   底栏已占底部 56px：shade 贴 item 底边；短视频层 fixed 贴住底栏顶（不要用 --nav-h，那是顶栏高度）。 */
+.np2-short-page { padding-bottom: 0; overflow: hidden; }
+/* 手机：顶栏会挡沉浸式播放，仅 PC 显示 */
+.np2-short-page .np2-top { display: none; }
+.np2-short-page .pbs-shell__main,
+.np2-short-page .pbs-wrap,
+.np2-short-page .layout,
+.np2-short-page .pbs-main {
+  height: 100dvh;
+  overflow: hidden;
+}
+.np2-short {
+  position: fixed;
+  inset: 0 0 calc(56px + env(safe-area-inset-bottom, 0px)) 0;
+  z-index: 2;
+  overflow-y: auto;
+  scroll-snap-type: y mandatory;
+  scroll-behavior: smooth;
+  background: #000;
+  scrollbar-width: none;
+}
+.np2-short::-webkit-scrollbar { display: none; }
+.np2-short__item {
+  position: relative;
+  height: 100%;
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+  overflow: hidden;
+  background: #000;
+}
+.np2-short__stage {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  background: #111;
+}
+.np2-short__video,
+.np2-short__frame {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  object-fit: cover;
+  background: #111;
+  z-index: 1;
+}
+.np2-short__video { z-index: 2; }
+.np2-short__video::-webkit-media-controls-enclosure,
+.np2-short__video::-webkit-media-controls-panel {
+  display: none !important;
+}
+.np2-short__live {
+  display: inline-block;
+  margin-bottom: 6px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: #f5a623;
+  color: #121214;
+  font-size: 11px;
+  font-weight: 700;
+}
+.np2-short__live[hidden] { display: none !important; }
+.np2-short__item.is-playing .np2-short__video { outline: 0; }
+.np2-short__shade {
+  position: absolute; inset: 0;
+  background: linear-gradient(180deg, transparent 42%, rgba(0,0,0,.78) 100%);
+  pointer-events: none;
+  z-index: 3;
+}
+.np2-short__meta {
+  position: absolute; left: 12px; right: 72px; bottom: 16px;
+  color: #fff;
+  z-index: 4;
+  pointer-events: none;
+}
+.np2-short__meta a { pointer-events: auto; }
+.np2-short__name { margin: 0 0 4px; font-size: 16px; }
+.np2-short__sub { margin: 0 0 8px; font-size: 12px; color: #c8c8c8; }
+.np2-short__open {
+  display: inline-block;
+  color: #121214;
+  background: #f5a623;
+  border-radius: 999px;
+  padding: 4px 10px;
+  font-size: 12px;
+  text-decoration: none;
+  font-weight: 650;
+}
+
+.np2-page { padding: 8px 0 20px; }
+.np2-page__bar {
+  display: flex; align-items: center; gap: 8px;
+  padding: 8px 12px 10px;
+}
+.np2-page__bar h1 { margin: 0; font-size: 20px; color: #fff; }
+.np2-page__search {
+  flex: 1;
+  height: 34px;
+  display: flex; align-items: center;
+  padding: 0 12px;
+  border-radius: 999px;
+  background: #2a2c2e;
+  color: #8b8e93;
+  font-size: 13px;
+  text-decoration: none;
+}
+.np2-sec { margin: 8px 0 16px; }
+.np2-sec__head {
+  display: flex; align-items: center;
+  padding: 0 12px 8px;
+}
+.np2-sec__head h2 { margin: 0; font-size: 16px; color: #fff; }
+.np2-sec__head a { margin-left: auto; color: #8b8e93; font-size: 12px; text-decoration: none; }
+.np2-vgrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  padding: 0 12px;
+}
+.np2-vgrid__card { color: inherit; text-decoration: none; }
+.np2-vgrid__pic { position: relative; }
+.np2-vgrid__pic img {
+  width: 100%; aspect-ratio: 16/10; object-fit: cover;
+  border-radius: 8px; background: #2a2c2e; display: block;
+}
+.np2-vgrid__name {
+  margin-top: 6px; font-size: 13px; color: #fff;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.np2-vgrid__meta { font-size: 11px; color: #8b8e93; }
+
+.np2-feed { padding: 0 12px; display: flex; flex-direction: column; gap: 12px; }
+.np2-feed__item {
+  display: flex; gap: 10px;
+  text-decoration: none; color: inherit;
+  background: #1a1c1d; border-radius: 12px; overflow: hidden;
+}
+.np2-feed__pic { flex: 0 0 112px; }
+.np2-feed__pic img { width: 112px; height: 84px; object-fit: cover; display: block; background: #2a2c2e; }
+.np2-feed__body { padding: 10px 10px 10px 0; }
+.np2-feed__body h2 { margin: 0 0 4px; font-size: 15px; color: #fff; }
+.np2-feed__body p { margin: 0; font-size: 12px; color: #8b8e93; }
+
+.np2-mine { padding: 16px 12px 24px; }
+.np2-mine__hero { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; }
+.np2-mine__hero h1 { margin: 0; font-size: 20px; color: #fff; }
+.np2-mine__hero p { margin: 4px 0 0; color: #8b8e93; font-size: 13px; }
+.np2-mine__avatar { width: 64px; height: 64px; border-radius: 50%; overflow: hidden; background: #2a2c2e; }
+.np2-mine__avatar img, .np2-mine__avatar svg { width: 100%; height: 100%; object-fit: cover; }
+.np2-mine__menu { display: flex; flex-direction: column; gap: 2px; }
+.np2-mine__menu a {
+  display: block; padding: 14px 4px;
+  color: #fff; text-decoration: none;
+  border-bottom: 1px solid #2c2e31; font-size: 15px;
+}
+.np2-mine__login {
+  display: flex; align-items: center; justify-content: center;
+  height: 44px; border-radius: 999px;
+  background: #f5a623; color: #121214;
+  font-weight: 700; text-decoration: none;
+}
+.np2-mine__hint { text-align: center; color: #8b8e93; font-size: 12px; margin-top: 12px; }
+
+.np2-empty svg { color: #f5a623; margin-bottom: 8px; }
+
+/* inner pages */
+.np2-inner-top {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  background: #121214;
+}
+.np2-inner-top__back,
+.np2-inner-top__search,
+.np2-inner-top__mine {
+  flex: 0 0 auto;
+  color: #f5a623;
+  text-decoration: none;
+  font-size: 13px;
+  font-weight: 650;
+}
+.np2-inner-top__brand { display: none; }
+.np2-inner-top__mine { display: none; }
+.np2-inner-top__title {
+  flex: 1;
+  margin: 0;
+  font-size: 16px;
+  color: #fff;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  text-align: center;
+}
+.np2-search-form {
+  display: flex;
+  gap: 8px;
+  padding: 0 12px 12px;
+  align-items: center;
+}
+.np2-search-form input {
+  flex: 1 1 auto;
+  min-width: 0;
+  height: 40px;
+  border: 0;
+  border-radius: 999px;
+  padding: 0 14px;
+  background: #2a2c2e;
+  color: #fff;
+  font-size: 14px;
+}
+.np2-search-form button {
+  flex: 0 0 auto;
+  height: 40px;
+  min-width: 72px;
+  border: 0;
+  border-radius: 999px;
+  padding: 0 14px;
+  background: #f5a623;
+  color: #121214;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+/* —— 搜索页：影院风 H5 + PC —— */
+.np2-search-page {
+  --ns-bg: #121214;
+  --ns-ink: #f4f5f6;
+  --ns-muted: #8b8e93;
+  --ns-line: rgba(255, 255, 255, 0.08);
+  --ns-soft: rgba(255, 255, 255, 0.045);
+  --ns-accent: #f5a623;
+  --ns-accent-soft: rgba(245, 166, 35, 0.16);
+  --ns-radius: 14px;
+}
+.np2-search-page .np2-search {
+  position: relative;
+  isolation: isolate;
+  padding: 0 0 36px;
+  color: var(--ns-ink);
+  overflow: hidden;
+}
+.np2-search-page .np2-search--idle::before {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: -40px;
+  z-index: -1;
+  width: 140%;
+  max-width: 900px;
+  height: 240px;
+  transform: translateX(-50%);
+  background:
+    radial-gradient(ellipse 55% 50% at 50% 18%, rgba(245, 166, 35, 0.14), transparent 70%),
+    radial-gradient(ellipse 40% 35% at 80% 0%, rgba(255, 255, 255, 0.04), transparent 65%);
+  pointer-events: none;
+}
+.np2-search-page .np2-search__panel {
+  padding: 6px 0 0;
+}
+.np2-search-page .np2-search__head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 16px 14px;
+}
+.np2-search-page .np2-search__title {
+  margin: 0;
+  color: #fff;
+  font-size: 20px;
+  font-weight: 750;
+  letter-spacing: -0.03em;
+  line-height: 1.2;
+}
+.np2-search-page .np2-search__sub {
+  margin: 6px 0 0;
+  color: var(--ns-muted);
+  font-size: 13px;
+  line-height: 1.4;
+}
+.np2-search-page .np2-search__sub em {
+  font-style: normal;
+  color: #e8eaed;
+  font-weight: 650;
+}
+.np2-search-page .np2-search__rail {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px 12px;
+  padding: 0 16px 8px;
+}
+.np2-search-page .np2-search__rail-item {
+  min-width: 0;
+  width: auto;
+}
+.np2-search-page .np2-search__rail-cover {
+  position: relative;
+  display: block;
+  overflow: hidden;
+  border-radius: 12px;
+  background: #1a1c1f;
+  box-shadow: 0 14px 28px rgba(0, 0, 0, 0.34);
+  text-decoration: none;
+}
+.np2-search-page .np2-search__rail-cover img,
+.np2-search-page .np2-search__rail-cover .np2-poster-ph {
+  display: block;
+  width: 100%;
+  aspect-ratio: 3 / 4;
+  object-fit: cover;
+  background: #24262a;
+  transition: transform 280ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+.np2-search-page .np2-search__rank {
+  position: absolute;
+  left: 8px;
+  top: 8px;
+  z-index: 2;
+  min-width: 24px;
+  height: 24px;
+  padding: 0 6px;
+  border-radius: 8px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(10, 10, 12, 0.72);
+  color: #fff;
+  font-size: 12px;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+.np2-search-page .np2-search__rail-item:nth-child(-n+3) .np2-search__rank {
+  color: #141316;
+  background: var(--ns-accent);
+}
+.np2-search-page .np2-search__rail-name {
+  display: block;
+  margin-top: 10px;
+  color: #fff;
+  font-size: 13px;
+  font-weight: 650;
+  line-height: 1.35;
+  text-decoration: none;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.np2-search-page .np2-search__rail-name:hover,
+.np2-search-page .np2-search__rail-name:focus-visible {
+  color: var(--ns-accent);
+  outline: none;
+}
+.np2-search-page .np2-search__rail-meta {
+  margin: 4px 0 0;
+  color: var(--ns-muted);
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
+}
+.np2-search-page .np2-search__grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px 12px;
+  padding: 0 16px;
+}
+.np2-search-page .np2-search__card {
+  min-width: 0;
+  color: inherit;
+  text-decoration: none;
+}
+.np2-search-page .np2-search__card:active .np2-search__pic img {
+  transform: scale(0.985);
+}
+.np2-search-page .np2-search__pic {
+  position: relative;
+  overflow: hidden;
+  border-radius: 12px;
+  background: #1a1c1f;
+  box-shadow: 0 10px 22px rgba(0, 0, 0, 0.28);
+}
+.np2-search-page .np2-search__pic img,
+.np2-search-page .np2-search__pic .np2-poster-ph {
+  display: block;
+  width: 100%;
+  aspect-ratio: 3 / 4;
+  object-fit: cover;
+  background: #24262a;
+  transition: transform 280ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+.np2-search-page .np2-search__tip {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1;
+  padding: 28px 8px 8px;
+  background: linear-gradient(180deg, transparent, rgba(8, 8, 10, 0.88));
+  color: #fff;
+  font-size: 11px;
+  font-weight: 650;
+  line-height: 1.3;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  pointer-events: none;
+}
+.np2-search-page .np2-search__body {
+  padding-top: 10px;
+}
+.np2-search-page .np2-search__name {
+  color: #fff;
+  font-size: 13px;
+  font-weight: 650;
+  line-height: 1.35;
+  letter-spacing: -0.01em;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.np2-search-page .np2-search__meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 8px;
+  margin-top: 5px;
+  color: var(--ns-muted);
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
+}
+.np2-search-page .np2-search__empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  padding: 36px 16px 48px;
+}
+.np2-search-page .np2-search__empty .np2-empty { margin: 0; }
+.np2-search-page .np2-search__retry {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 40px;
+  padding: 0 18px;
+  border-radius: 12px;
+  background: var(--ns-accent-soft);
+  color: var(--ns-accent);
+  font-size: 13px;
+  font-weight: 750;
+  text-decoration: none;
+  transition: background 160ms ease, transform 160ms ease;
+}
+.np2-search-page .np2-search__retry:hover,
+.np2-search-page .np2-search__retry:focus-visible {
+  background: rgba(245, 166, 35, 0.24);
+  outline: none;
+}
+.np2-search-page .np2-search__retry:active {
+  transform: scale(0.98);
+}
+
+@media (min-width: 640px) {
+  .np2-search-page .np2-search__grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 18px 14px;
+  }
+  .np2-search-page .np2-search__rail {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 18px 14px;
+  }
+}
+
+@media (min-width: 961px) {
+  .np2-search-page .np2-search {
+    max-width: 1160px;
+    margin: 0 auto;
+    padding: 12px 0 56px;
+  }
+  .np2-search-page .np2-search--idle::before {
+    top: -40px;
+    height: 280px;
+    max-width: 1100px;
+  }
+  .np2-search-page .np2-search__head {
+    padding: 18px 28px 16px;
+  }
+  .np2-search-page .np2-search__title {
+    font-size: 24px;
+  }
+  .np2-search-page .np2-search__sub {
+    font-size: 14px;
+  }
+  .np2-search-page .np2-search__rail {
+    gap: 16px;
+    padding: 0 28px 10px;
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+  }
+  .np2-search-page .np2-search__rail-item {
+    width: auto;
+  }
+  .np2-search-page .np2-search__rail-cover {
+    border-radius: 14px;
+  }
+  .np2-search-page .np2-search__rail-cover:hover img,
+  .np2-search-page .np2-search__rail-cover:focus-visible img {
+    transform: scale(1.04);
+  }
+  .np2-search-page .np2-search__rail-name {
+    font-size: 14px;
+  }
+  .np2-search-page .np2-search__grid {
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    gap: 22px 16px;
+    padding: 0 28px;
+  }
+  .np2-search-page .np2-search__card:hover .np2-search__pic img,
+  .np2-search-page .np2-search__card:focus-visible .np2-search__pic img {
+    transform: scale(1.04);
+  }
+  .np2-search-page .np2-search__card:hover .np2-search__name,
+  .np2-search-page .np2-search__card:focus-visible .np2-search__name {
+    color: var(--ns-accent);
+  }
+  .np2-search-page .np2-search__card:focus-visible {
+    outline: none;
+  }
+  .np2-search-page .np2-search__name {
+    font-size: 14px;
+  }
+  .np2-search-page .np2-search__empty {
+    padding: 56px 28px 72px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .np2-search-page .np2-search__rail-cover img,
+  .np2-search-page .np2-search__pic img,
+  .np2-search-page .np2-search__retry,
+  .np2-top__search-go,
+  .np2-top__search-form {
+    transition: none;
+  }
+}
+
+.np2-inner-body { padding: 0 0 12px; }
+/* np2 统一用手写底栏 SVG；PB bottom_nav 会叠在上面导致切页图标跳变 */
+.np2-app [data-component="bottom_nav"],
+.np2-app .pb-bottom-nav {
+  display: none !important;
+}
+.np2-inner-page [data-component="site_nav"],
+.np2-inner-page .bili-header,
+.np2-inner-page .pb-site-nav,
+.np2-inner-page [data-component="site_footer"],
+.np2-inner-page [data-component="channel_strip"],
+.np2-inner-page .bili-channel,
+.np2-inner-page .breadcrumb,
+.np2-inner-page .pbs-vod-player__nav { display: none !important; }
+
+.np2-inner-page .bili-grid,
+.np2-inner-page .pb-vod-list {
+  padding: 0 12px;
+}
+.np2-inner-page .pb-vod-card__title a,
+.np2-inner-page .pb-vod-card__title { color: #fff !important; }
+.np2-inner-page .pb-vod-card__meta { color: #8b8e93 !important; }
+
+.np2-play-body .pbs-vod-player,
+.np2-play-page .mac-player,
+.np2-play-page .pbs-mac-player-mount {
+  background: #000 !important;
+  color: #fff;
+}
+.np2-play-page .pbs-vod-player__eps { padding: 12px; }
+.np2-play-page .pbs-vod-player__eps-title,
+.np2-play-page .pbs-vod-player__eps-from { color: #fff; }
+.np2-play-page .pbs-vod-player__eps-item a {
+  background: #2a2c2e;
+  color: #ddd;
+  border-radius: 8px;
+}
+.np2-play-page .pbs-vod-player__eps-item.is-cur a {
+  background: #f5a623;
+  color: #121214;
+}
+
+.np2-detail-page .media-hero,
+.np2-detail-page .vod-detail,
+.np2-inner-page .topic-detail {
+  background: transparent !important;
+  color: #f2f3f5 !important;
+}
+.np2-inner-page .media-hero__title,
+.np2-inner-page h1, .np2-inner-page h2 { color: #fff !important; }
+
+body.np2-app.page-member .member-shell,
+body.np2-app.page-member .member-mnav,
+.np2-auth-page .auth-page,
+.np2-auth-page .auth-form {
+  background: #121214 !important;
+  color: #f2f3f5 !important;
+}
+.np2-auth-page input,
+.np2-auth-page .member-form input {
+  background: #2a2c2e !important;
+  color: #fff !important;
+  border-color: #2c2e31 !important;
+}
+.np2-inner-page .filter-panel,
+.np2-inner-page .pb-filter,
+.np2-inner-page .filter-chips {
+  background: #121214 !important;
+  color: #ddd !important;
+}
+.np2-inner-page .pb-empty,
+.np2-inner-page .empty-state { color: #8b8e93; }
+
+/* win over theme-override.css light tokens */
+:root {
+  --c-bg: #121214;
+  --c-surface: #1a1c1d;
+  --c-surface-2: #222426;
+  --c-text: #f2f3f5;
+  --c-text-muted: #8b8e93;
+  --c-border: #2c2e31;
+  --c-accent: #f5a623;
+  --c-accent-ink: #121214;
+  --c-accent-hover: #ffc14d;
+  --c-accent-soft: rgba(245, 166, 35, 0.16);
+  --c-link: #ffc14d;
+}
+
+.np2-chips { position: relative; z-index: 6; }
+.np2-inner-top__search:empty { visibility: hidden; min-width: 2em; }
+.np2-d { padding: 8px 12px 20px; color: #f2f3f5; }
+.np2-d__h { font-size: 20px; margin: 0 0 10px; color: #fff; }
+.np2-d__hero { display: flex; gap: 12px; margin-bottom: 16px; }
+.np2-d__poster { flex: 0 0 112px; width: 112px; }
+a.np2-d__poster { display: block; text-decoration: none; color: inherit; }
+.np2-d__poster img, .np2-d__poster svg {
+  width: 112px; aspect-ratio: 3/4; object-fit: cover;
+  border-radius: 10px; background: #2a2c2e; display: block; color: #f5a623;
+}
+.np2-d__info { flex: 1; min-width: 0; }
+.np2-d__info h1 { margin: 0 0 8px; font-size: 18px; color: #fff; line-height: 1.3; }
+.np2-d__meta { margin: 0 0 6px; font-size: 12px; color: #8b8e93; }
+.np2-d__meta a { color: #f5a623; text-decoration: none; }
+.np2-d__score { margin: 0 0 10px; color: #f5a623; font-weight: 700; }
+.np2-d__ops { display: flex; gap: 8px; flex-wrap: wrap; }
+.np2-d__play, .np2-d__fav {
+  display: inline-flex; align-items: center; justify-content: center;
+  height: 36px; padding: 0 14px; border-radius: 999px;
+  font-size: 14px; font-weight: 700; text-decoration: none; cursor: pointer;
+}
+.np2-d__play { background: #f5a623; color: #121214; }
+.np2-d__fav { background: #2a2c2e; color: #fff; }
+.np2-d__fav.is_fav { color: #f5a623; }
+.np2-d__sec { margin: 16px 0; }
+.np2-d__sec h2 { margin: 0 0 8px; font-size: 16px; color: #fff; }
+.np2-d__sec p { margin: 0; font-size: 13px; color: #c8c8c8; line-height: 1.55; }
+.np2-eps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 10px; }
+.np2-eps a {
+  display: flex; align-items: center; justify-content: center;
+  min-height: 40px; border-radius: 8px;
+  background: #2a2c2e; color: #eee; text-decoration: none; font-size: 13px;
+}
+.np2-eps a.is-on { background: #f5a623; color: #121214; font-weight: 700; }
+.np2-eps__from { font-size: 12px; color: #8b8e93; margin: 0 0 8px; }
+.np2-play-page .np2-tabbar { display: none !important; }
+.np2-play-page.np2-app { padding-bottom: 0; }
+/* 小说阅读 / 漫画播放：只用阅读器专属底栏，藏掉全局首页 Tab */
+.page-novel-read .np2-tabbar,
+.page-manga-play .np2-tabbar {
+  display: none !important;
+}
+.page-novel-read.np2-app,
+.page-manga-play.np2-app {
+  padding-bottom: 0;
+}
+.np2-play__player { background: #000; }
+.np2-play__player .pbs-vod-player__eps { display: none !important; }
+.np2-play .np2-d__sec { padding: 0 12px 20px; }
+.np2-vgrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  padding: 0 12px;
+}
+.np2-vgrid__pic { position: relative; }
+.np2-vgrid__pic img {
+  width: 100%; aspect-ratio: 3/4; object-fit: cover;
+  border-radius: 8px; background: #2a2c2e; display: block;
+}
+.np2-vgrid__name {
+  margin-top: 6px; font-size: 13px; color: #fff;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.np2-vgrid__meta { font-size: 11px; color: #8b8e93; }
+.np2-inner-page .pbs-vod-player__eps { display: none !important; }
+
+.np2-detail-page.np2-app {
+  padding-bottom: calc(56px + env(safe-area-inset-bottom, 0px));
+}
+.np2-detail-page .pbs-shell,
+.np2-detail-page .pbs-shell__main,
+.np2-detail-page .np2-app__main,
+.np2-detail-page .np2-d {
+  padding-bottom: 0 !important;
+}
+.np2-detail-page .np2-tabbar {
+  height: calc(56px + env(safe-area-inset-bottom, 0px));
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+.np2-detail-page .np2-d__sec:last-child { margin-bottom: 8px; padding-bottom: 8px; }
+.np2-detail-page .np2-vgrid { padding: 0; }
+
+.np2-poster-ph { width: 112px; height: 150px; color: #f5a623; display: block; }
+.np2-play-page .dplayer-notice,
+.np2-play-page .dplayer-notice-item { display: none !important; }
+.np2-play__fail {
+  position: absolute; inset: 0; display: flex; flex-direction: column;
+  align-items: center; justify-content: center; background: #121214;
+  color: #f2f3f5; text-align: center; padding: 16px; z-index: 2147483647;
+}
+.np2-play__fail[hidden] { display: none !important; }
+.np2-play__player.is-fail .np2-play__fail { display: flex !important; }
+.np2-play__player.is-fail .pbs-vod-player,
+.np2-play__player.is-fail .MacPlayer,
+.np2-play__player.is-fail iframe { visibility: hidden !important; }
+
+.np2-play__fail-sub { margin: 8px 0 0; font-size: 13px; color: #8b8e93; }
+.np2-play__player { position: relative; min-height: 200px; }
+.np2-play__player.is-fail .pbs-vod-player { opacity: 0; pointer-events: none; }
+.np2-eps__from, .pbs-vod-player__eps-from { display: none !important; }
+
+.np2-d__ops .np2-d__play ~ .np2-d__play { display: none; }
+
+/* polish inner */
+.np2-inner-top { padding: 12px; }
+.np2-chips a.is-on {
+  color: #f5a623 !important;
+  font-weight: 800;
+  position: relative;
+}
+.np2-chips a.is-on::after {
+  content: "";
+  position: absolute; left: 2px; right: 2px; bottom: 0;
+  height: 2px; background: #f5a623; border-radius: 2px;
+}
+.np2-vgrid:has(.np2-vgrid__card) + .np2-empty { display: none !important; }
+.np2-vgrid__pic .np2-poster-ph {
+  width: 100%; aspect-ratio: 3/4; color: #f5a623; display: block;
+}
+.np2-d__poster--lg { width: 112px; max-width: 112px; margin: 0; }
+.np2-d__name { font-size: 16px; color: #fff; margin: 0 0 6px; text-align: left; }
+.np2-detail-page .np2-inner-top__title { display: none; }
+.np2-d__ops--stack {
+  display: flex; flex-direction: column; gap: 10px; margin: 14px 0;
+}
+.np2-d__ops--stack .np2-d__play {
+  width: 100%; height: 44px; border-radius: 12px;
+  background: #f5a623; color: #121214; font-size: 16px;
+}
+.np2-d__ops--stack .np2-d__play ~ .np2-d__play { display: none; }
+.np2-d__ops--stack .np2-d__fav {
+  width: 100%; height: 40px; border-radius: 12px;
+  background: transparent; color: #f5a623; border: 1px solid #3a3c40;
+  font-weight: 650;
+}
+.np2-d__blurb {
+  display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical;
+  overflow: hidden; font-size: 13px; color: #c8c8c8; line-height: 1.55;
+}
+.np2-d__blurb.is-open { -webkit-line-clamp: unset; display: block; }
+.np2-d__more {
+  margin-top: 6px; background: none; border: 0; color: #f5a623;
+  font-size: 13px; padding: 0; font-weight: 650;
+}
+.np2-eps--row {
+  display: grid !important;
+  grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+  overflow: visible;
+  gap: 8px;
+}
+.np2-eps--row a { flex: none; min-width: 0; }
+.np2-detail-page .np2-eps {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8px;
+  max-height: none;
+}
+.np2-inner-top--over {
+  position: absolute; left: 0; right: 0; top: 0;
+  background: linear-gradient(180deg, rgba(18,18,20,.72), transparent);
+  z-index: 8;
+}
+.np2-play-page .np2-inner-top--over .np2-inner-top__title,
+.np2-play-page .np2-inner-top--over .np2-inner-top__back { color: #fff; }
+.np2-play-page .np2-inner-top { display: none !important; }
+.np2-play-page .np2-play { padding-top: 0; background: #000; min-height: 100dvh; padding-bottom: calc(88px + env(safe-area-inset-bottom, 0px)); }
+.np2-play__player {
+  position: relative;
+  background: #000;
+  width: 100%;
+}
+.np2-play__player .pbs-vod-player {
+  gap: 0;
+}
+.np2-play__player .pbs-vod-player__host,
+.np2-play__player .pbs-vod-player__empty {
+  border-radius: 0;
+  max-height: none;
+}
+.np2-play__player .pbs-vod-player__eps {
+  display: none !important;
+}
+.np2-play__vip-pill {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  z-index: 30;
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  height: 28px;
+  padding: 0 12px;
+  border-radius: 999px;
+  border: 1px solid rgba(245, 166, 35, 0.85);
+  background: rgba(18, 18, 20, 0.72);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+  text-decoration: none;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  pointer-events: auto;
+}
+.np2-play__vip-pill-em { color: #ffc14d; margin-right: 2px; }
+.np2-play__preview {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 48px;
+  margin: 0;
+  padding: 10px 12px 10px 0;
+  text-decoration: none;
+  background: linear-gradient(90deg, #fff1df 0%, #ffd2a8 42%, #ffb070 100%);
+  color: #944c00;
+  overflow: hidden;
+}
+.np2-play__preview-badge {
+  position: absolute;
+  left: 0;
+  top: 0;
+  min-height: 18px;
+  padding: 0 10px;
+  border-radius: 0 0 10px 0;
+  background: linear-gradient(90deg, #ffa67a, #fe4705);
+  color: #fff;
+  font-size: 10px;
+  font-weight: 600;
+  line-height: 18px;
+  white-space: nowrap;
+}
+.np2-play__preview-crown {
+  flex: 0 0 auto;
+  margin-left: 12px;
+  margin-top: 8px;
+  color: #ff4800;
+}
+.np2-play__preview-copy {
+  flex: 1 1 auto;
+  min-width: 0;
+  margin-top: 8px;
+  font-size: 14px;
+  font-weight: 700;
+  color: #944c00;
+}
+.np2-play__preview-copy em {
+  font-style: normal;
+  color: #ff4800;
+}
+.np2-play__preview-cta {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 28px;
+  min-width: 70px;
+  margin-top: 8px;
+  padding: 0 12px;
+  border-radius: 999px;
+  border: 0.5px solid #fff7eb;
+  background: linear-gradient(90deg, #fe4b0a 0%, #f8b56b 100%);
+  color: #fff;
+  font-size: 12px;
+  font-weight: 700;
+}
+.np2-play__toolbar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 12px;
+  border-bottom: 1px solid #1f2123;
+  background: #000;
+}
+.np2-play__tabs {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  flex: 1 1 auto;
+  min-width: 0;
+}
+.np2-play__tab {
+  position: relative;
+  height: 44px;
+  border: 0;
+  background: transparent;
+  color: #8b8e93;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+.np2-play__tab.is-on {
+  color: #fff;
+  font-weight: 800;
+}
+.np2-play__tab.is-on::after {
+  content: "";
+  position: absolute;
+  left: 2px;
+  right: 2px;
+  bottom: 6px;
+  height: 2px;
+  border-radius: 2px;
+  background: var(--c-accent);
+}
+.np2-play__line {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-left: auto;
+  color: #c8ccd2;
+  font-size: 13px;
+}
+.np2-play__line-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+.np2-play__line-btn:focus-visible,
+.np2-play__tab:focus-visible {
+  outline: none;
+  box-shadow: var(--shadow-focus);
+}
+.np2-play__line-menu {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 4px);
+  z-index: 20;
+  min-width: 120px;
+  padding: 6px;
+  border-radius: 10px;
+  background: #1a1c1d;
+  border: 1px solid #2c2e31;
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.35);
+}
+.np2-play__line-menu[hidden] { display: none !important; }
+.np2-play__line-menu a {
+  display: block;
+  padding: 10px 12px;
+  border-radius: 8px;
+  color: #eee;
+  text-decoration: none;
+  font-size: 13px;
+}
+.np2-play__line-menu a.is-on,
+.np2-play__line-menu a:hover {
+  background: rgba(245, 166, 35, 0.16);
+  color: #ffc14d;
+}
+.np2-play__panel { padding: 16px 12px 28px; }
+.np2-play__panel[hidden] { display: none !important; }
+.np2-play__head { margin-bottom: 14px; }
+.np2-play__title {
+  margin: 0 0 8px;
+  font-size: 20px;
+  line-height: 1.35;
+  color: #fff;
+  font-weight: 800;
+  letter-spacing: 0.01em;
+}
+.np2-play__meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0;
+  margin: 0;
+  color: #8b8e93;
+  font-size: 12px;
+  line-height: 1.5;
+}
+.np2-play__meta > * + *::before {
+  content: "·";
+  display: inline-block;
+  margin: 0 6px;
+  color: #4a4d52;
+}
+.np2-play__meta-type {
+  color: #ffc14d;
+  text-decoration: none;
+  font-weight: 600;
+}
+.np2-play__meta-type:active { opacity: 0.85; }
+.np2-play__head .np2-play__tags {
+  margin-top: 10px;
+  margin-bottom: 0;
+}
+.np2-play__actions {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+  margin: 0 0 16px;
+  padding: 10px 6px;
+  border-radius: 14px;
+  background: #141516;
+  border: 1px solid #222426;
+}
+.np2-play__act {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: 64px;
+  padding: 8px 4px;
+  border: 0;
+  border-radius: 12px;
+  background: transparent;
+  color: #c8ccd2;
+  text-decoration: none;
+  cursor: pointer;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  transition: background var(--dur) var(--ease);
+}
+.np2-play__act:active {
+  background: rgba(255, 255, 255, 0.04);
+}
+.np2-play__act:focus-visible {
+  outline: none;
+  box-shadow: var(--shadow-focus);
+}
+.np2-play__act-ico {
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.np2-play__act-ico--star { background: rgba(59, 130, 246, 0.16); color: #60a5fa; }
+.np2-play__act.is_fav .np2-play__act-ico--star { color: #f5a623; background: rgba(245, 166, 35, 0.18); }
+.np2-play__act-ico--coin { background: rgba(245, 166, 35, 0.16); color: #f5a623; }
+.np2-play__act-ico--share { background: rgba(56, 189, 248, 0.16); color: #38bdf8; }
+.np2-play__act-lbl {
+  font-size: 12px;
+  line-height: 1.2;
+  color: #b8bcc2;
+  text-align: center;
+  font-weight: 600;
+}
+.np2-play__act:active .np2-play__act-ico {
+  transform: scale(0.96);
+}
+.np2-play__tags {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding-bottom: 2px;
+  margin-bottom: 14px;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+.np2-play__tags::-webkit-scrollbar { display: none; }
+.np2-play__tags a {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  min-height: 28px;
+  padding: 0 10px;
+  border-radius: 8px;
+  background: #1a1c1e;
+  border: 1px solid #2a2c2e;
+  color: #c8ccd2;
+  font-size: 12px;
+  text-decoration: none;
+}
+.np2-play__tags a:active {
+  border-color: rgba(245, 166, 35, 0.45);
+  color: #ffc14d;
+}
+.np2-play__blurb {
+  margin: 0 0 18px;
+  padding: 12px;
+  border-radius: 12px;
+  background: #141516;
+  border: 1px solid #222426;
+}
+.np2-play__blurb-txt {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.65;
+  color: #b8bcc2;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  overflow: hidden;
+}
+.np2-play__blurb-txt.is-open {
+  display: block;
+  -webkit-line-clamp: unset;
+  overflow: visible;
+}
+.np2-play__blurb-more {
+  margin-top: 8px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: #ffc14d;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+.np2-play__eps { padding: 0 0 8px; }
+.np2-play__eps-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 10px;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+.np2-play__eps-head h2 {
+  margin: 0;
+  font-size: 16px;
+  color: #fff;
+  font-weight: 800;
+}
+.np2-play__eps-count {
+  font-size: 12px;
+  color: #8b8e93;
+}
+.np2-play__eps-chevron {
+  margin-left: auto;
+  flex-shrink: 0;
+  width: 20px;
+  height: 20px;
+  color: #8b8e93;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s ease;
+}
+.np2-play__eps-chevron svg { display: block; }
+.np2-play__eps.is-collapsed .np2-play__eps-chevron { transform: rotate(-90deg); }
+.np2-play__eps.is-collapsed .np2-play__eps-body { display: none; }
+.np2-play__eps.is-collapsed .np2-play__eps-head { margin-bottom: 0; }
+.np2-play-page .np2-eps--row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.np2-play-page .np2-eps--row a {
+  flex: 0 0 auto;
+  min-width: 72px;
+  min-height: 36px;
+  padding: 0 12px;
+  border-radius: 10px;
+  background: #1a1c1e;
+  border: 1px solid #2a2c2e;
+  color: #ddd;
+  text-decoration: none;
+  font-size: 13px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.np2-play-page .np2-eps--row a.is-on {
+  background: linear-gradient(90deg, #f5a623, #ff8a3d);
+  border-color: transparent;
+  color: #121214;
+  font-weight: 800;
+}
+.np2-play__rel {
+  margin: 8px 0 4px;
+  padding: 0 0 12px;
+}
+.np2-play__rel-head {
+  display: flex;
+  align-items: center;
+  margin: 0 0 10px;
+}
+.np2-play__rel-head h2 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 700;
+  color: #fff;
+}
+.np2-play-page .np2-vgrid--play {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 12px 8px;
+  padding: 0;
+}
+.np2-play-page .np2-vgrid--play .np2-vgrid__card {
+  min-width: 0;
+  width: auto;
+}
+/* 对齐参考站 video 详情「猜你喜欢」：pb-[65.116%] ≈ 100/65.116 横封面 */
+.np2-play-page .np2-vgrid--play .np2-vgrid__pic img {
+  width: 100%;
+  aspect-ratio: 100 / 65.116;
+  object-fit: cover;
+  border-radius: 10px;
+}
+.np2-play-page .pb-ads-grid {
+  margin: 0;
+  padding-top: 4px;
+}
+.np2-play__fab {
+  position: fixed;
+  right: 16px;
+  bottom: calc(24px + env(safe-area-inset-bottom, 0px));
+  z-index: 40;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #f5a623, #ff7a3d);
+  color: #fff;
+  text-decoration: none;
+  box-shadow: 0 8px 20px rgba(245, 166, 35, 0.35);
+  touch-action: manipulation;
+}
+.np2-play__fab:active { transform: scale(0.96); }
+@media (prefers-reduced-motion: reduce) {
+  .np2-play__act:active .np2-play__act-ico,
+  .np2-play__fab:active { transform: none; }
+}
+.np2-empty__art {
+  width: 96px; height: 96px; margin: 0 auto 10px; display: block;
+  object-fit: contain;
+}
+.np2-auth-page .auth-page,
+.np2-auth-page .auth-page-form,
+.np2-auth-page .auth-page__panel {
+  background: #121214 !important; color: #f2f3f5 !important;
+  box-shadow: none !important; border: 0 !important;
+}
+.np2-auth-page input,
+.np2-auth-page .auth-page-form__input {
+  background: #2a2c2e !important; color: #fff !important; border: 0 !important;
+  border-radius: 10px !important;
+}
+.np2-auth-page .auth-page-form__submit,
+.np2-auth-page button[type="submit"] {
+  background: #f5a623 !important; color: #121214 !important; border: 0 !important;
+  border-radius: 12px !important; font-weight: 700 !important;
+}
+.np2-auth-page [data-lang] { color: inherit; }
+
+/* NP2 整页登录/找回密码：去 split 渐变 banner，深色沉浸式 */
+body.np2-auth-page,
+body.np2-auth-page .auth-page,
+body.np2-auth-page .auth-page__main,
+body.np2-auth-page .auth-page__form-wrap {
+  background: #121214 !important;
+  color: #f2f3f5 !important;
+}
+body.np2-auth-page .auth-page__hero,
+body.np2-auth-page .auth-page__mbanner {
+  display: none !important;
+}
+body.np2-auth-page .auth-page__mnav,
+body.np2-auth-page .auth-page[data-auth-panel="login"] .auth-page__mnav {
+  display: grid;
+  position: sticky !important;
+  top: 0;
+  left: auto;
+  right: auto;
+  z-index: 10;
+  grid-template-columns: 44px minmax(0, 1fr) 44px;
+  align-items: center;
+  min-height: 48px;
+  padding: env(safe-area-inset-top, 0px) 8px 0;
+  background: #121214;
+  border-bottom: 1px solid #2c2e31;
+  pointer-events: auto;
+}
+body.np2-auth-page .auth-page__mnav-title,
+body.np2-auth-page .auth-page[data-auth-panel="login"] .auth-page__mnav-title {
+  visibility: hidden;
+  margin: 0;
+  font-size: 17px;
+  font-weight: 700;
+  color: #f2f3f5;
+  text-align: center;
+}
+body.np2-auth-page .auth-page__back,
+body.np2-auth-page .auth-page[data-auth-panel="login"] .auth-page__back {
+  color: #f2f3f5;
+  background: transparent;
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+}
+body.np2-auth-page .auth-page__back .auth-page__back-ico,
+body.np2-auth-page .auth-page__inline-back .auth-page__back-ico {
+  transform: none;
+}
+body.np2-auth-page .auth-page__back:active {
+  background: rgba(255, 255, 255, 0.06);
+}
+body.np2-auth-page .auth-page[data-auth-panel="login"] .auth-page__form-wrap {
+  margin-top: 0;
+  padding: 20px 16px max(24px, env(safe-area-inset-bottom, 0px));
+  border-radius: 0;
+  box-shadow: none;
+}
+body.np2-auth-page .auth-page__sheet-head {
+  display: block;
+  margin-bottom: 20px;
+}
+body.np2-auth-page .auth-page__sheet-title {
+  margin: 0 0 6px;
+  font-size: 24px;
+  font-weight: 800;
+  color: #fff;
+}
+body.np2-auth-page .auth-page__sheet-desc {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.5;
+  color: #8b8e93;
+}
+body.np2-auth-page .auth-page-form__invite-toggle {
+  color: #f5a623 !important;
+}
+body.np2-auth-page .auth-page-form__input {
+  background: #2a2c2e !important;
+  color: #fff !important;
+  border: 0 !important;
+}
+body.np2-auth-page .auth-page-form__input::placeholder {
+  color: #8b8e93;
+}
+body.np2-auth-page .auth-page-form__forgot {
+  color: #8b8e93 !important;
+}
+body.np2-auth-page .auth-page-form__forgot:hover {
+  color: #f5a623 !important;
+}
+body.np2-auth-page .auth-page__alt a {
+  color: #f5a623;
+}
+
+body.np2-app.page-member .member-card,
+body.np2-app.page-member .favs-list,
+body.np2-app.page-member .plays-list { background: transparent !important; color: #fff !important; }
+body.np2-app.page-member .plays-list__title,
+body.np2-app.page-member .member-card__title,
+body.np2-app.page-member .plays-list__name a,
+body.np2-app.page-member .member-fav__title { color: #fff !important; }
+body.np2-app.page-member .plays-list__item,
+body.np2-app.page-member .member-fav {
+  background: #1c1e21 !important;
+  border-color: rgba(255, 255, 255, 0.06) !important;
+}
+body.np2-app.page-member .plays-list__meta,
+body.np2-app.page-member .plays-list__ep,
+body.np2-app.page-member .member-fav__meta,
+body.np2-app.page-member .member-fav__tag,
+body.np2-app.page-member .plays-list__type {
+  color: #8b8e93 !important;
+}
+body.np2-app.page-member .plays-list__type,
+body.np2-app.page-member .member-fav__tag {
+  background: #2a2c2e !important;
+}
+body.np2-app.page-member .plays-list__pct { color: #f5a623 !important; }
+body.np2-app.page-member .plays-list__progress,
+body.np2-app.page-member .member-history__progress {
+  background: rgba(255, 255, 255, 0.12) !important;
+}
+body.np2-app.page-member .plays-list__bar { background: #f5a623 !important; }
+body.np2-app.page-member .plays-list__continue,
+body.np2-app.page-member .member-fav__go {
+  background: #f5a623 !important;
+  color: #121214 !important;
+}
+body.np2-app.page-member .plays-list__del,
+body.np2-app.page-member .member-fav__unfav,
+body.np2-app.page-member .plays-list__clear,
+body.np2-app.page-member .member-history__clear {
+  background: #2a2c2e !important;
+  color: #c8c8c8 !important;
+}
+/* 仅桌面强制显示标题栏；移动端仍走 member-mobile 的隐藏逻辑 */
+@media (min-width: 961px) {
+  body.np2-app.page-member .plays-list__head--desktop,
+  body.np2-app.page-member .member-card__head--desktop { display: flex !important; }
+}
+.np2-member-body { padding: 0 12px 24px; }
+
+/* —— 收藏 / 播放记录：PC 列表布局加固（防 page-member 类遗漏时也可用） —— */
+body.np2-app.page-member [data-component="favs_list"] .member-fav__link,
+body.np2-app.page-member.page-member--favs .member-fav__link {
+  display: grid;
+  grid-template-columns: 92px minmax(0, 1fr) auto;
+  gap: 14px;
+  align-items: center;
+  padding: 12px 52px 12px 12px;
+  color: inherit;
+  text-decoration: none;
+}
+body.np2-app.page-member [data-component="favs_list"] .member-fav__img,
+body.np2-app.page-member.page-member--favs .member-fav__img {
+  display: block;
+  width: 92px;
+  height: 122px;
+  max-width: 92px;
+  /* 覆盖 pb-shell 全局 img { height: auto } */
+  max-height: 122px;
+  object-fit: cover;
+}
+body.np2-app.page-member [data-component="favs_list"] .member-fav__body,
+body.np2-app.page-member.page-member--favs .member-fav__body {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+body.np2-app.page-member [data-component="favs_list"] .member-history__clear,
+body.np2-app.page-member.page-member--favs .member-history__clear {
+  flex: 0 0 auto;
+  align-self: center;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: 36px;
+  height: 36px;
+  max-height: 36px;
+  padding: 0 12px;
+  border: 0;
+  border-radius: 8px;
+  line-height: 1;
+  overflow: hidden;
+}
+body.np2-app.page-member [data-component="favs_list"] .member-history__clear-ico,
+body.np2-app.page-member.page-member--favs .member-history__clear-ico {
+  width: 16px;
+  height: 16px;
+  flex: 0 0 16px;
+}
+body.np2-app.page-member [data-component="favs_list"] .member-fav__unfav-text {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+@media (min-width: 961px) {
+  body.np2-app.page-member .np2-member-body {
+    /* flex 子项 + margin:auto 会按内容收缩；必须显式 width:100% 再靠 max-width 限宽 */
+    width: 100%;
+    max-width: 960px;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 16px 24px 48px;
+    box-sizing: border-box;
+  }
+  body.np2-app.page-member [data-component="favs_list"] .member-fav__link,
+  body.np2-app.page-member.page-member--favs .member-fav__link {
+    grid-template-columns: 108px minmax(0, 1fr) auto;
+    gap: 18px;
+    padding: 16px 56px 16px 16px;
+  }
+  body.np2-app.page-member [data-component="favs_list"] .member-fav__img,
+  body.np2-app.page-member.page-member--favs .member-fav__img {
+    width: 108px;
+    height: 144px;
+    max-width: 108px;
+    max-height: 144px;
+    border-radius: 8px;
+  }
+  body.np2-app.page-member [data-component="favs_list"] .member-fav__title,
+  body.np2-app.page-member.page-member--favs .member-fav__title {
+    font-size: 17px;
+    font-weight: 650;
+    letter-spacing: -0.01em;
+  }
+  body.np2-app.page-member [data-component="favs_list"] .member-fav__go,
+  body.np2-app.page-member.page-member--favs .member-fav__go {
+    min-height: 40px;
+    padding: 0 16px;
+    border-radius: 10px;
+    font-size: 14px;
+    transition: filter 180ms ease, transform 160ms ease;
+  }
+  body.np2-app.page-member [data-component="favs_list"] .member-fav:hover .member-fav__go,
+  body.np2-app.page-member.page-member--favs .member-fav:hover .member-fav__go {
+    filter: brightness(1.06);
+  }
+  body.np2-app.page-member [data-component="favs_list"] .member-fav:active .member-fav__go,
+  body.np2-app.page-member.page-member--favs .member-fav:active .member-fav__go {
+    transform: scale(0.98);
+  }
+  body.np2-app.page-member [data-component="favs_list"] .member-fav__unfav,
+  body.np2-app.page-member.page-member--favs .member-fav__unfav {
+    top: 14px;
+    right: 14px;
+    min-width: 40px;
+    min-height: 40px;
+    border-radius: 10px;
+    transition: background 180ms ease, color 180ms ease, transform 160ms ease;
+  }
+  body.np2-app.page-member [data-component="favs_list"] .member-card__head--desktop,
+  body.np2-app.page-member.page-member--favs .member-card__head--desktop {
+    padding: 20px 20px 16px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  }
+  body.np2-app.page-member [data-component="favs_list"] .member-favs,
+  body.np2-app.page-member.page-member--favs .member-favs {
+    gap: 14px;
+    padding: 16px 0 8px;
+  }
+  body.np2-app.page-member [data-component="favs_list"] .member-fav,
+  body.np2-app.page-member.page-member--favs .member-fav {
+    border-radius: 12px;
+    overflow: hidden;
+    transition: background 180ms ease, transform 160ms ease;
+  }
+  body.np2-app.page-member [data-component="favs_list"] .member-fav:hover,
+  body.np2-app.page-member.page-member--favs .member-fav:hover {
+    background: #222428 !important;
+  }
+}
+
+@media (max-width: 960px) {
+  body.np2-app.page-member [data-component="favs_list"] .member-fav__link,
+  body.np2-app.page-member.page-member--favs .member-fav__link {
+    grid-template-columns: 80px minmax(0, 1fr);
+    gap: 12px;
+    padding: 12px 44px 12px 12px;
+  }
+  body.np2-app.page-member [data-component="favs_list"] .member-fav__img,
+  body.np2-app.page-member.page-member--favs .member-fav__img {
+    width: 80px;
+    height: 106px;
+    max-width: 80px;
+  }
+  body.np2-app.page-member [data-component="favs_list"] .member-fav__go,
+  body.np2-app.page-member.page-member--favs .member-fav__go {
+    grid-column: 1 / -1;
+    justify-self: flex-start;
+  }
+}
+
+.np2-search-page .np2-inner-top__title:empty { min-height: 1em; }
+
+.np2-auth { padding: 24px 16px; }
+.np2-auth__form { display: flex; flex-direction: column; gap: 12px; }
+.np2-auth__form input {
+  height: 44px; border: 0; border-radius: 12px; padding: 0 14px;
+  background: #2a2c2e; color: #fff; font-size: 15px;
+}
+.np2-auth__form button {
+  height: 44px; border: 0; border-radius: 12px;
+  background: #f5a623; color: #121214; font-size: 16px; font-weight: 700;
+}
+.np2-auth__hint { margin-top: 16px; color: #8b8e93; font-size: 13px; text-align: center; }
+
+.np2-auth__err { color: #ff6b6b; font-size: 13px; margin: 0; }
+
+/* 登录桥接页：不再展示第二套表单，只负责拉起弹窗 */
+.np2-auth-bridge-page .np2-tabbar { display: none !important; }
+.np2-auth-bridge {
+  min-height: 40vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 48px 20px;
+  color: #8b8e93;
+  font-size: 14px;
+}
+.np2-auth-bridge__tip { margin: 0; }
+
+.np2-card { flex: 0 0 58%; min-width: 168px; max-width: 220px; }
+.np2-card img, .np2-card .np2-poster-ph {
+  width: 100%; aspect-ratio: 100 / 65.116; object-fit: cover;
+  border-radius: 8px; display: block; background: #2a2c2e; color: #f5a623;
+}
+.np2-home-page .np2-card img,
+.np2-home-page .np2-card .np2-poster-ph {
+  aspect-ratio: 100 / 65.116;
+  border-radius: 8px;
+}
+/* 对齐 splash displayType=3：pb-[131.858%] */
+.np2-home-page .np2-v3__pic img {
+  aspect-ratio: 100 / 131.858;
+  border-radius: 0;
+}
+.np2-home-page .np2-hs__pic img {
+  aspect-ratio: 100 / 53.138;
+  border-radius: 0;
+}
+.np2-row__more { margin-left: auto; }
+.np2-row__title { flex: 1; min-width: 0; overflow: hidden; }
+.np2-row__title-txt {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.np2-home-page .np2-top { gap: 8px; padding: 8px 12px; }
+.np2-home-page .np2-top__logo { display: flex !important; }
+.np2-home-page .np2-top__brand-wrap,
+.np2-home-page .np2-top__brand { display: none !important; }
+.np2-home-page .np2-top__search { flex: 1 1 auto; min-width: 0; height: 32px; font-size: 13px; }
+.np2-home-page .np2-row { margin: 0 0 10px; display: flex; flex-direction: column; }
+.np2-home-page .np2-row__head { padding: 0 12px 4px; }
+.np2-home-page .np2-row__title { font-size: 14px; font-weight: 700; }
+.np2-home-page .np2-row__more { font-size: 11px; color: #8b8e93; }
+.np2-row--grid2 .np2-cards {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px 8px;
+  overflow: visible;
+  padding: 0 12px;
+}
+.np2-row--grid2 .np2-card {
+  flex: none;
+  width: auto;
+  min-width: 0;
+  max-width: none;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border-radius: 12px;
+  background: #1e2022;
+}
+.np2-row--grid2 .np2-card:nth-child(n+5) { display: none; }
+.np2-row--grid2 .np2-card__pic {
+  border-radius: 0;
+  overflow: hidden;
+}
+.np2-row--grid2 .np2-card img,
+.np2-row--grid2 .np2-card .np2-poster-ph {
+  aspect-ratio: 16 / 9;
+  border-radius: 0;
+  object-fit: cover;
+}
+.np2-row--grid2 .np2-card__body {
+  padding: 8px 10px 10px;
+}
+.np2-home-page .np2-row--grid2 .np2-card__name {
+  font-size: 13px;
+  font-weight: 500;
+  margin-top: 0;
+  white-space: normal;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  line-height: 1.4;
+  min-height: 0;
+  color: #f5f6f8;
+}
+.np2-home-page .np2-row--grid2 .np2-card__meta {
+  margin-top: 0;
+  font-size: 11px;
+}
+.np2-home-page .np2-row__shuffle {
+  display: inline-flex !important;
+  align-self: stretch;
+  width: calc(100% - 24px);
+  max-width: none;
+  margin: 8px 12px 14px;
+  height: 33px;
+  padding: 0 10px;
+  border: 0;
+  border-radius: 8px;
+  background: #2a2c2e !important;
+  color: #c8c8c8;
+  font-size: 12px;
+  font-weight: 500;
+  gap: 6px;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: none;
+}
+
+/* —— 会员 / 用户子页顶栏分工（对齐 site-clean / member_shell）——
+   PC：首页同款 .np2-top
+   H5：返回栏 .member-mnav 或 .np2-inner-top，不要首页顶栏 */
+@media (max-width: 960px) {
+  body.np2-app.page-member .np2-top,
+  body.np2-app.page-member .np2-top,
+  body.np2-app.np2-topic-page .np2-top,
+  body.np2-app.np2-mine-page .np2-top {
+    display: none !important;
+  }
+  body.np2-app.np2-mine-page .pbs-shell__main > .np2-mine-pc-only {
+    display: none !important;
+  }
+  body.np2-app.page-member .member-mnav {
+    display: grid !important;
+    background: #1a1c1d !important;
+    color: #f2f3f5 !important;
+    border-bottom-color: #2c2e31 !important;
+    box-shadow: none !important;
+  }
+  body.np2-app.page-member .member-mnav__title,
+  body.np2-app.page-member .member-mnav__back {
+    color: #f2f3f5 !important;
+  }
+  /* 「我的」内容不足一屏时，去掉整屏 min-height，避免底栏留白把页面撑出滚动 */
+  body.np2-app.np2-mine-page {
+    min-height: 0;
+  }
+  body.np2-app.np2-mine-page .np2-app__main,
+  body.np2-app.np2-mine-page .pbs-shell,
+  body.np2-app.np2-mine-page .pbs-shell__main,
+  body.np2-app.np2-mine-page .pbs-wrap,
+  body.np2-app.np2-mine-page .layout,
+  body.np2-app.np2-mine-page .pbs-main {
+    min-height: 0 !important;
+    height: auto !important;
+  }
+  body.np2-app.np2-mine-page .np2-mine {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-x: hidden;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
+    padding-bottom: 8px;
+  }
+  body.np2-app.np2-mine-page.page-member--index .pbs-main {
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+  }
+}
+@media (min-width: 961px) {
+  body.np2-app.page-member .np2-top,
+  body.np2-app.page-member .np2-top,
+  body.np2-app.np2-topic-page .np2-top,
+  body.np2-app.np2-mine-page .np2-top {
+    display: flex !important;
+  }
+  /* PC 有首页顶栏后，隐藏 H5 返回栏 */
+  body.np2-app.page-member .np2-inner-top,
+  body.np2-app.page-member .np2-inner-top,
+  body.np2-app.np2-topic-page .np2-inner-top,
+  body.np2-app.page-member .member-mnav {
+    display: none !important;
+  }
+}
+
+/* 会员中心：H5 np2_mine_hub + PC member_shell；顶栏仅 PC */
+.np2-mine-pc-only { display: none; }
+.np2-mine-h5-only { display: block; }
+@media (min-width: 961px) {
+  .np2-mine-h5-only { display: none !important; }
+  .np2-mine-pc-only { display: block !important; }
+}
+.np2-mine-page .np2-mine { padding: 16px 12px 24px; }
+.np2-mine__who h1 { font-size: 22px; }
+.np2-mine__pts { color: #f5a623 !important; font-weight: 700; }
+.np2-mine__avatar--ph {
+  width: 64px; height: 64px; border-radius: 50%;
+  background: radial-gradient(circle at 40% 30%, #f5a623, #2a2c2e);
+}
+.np2-mine__login {
+  display: flex; align-items: center; justify-content: center;
+  margin: 0 0 14px;
+  height: 44px; border-radius: 12px;
+  background: linear-gradient(90deg, #f5a623, #ff8a5c);
+  color: #121214; font-weight: 800; text-decoration: none; font-size: 15px;
+}
+.np2-mine__vip {
+  display: flex; align-items: center; gap: 12px;
+  margin: 0 0 14px; padding: 14px 14px;
+  border-radius: 14px;
+  background:
+    linear-gradient(115deg, rgba(58,42,18,.92) 0%, rgba(26,28,30,.94) 55%, rgba(42,26,40,.92) 100%),
+    url(../img/banners/vip.webp) right center / auto 100% no-repeat,
+    #1a1c1e;
+  border: 1px solid rgba(245,166,35,.28);
+  text-decoration: none; color: #fff;
+  overflow: hidden;
+}
+.np2-mine__vip-ico {
+  flex: 0 0 auto;
+  width: 40px; height: 40px;
+  object-fit: contain;
+  filter: drop-shadow(0 2px 6px rgba(245,166,35,.35));
+}
+.np2-mine__vip strong { display: block; font-size: 15px; color: #ffc14d; }
+.np2-mine__vip span { display: block; margin-top: 4px; font-size: 12px; color: #b8b8b8; }
+.np2-mine__vip em {
+  margin-left: auto; flex: 0 0 auto;
+  padding: 6px 12px; border-radius: 999px;
+  background: #f5a623; color: #121214;
+  font-style: normal; font-size: 12px; font-weight: 800;
+}
+.np2-mine__stats {
+  display: grid; grid-template-columns: 1fr 1fr 1fr;
+  gap: 8px; margin: 0 0 16px;
+}
+.np2-mine__stats a {
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 4px; min-height: 64px; border-radius: 12px;
+  background: #1a1c1e; text-decoration: none; color: #fff;
+}
+.np2-mine__stats b { font-size: 16px; font-weight: 800; color: #ffc14d; }
+.np2-mine__stats span { font-size: 12px; color: #8b8e93; }
+.np2-mine__list {
+  display: flex; flex-direction: column;
+  background: #1a1c1e; border-radius: 14px; overflow: hidden;
+}
+.np2-mine__list a {
+  display: flex; align-items: center; gap: 10px;
+  min-height: 48px; padding: 0 14px;
+  color: #f2f3f5; text-decoration: none; font-size: 14px;
+  border-bottom: 1px solid #2a2c2e;
+}
+.np2-mine__list a:last-child { border-bottom: 0; }
+.np2-mine__ico {
+  width: 28px; height: 28px; border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  background: rgba(245,166,35,.12); color: #f5a623;
+  overflow: hidden;
+}
+.np2-mine__ico img {
+  width: 22px; height: 22px;
+  object-fit: contain;
+  display: block;
+}
+.np2-mine__list i { margin-left: auto; color: #5c5f64; font-style: normal; font-size: 18px; }
+.np2-mine__logout {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 16px;
+  min-height: 44px;
+  border-radius: 12px;
+  background: #1a1c1e;
+  color: #ff6b6b;
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+}
+.np2-mine__logout:active { opacity: 0.85; }
+.np2-mine__grid { display: none; }
+.np2-mine__menu { display: none; }
+.np2-mine__hint { display: none; }
+
+.np2-page__bar--sub {
+  display: flex; align-items: center; gap: 10px;
+  padding: 4px 12px 12px;
+}
+.np2-page__bar--sub h1 { margin: 0; font-size: 16px; color: #fff; }
+.np2-community .np2-top { margin-bottom: 0; }
+.np2-feed { padding: 0 12px 20px; display: flex; flex-direction: column; gap: 12px; }
+.np2-feed__item {
+  display: flex; gap: 12px; align-items: stretch;
+  background: #1a1c1e; border-radius: 14px; overflow: hidden;
+  text-decoration: none; color: inherit;
+}
+.np2-feed__pic { flex: 0 0 112px; }
+.np2-feed__pic img {
+  width: 112px; height: 100%; min-height: 96px;
+  object-fit: cover; display: block; background: #2a2c2e;
+}
+.np2-feed__body { flex: 1; min-width: 0; padding: 12px 12px 12px 0; }
+.np2-feed__body h2 {
+  margin: 0 0 6px; font-size: 15px; color: #fff;
+  display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical; overflow: hidden;
+}
+.np2-feed__body p {
+  margin: 0; font-size: 12px; color: #8b8e93; line-height: 1.45;
+  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+}
+.np2-feed__more { display: inline-block; margin-top: 8px; font-size: 12px; color: #f5a623; }
+
+.np2-short__rail {
+  position: absolute; right: 10px; bottom: 80px; z-index: 5;
+  display: flex; flex-direction: column; gap: 14px; align-items: center;
+}
+.np2-short__rail-btn {
+  display: flex; flex-direction: column; align-items: center; gap: 4px;
+  width: 48px; color: #fff; text-decoration: none; font-size: 11px;
+  text-shadow: 0 1px 2px rgba(0,0,0,.6);
+}
+.np2-short__rail-btn svg {
+  width: 44px; height: 44px; padding: 10px; border-radius: 50%;
+  background: rgba(0,0,0,.35); box-sizing: border-box;
+}
+
+/* explore uses home chrome — unlock document scroll */
+html:has(body.np2-explore-page.np2-home-page) {
+  height: auto;
+  overflow: auto;
+}
+body.np2-explore-page.np2-home-page {
+  height: auto;
+  max-height: none;
+  overflow: auto !important;
+  padding-bottom: calc(56px + env(safe-area-inset-bottom, 0px));
+}
+body.np2-explore-page.np2-home-page .pbs-shell,
+body.np2-explore-page.np2-home-page .pbs-shell__main,
+body.np2-explore-page.np2-home-page .np2-app__main,
+body.np2-explore-page.np2-home-page .pbs-wrap,
+body.np2-explore-page.np2-home-page .layout,
+body.np2-explore-page.np2-home-page .pbs-main {
+  height: auto !important;
+  max-height: none !important;
+  overflow: visible !important;
+  min-height: 0 !important;
+}
+.np2-explore-page .np2-explore__scroll {
+  overflow: visible;
+  height: auto;
+  padding-bottom: 8px;
+}
+
+.np2-search-page .np2-vgrid,
+.np2-detail-page .np2-vgrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px 8px;
+  padding: 0 12px;
+}
+.np2-detail-page .np2-vgrid__pic img {
+  width: 100%;
+  aspect-ratio: 3 / 4;
+  object-fit: cover;
+  border-radius: 10px;
+}
+.np2-d {
+  padding: 0 12px 24px;
+}
+.np2-detail-page .np2-d__hero {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+}
+.np2-detail-page .np2-d__poster {
+  flex: 0 0 120px;
+  width: 120px;
+}
+.np2-detail-page .np2-d__poster img {
+  width: 100%;
+  aspect-ratio: 3 / 4;
+  object-fit: cover;
+  border-radius: 12px;
+  display: block;
+}
+.np2-detail-page .np2-tabbar,
+body.np2-app.page-vod-detail .np2-tabbar { display: none !important; }
+.np2-detail-page.np2-app,
+body.np2-app.page-vod-detail { padding-bottom: env(safe-area-inset-bottom, 0px); }
+
+/* home rails: hscroll + 3-col posters */
+.np2-row--hscroll .np2-cards {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 8px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  padding: 0 12px 8px;
+}
+.np2-row--hscroll .np2-cards::-webkit-scrollbar { display: none; }
+/* splash VideoItem hscroll：w-[239rem] @375 → 239/375 vw */
+.np2-row--hscroll .np2-hs {
+  flex: 0 0 auto;
+  width: calc(239 / 375 * 100vw);
+  min-width: 0;
+  max-width: none;
+}
+
+.np2-row--cols3 .np2-cards {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 8px 6px;
+  padding: 0 12px 10px;
+  overflow: visible;
+}
+.np2-row--cols3 .np2-v3:nth-child(n+7) { display: none; }
+.np2-v3 { min-width: 0; }
+
+/* explore app shell: lock document, inner scroll */
+html:has(body.np2-explore-page) {
+  height: 100%;
+  overflow: hidden;
+}
+body.np2-explore-page {
+  height: 100dvh;
+  max-height: 100dvh;
+  overflow: hidden !important;
+  padding-bottom: 0;
+}
+body.np2-explore-page .pbs-shell,
+body.np2-explore-page .pbs-shell__main,
+body.np2-explore-page .np2-app__main,
+body.np2-explore-page .pbs-wrap,
+body.np2-explore-page .layout,
+body.np2-explore-page .pbs-main {
+  height: 100%;
+  max-height: 100dvh;
+  min-height: 0 !important;
+  overflow: hidden !important;
+}
+body.np2-explore-page .pbs-main {
+  height: calc(100dvh - 56px - env(safe-area-inset-bottom, 0px));
+}
+.np2-explore {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  min-height: 0;
+}
+.np2-explore .np2-page__bar,
+.np2-explore .np2-chips {
+  flex: 0 0 auto;
+  background: #121214;
+  z-index: 8;
+}
+.np2-explore .np2-page__bar { padding: 8px 12px 4px; }
+.np2-explore .np2-chips { padding-top: 0; }
+.np2-explore__scroll {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-x: hidden;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding-bottom: 8px;
+}
+.np2-explore .np2-vgrid { padding: 0 12px; }
+
+.np2-detail-page .np2-d__hero { align-items: flex-start; }
+.np2-detail-page .np2-d__name,
+.np2-detail-page .np2-d__meta,
+.np2-detail-page .np2-d__score { text-align: left; }
+.np2-detail-page .np2-vgrid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 10px 8px;
+}
+.np2-detail-page .np2-vgrid__card { min-width: 0; width: auto; }
+.np2-detail-page .np2-vgrid__pic img { width: 100%; }
+
+.np2-app img[width="0"],
+.np2-app img[height="0"],
+.np2-app .auth-card__logo { display: none !important; }
+
+/* —— np2 登录弹层：暗色 H5 皮 —— */
+.np2-app .auth-modal {
+  padding: 16px 12px;
+  align-items: center;
+}
+.np2-app .auth-modal__backdrop {
+  background: rgba(0, 0, 0, 0.72) !important;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+.np2-app .auth-modal__dialog,
+.np2-app .auth-modal__dialog--wide {
+  max-width: 420px;
+  width: 100%;
+  margin: 0 auto;
+  animation: np2-auth-sheet-in 0.22s ease-out;
+}
+@keyframes np2-auth-sheet-in {
+  from { opacity: 0; transform: translateY(18px); }
+  to { opacity: 1; transform: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .np2-app .auth-modal__dialog { animation: none; }
+}
+.np2-app .auth-card {
+  display: flex;
+  flex-direction: column;
+  grid-template-columns: none;
+  background: #1a1c1e !important;
+  color: #f2f3f5;
+  border-radius: 18px;
+  border: 1px solid #2c2e31;
+  box-shadow: 0 20px 48px rgba(0, 0, 0, 0.55);
+  min-height: 0;
+  max-height: min(86dvh, 640px);
+  overflow: hidden;
+}
+.np2-app .auth-card__visual {
+  position: relative;
+  flex: 0 0 auto;
+  height: 120px;
+  min-height: 120px;
+  background:
+    radial-gradient(120% 140% at 100% 0%, rgba(245, 166, 35, 0.45), transparent 55%),
+    linear-gradient(135deg, #2a2418 0%, #1a1c1e 48%, #241820 100%) !important;
+}
+.np2-app .auth-card__art {
+  opacity: 0.28;
+  object-fit: cover;
+  object-position: center 20%;
+  filter: saturate(0.85) brightness(0.7);
+}
+.np2-app .auth-card__visual-shade {
+  background:
+    linear-gradient(180deg, rgba(18, 18, 20, 0.15) 0%, rgba(18, 18, 20, 0.92) 100%) !important;
+}
+.np2-app .auth-card__brand {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 2;
+  display: flex !important;
+  flex-direction: column;
+  gap: 4px;
+  padding: 16px 18px 14px !important;
+  color: #fff;
+}
+.np2-app .auth-card__welcome {
+  margin: 0;
+  font-size: 20px !important;
+  font-weight: 800;
+  color: #ffc14d;
+  letter-spacing: 0.02em;
+}
+.np2-app .auth-card__hint {
+  display: block !important;
+  margin: 0;
+  font-size: 12px !important;
+  line-height: 1.45;
+  color: #c8c8c8 !important;
+}
+.np2-app .auth-modal__close {
+  top: 10px;
+  right: 10px;
+  width: 40px;
+  height: 40px;
+  background: rgba(26, 28, 30, 0.72) !important;
+  color: #f2f3f5 !important;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  cursor: pointer;
+  transition: background 0.15s ease, transform 0.15s ease;
+}
+.np2-app .auth-modal__close:hover,
+.np2-app .auth-modal__close:focus-visible {
+  background: rgba(42, 44, 46, 0.95) !important;
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(245, 166, 35, 0.35);
+}
+.np2-app .auth-modal__close:active {
+  transform: scale(0.96);
+}
+.np2-app .auth-card__body {
+  flex: 1 1 auto;
+  min-height: 0;
+  padding: 18px 16px 20px !important;
+  background: transparent !important;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+.np2-app .auth-card__head {
+  margin-bottom: 14px;
+}
+.np2-app .auth-card__title {
+  margin: 0;
+  font-size: 20px !important;
+  font-weight: 800;
+  color: #fff !important;
+}
+.np2-app .auth-card__sub {
+  margin: 6px 0 0;
+  font-size: 13px;
+  color: #8b8e93 !important;
+}
+.np2-app .auth-card__foot {
+  margin-top: 16px;
+  padding-top: 14px;
+  border-top: 1px solid #2c2e31;
+  gap: 8px;
+}
+.np2-app .auth-card__link {
+  color: #8b8e93 !important;
+  text-decoration: none;
+  cursor: pointer;
+  min-height: 32px;
+  display: inline-flex;
+  align-items: center;
+  transition: color 0.15s ease;
+}
+.np2-app .auth-card__link:hover,
+.np2-app .auth-card__link:focus-visible {
+  color: #f5a623 !important;
+  outline: none;
+}
+.np2-app .auth-card__sep {
+  color: #3a3c40 !important;
+}
+
+/* 表单控件 */
+.np2-app .auth-page-form,
+.np2-app [data-component="auth_form"].auth-page-form {
+  max-width: none;
+  gap: 12px;
+  background: transparent !important;
+  box-shadow: none !important;
+  border: 0 !important;
+}
+.np2-app .auth-page-form__input,
+.np2-app .auth-field__input,
+.np2-app .auth-form input,
+.np2-app .auth-form select {
+  min-height: 44px !important;
+  border: 0 !important;
+  border-radius: 12px !important;
+  background: #2a2c2e !important;
+  color: #fff !important;
+  font-size: 15px !important;
+  box-shadow: none !important;
+}
+.np2-app .auth-page-form__input::placeholder,
+.np2-app .auth-field__input::placeholder {
+  color: #8b8e93;
+}
+.np2-app .auth-page-form__input:focus,
+.np2-app .auth-field__input:focus,
+.np2-app .auth-form input:focus {
+  outline: none !important;
+  box-shadow: 0 0 0 3px rgba(245, 166, 35, 0.35) !important;
+  background: #323438 !important;
+}
+.np2-app .auth-page-form__eye {
+  color: #8b8e93 !important;
+  width: 44px;
+  height: 44px;
+  cursor: pointer;
+}
+.np2-app .auth-page-form__forgot,
+.np2-app .auth-field__label {
+  color: #8b8e93 !important;
+}
+.np2-app .auth-page-form__forgot:hover {
+  color: #f5a623 !important;
+}
+.np2-app .auth-page-form__error,
+.np2-app .auth-form__error {
+  background: rgba(225, 29, 72, 0.14) !important;
+  color: #fb7185 !important;
+  border-radius: 10px;
+}
+.np2-app .auth-page-form__submit,
+.np2-app .auth-form__submit,
+.np2-app .auth-card button[type="submit"] {
+  min-height: 48px !important;
+  border: 0 !important;
+  border-radius: 12px !important;
+  background: linear-gradient(90deg, #f5a623, #ff8a5c) !important;
+  color: #121214 !important;
+  font-size: 16px !important;
+  font-weight: 800 !important;
+  cursor: pointer;
+  transition: transform 0.15s ease, filter 0.15s ease, opacity 0.15s ease;
+}
+.np2-app .auth-page-form__submit:hover,
+.np2-app .auth-form__submit:hover {
+  filter: brightness(1.05);
+}
+.np2-app .auth-page-form__submit:active,
+.np2-app .auth-form__submit:active {
+  transform: scale(0.98);
+}
+.np2-app .auth-page-form__submit:disabled,
+.np2-app .auth-form__submit:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+.np2-app .auth-recovery__tabs {
+  background: #121214 !important;
+  border-radius: 12px;
+}
+.np2-app .auth-recovery__tab {
+  color: #8b8e93 !important;
+  min-height: 40px;
+  cursor: pointer;
+}
+.np2-app .auth-recovery__tab.is-on {
+  background: #2a2c2e !important;
+  color: #f5a623 !important;
+  box-shadow: none !important;
+}
+.np2-app .auth-steps__item.is-on { color: #f5a623 !important; }
+.np2-app .auth-steps__item.is-on .auth-steps__num {
+  background: #f5a623 !important;
+  border-color: #f5a623 !important;
+  color: #121214 !important;
+}
+.np2-app .auth-steps__line { background: #2c2e31 !important; }
+.np2-app .auth-captcha__img {
+  background: #2a2c2e !important;
+  border-color: #3a3c40 !important;
+}
+
+@media (min-width: 641px) {
+  .np2-app .auth-modal {
+    align-items: center;
+    padding: 24px;
+  }
+  .np2-app .auth-modal__dialog {
+    max-width: 720px !important;
+  }
+  .np2-app .auth-modal__dialog--wide {
+    max-width: 820px !important;
+  }
+  .np2-app .auth-card {
+    display: grid;
+    grid-template-columns: minmax(240px, 34%) minmax(0, 1fr);
+    max-height: min(80dvh, 560px);
+    width: 100%;
+  }
+  .np2-app .auth-card__visual {
+    height: auto;
+    min-height: 100%;
+  }
+  .np2-app .auth-card__art {
+    opacity: 0.4;
+  }
+  .np2-app .auth-card__brand {
+    position: relative;
+    padding: 28px 22px !important;
+  }
+  .np2-app .auth-card__body {
+    padding: 28px 28px 24px !important;
+    min-width: 0;
+  }
+}
+
+.np2-sec-title {
+  margin: 8px 12px 10px;
+  font-size: 16px;
+  font-weight: 700;
+  color: #fff;
+}
+.np2-detail-page .np2-tabbar,
+body.np2-app.page-vod-detail .np2-tabbar { display: none !important; }
+.np2-detail-page.np2-app,
+body.np2-app.page-vod-detail { padding-bottom: env(safe-area-inset-bottom, 0px); }
+.np2-detail-page .np2-vgrid__pic img {
+  aspect-ratio: 3 / 4;
+  border-radius: 10px;
+  object-fit: cover;
+}
+
+/* —— 会员中心未登录：OLED 扁平空态（覆盖 member.css 浅蓝卡片） —— */
+body.np2-app.page-member.pb-components-only .pb-member-shell--guest,
+body.np2-app.page-member.pb-components-only .pb-member-shell:has(> .member-guest-redirect),
+body.np2-app.page-member .pb-member-shell--guest,
+body.np2-app.page-member .pb-member-shell:has(> .member-guest-redirect) {
+  background: #121214 !important;
+  min-height: calc(100dvh - 56px - env(safe-area-inset-bottom, 0px));
+}
+body.np2-app.page-member.pb-components-only .member-guest-redirect,
+body.np2-app.page-member .member-guest-redirect {
+  display: flex !important;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  max-width: none;
+  margin: 0;
+  min-height: calc(100dvh - 120px - env(safe-area-inset-bottom, 0px));
+  padding: 20px 12px 28px;
+  box-sizing: border-box;
+  text-align: center;
+  border: 0 !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  background:
+    radial-gradient(120% 55% at 50% -8%, rgba(245, 166, 35, 0.18), transparent 58%),
+    radial-gradient(80% 40% at 50% 100%, rgba(245, 166, 35, 0.05), transparent 55%),
+    #121214 !important;
+}
+body.np2-app.page-member.pb-components-only .member-guest-redirect__panel,
+body.np2-app.page-member .member-guest-redirect__panel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  max-width: none;
+  padding: 0 4px;
+  box-sizing: border-box;
+}
+body.np2-app.page-member.pb-components-only .member-guest-redirect__art,
+body.np2-app.page-member .member-guest-redirect__art {
+  width: 80px !important;
+  height: 80px !important;
+  margin: 0 0 14px !important;
+  border-radius: 50% !important;
+  display: grid !important;
+  place-items: center;
+  color: #f5a623 !important;
+  background:
+    radial-gradient(circle at 40% 32%, rgba(245, 166, 35, 0.28), transparent 62%),
+    #1e1f22 !important;
+  border: 1px solid rgba(245, 166, 35, 0.35) !important;
+  box-shadow:
+    0 0 0 6px rgba(245, 166, 35, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.04) !important;
+}
+body.np2-app.page-member.pb-components-only .member-guest-redirect__art svg,
+body.np2-app.page-member .member-guest-redirect__art svg,
+body.np2-app.page-member.pb-components-only .member-guest-redirect__art img,
+body.np2-app.page-member .member-guest-redirect__art img {
+  width: 48px !important;
+  height: 48px !important;
+  object-fit: contain;
+  display: block;
+}
+body.np2-app.page-member.pb-components-only .member-guest-redirect__kicker,
+body.np2-app.page-member .member-guest-redirect__kicker {
+  margin: 0 0 6px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  color: #f5a623;
+}
+body.np2-app.page-member.pb-components-only .member-guest-redirect__text,
+body.np2-app.page-member .member-guest-redirect__text {
+  margin: 0;
+  font-size: 22px;
+  font-weight: 800;
+  line-height: 1.3;
+  color: #fff !important;
+  letter-spacing: 0.01em;
+}
+body.np2-app.page-member.pb-components-only .member-guest-redirect__hint,
+body.np2-app.page-member .member-guest-redirect__hint {
+  margin: 8px 0 0;
+  font-size: 13px;
+  line-height: 1.5;
+  color: #8b8e93 !important;
+  max-width: 22em;
+}
+body.np2-app.page-member.pb-components-only .member-guest-redirect__cta,
+body.np2-app.page-member .member-guest-redirect__cta {
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0 !important;
+  min-height: 48px;
+  margin-top: 16px;
+  padding: 0 16px;
+  border: 0;
+  border-radius: 14px !important;
+  background: linear-gradient(90deg, #f5a623, #ff8a3d) !important;
+  color: #121214 !important;
+  text-decoration: none;
+  font-size: 16px;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  touch-action: manipulation;
+  box-shadow: none !important;
+  transition: transform 0.18s ease, filter 0.18s ease;
+}
+body.np2-app.page-member.pb-components-only .member-guest-redirect__cta:hover,
+body.np2-app.page-member .member-guest-redirect__cta:hover {
+  filter: brightness(1.05);
+}
+body.np2-app.page-member.pb-components-only .member-guest-redirect__cta:active,
+body.np2-app.page-member .member-guest-redirect__cta:active {
+  transform: scale(0.97);
+}
+body.np2-app.page-member.pb-components-only .member-guest-redirect__sub,
+body.np2-app.page-member .member-guest-redirect__sub {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  margin-top: 8px;
+  padding: 0 12px;
+  color: #8b8e93;
+  font-size: 13px;
+  text-decoration: none;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+body.np2-app.page-member.pb-components-only .member-guest-redirect__sub:hover,
+body.np2-app.page-member.pb-components-only .member-guest-redirect__sub:focus-visible,
+body.np2-app.page-member .member-guest-redirect__sub:hover,
+body.np2-app.page-member .member-guest-redirect__sub:focus-visible {
+  color: #f5a623;
+}
+body.np2-app.page-member.pb-components-only .member-guest-redirect__cta:focus-visible,
+body.np2-app.page-member .member-guest-redirect__cta:focus-visible,
+body.np2-app.page-member.pb-components-only .member-guest-redirect__sub:focus-visible,
+body.np2-app.page-member .member-guest-redirect__sub:focus-visible {
+  outline: 2px solid #f5a623;
+  outline-offset: 3px;
+}
+@media (prefers-reduced-motion: reduce) {
+  body.np2-app.page-member.pb-components-only .member-guest-redirect__cta,
+  body.np2-app.page-member .member-guest-redirect__cta {
+    transition: none;
+  }
+  body.np2-app.page-member.pb-components-only .member-guest-redirect__cta:active,
+  body.np2-app.page-member .member-guest-redirect__cta:active {
+    transform: none;
+  }
+}
+
+/* —— 充值中心 H5：单层 12px gutter，去掉 16/20 叠缩进 —— */
+@media (max-width: 960px) {
+  body.np2-app.page-member--upgrade .member-main,
+  body.np2-app.page-member.pb-components-only.page-member--upgrade .member-main {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+  }
+  body.np2-app.page-member--upgrade .member-card,
+  body.np2-app.page-member.pb-components-only.page-member--upgrade .pb-member-shell .member-card {
+    padding: 0 !important;
+  }
+  body.np2-app.page-member--upgrade .member-pay-top {
+    padding: 10px 12px 0 !important;
+  }
+  body.np2-app.page-member--upgrade .member-pay-links {
+    padding: 8px 12px 0 !important;
+  }
+  body.np2-app.page-member--upgrade .member-pay-panels {
+    /* 底栏 + 结算区余量 */
+    padding: 10px 12px calc(88px + env(safe-area-inset-bottom, 0px)) !important;
+  }
+  /* H5 充值/升级：隐藏底栏，避免挡住确认支付 */
+  body.np2-app.page-member--upgrade .np2-tabbar {
+    display: none !important;
+  }
+  body.np2-app.page-member--upgrade {
+    padding-bottom: 0 !important;
+  }
+  body.np2-app.page-member--upgrade .member-pay-vip-hero {
+    margin-bottom: 12px !important;
+    padding: 12px !important;
+  }
+  body.np2-app.page-member--upgrade .member-pay-settle .member-pay-checkout,
+  body.np2-app.page-member--upgrade .member-pay-checkout {
+    padding: 12px !important;
+  }
+  body.np2-app.page-member--upgrade .member-pay-card,
+  body.np2-app.page-member--upgrade .rc-card {
+    padding-left: 0;
+    padding-right: 0;
+  }
+  body.np2-app.page-member--upgrade .member-pay-amounts,
+  body.np2-app.page-member--upgrade .rc-amounts {
+    gap: 8px;
+  }
+}
+
+/* ============================================================
+   np2 小说 / 漫画首页视觉皮肤（对齐短视频暗色 App）
+   同系：#121214 / #f5a623 / 圆角软表面
+   差异：小说横幅+2列书封+列表榜；漫画精选16:9+竖封横滑+列表榜
+   ============================================================ */
+body.np2-app.page-novel-home,
+body.np2-app.page-manga-home,
+body.np2-app.np2-novel-home,
+body.np2-app.np2-manga-home {
+  overflow-x: hidden;
+  max-width: 100%;
+}
+body.np2-app.page-novel-home .pbs-wrap,
+body.np2-app.page-manga-home .pbs-wrap,
+body.np2-app.page-novel-home .layout.novel-home,
+body.np2-app.page-manga-home .layout.manga-home,
+body.np2-app.page-novel-home main,
+body.np2-app.page-manga-home main {
+  min-width: 0;
+  max-width: 100%;
+  overflow-x: hidden;
+  box-sizing: border-box;
+}
+
+/* 移动端铁律：水平边距只留一层。禁止 wrap 12px + 区块再缩进 */
+@media (max-width: 960px) {
+  body.np2-app.page-novel-home .pbs-wrap,
+  body.np2-app.page-manga-home .pbs-wrap,
+  body.np2-app.page-novel-home .wrap,
+  body.np2-app.page-manga-home .wrap {
+    padding: 0 !important;
+    margin: 0;
+    max-width: none;
+    width: 100%;
+  }
+  body.np2-app.page-novel-home .layout.novel-home,
+  body.np2-app.page-novel-home .pbs-main,
+  body.np2-app.page-manga-home .layout.manga-home,
+  body.np2-app.page-manga-home .pbs-main {
+    margin: 0 !important;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+    width: 100%;
+    max-width: none;
+  }
+}
+
+/* ---------- 小说：同系暗色 App；封面比对齐首页双列卡 100/65.116 ---------- */
+body.np2-app.page-novel-home {
+  --nv-paper: #1a1c1e;
+  --nv-paper-line: #2a2c2e;
+  --nv-ink-soft: #8b8e93;
+  --nv-radius: 10px;
+  --nv-cover-ratio: 100 / 65.116;
+  --nv-gutter: 12px; /* 唯一水平边距，对齐短视频 */
+}
+body.np2-app.page-novel-home .layout.novel-home {
+  gap: 0;
+  padding-top: 0 !important;
+  padding-bottom: 20px;
+}
+body.np2-app.page-novel-home .nv-banner {
+  margin: 4px var(--nv-gutter) 0;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  padding: 0;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+body.np2-app.page-novel-home .nv-banner__viewport {
+  overflow-x: auto !important;
+  overflow-y: hidden !important;
+  scroll-snap-type: x proximity;
+  overscroll-behavior-x: contain;
+  -webkit-overflow-scrolling: touch;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  touch-action: pan-x pan-y;
+}
+body.np2-app.page-novel-home .nv-banner__track {
+  max-width: none;
+  gap: 10px;
+  padding: 4px 0 10px;
+  justify-content: flex-start;
+}
+body.np2-app.page-novel-home .nv-banner__slide {
+  flex: 0 0 min(72vw, 268px);
+  gap: 8px;
+}
+body.np2-app.page-novel-home .nv-banner__cover {
+  aspect-ratio: var(--nv-cover-ratio);
+  border-radius: 8px;
+  box-shadow: none;
+  border: 0;
+  overflow: hidden;
+}
+body.np2-app.page-novel-home .nv-banner__cover img {
+  object-fit: cover !important;
+  object-position: center center;
+}
+body.np2-app.page-novel-home .nv-banner__body strong {
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 650;
+  letter-spacing: 0;
+  line-height: 1.35;
+  color: #f2f3f5;
+}
+body.np2-app.page-novel-home .nv-banner__body em {
+  font-size: 12px;
+  color: var(--nv-ink-soft);
+  -webkit-line-clamp: 1;
+}
+body.np2-app.page-novel-home .nv-sec,
+body.np2-app.page-novel-home [data-component="novel_home_grid"],
+body.np2-app.page-novel-home [data-component="novel_home_rank"],
+body.np2-app.page-novel-home [data-component="novel_home_row"],
+body.np2-app.page-novel-home [data-component="novel_home_zone"] {
+  /* 对齐首页 np2-row：区块无底色，仅卡片 item 带壳 */
+  margin: 0 0 18px !important;
+  padding: 0 var(--nv-gutter) !important;
+  max-width: none;
+  width: auto;
+  min-width: 0;
+  box-sizing: border-box;
+  border-radius: 0 !important;
+  border: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+body.np2-app.page-novel-home .nv-sec__title,
+body.np2-app.page-novel-home [data-component] .nv-sec__title {
+  font-family: inherit !important;
+  font-size: 17px !important;
+  font-weight: 700 !important;
+  letter-spacing: -0.01em !important;
+  color: #f2f3f5 !important;
+  gap: 0 !important;
+}
+body.np2-app.page-novel-home .nv-sec__title::before,
+body.np2-app.page-novel-home [data-component] .nv-sec__title::before {
+  display: none !important;
+}
+body.np2-app.page-novel-home .nv-sec__sub,
+body.np2-app.page-novel-home [data-component] .nv-sec__sub {
+  margin-top: 4px !important;
+  font-size: 12px !important;
+  color: var(--nv-ink-soft) !important;
+  letter-spacing: 0;
+}
+body.np2-app.page-novel-home .nv-sec__more {
+  border-radius: 999px !important;
+  border: 0 !important;
+  background: transparent !important;
+  color: var(--nv-ink-soft) !important;
+  font-size: 12px !important;
+  letter-spacing: 0;
+}
+body.np2-app.page-novel-home .nv-sec__head {
+  margin-bottom: 6px !important;
+  padding-bottom: 0;
+  border-bottom: 0;
+}
+/* #nv-guess：字标 + 副标层级（对齐短视频 feed-title 处理） */
+body.np2-app.page-novel-home [data-component="novel_home_grid"] .nv-sec__head {
+  margin-bottom: 10px !important;
+  align-items: center;
+}
+body.np2-app.page-novel-home [data-component="novel_home_grid"] .nv-sec__intro {
+  flex-direction: row;
+  align-items: center;
+  flex-wrap: nowrap;
+  gap: 0 10px;
+}
+body.np2-app.page-novel-home [data-component="novel_home_grid"] .nv-sec__title--wordmark {
+  line-height: 0;
+}
+body.np2-app.page-novel-home [data-component="novel_home_grid"] .nv-sec__title-wordmark {
+  height: 30px;
+  max-width: min(168px, 42vw);
+  filter: drop-shadow(0 1px 6px rgba(0, 0, 0, 0.35));
+}
+body.np2-app.page-novel-home [data-component="novel_home_grid"] .nv-sec__sub {
+  margin: 0 !important;
+  max-width: none;
+  padding-left: 10px;
+  border-left: 1px solid #2a2c2e;
+  font-size: 13px !important;
+  font-weight: 400;
+  line-height: 1.4 !important;
+  color: #9aa0a6 !important;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+body.np2-app.page-novel-home .nv-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  gap: 10px 8px !important;
+}
+body.np2-app.page-novel-home .nv-book {
+  gap: 0;
+  overflow: hidden;
+  border-radius: 12px;
+  background: #1e2022;
+  transition: transform 120ms ease, background 180ms ease;
+}
+body.np2-app.page-novel-home .nv-book:active {
+  transform: scale(0.985);
+}
+body.np2-app.page-novel-home .nv-book__cover {
+  aspect-ratio: var(--nv-cover-ratio) !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  border: 0;
+  background-color: #141618 !important;
+}
+body.np2-app.page-novel-home .nv-book__cover img,
+body.np2-app.page-novel-home .nv-book__cover .nv-book__img {
+  border-radius: 0 !important;
+}
+body.np2-app.page-novel-home .nv-book__cover .nv-book__img--empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+body.np2-app.page-novel-home .nv-book__cover .nv-book__ph {
+  color: #f5a623;
+  width: 36%;
+  height: auto;
+}
+body.np2-app.page-novel-home .nv-rank-item__cover {
+  aspect-ratio: var(--nv-cover-ratio) !important;
+  border-radius: 10px !important;
+  box-shadow: none !important;
+  border: 0;
+  background-color: #1e2022 !important;
+  flex-shrink: 0;
+  overflow: hidden;
+}
+body.np2-app.page-novel-home .nv-book:hover .nv-book__cover,
+body.np2-app.page-novel-home .nv-book:active .nv-book__cover {
+  transform: none;
+  opacity: 1;
+}
+body.np2-app.page-novel-home .nv-book__title {
+  padding: 8px 10px 0;
+  font-size: 13px !important;
+  font-weight: 600 !important;
+  line-height: 1.35 !important;
+  color: #f2f3f5 !important;
+  letter-spacing: 0;
+}
+body.np2-app.page-novel-home .nv-book__meta {
+  padding: 4px 10px 10px;
+  color: var(--nv-ink-soft) !important;
+  font-size: 11px !important;
+}
+body.np2-app.page-novel-home .nv-row,
+body.np2-app.page-novel-home .nv-row__viewport {
+  max-width: 100%;
+  min-width: 0;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none !important;
+  -ms-overflow-style: none;
+}
+body.np2-app.page-novel-home .nv-row__viewport::-webkit-scrollbar,
+body.np2-app.page-manga-home .mc-row__viewport::-webkit-scrollbar {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+  background: transparent !important;
+}
+body.np2-app.page-novel-home .nv-book--md {
+  width: calc(168 / 375 * 100vw) !important;
+  flex: 0 0 calc(168 / 375 * 100vw) !important;
+  min-width: 148px;
+  max-width: 200px;
+}
+body.np2-app.page-novel-home .nv-book--lg {
+  width: calc(180 / 375 * 100vw) !important;
+  flex: 0 0 calc(180 / 375 * 100vw) !important;
+  min-width: 160px;
+  max-width: 220px;
+}
+/* 横滑书列：封面比例跟首页 --nv-cover-ratio，文案略压缩 */
+body.np2-app.page-novel-home .nv-row__track > .nv-book .nv-book__title,
+body.np2-app.page-novel-home [data-component="novel_home_zone"] .nv-row__track > .nv-book .nv-book__title {
+  padding: 8px 10px 0;
+  font-size: 13px !important;
+  line-height: 1.35 !important;
+  -webkit-line-clamp: 2;
+}
+body.np2-app.page-novel-home .nv-row__track > .nv-book .nv-book__meta,
+body.np2-app.page-novel-home [data-component="novel_home_zone"] .nv-row__track > .nv-book .nv-book__meta {
+  padding: 4px 10px 10px;
+  font-size: 11px !important;
+}
+body.np2-app.page-novel-home [data-component="novel_home_rank"].nv-sec--rank {
+  background: transparent !important;
+  padding: 0 var(--nv-gutter) !important;
+}
+body.np2-app.page-novel-home [data-component="novel_home_rank"] .nv-sec__head {
+  margin-bottom: 12px !important;
+}
+body.np2-app.page-novel-home .nv-rank-list {
+  gap: 8px !important;
+}
+body.np2-app.page-novel-home .nv-rank-tabs {
+  background: #121214 !important;
+  border: 0;
+  border-radius: 999px !important;
+  padding: 3px !important;
+}
+body.np2-app.page-novel-home .nv-rank-tabs button.is-on {
+  background: rgba(245, 166, 35, 0.16) !important;
+  color: #f5a623 !important;
+  box-shadow: none !important;
+  border-radius: 999px !important;
+}
+body.np2-app.page-novel-home .nv-rank-hero {
+  display: flex;
+  flex-direction: column;
+  background: #1e2022 !important;
+  border-radius: 12px !important;
+  overflow: hidden;
+  padding: 0 !important;
+  border: 0 !important;
+  gap: 0 !important;
+  text-decoration: none;
+  color: inherit;
+  transition: transform 120ms ease;
+}
+body.np2-app.page-novel-home .nv-rank-hero:active {
+  transform: scale(0.985);
+}
+body.np2-app.page-novel-home .nv-rank-hero__cover {
+  position: relative;
+  flex: none !important;
+  width: 100% !important;
+  max-height: none !important;
+  aspect-ratio: var(--nv-cover-ratio) !important;
+  border-radius: 0 !important;
+  background-color: #141618 !important;
+  background-size: cover;
+  background-position: center;
+  overflow: hidden;
+}
+body.np2-app.page-novel-home .nv-rank-hero__body {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  min-width: 0;
+  padding: 10px 12px 12px;
+}
+body.np2-app.page-novel-home .nv-rank-hero__body strong {
+  font-family: inherit;
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 0;
+  line-height: 1.35;
+  color: #f2f3f5;
+  display: block;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+body.np2-app.page-novel-home .nv-rank-hero__blurb {
+  display: -webkit-box;
+  margin: 0;
+  font-size: 12px;
+  line-height: 1.5;
+  color: #9aa0a6;
+  font-style: normal;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+body.np2-app.page-novel-home .nv-rank-hero__meta {
+  margin: 0;
+  margin-top: auto;
+  padding-top: 2px;
+  font-size: 11px;
+  line-height: 1.4;
+  color: #7c8288;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-variant-numeric: tabular-nums;
+}
+body.np2-app.page-novel-home .nv-rank-item {
+  grid-template-columns: 32px 72px minmax(0, 1fr) !important;
+  min-height: 76px;
+  padding: 10px 8px !important;
+  border-radius: 10px !important;
+  gap: 12px !important;
+  align-items: center !important;
+}
+body.np2-app.page-novel-home .nv-rank-item__cover {
+  width: 72px !important;
+}
+body.np2-app.page-novel-home .nv-rank-item:hover,
+body.np2-app.page-novel-home .nv-rank-item:active {
+  background: transparent !important;
+  border-color: transparent !important;
+}
+body.np2-app.page-novel-home .nv-rank-item__n {
+  font-family: inherit;
+  font-size: 18px !important;
+  font-weight: 800 !important;
+  color: var(--nv-ink-soft) !important;
+  font-variant-numeric: tabular-nums;
+  line-height: 1 !important;
+}
+body.np2-app.page-novel-home .nv-rank-item__n[data-rank="2"] {
+  color: #e8eaed !important;
+}
+body.np2-app.page-novel-home .nv-rank-item__n[data-rank="3"] {
+  color: #f5a623 !important;
+}
+@media (min-width: 821px) {
+  body.np2-app.page-novel-home .nv-rank-item {
+    grid-template-columns: 36px 80px minmax(0, 1fr) !important;
+    min-height: 84px;
+    padding: 12px 10px !important;
+  }
+  body.np2-app.page-novel-home .nv-rank-item__cover {
+    width: 80px !important;
+  }
+  body.np2-app.page-novel-home .nv-rank-hero__cover {
+    width: 100% !important;
+    max-height: none !important;
+  }
+}
+@media (max-width: 820px) {
+  body.np2-app.page-novel-home .nv-rank-hero {
+    flex-direction: row;
+    align-items: stretch;
+  }
+  body.np2-app.page-novel-home .nv-rank-hero__cover {
+    flex: 0 0 108px !important;
+    width: 108px !important;
+    aspect-ratio: var(--nv-cover-ratio) !important;
+  }
+  body.np2-app.page-novel-home .nv-rank-hero__body {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 5px;
+    flex: 1 1 auto;
+    min-width: 0;
+    padding: 10px 12px 10px 0;
+  }
+  body.np2-app.page-novel-home .nv-rank-hero__blurb {
+    font-size: 11px;
+    line-height: 1.45;
+    -webkit-line-clamp: 2;
+  }
+  body.np2-app.page-novel-home .nv-rank-hero__meta {
+    font-size: 11px;
+  }
+}
+@media (min-width: 640px) {
+  body.np2-app.page-novel-home .nv-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  }
+}
+@media (min-width: 961px) {
+  body.np2-app.page-novel-home [data-component="novel_home_grid"] .nv-sec__head {
+    margin-bottom: 14px !important;
+  }
+  body.np2-app.page-novel-home [data-component="novel_home_grid"] .nv-sec__intro {
+    gap: 0 14px;
+  }
+  body.np2-app.page-novel-home [data-component="novel_home_grid"] .nv-sec__title-wordmark {
+    height: 34px;
+    max-width: 180px;
+  }
+  body.np2-app.page-novel-home [data-component="novel_home_grid"] .nv-sec__sub {
+    margin: 0 !important;
+    padding-left: 14px;
+    max-width: none;
+    font-size: 14px !important;
+    border-left: 1px solid #2a2c2e;
+    line-height: 1.4 !important;
+  }
+  body.np2-app.page-novel-home .nv-book--md {
+    width: 186px !important;
+    flex: 0 0 186px !important;
+    min-width: 0;
+    max-width: none;
+  }
+  body.np2-app.page-novel-home .nv-book--lg {
+    width: 200px !important;
+    flex: 0 0 200px !important;
+    min-width: 0;
+    max-width: none;
+  }
+}
+
+/* ---------- 漫画：对齐短视频暗色 App 风（圆角 / 暖金 / 轻表面） ---------- */
+body.np2-app.page-manga-home {
+  --mc-pop: #f5a623;
+  --mc-pop-ink: #121214;
+  --mc-panel: #1a1c1e;
+  --mc-panel-2: #222426;
+  --mc-line: #2a2c2e;
+  --mc-muted: #8b8e93;
+  --mc-radius: 10px;
+  --mc-radius-sm: 8px;
+}
+body.np2-app.page-manga-home,
+body.np2-app.page-manga-home .pbs-shell,
+body.np2-app.page-manga-home .pbs-shell__main {
+  background: #121214 !important;
+}
+body.np2-app.page-manga-home .layout.manga-home {
+  max-width: none;
+  width: 100%;
+  padding: 0 0 28px !important;
+  margin: 0;
+  gap: 0;
+}
+
+/* 精选：圆角横图大卡，像短视频区块头图 */
+body.np2-app.page-manga-home [data-component="manga_home_spotlight"] {
+  margin: 8px 12px 0 !important;
+  max-width: none;
+  width: auto;
+  padding: 0 !important;
+  background: transparent !important;
+  border: 0 !important;
+}
+body.np2-app.page-manga-home [data-component="manga_home_spotlight"] .mc-sec__head {
+  padding: 4px 2px 10px;
+  margin: 0 !important;
+  align-items: center;
+  gap: 8px;
+}
+body.np2-app.page-manga-home [data-component="manga_home_spotlight"] .mc-sec__title {
+  font-size: 17px !important;
+  font-weight: 700 !important;
+  letter-spacing: -0.01em !important;
+  text-transform: none !important;
+  color: #f2f3f5 !important;
+  line-height: 1.3 !important;
+}
+body.np2-app.page-manga-home [data-component="manga_home_spotlight"] .mc-sec__sub {
+  width: auto;
+  flex: 0 1 auto;
+  margin: 0 0 0 8px !important;
+  font-size: 12px !important;
+  font-weight: 400 !important;
+  letter-spacing: 0 !important;
+  color: var(--mc-muted) !important;
+  line-height: 1.4 !important;
+}
+body.np2-app.page-manga-home .mc-spot {
+  margin: 0;
+  max-width: 100%;
+}
+body.np2-app.page-manga-home .mc-spot__box {
+  display: flex !important;
+  flex-direction: column !important;
+  margin-top: 0 !important;
+  min-height: 0 !important;
+  padding: 0 !important;
+  border-radius: var(--mc-radius) !important;
+  overflow: hidden !important;
+  border: 0 !important;
+  background: var(--mc-panel) !important;
+  box-shadow: none !important;
+  box-sizing: border-box;
+  position: relative;
+}
+body.np2-app.page-manga-home .mc-spot__bg-wrap {
+  position: relative !important;
+  inset: auto !important;
+  order: 0;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  height: auto !important;
+  border-radius: 0 !important;
+  overflow: hidden;
+  pointer-events: auto !important;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+body.np2-app.page-manga-home .mc-spot__bg-wrap::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background: linear-gradient(180deg, transparent 45%, rgba(18, 18, 20, 0.75) 100%);
+}
+body.np2-app.page-manga-home .mc-spot__bg-img {
+  position: absolute !important;
+  inset: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
+  object-position: center top !important;
+  opacity: 1 !important;
+}
+body.np2-app.page-manga-home .mc-spot__shade {
+  display: none !important;
+}
+body.np2-app.page-manga-home .mc-spot__main {
+  position: relative !important;
+  z-index: 2;
+  order: 1;
+  min-height: 0 !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  padding: 12px 12px 14px !important;
+  box-sizing: border-box;
+}
+body.np2-app.page-manga-home .mc-spot__hero-wrap {
+  display: none !important;
+}
+body.np2-app.page-manga-home .mc-spot__hero {
+  display: none !important;
+}
+body.np2-app.page-manga-home .mc-spot__name {
+  font-size: 16px !important;
+  font-weight: 650 !important;
+  letter-spacing: 0;
+  color: #f2f3f5 !important;
+  line-height: 1.35 !important;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+body.np2-app.page-manga-home .mc-spot__tags {
+  margin-top: 8px !important;
+  gap: 6px !important;
+}
+body.np2-app.page-manga-home .mc-spot__tags span {
+  border-radius: 6px !important;
+  padding: 2px 8px !important;
+  background: rgba(245, 166, 35, 0.14) !important;
+  border: 0 !important;
+  color: #f5a623 !important;
+  font-size: 11px !important;
+  font-weight: 600;
+  letter-spacing: 0;
+  text-transform: none;
+}
+body.np2-app.page-manga-home .mc-spot__desc {
+  margin-top: 8px !important;
+  max-width: 100% !important;
+  max-height: none !important;
+  min-height: 0 !important;
+  padding-top: 0 !important;
+  border-top: 0 !important;
+  color: var(--mc-muted) !important;
+  font-size: 12px !important;
+  line-height: 1.45 !important;
+  -webkit-line-clamp: 2;
+}
+body.np2-app.page-manga-home .mc-spot__thumbs {
+  margin-top: 12px !important;
+  margin-bottom: 0 !important;
+  padding-top: 0 !important;
+  gap: 8px !important;
+  max-width: 100%;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  -webkit-overflow-scrolling: touch;
+}
+body.np2-app.page-manga-home .mc-spot__thumb {
+  width: 52px !important;
+  height: 70px !important;
+  border-radius: var(--mc-radius-sm) !important;
+  opacity: 0.55 !important;
+  transform: none !important;
+  border: 2px solid transparent;
+  box-sizing: border-box;
+}
+body.np2-app.page-manga-home .mc-spot__thumb.is-on {
+  opacity: 1 !important;
+  transform: none !important;
+  border-color: #f5a623 !important;
+}
+body.np2-app.page-manga-home .mc-spot__cta {
+  position: static !important;
+  right: auto !important;
+  bottom: auto !important;
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: center;
+  align-self: flex-start;
+  min-height: 40px;
+  margin: 12px 0 0 !important;
+  padding: 0 18px !important;
+  border-radius: 999px !important;
+  background: #f5a623 !important;
+  color: var(--mc-pop-ink) !important;
+  font-weight: 700 !important;
+  font-size: 13px !important;
+  letter-spacing: 0;
+  text-transform: none;
+  border: 0 !important;
+  box-shadow: none !important;
+  transition: opacity 160ms var(--ease, ease), transform 160ms var(--ease, ease);
+}
+body.np2-app.page-manga-home .mc-spot__cta:active {
+  opacity: 0.9;
+  transform: scale(0.98);
+}
+body.np2-app.page-manga-home .mc-spot__cta:active {
+  opacity: 0.9;
+  transform: scale(0.98);
+}
+
+/* 横滑行：圆角竖封，对齐图中人像横滑区 */
+body.np2-app.page-manga-home [data-component="manga_home_row"] {
+  margin: 14px 0 0 !important;
+  max-width: 100%;
+  padding: 0 !important;
+  background: transparent !important;
+  border: 0 !important;
+}
+body.np2-app.page-manga-home [data-component="manga_home_row"] .mc-sec__head,
+body.np2-app.page-manga-home [data-component="manga_home_rank"] .mc-sec__head,
+body.np2-app.page-manga-home [data-component="manga_home_rank_tags"] .mc-sec__head {
+  padding: 0 12px;
+  margin-bottom: 10px !important;
+  align-items: center;
+}
+body.np2-app.page-manga-home [data-component="manga_home_row"] .mc-sec__title,
+body.np2-app.page-manga-home [data-component="manga_home_rank"] .mc-sec__title,
+body.np2-app.page-manga-home [data-component="manga_home_rank_tags"] .mc-sec__title {
+  font-size: 17px !important;
+  font-weight: 700 !important;
+  letter-spacing: -0.01em !important;
+  color: #f2f3f5 !important;
+  line-height: 1.3 !important;
+}
+body.np2-app.page-manga-home [data-component="manga_home_row"] .mc-sec__sub {
+  font-size: 12px !important;
+  color: var(--mc-muted) !important;
+  letter-spacing: 0;
+  text-transform: none;
+}
+body.np2-app.page-manga-home [data-component="manga_home_row"] .mc-sec__more,
+body.np2-app.page-manga-home [data-component="manga_home_rank"] .mc-sec__more,
+body.np2-app.page-manga-home [data-component="manga_home_rank_tags"] .mc-sec__more {
+  border-radius: 999px !important;
+  background: transparent !important;
+  border: 0 !important;
+  color: var(--mc-muted) !important;
+  font-size: 12px !important;
+  font-weight: 500 !important;
+  letter-spacing: 0;
+  text-transform: none;
+  min-height: 32px;
+  padding: 0 2px !important;
+}
+body.np2-app.page-manga-home .mc-row {
+  max-width: 100%;
+  overflow-x: hidden;
+}
+body.np2-app.page-manga-home .mc-row__viewport {
+  padding: 2px 12px 8px !important;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  -webkit-overflow-scrolling: touch;
+}
+body.np2-app.page-manga-home .mc-row__btn {
+  display: none !important;
+}
+body.np2-app.page-manga-home .mc-poster {
+  width: 118px !important;
+  gap: 8px;
+}
+body.np2-app.page-manga-home .mc-poster__cover {
+  aspect-ratio: 3 / 4 !important;
+  border-radius: var(--mc-radius-sm) !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  background-color: var(--mc-panel-2);
+  overflow: hidden;
+}
+body.np2-app.page-manga-home .mc-poster__tip {
+  border-radius: 6px !important;
+  background: rgba(0, 0, 0, 0.55) !important;
+  color: #fff !important;
+  font-weight: 600;
+  font-size: 10px;
+  letter-spacing: 0;
+}
+body.np2-app.page-manga-home .mc-poster__name {
+  font-size: 13px !important;
+  font-weight: 600 !important;
+  color: #f2f3f5 !important;
+  letter-spacing: 0;
+  line-height: 1.35 !important;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+body.np2-app.page-manga-home .mc-poster__meta {
+  font-size: 11px !important;
+  color: var(--mc-muted) !important;
+  font-style: normal !important;
+}
+body.np2-app.page-manga-home .mc-poster:active .mc-poster__cover {
+  opacity: 0.92;
+  transform: scale(0.98);
+  transition: opacity 140ms var(--ease, ease), transform 140ms var(--ease, ease);
+}
+
+/* 排行：轻列表，暖金序号，圆角小封 */
+body.np2-app.page-manga-home [data-component="manga_home_rank"],
+body.np2-app.page-manga-home [data-component="manga_home_rank_tags"] {
+  margin: 14px 0 0 !important;
+  max-width: 100%;
+  width: auto;
+  min-width: 0;
+  padding: 0 !important;
+  background: transparent !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  box-sizing: border-box;
+}
+body.np2-app.page-manga-home [data-component="manga_home_rank"] {
+  margin: 14px 12px 0 !important;
+  padding: 10px 8px 6px !important;
+  background: var(--mc-panel) !important;
+  border-radius: var(--mc-radius) !important;
+}
+body.np2-app.page-manga-home [data-component="manga_home_rank"] .mc-sec__head,
+body.np2-app.page-manga-home [data-component="manga_home_rank_tags"] .mc-sec__head {
+  margin-bottom: 6px !important;
+  gap: 8px 10px;
+  align-items: center;
+}
+body.np2-app.page-manga-home [data-component="manga_home_rank"] .mc-sec__head {
+  padding: 0 2px;
+}
+body.np2-app.page-manga-home [data-component="manga_home_rank_tags"] .mc-rank-panels,
+body.np2-app.page-manga-home [data-component="manga_home_rank_tags"] .mc-rank-grid {
+  padding-left: 12px;
+  padding-right: 12px;
+  box-sizing: border-box;
+}
+body.np2-app.page-manga-home .mc-rank-tabs {
+  order: 3;
+  flex: 1 1 100%;
+  gap: 4px !important;
+  margin: 2px 0 0 !important;
+  border-bottom: 0;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+body.np2-app.page-manga-home .mc-rank-tabs button {
+  position: relative;
+  min-height: 36px !important;
+  padding: 6px 12px !important;
+  font-size: 13px !important;
+  font-weight: 500 !important;
+  color: var(--mc-muted) !important;
+  letter-spacing: 0;
+  border-radius: 999px;
+}
+body.np2-app.page-manga-home .mc-rank-tabs button.is-on {
+  color: #f5a623 !important;
+  font-weight: 650 !important;
+  background: rgba(245, 166, 35, 0.12);
+}
+body.np2-app.page-manga-home .mc-rank-tabs button.is-on::after {
+  display: none;
+}
+body.np2-app.page-manga-home .mc-rank-grid {
+  display: none !important;
+  flex-direction: column !important;
+  grid-template-columns: none !important;
+  gap: 0 !important;
+  margin-top: 4px;
+  list-style: none;
+  padding: 0;
+}
+body.np2-app.page-manga-home .mc-rank-grid.is-on {
+  display: flex !important;
+}
+body.np2-app.page-manga-home .mc-rank-grid > li {
+  border-bottom: 1px solid rgba(42, 44, 46, 0.9);
+}
+body.np2-app.page-manga-home .mc-rank-grid > li:last-child {
+  border-bottom: 0;
+}
+body.np2-app.page-manga-home .mc-rank-card {
+  display: grid !important;
+  grid-template-columns: 28px 56px minmax(0, 1fr);
+  align-items: center;
+  column-gap: 10px;
+  padding: 10px 2px !important;
+  min-height: 68px;
+  text-decoration: none;
+  border-radius: 8px;
+}
+body.np2-app.page-manga-home .mc-rank-card__body {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  justify-content: center;
+}
+body.np2-app.page-manga-home .mc-rank-card__n {
+  position: static !important;
+  left: auto !important;
+  top: auto !important;
+  z-index: auto !important;
+  font-size: 15px !important;
+  font-weight: 700 !important;
+  line-height: 1 !important;
+  color: var(--mc-muted) !important;
+  -webkit-text-stroke: 0 !important;
+  text-shadow: none !important;
+  font-variant-numeric: tabular-nums;
+  text-align: center;
+}
+body.np2-app.page-manga-home .mc-rank-card:nth-child(1) .mc-rank-card__n,
+body.np2-app.page-manga-home .mc-rank-card:nth-child(2) .mc-rank-card__n,
+body.np2-app.page-manga-home .mc-rank-card:nth-child(3) .mc-rank-card__n {
+  color: #f5a623 !important;
+}
+body.np2-app.page-manga-home .mc-rank-card__cover {
+  width: 56px;
+  margin-left: 0 !important;
+  aspect-ratio: 3 / 4 !important;
+  border-radius: 8px !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  background-color: var(--mc-panel-2);
+  background-size: cover;
+  background-position: center top;
+}
+body.np2-app.page-manga-home .mc-rank-card__name {
+  margin: 0 !important;
+  font-size: 14px !important;
+  font-weight: 600 !important;
+  color: #f2f3f5 !important;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+body.np2-app.page-manga-home .mc-rank-card__meta {
+  display: flex !important;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin: 0 !important;
+  font-style: normal !important;
+}
+body.np2-app.page-manga-home .mc-rank-card__tag {
+  display: inline-flex;
+  align-items: center;
+  min-height: 20px;
+  padding: 0 7px;
+  border-radius: 6px;
+  background: rgba(245, 166, 35, 0.14);
+  color: #f5a623;
+  font-size: 11px;
+  font-weight: 600;
+  font-style: normal;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+body.np2-app.page-manga-home .mc-rank-card:active {
+  background: rgba(245, 166, 35, 0.06);
+}
+@media (prefers-reduced-motion: reduce) {
+  body.np2-app.page-novel-home .nv-book:hover .nv-book__cover,
+  body.np2-app.page-novel-home .nv-book:active .nv-book__cover,
+  body.np2-app.page-manga-home .mc-spot__cta:active,
+  body.np2-app.page-manga-home .mc-poster:active .mc-poster__cover {
+    transform: none;
+  }
+}
+
+/* ============================================================
+   PC / 宽屏：全站顶栏 + 首页布局（不再沿用 H5 窄栏）
+   ============================================================ */
+@media (min-width: 961px) {
+  /* 底栏是 H5 导航，桌面隐藏并收掉留白 */
+  .np2-tabbar {
+    display: none !important;
+  }
+  .np2-app {
+    padding-bottom: 40px;
+    overflow-x: hidden;
+  }
+  body.np2-app {
+    --np2-pc-max: 1280px;
+    --np2-pc-pad: 24px;
+    --np2-pc-gutter: max(var(--np2-pc-pad), calc((100vw - var(--np2-pc-max)) / 2 + var(--np2-pc-pad)));
+  }
+
+  /* 小说 / 漫画 PC：无 H5 底栏安全区；用正常页脚收尾 */
+  body.np2-app.page-novel-home,
+  body.np2-app.page-manga-home,
+  body.np2-app.page-novel-read,
+  body.np2-app.page-manga-play,
+  body.np2-app.np2-novel-home,
+  body.np2-app.np2-manga-home,
+  body.np2-app:has(.layout.novel-home),
+  body.np2-app:has(.layout.manga-home) {
+    padding-bottom: 0 !important;
+  }
+
+  /* PC 内容区：全站统一左右安全区（与顶栏 logo 左缘对齐） */
+  .np2-app .pbs-wrap {
+    max-width: none !important;
+    width: 100% !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    padding-left: var(--np2-pc-gutter) !important;
+    padding-right: var(--np2-pc-gutter) !important;
+    padding-top: 12px;
+    box-sizing: border-box;
+  }
+
+  /* 短视频：通栏，不叠安全区（播放/详情走统一 gutter，头图/播放器单独破栏） */
+  body.np2-app.np2-short-page .pbs-wrap {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+    padding-top: 0;
+  }
+
+  .np2-app .pbs-wrap > .layout,
+  .np2-app .layout.home,
+  .np2-app .layout.inner,
+  .np2-app .layout.solo,
+  .np2-app .layout.list,
+  .np2-app .layout.detail,
+  .np2-app .layout.play,
+  .np2-app .layout.rank,
+  .np2-app .layout.member,
+  .np2-app .layout.novel-home,
+  .np2-app .layout.manga-home {
+    max-width: none !important;
+    width: 100% !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    box-sizing: border-box;
+  }
+  .np2-app .layout.list,
+  .np2-app .layout.detail,
+  .np2-app .layout.play,
+  .np2-app .layout.rank,
+  .np2-app .layout.member,
+  .np2-app .layout.home,
+  .np2-app .layout.inner,
+  .np2-app .layout.solo {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+  .np2-app .layout .pbs-main,
+  .np2-app .pbs-main {
+    width: 100% !important;
+    max-width: none !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    min-width: 0;
+    box-sizing: border-box;
+  }
+
+  /* wrap 已留安全区：内层组件勿再叠水平 gutter */
+  .np2-app .pbs-wrap > .bili-channel,
+  .np2-app .pbs-wrap > .pb-channel-strip,
+  .np2-app .pbs-wrap > [data-component="channel_strip"],
+  .np2-app .layout.list .pbs-main > .bili-sec,
+  .np2-app .layout.list .pbs-main > .pb-block-host,
+  .np2-type-page .pbs-main > .bili-sec,
+  .np2-app .layout.list .pbs-main > [data-component="page_hero"],
+  .np2-app .layout.list .pbs-main > .pb-page-hero,
+  .np2-app .layout.list .pbs-main > [data-component="role_list"],
+  .np2-app .layout.list .pbs-main > .pb-role-list,
+  .np2-app .layout.rank .pbs-main > .pb-rank-list,
+  .np2-app .layout.rank .pbs-main > [data-component="rank_list"],
+  .np2-app .layout.rank .pbs-main > [data-component="sec_heading"],
+  .np2-app .layout.rank .pbs-main > .pb-sec-heading,
+  body.np2-app.np2-rank-page .pbs-main > .pb-sec-heading,
+  body.np2-app.np2-rank-page .pbs-main > [data-component="sec_heading"],
+  body.np2-app.np2-rank-page .pbs-main > [data-component="rank_list"],
+  body.np2-app:has(.layout.play) .layout.play .pbs-main > .pb-breadcrumb.mac-crumb,
+  body.np2-app:has(.layout.play) .layout.play .pbs-main > [data-component="breadcrumb"],
+  body.np2-app:has(.layout.play) .layout.play .pbs-main > [data-component="vod_player"],
+  body.np2-app:has(.layout.play) .layout.play .pbs-main > .pbs-vod-player {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+  }
+  body.np2-app:has(.layout.play) .layout.play .pbs-main > .pb-media-related,
+  body.np2-app:has(.layout.play) .layout.play .pbs-main > [data-component="media_related_panel"] {
+    width: 100% !important;
+    max-width: none !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+  }
+  body.np2-app:has(.layout.play) .layout.play .pbs-main > .pb-media-related.media-panel--cinema,
+  body.np2-app:has(.layout.play) .layout.play .pbs-main > [data-component="media_related_panel"].media-panel--cinema {
+    padding-left: 20px !important;
+    padding-right: 20px !important;
+    box-sizing: border-box;
+  }
+  /* 播放页 PC：播放器通栏破出 wrap gutter */
+  body.np2-app:has(.layout.play) .pbs-vod-player__host,
+  body.np2-app:has(.layout.play) .pbs-vod-player__empty {
+    width: calc(100% + (2 * var(--np2-pc-gutter)));
+    max-width: none;
+    margin-left: calc(-1 * var(--np2-pc-gutter));
+    margin-right: calc(-1 * var(--np2-pc-gutter));
+  }
+  body.np2-app:has(.layout.play) .pbs-vod-player__eps,
+  body.np2-app:has(.layout.play) .pbs-vod-player__gate {
+    max-width: none;
+    width: 100%;
+    margin-inline: 0;
+    box-sizing: border-box;
+  }
+
+  /* 详情页 PC：wrap 已有 gutter；头图通栏破出，正文/面板/相关推荐对齐顶栏 */
+  body.np2-app:has(.layout.detail) .layout.detail .pbs-main > [data-component="vod_detail"],
+  body.np2-app:has(.layout.detail) .layout.detail .pbs-main > [data-component="art_detail"],
+  body.np2-app:has(.layout.detail) .layout.detail .pbs-main > [data-component="manga_detail"],
+  body.np2-app:has(.layout.detail) .layout.detail .pbs-main > .pb-vod-detail,
+  body.np2-app:has(.layout.detail) .layout.detail .pbs-main > .pb-art-detail,
+  body.np2-app:has(.layout.detail) .layout.detail .pbs-main > .pb-manga-detail,
+  body.np2-app:has(.layout.detail) .layout.detail .pbs-main > .pb-entity-detail,
+  body.np2-app:has(.layout.detail) .layout.detail .pbs-main > .pb-block-host:has(> .pb-entity-detail),
+  body.np2-app:has(.layout.detail) .layout.detail .pbs-main > [data-component="role_detail"],
+  body.np2-app:has(.layout.detail) .layout.detail .pbs-main > [data-component="actor_detail"],
+  body.np2-app:has(.layout.detail) .layout.detail .pbs-main > [data-component="website_detail"] {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    width: 100% !important;
+    max-width: none !important;
+    box-sizing: border-box;
+  }
+  body.np2-app:has(.layout.detail) .layout.detail .pbs-main > .pb-media-related,
+  body.np2-app:has(.layout.detail) .layout.detail .pbs-main > [data-component="media_related_panel"] {
+    width: 100% !important;
+    max-width: none !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    box-sizing: border-box;
+  }
+  body.np2-app:has(.layout.detail) .pb-vod-detail .media-hero,
+  body.np2-app:has(.layout.detail) .pb-art-detail .media-hero,
+  body.np2-app:has(.layout.detail) .pb-manga-detail .media-hero {
+    width: calc(100% + (2 * var(--np2-pc-gutter)));
+    max-width: none;
+    margin-left: calc(-1 * var(--np2-pc-gutter));
+    margin-right: calc(-1 * var(--np2-pc-gutter));
+  }
+  body.np2-app:has(.layout.detail) .media-hero__wrap {
+    max-width: none;
+    padding-left: var(--np2-pc-gutter);
+    padding-right: var(--np2-pc-gutter);
+    box-sizing: border-box;
+  }
+  body.np2-app:has(.layout.detail) .pb-vod-detail .media-panel--cinema,
+  body.np2-app:has(.layout.detail) .pb-art-detail .media-panel--cinema,
+  body.np2-app:has(.layout.detail) .pb-manga-detail .media-panel--cinema,
+  body.np2-app:has(.layout.detail) [data-component="media_related_panel"].media-panel--cinema,
+  body.np2-app:has(.layout.detail) .pb-media-related.media-panel--cinema {
+    width: 100% !important;
+    max-width: none !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    padding-left: 20px !important;
+    padding-right: 20px !important;
+    box-sizing: border-box;
+  }
+  .np2-type-page .bili-sec__head {
+    margin-top: 8px;
+    margin-bottom: 20px;
+  }
+  .np2-type-page .bili-sec__title {
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+  }
+  .np2-type-page .bili-sec__body {
+    min-width: 0;
+  }
+
+  /* 漫画 / 小说列表网格：auto-fit 回收空列，少数据时卡片可略增宽 */
+  .np2-app .pb-manga-list,
+  .np2-app .pb-art-list,
+  .np2-app .layout.list .bili-grid.pb-manga-list,
+  .np2-app .layout.list .bili-grid.pb-art-list {
+    grid-template-columns: repeat(auto-fit, minmax(160px, 200px)) !important;
+    justify-content: start;
+    gap: 20px 16px !important;
+  }
+  .np2-app .layout.list .pb-manga-card__title,
+  .np2-app .layout.list .pb-art-book__title {
+    font-size: 14px;
+    line-height: 1.35;
+    white-space: normal;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .np2-app .layout.list .pb-manga-card__meta,
+  .np2-app .layout.list .pb-art-book__meta {
+    font-size: 12px;
+  }
+
+  /* 小说 / 漫画 / 短视频 / 排行 PC：顶栏与 wrap 外区块共用 --np2-pc-gutter */
+  body.np2-app.page-novel-home .pbs-wrap,
+  body.np2-app.page-manga-home .pbs-wrap,
+  body.np2-app.np2-novel-home .pbs-wrap,
+  body.np2-app.np2-manga-home .pbs-wrap,
+  body.np2-app.page-novel-home .pbs-shell__main > .np2-ads.pb-ads-grid,
+  body.np2-app.page-manga-home .pbs-shell__main > .np2-ads.pb-ads-grid,
+  body.np2-app.page-novel-home .pbs-shell__main > [data-component="novel_home_banner"],
+  body.np2-app.page-manga-home .pbs-shell__main > [data-component="manga_home_spotlight"],
+  body.np2-app.np2-novel-home .pbs-shell__main > [data-component="novel_home_banner"],
+  body.np2-app.np2-manga-home .pbs-shell__main > [data-component="manga_home_spotlight"],
+  body.np2-app.np2-short-page .pbs-main {
+    max-width: none !important;
+    width: 100% !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    padding-left: var(--np2-pc-gutter) !important;
+    padding-right: var(--np2-pc-gutter) !important;
+    box-sizing: border-box;
+  }
+  body.np2-app.page-novel-home .layout.novel-home,
+  body.np2-app.page-manga-home .layout.manga-home {
+    max-width: none !important;
+    width: 100% !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+  }
+  body.np2-app.page-novel-home .pbs-main,
+  body.np2-app.page-manga-home .pbs-main {
+    width: 100% !important;
+    max-width: none !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+  }
+  body.np2-app.page-novel-home {
+    --nv-gutter: 0px;
+  }
+  body.np2-app.page-novel-home .pbs-shell__main > [data-component="novel_home_banner"] .nv-banner,
+  body.np2-app.page-novel-home .nv-banner,
+  body.np2-app.page-novel-home .nv-sec,
+  body.np2-app.page-novel-home [data-component="novel_home_grid"],
+  body.np2-app.page-novel-home [data-component="novel_home_rank"],
+  body.np2-app.page-novel-home [data-component="novel_home_row"],
+  body.np2-app.page-novel-home [data-component="novel_home_zone"] {
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+  }
+  body.np2-app.page-manga-home [data-component="manga_home_spotlight"],
+  body.np2-app.page-manga-home [data-component="manga_home_rank"],
+  body.np2-app.page-manga-home [data-component="manga_home_rank_tags"],
+  body.np2-app.page-manga-home [data-component="manga_home_row"] {
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+  }
+  body.np2-app.page-manga-home [data-component="manga_home_row"] .mc-sec__head,
+  body.np2-app.page-manga-home [data-component="manga_home_rank"] .mc-sec__head,
+  body.np2-app.page-manga-home [data-component="manga_home_rank_tags"] .mc-sec__head,
+  body.np2-app.page-manga-home [data-component="manga_home_rank_tags"] .mc-rank-panels,
+  body.np2-app.page-manga-home [data-component="manga_home_rank_tags"] .mc-rank-grid {
+    padding-left: 0;
+    padding-right: 0;
+  }
+
+  body.np2-app.np2-rank-page .layout.rank,
+  body.np2-app.np2-rank-page .pbs-main {
+    max-width: none !important;
+    width: 100% !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+  }
+  body.np2-app.np2-rank-page .pbs-main > .pb-sec-heading,
+  body.np2-app.np2-rank-page .pbs-main > [data-component="sec_heading"],
+  body.np2-app.np2-rank-page .pbs-main > [data-component="rank_list"] {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+  }
+
+  /* 阅读 / 漫画播放页 PC：正文左右安全区 */
+  body.np2-app.page-novel-read .pbs-wrap,
+  body.np2-app.page-manga-play .pbs-wrap,
+  body.np2-app.page-novel-read .wrap,
+  body.np2-app.page-manga-play .wrap {
+    max-width: 960px !important;
+    width: 100% !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    padding-left: var(--np2-pc-gutter) !important;
+    padding-right: var(--np2-pc-gutter) !important;
+    box-sizing: border-box;
+  }
+
+  .np2-home-page .np2-home {
+    padding: 0 0 40px;
+  }
+
+  /* —— 顶栏：通栏背景，内容在宽屏内对齐（跳出 .pbs-wrap） —— */
+  .np2-top,
+  .np2-home-page .np2-top,
+  .np2-detail-page .np2-top,
+  .np2-short-page .np2-top,
+  .np2-mine-page .np2-top,
+  .np2-type-page .np2-top,
+  .np2-show-page .np2-top,
+  .np2-inner-top {
+    --np2-bar-max: var(--np2-pc-max);
+    --np2-bar-pad: var(--np2-pc-pad);
+    position: sticky;
+    top: 0;
+    z-index: 40;
+    flex-wrap: nowrap;
+    align-items: center;
+    gap: 12px 16px;
+    width: 100%;
+    max-width: none;
+    margin-left: 0;
+    margin-right: 0;
+    padding: 12px var(--np2-pc-gutter);
+    box-sizing: border-box;
+    background: rgba(18, 18, 20, 0.94);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  }
+  /* 小说/漫画/短视频/排行顶栏在 site_header：不用 100vw 破栏，跟首页 logo 对齐 */
+  body.np2-app.page-novel-home .pbs-shell__main > .np2-top,
+  body.np2-app.page-manga-home .pbs-shell__main > .np2-top,
+  body.np2-app.np2-novel-home .pbs-shell__main > .np2-top,
+  body.np2-app.np2-manga-home .pbs-shell__main > .np2-top,
+  body.np2-app.np2-short-page .pbs-shell__main > .np2-top,
+  body.np2-app.np2-rank-page .pbs-shell__main > .np2-top {
+    width: 100% !important;
+    max-width: none !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    padding-top: 12px !important;
+    padding-bottom: 12px !important;
+    padding-left: var(--np2-pc-gutter) !important;
+    padding-right: var(--np2-pc-gutter) !important;
+  }
+  /* 顶栏下快捷入口：PC 竖向留白（小说/漫画 ads 在 site_header，紧邻 sticky top） */
+  body.np2-app .pbs-shell__main > .np2-top + .pb-ads-grid,
+  body.np2-app .pbs-shell__main > .np2-top + .np2-ads.pb-ads-grid {
+    padding-top: 12px !important;
+    padding-bottom: 16px !important;
+  }
+  .np2-top__logo,
+  .np2-home-page .np2-top__logo {
+    flex-direction: row;
+    align-items: center;
+    gap: 8px;
+    min-width: 0;
+    max-width: 160px;
+  }
+  .np2-top__logo-img,
+  .np2-home-page .np2-top__logo-img {
+    height: 28px;
+    max-width: 140px;
+  }
+  .np2-top__mark,
+  .np2-home-page .np2-top__mark {
+    display: none;
+  }
+  .np2-top__logo-txt,
+  .np2-home-page .np2-top__logo-txt {
+    display: none;
+  }
+  .np2-top__channels {
+    display: flex;
+    flex: 0 0 auto;
+    align-items: center;
+    gap: 4px;
+  }
+  .np2-top__channels a {
+    padding: 6px 10px;
+    border-radius: 8px;
+    color: #aeb2b8;
+    font-size: 14px;
+    font-weight: 600;
+    text-decoration: none;
+    white-space: nowrap;
+    transition: color 160ms ease, background 160ms ease;
+  }
+  .np2-top__channels a:hover {
+    color: #fff;
+    background: rgba(255, 255, 255, 0.06);
+  }
+  .np2-top__channels a.is-on {
+    color: #f5a623;
+    background: rgba(245, 166, 35, 0.12);
+  }
+  /* PC 频道栏已有「排行」，分类 chips 不再重复 */
+  .np2-top__chips .np2-top__chip-rank {
+    display: none;
+  }
+  .np2-home-page .np2-top.np2-top--with-chips,
+  .np2-top.np2-top--with-chips {
+    flex-wrap: wrap;
+    align-content: flex-start;
+  }
+  .np2-home-page .np2-top.np2-top--with-chips .np2-top__chips,
+  .np2-top.np2-top--with-chips .np2-top__chips,
+  .np2-home-page .np2-top.np2-top--with-chips .np2-chips,
+  .np2-top.np2-top--with-chips .np2-chips {
+    order: 10;
+    flex: 1 1 100%;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+  }
+  .np2-top__chips,
+  .np2-top .np2-chips,
+  .np2-home-page .np2-top__chips {
+    order: 0;
+    flex: 1 1 auto;
+    width: auto;
+    min-width: 0;
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 4px 12px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    padding: 0 4px;
+    scrollbar-width: none;
+  }
+  .np2-top__chips a,
+  .np2-top .np2-chips a {
+    font-size: 13px;
+    font-weight: 600;
+    padding: 6px 2px;
+    color: #8b8e93;
+    transition: color 160ms ease;
+  }
+  .np2-top__chips a:hover,
+  .np2-top .np2-chips a:hover {
+    color: #ffc14d;
+  }
+  .np2-top__chips a.is-on,
+  .np2-top .np2-chips a.is-on {
+    color: #f5a623;
+  }
+  .np2-top__chips a.is-on::after,
+  .np2-top .np2-chips a.is-on::after {
+    left: 0;
+    right: 0;
+    bottom: 0;
+  }
+  .np2-top__search,
+  .np2-home-page .np2-top__search,
+  .np2-top__search-form,
+  .np2-home-page .np2-top__search-form {
+    flex: 0 0 280px;
+    width: 280px;
+    max-width: 320px;
+    min-width: 200px;
+    height: 36px;
+    margin: 0;
+    padding: 0 6px 0 14px;
+    border-radius: 10px;
+    font-size: 13px;
+    transition: background 180ms ease, box-shadow 180ms ease;
+  }
+  .np2-top__search {
+    padding: 0 14px;
+  }
+  .np2-top__search:hover,
+  .np2-top__search:focus-visible,
+  .np2-home-page .np2-top__search:hover,
+  .np2-home-page .np2-top__search:focus-visible {
+    background: #323438 !important;
+    box-shadow: 0 0 0 2px rgba(245, 166, 35, 0.28);
+  }
+  .np2-top__search-form:focus-within,
+  .np2-home-page .np2-top__search-form:focus-within {
+    background: #323438;
+    box-shadow: 0 0 0 2px rgba(245, 166, 35, 0.28);
+  }
+  .np2-top__search-input {
+    font-size: 13px;
+  }
+  .np2-top__search-go {
+    height: 28px;
+    min-width: 52px;
+    border-radius: 8px;
+    font-size: 12px;
+  }
+  .np2-top__search-clear {
+    font-size: 12px;
+    padding: 4px 8px;
+  }
+  .np2-top__actions {
+    gap: 8px;
+  }
+  .np2-top__gift,
+  .np2-home-page .np2-top__gift {
+    width: 36px;
+    height: 36px;
+    flex-basis: 36px;
+    border-radius: 10px;
+    transition: background 160ms ease;
+  }
+  .np2-top__gift:hover {
+    background: rgba(255, 255, 255, 0.06);
+  }
+  .np2-top__user-dd {
+    display: block;
+    position: relative;
+    flex: 0 0 auto;
+  }
+  .np2-top__user-dd .np2-top__user.user-dd__btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    min-width: 36px;
+    min-height: 36px;
+    flex: 0 0 36px;
+    margin: 0;
+    padding: 0;
+    gap: 0;
+    border: 0;
+    border-radius: 10px;
+    background: rgba(245, 166, 35, 0.14);
+    color: #f5a623;
+    text-decoration: none;
+    cursor: pointer;
+    appearance: none;
+    -webkit-appearance: none;
+    transition: background 160ms ease, color 160ms ease, transform 120ms ease;
+  }
+  .np2-top__user-ico {
+    display: block;
+    width: 22px;
+    height: 22px;
+  }
+  .np2-top__user-dd .np2-top__user.user-dd__btn:hover,
+  .np2-top__user-dd .np2-top__user.user-dd__btn[aria-expanded="true"] {
+    background: rgba(245, 166, 35, 0.22);
+    color: #ffc14d;
+  }
+  .np2-top__user-dd .np2-top__user.user-dd__btn:active {
+    transform: scale(0.98);
+  }
+  .np2-top__user:not(.user-dd__btn) {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    flex: 0 0 36px;
+    margin: 0;
+    padding: 0;
+    border-radius: 10px;
+    background: rgba(245, 166, 35, 0.14);
+    color: #f5a623;
+    text-decoration: none;
+    transition: background 160ms ease, color 160ms ease, transform 120ms ease;
+  }
+  .np2-top__user:not(.user-dd__btn):hover {
+    background: rgba(245, 166, 35, 0.22);
+    color: #ffc14d;
+  }
+  .np2-top__user-dd .user-dd__name,
+  .np2-top__user-dd .user-dd__caret {
+    display: none;
+  }
+  .np2-user-dd__menu {
+    right: 0;
+    left: auto;
+    min-width: 200px;
+    padding: 8px;
+    border: 1px solid #2a2c2e;
+    border-radius: 12px;
+    background: #1a1c1e;
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.45);
+    z-index: 80;
+  }
+  .np2-user-dd__menu .user-dd__head {
+    display: flex;
+    border-bottom-color: #2a2c2e;
+  }
+  .np2-user-dd__menu .user-dd__head-name,
+  .np2-user-dd__menu .user-dd__label {
+    color: #f2f3f5;
+  }
+  .np2-user-dd__menu .user-dd__head-meta,
+  .np2-user-dd__menu .user-dd__ico {
+    color: #8b8e93;
+  }
+  .np2-user-dd__menu .user-dd__ico.ts-icon {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    background-color: currentColor;
+    -webkit-mask: var(--ts-icon) center / contain no-repeat;
+    mask: var(--ts-icon) center / contain no-repeat;
+  }
+  .np2-user-dd__menu .user-dd__item {
+    text-decoration: none;
+  }
+  .np2-user-dd__menu .user-dd__menu-foot {
+    border-top-color: #2a2c2e;
+  }
+  .np2-user-dd__menu .user-dd__item:hover,
+  .np2-user-dd__menu .user-dd__item:focus-visible {
+    background: rgba(255, 255, 255, 0.06);
+  }
+  .np2-user-dd__menu .user-dd__item--logout,
+  .np2-user-dd__menu .user-dd__item--logout .user-dd__label,
+  .np2-user-dd__menu .user-dd__item--logout .user-dd__ico {
+    color: #ff6b6b;
+  }
+  .np2-user-dd__menu .user-dd__item--logout:hover,
+  .np2-user-dd__menu .user-dd__item--logout:focus-visible {
+    background: rgba(255, 107, 107, 0.12);
+  }
+
+  /* 频道与搜索之间留弹性空位（含 chips 换行到第二行的首页） */
+  .np2-top .np2-top__search,
+  .np2-home-page .np2-top .np2-top__search,
+  .np2-top .np2-top__search-form,
+  .np2-home-page .np2-top .np2-top__search-form {
+    margin-left: auto;
+  }
+
+  /* —— 内页顶栏：品牌 + 标题 + 搜索 + 我的 —— */
+  .np2-inner-top__back {
+    display: none;
+  }
+  .np2-inner-top__brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    flex: 0 0 auto;
+    text-decoration: none;
+    color: #fff;
+  }
+  .np2-inner-top__mark {
+    width: 32px;
+    height: 32px;
+    border-radius: 9px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(145deg, #fff 0%, #e8e8ea 100%);
+    color: #121214;
+    font-size: 14px;
+    font-weight: 800;
+    line-height: 1;
+  }
+  .np2-inner-top__brand-txt {
+    font-size: 14px;
+    font-weight: 750;
+    letter-spacing: -0.02em;
+  }
+  .np2-inner-top__title {
+    font-size: 15px;
+    font-weight: 650;
+    color: #c8ccd2;
+  }
+  .np2-inner-top__search {
+    margin-left: auto;
+    height: 36px;
+    min-width: 72px;
+    padding: 0 14px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
+    background: #2a2c2e;
+    color: #c8ccd2 !important;
+    font-weight: 600;
+    transition: background 160ms ease, color 160ms ease;
+  }
+  .np2-inner-top__search:hover {
+    background: #34363a;
+    color: #fff !important;
+  }
+  .np2-inner-top__search:empty {
+    display: none;
+  }
+  .np2-inner-top__mine {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    padding: 0;
+    border-radius: 10px;
+    background: rgba(245, 166, 35, 0.14);
+    color: #f5a623 !important;
+    font-weight: 700;
+    transition: background 160ms ease, transform 160ms ease;
+  }
+  .np2-inner-top__mine-ico {
+    display: block;
+    width: 20px;
+    height: 20px;
+  }
+  .np2-inner-top__mine:hover {
+    background: rgba(245, 166, 35, 0.22);
+  }
+  .np2-inner-top__mine:active {
+    transform: scale(0.96);
+  }
+
+  /* 广告入口：桌面做成小图标一行，别铺成大海报（首页 / 小说 / 漫画共用 .np2-ads） */
+  .np2-home-page .pb-ads-grid,
+  .np2-ads.pb-ads-grid,
+  body.np2-app.page-manga-home .pb-ads-grid,
+  body.np2-app.page-novel-home .pb-ads-grid {
+    display: grid;
+    grid-template-columns: repeat(10, minmax(0, 1fr));
+    gap: 10px 8px;
+    padding: 12px 0 16px;
+    justify-items: center;
+  }
+  .np2-home-page .pb-ads-grid {
+    padding: 12px 0 16px;
+  }
+  .np2-home-page .pb-ads-grid__item,
+  .np2-ads .pb-ads-grid__item,
+  body.np2-app.page-manga-home .pb-ads-grid__item,
+  body.np2-app.page-novel-home .pb-ads-grid__item {
+    width: 100%;
+    max-width: 72px;
+    gap: 6px;
+  }
+  .np2-home-page .pb-ads-grid__tile,
+  .np2-ads .pb-ads-grid__tile,
+  body.np2-app.page-manga-home .pb-ads-grid__tile,
+  body.np2-app.page-novel-home .pb-ads-grid__tile {
+    width: 100%;
+    max-width: 56px;
+    aspect-ratio: 1 / 1;
+    border-radius: 14px;
+    margin: 0 auto;
+    transition: transform 180ms ease, filter 180ms ease;
+  }
+  .np2-home-page .pb-ads-grid__cap,
+  .np2-ads .pb-ads-grid__cap,
+  body.np2-app.page-manga-home .pb-ads-grid__cap,
+  body.np2-app.page-novel-home .pb-ads-grid__cap {
+    font-size: 11px;
+    font-weight: 600;
+    color: #c8cbcf;
+  }
+  .np2-home-page .pb-ads-grid__item:hover .pb-ads-grid__tile,
+  .np2-ads .pb-ads-grid__item:hover .pb-ads-grid__tile,
+  body.np2-app.page-manga-home .pb-ads-grid__item:hover .pb-ads-grid__tile,
+  body.np2-app.page-novel-home .pb-ads-grid__item:hover .pb-ads-grid__tile {
+    transform: translateY(-2px);
+    filter: brightness(1.08);
+  }
+  .np2-home-page .pb-ads-grid__item:hover .pb-ads-grid__cap,
+  .np2-ads .pb-ads-grid__item:hover .pb-ads-grid__cap,
+  body.np2-app.page-manga-home .pb-ads-grid__item:hover .pb-ads-grid__cap,
+  body.np2-app.page-novel-home .pb-ads-grid__item:hover .pb-ads-grid__cap {
+    color: #f2f3f5;
+  }
+
+  /* 区块标题：与封面列表左右对齐 */
+  .np2-home-page .np2-row {
+    margin: 0 0 12px;
+  }
+  .np2-home-page [data-component="vod_list_np2"] .np2-row__head {
+    padding: 0 0 4px;
+    align-items: center;
+  }
+  .np2-home-page [data-component="vod_list_np2"] .np2-row__title {
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 0;
+  }
+  .np2-home-page [data-component="vod_list_np2"] .np2-row__more {
+    font-size: 11px;
+    gap: 8px;
+    transition: color 160ms ease;
+  }
+  .np2-home-page [data-component="vod_list_np2"] .np2-row__more-ico {
+    width: 20px;
+    height: 20px;
+  }
+  .np2-home-page [data-component="vod_list_np2"] .np2-row__more-ico svg {
+    width: 11px;
+    height: 11px;
+  }
+  .np2-home-page .np2-row__more:hover,
+  .np2-home-page [data-component="vod_list_np2"] .np2-row__more:hover {
+    color: #f5a623;
+  }
+  .np2-home-page [data-component="vod_list_np2"] .np2-row__more:hover .np2-row__more-ico {
+    background: rgba(245, 166, 35, 0.22);
+    color: #f5a623;
+  }
+
+  /* 双列横版 → 桌面 4 列，多露出几张 */
+  .np2-home-page .np2-row--grid2 .np2-cards {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 16px 14px;
+    padding: 0;
+  }
+  .np2-home-page .np2-row--grid2 .np2-card:nth-child(n+5) {
+    display: block;
+  }
+  .np2-home-page .np2-row--grid2 .np2-card:nth-child(n+9) {
+    display: none;
+  }
+  .np2-home-page .np2-row--grid2 .np2-card img,
+  .np2-home-page .np2-row--grid2 .np2-card .np2-poster-ph {
+    border-radius: 0;
+    transition: transform 200ms ease, filter 200ms ease;
+  }
+  .np2-home-page .np2-row--grid2 .np2-card:hover .np2-card__pic img {
+    transform: scale(1.03);
+    filter: brightness(1.06);
+  }
+  .np2-home-page .np2-row--grid2 .np2-card__name {
+    font-size: 14px;
+    margin-top: 0;
+    min-height: 0;
+  }
+  .np2-home-page .np2-row--grid2 .np2-card__meta {
+    font-size: 12px;
+    margin-top: 0;
+  }
+  .np2-home-page .np2-row--grid2 .np2-card__body {
+    padding: 10px 12px 12px;
+  }
+
+  /* 三列竖版 → 桌面 6 列，两行共 12 张 */
+  .np2-home-page .np2-row--cols3 .np2-cards {
+    display: grid;
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    gap: 16px 12px;
+    overflow: visible;
+    padding: 0;
+  }
+  .np2-home-page .np2-row--cols3 .np2-v3:nth-child(n+7) {
+    display: block;
+  }
+  .np2-home-page .np2-row--cols3 .np2-v3:nth-child(n+13) {
+    display: none;
+  }
+  .np2-home-page .np2-row--cols3 .np2-v3 {
+    width: auto;
+    min-width: 0;
+  }
+  .np2-home-page .np2-row--cols3 .np2-v3__pic img {
+    border-radius: 0;
+    transition: transform 200ms ease, filter 200ms ease;
+  }
+  .np2-home-page .np2-row--cols3 .np2-v3:hover .np2-v3__pic img {
+    transform: scale(1.03);
+    filter: brightness(1.06);
+  }
+
+  /* 横滑宽卡 → 桌面固定 4 列网格，不再手指滑动 */
+  .np2-home-page .np2-row--hscroll .np2-cards {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 16px 14px;
+    overflow: visible;
+    padding: 0 0 8px;
+  }
+  .np2-home-page .np2-row--hscroll .np2-hs {
+    width: auto;
+    max-width: none;
+  }
+  .np2-home-page .np2-row--hscroll .np2-hs__pic img {
+    border-radius: 0;
+    transition: transform 200ms ease, filter 200ms ease;
+  }
+  .np2-home-page .np2-row--hscroll .np2-hs:hover .np2-hs__pic img {
+    transform: scale(1.03);
+    filter: brightness(1.06);
+  }
+  .np2-home-page .np2-row--hscroll .np2-hs:nth-child(n+5) {
+    display: none;
+  }
+
+  /* 换一换：居中窄按钮，别拉满屏宽 */
+  .np2-home-page .np2-row__shuffle {
+    width: auto;
+    min-width: 160px;
+    max-width: 220px;
+    align-self: center;
+    margin: 14px auto 0;
+    height: 36px;
+    border-radius: 10px;
+    transition: background 160ms ease, color 160ms ease;
+  }
+  .np2-home-page .np2-row__shuffle:hover {
+    background: #34363a !important;
+    color: #fff;
+  }
+  .np2-home-page .np2-row__shuffle:active {
+    transform: scale(0.98);
+  }
+
+  /* 小说 / 漫画：site_nav 跟深色皮对齐 */
+  .np2-novel-home .hd,
+  .np2-manga-home .hd,
+  body.page-novel-home .hd,
+  body.page-manga-home .hd {
+    background: rgba(18, 18, 20, 0.92) !important;
+    border-bottom-color: rgba(255, 255, 255, 0.06);
+    box-shadow: none !important;
+  }
+  .np2-novel-home .hd .nav a,
+  .np2-manga-home .hd .nav a,
+  body.page-novel-home .hd .nav a,
+  body.page-manga-home .hd .nav a {
+    color: #aeb2b8;
+  }
+  .np2-novel-home .hd .nav a:hover,
+  .np2-manga-home .hd .nav a:hover,
+  .np2-novel-home .hd .nav a.is-on,
+  .np2-manga-home .hd .nav a.is-on,
+  body.page-novel-home .hd .nav a:hover,
+  body.page-manga-home .hd .nav a:hover,
+  body.page-novel-home .hd .nav a.is-on,
+  body.page-manga-home .hd .nav a.is-on {
+    color: #f5a623;
+  }
+
+  /* —— 短视频 PC：顶栏 + 居中竖屏机位 —— */
+  .np2-short-page {
+    overflow: hidden;
+  }
+  .np2-short-page .np2-top {
+    display: flex !important;
+  }
+  .np2-short-page .pbs-shell__main,
+  .np2-short-page .pbs-wrap,
+  .np2-short-page .layout,
+  .np2-short-page .pbs-main {
+    height: auto !important;
+    max-height: none !important;
+    max-width: none !important;
+    width: 100% !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    overflow: visible !important;
+  }
+  .np2-short-page .pbs-main {
+    display: flex !important;
+    flex-direction: column;
+    align-items: center;
+  }
+  .np2-short {
+    position: relative;
+    inset: auto;
+    z-index: 1;
+    width: 100%;
+    max-width: 1280px;
+    height: calc(100dvh - 72px);
+    max-height: calc(100dvh - 72px);
+    margin: 0 auto;
+    background:
+      radial-gradient(ellipse 60% 50% at 50% 40%, rgba(245, 166, 35, 0.07), transparent 70%),
+      #0a0a0c;
+  }
+  .np2-short__item {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    background: transparent;
+  }
+  .np2-short__stage {
+    position: relative;
+    inset: auto;
+    height: min(746px, calc(100% - 48px));
+    width: auto;
+    max-width: min(420px, 40vw);
+    aspect-ratio: 9 / 16;
+    border-radius: 18px;
+    overflow: hidden;
+    box-shadow:
+      0 0 0 1px rgba(255, 255, 255, 0.06),
+      0 24px 64px rgba(0, 0, 0, 0.55);
+    background: #121214;
+  }
+  .np2-short__video,
+  .np2-short__frame {
+    border-radius: 0;
+  }
+  .np2-short__meta {
+    left: 16px;
+    right: 76px;
+    bottom: 20px;
+  }
+  .np2-short__name {
+    font-size: 17px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    text-wrap: balance;
+  }
+  .np2-short__sub {
+    font-size: 13px;
+    color: #d0d3d8;
+  }
+  .np2-short__open {
+    border-radius: 10px;
+    padding: 6px 14px;
+    font-size: 13px;
+    transition: background 160ms ease, transform 120ms ease;
+  }
+  .np2-short__open:hover {
+    background: #ffc14d;
+  }
+  .np2-short__rail {
+    right: 12px;
+    bottom: 96px;
+    gap: 16px;
+  }
+  .np2-short__rail-btn {
+    width: 52px;
+    font-size: 12px;
+    transition: transform 160ms ease;
+  }
+  .np2-short__rail-btn:hover {
+    transform: translateY(-2px);
+  }
+  .np2-short__rail-btn svg {
+    width: 48px;
+    height: 48px;
+    background: rgba(0, 0, 0, 0.45);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    transition: background 160ms ease;
+  }
+  .np2-short__rail-btn:hover svg {
+    background: rgba(245, 166, 35, 0.35);
+  }
+  .np2-short__live {
+    border-radius: 8px;
+  }
+
+  /* —— 我的：PC 顶栏在 site_header（对齐排行榜，禁止 100vw 破栏） —— */
+  body.np2-app.np2-mine-page .pbs-shell__main > .np2-mine-pc-only > .np2-top,
+  body.np2-app.np2-mine-page .pbs-shell__main > .np2-mine-pc-only .np2-top {
+    width: 100% !important;
+    max-width: none !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    padding-top: 12px !important;
+    padding-bottom: 12px !important;
+    padding-left: var(--np2-pc-gutter, 24px) !important;
+    padding-right: var(--np2-pc-gutter, 24px) !important;
+  }
+  body.np2-app.np2-mine-page .pbs-shell__main > .np2-mine-pc-only {
+    width: 100%;
+  }
+  /* PC 未登录「我的」：顶栏下登录区勿撑满第二屏 */
+  body.np2-app.np2-mine-page.page-member--index .pb-member-shell:has(> .member-guest-redirect) {
+    min-height: 0 !important;
+  }
+  body.np2-app.np2-mine-page.page-member--index .member-guest-redirect {
+    min-height: 0 !important;
+    padding-top: 40px;
+    padding-bottom: 48px;
+    justify-content: flex-start !important;
+  }
+  body.np2-app.np2-mine-page.page-member--index .member-guest-redirect__kicker {
+    display: none;
+  }
+  .np2-mine-page .np2-top {
+    display: flex !important;
+  }
+}
+
+@media (min-width: 961px) and (prefers-reduced-motion: reduce) {
+  .np2-home-page .np2-row--grid2 .np2-card:hover .np2-card__pic img,
+  .np2-home-page .np2-row--cols3 .np2-v3:hover .np2-v3__pic img,
+  .np2-home-page .np2-row--hscroll .np2-hs:hover .np2-hs__pic img,
+  .np2-home-page .np2-row__shuffle:active {
+    transform: none;
+  }
+}
+
+@media (min-width: 1280px) {
+  body.np2-app {
+    --np2-pc-max: 1400px;
+  }
+  .np2-app .pb-manga-list,
+  .np2-app .pb-art-list {
+    grid-template-columns: repeat(auto-fit, minmax(168px, 200px)) !important;
+  }
+  .np2-top,
+  .np2-home-page .np2-top,
+  .np2-detail-page .np2-top,
+  .np2-short-page .np2-top,
+  .np2-mine-page .np2-top,
+  .np2-type-page .np2-top,
+  .np2-show-page .np2-top,
+  .np2-inner-top {
+    --np2-bar-max: 1400px;
+  }
+  .np2-top__search,
+  .np2-home-page .np2-top__search,
+  .np2-top__search-form,
+  .np2-home-page .np2-top__search-form {
+    flex-basis: 320px;
+    width: 320px;
+    max-width: 360px;
+  }
+  .np2-home-page .pb-ads-grid__item,
+  .np2-ads .pb-ads-grid__item,
+  body.np2-app.page-manga-home .pb-ads-grid__item,
+  body.np2-app.page-novel-home .pb-ads-grid__item {
+    max-width: 80px;
+  }
+  .np2-home-page .pb-ads-grid__tile,
+  .np2-ads .pb-ads-grid__tile,
+  body.np2-app.page-manga-home .pb-ads-grid__tile,
+  body.np2-app.page-novel-home .pb-ads-grid__tile {
+    max-width: 60px;
+  }
+  .np2-home-page .np2-row--grid2 .np2-cards {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+  }
+  .np2-home-page .np2-row--grid2 .np2-card:nth-child(n+9) {
+    display: block;
+  }
+  .np2-home-page .np2-row--grid2 .np2-card:nth-child(n+11) {
+    display: none;
+  }
+  .np2-home-page .np2-row--hscroll .np2-cards {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+  }
+  .np2-home-page .np2-row--hscroll .np2-hs:nth-child(n+5) {
+    display: block;
+  }
+  .np2-home-page .np2-row--hscroll .np2-hs:nth-child(n+6) {
+    display: none;
+  }
+}
+
+/* ---------- 参考站切图：标题火标 / 排行奖杯 / 换一换 ---------- */
+.np2-row__shuffle-ico {
+  width: 14px;
+  height: 14px;
+  object-fit: contain;
+  display: block;
+  flex: 0 0 auto;
+}
+body.np2-app.page-novel-home .nv-sec--rank .nv-sec__title,
+body.np2-app.page-manga-home [data-component="manga_home_rank"] .mc-sec__title,
+body.np2-app.page-manga-home [data-component="manga_home_rank_tags"] .mc-sec__title {
+  display: inline-flex !important;
+  align-items: center;
+  gap: 6px;
+}
+body.np2-app.page-novel-home .nv-sec--rank .nv-sec__title::before,
+body.np2-app.page-manga-home [data-component="manga_home_rank"] .mc-sec__title::before,
+body.np2-app.page-manga-home [data-component="manga_home_rank_tags"] .mc-sec__title::before {
+  content: "" !important;
+  display: inline-block !important;
+  width: 22px;
+  height: 22px;
+  flex: 0 0 auto;
+  background: url(../img/icons/hot.webp) center / contain no-repeat;
+}
+
+/* splash 长标题：允许换行，别挤掉「查看更多」 */
+.np2-home-page .np2-row__title {
+  flex: 1 1 auto;
+  min-width: 0;
+  font-size: 14px;
+  line-height: 1.35;
+  white-space: normal;
+}
+.np2-home-page .np2-row__title-txt {
+  white-space: normal;
+}
+.np2-home-page .np2-ads .pb-ads-grid__tile,
+.np2-ads .pb-ads-grid__tile {
+  border-radius: 12px;
+}
+.np2-home-page .np2-ads .pb-ads-grid__cap,
+.np2-ads .pb-ads-grid__cap {
+  font-size: 11px;
+  color: #f2f3f5;
+}
+
+/* 小说 / 漫画：广告位跟首页同宽 gutter；PC 小图标见上方 media */
+body.np2-app.page-manga-home .np2-ads,
+body.np2-app.page-novel-home .np2-ads {
+  padding: 0 12px 12px;
+  box-sizing: border-box;
+}
+@media (min-width: 961px) {
+  body.np2-app.page-manga-home .np2-ads,
+  body.np2-app.page-novel-home .np2-ads {
+    padding-top: 12px;
+    padding-bottom: 16px;
+    padding-left: 0;
+    padding-right: 0;
+  }
+}
+
+/* 无权限/跳转等状态页：无顶栏底栏，去掉底栏占位 */
+.np2-status-page {
+  padding-bottom: 0 !important;
+}
+.np2-status-page .pbs-shell__main {
+  min-height: 100dvh;
+}
+
+/* —— 排行榜页（label/rank）：黑橙 PC 重构 —— */
+.np2-rank-page .layout.rank .pbs-main {
+  padding-top: 8px;
+}
+.np2-rank-page .pbs-shell__main > .pb-block-host:first-child,
+.np2-rank-page .pbs-main > .pb-block-host:first-child {
+  margin-top: 0;
+}
+body.np2-app.np2-rank-page .np2-top {
+  padding-top: max(8px, env(safe-area-inset-top, 0px));
+}
+.np2-rank-page .np2-rank {
+  padding: 8px 0 28px;
+  box-sizing: border-box;
+}
+.np2-rank-page .np2-rank__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 4px 12px 12px;
+}
+.np2-rank-page .np2-rank__head .np2-row__title {
+  margin: 0;
+  flex: 1;
+  min-width: 0;
+}
+.np2-rank-page .np2-rank__periods {
+  display: flex;
+  flex: 1 1 auto;
+  align-items: stretch;
+  gap: 0;
+  width: 100%;
+  padding: 0;
+  border-radius: 0;
+  background: transparent;
+  border-bottom: 1px solid #2c2e31;
+}
+.np2-rank-page .np2-rank__period {
+  position: relative;
+  display: inline-flex;
+  flex: 1 1 0;
+  align-items: center;
+  justify-content: center;
+  min-width: 0;
+  height: 40px;
+  padding: 0 10px;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  color: #8b8e93;
+  font-size: 14px;
+  font-weight: 500;
+  text-decoration: none;
+  cursor: pointer;
+  touch-action: manipulation;
+  transition: color 180ms ease;
+}
+.np2-rank-page .np2-rank__period:hover {
+  color: #f2f3f5;
+}
+.np2-rank-page .np2-rank__period.is-on {
+  color: #f5a623;
+  font-weight: 650;
+  background: transparent;
+}
+.np2-rank-page .np2-rank__period.is-on::after {
+  content: "";
+  position: absolute;
+  left: 16px;
+  right: 16px;
+  bottom: 0;
+  height: 2px;
+  border-radius: 2px 2px 0 0;
+  background: #f5a623;
+}
+.np2-rank-page .np2-rank__period:active {
+  transform: none;
+  opacity: 0.88;
+}
+.np2-rank-page .np2-rank__period:focus-visible {
+  outline: 2px solid #f5a623;
+  outline-offset: 2px;
+}
+.np2-rank-page .layout.rank .pbs-main {
+  max-width: none;
+  padding: 0;
+}
+.np2-rank-page .pb-rank-list {
+  margin: 0 12px;
+  padding: 4px 0 8px;
+  border-radius: 12px;
+  background: #1a1c1d;
+  border: 1px solid #2c2e31;
+  box-shadow: none;
+}
+.np2-rank-page .pb-rank-list__title {
+  color: #f2f3f5;
+  border-bottom-color: #2c2e31;
+}
+.np2-rank-page .pb-rank-list__item {
+  border-bottom-color: #2c2e31;
+}
+.np2-rank-page .pb-rank-list__name {
+  color: #f2f3f5;
+}
+.np2-rank-page .pb-rank-list__meta {
+  color: #8b8e93;
+}
+.np2-rank-page .pb-rank-list__link:hover {
+  background: rgba(245, 166, 35, 0.08);
+}
+.np2-rank-page .pb-rank-list__link:hover .pb-rank-list__name {
+  color: #f5a623;
+}
+.np2-rank-page .pb-rank-list__poster {
+  background: #222426;
+  box-shadow: none;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+.np2-rank-page .pb-rank-list__poster img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: cover;
+}
+.np2-rank-page .pb-rank-list__poster img.is-fallback {
+  background: #222426;
+}
+.np2-rank-page .pb-rank-list__empty {
+  color: #8b8e93;
+}
+.np2-rank-page .pb-rank-list__score {
+  color: #f5a623;
+}
+.np2-rank-page .pb-rank-list__no {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  line-height: 1;
+  box-sizing: border-box;
+  font-variant-numeric: tabular-nums;
+  background: #3a3c40;
+  color: #c8ccd2;
+  box-shadow: none;
+  border-radius: 8px;
+}
+.np2-rank-page .pb-rank-list__link {
+  border-radius: 8px;
+}
+.np2-rank-page .pb-rank-list__item:nth-child(1) .pb-rank-list__no {
+  background: url(../img/rank/cup1.webp) center / contain no-repeat;
+  color: transparent;
+  box-shadow: none;
+}
+.np2-rank-page .pb-rank-list__item:nth-child(2) .pb-rank-list__no {
+  background: url(../img/rank/cup2.webp) center / contain no-repeat;
+  color: transparent;
+  box-shadow: none;
+}
+.np2-rank-page .pb-rank-list__item:nth-child(3) .pb-rank-list__no {
+  background: url(../img/rank/cup3.webp) center / contain no-repeat;
+  color: transparent;
+  box-shadow: none;
+}
+
+/* 排行榜页 — 移动端：对齐漫画榜横卡（固定 3:4 封面，禁止撑满屏） */
+@media (max-width: 960px) {
+  .np2-rank-page .np2-rank {
+    padding: 4px 0 20px;
+  }
+  .np2-rank-page .np2-rank__head {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+    padding: 10px 16px 0;
+  }
+  .np2-rank-page .np2-rank__head .np2-row__title,
+  .np2-rank-page .np2-rank__head .np2-row__title-txt {
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    color: #f2f3f5;
+  }
+  .np2-rank-page .np2-rank__periods {
+    margin: 0 -16px;
+    width: calc(100% + 32px);
+    border-bottom-color: #2c2e31;
+  }
+  .np2-rank-page .np2-rank__period {
+    height: 42px;
+    font-size: 14px;
+  }
+  .np2-rank-page .pb-rank-list {
+    margin: 0;
+    padding: 8px 16px 12px;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+  }
+  .np2-rank-page .pb-rank-list__ol {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .np2-rank-page .pb-rank-list__item {
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    border-bottom: 1px solid rgba(44, 46, 49, 0.9);
+  }
+  .np2-rank-page .pb-rank-list__item:last-child {
+    border-bottom: 0;
+  }
+  .np2-rank-page .pb-rank-list__link {
+    display: grid;
+    grid-template-columns: 28px 56px minmax(0, 1fr) auto;
+    align-items: center;
+    column-gap: 10px;
+    min-height: 76px;
+    padding: 10px 2px;
+    border-radius: 8px;
+  }
+  .np2-rank-page .pb-rank-list__link:hover,
+  .np2-rank-page .pb-rank-list__link:active {
+    background: rgba(245, 166, 35, 0.06);
+  }
+  .np2-rank-page .pb-rank-list__no {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    align-self: center;
+    justify-self: center;
+    width: 28px;
+    height: 28px;
+    margin: 0;
+    padding: 0;
+    border-radius: 8px;
+    font-size: 14px;
+    line-height: 1;
+    box-shadow: none;
+    box-sizing: border-box;
+    font-variant-numeric: tabular-nums;
+    text-align: center;
+  }
+  .np2-rank-page .pb-rank-list__item:nth-child(1) .pb-rank-list__no,
+  .np2-rank-page .pb-rank-list__item:nth-child(2) .pb-rank-list__no,
+  .np2-rank-page .pb-rank-list__item:nth-child(3) .pb-rank-list__no {
+    background: transparent;
+    box-shadow: none;
+    color: #f5a623;
+    font-weight: 800;
+    font-size: 16px;
+    border-radius: 0;
+  }
+  .np2-rank-page .pb-rank-list__item:nth-child(n+4) .pb-rank-list__no {
+    background: #2a2c2f;
+    color: #8b8e93;
+    font-weight: 700;
+  }
+  .np2-rank-page .pb-rank-list__poster {
+    position: static;
+    width: 56px;
+    height: 75px;
+    flex: none;
+    border-radius: 8px;
+  }
+  .np2-rank-page .pb-rank-list__poster img {
+    width: 56px;
+    height: 75px;
+    max-width: 56px;
+    max-height: 75px;
+    object-fit: cover;
+  }
+  .np2-rank-page .pb-rank-list__body {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 0;
+  }
+  .np2-rank-page .pb-rank-list__name {
+    font-size: 15px;
+    font-weight: 600;
+    line-height: 1.35;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .np2-rank-page .pb-rank-list__meta {
+    font-size: 12px;
+    line-height: 1.4;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .np2-rank-page .pb-rank-list__score {
+    position: static;
+    min-width: 0;
+    padding: 0;
+    border-radius: 0;
+    background: transparent;
+    backdrop-filter: none;
+    font-size: 14px;
+    font-weight: 700;
+    align-self: center;
+  }
+}
+
+@media (min-width: 961px) {
+  .np2-rank-page .np2-rank {
+    /* flex 子项 + margin:auto 会按内容收缩 */
+    width: 100%;
+    max-width: 1120px;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 20px 24px 56px;
+  }
+  .np2-rank-page .np2-rank__head {
+    padding: 0 0 18px;
+    margin-bottom: 4px;
+  }
+  .np2-rank-page .np2-rank__head .np2-row__title,
+  .np2-rank-page .np2-rank__head .np2-row__title-txt {
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+  }
+  .np2-rank-page .np2-rank__periods {
+    width: auto;
+    flex: 0 0 auto;
+    margin: 0;
+    border-bottom: 0;
+  }
+  .np2-rank-page .np2-rank__period {
+    flex: 0 0 auto;
+    min-width: 52px;
+    height: 34px;
+    padding: 0 16px;
+    font-size: 13px;
+  }
+  .np2-rank-page .pb-rank-list {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    border-radius: 0;
+  }
+  .np2-rank-page .pb-rank-list__ol {
+    display: grid;
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    gap: 14px 16px;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  /* 前三： podium 大卡 — 封面通栏 + 独立信息区 */
+  .np2-rank-page .pb-rank-list__item:nth-child(-n+3) {
+    grid-column: span 2;
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 12px;
+    background: #1c1e21;
+    overflow: hidden;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.22);
+    transition: background 180ms ease, border-color 180ms ease, transform 160ms ease;
+  }
+  .np2-rank-page .pb-rank-list__item:nth-child(1) {
+    border-color: rgba(245, 166, 35, 0.28);
+    box-shadow: 0 10px 28px rgba(0, 0, 0, 0.28), inset 0 1px 0 rgba(245, 166, 35, 0.12);
+  }
+  .np2-rank-page .pb-rank-list__item:nth-child(2) {
+    border-color: rgba(200, 210, 220, 0.16);
+  }
+  .np2-rank-page .pb-rank-list__item:nth-child(3) {
+    border-color: rgba(196, 136, 74, 0.2);
+  }
+  .np2-rank-page .pb-rank-list__item:nth-child(-n+3):hover {
+    background: #222428;
+    transform: translateY(-2px);
+  }
+  .np2-rank-page .pb-rank-list__item:nth-child(-n+3) .pb-rank-list__link {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0;
+    min-height: 0;
+    padding: 0;
+    border-radius: 0;
+    overflow: hidden;
+  }
+  .np2-rank-page .pb-rank-list__item:nth-child(-n+3) .pb-rank-list__link:hover {
+    background: transparent;
+  }
+  .np2-rank-page .pb-rank-list__item:nth-child(-n+3) .pb-rank-list__no {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    z-index: 2;
+    width: 34px;
+    height: 34px;
+    border-radius: 8px;
+    font-size: 15px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.28);
+  }
+  .np2-rank-page .pb-rank-list__item:nth-child(-n+3) .pb-rank-list__poster {
+    position: relative;
+    flex: none;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 16 / 9;
+    max-height: 164px;
+    margin: 0;
+    border-radius: 0;
+    overflow: hidden;
+    background: #222426;
+    box-shadow: none;
+  }
+  .np2-rank-page .pb-rank-list__item:nth-child(-n+3) .pb-rank-list__poster::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(0, 0, 0, 0.08) 0%, rgba(0, 0, 0, 0.42) 100%);
+    pointer-events: none;
+  }
+  .np2-rank-page .pb-rank-list__item:nth-child(-n+3) .pb-rank-list__poster img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    max-width: 100%;
+    max-height: 164px;
+    object-fit: cover;
+    border-radius: 0;
+  }
+  .np2-rank-page .pb-rank-list__item:nth-child(-n+3) .pb-rank-list__body {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    width: 100%;
+    min-width: 0;
+    padding: 14px 16px 16px;
+    box-sizing: border-box;
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
+    background: #1c1e21;
+  }
+  .np2-rank-page .pb-rank-list__item:nth-child(-n+3) .pb-rank-list__name {
+    margin: 0;
+    font-size: 15px;
+    font-weight: 650;
+    line-height: 1.45;
+    color: #f2f3f5;
+    white-space: normal;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    overflow: hidden;
+  }
+  .np2-rank-page .pb-rank-list__item:nth-child(-n+3) .pb-rank-list__meta {
+    margin: 0;
+    font-size: 12px;
+    line-height: 1.45;
+    color: #8b8e93;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .np2-rank-page .pb-rank-list__item:nth-child(-n+3) .pb-rank-list__score {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    z-index: 2;
+    min-width: 0;
+    padding: 5px 10px;
+    border-radius: 999px;
+    background: rgba(18, 18, 20, 0.78);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    font-size: 13px;
+    font-weight: 700;
+    line-height: 1;
+  }
+
+  /* 4 名起：双列横卡 */
+  .np2-rank-page .pb-rank-list__item:nth-child(n+4) {
+    grid-column: span 3;
+    border: 0;
+    border-radius: 8px;
+    background: #1c1e21;
+    transition: background 180ms ease;
+  }
+  .np2-rank-page .pb-rank-list__item:nth-child(n+4):hover {
+    background: #222428;
+  }
+  .np2-rank-page .pb-rank-list__item:nth-child(n+4) .pb-rank-list__link {
+    display: grid;
+    grid-template-columns: 32px 72px minmax(0, 1fr) auto;
+    align-items: center;
+    column-gap: 12px;
+    row-gap: 0;
+    gap: 12px;
+    min-height: 104px;
+    padding: 12px 14px;
+    border-radius: 8px;
+  }
+  .np2-rank-page .pb-rank-list__item:nth-child(n+4) .pb-rank-list__link:hover {
+    background: transparent;
+  }
+  .np2-rank-page .pb-rank-list__item:nth-child(n+4) .pb-rank-list__poster {
+    flex-basis: auto;
+    width: 72px;
+    height: 96px;
+    max-width: 72px;
+    max-height: 96px;
+    border-radius: 8px;
+  }
+  .np2-rank-page .pb-rank-list__item:nth-child(n+4) .pb-rank-list__poster img {
+    width: 72px;
+    height: 96px;
+    max-width: 72px;
+    max-height: 96px;
+  }
+  .np2-rank-page .pb-rank-list__item:nth-child(n+4) .pb-rank-list__body {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    min-width: 0;
+    align-self: center;
+  }
+  .np2-rank-page .pb-rank-list__item:nth-child(n+4) .pb-rank-list__name {
+    font-size: 15px;
+    line-height: 1.35;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .np2-rank-page .pb-rank-list__item:nth-child(n+4) .pb-rank-list__meta {
+    font-size: 12px;
+    line-height: 1.4;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .np2-rank-page .pb-rank-list__item:nth-child(n+4) .pb-rank-list__score {
+    align-self: center;
+    min-width: 0;
+    padding: 0;
+    font-size: 15px;
+    font-weight: 700;
+    white-space: nowrap;
+  }
+  .np2-rank-page .pb-rank-list__item:nth-child(n+4) .pb-rank-list__no {
+    width: 28px;
+    height: 28px;
+    align-self: center;
+    border-radius: 8px;
+  }
+}
+
+@media (min-width: 1200px) {
+  .np2-rank-page .np2-rank {
+    max-width: 1200px;
+  }
+  .np2-rank-page .pb-rank-list__item:nth-child(-n+3) .pb-rank-list__name {
+    font-size: 17px;
+  }
+}
+
+.is-sr-only{position:absolute!important;width:1px!important;height:1px!important;padding:0!important;margin:-1px!important;overflow:hidden!important;clip:rect(0,0,0,0)!important;white-space:nowrap!important;border:0!important}
+
+/* ── np2-starter/asset/img 装饰接线 ── */
+body.page-auth .auth-page__hero {
+  background-image:
+    linear-gradient(155deg, color-mix(in srgb, var(--c-accent, #f5a623) 72%, transparent) 0%, rgba(8, 10, 14, 0.72) 100%),
+    url(../img/ui/login-bg.webp);
+  background-size: cover, cover;
+  background-position: center, center;
+}
+body.np2-app.np2-rank-page .layout.rank .pbs-main {
+  background: url(../img/ui/dark-bg.webp) center / cover no-repeat, #121214;
+}
+body.np2-app .pb-member-shell .member-side__promo-deco {
+  background: url(../img/dialogs/vip-tip.webp) center / contain no-repeat;
+  opacity: 0.92;
+  width: 96px;
+  height: 80px;
+}
+body.np2-app.page-member--upgrade .member-card__head::after,
+body.np2-app.body-buy-upgrade-combo .member-card__head::after {
+  content: '';
+  display: block;
+  width: 56px;
+  height: 56px;
+  margin: 8px auto 0;
+  background: url(../img/dialogs/rocket.webp) center / contain no-repeat;
+}
+body.np2-app.page-member--plog .pb-empty-state__art::after {
+  content: '';
+  display: block;
+  width: 72px;
+  height: 72px;
+  margin: 0 auto;
+  background: url(../img/dialogs/clock.webp) center / contain no-repeat;
+}
+body.np2-app.page-member--notify .mac-notify-empty .pb-empty-state__svg {
+  display: none;
+}
+body.np2-app.page-member--notify .mac-notify-empty .pb-empty-state__art::after {
+  content: '';
+  display: block;
+  width: 88px;
+  height: 88px;
+  margin: 0 auto;
+  background: url(../img/icons/bell-lg.webp) center / contain no-repeat;
+}
+body.np2-app .rc-card.member-pay-card {
+  background-image: url(../img/dialogs/coin-buy.webp);
+  background-repeat: no-repeat;
+  background-position: right 12px top 12px;
+  background-size: 56px auto;
+}
+body.np2-app .member-pay-confirm .order-summary {
+  background: url(../img/dialogs/security.webp) right 12px top 50% / 48px auto no-repeat;
+}
+body.np2-app .rc-loading-init,
+body.np2-app .pay-loading-spinner {
+  background: url(../img/ui/loading.png) center / 32px no-repeat;
+  min-height: 40px;
+  color: transparent;
+}
+body.np2-app .status-page__img {
+  display: block;
+  width: 120px;
+  height: 120px;
+  margin: 0 auto 12px;
+  object-fit: contain;
+}
+body.np2-app .pb-t0__title-art {
+  display: block;
+  width: auto;
+  max-width: 160px;
+  height: 32px;
+  margin-bottom: 8px;
+  object-fit: contain;
+}
+body.np2-app .member-guest-redirect__panel {
+  background-image: url(../img/dialogs/security.webp);
+  background-repeat: no-repeat;
+  background-position: right 12px top 12px;
+  background-size: 52px auto;
+}
+body.np2-app .mac-notify-bell__btn .hd-notify__ico,
+body.np2-app .mac-notify-bell__btn .ts-icon {
+  opacity: 0;
+  width: 20px;
+  height: 20px;
+}
+body.np2-app .mac-notify-bell__btn::before {
+  content: '';
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  background: url(../img/dialogs/bell.webp) center / contain no-repeat;
+}

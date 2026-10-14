@@ -1,0 +1,48 @@
+{
+    "id": "vod_detail",
+    "label_key": "admin/themedesign/pb_block_vod_detail",
+    "category": "detail",
+    "kind": "detail",
+    "palette": false,
+    "styleMode": "component",
+    "peer_styles": [
+        "shared/css/comment.css"
+    ],
+    "assets": {
+        "css": "style.css",
+        "js": "script.js"
+    },
+    "props": {
+        "show_intro": {
+            "type": "boolean",
+            "default": true,
+            "trait": "show_intro"
+        },
+        "card": {
+            "type": "enum",
+            "default": "poster-h",
+            "values": [
+                "poster-h",
+                "poster-v"
+            ],
+            "trait": "card"
+        },
+        "ratio": {
+            "type": "string",
+            "default": "default",
+            "trait": "cover_ratio"
+        }
+    },
+    "context": {
+        "pageTypes": [
+            "detail"
+        ],
+        "requires": [
+            "obj.vod_id"
+        ]
+    },
+    "data": {
+        "source": "page_obj",
+        "objectKey": "obj"
+    }
+}

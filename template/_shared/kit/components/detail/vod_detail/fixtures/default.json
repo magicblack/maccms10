@@ -1,0 +1,21 @@
+{
+    "props": {
+        "show_intro": true
+    },
+    "context": {
+        "obj": {
+            "vod_id": 1,
+            "vod_name": "示例影片",
+            "vod_pic": "/static/images/home/background.png",
+            "vod_blurb": "这是一段用于 fixture 的简介文案。",
+            "vod_hits": 1200,
+            "vod_year": "2024",
+            "vod_area": "大陆",
+            "type": {
+                "type_name": "电影",
+                "type_id": 1
+            },
+            "vod_play_list": {}
+        }
+    }
+}

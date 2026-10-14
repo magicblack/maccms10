@@ -75,6 +75,18 @@ class Init
         $resolved = self::resolveSite($config['site'], $domain, $http_host, $isMobile);
         $config['site'] = $resolved['site'];
 
+        // 主题设计预览：iframe 带 td_preview=1&td_theme=<dir>&td_pt=<token> 时用指定主题渲染草稿
+        if (defined('ENTRANCE') && \ENTRANCE === 'index' && !empty($_GET['td_preview'])
+            && \app\common\util\ThemePreviewAuth::verifyRequest()) {
+            $tdTheme = isset($_GET['td_theme']) ? preg_replace('/[^a-zA-Z0-9_-]/', '', (string) $_GET['td_theme']) : '';
+            if ($tdTheme !== '' && is_dir(ROOT_PATH . 'template/' . $tdTheme . '/html')) {
+                $GLOBALS['mac_td_site_template_dir'] = $resolved['template_dir'];
+                $GLOBALS['mac_td_site_html_dir'] = $resolved['html_dir'];
+                $config['site']['template_dir'] = $tdTheme;
+                $resolved['template_dir'] = $tdTheme;
+            }
+        }
+
         $TMP_ISWAP = $resolved['is_wap'];
         $TMP_TEMPLATEDIR = $resolved['template_dir'];
         $TMP_HTMLDIR = $resolved['html_dir'];
@@ -100,14 +112,24 @@ class Init
 
         $GLOBALS['http_type'] = ((isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on') || (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] == 'https')) ? 'https://' : 'http://';
 
-        if(ENTRANCE=='index'){
+        if(\ENTRANCE=='index'){
             config('dispatch_success_tmpl','public/jump');
             config('dispatch_error_tmpl','public/jump');
         }
 
         config('template.view_path', 'template/' . $TMP_TEMPLATEDIR .'/' . $TMP_HTMLDIR .'/');
 
-        if(ENTRANCE=='admin'){
+        // 雙引擎並存：主題在自己的 info.ini 宣告 `engine = twig` 才切到 Twig 驅動；
+        // 未宣告（存量主題與第三方模板）一律沿用 think\view\driver\Think。
+        // 僅前台 index 切 Twig：後台 view_new 全是 .html（全局切會白屏），api 無 fetch、
+        // install 走 install@（含 @，Twig::shouldDelegate() 委派回 think）。用 defined()
+        // 守衛，非標準引導（未定義 ENTRANCE）下不切引擎而非致命。
+        if (defined('ENTRANCE') && \ENTRANCE === 'index' && self::themeEngine($TMP_TEMPLATEDIR) === 'twig' && \app\common\view\Twig::available()) {
+            config('template.type', 'app\\common\\view\\Twig');
+            config('template.view_suffix', 'twig');
+        }
+
+        if(\ENTRANCE=='admin'){
             if(!file_exists('./template/' . $TMP_TEMPLATEDIR .'/' . $TMP_HTMLDIR .'/')){
                 config('template.view_path','');
             }
@@ -173,6 +195,98 @@ class Init
         config('view_replace_str', array_merge($existReplace, $staticReplace));
 
         $GLOBALS['config'] = $config;
+    }
+
+    /**
+     * 讀取主題自述的模板引擎。
+     *
+     * 主題根目錄的 info.ini（每個主題本來就有）可加一個可選鍵：
+     *
+     *     engine = twig
+     *
+     * 沒有這個鍵、檔案不存在、或值不認識，一律回傳 'think'（存量行為）。
+     * 之所以放在主題自己的檔案而不是 application/extra/*.php：後者是站長運行期
+     * 資料，由 mac_arr2file() 回寫、升級不覆蓋，往裡塞新鍵會踩鐵律 4。
+     *
+     * @param string $templateDir 主題目錄名（site.template_dir）
+     * @return string 'twig' | 'think'
+     */
+    public static function themeEngine($templateDir)
+    {
+        static $cache = [];
+
+        $templateDir = (string) $templateDir;
+        if ($templateDir === '' || strpos($templateDir, '.') !== false
+            || strpos($templateDir, '/') !== false || strpos($templateDir, '\\') !== false) {
+            return 'think';
+        }
+        if (isset($cache[$templateDir])) {
+            return $cache[$templateDir];
+        }
+
+        $engine = 'think';
+        $file = ROOT_PATH . 'template/' . $templateDir . '/info.ini';
+        if (is_file($file)) {
+            $ini = @parse_ini_file($file, false, INI_SCANNER_RAW);
+            if (is_array($ini) && isset($ini['engine'])) {
+                $val = strtolower(trim((string) $ini['engine']));
+                if ($val === 'twig') {
+                    $engine = 'twig';
+                }
+            }
+        }
+
+        $cache[$templateDir] = $engine;
+        return $engine;
+    }
+
+    /**
+     * 讀主題自述的父主題（info.ini 的 `parent` 鍵）。
+     *
+     * 主題繼承要解決的是「一套完整主題約 90 個模板，不複製底座就得從零寫 90 個」。
+     * 有了繼承，子主題只放它想改的檔，其餘自動回落到父主題 —— 換皮可以只留
+     * layout/base.twig 加一支 CSS，AI 產出物也才塞得進產線的檔數上限。
+     *
+     * 與 themeEngine() 同樣放在主題自己的 info.ini：application/extra/*.php
+     * 是站長運行期資料，往裡塞新鍵會踩鐵律 4。
+     *
+     * 刻意只支援一層：多層繼承會讓「這個模板到底從哪來」變得難追，
+     * 而換皮這個使用情境一層就夠了。
+     *
+     * @param string $templateDir 主題目錄名
+     * @return string 父主題目錄名；無繼承或不合法回傳 ''
+     */
+    public static function themeParent($templateDir)
+    {
+        static $cache = [];
+
+        $templateDir = (string) $templateDir;
+        if ($templateDir === '' || strpos($templateDir, '.') !== false || strpos($templateDir, '/') !== false) {
+            return '';
+        }
+        if (isset($cache[$templateDir])) {
+            return $cache[$templateDir];
+        }
+
+        $parent = '';
+        $file = ROOT_PATH . 'template/' . $templateDir . '/info.ini';
+        if (is_file($file)) {
+            $ini = @parse_ini_file($file, false, INI_SCANNER_RAW);
+            if (is_array($ini) && !empty($ini['parent'])) {
+                $val = trim((string) $ini['parent']);
+                // 目錄名消毒與 themeEngine() 同一套；另外擋掉自我繼承，
+                // 那會讓 loader 把同一個目錄加兩次，錯誤訊息完全看不出原因。
+                if ($val !== '' && $val !== $templateDir
+                    && strpos($val, '.') === false
+                    && strpos($val, '/') === false && strpos($val, '\\') === false
+                    && is_dir(ROOT_PATH . 'template/' . $val . '/html')) {
+                    $parent = $val;
+                }
+            }
+        }
+
+        $cache[$templateDir] = $parent;
+        return $parent;
     }
 
     /**

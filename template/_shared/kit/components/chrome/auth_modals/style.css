@@ -1,0 +1,463 @@
+/* auth_modals — 登录/找回密码弹层（薄壳主题自包含，不依赖主题 theme.css） */
+[data-component="auth_modals"].pb-auth-modals {
+  display: contents;
+}
+
+.auth-modal {
+  position: fixed;
+  inset: 0;
+  /* --auth-vv-*：auth_page/script.js 写入的 visual viewport 尺寸；
+     移动端弹出键盘时弹窗随可视区收缩，避免底部输入框（邀请码）被键盘遮挡 */
+  top: var(--auth-vv-top, 0px);
+  bottom: auto;
+  height: var(--auth-vv-h, 100%);
+  z-index: 1200;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  box-sizing: border-box;
+}
+
+.auth-modal[hidden] {
+  display: none !important;
+}
+
+.auth-modal__backdrop {
+  /* fixed 铺满整屏：弹窗容器在软键盘弹出时会收缩到键盘上方（--auth-vv-h），
+     遮罩若跟随容器，容器与键盘之间会露出一条白色页面 */
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 18, 20, 0.58);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}
+
+.auth-modal__dialog {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 760px;
+  animation: auth-modal-in 0.24s ease-out;
+}
+
+.auth-modal__dialog--wide {
+  max-width: 860px;
+}
+
+.auth-card {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(220px, 38%) 1fr;
+  background: #fff;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 28px 72px rgba(0, 0, 0, 0.22);
+  /* 高度不超过可视区（软键盘弹出时 --auth-vv-h 变小，平板/横屏也适用）；
+     minmax(0,1fr) 行让 grid 受 max-height 约束，表单区可在卡片内滚动 */
+  grid-template-rows: minmax(0, 1fr);
+  min-height: min(420px, calc(var(--auth-vv-h, 100dvh) - 48px));
+  max-height: calc(var(--auth-vv-h, 100dvh) - 48px);
+}
+
+.auth-card--recovery {
+  min-height: 0;
+}
+
+.auth-card__visual {
+  position: relative;
+  min-height: 100%;
+  background: linear-gradient(145deg, var(--c-accent-soft) 0%, var(--c-accent) 48%, var(--c-link-soft) 100%);
+}
+
+.auth-card__art {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center top;
+}
+
+.auth-card__visual-shade {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(180deg, rgba(8, 10, 14, 0.08) 0%, rgba(8, 10, 14, 0.55) 100%),
+    linear-gradient(135deg, var(--c-accent-border-strong) 0%, transparent 55%);
+  pointer-events: none;
+}
+
+.auth-card__brand {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 28px 24px;
+  color: #fff;
+}
+
+.auth-card__logo {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.18);
+  padding: 8px;
+  box-sizing: border-box;
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+}
+
+.auth-card__welcome {
+  margin: 0;
+  font-size: 22px;
+  font-weight: 800;
+  line-height: 1.25;
+  letter-spacing: 0.02em;
+}
+
+.auth-card__hint {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.55;
+  color: rgba(255, 255, 255, 0.88);
+}
+
+.auth-card__body {
+  position: relative;
+  padding: 32px 32px 26px;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+.auth-card__body--scroll {
+  max-height: min(90vh, 760px);
+  overflow-y: auto;
+}
+
+.auth-modal__close {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  z-index: 2;
+  width: 36px;
+  height: 36px;
+  border: 0;
+  border-radius: 50%;
+  background: var(--c-surface-2, #f1f2f3);
+  color: var(--c-text-muted, #9499a0);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease, transform 0.15s ease;
+}
+
+.auth-modal__close:hover {
+  background: #eceef0;
+  color: var(--c-text, #18191c);
+}
+
+.auth-modal__close:active {
+  transform: scale(0.96);
+}
+
+.auth-card__head {
+  margin-bottom: 22px;
+}
+
+.auth-card__head--compact {
+  margin-bottom: 12px;
+}
+
+.auth-card__title {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 800;
+  line-height: 1.2;
+  color: var(--c-text, #18191c);
+}
+
+.auth-card__sub {
+  margin: 8px 0 0;
+  font-size: 13px;
+  color: var(--c-text-muted, #9499a0);
+}
+
+.auth-card__foot {
+  margin-top: auto;
+  padding-top: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  font-size: 13px;
+}
+
+.auth-card__link {
+  color: var(--c-text-muted, #9499a0);
+  font-weight: 500;
+  transition: color 0.15s ease;
+}
+
+.auth-card__link:hover {
+  color: var(--c-accent);
+}
+
+.auth-card__sep {
+  color: var(--c-border, #e3e5e7);
+  user-select: none;
+}
+
+/* 找回密码：步骤 / Tab / 旧版 field（auth_recovery） */
+.auth-steps {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 18px;
+}
+
+.auth-steps__item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: var(--c-text-muted, #9499a0);
+}
+
+.auth-steps__item.is-on {
+  color: var(--c-accent);
+}
+
+.auth-steps__num {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  border: 1px solid currentColor;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.auth-steps__item.is-on .auth-steps__num {
+  background: var(--c-accent);
+  border-color: var(--c-accent);
+  color: #fff;
+}
+
+.auth-steps__line {
+  width: 36px;
+  height: 1px;
+  background: var(--c-border, #e3e5e7);
+}
+
+.auth-steps--compact {
+  margin-bottom: 12px;
+}
+
+.auth-recovery__tabs {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 14px;
+  padding: 4px;
+  border-radius: 10px;
+  background: var(--c-surface-2, #f1f2f3);
+}
+
+.auth-recovery__tab {
+  flex: 1;
+  min-height: 34px;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--c-text-muted, #9499a0);
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.auth-recovery__tab.is-on {
+  background: #fff;
+  color: var(--c-accent);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+}
+
+.auth-recovery__panel[hidden] {
+  display: none !important;
+}
+
+.auth-field {
+  display: block;
+  margin-bottom: 14px;
+}
+
+.auth-field__label {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--c-text-muted, #9499a0);
+}
+
+.auth-field__input {
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+  min-height: 44px;
+  padding: 10px 14px;
+  border: 1px solid var(--c-border, #e3e5e7);
+  border-radius: 10px;
+  background: var(--c-surface-2, #f1f2f3);
+  color: var(--c-text, #18191c);
+  font: inherit;
+  font-size: 14px;
+}
+
+.auth-field__input:focus {
+  outline: none;
+  border-color: var(--c-accent);
+  background: #fff;
+  box-shadow: 0 0 0 3px var(--c-accent-soft, var(--c-accent-border));
+}
+
+.auth-field--captcha .auth-captcha {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.auth-captcha__img {
+  flex: 0 0 auto;
+  height: 44px;
+  border-radius: 8px;
+  border: 1px solid var(--c-border, #e3e5e7);
+  cursor: pointer;
+  background: #fff;
+}
+
+.auth-form__row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px 10px;
+}
+
+.auth-form__submit {
+  width: 100%;
+  margin-top: 6px;
+  min-height: 44px;
+  border: 0;
+  border-radius: 10px;
+  background: var(--gradient-brand);
+  color: #fff;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+body.has-auth-modal {
+  overflow: hidden;
+}
+
+@keyframes auth-modal-in {
+  from {
+    opacity: 0;
+    transform: translateY(12px) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media (max-width: 640px) {
+  .auth-modal {
+    padding: 12px;
+  }
+
+  .auth-modal__dialog,
+  .auth-modal__dialog--wide {
+    max-width: 420px;
+  }
+
+  /* flex 列：限高后 body 才能在卡片内滚动（grid 行不受 max-height 约束，会被 overflow:hidden 裁掉） */
+  .auth-card {
+    display: flex;
+    flex-direction: column;
+    min-height: auto;
+    max-height: min(88dvh, 640px, calc(var(--auth-vv-h, 100dvh) - 24px));
+  }
+
+  .auth-card__visual {
+    min-height: 0;
+    flex: 0 0 88px;
+    height: 88px;
+  }
+
+  .auth-card__art {
+    opacity: 1;
+    object-position: center top;
+  }
+
+  .auth-card__brand {
+    flex-direction: row;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 14px 48px 0 14px;
+  }
+
+  .auth-card__logo {
+    width: 32px;
+    height: 32px;
+    padding: 5px;
+    border-radius: 10px;
+  }
+
+  .auth-card__welcome {
+    font-size: 17px;
+  }
+
+  .auth-card__hint {
+    display: none;
+  }
+
+  .auth-card__body {
+    flex: 1 1 auto;
+    min-height: 0;
+    padding: 12px 16px 20px;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .auth-card__head {
+    margin-bottom: 14px;
+  }
+
+  .auth-card__title {
+    font-size: 20px;
+  }
+
+  .auth-modal__close {
+    top: 10px;
+    right: 10px;
+    background: rgba(255, 255, 255, 0.78);
+    border: 1px solid rgba(255, 255, 255, 0.55);
+  }
+
+  .auth-form__row {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .auth-modal__dialog {
+    animation: none;
+  }
+}

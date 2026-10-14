@@ -1,0 +1,375 @@
+/* cinema_detail_stage — pb-sandbox 详情顶栏（封面 + 元信息） */
+.pb-cinema-stage.cinema-stage {
+  margin: -16px calc(-1 * var(--gutter, 8px)) 20px;
+  width: calc(100% + 2 * var(--gutter, 8px));
+  max-width: none;
+  background: #18191c;
+}
+
+.pb-cinema-stage .media-hero {
+  position: relative;
+  margin: 0;
+  padding: 0;
+  color: #fff;
+  overflow: hidden;
+  min-height: 300px;
+}
+
+.pb-cinema-stage .media-hero__bg {
+  position: absolute;
+  inset: -32px;
+  background-size: cover;
+  background-position: center 20%;
+  filter: blur(32px) saturate(1.15) brightness(0.72);
+  transform: scale(1.1);
+  pointer-events: none;
+}
+
+.pb-cinema-stage .media-hero__shade {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(180deg, rgba(8, 9, 12, 0.35) 0%, rgba(8, 9, 12, 0.55) 38%, rgba(8, 9, 12, 0.88) 100%),
+    linear-gradient(90deg, rgba(8, 9, 12, 0.82) 0%, rgba(8, 9, 12, 0.45) 52%, rgba(8, 9, 12, 0.72) 100%);
+  pointer-events: none;
+}
+
+.pb-cinema-stage .media-hero__wrap {
+  position: relative;
+  z-index: 1;
+  max-width: var(--wrap, 1400px);
+  margin: 0 auto;
+  padding: 16px 20px 28px;
+}
+
+.pb-cinema-stage .media-hero__crumb {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  margin: 0 0 18px;
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.62);
+}
+
+.pb-cinema-stage .media-hero__crumb a {
+  color: rgba(255, 255, 255, 0.78);
+  text-decoration: none;
+}
+
+.pb-cinema-stage .media-hero__crumb a:hover { color: #fff; }
+
+.pb-cinema-stage .media-hero__crumb-cur {
+  color: rgba(255, 255, 255, 0.92);
+  max-width: 42vw;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.pb-cinema-stage .media-hero__inner {
+  display: grid;
+  grid-template-columns: 160px minmax(0, 1fr) 72px;
+  gap: 20px 24px;
+  align-items: end;
+}
+
+.pb-cinema-stage .media-hero__poster {
+  position: relative;
+  display: block;
+  width: 100%;
+  aspect-ratio: 3 / 4;
+  min-height: 220px;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #2a2c32;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.5);
+}
+
+.pb-cinema-stage .media-hero__poster img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.pb-cinema-stage .media-hero__poster-play {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.28);
+  opacity: 0;
+  transition: opacity .15s ease;
+}
+
+.pb-cinema-stage .media-hero__poster-play::after {
+  content: "";
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: var(--c-accent);
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='white'%3E%3Cpath d='M8 5v14l11-7z'/%3E%3C/svg%3E") center / 20px no-repeat;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='white'%3E%3Cpath d='M8 5v14l11-7z'/%3E%3C/svg%3E") center / 20px no-repeat;
+}
+
+.pb-cinema-stage .media-hero__poster.is-playable:hover .media-hero__poster-play { opacity: 1; }
+
+.pb-cinema-stage .media-hero__body {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.pb-cinema-stage .media-hero__title {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 700;
+  line-height: 1.25;
+  color: #fff;
+}
+
+.pb-cinema-stage .media-hero__tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.pb-cinema-stage .media-hero__tag {
+  display: inline-flex;
+  align-items: center;
+  min-height: 24px;
+  padding: 0 10px;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.16);
+  color: #fff;
+  font-size: 12px;
+  text-decoration: none;
+}
+
+.pb-cinema-stage .media-hero__tag--type {
+  background: rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.38);
+  font-weight: 600;
+}
+
+.pb-cinema-stage .media-hero__tag--keyword {
+  background: transparent;
+  border: 1px dashed rgba(255, 255, 255, 0.28);
+  color: rgba(255, 255, 255, 0.72);
+  font-weight: 400;
+  padding: 0 8px;
+}
+
+.pb-cinema-stage .media-hero__tag--keyword::before {
+  content: '#';
+  margin-right: 1px;
+  opacity: 0.45;
+  font-size: 11px;
+}
+
+.pb-cinema-stage .media-hero__tag--soft {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.pb-cinema-stage .media-hero__meta {
+  margin: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 12px;
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.68);
+}
+
+.pb-cinema-stage .media-hero__meta span + span::before {
+  content: "·";
+  margin-right: 12px;
+  color: rgba(255, 255, 255, 0.35);
+}
+
+.pb-cinema-stage .media-hero__desc {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.7;
+  color: rgba(255, 255, 255, 0.8);
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  max-width: 640px;
+}
+
+.pb-cinema-stage .media-hero__play {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 40px;
+  padding: 0 22px;
+  border-radius: 20px;
+  background: var(--c-accent);
+  color: #fff !important;
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.pb-cinema-stage .media-hero__play:hover {
+  background: var(--c-accent-hover, #e85d88);
+}
+
+.pb-cinema-stage .media-hero__rating {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  min-width: 68px;
+  padding: 10px;
+  border-radius: 12px;
+  background: rgba(255, 198, 64, 0.14);
+  color: #ffc640;
+  align-self: end;
+}
+
+.pb-cinema-stage .media-hero__rating strong {
+  font-size: 28px;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.pb-cinema-stage .media-hero__rating-stars {
+  font-size: 10px;
+  letter-spacing: 1px;
+}
+
+.pb-cinema-stage .media-hero__rating-label {
+  font-size: 11px;
+  opacity: 0.75;
+}
+
+/* ── 锚点 Tab 栏（选集 / 简介 / 评论 / 推荐）── */
+.cinema-stage:has(.cinema-stage__bar) .media-hero__wrap {
+  padding-bottom: 16px;
+}
+
+.cinema-stage__bar {
+  position: sticky;
+  top: var(--nav-h, 64px);
+  z-index: 820;
+  background: #fff;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.92);
+}
+
+.cinema-stage__bar-inner {
+  max-width: var(--wrap, 1400px);
+  margin: 0 auto;
+  padding: 0 var(--gutter, 16px);
+}
+
+.cinema-stage__bar .media-tabs.media-tabs--cinema,
+.media-tabs.media-tabs--cinema {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: stretch;
+  gap: 4px;
+  margin: 0;
+  padding: 0;
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  /* 勿用 touch-action: pan-x，会阻断详情 Tab 上的页面纵向滑动 */
+}
+
+.cinema-stage__bar .media-tabs.media-tabs--cinema::-webkit-scrollbar,
+.media-tabs.media-tabs--cinema::-webkit-scrollbar {
+  display: none;
+}
+
+.media-tabs--cinema a {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  min-height: 44px;
+  padding: 0 18px;
+  border: 0;
+  border-radius: 0;
+  border-bottom: 3px solid transparent;
+  color: #61666d;
+  font-size: 15px;
+  font-weight: 500;
+  line-height: 1.2;
+  white-space: nowrap;
+  text-decoration: none;
+  background: transparent;
+  transition: color var(--dur, 0.2s) var(--ease, ease), border-color var(--dur, 0.2s) var(--ease, ease);
+  touch-action: manipulation;
+}
+
+.media-tabs--cinema a::after {
+  content: "";
+  position: absolute;
+  left: 18px;
+  right: 18px;
+  bottom: 0;
+  height: 3px;
+  border-radius: 3px 3px 0 0;
+  background: var(--c-accent);
+  transform: scaleX(0);
+  transform-origin: center;
+  transition: transform 0.22s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.media-tabs--cinema a.is-on {
+  color: var(--c-accent);
+  border-bottom-color: transparent;
+  border-radius: 0;
+  font-weight: 600;
+  background: transparent;
+  box-shadow: none;
+}
+
+.media-tabs--cinema a.is-on::after {
+  transform: scaleX(1);
+}
+
+.media-tabs--cinema a:hover {
+  color: var(--c-accent);
+  background: transparent;
+}
+
+@media (max-width: 720px) {
+  .pb-cinema-stage .media-hero__inner {
+    grid-template-columns: 120px minmax(0, 1fr);
+  }
+  .pb-cinema-stage .media-hero__rating {
+    grid-column: 1 / -1;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-self: auto;
+  }
+
+  .cinema-stage__bar .media-tabs--cinema {
+    gap: 0;
+  }
+
+  .media-tabs--cinema a {
+    min-height: 40px;
+    padding: 0 14px;
+    font-size: 14px;
+  }
+
+  .media-tabs--cinema a::after {
+    left: 14px;
+    right: 14px;
+  }
+}

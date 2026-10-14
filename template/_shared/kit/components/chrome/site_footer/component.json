@@ -1,0 +1,59 @@
+{
+    "id": "site_footer",
+    "label_key": "admin/themedesign/pb_block_site_footer",
+    "category": "chrome",
+    "kind": "chrome",
+    "palette": false,
+    "peer_styles": [],
+    "assets": {
+        "css": "style.css",
+        "js": "script.js"
+    },
+    "props": {
+        "variant": {
+            "type": "enum",
+            "default": "default",
+            "values": [
+                "default",
+                "compact"
+            ],
+            "trait": "footer_variant"
+        },
+        "copyright": {
+            "type": "string",
+            "default": "",
+            "trait": "footer_copyright"
+        },
+        "show_nav": {
+            "type": "boolean",
+            "default": true,
+            "trait": "footer_show_nav"
+        },
+        "show_friends": {
+            "type": "boolean",
+            "default": true,
+            "trait": "footer_show_friends"
+        },
+        "logo": {
+            "type": "string",
+            "default": ""
+        },
+        "type_limit": {
+            "type": "number",
+            "default": 6,
+            "trait": "footer_type_limit"
+        }
+    },
+    "context": {
+        "pageTypes": [
+            "home",
+            "list",
+            "detail",
+            "play",
+            "member",
+            "rank",
+            "gbook"
+        ],
+        "requires": []
+    }
+}

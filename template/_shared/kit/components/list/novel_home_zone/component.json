@@ -1,0 +1,37 @@
+{
+    "id": "novel_home_zone",
+    "label_key": "admin/themedesign/pb_block_novel_home_zone",
+    "category": "list",
+    "kind": "list",
+    "peer_styles": [],
+    "assets": {
+        "css": "style.css",
+        "js": "script.js"
+    },
+    "palette": false,
+    "palette_inject": true,
+    "props": {
+        "type_num": {
+            "type": "number",
+            "default": 4,
+            "min": 1,
+            "max": 8,
+            "trait": "type_count"
+        },
+        "row_num": {
+            "type": "number",
+            "default": 10,
+            "min": 4,
+            "max": 20,
+            "trait": "count"
+        }
+    },
+    "context": {
+        "pageTypes": [
+            "home",
+            "list",
+            "detail"
+        ],
+        "requires": []
+    }
+}

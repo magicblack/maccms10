@@ -1,0 +1,18 @@
+{# grid2 卡片底栏：相对时间 + 播放量（对齐 splash 首页双列） #}
+{% set _hits = vo.vod_hits|default(0) %}
+<div class="np2-card__meta">
+  <span class="np2-card__when"{% if vo.vod_time %} data-ts="{{ vo.vod_time }}"{% endif %}>
+    {% if vo.vod_time %}
+      {{ mac_friend_date(vo.vod_time) }}
+    {% elseif type_label|default('') != '' %}
+      {{ type_label }}
+    {% else %}
+      新片
+    {% endif %}
+  </span>
+  {% if _hits > 0 %}
+  <span class="np2-card__hits">
+    {% if _hits >= 10000 %}{{ (_hits / 10000)|number_format(1, '.', '') }}万{% else %}{{ _hits }}{% endif %}次观看
+  </span>
+  {% endif %}
+</div>

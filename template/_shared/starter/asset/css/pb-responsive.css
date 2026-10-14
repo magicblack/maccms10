@@ -1,0 +1,113 @@
+/**
+ * PB 薄壳移动端响应式（对齐 twigspike bili-responsive 顶栏/频道行为）。
+ * 依赖 tokens.css 中的 --nav-h / --gutter。
+ */
+
+@media (max-width: 640px) {
+  body:has(.pb-bottom-nav),
+  html.has-pb-bottom-nav body {
+    padding-bottom: calc(56px + env(safe-area-inset-bottom));
+  }
+}
+
+@media (max-width: 960px) {
+  :root {
+    --gutter: 12px;
+  }
+
+  .bili-hero {
+    display: none;
+  }
+
+  /* 首页移动端统一实心顶栏；跟 --c-surface（浅色/午夜深色均可读） */
+  body.page-home .hd {
+    background: color-mix(in srgb, var(--c-surface, #fff) 92%, transparent) !important;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    box-shadow: 0 2px 8px color-mix(in srgb, var(--c-text, #000) 6%, transparent) !important;
+    border-bottom: 1px solid color-mix(in srgb, var(--c-border, #e3e5e7) 70%, transparent);
+    min-height: var(--nav-h, 56px);
+  }
+  @supports not (background: color-mix(in srgb, #000 50%, transparent)) {
+    body.page-home .hd {
+      background: var(--c-surface, #fff) !important;
+    }
+  }
+
+  body.page-home .hd .nav a,
+  body.page-home .hd .hd-trailing > a:not(.hd-login),
+  body.page-home .hd .hd-trailing .lang-dd__btn,
+  body.page-home .hd .hd-notify__btn,
+  body.page-home .hd .user-dd__btn,
+  body.page-home .hd .user-dd__name,
+  body.page-home .hd .hd-menu {
+    color: var(--c-text);
+    text-shadow: none;
+  }
+
+  body.page-home .hd .lang-dd__btn,
+  body.page-home .hd .hd-notify__btn {
+    background: transparent !important;
+    border-color: transparent !important;
+  }
+
+  body.page-home .hd .user-dd__avatar,
+  body.page-home .hd .hd-login__avatar {
+    box-shadow: none;
+  }
+
+  body.page-home .hd .nav a:hover,
+  body.page-home .hd .nav a.on {
+    color: var(--c-accent) !important;
+    background: var(--c-accent-soft);
+  }
+
+  body.page-home .hd .brand__logo {
+    filter: none;
+  }
+
+  body.page-home .hd .sbox {
+    background: var(--c-surface-2, #f6f7f8) !important;
+    border-color: transparent !important;
+  }
+
+  /* 频道 Tab：通栏 + 吸顶（在顶栏下方）；负 margin 抵消 wrap 内边距 */
+  .pbs-wrap > .bili-channel,
+  .bili-channel {
+    position: sticky;
+    top: var(--nav-h, 56px);
+    z-index: 850;
+    display: block;
+    gap: 0;
+    margin: 0 calc(-1 * var(--gutter, 12px)) 10px;
+    padding: 0;
+    background: var(--c-surface, #fff);
+    border-bottom: 1px solid var(--c-border, #e3e5e7);
+    border-radius: 0;
+    box-shadow: none;
+    transition: box-shadow var(--dur) var(--ease);
+  }
+
+  .bili-channel.is-panel-open {
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+  }
+
+  .bili-channel__tab-scroll {
+    padding-left: var(--gutter, 12px);
+  }
+
+  .bili-channel--compact {
+    margin-bottom: 8px;
+    padding-bottom: 0;
+    border-bottom: 0;
+  }
+
+  /* 横滑 Tab / 横滑卡片不得把整页带偏 */
+  .bili-channel__tab-scroll,
+  .pb-scroll-row__viewport,
+  .mc-row__viewport,
+  .media-tabs.media-tabs--cinema,
+  .bili-filter__chips {
+    overscroll-behavior-x: contain;
+  }
+}

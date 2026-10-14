@@ -1,0 +1,49 @@
+{
+    "id": "channel_strip",
+    "label_key": "admin/themedesign/pb_block_channel_strip",
+    "category": "chrome",
+    "kind": "chrome",
+    "palette": true,
+    "peer_styles": [],
+    "assets": {
+        "css": "style.css",
+        "js": "script.js"
+    },
+    "props": {
+        "compact": {
+            "type": "boolean",
+            "default": false,
+            "trait": "channel_compact"
+        },
+        "chip_limit": {
+            "type": "number",
+            "default": 11,
+            "min": 3,
+            "max": 20,
+            "trait": "channel_chips"
+        },
+        "show_icons": {
+            "type": "boolean",
+            "default": true,
+            "trait": "channel_icons"
+        },
+        "show_more": {
+            "type": "boolean",
+            "default": true,
+            "trait": "channel_more"
+        },
+        "show_live": {
+            "type": "boolean",
+            "default": false,
+            "trait": "channel_live"
+        }
+    },
+    "context": {
+        "pageTypes": [
+            "home",
+            "list",
+            "detail"
+        ],
+        "requires": []
+    }
+}

@@ -1,0 +1,157 @@
+{# 未传 fallback / broken_class 时不挂 onerror：封面失效由 mac-theme-runtime 统一换成
+   默认缩略图（img/cover-fallback.svg，与排行榜一致）。 #}
+{% macro lazy_img(src, alt, opts) %}
+{% set o = opts|default({}) %}
+{% set ph = o.placeholder|default('data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==') %}
+{% set fb = o.fallback|default('') %}
+{% set resolved = mac_url_img(src) %}
+<img class="{{ o.class|default('') }}"
+     data-original="{{ resolved }}"
+     src="{{ ph }}"
+{% if o.broken_class|default('') %}
+     {# 图片失效：给父容器加类（如 is-empty），由容器 CSS 切换为占位图 #}
+     onerror="this.onerror=null;if(this.parentNode){this.parentNode.classList.add('{{ o.broken_class|e('js') }}');}"
+{% elseif fb %}
+     data-fallback="{{ fb }}"
+     onerror="if(this.dataset.fallback&amp;&amp;this.src!==this.dataset.fallback){this.onerror=null;this.src=this.dataset.fallback;}"
+{% endif %}
+     alt="{{ alt|default('') }}"{% if o.loading|default('') %} loading="{{ o.loading }}"{% endif %}{% if o.decoding|default('') %} decoding="{{ o.decoding }}"{% endif %}>
+{% endmacro %}
+
+{% macro pb_cover_classes(props) %}
+{% set _card = props.card|default('poster-h') %}
+{% if _card != 'poster-v' and _card != 'poster-h' %}{% set _card = 'poster-h' %}{% endif %}
+{% set _ratio = props.ratio|default('default') %}
+{% set _known = ['16-9', '4-3', '3-4', '2-3', '69-40', '20-29', '1-1'] %}
+{% set _landscape_presets = ['16-9', '4-3', '69-40'] %}
+{% set _rw = props.ratio_w|default(0) + 0 %}
+{% set _rh = props.ratio_h|default(0) + 0 %}
+{% if _rw < 1 or _rh < 1 %}
+  {% if _ratio != 'default' and _ratio and _ratio not in _known %}
+    {% set _parts = _ratio|split('-') %}
+    {% if _parts|length == 2 %}
+      {% set _rw = _parts[0] + 0 %}
+      {% set _rh = _parts[1] + 0 %}
+    {% endif %}
+  {% elseif _ratio != 'default' and _ratio in _known %}
+    {% set _parts = _ratio|split('-') %}
+    {% if _parts|length == 2 %}
+      {% set _rw = _parts[0] + 0 %}
+      {% set _rh = _parts[1] + 0 %}
+    {% endif %}
+  {% endif %}
+{% endif %}
+{% set _landscape = (_card == 'poster-h' and _ratio == 'default') or (_rw > 0 and _rh > 0 and _rw > _rh) or (_ratio in _landscape_presets) %}
+pb-cover pb-cover--{{ _card }}{% if _ratio != 'default' and _ratio and _ratio in _known %} pb-cover--ratio-{{ _ratio }}{% endif %}{% if _landscape %} pb-cover--landscape{% endif %}
+{% endmacro %}
+
+{% macro pb_cover_style(props) %}
+{% set _ratio = props.ratio|default('default') %}
+{% set _known = ['16-9', '4-3', '3-4', '2-3', '69-40', '20-29', '1-1'] %}
+{% set _rw = props.ratio_w|default(0) + 0 %}
+{% set _rh = props.ratio_h|default(0) + 0 %}
+{% if _rw < 1 or _rh < 1 %}
+  {% if _ratio != 'default' and _ratio and _ratio not in _known %}
+    {% set _parts = _ratio|split('-') %}
+    {% if _parts|length == 2 %}
+      {% set _rw = _parts[0] + 0 %}
+      {% set _rh = _parts[1] + 0 %}
+    {% endif %}
+  {% endif %}
+{% endif %}
+{% if _rw > 0 and _rh > 0 %}--pb-cover-ratio: {{ _rw }} / {{ _rh }}{% endif %}
+{% endmacro %}
+
+{# 封面网格分页：2/3/4/5 列 LCM=60，有下一页时末行不留空 #}
+{% macro pb_grid_paging_num(num) %}
+{% set n = num|default(24) + 0 %}
+{% set step = 60 %}
+{% if n < step %}{{ step }}{% else %}{{ ((n + step - 1) // step) * step }}{% endif %}
+{% endmacro %}
+
+{# 首页/区块网格：向上取整为 30 的倍数（5/3/2 列 LCM，末行不留空） #}
+{% macro pb_grid_section_num(num) %}
+{% set raw = num|default(12) + 0 %}
+{% set step = 30 %}
+{% if raw < 1 %}{{ step }}{% elseif raw % step == 0 %}{{ raw }}{% else %}{{ ((raw + step - 1) // step) * step }}{% endif %}
+{% endmacro %}
+
+{# 专题列表 grid：2/3/4 列 LCM=12，末行不留空 #}
+{% macro pb_grid_topic_num(num) %}
+{% set n = num|default(24) + 0 %}
+{% set step = 12 %}
+{% if n < 1 %}{{ step }}{% elseif n % step == 0 %}{{ n }}{% else %}{{ ((n + step - 1) // step) * step }}{% endif %}
+{% endmacro %}
+
+{# 分区「更多」：由 body 内列表组件 + 分类自动推导，无需手填 more_url #}
+{# 友情链接：link_type=1 为图片链接，展示 link_logo；否则展示 link_name #}
+{% macro friend_link_item(link, item_class, link_class, rel, target) %}
+{% set _fl_name = link.link_name|default('')|trim %}
+{% set _fl_url = link.link_url|default('')|trim %}
+{% set _fl_type = link.link_type|default(0) + 0 %}
+{% set _fl_logo = link.link_logo|default('')|trim %}
+{% if _fl_url != '' and ((_fl_type == 1 and _fl_logo != '') or (_fl_type != 1 and _fl_name != '')) %}
+<li{% if item_class %} class="{{ item_class }}"{% endif %}>
+  <a class="{{ link_class }}{% if _fl_type == 1 and _fl_logo != '' %} {{ link_class }}--logo{% endif %}" href="{{ _fl_url }}"{% if rel %} rel="{{ rel }}"{% endif %}{% if target %} target="{{ target }}"{% endif %}{% if _fl_name %} title="{{ _fl_name }}"{% endif %}>
+    {% if _fl_type == 1 and _fl_logo != '' %}
+      {% set _logo_src = (_fl_logo matches '/^(https?:)?\/\//' or _fl_logo starts with '/') ? _fl_logo : mac_url_img(_fl_logo) %}
+      <img class="pb-friend-link-logo" src="{{ _logo_src }}" alt="{{ _fl_name }}" decoding="async" loading="lazy">
+    {% else %}
+      {{ _fl_name }}
+    {% endif %}
+  </a>
+</li>
+{% endif %}
+{% endmacro %}
+
+{% macro pb_section_more_url(child) %}
+{% if child.component is defined %}
+{% set comp = child.component %}
+{% set p = child.props|default({}) %}
+{% set type_raw = p.type|default(0) %}
+{% set type_id = (type_raw == 'current') ? 0 : (type_raw + 0) %}
+{% if comp == 'rank_list' or comp == 'rank_feed' or comp == 'rank_inline' %}
+{{- mac_url('label/rank') -}}
+{% elseif comp == 'topic_list' %}
+{{- mac_url('topic/index') -}}
+{% elseif comp == 'live_list' %}
+{{- mac_url('live/index') -}}
+{% elseif comp == 'website_list' %}
+{{- mac_url('website/index') -}}
+{% elseif comp == 'actor_list' %}
+{% set _by = p.by|default('time') %}
+{% set _order = p.order|default('desc') %}
+{{- mac_url('actor/index', {by: _by, order: _order}) -}}
+{% elseif comp == 'gbook_list' %}
+{{- mac_url('gbook/index') -}}
+{% elseif comp == 'content_feed' %}
+{% set bind = p.bind|default('vod') %}
+{% if bind == 'topic' %}
+{{- mac_url('topic/index') -}}
+{% elseif bind == 'live' %}
+{{- mac_url('live/index') -}}
+{% elseif bind == 'website' %}
+{{- mac_url('website/index') -}}
+{% elseif bind == 'gbook' %}
+{{- mac_url('gbook/index') -}}
+{% elseif bind == 'art' %}
+{% if type_id > 0 %}{{- mac_url_type({type_id: type_id, type_mid: 2}) -}}{% else %}{{- mac_url('art/index') -}}{% endif %}
+{% elseif bind == 'manga' %}
+{% if type_id > 0 %}{{- mac_url_type({type_id: type_id, type_mid: 12}) -}}{% else %}{{- mac_url('manga/index') -}}{% endif %}
+{% else %}
+{% set _by = p.by|default('time') %}
+{% set _order = p.order|default('desc') %}
+{% if type_id > 0 %}{{- mac_url_type({type_id: type_id, type_mid: 1}, {by: _by, order: _order}, 'show') -}}{% elseif _by == 'hits_month' %}{{- mac_url('label/rank') ~ '#month' -}}{% elseif _by == 'hits_week' %}{{- mac_url('label/rank') ~ '#week' -}}{% elseif _by == 'hits_day' %}{{- mac_url('label/rank') ~ '#day' -}}{% else %}{{- mac_url('vod/index', {by: _by, order: _order}) -}}{% endif %}
+{% endif %}
+{% elseif comp == 'art_list' %}
+{% set art_top = mac_top_types(2, 1)|first %}
+{% if type_id > 0 %}{{- mac_url_type({type_id: type_id, type_mid: 2}, {by: p.by|default('time')}, 'show') -}}{% elseif art_top %}{{- mac_url_type(art_top, {by: p.by|default('time')}, 'show') -}}{% else %}{{- mac_url('art/search') -}}{% endif %}
+{% elseif comp == 'manga_list' %}
+{% if type_id > 0 %}{{- mac_url_type({type_id: type_id, type_mid: 12}) -}}{% else %}{{- mac_url('manga/index') -}}{% endif %}
+{% elseif comp == 'vod_list' %}
+{% set _by = p.by|default('time') %}
+{% set _order = p.order|default('desc') %}
+{% if type_id > 0 %}{{- mac_url_type({type_id: type_id, type_mid: 1}, {by: _by, order: _order}, 'show') -}}{% elseif _by == 'hits_month' %}{{- mac_url('label/rank') ~ '#month' -}}{% elseif _by == 'hits_week' %}{{- mac_url('label/rank') ~ '#week' -}}{% elseif _by == 'hits_day' %}{{- mac_url('label/rank') ~ '#day' -}}{% else %}{{- mac_url('vod/index', {by: _by, order: _order}) -}}{% endif %}
+{% endif %}
+{% endif %}
+{% endmacro %}

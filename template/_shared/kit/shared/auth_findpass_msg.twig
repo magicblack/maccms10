@@ -1,0 +1,49 @@
+{% set ac = param.ac|default('email') %}
+{% set ac_text = param.ac_text|default(ac == 'phone' ? '手机' : '邮箱') %}
+<div class="auth-findpass-msg" data-mac-findpass-msg data-ac="{{ ac }}">
+  <div class="auth-steps auth-steps--compact" data-findpass-step-indicator aria-label="找回密码步骤" data-lang-aria-label="auth_findpass_steps_aria">
+    <div class="auth-steps__item is-on" data-findpass-step-dot="1">
+      <span class="auth-steps__num">1</span>
+      <span class="auth-steps__text" data-lang="user_step_send_verify">发送验证</span>
+    </div>
+    <div class="auth-steps__line" aria-hidden="true"></div>
+    <div class="auth-steps__item" data-findpass-step-dot="2">
+      <span class="auth-steps__num">2</span>
+      <span class="auth-steps__text" data-lang="user_chongzhimm">重置密码</span>
+    </div>
+  </div>
+  <form data-mac-findpass-send-form class="auth-form auth-form--dense" method="post" action="" data-findpass-step="1">
+    <input type="hidden" name="ac" value="{{ ac }}" data-findpass-ac-input>
+    <label class="auth-field auth-field--full">
+      <span class="auth-field__label" data-findpass-to-label data-lang="{{ ac == 'phone' ? 'string_findpass_bind_phone' : 'string_findpass_bind_email' }}">绑定{{ ac_text }}</span>
+      <input type="{{ ac == 'phone' ? 'tel' : 'email' }}" name="to" class="auth-field__input" data-findpass-to-input data-placeholder="user_place_bangdyx" placeholder="绑定的{{ ac_text }}" autocomplete="{{ ac == 'phone' ? 'tel' : 'email' }}" inputmode="{{ ac == 'phone' ? 'tel' : 'email' }}">
+    </label>
+    <div class="auth-field auth-field--captcha auth-field--full">
+      <span class="auth-field__label" data-lang="string_yzm">验证码</span>
+      <div class="auth-captcha">
+        <input type="text" name="verify" class="auth-field__input" data-placeholder="user_place_yanzm" placeholder="请输入您的验证码" autocomplete="off">
+        <img class="auth-captcha__img" src="{{ mac_url('verify/index') }}" alt="验证码" data-lang-title="string_click_refresh" title="单击刷新" data-mac-findpass-msg-captcha onclick="this.src=this.src.split('?')[0]+'?v='+(new Date()).getTime()">
+      </div>
+    </div>
+    <button type="submit" class="auth-form__submit" data-lang="btn_fsyzm">发送验证码</button>
+  </form>
+  <form data-mac-findpass-reset-form class="auth-form auth-form--dense" method="post" action="" data-findpass-step="2" hidden>
+    <input type="hidden" name="ac" value="{{ ac }}" data-findpass-ac-input>
+    <input type="hidden" name="to" value="" data-findpass-to-hidden>
+    <label class="auth-field auth-field--full">
+      <span class="auth-field__label" data-findpass-code-label data-lang="{{ ac == 'phone' ? 'string_findpass_code_phone' : 'string_findpass_code_email' }}">{{ ac_text }}验证码</span>
+      <input type="text" name="code" class="auth-field__input" data-placeholder="user_place_yanzm" placeholder="请输入您的验证码" autocomplete="one-time-code" inputmode="numeric">
+    </label>
+    <div class="auth-form__row">
+      <label class="auth-field">
+        <span class="auth-field__label" data-lang="user_xmm">新密码</span>
+        <input type="password" name="user_pwd" class="auth-field__input" data-placeholder="user_place_xmm" placeholder="请输入新密码" autocomplete="new-password">
+      </label>
+      <label class="auth-field">
+        <span class="auth-field__label" data-lang="user_qrmm">确认密码</span>
+        <input type="password" name="user_pwd2" class="auth-field__input" data-placeholder="user_place_querenmm" placeholder="请输入您的确认密码" autocomplete="new-password">
+      </label>
+    </div>
+    <button type="submit" class="auth-form__submit" data-lang="btn_czmm">重置密码</button>
+  </form>
+</div>

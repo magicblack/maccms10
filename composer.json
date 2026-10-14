@@ -12,7 +12,10 @@
         }
     },
     "require": {
-        "php": ">=7.0"
+        "php": ">=7.0",
+        "ext-ctype": "*",
+        "ext-mbstring": "*",
+        "twig/twig": "2.12.5"
     },
     "suggest": {
         "workerman/workerman": "常驻 WebSocket 服务，启用 socialws 插件时需要。安装：composer require workerman/workerman:~4.0.30 workerman/gateway-worker:^3.1（~4.0.30 兼容 PHP 7.0，4.2+ 需要 PHP 8.0）",

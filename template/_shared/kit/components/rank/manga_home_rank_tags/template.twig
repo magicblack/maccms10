@@ -1,0 +1,58 @@
+{# spike manga/index — 高能排行：网格 + 周榜/月榜/筛选 #}
+{% set p = props|default({}) %}
+{% set num = p.num|default(6) %}
+{% set title = p.title|default('热门排行') %}
+{% set title_lang = p.title_lang|default('string_manga_rank_tags_title') %}
+{% set week_list = mac_manga({num: num, order: 'desc', by: 'hits_week'}).list|default([]) %}
+{% set month_list = mac_manga({num: num, order: 'desc', by: 'hits_month'}).list|default([]) %}
+{% set fallback = mac_manga({num: num, order: 'desc', by: 'hits'}).list|default([]) %}
+{% if week_list is empty %}{% set week_list = fallback %}{% endif %}
+{% if month_list is empty %}{% set month_list = fallback %}{% endif %}
+{% set manga_root = mac_top_types(12, 1)|first %}
+{% set filter_href = manga_root ? mac_url_type(manga_root, {}, 'show') : mac_url('manga/index') %}
+
+{% macro rank_card(vo, index) %}
+<a class="mc-rank-card" href="{{ mac_url_manga_detail(vo) }}">
+  <span class="mc-rank-card__n" aria-hidden="true">{{ index }}</span>
+  <span class="mc-rank-card__cover" data-cover-bg="{{ mac_url_img(vo.manga_pic) }}" style="background-image:url('{{ mac_url_img(vo.manga_pic) }}')"></span>
+  <span class="mc-rank-card__body">
+    <strong class="mc-rank-card__name">{{ vo.manga_name }}</strong>
+    <span class="mc-rank-card__meta">
+      {% if vo.manga_class %}
+        {% for tag in vo.manga_class|split(',')|slice(0, 2) %}
+          {% if tag|trim %}<i class="mc-rank-card__tag">{{ tag|trim }}</i>{% endif %}
+        {% endfor %}
+      {% else %}
+        <i class="mc-rank-card__tag">{% if vo.manga_remarks %}{% include "page-builder-components/_shared/chapter_remarks.twig" with {remarks: vo.manga_remarks, kind: 'manga'} only %}{% else %}<span{% set _ml = mac_module_label(12) %}{% if _ml.lang %} data-lang="{{ _ml.lang }}"{% endif %}>{{ _ml.name }}</span>{% endif %}</i>
+      {% endif %}
+    </span>
+  </span>
+</a>
+{% endmacro %}
+
+{% if week_list is not empty %}
+<section class="mc-sec mc-sec--rank pb-manga-home-rank" id="mc-rank" aria-labelledby="mc-rank-h" data-component="manga_home_rank_tags" data-mc-rank data-rankpage>
+  <header class="mc-sec__head">
+    <h2 class="mc-sec__title" id="mc-rank-h"{% if title_lang and mac_i18n_key(title, title_lang) %} data-lang="{{ title_lang }}"{% endif %}>{{ title }}</h2>
+    <div class="mc-sec__actions">
+      <a class="mc-sec__more" href="{{ filter_href }}"><span data-lang="str_shaixuan">筛选</span> <span aria-hidden="true">›</span></a>
+      <div class="mc-rank-tabs" role="tablist" data-lang-aria-label="rank_type_aria" aria-label="排行榜类型">
+        <button type="button" class="is-on" data-rank-tab="week" role="tab" aria-selected="true" aria-controls="mc-rank-week"><span data-lang="string_zhoub">周榜</span></button>
+        <button type="button" data-rank-tab="month" role="tab" aria-selected="false" aria-controls="mc-rank-month"><span data-lang="string_yueb">月榜</span></button>
+      </div>
+    </div>
+  </header>
+  <div class="mc-rank-panels">
+    <ol class="mc-rank-grid is-on" id="mc-rank-week" data-rank-board="week" role="tabpanel" aria-labelledby="mc-rank-tab-week">
+      {% for vo in week_list %}
+      <li>{{ _self.rank_card(vo, loop.index) }}</li>
+      {% endfor %}
+    </ol>
+    <ol class="mc-rank-grid" id="mc-rank-month" data-rank-board="month" role="tabpanel" aria-labelledby="mc-rank-tab-month" hidden>
+      {% for vo in month_list %}
+      <li>{{ _self.rank_card(vo, loop.index) }}</li>
+      {% endfor %}
+    </ol>
+  </div>
+</section>
+{% endif %}

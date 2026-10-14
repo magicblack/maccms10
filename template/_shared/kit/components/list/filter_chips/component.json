@@ -1,0 +1,31 @@
+{
+    "id": "filter_chips",
+    "label_key": "admin/themedesign/pb_block_filter_chips",
+    "category": "list",
+    "kind": "filter",
+    "styleMode": "peer_only",
+    "peer_styles": ["filter_panel/style.css"],
+    "assets": {
+        "css": "style.css",
+        "js": "script.js"
+    },
+    "props": {
+        "flag": {
+            "type": "enum",
+            "default": "show",
+            "values": [
+                "show",
+                "type"
+            ],
+            "trait": "filter_flag"
+        }
+    },
+    "context": {
+        "pageTypes": [
+            "home",
+            "list",
+            "detail"
+        ],
+        "requires": []
+    }
+}

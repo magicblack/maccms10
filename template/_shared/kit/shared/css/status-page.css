@@ -1,0 +1,192 @@
+/* 状态页：jump / msg / 404 / 403 / 500 — 仅用主题 tokens */
+
+.status-page {
+  text-align: center;
+  padding: var(--space-7) var(--space-5) calc(var(--space-7) + var(--space-6));
+  background: var(--c-surface);
+  border-radius: var(--radius-lg);
+  margin: var(--space-5) auto var(--space-7);
+  max-width: 560px;
+  box-sizing: border-box;
+  box-shadow: var(--shadow-card);
+}
+
+.status-page__art {
+  width: 200px;
+  max-width: 60%;
+  height: auto;
+  margin: 0 auto var(--space-3);
+  display: block;
+  color: var(--c-accent);
+}
+
+.status-page__art svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.status-page__code {
+  font-family: var(--font-head);
+  font-size: 56px;
+  font-weight: 800;
+  color: var(--c-accent);
+  line-height: 1;
+}
+
+.status-page__msg {
+  margin: var(--space-3) 0 var(--space-2);
+  font-family: var(--font-head);
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 1.45;
+  color: var(--c-text);
+  border: 0;
+  padding: 0;
+}
+
+.status-page__sub {
+  color: var(--c-text-muted);
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.status-page__act {
+  margin-top: var(--space-5);
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  justify-content: center;
+}
+
+.status-page__act .btn {
+  appearance: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 40px;
+  padding: 0 var(--space-5);
+  border-radius: var(--radius-pill);
+  border: 1px solid transparent;
+  font-family: var(--font-base);
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background var(--dur) var(--ease), color var(--dur) var(--ease), border-color var(--dur) var(--ease), transform var(--dur) var(--ease);
+  background: var(--c-accent);
+  color: var(--c-accent-ink);
+}
+
+.status-page__act .btn:hover {
+  background: var(--c-accent-hover);
+  color: var(--c-accent-ink);
+}
+
+.status-page__act .btn:active {
+  transform: scale(0.98);
+}
+
+.status-page__act .btn:focus-visible {
+  outline: 2px solid var(--c-accent-focus-ring);
+  outline-offset: 2px;
+}
+
+.status-page__act .btn.ghost {
+  background: var(--c-surface);
+  color: var(--c-text);
+  border-color: var(--c-border);
+}
+
+.status-page__act .btn.ghost:hover {
+  background: var(--c-surface-2);
+  color: var(--c-text);
+}
+
+/* 列表/搜索验证码门 public/verify */
+.status-page--verify {
+  max-width: 420px;
+}
+
+.status-page--verify .status-page__code {
+  font-size: 40px;
+  line-height: 1.2;
+}
+
+.status-page--verify .status-page__art--verify {
+  width: 120px;
+}
+
+.pb-verify-form {
+  margin-top: 20px;
+  text-align: left;
+}
+
+.pb-verify-form__row {
+  display: flex;
+  gap: 10px;
+  align-items: stretch;
+  margin-bottom: 14px;
+}
+
+.pb-verify-form__input {
+  flex: 1;
+  min-width: 0;
+  min-height: 44px;
+  padding: 0 12px;
+  border: 1px solid var(--c-border);
+  border-radius: var(--radius-md, 8px);
+  background: var(--c-surface-2, #f8fafc);
+  color: var(--c-text);
+  font-size: 15px;
+  text-align: center;
+  letter-spacing: 0.12em;
+  box-sizing: border-box;
+}
+
+.pb-verify-form__input:focus {
+  outline: none;
+  border-color: var(--c-accent);
+  box-shadow: 0 0 0 3px var(--c-accent-soft, rgba(79, 70, 229, 0.15));
+}
+
+.pb-verify-form__img {
+  flex: none;
+  width: 110px;
+  height: 44px;
+  border-radius: var(--radius-md, 8px);
+  border: 1px solid var(--c-border);
+  cursor: pointer;
+  object-fit: cover;
+  background: var(--c-surface-2, #f8fafc);
+}
+
+.pb-verify-form__btn {
+  width: 100%;
+  min-height: 44px;
+  border: 0;
+  cursor: pointer;
+}
+
+.pb-verify-form__btn:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
+.pb-verify-form__msg {
+  min-height: 20px;
+  margin: 10px 0 0;
+  font-size: 13px;
+  line-height: 1.45;
+  color: var(--c-danger, #dc2626);
+  text-align: center;
+}
+
+.pb-verify-form__msg.is-ok {
+  color: var(--c-success, #16a34a);
+}
+
+.status-page--verify .status-page__act {
+  margin-top: 18px;
+}

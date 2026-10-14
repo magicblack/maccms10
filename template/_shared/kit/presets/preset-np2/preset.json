@@ -1,0 +1,25 @@
+{
+    "id": "preset-np2",
+    "version": 1,
+    "name_key": "admin/themedesign/preset_np2",
+    "default_scheme": "midnight",
+    "shell_mode": "thin",
+    "scaffold": {
+        "list_sidebar_rank": false,
+        "detail_sidebar_rank": false,
+        "home_sidebar_rank": false,
+        "shell_left_nav": false,
+        "site_header_chrome": "app_top_chrome",
+        "hide_pb_footer": true,
+        "hide_pb_bottom_nav": true,
+        "use_np2_tabbar": true,
+        "manga_home_spotlight_show_hero": false,
+        "hide_member_circle": true
+    },
+    "assets": {
+        "shell_css": "pb-shell.css",
+        "tokens_css": "tokens-overlay.css",
+        "homepage": "homepage.json",
+        "static_img": "assets/img"
+    }
+}

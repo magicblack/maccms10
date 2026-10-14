@@ -1,0 +1,21 @@
+{#
+  评论分页控件（kit/shared 唯一真相）— 供 comment_block_list.twig 共用
+  依赖：mac_paging()（total/limit/page 由 mac_comment 结果提供），按钮由 comment_block.js 委托点击处理（AJAX 翻页，不做整页跳转）
+  参数：res（mac_comment 返回值，需包含 total/limit/page）
+#}
+{% set pg = mac_paging(res) %}
+{% if pg.page_total|default(1) > 1 %}
+<nav class="cmt-pager" data-cmt-pager data-cmt-page-current="{{ pg.page_current }}">
+  <button type="button" class="cmt-pager__btn cmt-pager__nav" data-cmt-page-nav="prev" data-lang-aria-label="string_syy" aria-label="上一页"{% if pg.page_current <= 1 %} disabled{% endif %}>
+    <span aria-hidden="true">&lsaquo;</span>
+  </button>
+  <span class="cmt-pager__nums">
+    {% for n in pg.page_num|default([]) %}
+    <button type="button" class="cmt-pager__btn cmt-pager__num{% if n == pg.page_current %} is-active{% endif %}" data-cmt-page-nav="{{ n }}"{% if n == pg.page_current %} aria-current="page"{% endif %}>{{ n }}</button>
+    {% endfor %}
+  </span>
+  <button type="button" class="cmt-pager__btn cmt-pager__nav" data-cmt-page-nav="next" data-lang-aria-label="string_xyy" aria-label="下一页"{% if pg.page_current >= pg.page_total %} disabled{% endif %}>
+    <span aria-hidden="true">&rsaquo;</span>
+  </button>
+</nav>
+{% endif %}

@@ -59,6 +59,16 @@
                     </select>
                 </div>
                 <div class="layui-input-inline w150">
+                    <select name="check">
+                        <option value="">{:lang('admin/content_check/select_check')}</option>
+                        <option value="4" {if condition="$param['check'] eq '4'"}selected {/if}>{:lang('admin/content_check/st_admin_disabled')}</option>
+                        <option value="3" {if condition="$param['check'] eq '3'"}selected {/if}>{:lang('admin/content_check/st_disabled')}</option>
+                        <option value="2" {if condition="$param['check'] eq '2'"}selected {/if}>{:lang('admin/content_check/st_failing')}</option>
+                        <option value="1" {if condition="$param['check'] eq '1'"}selected {/if}>{:lang('admin/content_check/st_ok')}</option>
+                        <option value="0" {if condition="$param['check'] eq '0'"}selected {/if}>{:lang('admin/content_check/st_unchecked')}</option>
+                    </select>
+                </div>
+                <div class="layui-input-inline w150">
                     <select name="level">
                         <option value="">{:lang('select_level')}</option>
                         <option value="9" {if condition="$param['level'] eq '9'"}selected {/if}>{:lang('level')}9-{:lang('slide')}</option>
@@ -202,6 +212,9 @@
             <a data-href="{:url('del')}?purge=1" class="layui-btn layui-btn-danger j-page-btns confirm">{:lang('recycle_purge')}</a>
             {else/}
             <a href="{:url('data',['recycle'=>1])}" class="layui-btn layui-btn-primary">{:lang('admin/recycle/bin')}</a>
+            <a href="javascript:;" class="layui-btn layui-btn-primary j-rc-batch" data-act="enable"><i class="layui-icon">&#xe605;</i>{:lang('admin/content_check/btn_enable')}</a>
+            <a href="javascript:;" class="layui-btn layui-btn-primary j-rc-batch" data-act="disable"><i class="layui-icon">&#x1006;</i>{:lang('admin/content_check/btn_disable')}</a>
+            <a href="{:url('resource_check/index',['module'=>'vod'])}" class="layui-btn layui-btn-primary"><i class="layui-icon">&#xe60e;</i>{:lang('admin/content_check/log_title')}</a>
             <a data-href="{:url('info')}" data-full="1" class="layui-btn layui-btn-primary j-iframe"><i class="layui-icon">&#xe654;</i>{:lang('add')}</a>
             <a data-href="{:url('del')}" class="layui-btn layui-btn-primary j-page-btns confirm"><i class="layui-icon">&#xe640;</i>{:lang('del')}</a>
             <a data-href="{:url('index/select')}?tab=vod&col=type_id&tpl=select_type&url=vod/field" data-width="100%" data-height="100%" data-checkbox="1" class="layui-btn layui-btn-primary j-select"><i class="layui-icon">&#xe620;</i>{:lang('type')}</a>
@@ -247,6 +260,7 @@
                 <th width="60">{:lang('id')}</th>
                 <th id="table_th_vod_name">{:lang('name')}</th>
                 <th width="90">{:lang('admin/ai_seo/status_col')}</th>
+                <th width="150">{:lang('admin/content_check/col_status')}</th>
                 <th width="50">{:lang('hits')}</th>
                 <th width="100">{:lang('hits_week')}</th>
                 <th width="60">{:lang('score')}</th>
@@ -284,6 +298,26 @@
                     <span class="layui-badge layui-bg-gray">{:lang('admin/ai_seo/status_none')}</span>
                     {/if}
                 </td>
+                <td class="rc-cell">
+                    {switch name="$vo['vod_check_state']"}
+                    {case value="4"}<span class="layui-badge" title="{$vo.vod_check_reason|htmlspecialchars}">{:lang('admin/content_check/st_admin_disabled')}</span>{/case}
+                    {case value="3"}<span class="layui-badge" title="{$vo.vod_check_reason|htmlspecialchars}">{:lang('admin/content_check/st_disabled')}</span>{/case}
+                    {case value="2"}<span class="layui-badge layui-bg-orange" title="{$vo.vod_check_reason|htmlspecialchars}">{:lang('admin/content_check/st_failing')}</span>{/case}
+                    {case value="1"}{if condition="$vo.vod_check_reason neq ''"}<span class="layui-badge layui-bg-gray" title="{$vo.vod_check_reason|htmlspecialchars}">{:lang('admin/content_check/st_partial')}</span>{else/}<span class="layui-badge layui-bg-green">{:lang('admin/content_check/st_ok')}</span>{/if}{/case}
+                    {default /}<span class="layui-badge-rim">{:lang('admin/content_check/st_unchecked')}</span>
+                    {/switch}
+                    {if condition="$vo.vod_check_reason neq ''"}<div class="rc-reason" title="{$vo.vod_check_reason|htmlspecialchars}">{$vo.vod_check_reason|htmlspecialchars|mac_substring=40}</div>{/if}
+                    <div class="rc-meta">
+                        {if condition="$vo.vod_check_time gt 0"}<span>{$vo.vod_check_time|date='m-d H:i',###}</span>{/if}
+                        <a href="{:url('resource_check/index',['module'=>'vod','id'=>$vo['vod_id']])}">{:lang('admin/content_check/link_logs')}</a>
+                        {if condition="$vo['vod_check_state'] egt 2"}
+                        <a href="javascript:;" class="j-rc-row" data-act="enable" data-id="{$vo.vod_id}" style="color:#16b777">{:lang('admin/collect_health/btn_enable')}</a>
+                        {/if}
+                        {if condition="$vo['vod_check_state'] lt 3"}
+                        <a href="javascript:;" class="j-rc-row" data-act="disable" data-id="{$vo.vod_id}" style="color:#ff5722">{:lang('admin/collect_health/btn_disable')}</a>
+                        {/if}
+                    </div>
+                </td>
                 <td>{$vo.vod_hits}</td>
                 <td>{$vo.vod_hits_week}</td>
                 <td>{$vo.vod_score}</td>
@@ -317,6 +351,28 @@
 
 
 {include file="../../../application/admin/view_new/public/foot" /}
+<style>
+.rc-cell .rc-reason { font-size:12px; color:#999; margin-top:3px; word-break:break-all; }
+.rc-cell .rc-meta { font-size:12px; color:#999; margin-top:3px; display:flex; gap:8px; flex-wrap:wrap; }
+</style>
+<script type="text/javascript">
+var RC_CFG = {
+    mid: 1,
+    enableUrl: '{:url("resource_check/enable")}',
+    disableUrl: '{:url("resource_check/disable")}',
+    lang: {
+        enable_title: '{:lang("admin/content_check/prompt_enable")}',
+        disable_title: '{:lang("admin/content_check/prompt_disable")}',
+        reason_ph_enable: '{:lang("admin/content_check/reason_ph_optional")}',
+        reason_ph_disable: '{:lang("admin/content_check/reason_ph_required")}',
+        reason_required: '{:lang("admin/content_check/reason_required")}',
+        select_rows: '{:lang("admin/content_check/select_rows")}',
+        ok: '{:lang("admin/content_check/btn_confirm")}',
+        cancel: '{:lang("admin/content_check/btn_cancel")}'
+    }
+};
+</script>
+<script type="text/javascript" src="__STATIC__/js/resource_check.js?v={:time()}"></script>
 
 <script type="text/javascript" src="__STATIC__/js/ai_seo_list.js?{$MAC_VERSION}"></script>
 <script type="text/javascript">

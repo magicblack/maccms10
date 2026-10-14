@@ -1,0 +1,30 @@
+{% set _w = props.width|default('100%')|trim %}
+{% if _w == '' %}{% set _w = '100%' %}{% endif %}
+{% if _w matches '/^[0-9.]+%$/' or _w matches '/^[0-9.]+px$/' or _w matches '/^[0-9.]+rem$/' %}
+  {% set _w_safe = _w %}
+{% else %}
+  {% set _w_safe = '100%' %}
+{% endif %}
+{% set _h_raw = props.height|default(72) %}
+{% if _h_raw == '' or _h_raw is null %}{% set _h_raw = 72 %}{% endif %}
+{% if _h_raw > 800 %}
+  {% set _h = 800 %}
+{% elseif _h_raw < 0 %}
+  {% set _h = 0 %}
+{% else %}
+  {% set _h = _h_raw %}
+{% endif %}
+{% set _img = props.image|default('')|trim %}
+{% if _h == 0 and _img == '' %}
+{# 高度为 0 且无图时不占位 #}
+{% else %}
+{% set _full = _w_safe == '100%' %}
+{% set _style = '' %}
+{% if not _full %}{% set _style = _style ~ 'width: ' ~ _w_safe ~ '; ' %}{% endif %}
+{% set _style = _style ~ 'height: ' ~ _h ~ 'px; min-height: ' ~ _h ~ 'px;' %}
+{% if _img %}
+  {% set _src = (_img matches '/^(https?:)?\\/\\//i' or _img starts with '/') ? _img : mac_url_img(_img) %}
+  {% set _style = _style ~ ' background-image: url(\'' ~ _src ~ '\');' %}
+{% endif %}
+<div class="pb-header-decor{% if _full %} pb-header-decor--full{% endif %}{% if _img %} pb-header-decor--image{% endif %}" style="{{ _style }}" role="presentation" aria-hidden="true"></div>
+{% endif %}

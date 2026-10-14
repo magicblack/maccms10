@@ -1,0 +1,346 @@
+/* user_invite panel — bundled from _shared/assets/css/member/invite.css */
+.page-member--invite .invite-page {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.page-member--invite .invite-header-card,
+.page-member--invite .invite-reward-card,
+.page-member--invite .invite-stats-card {
+  padding: 16px;
+  border: 1px solid var(--c-border);
+  border-radius: var(--radius-lg);
+  background: var(--c-surface);
+}
+
+.page-member--invite .invite-header-card {
+  background: linear-gradient(120deg, var(--c-accent-soft), var(--c-surface));
+}
+
+.page-member--invite .invite-card-kicker {
+  margin: 0 0 10px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--c-text-muted);
+}
+
+.page-member--invite .invite-hero-main {
+  margin-bottom: 14px;
+}
+
+.page-member--invite .invite-code-line {
+  margin: 0 0 4px;
+  font-size: 15px;
+  color: var(--c-text);
+}
+
+.page-member--invite .invite-code-value {
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.04em;
+  color: var(--c-accent);
+}
+
+.page-member--invite .invite-code-hint {
+  margin: 0;
+  font-size: 12px;
+  color: var(--c-text-muted);
+}
+
+.page-member--invite .invite-link-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.page-member--invite .invite-link-block {
+  overflow: hidden;
+  border: 1px solid var(--c-border);
+  border-radius: var(--radius);
+  background: var(--c-surface);
+}
+
+.page-member--invite .invite-link-bar {
+  padding: 8px 12px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--c-text-muted);
+  background: var(--c-surface-2);
+  border-bottom: 1px solid var(--c-border);
+}
+
+.page-member--invite .invite-link-body-wrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 12px;
+}
+
+.page-member--invite .invite-link-body {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 13px;
+  color: var(--c-link);
+  text-decoration: none;
+}
+
+.page-member--invite .invite-link-body:hover {
+  color: var(--c-link-hover);
+}
+
+.page-member--invite .invite-link-copy {
+  flex-shrink: 0;
+  min-height: 32px;
+  padding: 0 12px;
+  border: 0;
+  border-radius: 999px;
+  background: var(--c-accent);
+  color: #fff;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.page-member--invite .invite-link-copy:hover {
+  background: var(--c-accent-hover);
+}
+
+.page-member--invite .invite-stats-head {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  margin-bottom: 12px;
+}
+
+.page-member--invite .invite-stats-title {
+  font-size: 13px;
+  color: var(--c-text-muted);
+}
+
+.page-member--invite .invite-stats-num {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--c-text);
+  font-variant-numeric: tabular-nums;
+}
+
+.page-member--invite .invite-mobile-list {
+  display: none;
+}
+
+.page-member--invite .invite-mobile-item {
+  padding: 12px 14px;
+  border-radius: var(--radius);
+  background: var(--c-surface-2);
+}
+
+.page-member--invite .invite-mobile-item+.invite-mobile-item {
+  margin-top: 8px;
+}
+
+.page-member--invite .invite-mobile-item p {
+  display: flex;
+  gap: 8px;
+  margin: 0 0 4px;
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+.page-member--invite .invite-mobile-item p:last-child {
+  margin-bottom: 0;
+}
+
+.page-member--invite .invite-mobile-item .label {
+  flex-shrink: 0;
+  color: var(--c-text-muted);
+}
+
+.page-member--invite .invite-mobile-item .value {
+  min-width: 0;
+  color: var(--c-text);
+  word-break: break-all;
+}
+
+/* 邀请奖励规则 */
+.page-member--invite .invite-reward-card[hidden] {
+  display: none;
+}
+
+.page-member--invite .invite-reward-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 4px 12px;
+  margin-bottom: 10px;
+}
+
+.page-member--invite .invite-reward-title {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--c-text);
+}
+
+.page-member--invite .invite-reward-progress {
+  font-size: 12px;
+  color: var(--c-text-muted);
+}
+
+.page-member--invite .invite-reward-progress strong {
+  color: var(--c-accent);
+  font-variant-numeric: tabular-nums;
+}
+
+.page-member--invite .invite-reward-reg {
+  margin: 0 0 12px;
+  padding: 10px 12px;
+  border-radius: var(--radius);
+  background: var(--c-accent-soft);
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--c-text);
+}
+
+.page-member--invite .invite-reward-sub {
+  margin: 0 0 8px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--c-text-muted);
+}
+
+.page-member--invite .invite-reward-tiers {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 0 0 12px;
+  padding: 0;
+  list-style: none;
+}
+
+.page-member--invite .invite-reward-tier {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  border: 1px solid var(--c-border);
+  border-radius: var(--radius);
+  background: var(--c-surface-2);
+}
+
+.page-member--invite .invite-reward-tier__main {
+  flex: 1;
+  min-width: 0;
+}
+
+.page-member--invite .invite-reward-tier__count {
+  margin: 0 0 2px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--c-text);
+}
+
+.page-member--invite .invite-reward-tier__gift {
+  margin: 0;
+  font-size: 13px;
+  color: var(--c-accent);
+  word-break: break-word;
+}
+
+.page-member--invite .invite-reward-tier__state {
+  flex-shrink: 0;
+  padding: 2px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  white-space: nowrap;
+  color: var(--c-text-muted);
+  background: var(--c-surface);
+  border: 1px solid var(--c-border);
+}
+
+.page-member--invite .invite-reward-tier.is-done {
+  border-color: var(--c-accent);
+}
+
+.page-member--invite .invite-reward-tier.is-done .invite-reward-tier__state {
+  color: #fff;
+  background: var(--c-accent);
+  border-color: var(--c-accent);
+}
+
+.page-member--invite .invite-reward-foot {
+  margin: 0;
+  font-size: 12px;
+  color: var(--c-text-muted);
+}
+
+.page-member--invite .invite-reward-foot__link {
+  margin-left: 4px;
+  color: var(--c-link);
+  text-decoration: none;
+}
+
+.page-member--invite .invite-reward-foot__link:hover {
+  color: var(--c-link-hover);
+}
+
+@media (max-width: 720px) {
+  .page-member--invite .invite-table-wrap {
+    display: none !important;
+  }
+
+  .page-member--invite .invite-mobile-list {
+    display: block;
+  }
+}
+
+/* 空态：在卡片内水平垂直居中（li 默认 list-item 会左对齐） */
+.page-member--invite .mac-invite-empty.invite-empty-list {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  list-style: none;
+  margin: 0;
+  padding: 12px 0 4px;
+  min-height: 260px;
+}
+
+.page-member--invite .invite-empty-li.pb-empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  max-width: 100%;
+  list-style: none;
+  margin: 0;
+  padding: 28px 16px 32px;
+  border: 0;
+  background: transparent;
+  text-align: center;
+  min-height: 220px;
+  box-sizing: border-box;
+}
+
+.page-member--invite .invite-empty-li .pb-empty-state__art {
+  display: flex;
+  justify-content: center;
+  margin: 0 auto 12px;
+}
+
+.page-member--invite .invite-empty-li .pb-empty-state__svg {
+  display: block;
+  margin: 0 auto;
+}
+
+.page-member--invite .invite-empty-li .pb-empty-state__title,
+.page-member--invite .invite-empty-li .invite-empty-txt {
+  margin: 0;
+  text-align: center;
+  width: 100%;
+}

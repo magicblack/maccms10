@@ -1,0 +1,12 @@
+{% import "page-builder-components/_shared/macros.twig" as pb %}
+<article class="pb-actor-card pb-role-card" data-mid="9" data-id="{{ vo.role_id }}">
+  <a class="pb-actor-card__pic" href="{{ mac_url_role_detail(vo) }}" title="{{ vo.role_name }}">
+    {{ pb.lazy_img(vo.role_pic, vo.role_name) }}
+  </a>
+  <h3 class="pb-actor-card__title"><a href="{{ mac_url_role_detail(vo) }}">{{ vo.role_name }}</a></h3>
+  {% if vo.role_actor|default('') %}
+  <p class="pb-actor-card__meta">{{ vo.role_actor }}</p>
+  {% elseif vo.role_remarks|default('') %}
+  <p class="pb-actor-card__meta">{{ vo.role_remarks }}</p>
+  {% endif %}
+</article>

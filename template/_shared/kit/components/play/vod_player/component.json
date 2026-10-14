@@ -1,0 +1,29 @@
+{
+    "id": "vod_player",
+    "label_key": "admin/themedesign/pb_block_vod_player",
+    "category": "play",
+    "kind": "vod_player",
+    "palette": false,
+    "palette_inject": true,
+    "peer_styles": [],
+    "assets": {
+        "css": "style.css",
+        "js": "script.js"
+    },
+    "props": {
+        "show_episodes": {
+            "type": "boolean",
+            "default": true,
+            "trait": "show_episodes"
+        },
+        "show_nav": {
+            "type": "boolean",
+            "default": false,
+            "trait": "show_nav"
+        }
+    },
+    "context": {
+        "pageTypes": ["play"],
+        "requires": []
+    }
+}

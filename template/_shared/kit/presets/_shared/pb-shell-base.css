@@ -1,0 +1,277 @@
+/* PB 薄壳共享基底：reset + wrap，不含风格差异（由各 preset 的 pb-shell.css 扩展） */
+*, *::before, *::after { box-sizing: border-box; }
+/* 移动端触摸滚动时哪怕没有真实横向溢出，斜向滑动也可能触发页面横向弹性回弹（scrollX 短暂偏移）；
+   禁用横向 overscroll 从根上消除这个抖动源，避免依赖 JS 事后修正（见 mac-theme-chrome.js initPageScrollXLock） */
+html {
+  overscroll-behavior-x: none;
+}
+body {
+  margin: 0;
+  font-family: var(--font-base);
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--c-text);
+  background: var(--c-bg);
+  overscroll-behavior-x: none;
+}
+a { color: var(--c-link); text-decoration: none; }
+a:hover { color: var(--c-link-hover); }
+img { max-width: 100%; height: auto; }
+
+/* 短内容页：主栏至少一屏高，配合 .pb-site-footer { margin-top: auto } 把页脚顶到底 */
+.pbs-shell__main {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  min-height: 100dvh;
+  box-sizing: border-box;
+  min-width: 0;
+  width: 100%;
+}
+
+.pbs-wrap {
+  max-width: var(--wrap, 1400px);
+  margin: 0 auto;
+  padding: 16px var(--gutter, 8px) 48px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* 顶栏下紧接频道条：去掉 wrap 顶 padding，避免 16px 灰缝 */
+.pbs-wrap:has(> .bili-channel),
+.pbs-wrap:has(> .pb-channel-strip) {
+  padding-top: 0;
+}
+
+.pbs-wrap > .bili-channel {
+  /* B站初版：贴合页面，不要卡片底/圆角/阴影 */
+  background: transparent;
+  border-radius: 0;
+  padding: 16px 0 14px;
+  margin-bottom: 12px;
+  box-shadow: none;
+}
+
+.bili-hero {
+  position: relative;
+  height: 120px;
+  margin-bottom: 8px;
+  overflow: hidden;
+  background: linear-gradient(135deg, var(--c-accent-soft), var(--c-link-soft));
+}
+.bili-hero__img,
+.bili-hero__glow,
+.bili-hero__mask { display: none; }
+.bili-hero__base {
+  position: absolute;
+  inset: 0;
+  background: var(--gradient-hero-band);
+}
+
+.layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 16px;
+  align-items: start;
+}
+
+.layout.home .pbs-main { min-width: 0; }
+
+.layout.manga-home,
+.layout.novel-home {
+  /* 必须 minmax(0,1fr)：裸 1fr = minmax(auto,1fr)，横向 max-content 子项会撑破整页 */
+  grid-template-columns: minmax(0, 1fr) !important;
+  max-width: 1160px;
+  margin: 0 auto;
+  width: 100%;
+  min-width: 0;
+  padding-top: 8px !important;
+}
+
+.layout.novel-home {
+  padding-top: 0 !important;
+  gap: 0;
+}
+
+.layout.manga-home .pbs-main,
+.layout.novel-home .pbs-main,
+.layout.home .pbs-main {
+  min-width: 0;
+  max-width: 100%;
+}
+
+.layout.list .pbs-main,
+.layout.detail .pbs-main,
+.layout.play .pbs-main,
+.layout.member .pbs-main,
+.layout.gbook .pbs-main,
+.layout.rank .pbs-main {
+  min-width: 0;
+}
+
+/* 块栈主栏：8pt 节奏（16px），替代脚手架顶层 spacer（排除 solo/auth/漫画小说首页） */
+.layout.list .pbs-main,
+.layout.rank .pbs-main,
+.layout.gbook .pbs-main,
+.layout.detail .pbs-main,
+.layout.member .pbs-main,
+.layout.home .pbs-main,
+.layout.play .pbs-main {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* 脚手架遗留顶层 spacer 由 gap 接管 */
+.layout.list .pbs-main > .pb-block-host[data-pb-component="spacer"],
+.layout.rank .pbs-main > .pb-block-host[data-pb-component="spacer"],
+.layout.gbook .pbs-main > .pb-block-host[data-pb-component="spacer"],
+.layout.detail .pbs-main > .pb-block-host[data-pb-component="spacer"],
+.layout.member .pbs-main > .pb-block-host[data-pb-component="spacer"],
+.layout.home .pbs-main > .pb-block-host[data-pb-component="spacer"],
+.layout.play .pbs-main > .pb-block-host[data-pb-component="spacer"] {
+  display: none;
+}
+
+/* 列表/排行/留言默认不加顶层面包屑 */
+.layout.list .pbs-main > .pb-block-host[data-pb-component="breadcrumb"],
+.layout.rank .pbs-main > .pb-block-host[data-pb-component="breadcrumb"],
+.layout.gbook .pbs-main > .pb-block-host[data-pb-component="breadcrumb"] {
+  display: none;
+}
+
+.layout.list .pbs-main > .pb-sec-heading,
+.layout.rank .pbs-main > .pb-sec-heading,
+.layout.gbook .pbs-main > .pb-sec-heading,
+.layout.detail .pbs-main > .pb-sec-heading,
+.layout.member .pbs-main > .pb-sec-heading,
+.layout.home .pbs-main > .pb-sec-heading {
+  margin-bottom: 0;
+}
+
+.layout.list .bili-hero,
+.layout.detail .bili-hero,
+.layout.play .bili-hero,
+.layout.member .bili-hero {
+  display: none;
+}
+
+.layout.solo .pbs-wrap { padding-top: 0; }
+.layout.solo .pbs-main {
+  min-width: 0;
+  max-width: none;
+  margin: 0;
+  padding: 0;
+  display: block;
+}
+
+/* H5：list/live 顶栏下有频道条时去掉 wrap 顶缝；is-left-nav 槽位吸顶（祖先勿 overflow，否则 .hd sticky 无效） */
+@media (max-width: 960px) {
+  /* 首页：横滑卡片/频道条负 margin 不得撑出整页左右滑；勿在 body/html 设 overflow（会打掉 .hd sticky） */
+  body.page-home {
+    max-width: 100%;
+    touch-action: pan-y pinch-zoom;
+  }
+
+  body.page-home .pbs-shell__main {
+    max-width: 100%;
+    min-width: 0;
+  }
+
+  body.page-home .pbs-wrap {
+    max-width: 100%;
+    min-width: 0;
+  }
+
+  body.page-home .layout.home {
+    min-width: 0;
+    max-width: 100%;
+  }
+
+  .pbs-shell.is-left-nav,
+  .pbs-shell.is-left-nav > .pbs-shell__main {
+    overflow: visible;
+  }
+  .pbs-shell.is-left-nav > .pbs-shell__nav {
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    overflow: visible;
+    background: var(--c-surface, #fff);
+  }
+  /* 双保险：H5 顶栏下紧接频道条时顶缝为 0（避免误伤无 channel 的 wrap） */
+  .pbs-wrap:has(> .bili-channel),
+  .pbs-wrap:has(> .pb-channel-strip) {
+    padding-top: 0;
+  }
+}
+
+/* 小说首页：页级左右安全区（不依赖 novel_home_banner 组件 CSS） */
+.page-novel-home {
+  background: var(--c-bg, #f5f6fa);
+  overflow-x: hidden;
+}
+
+.page-novel-home .mac-crumb {
+  display: none;
+}
+
+.page-novel-home .nv-tabs-shell {
+  max-width: 1160px;
+  width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 12px;
+  padding-right: 12px;
+  box-sizing: border-box;
+  min-width: 0;
+}
+
+.page-novel-home .pbs-wrap,
+.page-novel-home .wrap {
+  padding-left: 12px;
+  padding-right: 12px;
+  min-width: 0;
+  overflow-x: hidden;
+  box-sizing: border-box;
+}
+
+.page-novel-home .layout.novel-home .pbs-main {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.page-novel-home .bili-sec--card {
+  margin: 0;
+  border: 1px solid var(--c-border, rgba(15, 23, 42, 0.06));
+  border-radius: 14px;
+  box-shadow: 0 2px 12px rgba(15, 23, 42, 0.04);
+}
+
+.page-novel-home .bili-sec--card > .bili-sec__head {
+  margin-bottom: 8px !important;
+}
+
+.page-novel-home .bili-sec--card .bili-sec__ico--art {
+  background: linear-gradient(135deg, #9b8cff, #7c4dff);
+}
+
+@media (max-width: 960px) {
+  .page-novel-home .nv-tabs-shell,
+  .page-novel-home .nv-row,
+  .page-novel-home .nv-sec,
+  .page-novel-home .bili-sec {
+    max-width: 100%;
+    min-width: 0;
+  }
+}
+
+@media (min-width: 821px) {
+  .page-novel-home .nv-tabs-shell,
+  .page-novel-home .pbs-wrap,
+  .page-novel-home .wrap {
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+}

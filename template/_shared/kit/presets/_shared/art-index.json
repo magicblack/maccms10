@@ -1,0 +1,79 @@
+{
+    "template": "art/index",
+    "layout": "base",
+    "page_type": "list",
+    "layout_mod": "novel-home",
+    "regions": {
+        "site_header": [
+            {
+                "component": "site_nav",
+                "props": {
+                    "max": 8,
+                    "show_search": true,
+                    "type_ids": []
+                }
+            }
+        ],
+        "hero": [
+            {
+                "component": "novel_genre_nav",
+                "props": {
+                    "num": 16,
+                    "more_url": "art/type"
+                }
+            }
+        ],
+        "channel": [],
+        "content": [
+            {
+                "component": "novel_home_dock",
+                "props": []
+            },
+            {
+                "component": "novel_home_rank",
+                "props": {
+                    "num": 10
+                }
+            },
+            {
+                "component": "section",
+                "props": {
+                    "variant": "card",
+                    "title": "最新小说",
+                    "title_key": "art_index_latest_novel",
+                    "icon": "book",
+                    "more_url": "art/show"
+                },
+                "slots": {
+                    "body": [
+                        {
+                            "component": "art_list",
+                            "props": {
+                                "num": 30,
+                                "by": "time",
+                                "order": "desc",
+                                "type": 0,
+                                "render": "grid",
+                                "card": "poster-v",
+                                "ratio": "3-4"
+                            }
+                        }
+                    ]
+                }
+            }
+        ],
+        "sidebar": [],
+        "footer": [
+            {
+                "component": "site_footer",
+                "props": {
+                    "variant": "default",
+                    "copyright": "",
+                    "show_nav": true,
+                    "show_friends": true,
+                    "logo": ""
+                }
+            }
+        ]
+    }
+}

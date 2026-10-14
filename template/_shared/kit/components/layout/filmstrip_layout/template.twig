@@ -1,0 +1,13 @@
+{# 环绕布局：左侧轮播 + 右侧列表（子块 vod_carousel + vod_list / content_feed） #}
+<section class="bili-feed pb-cf" aria-label="推荐" data-lang-aria-label="string_vod_recommend" data-pb-surround-layout>
+  {% for child in slots.banner|default([]) %}
+    {% include "page-builder-components/vod_carousel/template.twig" with {props: child.props|default({})} %}
+  {% endfor %}
+  {% for child in slots.feed|default([]) %}
+    {% if child.component|default('vod_list') == 'content_feed' %}
+      {% include "page-builder-components/content_feed/template.twig" with {props: child.props|default({})} %}
+    {% else %}
+      {% include "page-builder-components/vod_list/template.twig" with {props: child.props|default({})} %}
+    {% endif %}
+  {% endfor %}
+</section>

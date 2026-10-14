@@ -1,0 +1,125 @@
+{# Starter T0: vod down #}
+{% extends "layout/base.twig" %}
+{% import "@shared/components.twig" as c %}
+{% block layout_mod %} detail{% endblock %}
+{% block page_class %} pb-components-only page-vod-down{% endblock %}
+{% block theme_styles %}
+<link rel="stylesheet" href="{{ maccms.path_tpl }}asset/css/tokens.css">
+{% set _pb_td_override = mac_theme_override_css_href() %}
+{% if _pb_td_override %}<link rel="stylesheet" href="{{ _pb_td_override }}">{% endif %}
+<link rel="stylesheet" href="{{ maccms.path_tpl }}asset/css/pb-shell.css">
+{% endblock %}
+{% block title %}{{ obj.vod_name|default('') }} 下载{% endblock %}
+{% block head %}
+<link rel="stylesheet" href="{{ maccms.path_tpl }}page-builder-components/_shared/css/peers.css">
+<link rel="stylesheet" href="{{ maccms.path_tpl }}asset/css/pb-t0.css?v=3">
+
+<link rel="stylesheet" href="{{ maccms.path_tpl }}page-builder-components/site_nav/style.css">
+<script src="{{ maccms.path_tpl }}page-builder-components/site_nav/script.js" defer></script>
+<link rel="stylesheet" href="{{ maccms.path_tpl }}page-builder-components/notify_bell/style.css">
+<script src="{{ maccms.path_tpl }}page-builder-components/notify_bell/script.js" defer></script>
+<link rel="stylesheet" href="{{ maccms.path_tpl }}page-builder-components/header_decor/style.css">
+<script src="{{ maccms.path_tpl }}page-builder-components/header_decor/script.js" defer></script>
+<link rel="stylesheet" href="{{ maccms.path_tpl }}page-builder-components/channel_strip/style.css">
+<script src="{{ maccms.path_tpl }}page-builder-components/channel_strip/script.js" defer></script>
+<link rel="stylesheet" href="{{ maccms.path_tpl }}page-builder-components/empty_state/style.css">
+{% endblock %}
+
+{% block site_header %}
+  {% include 'page-builder-components/site_nav/template.twig' with {props: { max: 8, show_search: true, type_ids: [] }} %}
+{% endblock %}
+{% block channel %}
+  {% include 'page-builder-components/channel_strip/template.twig' with {props: { compact: false, chip_limit: 11, show_icons: true, show_more: true, type_ids: [] }} %}
+{% endblock %}
+{% block content %}
+{% set downs = obj.vod_down_list|default([]) %}
+{% set _popedom = popedom|default({}) %}
+{% set cur_sid = param.sid|default(0) %}
+{% set cur_nid = param.nid|default(0) %}
+{# 整部积分模式锁定时控制器把 popedom.points 设为 vod_points；按集模式取 vod_points_down #}
+{% set _buy_points = _popedom.points|default(0) ?: obj.vod_points_down|default(0) %}
+{% set _play_first = obj.vod_play_list|default([])|length > 0 ? mac_url_vod_play(obj, 'first') : '' %}
+<section class="pb-t0">
+  <nav class="pb-t0__crumb" aria-label="breadcrumb">
+    <a href="{{ maccms.path|default('/') }}" data-lang="string_home">首页</a>
+    <span class="pb-t0__sep">/</span>
+    <a href="{{ mac_url_vod_detail(obj) }}" class="clamp-1">{{ obj.vod_name|default('') }}</a>
+    <span class="pb-t0__sep">/</span>
+    <span data-lang="string_play_xz1">下载</span>
+  </nav>
+  <header class="pb-t0__hero">
+    <p class="pb-t0__kicker" data-lang="string_down_xzlb">下载列表</p>
+    <h1 class="pb-t0__title">{{ obj.vod_name|default('下载') }}</h1>
+    <p class="pb-t0__desc" data-lang="vod_down_desc">选择线路与资源链接，下载到本地观看。</p>
+    <div class="pb-t0__actions">
+      <a class="pb-t0__btn--ghost pb-t0__btn" href="{{ mac_url_vod_detail(obj) }}" data-lang="vod_view_detail">查看详情</a>
+      {# 只有下载线路、没有播放线路的影片（部分采集源）不给「在线播放」，否则会进到空播放页 #}
+      {% if _play_first %}
+      <a class="pb-t0__btn" href="{{ _play_first }}" data-lang="string_online_play">在线播放</a>
+      {% endif %}
+    </div>
+  </header>
+  <div class="pb-t0__panel">
+    {% if obj.vod_lock|default(0) %}
+      <div class="pb-t0__empty">
+        <p data-lang="string_down_bnxz">因特殊原因，该片不提供下载</p>
+      </div>
+    {% elseif downs %}
+      {% if _popedom.code|default(1) > 1 %}
+      <div class="pb-t0-down__gate" data-popedom-code="{{ _popedom.code }}">
+        <p class="pb-t0-down__gate-msg"{% if not _popedom.msg|default('') %} data-lang="vod_down_no_permission"{% endif %}>{{ _popedom.msg|default('暂无下载权限') }}</p>
+        <div class="pb-t0-down__gate-actions">
+          {% if user.user_id|default(0) == 0 %}
+          <a class="pb-t0__btn--ghost pb-t0__btn" href="{{ mac_url('user/login') }}" data-lang="recharge_login_link">去登录</a>
+          {% endif %}
+          <a class="pb-t0__btn" href="{{ mac_url('user/upgrade') }}" data-lang="user_upgrade">升级会员</a>
+        </div>
+      </div>
+      {% endif %}
+      {% for sid, src in downs %}
+      {% set src_label = src.player_info.show|default(src.from|default('')) %}
+      <div class="pb-t0-down__src" data-sid="{{ sid }}">
+        <h2 class="pb-t0-down__head"{% if not src_label %} data-lang="string_play_xl"{% endif %}>{{ src_label ?: '线路' }}</h2>
+        {% for nid, u in src.urls|default([]) %}
+        {% set is_cur = cur_sid == sid and cur_nid == nid %}
+        <div class="pb-t0-down__item{{ is_cur ? ' is-cur' : '' }}{{ u.locked|default(0) ? ' is-locked' : '' }}" id="down-{{ sid }}-{{ nid }}"{% if is_cur %} aria-current="true"{% endif %}>
+          <span class="pb-t0-down__name" title="{{ u.name|default('') }}"{% if not u.name|default('') %} data-lang="vod_down_resource_default"{% endif %}>{{ u.name|default('资源', true) }}</span>
+          {% if u.locked|default(0) %}
+          <span class="pb-t0-down__url" data-lang="string_down_locked">未解锁</span>
+          {% if _buy_points > 0 %}
+          <button type="button" class="pb-t0-down__btn js-popedom-buy-btn"
+                  data-id="{{ obj.vod_id }}" data-mid="1" data-sid="{{ sid }}" data-nid="{{ nid }}" data-type="5">
+            <span data-lang="string_down_buy_ep">购买本集</span>（{{ _buy_points }} <span data-lang="string_points">金币</span>）
+          </button>
+          {% endif %}
+          {% else %}
+          <span class="pb-t0-down__url" title="{{ u.url|default('') }}">{{ u.url|default('') }}</span>
+          <a class="pb-t0-down__btn" href="{{ u.url|default('#') }}" rel="nofollow" download data-lang="string_down_bd">本地下载</a>
+          {% endif %}
+        </div>
+        {% endfor %}
+      </div>
+      {% endfor %}
+    {% else %}
+      <div class="pb-t0__empty">
+        <svg class="pb-t0__empty-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" aria-hidden="true"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 19h14"/></svg>
+        <p data-lang="vod_down_empty_title">暂无下载资源</p>
+        <a class="pb-t0__btn" href="{{ mac_url_vod_detail(obj) }}" data-lang="art_read_back_detail">返回详情</a>
+      </div>
+    {% endif %}
+  </div>
+  {% if obj.vod_pic|default('') %}
+  <div class="pb-t0__panel pb-t0-plot__media" style="margin-top:0">
+    <div class="pb-t0-plot__cover">{{ c.lazy_img(obj.vod_pic, obj.vod_name|default('')) }}</div>
+    <div>
+      <h2 class="pb-t0__panel-title" data-lang="string_vod_introduction">剧情介绍</h2>
+      <div class="pb-t0-plot__body">{% set plot_txt = mac_plain_text(obj.vod_content|default('')) ?: mac_plain_text(obj.vod_blurb|default('')) %}{{ plot_txt|slice(0, 280) }}{% if plot_txt|length > 280 %}…{% endif %}</div>
+    </div>
+  </div>
+  {% else %}
+  <span class="is-sr-only" hidden aria-hidden="true">{{ c.lazy_img('', '') }}</span>
+  {% endif %}
+</section>
+{% endblock %}
+{% block sidebar %}{% endblock %}
+{% block footer %}{% endblock %}

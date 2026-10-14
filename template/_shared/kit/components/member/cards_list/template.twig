@@ -1,0 +1,29 @@
+{# 卡密充值：兑换表单 + 使用记录 #}
+{% set _tpl = maccms.path_tpl|default('') %}
+{% set api_base = maccms.path|trim('/') ~ '/api.php' %}
+<div class="mac-cards"
+  data-component="cards_list"
+  data-mac-user-cards
+  data-api-base="{{ api_base }}">
+  <header class="member-card__head">
+    <h2 class="member-card__title" data-lang="string_user_card">卡密充值</h2>
+  </header>
+
+  <form class="mac-cards__form" data-mac-card-form autocomplete="off">
+    <label class="mac-cards__field">
+      <span data-lang="mall_card_no">卡号</span>
+      <input type="text" name="card_no" data-mac-card-no maxlength="64" required data-lang-placeholder="card_number_placeholder" placeholder="请输入卡号">
+    </label>
+    <label class="mac-cards__field">
+      <span data-lang="user_mm">密码</span>
+      <input type="text" name="card_pwd" data-mac-card-pwd maxlength="64" required data-lang-placeholder="card_pwd_placeholder" placeholder="请输入卡密">
+    </label>
+    <button type="submit" class="mac-cards__submit" data-mac-card-submit data-lang="user_tj">提交充值</button>
+  </form>
+
+  <h3 class="mac-cards__list-title" data-lang="user_czkjz">充值卡记录</h3>
+  <p class="mac-cards-loading muted" data-lang="string_topic_feed_loading">加载中…</p>
+  <ul class="order__list clearfix member-rows"></ul>
+  <div class="member-page"></div>
+</div>
+<script src="{{ _tpl }}page-builder-components/cards_list/script.js" defer></script>

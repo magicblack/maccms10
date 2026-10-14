@@ -1,0 +1,53 @@
+/* preset-clean：单栏全宽；详情/播放 wrap 通栏（结构 .pbs-wrap > .layout.*） */
+.pbs-wrap:has(> .layout.detail),
+.pbs-wrap:has(> .layout.play) {
+  max-width: none;
+  width: 100%;
+  margin: 0;
+  padding: 0 0 48px;
+  overflow: visible;
+  box-sizing: border-box;
+}
+
+.layout.detail .pbs-main,
+.layout.play .pbs-main {
+  max-width: none;
+  margin: 0;
+  width: 100%;
+  min-width: 0;
+}
+
+.layout.play .pbs-main {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+body.pbs-body:has(.layout.detail),
+body.pbs-body:has(.layout.play) {
+  background: var(--c-bg);
+}
+
+.layout.detail [data-component="media_related_panel"],
+.layout.play [data-component="media_related_panel"] {
+  max-width: var(--wrap, 1400px);
+  margin-inline: auto;
+  width: calc(100% - 2 * var(--gutter, 16px));
+  box-sizing: border-box;
+}
+
+/* 专题详情：卡片布局，勿走 cinema 通栏（与 layout_mod=list 双保险） */
+.pbs-wrap:has(> .layout.detail [data-component="topic_detail"]),
+body.page-topic-detail .pbs-wrap:has(> .layout.detail) {
+  max-width: var(--wrap, 1400px);
+  margin: 0 auto;
+  padding: 16px var(--gutter, 8px) 48px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.layout.detail:has([data-component="topic_detail"]) .pbs-main {
+  max-width: none;
+  margin: 0;
+  width: 100%;
+}

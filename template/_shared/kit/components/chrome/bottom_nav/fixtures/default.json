@@ -1,0 +1,16 @@
+{
+    "props": {
+        "items": [
+            {"id": "home", "label": "首页", "href": "", "icon": "home"},
+            {"id": "video", "label": "视频", "href": "", "icon": "video"},
+            {"id": "novel", "label": "小说", "href": "", "icon": "book"},
+            {"id": "manga", "label": "漫画", "href": "", "icon": "manga"},
+            {"id": "me", "label": "会员", "href": "", "icon": "user"}
+        ]
+    },
+    "context": {
+        "maccms": {
+            "path": "/"
+        }
+    }
+}

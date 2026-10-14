@@ -1,0 +1,120 @@
+{
+    "id": "vod_list",
+    "label_key": "admin/themedesign/pb_block_vod_list",
+    "category": "list",
+    "kind": "content",
+    "palette": false,
+    "styleMode": "component",
+    "peer_styles": [],
+    "assets": {
+        "css": "style.css",
+        "js": "script.js"
+    },
+    "props": {
+        "num": {
+            "type": "number",
+            "default": 12,
+            "min": 1,
+            "max": 60,
+            "trait": "count"
+        },
+        "type": {
+            "type": "category",
+            "mid": 1,
+            "default": 0,
+            "trait": "category"
+        },
+        "by": {
+            "type": "enum",
+            "default": "time",
+            "values": [
+                "time",
+                "hits",
+                "hits_day",
+                "hits_week",
+                "hits_month",
+                "score"
+            ],
+            "trait": "sort"
+        },
+        "order": {
+            "type": "enum",
+            "default": "desc",
+            "values": [
+                "desc",
+                "asc"
+            ]
+        },
+        "render": {
+            "type": "enum",
+            "default": "grid",
+            "values": [
+                "grid",
+                "slider",
+                "list",
+                "filmstrip"
+            ],
+            "trait": "layout"
+        },
+        "paging": {
+            "type": "boolean",
+            "default": false,
+            "trait": "paging"
+        },
+        "relation": {
+            "type": "boolean",
+            "default": false,
+            "trait": "relation"
+        },
+        "pageurl": {
+            "type": "string",
+            "default": "vod/show",
+            "trait": "pageurl"
+        },
+        "time": {
+            "type": "enum",
+            "default": "",
+            "values": [
+                "",
+                "today"
+            ],
+            "trait": "time_filter"
+        },
+        "card": {
+            "type": "enum",
+            "default": "poster-h",
+            "values": [
+                "poster-h",
+                "poster-v"
+            ],
+            "trait": "card"
+        },
+        "ratio": {
+            "type": "string",
+            "default": "default",
+            "trait": "cover_ratio"
+        }
+    },
+    "context": {
+        "pageTypes": [
+            "home",
+            "list",
+            "detail"
+        ],
+        "requires": []
+    },
+    "data": {
+        "source": "mac_vod",
+        "listKey": "list",
+        "argsFromProps": [
+            "num",
+            "type",
+            "by",
+            "order",
+            "paging",
+            "relation",
+            "pageurl",
+            "time"
+        ]
+    }
+}

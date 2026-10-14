@@ -1,0 +1,20 @@
+{
+    "id": "order_list",
+    "label_key": "admin/themedesign/pb_block_order_list",
+    "category": "member",
+    "kind": "member",
+    "peer_styles": [],
+    "assets": {
+        "css": "style.css",
+        "js": "script.js"
+    },
+    "palette": false,
+    "styleMode": "peer_only",
+    "props": {},
+    "context": {
+        "pageTypes": [
+            "member"
+        ],
+        "requires": []
+    }
+}

@@ -1,0 +1,31 @@
+{
+    "id": "media_intro_panel",
+    "label_key": "admin/themedesign/pb_block_media_intro_panel",
+    "category": "detail",
+    "kind": "detail",
+    "palette": false,
+    "peer_styles": [],
+    "assets": {
+        "css": "style.css",
+        "js": "script.js"
+    },
+    "props": {
+        "title": {
+            "type": "string",
+            "default": "剧情简介",
+            "trait": "title"
+        },
+        "title_lang": {
+            "type": "string",
+            "default": "string_vod_synopsis",
+            "trait": "title_lang"
+        }
+    },
+    "context": {
+        "pageTypes": [
+            "detail",
+            "play"
+        ],
+        "requires": []
+    }
+}

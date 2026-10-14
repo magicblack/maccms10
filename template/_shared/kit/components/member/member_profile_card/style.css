@@ -1,0 +1,55 @@
+/* member_profile_card */
+[data-component="member_profile_card"].member-profile {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  margin: 0;
+  border: 0;
+  border-radius: 10px;
+  box-shadow: none;
+  text-decoration: none;
+  color: inherit;
+  transition: background 0.15s ease;
+}
+
+.member-profile__avatar {
+  flex: 0 0 auto;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  object-fit: cover;
+  background: var(--c-surface-2, #f1f2f3);
+  box-shadow: none;
+}
+
+.member-profile__meta {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.member-profile__name {
+  font-size: 15px;
+  font-weight: 650;
+  color: var(--c-text, #18191c);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.member-profile__group {
+  font-size: 12px;
+  color: var(--c-text-muted, #9499a0);
+}
+
+.member-profile:hover {
+  background: var(--c-accent-soft);
+}
+
+.member-profile--guest {
+  padding: 16px;
+  color: var(--c-text-muted, #9499a0);
+  font-size: 13px;
+}

@@ -1,0 +1,16 @@
+{
+    "props": {
+        "title": "相关推荐",
+        "title_lang": "string_xgtj",
+        "num": 10,
+        "relation": true,
+        "bind": "vod",
+        "type": 0,
+        "layout": "grid",
+        "context": "detail",
+        "by": "hits",
+        "card": "poster-h",
+        "ratio": "default"
+    },
+    "context": []
+}

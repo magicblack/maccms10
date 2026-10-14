@@ -248,10 +248,15 @@ class System extends Base
         }
 
 
-        $templates = glob('./template' . '/*', GLOB_ONLYDIR);
+        // 下劃線開頭的目錄不是主題（如 template/_shared/ 存放跨主題共用的行為 JS
+        // 與 Twig 元件庫），不能出現在主題選擇器裡
+        $templates = array_values(array_filter(glob('./template' . '/*', GLOB_ONLYDIR), function ($d) {
+            return substr(basename($d), 0, 1) !== '_';
+        }));
         foreach ($templates as $k => &$v) {
             $v = str_replace('./template/', '', $v);
         }
+        unset($v);
         $this->assign('templates', $templates);
 
         $langs = glob('./application/lang/*.php');

@@ -170,8 +170,7 @@ class Actor extends Base
     {
         $param = $request->param();
         $ids = isset($param['ids']) ? trim($param['ids']) : '';
-        $num = isset($param['num']) ? (int)$param['num'] : 8;
-        $start = isset($param['start']) ? max(0, (int)$param['start']) : 0;
+        list($num, $start) = $this->clampNumStart($param, 8);
         $by = isset($param['by']) ? trim($param['by']) : 'time';
 
         $allowBy = ['hits', 'hits_day', 'hits_week', 'hits_month', 'time'];

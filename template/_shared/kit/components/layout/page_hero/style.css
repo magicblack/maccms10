@@ -1,0 +1,117 @@
+/**
+ * page_hero — Flat · touch-first（ui-ux-pro-max）
+ * 颜色/间距/圆角/动效一律走 tokens；主题靠覆盖 --c-* 换皮。
+ */
+.is-sr-only {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0, 0, 0, 0) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
+}
+
+.pb-page-hero {
+  margin: 0 0 var(--space-3, 12px);
+  padding: var(--space-4, 16px) var(--space-3, 12px) 18px;
+  background: var(--gradient-hero);
+  border-bottom: 1px solid var(--c-border);
+  box-sizing: border-box;
+}
+
+.pb-page-hero__kicker {
+  margin: 0 0 var(--space-2, 8px);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--c-accent);
+}
+
+.pb-page-hero__title {
+  margin: 0;
+  font-size: 22px;
+  font-weight: 800;
+  line-height: 1.25;
+  letter-spacing: -0.02em;
+  color: var(--c-text);
+  font-family: var(--font-head, inherit);
+}
+
+.pb-page-hero__desc {
+  margin: var(--space-2, 8px) 0 0;
+  max-width: 36em;
+  font-size: 14px;
+  line-height: 1.55;
+  color: var(--c-text-muted);
+}
+
+.pb-page-hero__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 14px;
+}
+
+.pb-page-hero__btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2, 8px);
+  min-height: 44px;
+  min-width: 44px;
+  padding: 0 18px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--c-accent-ink);
+  background: var(--c-accent);
+  border: none;
+  border-radius: var(--radius-pill, 999px);
+  text-decoration: none;
+  cursor: pointer;
+  touch-action: manipulation;
+  transition: background var(--dur) var(--ease), opacity var(--dur) var(--ease), transform var(--dur) var(--ease);
+}
+
+.pb-page-hero__btn:hover {
+  background: var(--c-accent-hover);
+}
+
+.pb-page-hero__btn:active {
+  transform: scale(0.97);
+}
+
+.pb-page-hero__btn:focus-visible {
+  outline: 2px solid var(--c-accent-focus-ring);
+  outline-offset: 2px;
+}
+
+.pb-page-hero__btn--ghost {
+  color: var(--c-accent);
+  background: var(--c-accent-soft);
+}
+
+.pb-page-hero__btn--ghost:hover {
+  background: var(--c-accent-tint);
+}
+
+@media (min-width: 768px) {
+  .pb-page-hero {
+    padding: var(--space-5, 20px) var(--space-3, 12px) 22px;
+  }
+  .pb-page-hero__title {
+    font-size: 26px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pb-page-hero__btn {
+    transition: none;
+  }
+  .pb-page-hero__btn:active {
+    transform: none;
+  }
+}

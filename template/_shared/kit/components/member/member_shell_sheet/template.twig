@@ -1,0 +1,112 @@
+{#
+  会员中心壳层（PB + 主题复用）
+  props: active, title, show_hub, require_login
+  slots.body: 主内容区子块
+#}
+{% set p = props|default({}) %}
+{% set active = p.active|default(active|default('index')) %}
+{% set title = p.title|default(title|default('个人中心')) %}
+{% set title_lang = p.title_lang|default(title_lang|default((p.title is defined or title is defined) ? '' : 'user_grzx')) %}
+{% set show_hub = p.show_hub is defined ? p.show_hub : (show_hub is defined ? show_hub : (active == 'index')) %}
+{% set require_login = p.require_login|default(true) %}
+{% set _mnav_action = p.mnav_action|default(mnav_action|default('')) %}
+{% set _logged = user.user_id|default(0) %}
+
+<div class="pb-member-shell member-shell{% if not _logged and require_login %} pb-member-shell--guest{% endif %}" data-component="member_shell_sheet" data-member-active="{{ active }}">
+{% if _logged %}
+  <header class="member-mnav" data-lang-aria-label="member_shell_nav_aria" aria-label="会员中心导航栏">
+  {% if show_hub %}
+    <a class="member-mnav__back" href="{{ maccms.path }}" data-lang-aria-label="string_fhsy" aria-label="返回首页">
+      {% include "page-builder-components/_shared/component_icon.twig" with { component: 'member_shell_sheet', name: 'chevron-right', class: 'member-mnav__back-ico', mode: 'current' } %}
+    </a>
+    <h1 class="member-mnav__title" data-lang="user_grzx">个人中心</h1>
+  {% else %}
+    <a class="member-mnav__back" href="{{ mac_url('user/index') }}" data-lang-aria-label="member_shell_back_profile_aria" aria-label="返回个人中心">
+      {% include "page-builder-components/_shared/component_icon.twig" with { component: 'member_shell_sheet', name: 'chevron-right', class: 'member-mnav__back-ico', mode: 'current' } %}
+    </a>
+    <h1 class="member-mnav__title"{% if title_lang and mac_i18n_key(title, title_lang) %} data-lang="{{ title_lang }}"{% endif %}>{{ title }}</h1>
+  {% endif %}
+  {% if _mnav_action == 'search' %}
+  <button type="button"
+    class="member-mnav__action member-mnav__action--search"
+    data-plays-search-toggle
+    data-lang-aria-label="member_shell_search_history_aria"
+    aria-label="搜索播放记录"
+    aria-expanded="false"
+    aria-controls="plays-list-search">
+    {% include "page-builder-components/_shared/component_icon.twig" with {
+      component: 'member_shell_sheet', name: 'icon-search', class: 'member-mnav__action-ico', mode: 'current'
+    } %}
+  </button>
+  {% endif %}
+  </header>
+
+  {% if show_hub %}
+  <section class="member-hub" aria-labelledby="member-hub-title">
+    <div class="member-hub__hero">
+      <div class="member-hub__profile">
+        {% include "page-builder-components/_shared/user_avatar.twig" with {uid: user.user_id, class: 'member-hub__avatar', size: 72} %}
+        <div class="member-hub__meta">
+          <h2 id="member-hub-title" class="member-hub__name">{{ user.user_name }}</h2>
+          <p class="member-hub__group">{{ user.group.group_name|default('') }}</p>
+        </div>
+      </div>
+      <dl class="member-hub__stats">
+        <div>
+          <dt data-lang="user_jf">金币</dt>
+          <dd>{{ user.user_points|default(0) }}</dd>
+        </div>
+        <div>
+          <dt data-lang="user_dqsj">到期时间</dt>
+          <dd>{% set _end = user.user_end_time|default(0) %}{% if _end and _end > 0 %}{{ _end|date('Y-m-d') }}{% else %}—{% endif %}</dd>
+        </div>
+      </dl>
+    </div>
+    {% include "page-builder-components/member_hub_menu/template.twig" with { active: active, props: { active: active } } %}
+  </section>
+  {% endif %}
+
+  <div class="member-main">
+    <div class="member-card">
+      {% if slots.body is defined and slots.body|length %}
+        {% for j, child in slots.body %}
+          {% include "page_builder/block.twig" with {block: child, pb_path: (pb_path|default('')) ~ '/body/' ~ j, pb_preview: pb_preview|default(false)} %}
+        {% endfor %}
+      {% elseif member_body is defined %}
+        {{ member_body|raw }}
+      {% endif %}
+    </div>
+  </div>
+
+  <aside class="side member-side pb-member-shell__side">
+    <div class="member-side__panel panel">
+      {% include "page-builder-components/member_profile_card/template.twig" %}
+      <nav class="member-nav" data-lang-aria-label="member_hub_nav_aria" aria-label="会员中心导航">
+        {% include "page-builder-components/member_nav/template.twig" with { active: active, props: { active: active } } %}
+      </nav>
+      <a class="member-side__promo" href="{{ mac_url('user/upgrade') }}">
+        <span class="member-side__promo-deco" aria-hidden="true"></span>
+        <span class="member-side__promo-body">
+          <strong class="member-side__promo-title" data-lang="member_vip_promo_title">升级为 VIP</strong>
+          <span class="member-side__promo-desc" data-lang="member_vip_promo_desc">解锁高清播放与专属权益</span>
+          <span class="member-side__promo-link" data-lang="member_vip_promo_link">立即升级 →</span>
+        </span>
+      </a>
+    </div>
+  </aside>
+{% elseif require_login %}
+  <div class="member-guest-redirect" aria-live="polite">
+    <div class="member-guest-redirect__panel">
+      <div class="member-guest-redirect__art" aria-hidden="true">
+        <img src="{{ maccms.path_tpl }}asset/img/dialogs/crown.webp" alt="" width="64" height="64" decoding="async">
+      </div>
+      <p class="member-guest-redirect__kicker" data-lang="string_mac_hyzx">会员中心</p>
+      <p class="member-guest-redirect__text" data-lang="string_guest_redirect_continue">登录后继续</p>
+      <p class="member-guest-redirect__hint" data-lang="string_guest_redirect_hint">同步收藏、消息与观看记录，权益跨设备可用</p>
+      <a class="member-guest-redirect__cta" href="#login" data-auth-open="login" data-lang="string_login">登录</a>
+      <a class="member-guest-redirect__sub" href="#login" data-auth-open="login" data-lang="string_guest_redirect_register">没有账号？去注册</a>
+    </div>
+  </div>
+{% endif %}
+
+</div>

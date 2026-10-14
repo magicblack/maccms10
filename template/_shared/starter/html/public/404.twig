@@ -1,0 +1,4 @@
+{% extends "public/_status.twig" %}
+{% block status_code %}404{% endblock %}
+{% block status_msg %}{{ msg|default('页面不存在') }}{% endblock %}
+{% block status_sub %}<span data-lang="string_404">您访问的页面不存在或已被删除</span>{% endblock %}

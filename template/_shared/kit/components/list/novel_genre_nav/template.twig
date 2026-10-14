@@ -1,0 +1,13 @@
+{# twigspike art/index — 全部 / 小说 胶囊 Tab #}
+{% set p = props|default({}) %}
+{% set more_url = p.more_url|default('art/show') %}
+{% set active = p.active|default('novel') %}
+{% set art_type_default = mac_top_types(2, 1)|first %}
+{% set all_url = art_type_default ? mac_url_type(art_type_default, {}, 'show') : mac_url('art/search') %}
+
+<div class="nv-tabs-shell">
+  <nav class="nv-tabs nv-tabs--capsule" id="nv-genre" data-component="novel_genre_nav" aria-label="小说频道" data-lang-aria-label="novel_genre_nav_aria">
+    <a class="nv-tabs__item{% if active == 'all' %} is-on{% endif %}" href="{{ all_url }}"{% if active == 'all' %} aria-current="page"{% endif %} data-lang="string_all">全部</a>
+    <a class="nv-tabs__item{% if active == 'novel' %} is-on{% endif %}" href="{{ mac_url('art/index') }}"{% if active == 'novel' %} aria-current="page"{% endif %}{% set _ml = mac_module_label(2) %}{% if _ml.lang %} data-lang="{{ _ml.lang }}"{% endif %}>{{ _ml.name }}</a>
+  </nav>
+</div>

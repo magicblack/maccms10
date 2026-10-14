@@ -1,0 +1,106 @@
+{
+    "id": "media_related_panel",
+    "label_key": "admin/themedesign/pb_block_media_related_panel",
+    "category": "detail",
+    "kind": "detail",
+    "palette": false,
+    "peer_styles": [],
+    "assets": {
+        "css": "style.css",
+        "js": "script.js"
+    },
+    "props": {
+        "title": {
+            "type": "string",
+            "default": "相关推荐",
+            "trait": "title"
+        },
+        "title_lang": {
+            "type": "string",
+            "default": "string_xgtj",
+            "trait": "title_lang"
+        },
+        "num": {
+            "type": "number",
+            "default": 10,
+            "min": 4,
+            "max": 24,
+            "trait": "count"
+        },
+        "relation": {
+            "type": "boolean",
+            "default": true,
+            "trait": "relation"
+        },
+        "bind": {
+            "type": "enum",
+            "default": "vod",
+            "values": [
+                "vod",
+                "art",
+                "manga"
+            ],
+            "trait": "bind"
+        },
+        "type": {
+            "type": "category",
+            "mid": 1,
+            "default": 0,
+            "trait": "category"
+        },
+        "layout": {
+            "type": "enum",
+            "default": "grid",
+            "values": [
+                "grid",
+                "rows"
+            ],
+            "trait": "layout"
+        },
+        "context": {
+            "type": "enum",
+            "default": "detail",
+            "values": [
+                "detail",
+                "play"
+            ],
+            "trait": "context"
+        },
+        "by": {
+            "type": "enum",
+            "default": "hits",
+            "values": [
+                "hits",
+                "time",
+                "score"
+            ],
+            "trait": "by"
+        },
+        "card": {
+            "type": "enum",
+            "default": "poster-h",
+            "values": [
+                "poster-h",
+                "poster-v"
+            ],
+            "trait": "card"
+        },
+        "ratio": {
+            "type": "string",
+            "default": "default",
+            "trait": "cover_ratio"
+        },
+        "row_compact": {
+            "type": "boolean",
+            "default": false,
+            "trait": "row_compact"
+        }
+    },
+    "context": {
+        "pageTypes": [
+            "detail",
+            "play"
+        ],
+        "requires": []
+    }
+}

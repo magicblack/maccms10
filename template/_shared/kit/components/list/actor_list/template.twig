@@ -1,0 +1,40 @@
+{% import "page-builder-components/_shared/macros.twig" as pb %}
+{% set use_paging = props.paging|default(false) %}
+{% set num = props.num|default(24) %}
+{% if use_paging %}
+  {% set _grid_num = num + 0 %}
+  {% set num = _grid_num < 60 ? 60 : (((_grid_num + 59) // 60) * 60) %}
+{% endif %}
+{% set by = props.by|default('time') %}
+{% set order = props.order|default('desc') %}
+{% set type_raw = props.type|default(0) %}
+{% set type_id = (type_raw == 'current') ? obj.type_id|default(0) : type_raw %}
+{% set _cover_cls = pb.pb_cover_classes(props) %}
+{% set _cover_style = pb.pb_cover_style(props) %}
+{% set actor_args = {num: num, type: type_id, order: order, by: by} %}
+{% if use_paging %}
+  {% set actor_args = actor_args|merge({
+    paging: true,
+    pageurl: props.pageurl|default('actor/show'),
+    area: param.area|default(''),
+    letter: param.letter|default(''),
+    wd: param.wd|default('')
+  }) %}
+{% endif %}
+{% set res = mac_actor(actor_args) %}
+{% set list = res.list|default([]) %}
+{% if use_paging %}
+  {% set pg = mac_paging(res) %}
+{% endif %}
+{% if list is not empty %}
+<div class="bili-grid pb-actor-list {{ _cover_cls }}" data-component="actor_list"{% if _cover_style %} style="{{ _cover_style }}"{% endif %}>
+  {% for vo in list %}{% include "page-builder-components/_shared/actor_card.twig" %}{% endfor %}
+</div>
+{% endif %}
+{% include "page-builder-components/_shared/list_footer.twig" with {
+  use_paging: use_paging,
+  pg: pg|default(null),
+  empty_preset: use_paging ? 'filter' : '',
+  empty_title: use_paging ? '暂无符合条件的演员' : '暂无演员',
+  empty_title_lang: use_paging ? 'actor_empty_filter' : 'actor_empty_default'
+} %}

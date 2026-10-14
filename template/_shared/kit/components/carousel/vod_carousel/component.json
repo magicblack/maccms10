@@ -1,0 +1,78 @@
+{
+    "id": "vod_carousel",
+    "label_key": "admin/themedesign/pb_block_vod_carousel",
+    "category": "carousel",
+    "kind": "carousel",
+    "styleMode": "component",
+    "peer_styles": [],
+    "assets": {
+        "css": "style.css",
+        "js": "script.js"
+    },
+    "props": {
+        "bind": {
+            "type": "enum",
+            "default": "vod",
+            "values": [
+                "vod",
+                "manga",
+                "art"
+            ],
+            "trait": "bind"
+        },
+        "type": {
+            "type": "category",
+            "mid": 1,
+            "default": 0,
+            "trait": "category"
+        },
+        "num": {
+            "type": "number",
+            "default": 6,
+            "min": 1,
+            "max": 12,
+            "trait": "count"
+        },
+        "by": {
+            "type": "enum",
+            "default": "hits_month",
+            "values": [
+                "time",
+                "hits",
+                "hits_day",
+                "hits_week",
+                "hits_month",
+                "score"
+            ],
+            "trait": "sort"
+        },
+        "level": {
+            "type": "string",
+            "default": "9",
+            "trait": "level",
+            "description": "推荐等级，默认 9：先取推荐位；不足槽位再按 by/fill_by（默认 hits_month）补齐。设空则整段只按 by 排序。"
+        },
+        "fill_by": {
+            "type": "enum",
+            "default": "hits_month",
+            "values": [
+                "hits",
+                "hits_day",
+                "hits_week",
+                "hits_month",
+                "score",
+                "time"
+            ],
+            "trait": "sort",
+            "description": "推荐位不足时的补齐排序；未设时跟随 by（hits/time 会落到 hits_month）"
+        }
+    },
+    "context": {
+        "pageTypes": [
+            "home",
+            "list",
+            "detail"
+        ],
+        "requires": []
+    }
+}

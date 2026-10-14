@@ -76,7 +76,7 @@ class ImdbExternalSourceProvider implements ExternalSourceProviderInterface
             'Accept: application/json',
             'User-Agent: '.trim((string)$this->get('user_agent', 'Mozilla/5.0')),
         ];
-        $resp = HttpClient::curlPostWithTimeout($url, '', $headers, 12, false);
+        $resp = HttpClient::curlPostWithTimeout($url, '', $headers, 12, false, true);
         if ($resp === false || $resp === '') {
             return [];
         }

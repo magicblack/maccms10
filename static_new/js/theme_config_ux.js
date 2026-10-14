@@ -769,6 +769,9 @@
         syncFormLabelColumn: syncFormLabelColumn,
         hotvodTabLabel: function (index) {
             return sprintf(t('hotvodTabLabel', 'Tab%d'), index + 2);
+        },
+        rankBoardLabel: function (index) {
+            return sprintf(t('rankBoardLabel', 'Board %d'), index + 1);
         }
     };
 })(window);

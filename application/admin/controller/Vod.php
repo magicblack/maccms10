@@ -20,6 +20,10 @@ class Vod extends Base
         $param['limit'] = intval($param['limit']) <1 ? $this->_pagesize : $param['limit'];
 
         $where = [];
+        // 资源检测筛选（0 未检测 / 1 正常 / 2 检测失败 / 3 已自动停用 / 4 管理员停用）；字段由升级脚本补，未升级时不筛选
+        if (\app\common\util\ContentCheck::hasColumns('vod') && in_array($param['check'] ?? '', ['0', '1', '2', '3', '4'], true)) {
+            $where['vod_check_state'] = ['eq', intval($param['check'])];
+        }
         if(!empty($param['type'])){
             $where['type_id|type_id_1'] = ['eq',$param['type']];
         }
@@ -183,6 +187,8 @@ class Vod extends Base
             $v['seo_ai_status'] = isset($vodSeoStatusMap[$v['vod_id']]) ? intval($vodSeoStatusMap[$v['vod_id']]) : 0;
         }
 
+        // 未升级站点缺 check_* 字段：补默认值，列表模板直接读取
+        \app\common\util\ContentCheck::fillDefaults('vod', $res['list']);
         $this->assign('list',$res['list']);
         $this->assign('total',$res['total']);
         $this->assign('page',$res['page']);

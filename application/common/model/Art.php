@@ -82,6 +82,9 @@ class Art extends Base {
         $vip_exclusive = mac_get_vip_exclusive_type_ids();
         foreach($list as $k=>$v){
             $list[$k]['type_is_vip_exclusive'] = in_array($v['type_id'] ?? 0, $vip_exclusive) ? 1 : 0;
+            if(isset($v['art_remarks'], $v['art_content'])) {
+                $list[$k]['art_remarks'] = mac_art_chapter_remarks($v['art_remarks'], $v['art_content']);
+            }
             if($addition==1){
 	            if(!empty($v['type_id'])) {
 	                $list[$k]['type'] = $type_list[$v['type_id']];
@@ -248,7 +251,8 @@ class Art extends Base {
                 if($pageurl == 'art/show'){
                     $flag='show';
                 }
-                $pageurl = mac_url_type($type_info,$param,$flag);
+                // 无分类 id 的跨分类列表页（如 art/show.html）取不到 type_info，mac_url_type 会回落成 vod 分页链接
+                $pageurl = !empty($type_info) ? mac_url_type($type_info,$param,$flag) : mac_url('art/'.$flag,$param);
             }
             else{
                 $pageurl = mac_url($pageurl,$param);
@@ -439,9 +443,12 @@ class Art extends Base {
                 $res = $this->listData($where,$order,$page,$num,$start,'*',1,$totalshow);
             }
             if($GLOBALS['config']['app']['cache_core']==1 && !$use_rnd_order) {
-                Cache::set($cach_name, $res, $cachetime);
+                // 打上表名标签，写路径才能定点作废这一族列表缓存（见 Base::clearListCache()）
+                Cache::tag($this->name)->set($cach_name, $res, $cachetime);
             }
         }
+        // 缓存里的 type/type_1 是建缓存时的快照，按当前分类缓存重挂（见 Base::refreshTypeRelation()）
+        $res = $this->refreshListTypeRelation($res);
         $res['pageurl'] = $pageurl;
         $res['half'] = $half;
         return $res;
@@ -489,10 +496,12 @@ class Art extends Base {
                 Cache::set($key, $info);
             }
         }
+        $info = $this->refreshTypeRelation($info);
         $info = mac_content_lang_overlay('art', $info);
         if (!empty($info['art_content'])) {
             $info['art_page_list'] = mac_art_list($info['art_title'], $info['art_note'], $info['art_content']);
             $info['art_page_total'] = count($info['art_page_list']);
+            $info['art_remarks'] = mac_art_chapter_remarks($info['art_remarks'] ?? '', $info['art_content']);
         }
         return ['code'=>1,'msg'=>lang('obtain_ok'),'info'=>$info];
     }
@@ -504,12 +513,7 @@ class Art extends Base {
             return ['code'=>1001,'msg'=>lang('param_err').'：'.$validate->getError() ];
         }
 
-        $key = 'art_detail_'.$data['art_id'];
-        Cache::rm($key);
-        $key = 'art_detail_'.$data['art_en'];
-        Cache::rm($key);
-        $key = 'art_detail_'.$data['art_id'].'_'.$data['art_en'];
-        Cache::rm($key);
+        $this->clearDetailCache($data['art_id'], $data['art_en']);
 
 
         $type_list = model('Type')->getCache('type_list');
@@ -547,6 +551,7 @@ class Art extends Base {
         if(empty($data['art_blurb'])){
             $data['art_blurb'] = mac_substring( str_replace('$$$','', strip_tags($data['art_content'])),100);
         }
+        $data['art_remarks'] = mac_art_chapter_remarks($data['art_remarks'] ?? '', $data['art_content'] ?? '');
 
         if($data['uptime']==1){
             $data['art_time'] = time();
@@ -611,6 +616,7 @@ class Art extends Base {
         }
         MeilisearchSync::afterArtSave($ixArtId);
 
+        $this->clearListCache();
         return ['code'=>1,'msg'=>lang('save_ok'),'art_id'=>$ixArtId];
     }
 
@@ -650,6 +656,7 @@ class Art extends Base {
         }
         \app\common\model\ContentLang::deleteByContent('art', $delIds);
 
+        $this->clearListCache();
         return ['code'=>1,'msg'=>lang('del_ok')];
     }
 
@@ -665,12 +672,10 @@ class Art extends Base {
 
         $list = $this->field('art_id,art_name,art_en')->where($where)->select();
         foreach($list as $k=>$v){
-            $key = 'art_detail_'.$v['art_id'];
-            Cache::rm($key);
-            $key = 'art_detail_'.$v['art_en'];
-            Cache::rm($key);
+            $this->clearDetailCache($v['art_id'], $v['art_en']);
         }
 
+        $this->clearListCache();
         return ['code'=>1,'msg'=>lang('set_ok')];
     }
 

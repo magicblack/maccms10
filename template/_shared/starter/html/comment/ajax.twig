@@ -1,0 +1,8 @@
+{# PB 评论区列表片段 — comment_block.js 刷新用 #}
+{% set _mid = param.mid|default(0) %}
+{% set _rid = param.rid|default(0) %}
+{% set _num = param.limit|default(comment.pagesize|default(10)) %}
+{% if _num < 1 %}{% set _num = 10 %}{% endif %}
+{% set res = mac_comment({num: _num, paging: true, mid: _mid, rid: _rid, page: param.page|default(1)}) %}
+<div class="cmt-ajax-meta" data-cmt-ajax-total="{{ res.total|default(0) }}" hidden aria-hidden="true"></div>
+{% include "page-builder-components/_shared/comment_block_list.twig" with {res: res} %}

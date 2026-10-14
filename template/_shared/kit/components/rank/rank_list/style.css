@@ -1,0 +1,277 @@
+/* rank_list — 带封面的完整排行榜 */
+
+.layout.rank .pbs-main {
+  max-width: 960px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.layout.rank .pb-sec-heading {
+  font-size: 24px;
+  letter-spacing: -0.02em;
+}
+
+.pb-rank-list {
+  margin: 0;
+  padding: 18px 18px 10px;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  border-radius: var(--radius-lg, 12px);
+  background: var(--c-surface, #fff);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+}
+
+.pb-rank-period .pb-rank-list {
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.pb-rank-list__title {
+  margin: 0 0 14px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+  font-size: 16px;
+  font-weight: 650;
+  color: var(--c-text, #18191c);
+  line-height: 1.3;
+}
+
+.pb-rank-list__ol {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.pb-rank-list__item {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.pb-rank-list__item:last-child {
+  border-bottom: 0;
+}
+
+.pb-rank-list__link {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  min-height: 88px;
+  padding: 12px 6px;
+  color: inherit;
+  text-decoration: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.pb-rank-list__link:hover {
+  background: var(--c-accent-soft);
+}
+
+.pb-rank-list__link:focus-visible {
+  outline: 2px solid var(--c-accent);
+  outline-offset: 2px;
+}
+
+.pb-rank-list__no {
+  flex: 0 0 28px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  background: #c9ccd0;
+  color: #fff;
+  font-size: 13px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+}
+
+.pb-rank-list__item:nth-child(1) .pb-rank-list__no {
+  background: linear-gradient(135deg, #ff6b6b, #e11d48);
+  box-shadow: 0 2px 6px rgba(225, 29, 72, 0.28);
+}
+
+.pb-rank-list__item:nth-child(2) .pb-rank-list__no {
+  background: linear-gradient(135deg, #ffb347, #ff9212);
+  box-shadow: 0 2px 6px rgba(255, 146, 18, 0.25);
+}
+
+.pb-rank-list__item:nth-child(3) .pb-rank-list__no {
+  background: linear-gradient(135deg, #ffe08a, #ffc85c);
+  color: #5c4200;
+  box-shadow: 0 2px 6px rgba(255, 200, 92, 0.3);
+}
+
+.pb-rank-list__poster {
+  position: relative;
+  flex: 0 0 120px;
+  width: 120px;
+  aspect-ratio: 69 / 40;
+  height: auto;
+  border-radius: 8px;
+  overflow: hidden;
+  background:
+    linear-gradient(145deg, #f0f2f5 0%, #e2e6eb 100%);
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* 漫画排行：竖版封面 */
+.pb-rank-list[data-mid="12"] .pb-rank-list__poster {
+  flex-basis: 56px;
+  width: 56px;
+  aspect-ratio: 3 / 4;
+}
+
+/* 视频竖屏封面（短剧等）：同漫画换竖版框，不再裁成横条。
+   --portrait = 分类比例提示（type_extend.cover）；data-cover-natural 由 runtime（mac-theme-runtime.js cover.orient）
+   按封面实际尺寸写入，同一分类里横竖混杂也逐条校正 */
+.pb-rank-list__item[data-cover-natural="v"] .pb-rank-list__poster,
+.pb-rank-list__item--portrait:not([data-cover-natural="h"]):not([data-cover-natural="s"]) .pb-rank-list__poster {
+  flex-basis: 56px;
+  width: 56px;
+  aspect-ratio: 3 / 4;
+}
+
+/* 小说排行：纯标题行 */
+.pb-rank-list[data-mid="2"] .pb-rank-list__link {
+  min-height: 64px;
+  gap: 12px;
+}
+
+.pb-rank-list[data-mid="2"] .pb-rank-list__name {
+  -webkit-line-clamp: 3;
+}
+
+.pb-rank-list__poster img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.25s ease;
+}
+
+.pb-rank-list__poster img.is-fallback {
+  object-fit: contain;
+  padding: 10px;
+  opacity: 0.75;
+  background: #f4f5f7;
+}
+
+.pb-rank-list__link:hover .pb-rank-list__poster img:not(.is-fallback) {
+  transform: scale(1.04);
+}
+
+.pb-rank-list__body {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.pb-rank-list__name {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1.35;
+  color: var(--c-text, #18191c);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  transition: color 0.2s ease;
+}
+
+.pb-rank-list__link:hover .pb-rank-list__name {
+  color: var(--c-accent);
+}
+
+.pb-rank-list__meta {
+  font-size: 12px;
+  line-height: 1.4;
+  color: var(--c-text-muted, #9499a0);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.pb-rank-list__empty {
+  padding: 48px 16px;
+  text-align: center;
+  color: var(--c-text-muted, #9499a0);
+  font-size: 14px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pb-rank-list__link,
+  .pb-rank-list__name,
+  .pb-rank-list__poster img {
+    transition: none;
+  }
+
+  .pb-rank-list__link:hover .pb-rank-list__poster img {
+    transform: none;
+  }
+}
+
+@container pb-col (max-width: 520px) {
+  .pb-rank-list__link {
+    gap: 8px;
+    min-height: 72px;
+    padding: 8px 2px;
+  }
+
+  .pb-rank-list__poster {
+    flex-basis: 80px;
+    width: 80px;
+  }
+
+  .pb-rank-list[data-mid="12"] .pb-rank-list__poster {
+    flex-basis: 48px;
+    width: 48px;
+  }
+
+  .pb-rank-list__item[data-cover-natural="v"] .pb-rank-list__poster,
+  .pb-rank-list__item--portrait:not([data-cover-natural="h"]):not([data-cover-natural="s"]) .pb-rank-list__poster {
+    flex-basis: 48px;
+    width: 48px;
+  }
+}
+
+@media (max-width: 640px) {
+  .pb-rank-list {
+    padding: 14px 12px 6px;
+    border-radius: 10px;
+  }
+
+  .pb-rank-list__link {
+    gap: 10px;
+    min-height: 76px;
+    padding: 8px 2px;
+  }
+
+  .pb-rank-list__poster {
+    flex-basis: 96px;
+    width: 96px;
+    border-radius: 6px;
+  }
+
+  .pb-rank-list[data-mid="12"] .pb-rank-list__poster {
+    flex-basis: 52px;
+    width: 52px;
+  }
+
+  .pb-rank-list__item[data-cover-natural="v"] .pb-rank-list__poster,
+  .pb-rank-list__item--portrait:not([data-cover-natural="h"]):not([data-cover-natural="s"]) .pb-rank-list__poster {
+    flex-basis: 52px;
+    width: 52px;
+  }
+
+  .pb-rank-list__name {
+    font-size: 14px;
+  }
+}

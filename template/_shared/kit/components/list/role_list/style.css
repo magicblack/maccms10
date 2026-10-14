@@ -1,0 +1,25 @@
+.pb-role-list {
+  display: grid;
+  gap: 16px 12px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+@container pb-sec-body (min-width: 560px) {
+  .pb-role-list {
+    grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+  }
+}
+
+@container pb-sec-body (min-width: 900px) {
+  .pb-role-list {
+    grid-template-columns: repeat(6, minmax(0, 1fr)) !important;
+    gap: 20px 16px !important;
+  }
+}
+
+@media (max-width: 560px) {
+  .pb-role-list {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 12px 10px !important;
+  }
+}

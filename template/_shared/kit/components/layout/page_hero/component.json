@@ -1,0 +1,55 @@
+{
+    "id": "page_hero",
+    "label_key": "admin/themedesign/pb_block_page_hero",
+    "category": "layout",
+    "kind": "heading",
+    "palette": false,
+    "peer_styles": [],
+    "assets": {
+        "css": "style.css",
+        "js": "script.js"
+    },
+    "props": {
+        "kicker": {
+            "type": "string",
+            "default": ""
+        },
+        "kicker_lang": {
+            "type": "string",
+            "default": ""
+        },
+        "title": {
+            "type": "string",
+            "default": "",
+            "trait": "title"
+        },
+        "title_lang": {
+            "type": "string",
+            "default": ""
+        },
+        "title_id": {
+            "type": "string",
+            "default": ""
+        },
+        "desc": {
+            "type": "string",
+            "default": ""
+        },
+        "actions": {
+            "type": "array",
+            "default": []
+        }
+    },
+    "context": {
+        "pageTypes": [
+            "home",
+            "list",
+            "detail",
+            "play",
+            "special",
+            "member",
+            "gbook"
+        ],
+        "requires": []
+    }
+}

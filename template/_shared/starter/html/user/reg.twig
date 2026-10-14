@@ -1,0 +1,23 @@
+{# Starter T0: user reg — 统一登录/注册表单 #}
+{% extends "layout/auth.twig" %}
+{% import "@shared/components.twig" as c %}
+{% block layout_mod %} auth{% endblock %}
+{% block page_class %} pb-components-only page-auth page-auth--reg{% endblock %}
+{% block theme_styles %}
+<link rel="stylesheet" href="{{ maccms.path_tpl }}asset/css/tokens.css">
+{% set _pb_td_override = mac_theme_override_css_href() %}
+{% if _pb_td_override %}<link rel="stylesheet" href="{{ _pb_td_override }}">{% endif %}
+<link rel="stylesheet" href="{{ maccms.path_tpl }}asset/css/pb-shell.css">
+{% endblock %}
+{% block title %}{{ maccms.page_title|default('用户注册') }}{% endblock %}
+{% block head %}
+<link rel="stylesheet" href="{{ maccms.path_tpl }}page-builder-components/auth_page/style.css">
+<script src="{{ maccms.path_tpl }}page-builder-components/auth_page/script.js" defer></script>
+<link rel="stylesheet" href="{{ maccms.path_tpl }}page-builder-components/auth_form/style.css">
+<script src="{{ maccms.path_tpl }}page-builder-components/auth_form/script.js" defer></script>
+{% endblock %}
+{% block content %}
+<span class="is-sr-only" hidden aria-hidden="true">{{ c.lazy_img('', '') }}</span>
+{% include 'page-builder-components/auth_page/template.twig' with {props: { panel: 'login', expand_invite: true, hero_title: '创建账号', hero_title_lang: 'reg_hero_title', hero_desc: '登录或注册，开启会员功能', hero_desc_lang: 'reg_hero_desc', hero_image: '', hero_image_mobile: '', show_hero: true, layout: 'split' }} %}
+{% endblock %}
+{% block sidebar %}{% endblock %}

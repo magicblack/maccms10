@@ -1,0 +1,7 @@
+.rank-theme-boards {
+  display: block;
+}
+
+.rank-theme-boards > [data-component="np2_rank_board"] + [data-component="np2_rank_board"] {
+  margin-top: 24px;
+}

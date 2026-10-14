@@ -1,0 +1,48 @@
+{# 全站分享底部弹层 — base.twig 引入一次，触发器用 data-mac-share-open #}
+<div class="share-sheet" data-mac-share-sheet hidden role="dialog" aria-modal="true" aria-labelledby="share-sheet-title">
+  <div class="share-sheet__backdrop" data-mac-share-close tabindex="-1" aria-hidden="true"></div>
+  <div class="share-sheet__panel">
+    <header class="share-sheet__head">
+      <h2 class="share-sheet__title" id="share-sheet-title">分享到</h2>
+      <button type="button" class="share-sheet__close" data-mac-share-close aria-label="关闭">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+          <path d="M6 6l12 12M18 6L6 18" stroke-linecap="round"/>
+        </svg>
+      </button>
+    </header>
+    <p class="share-sheet__preview" data-mac-share-preview hidden></p>
+    <div class="share-sheet__copy">
+      <label class="share-sheet__copy-label" for="share-sheet-url">链接</label>
+      <div class="share-sheet__copy-row">
+        <input type="text" class="share-sheet__input" id="share-sheet-url" data-mac-share-url-input readonly>
+        <button type="button" class="share-sheet__copy-btn" data-mac-share-copy>复制</button>
+      </div>
+    </div>
+    <div class="share-sheet__grid" role="group" aria-label="分享方式">
+      <button type="button" class="share-channel" data-mac-share-channel="wechat">
+        <span class="share-channel__icon share-channel__icon--wechat" aria-hidden="true">
+          <svg class="share-channel__glyph" viewBox="0 0 24 24" fill="currentColor"><path d="M8.5 4C5.46 4 3 5.79 3 8.02c0 1.17.63 2.23 1.62 2.98L4 13l2.3-1.15c.64.18 1.32.28 2.02.28.17 0 .34-.01.5-.03C8.3 10.17 10.45 8.5 13 8.5c.17 0 .34.01.5.02C12.7 5.84 10.8 4 8.5 4zm-2 3.25a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5zm4 0a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5zM21 11.5c0-2.07-2.24-3.75-5-3.75S11 9.43 11 11.5s2.24 3.75 5 3.75c.58 0 1.14-.08 1.67-.22L19 16l-.55-1.62C19.2 13.78 21 12.74 21 11.5zm-6.75-.75a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5zm3.5 0a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5z"/></svg>
+        </span>
+        <span class="share-channel__label">微信</span>
+      </button>
+      <button type="button" class="share-channel" data-mac-share-channel="weibo">
+        <span class="share-channel__icon share-channel__icon--weibo" aria-hidden="true">
+          <svg class="share-channel__glyph" viewBox="0 0 24 24" fill="currentColor"><path d="M10.2 20.5c-4.1 0-7.4-2.1-7.4-4.7 0-1.4.9-2.7 2.4-3.6.1 0 .2-.1.1-.3-.1-.4-.2-.8-.2-1.2 0-2.5 2.8-4.5 6.2-4.5.8 0 1.6.1 2.3.4.1 0 .2 0 .2-.1.6-2.2 2.8-3.8 5.4-3.8 3.1 0 5.6 2 5.6 4.5 0 1.5-1 2.9-2.6 3.7-.1 0-.1.1-.1.2.5 1.5.8 3.1.8 4.7 0 4.4-4.5 8-10.1 8h-.6zm-2.8-6.8c.5.3 1.1.5 1.7.5 1.5 0 2.7-1 2.7-2.2S10.6 9.8 9.1 9.8c-1.5 0-2.7 1-2.7 2.2 0 .6.3 1.1.8 1.5l.2.2z"/></svg>
+        </span>
+        <span class="share-channel__label">微博</span>
+      </button>
+      <button type="button" class="share-channel" data-mac-share-channel="qq">
+        <span class="share-channel__icon share-channel__icon--qq" aria-hidden="true">
+          <svg class="share-channel__glyph" viewBox="0 0 24 24" fill="currentColor"><path d="M12 4c-3.9 0-7 2.4-7 5.4 0 1.7 1 3.2 2.6 4.2-.1.5-.4 1.6-.5 1.9 0 .2.1.3.3.2.3-.1 1.5-.9 2.1-1.3.7.2 1.5.3 2.3.3 3.9 0 7-2.4 7-5.4S15.9 4 12 4z"/></svg>
+        </span>
+        <span class="share-channel__label">QQ</span>
+      </button>
+      <button type="button" class="share-channel" data-mac-share-channel="copy">
+        <span class="share-channel__icon share-channel__icon--link" aria-hidden="true">
+          <svg class="share-channel__glyph" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+        </span>
+        <span class="share-channel__label">复制链接</span>
+      </button>
+    </div>
+  </div>
+</div>

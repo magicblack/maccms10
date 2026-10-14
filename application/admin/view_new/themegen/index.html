@@ -1,0 +1,124 @@
+{include file="../../../application/admin/view_new/public/head" /}
+<div class="page-container p10">
+
+    <blockquote class="layui-elem-quote layui-quote-nm">
+        {:lang('admin/themegen/help_tip')}
+    </blockquote>
+
+    <form class="layui-form layui-form-pane" id="themegen-form" method="post" action="">
+
+        <div class="layui-form-item mb-2">
+            <label class="layui-form-label">{:lang('admin/themegen/dir')}</label>
+            <div class="layui-input-inline w200">
+                <input type="text" name="dir" class="layui-input" placeholder="myskin" autocomplete="off">
+            </div>
+            <div class="layui-form-mid layui-word-aux">{:lang('admin/themegen/dir_tip')}</div>
+        </div>
+
+        <div class="layui-form-item mb-2">
+            <label class="layui-form-label">{:lang('admin/themegen/name')}</label>
+            <div class="layui-input-inline w200">
+                <input type="text" name="name" class="layui-input" autocomplete="off">
+            </div>
+        </div>
+
+        <div class="layui-form-item mb-2">
+            <label class="layui-form-label">{:lang('admin/themegen/parent')}</label>
+            <div class="layui-input-inline w200">
+                <select name="parent">
+                    {volist name="parents" id="vo" key="k"}
+                    <option value="{$key}" {if condition="$key eq 'starter'"}selected{/if}>{$vo}（{$key}）</option>
+                    {/volist}
+                </select>
+            </div>
+            <div class="layui-form-mid layui-word-aux">{:lang('admin/themegen/parent_tip')}</div>
+        </div>
+
+        <div class="layui-form-item mb-2">
+            <label class="layui-form-label">{:lang('admin/themegen/style')}</label>
+            <div class="layui-input-inline w300">
+                <input type="text" name="style" class="layui-input" autocomplete="off">
+            </div>
+        </div>
+
+        <div class="layui-form-item mb-2">
+            <label class="layui-form-label">{:lang('admin/themegen/colors')}</label>
+            <div class="layui-input-inline w300">
+                <input type="text" name="colors" class="layui-input" placeholder="#0e0e0e / #ff9000" autocomplete="off">
+            </div>
+        </div>
+
+        <div class="layui-form-item mb-2">
+            <label class="layui-form-label">{:lang('admin/themegen/layout')}</label>
+            <div class="layui-input-inline w300">
+                <input type="text" name="layout" class="layui-input" autocomplete="off">
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">{:lang('admin/themegen/notes')}</label>
+            <div class="layui-input-block">
+                <textarea name="notes" class="layui-textarea" rows="4"></textarea>
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <div class="layui-input-block flex gap-5 overflow-x-auto">
+                <button class="layui-btn" type="button" id="themegen-run">{:lang('admin/themegen/run')}</button>
+                <a class="layui-btn layui-btn-primary" href="{:url('template/index')}">{:lang('admin/themegen/goto_template')}</a>
+            </div>
+        </div>
+    </form>
+
+    <div id="themegen-result" style="display:none;">
+        <blockquote class="layui-elem-quote layui-quote-nm">
+            <div id="themegen-result-msg"></div>
+            <ul id="themegen-result-list" class="p10"></ul>
+        </blockquote>
+    </div>
+</div>
+
+<script>
+layui.use(['form', 'layer'], function () {
+    var form = layui.form, layer = layui.layer, $ = layui.jquery;
+
+    $('#themegen-run').on('click', function () {
+        var btn = $(this);
+        // 一次生成要等模型返回，可能好几十秒；不锁按钮的话站长会连点，
+        // 后端就会同时跑几条产线，最后互相抢同一个目录名
+        btn.addClass('layui-btn-disabled').prop('disabled', true);
+        var loading = layer.msg("{:lang('admin/themegen/running')}", {icon: 16, time: 0, shade: 0.1});
+
+        $.post("{:url('themegen/index')}", $('#themegen-form').serialize(), function (res) {
+            layer.close(loading);
+            btn.removeClass('layui-btn-disabled').prop('disabled', false);
+
+            var box = $('#themegen-result'), list = $('#themegen-result-list');
+            list.empty();
+            $('#themegen-result-msg').text(res.msg || '');
+            box.show();
+
+            var items = [];
+            if (res.code == 1) {
+                items = (res.data && res.data.warnings) || [];
+                layer.msg(res.msg, {icon: 1});
+            } else {
+                // 把闸的每一条 error 原样列出来：站长要据此判断是 brief 没写清楚
+                // 还是模型产出不合规，笼统一句「生成失败」什么都判断不了
+                items = (res.data && res.data.errors) || [];
+                layer.msg(res.msg, {icon: 2});
+            }
+            for (var i = 0; i < items.length; i++) {
+                list.append($('<li></li>').text(items[i]));
+            }
+        }, 'json').fail(function () {
+            layer.close(loading);
+            btn.removeClass('layui-btn-disabled').prop('disabled', false);
+            layer.msg("{:lang('admin/themegen/gen_err')}", {icon: 2});
+        });
+    });
+});
+</script>
+
+</body>
+</html>

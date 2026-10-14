@@ -1,0 +1,48 @@
+{
+    "id": "np2_rank_board",
+    "label_key": "admin/themedesign/pb_block_rank_panel",
+    "category": "rank",
+    "kind": "rank",
+    "styleMode": "component",
+    "peer_styles": [],
+    "assets": {
+        "css": "style.css",
+        "js": "script.js"
+    },
+    "props": {
+        "title": {
+            "type": "string",
+            "default": "排行榜",
+            "trait": "title"
+        },
+        "type": {
+            "type": "category",
+            "mid": 1,
+            "default": 0,
+            "trait": "category"
+        },
+        "mid": {
+            "type": "number",
+            "default": 1,
+            "min": 1,
+            "max": 12
+        },
+        "num": {
+            "type": "number",
+            "default": 20,
+            "min": 1,
+            "max": 50,
+            "trait": "count"
+        },
+        "period": {
+            "type": "enum",
+            "default": "week",
+            "values": ["day", "week", "month"],
+            "trait": "period"
+        }
+    },
+    "context": {
+        "pageTypes": ["rank"],
+        "requires": ["maccms"]
+    }
+}

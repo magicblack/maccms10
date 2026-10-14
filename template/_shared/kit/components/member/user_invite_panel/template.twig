@@ -1,0 +1,96 @@
+{# 邀请好友 #}
+<header class="member-card__head">
+  <h2 class="member-card__title" data-lang="string_user_invite">邀请好友</h2>
+</header>
+<div class="invite-page" data-component="user_invite_panel" data-mac-user-invite
+     data-api-base="{{ maccms.path }}api.php"
+     data-reg-path="{{ mac_url('user/reg') }}"
+     data-limit="20"
+     data-text-no-code="暂未生成（请重新登录）">
+  <div class="invite-header-card">
+    <p class="invite-card-kicker" data-lang="invite_my_info_title">我的推广信息</p>
+    <div class="invite-hero">
+      <div class="invite-hero-main">
+        <p class="invite-code-line"><span class="invite-code-label" data-lang="user_yqm">邀请码</span>：<span class="invite-code-value mac-invite-code">{{ invite_code|default('') }}</span></p>
+        <p class="invite-code-hint" data-lang="user_yqlj">邀请链接</p>
+      </div>
+    </div>
+    <div class="invite-link-stack">
+      <div class="invite-link-block">
+        <div class="invite-link-bar" data-lang="invite_link_uid_label">推广链接（UID）</div>
+        <div class="invite-link-body-wrap">
+          <a class="invite-link-body mac-invite-link-uid" href="{{ invite_link_uid|default('#') }}" target="_blank" rel="noopener">{{ invite_link_uid|default('') }}</a>
+          <button type="button" class="invite-link-copy" data-invite-copy="uid" data-lang-aria-label="invite_copy_link_aria" aria-label="复制推广链接" data-lang="mall_copy">复制</button>
+        </div>
+      </div>
+      <div class="invite-link-block mac-invite-row-code"{% if not invite_link_code|default('') %} style="display:none"{% endif %}>
+        <div class="invite-link-bar" data-lang="invite_link_code_label">推广链接（邀请码）</div>
+        <div class="invite-link-body-wrap">
+          <a class="invite-link-body mac-invite-link-code" href="{{ invite_link_code|default('#') }}" target="_blank" rel="noopener">{{ invite_link_code|default('') }}</a>
+          <button type="button" class="invite-link-copy" data-invite-copy="code" data-lang-aria-label="invite_copy_code_link_aria" aria-label="复制邀请码链接" data-lang="mall_copy">复制</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <section class="invite-reward-card mac-invite-reward" aria-labelledby="mac-invite-reward-h" hidden>
+    <div class="invite-reward-head">
+      <h3 class="invite-reward-title" id="mac-invite-reward-h" data-lang="invite_reward_title">邀请奖励</h3>
+      <span class="invite-reward-progress mac-invite-reward-progress"></span>
+    </div>
+    <p class="invite-reward-reg mac-invite-reward-reg" hidden></p>
+    <p class="invite-reward-sub mac-invite-reward-sub" data-lang="invite_reward_tiers_title" hidden>累计邀请阶梯奖励</p>
+    <ul class="invite-reward-tiers mac-invite-reward-tiers" hidden></ul>
+    <p class="invite-reward-foot">
+      <span data-lang="invite_reward_notify_tip">奖励到账后会在消息中心通知你</span>
+      <a class="invite-reward-foot__link" href="{{ mac_url('user/notify') }}" data-lang="invite_reward_notify_link">去查看</a>
+    </p>
+  </section>
+  <div class="invite-stats-card">
+    <div class="invite-stats-head">
+      <span class="invite-stats-title" data-lang="string_vod_zg">共</span>
+      <strong class="invite-stats-num mac-invite-total">{{ total|default(0) }}</strong>
+    </div>
+    <p class="mac-invite-loading muted" data-lang="string_topic_feed_loading">加载中…</p>
+    <ul class="order__list clearfix mac-invite-empty invite-empty-list" style="display:none">
+      <li class="invite-empty-li pb-empty-state" style="list-style:none">
+        <div class="pb-empty-state__art" aria-hidden="true">
+{# Themeable empty illustration — colors follow --c-accent #}
+<svg class="pb-empty-state__svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="160" height="160" role="img" aria-hidden="true" focusable="false">
+  <ellipse cx="100" cy="168" rx="62" ry="14" fill="color-mix(in srgb, var(--c-accent) 14%, #f3f5f7)"/>
+  <circle cx="42" cy="48" r="8" fill="color-mix(in srgb, var(--c-accent) 22%, #dbe4ea)" opacity=".7"/>
+  <circle cx="168" cy="56" r="10" fill="color-mix(in srgb, var(--c-accent) 35%, #ffffff)" opacity=".85"/>
+  <path d="M34 72l10-16 10 16z" fill="var(--c-accent)" opacity=".55"/>
+  <rect x="156" y="110" width="14" height="14" rx="3" transform="rotate(20 163 117)" fill="color-mix(in srgb, var(--c-accent) 22%, #dbe4ea)" opacity=".55"/>
+  <rect x="48" y="52" width="104" height="86" rx="16" fill="color-mix(in srgb, var(--c-accent) 35%, #ffffff)"/>
+  <rect x="52" y="56" width="96" height="78" rx="13" fill="var(--c-accent)"/>
+  <rect x="62" y="66" width="76" height="50" rx="8" fill="#111827"/>
+  <circle cx="78" cy="46" r="4" fill="#1f2329"/>
+  <circle cx="122" cy="46" r="4" fill="#1f2329"/>
+  <path d="M78 46c8-18 36-18 44 0" stroke="#1f2329" stroke-width="3" fill="none" stroke-linecap="round"/>
+  <rect x="88" y="138" width="24" height="8" rx="3" fill="var(--c-accent)"/>
+  <rect x="78" y="146" width="44" height="8" rx="4" fill="color-mix(in srgb, var(--c-accent) 35%, #ffffff)"/>
+  <path d="M28 148c18-4 28 10 24 22-16 2-28-8-24-22z" fill="color-mix(in srgb, var(--c-accent) 22%, #dbe4ea)" opacity=".85"/>
+  <path d="M172 148c-18-4-28 10-24 22 16 2 28-8 24-22z" fill="color-mix(in srgb, var(--c-accent) 35%, #ffffff)" opacity=".9"/>
+</svg>
+        </div>
+        <p class="pb-empty-state__title invite-empty-txt" data-lang="string_empty_default">暂无内容</p>
+      </li>
+    </ul>
+    <div class="invite-table-wrap" style="display:none">
+      <table class="member-table">
+        <thead>
+          <tr>
+            <th>UID</th>
+            <th data-lang="string_user_name">用户名</th>
+            <th data-lang="invite_th_invite">邀请</th>
+            <th data-lang="invite_level2_th">二级</th>
+            <th data-lang="string_time">时间</th>
+          </tr>
+        </thead>
+        <tbody class="mac-invite-tbody"></tbody>
+      </table>
+    </div>
+    <div class="invite-mobile-list" style="display:none"></div>
+    <div class="member-page"></div>
+  </div>
+</div>

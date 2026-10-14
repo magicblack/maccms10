@@ -105,6 +105,21 @@ class User extends Base
             $data['ulog_points'] = intval($data['ulog_points']);
 
             $__ualMap = [2 => 'fav', 3 => 'want', 4 => 'play', 5 => 'down'];
+            $res = null;
+            if ($data['ulog_mid'] == 1 && $data['ulog_type'] === 4 && $data['ulog_points'] == 0) {
+                $res = model('Ulog')->touchFreeVodPlay($data['user_id'], $data['ulog_rid'], $data['ulog_sid'], $data['ulog_nid']);
+            }
+            if ($res !== null) {
+                if (isset($__ualMap[$data['ulog_type']])) {
+                    \app\common\model\UserAccessLog::record($__ualMap[$data['ulog_type']], [
+                        'user_id' => $data['user_id'],
+                        'mid'     => $data['ulog_mid'],
+                        'rid'     => $data['ulog_rid'],
+                    ]);
+                }
+                $res['ulog_id'] = intval($res['info']['ulog_id']);
+                return json($res);
+            }
             $res = model('Ulog')->infoData($data);
             if ($res['code'] == 1) {
                 $r = model('Ulog')->where($data)->update(['ulog_time'=>time()]);
@@ -149,6 +164,7 @@ class User extends Base
                 $where['ulog_type'] = ['eq',intval($param['type'])];
             }
             $order = 'ulog_time desc';
+            $where['_active_only'] = 1;
             $res = model('Ulog')->listData($where, $order, $param['page'], $param['limit']);
         }
         return json($res);
@@ -457,6 +473,11 @@ class User extends Base
             $param['ac'] = 'email';
         }
         $ac = $param['ac'] === 'phone' ? 'phone' : 'email';
+        // 通道未配置时不提供绑定页（#272），入口已在模板隐藏
+        $channels = mac_msg_channels();
+        if (empty($channels[$ac])) {
+            return redirect('user/info');
+        }
         $bind_readonly = ($ac === 'email' && !empty($GLOBALS['user']['user_email']))
             || ($ac === 'phone' && !empty($GLOBALS['user']['user_phone']));
         $this->assign('ac', $ac);
@@ -536,9 +557,7 @@ class User extends Base
     {
         $param = input();
         if (Request()->isPost()) {
-            if (!empty(cookie('uid'))) {
-                $param['uid'] = intval(cookie('uid'));
-            }
+            $param = model('User')->fillInviteCodeFromUid($param);
             $res = model('User')->register($param);
             if ($res['code'] > 1) {
                 return json($res);
@@ -639,6 +658,11 @@ class User extends Base
         if (Request()->isPost()) {
             $res = model('User')->findpass_msg($param);
             return json($res);
+        }
+        // 通道未配置时回到找回密码首页（#272）
+        $channels = mac_msg_channels();
+        if (!isset($param['ac']) || empty($channels[$param['ac']])) {
+            return redirect('user/findpass');
         }
         $param['ac_text'] = $param['ac'] == 'phone' ? lang('mobile') : lang('email');
         $this->assign('param', $param);
@@ -912,6 +936,7 @@ class User extends Base
             $where['ulog_mid'] = $param['mid'];
         }
         $order = 'ulog_time desc';
+        $where['_active_only'] = 1;
         $res = model('Ulog')->listData($where, $order, $param['page'], $param['limit']);
 
         $this->assign('param',$param);
@@ -946,6 +971,7 @@ class User extends Base
         $where['ulog_mid'] = 1;
         $where['ulog_type'] = 5;
         $order = 'ulog_time desc';
+        $where['_active_only'] = 1;
         $res = model('Ulog')->listData($where, $order, $param['page'], $param['limit']);
 
         $this->assign('param',$param);
@@ -969,6 +995,7 @@ class User extends Base
         }
         $where['ulog_type'] = 2;
         $order = 'ulog_time desc';
+        $where['_active_only'] = 1;
         $res = model('Ulog')->listData($where, $order, $param['page'], $param['limit']);
 
         $this->assign('param',$param);
@@ -995,6 +1022,7 @@ class User extends Base
         }
 
         $order = 'ulog_time desc';
+        $where['_active_only'] = 1;
         $res = model('Ulog')->listData($where, $order, $param['page'], $param['limit']);
 
         $this->assign('param',$param);
@@ -1045,11 +1073,11 @@ class User extends Base
 
         $where = [];
         $where['user_id'] = $GLOBALS['user']['user_id'];
-        // 筛选：income=收入(1-6 与任务/里程碑奖励 10-11), expense=支出(7-9)
+        // 筛选：income=收入(1-6、任务/里程碑奖励 10-11、邀请奖励 14-15), expense=支出(7-9、商城 12、秒杀 13)
         if ($param['filter'] == 'income') {
-            $where['plog_type'] = ['in', [1, 2, 3, 4, 5, 6, 10, 11]];
+            $where['plog_type'] = ['in', [1, 2, 3, 4, 5, 6, 10, 11, 14, 15]];
         } elseif ($param['filter'] == 'expense') {
-            $where['plog_type'] = ['in', [7, 8, 9, 12]];
+            $where['plog_type'] = ['in', [7, 8, 9, 12, 13]];
         }
         $order = 'plog_id desc';
         $res = model('Plog')->listData($where, $order, $param['page'], $param['limit']);

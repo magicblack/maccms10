@@ -1,0 +1,26 @@
+{
+    "id": "filmstrip_layout",
+    "label_key": "admin/themedesign/pb_block_filmstrip_layout",
+    "category": "layout",
+    "kind": "filmstrip",
+    "styleMode": "component",
+    "peer_styles": [],
+    "slots": {
+        "banner": {
+            "accept": ["vod_carousel"],
+            "max": 1
+        },
+        "feed": {
+            "accept": ["vod_list"],
+            "max": 1
+        }
+    },
+    "assets": {
+        "css": "style.css"
+    },
+    "props": {},
+    "context": {
+        "pageTypes": ["home", "list"],
+        "requires": []
+    }
+}

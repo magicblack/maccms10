@@ -21,6 +21,18 @@ class Collect extends Base {
     protected $insert     = [];
     protected $update     = [];
 
+    // 远端采集接口返回的 pagecount 与 total/limit 经常不一致（自建接口常见 bug），
+    // 统一按 total/limit 本地重算，避免后台列表分页条数与实际总数对不上
+    private static function calcPageCount($recordCount, $pageSize, $remotePageCount = 0)
+    {
+        $recordCount = (int)$recordCount;
+        $pageSize = (int)$pageSize;
+        if ($pageSize > 0) {
+            return (int)ceil($recordCount / $pageSize);
+        }
+        return (int)$remotePageCount;
+    }
+
     public function listData($where,$order,$page=1,$limit=20,$start=0)
     {
         $page = $page > 0 ? (int)$page : 1;
@@ -243,7 +255,7 @@ class Collect extends Base {
 
         $array_page = [];
         $array_page['page'] = (string)$xml->list->attributes()->page;
-        $array_page['pagecount'] = (string)$xml->list->attributes()->pagecount;
+        $array_page['pagecount'] = self::calcPageCount((string)$xml->list->attributes()->recordcount, (string)$xml->list->attributes()->pagesize, (string)$xml->list->attributes()->pagecount);
         $array_page['pagesize'] = (string)$xml->list->attributes()->pagesize;
         $array_page['recordcount'] = (string)$xml->list->attributes()->recordcount;
         $array_page['url'] = $url;
@@ -376,7 +388,7 @@ class Collect extends Base {
 
         $array_page = [];
         $array_page['page'] = $json['page'];
-        $array_page['pagecount'] = $json['pagecount'];
+        $array_page['pagecount'] = self::calcPageCount($json['total'], $json['limit'], $json['pagecount']);
         $array_page['pagesize'] = $json['limit'];
         $array_page['recordcount'] = $json['total'];
         $array_page['url'] = $url;
@@ -578,6 +590,38 @@ class Collect extends Base {
     }
 
     /**
+     * 采集简介统一清洗：解多层 HTML 实体（资源站简介常见 &amp;nbsp;）、去标签、合并空白，
+     * 为空则从正文截取；最后按后台保存的口径单层转义入库。
+     * @param mixed $blurb
+     * @param mixed $content
+     * @return string
+     */
+    private function cleanBlurb($blurb, $content)
+    {
+        $blurb = mac_plain_text($blurb);
+        if ($blurb === '') {
+            $blurb = mac_substring(mac_plain_text(str_replace('$$$', ' ', mac_scalar_string($content))), 100);
+        }
+        return mac_filter_xss($blurb);
+    }
+
+    /**
+     * 去掉 4 字节 UTF-8 字符（emoji、CJK 扩展 B 及以后的生僻字）。
+     * mac_ 表与连接均为 utf8，MySQL 遇到此类字符会拒绝整行（1366 Incorrect string value）。
+     * @param array $v
+     * @return array
+     */
+    private function stripUtf8mb4($v)
+    {
+        foreach ($v as $key => $val) {
+            if (is_string($val) && preg_match('/[\x{10000}-\x{10FFFF}]/u', $val)) {
+                $v[$key] = preg_replace('/[\x{10000}-\x{10FFFF}]/u', '', $val);
+            }
+        }
+        return $v;
+    }
+
+    /**
      * 同步图片
      *
      * @param $pic_status int 是否同步。为1时，同步图片
@@ -642,6 +686,7 @@ class Collect extends Base {
             $des='';
             $msg='';
             $tmp='';
+            $skip_play_from=[];
 
             if ($v['type_id'] ==0) {
                 $des = lang('model/collect/type_err');
@@ -714,6 +759,8 @@ class Collect extends Base {
 
                 $v['vod_plot_name'] = (string)$v['vod_plot_name'];
                 $v['vod_plot_detail'] = (string)$v['vod_plot_detail'];
+                // 资源站省略简介时为 null，新增入库写入 NOT NULL 的 vod_content 会中断整页采集
+                $v['vod_content'] = mac_scalar_string($v['vod_content']);
 
                 if(!empty($v['vod_plot_name'])){
                     $v['vod_plot'] = 1;
@@ -762,9 +809,7 @@ class Collect extends Base {
                     $v['vod_lang'] = mac_rep_pse_syn($pse_lang, $v['vod_lang']);
                 }
 
-                if(empty($v['vod_blurb'])){
-                    $v['vod_blurb'] = mac_substring( strip_tags($v['vod_content']) ,100);
-                }
+                $v['vod_blurb'] = $this->cleanBlurb(isset($v['vod_blurb']) ? $v['vod_blurb'] : '', $v['vod_content']);
 
                 $where = [];
 
@@ -787,7 +832,10 @@ class Collect extends Base {
                 $search_actor_id_list = [];
                 if (strpos($config['inrule'], 'f')!==false && !empty(trim($v['vod_actor']))) {
                     $where['vod_actor'] = ['like', mac_like_arr(mac_filter_xss($v['vod_actor'])), 'OR'];
-                    if ($vod_search_enabled) {
+                    // 已按 vod_name（有索引）限定时，演员 LIKE 只在同名几行里比对，无需 vod_search。
+                    // vod_search 对每个未缓存的演员名做一次全表 LIKE，演员多的一条（十几个新名字）
+                    // 就要连扫十几遍 mac_vod，期间无输出，CloudFront/nginx 超时断开，页面停住不翻页
+                    if ($vod_search_enabled && !isset($where['vod_name'])) {
                         $search_actor_id_list = $vod_search->getResultIdList(mac_filter_xss($v['vod_actor']), 'vod_actor', true);
                         $search_actor_id_list = empty($search_actor_id_list) ? [0] : $search_actor_id_list;
                     }
@@ -846,6 +894,9 @@ class Collect extends Base {
                     }
 
                     if(empty($players[$vv])){
+                        // 本站没有同编码的播放器 → 整组丢弃。以前不提示，管理员只看到“新增ok”，
+                        // 前台却没有这条线路（或整部无法观看），误以为是播放器代码的问题
+                        $skip_play_from[] = $vv;
                         unset($cj_play_from_arr[$kk]);
                         unset($cj_play_url_arr[$kk]);
                         unset($cj_play_server_arr[$kk]);
@@ -939,6 +990,8 @@ class Collect extends Base {
                             $v['vod_down_server'] = (string)join('$$$', (array)$collect_filter['down'][$param['filter']]['cj_down_server_arr']);
                             $v['vod_down_note'] = (string)join('$$$', (array)$collect_filter['down'][$param['filter']]['cj_down_note_arr']);
                         }
+                        // 源站备注常为全集数（全N集），接口只下发部分剧集：按实际入库集数改写
+                        $v['vod_remarks'] = mac_vod_episode_remarks($v['vod_remarks'], $v['vod_play_url']);
                         $tmp = $this->syncImages($config_sync_pic,  $v['vod_pic'], 'vod');
                         $v['vod_pic'] = (string)$tmp['pic'];
                         $msg = $tmp['msg'];
@@ -1195,12 +1248,30 @@ class Collect extends Base {
                             $update['vod_plot_detail'] = $v['vod_plot_detail'];
                         }
 
+                        // 集数类备注与合并后的实际播放地址对齐（未勾选更新备注时，地址更新后备注也不能停在旧集数）；
+                        // 仅随其它字段一起更新，避免单纯改写备注刷新 vod_time（展示层读取时已对齐）
+                        if (count($update) > 0) {
+                            $cur_remarks = isset($update['vod_remarks']) ? $update['vod_remarks'] : $info['vod_remarks'];
+                            $fix_remarks = mac_vod_episode_remarks($cur_remarks, isset($update['vod_play_url']) ? $update['vod_play_url'] : $info['vod_play_url']);
+                            if ($fix_remarks === (string)$info['vod_remarks']) {
+                                unset($update['vod_remarks']);
+                            } else {
+                                $update['vod_remarks'] = $fix_remarks;
+                            }
+                        }
                         if(count($update)>0){
                             $update['vod_time'] = time();
+                            // 播放地址有更新：资源检测失败 / 已自动停用的视频重置检测并恢复
+                            if (isset($update['vod_play_url'])) {
+                                $update = array_merge($update, \app\common\util\ContentCheck::recollectReset('vod', $info));
+                            }
                             $where = [];
                             $where['vod_id'] = $info['vod_id'];
                             $update = VodValidate::formatDataBeforeDb($update);
                             $res = model('Vod')->where($where)->update($update);
+                            if (isset($update['vod_check_state'])) {
+                                \app\common\util\ContentCheck::afterStatusChange('vod', [$info['vod_id']]);
+                            }
                             $color = 'green';
                             if ($res === false) {
 
@@ -1215,6 +1286,9 @@ class Collect extends Base {
                 if(Cache::has('vod_repeat_table_created_time')){
                     Cache::rm('vod_repeat_table_created_time');
                 }
+            }
+            if(!empty($skip_play_from)){
+                $msg .= " <font color='orange'>" . lang('model/collect/playfrom_skip', [htmlspecialchars(implode(',', array_unique($skip_play_from)), ENT_QUOTES, 'UTF-8')]) . '</font>';
             }
             if($show==1) {
                 mac_echo( ($k + 1) .'、'. $v['vod_name'] . " <font color='{$color}'>" .$des .'</font>'. $msg.'' );
@@ -1314,7 +1388,7 @@ class Collect extends Base {
 
         $array_page = [];
         $array_page['page'] = $json['page'];
-        $array_page['pagecount'] = $json['pagecount'];
+        $array_page['pagecount'] = self::calcPageCount($json['total'], $json['limit'], $json['pagecount']);
         $array_page['pagesize'] = $json['limit'];
         $array_page['recordcount'] = $json['total'];
         $array_page['url'] = $url;
@@ -1389,7 +1463,7 @@ class Collect extends Base {
 
         $array_page = [];
         $array_page['page'] = $json['page'];
-        $array_page['pagecount'] = $json['pagecount'];
+        $array_page['pagecount'] = self::calcPageCount($json['total'], $json['limit'], $json['pagecount']);
         $array_page['pagesize'] = $json['limit'];
         $array_page['recordcount'] = $json['total'];
         $array_page['url'] = $url;
@@ -1464,6 +1538,8 @@ class Collect extends Base {
                         $v[$k2] = mac_strip_tags($v2);
                     }
                 }
+                // 库表为 utf8（3 字节），正文含 emoji/生僻字等 4 字节字符会整行写入失败并中断整页采集
+                $v = $this->stripUtf8mb4($v);
                 $v['art_name'] = trim($v['art_name']);
                 $v['type_id_1'] = intval($type_list[$v['type_id']]['type_pid']);
                 $v['art_en'] = Pinyin::get($v['art_name']);
@@ -1515,12 +1591,8 @@ class Collect extends Base {
                     $v['art_content'] = mac_rep_pse_syn($pse_syn, $v['art_content']);
                 }
 
-                if(empty($v['art_blurb'])){
-                    $v['art_blurb'] = mac_substring( strip_tags( str_replace('$$$','',$v['art_content']) ) ,100);
-                } else {
-                    // 采集源不可信，简介字段此前未过滤直接入库，前台详情页以 raw 输出会形成存储型XSS
-                    $v['art_blurb'] = mac_filter_xss($v['art_blurb']);
-                }
+                // 采集源不可信，简介字段此前未过滤直接入库，前台详情页以 raw 输出会形成存储型XSS（cleanBlurb 内已 mac_filter_xss）
+                $v['art_blurb'] = $this->cleanBlurb(isset($v['art_blurb']) ? $v['art_blurb'] : '', $v['art_content']);
 
                 if ($config['tag'] == 1) {
                     $v['art_tag'] = mac_filter_xss(mac_get_tag($v['art_name'], $v['art_content']));
@@ -1548,6 +1620,8 @@ class Collect extends Base {
                 $v['art_title'] = join('$$$', (array)$tmp_title_arr);
                 $v['art_note'] = join('$$$', (array)$tmp_note_arr);
                 $v['art_content'] = join('$$$', (array)$tmp_content_arr);
+                // 源站备注为全本章数，而接口只下发部分章节：按实际入库章节数改写
+                $v['art_remarks'] = mac_art_chapter_remarks($v['art_remarks'], $v['art_content']);
 
 
                 $info = model('Art')->where($where)->find();
@@ -1556,12 +1630,14 @@ class Collect extends Base {
                     $v['art_pic'] = (string)$tmp['pic'];
 
                     $msg = $tmp['msg'];
-                    $res = model('Art')->insert($v);
-                    if($res===false){
-
+                    // 单条写库失败（如超长正文超出 max_allowed_packet）只标红跳过，不能中断整页及后续翻页
+                    try {
+                        model('Art')->insert($v);
+                        $color ='green';
+                        $des= lang('model/collect/add_ok');
+                    } catch (\Exception $e) {
+                        $des = mac_filter_xss($e->getMessage());
                     }
-                    $color ='green';
-                    $des= lang('model/collect/add_ok');
                 }
                 else {
 
@@ -1590,6 +1666,13 @@ class Collect extends Base {
 
                             if(strpos(','.$config['uprule'],'a')!==false && !empty($v['art_content']) && $v['art_content']!=$info['art_content']){
                                 $update['art_content'] = $v['art_content'];
+                                // 小说阅读器按 art_title/art_note/art_content 的 $$$ 分段对齐章节，三者须同步更新
+                                $update['art_title'] = $v['art_title'];
+                                $update['art_note'] = $v['art_note'];
+                            }
+                            // 备注为章节数（如「共N章」），随正文/章节一起更新
+                            if(strpos(','.$config['uprule'],'a')!==false && !empty($v['art_remarks']) && $v['art_remarks']!=$info['art_remarks']){
+                                $update['art_remarks'] = $v['art_remarks'];
                             }
                             if(strpos(','.$config['uprule'],'b')!==false && !empty($v['art_author']) && $v['art_author']!=$info['art_author']){
                                 $update['art_author'] = $v['art_author'];
@@ -1615,10 +1698,11 @@ class Collect extends Base {
                                 $update['art_time'] = time();
                                 $where = [];
                                 $where['art_id'] = $info['art_id'];
-                                $res = model('Art')->where($where)->update($update);
-                                $color = 'green';
-                                if($res===false){
-
+                                try {
+                                    model('Art')->where($where)->update($update);
+                                    $color = 'green';
+                                } catch (\Exception $e) {
+                                    $des = mac_filter_xss($e->getMessage());
                                 }
                             }
                             else{
@@ -1726,7 +1810,7 @@ class Collect extends Base {
 
         $array_page = [];
         $array_page['page'] = $json['page'];
-        $array_page['pagecount'] = $json['pagecount'];
+        $array_page['pagecount'] = self::calcPageCount($json['total'], $json['limit'], $json['pagecount']);
         $array_page['pagesize'] = $json['limit'];
         $array_page['recordcount'] = $json['total'];
         $array_page['url'] = $url;
@@ -1850,9 +1934,7 @@ class Collect extends Base {
                     $v['actor_content'] = mac_rep_pse_syn($pse_syn, $v['actor_content']);
                 }
 
-                if(empty($v['actor_blurb'])){
-                    $v['actor_blurb'] = mac_substring( strip_tags($v['actor_content']) ,100);
-                }
+                $v['actor_blurb'] = $this->cleanBlurb(isset($v['actor_blurb']) ? $v['actor_blurb'] : '', $v['actor_content']);
 
                 $where = [];
                 $where['actor_name'] = $v['actor_name'];
@@ -2021,7 +2103,7 @@ class Collect extends Base {
 
         $array_page = [];
         $array_page['page'] = $json['page'];
-        $array_page['pagecount'] = $json['pagecount'];
+        $array_page['pagecount'] = self::calcPageCount($json['total'], $json['limit'], $json['pagecount']);
         $array_page['pagesize'] = $json['limit'];
         $array_page['recordcount'] = $json['total'];
         $array_page['url'] = $url;
@@ -2323,7 +2405,7 @@ class Collect extends Base {
 
         $array_page = [];
         $array_page['page'] = $json['page'];
-        $array_page['pagecount'] = $json['pagecount'];
+        $array_page['pagecount'] = self::calcPageCount($json['total'], $json['limit'], $json['pagecount']);
         $array_page['pagesize'] = $json['limit'];
         $array_page['recordcount'] = $json['total'];
         $array_page['url'] = $url;
@@ -2447,9 +2529,7 @@ class Collect extends Base {
                     $v['website_content'] = mac_rep_pse_syn($pse_syn, $v['website_content']);
                 }
 
-                if(empty($v['website_blurb'])){
-                    $v['website_blurb'] = mac_substring( strip_tags($v['website_content']) ,100);
-                }
+                $v['website_blurb'] = $this->cleanBlurb(isset($v['website_blurb']) ? $v['website_blurb'] : '', $v['website_content']);
 
                 $where = [];
                 $where['website_name'] = $v['website_name'];
@@ -2621,7 +2701,7 @@ class Collect extends Base {
 
         $array_page = [];
         $array_page['page'] = $json['page'];
-        $array_page['pagecount'] = $json['pagecount'];
+        $array_page['pagecount'] = self::calcPageCount($json['total'], $json['limit'], $json['pagecount']);
         $array_page['pagesize'] = $json['limit'];
         $array_page['recordcount'] = $json['total'];
         $array_page['url'] = $url;
@@ -2925,7 +3005,7 @@ class Collect extends Base {
 
         $array_page = [];
         $array_page['page'] = (string)$xml->list->attributes()->page;
-        $array_page['pagecount'] = (string)$xml->list->attributes()->pagecount;
+        $array_page['pagecount'] = self::calcPageCount((string)$xml->list->attributes()->recordcount, (string)$xml->list->attributes()->pagesize, (string)$xml->list->attributes()->pagecount);
         $array_page['pagesize'] = (string)$xml->list->attributes()->pagesize;
         $array_page['recordcount'] = (string)$xml->list->attributes()->recordcount;
         $array_page['url'] = $url;
@@ -3044,7 +3124,10 @@ class Collect extends Base {
                         $v[$k2] = mac_strip_tags($v2);
                     }
                 }
+                // 库表为 utf8（3 字节），含 emoji/生僻字等 4 字节字符会整行写入失败并中断整页采集
+                $v = $this->stripUtf8mb4($v);
 
+                $v['manga_blurb'] = $this->cleanBlurb(isset($v['manga_blurb']) ? $v['manga_blurb'] : '', isset($v['manga_content']) ? $v['manga_content'] : '');
                 $v['type_id_1'] = intval($type_list[$v['type_id']]['type_pid']);
                 $v['manga_en'] = Pinyin::get($v['manga_name']);
                 $v['manga_letter'] = strtoupper(substr($v['manga_en'],0,1));
@@ -3066,6 +3149,8 @@ class Collect extends Base {
                     
                     $v['manga_chapter_from'] = $v['manga_play_from'];
                     $v['manga_chapter_url'] = $v['manga_play_url'];
+                    // 源站备注为全本话数，而接口只下发部分章节：按实际入库话数改写
+                    $v['manga_remarks'] = mac_manga_chapter_remarks($v['manga_remarks'], $v['manga_chapter_url']);
                     
                     $res = model('Manga')->insert($v);
                     if($res===false){
@@ -3103,6 +3188,16 @@ class Collect extends Base {
                                     $old_play_url .= "" . $cj_play_url;
                                     $old_play_from .= "" . $cj_play_from;
                                     $ec=true;
+                                } elseif (!empty($cj_play_url)) {
+                                    // 同来源章节组：采集源下发的是完整章节列表，有变化（如新增话数）则替换
+                                    $arr_url = explode('$$$', $old_play_url);
+                                    $arr_from = explode('$$$', $old_play_from);
+                                    $play_key = array_search($cj_play_from, $arr_from);
+                                    if ($play_key !== false && (!isset($arr_url[$play_key]) || $arr_url[$play_key] != $cj_play_url)) {
+                                        $arr_url[$play_key] = $cj_play_url;
+                                        $old_play_url = join('$$$', $arr_url);
+                                        $ec=true;
+                                    }
                                 }
                             }
                             if($ec) {
@@ -3110,12 +3205,26 @@ class Collect extends Base {
                                 $update['manga_chapter_url'] = $old_play_url;
                             }
                         }
+                        // 备注为话数（如「共N话」），随章节一起更新；话数按合并后的实际章节计
+                        if (strpos(',' . $config['uprule'], 'a')!==false && !empty($v['manga_remarks'])) {
+                            $v['manga_remarks'] = mac_manga_chapter_remarks($v['manga_remarks'], isset($update['manga_chapter_url']) ? $update['manga_chapter_url'] : $info['manga_chapter_url']);
+                        }
+                        if (strpos(',' . $config['uprule'], 'a')!==false && !empty($v['manga_remarks']) && $v['manga_remarks']!=$info['manga_remarks']) {
+                            $update['manga_remarks'] = $v['manga_remarks'];
+                        }
 
                         if(count($update)>0){
                             $update['manga_time'] = time();
+                            // 章节地址有更新：资源检测失败 / 已自动停用的漫画重置检测并恢复
+                            if (isset($update['manga_chapter_url'])) {
+                                $update = array_merge($update, \app\common\util\ContentCheck::recollectReset('manga', $info));
+                            }
                             $where = [];
                             $where['manga_id'] = $info['manga_id'];
                             $res = model('Manga')->where($where)->update($update);
+                            if (isset($update['manga_check_state'])) {
+                                \app\common\util\ContentCheck::afterStatusChange('manga', [$info['manga_id']]);
+                            }
                             $color = 'green';
                         }
                         else{

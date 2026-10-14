@@ -1,0 +1,15 @@
+{% set p = props|default({}) %}
+{% set content = '' %}
+{% if obj.vod_content|default('') %}
+  {% set content = obj.vod_content %}
+{% elseif obj.art_content|default('') %}
+  {% set content = obj.art_content %}
+{% elseif obj.manga_content|default('') %}
+  {% set content = obj.manga_content %}
+{% endif %}
+{% if content %}
+<section class="pb-media-intro media-panel media-panel--cinema" id="{{ p.id|default('media-intro') }}">
+  <h2 class="media-panel__title"{% if p.title_lang|default('') and mac_i18n_key(p.title|default('剧情简介'), p.title_lang) %} data-lang="{{ p.title_lang }}"{% endif %}>{{ p.title|default('剧情简介') }}</h2>
+  <div class="media-panel__body">{{ content|raw }}</div>
+</section>
+{% endif %}

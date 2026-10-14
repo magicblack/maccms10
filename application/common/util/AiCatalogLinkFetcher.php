@@ -63,6 +63,7 @@ class AiCatalogLinkFetcher
             $body,
             $headers,
             $timeout,
+            true,
             true
         );
         if ($resp === false || $resp === '') {
@@ -125,7 +126,7 @@ class AiCatalogLinkFetcher
         ], '', '&', PHP_QUERY_RFC3986);
         $url = 'https://www.googleapis.com/books/v1/volumes?'.$q;
         $headers = ['Accept: application/json'];
-        $resp = HttpClient::curlPostWithTimeout($url, '', $headers, $timeout, false);
+        $resp = HttpClient::curlPostWithTimeout($url, '', $headers, $timeout, false, true);
         if ($resp === false || $resp === '') {
             return [];
         }

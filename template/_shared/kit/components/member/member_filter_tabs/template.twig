@@ -1,0 +1,64 @@
+{#
+  会员列表筛选 Tab（收藏 / 播放记录）
+  props: preset(favs|plays), action, active_mid, items[], aria_label, mod
+  兼容旧参：active / current / preset 从 with 传入
+#}
+{% set p = props|default({}) %}
+{% set _preset = p.preset|default(preset|default('')) %}
+{# 收藏 / 播放记录：以 URL param.mid 为准，避免 PB 编译把 active_mid 写死成 0 #}
+{% if _preset == 'favs' or _preset == 'plays' %}
+  {% set _active = param.mid|default(0) + 0 %}
+{% else %}
+  {% set _raw = p.active_mid is defined ? p.active_mid : (active_mid is defined ? active_mid : (current is defined ? current : 0)) %}
+  {% if _raw == '' or _raw is null %}
+    {% set _active = 0 %}
+  {% else %}
+    {% set _active = _raw + 0 %}
+  {% endif %}
+{% endif %}
+{% set _mod = p.mod|default(mod|default(_preset)) %}
+{% set _aria = p.aria_label|default(aria_label|default('筛选')) %}
+{% set _aria_lang = (p.aria_label is not defined and aria_label is not defined) ? 'str_shaixuan' : '' %}
+{% set _custom = p.items is defined ? p.items : (items is defined ? items : []) %}
+{% set _ml_art = mac_module_label(2) %}
+{% set _ml_manga = mac_module_label(12) %}
+{% if _preset == 'favs' %}
+  {% set _action = p.action|default(action|default('user/favs')) %}
+  {% set _items = [
+    {mid: 0, label: '全部', lang: 'string_all'},
+    {mid: 1, label: '视频', lang: 'string_vod'},
+    {mid: 2, label: _ml_art.name, lang: _ml_art.lang},
+    {mid: 3, label: '专题', lang: 'string_topic'},
+    {mid: 12, label: _ml_manga.name, lang: _ml_manga.lang}
+  ] %}
+{% elseif _preset == 'plays' %}
+  {% set _action = p.action|default(action|default('user/plays')) %}
+  {% set _items = [
+    {mid: 0, label: '全部', lang: 'string_all'},
+    {mid: 1, label: '视频', lang: 'string_vod'},
+    {mid: 2, label: _ml_art.name, lang: _ml_art.lang},
+    {mid: 12, label: _ml_manga.name, lang: _ml_manga.lang}
+  ] %}
+{% else %}
+  {% set _action = p.action|default(action|default('user/index')) %}
+  {% set _items = _custom %}
+{% endif %}
+{% if _custom|length %}
+  {% set _items = _custom %}
+{% endif %}
+
+<nav class="member-tabs{% if _mod %} member-tabs--{{ _mod }}{% endif %}" data-component="member_filter_tabs"{% if _aria_lang %} data-lang-aria-label="{{ _aria_lang }}"{% endif %} aria-label="{{ _aria }}">
+  {% for it in _items %}
+  {% set _mid = it.mid|default(0) + 0 %}
+  {% set _on = _active == _mid %}
+  {% if _mid == 0 %}
+  {% set _href = mac_url(_action) %}
+  {% else %}
+  {% set _href = mac_url(_action, {mid: _mid}) %}
+  {% endif %}
+  <a href="{{ _href }}"
+     class="member-tabs__link{% if _on %} is-on{% endif %}"
+     {% if _on %}aria-current="page"{% endif %}
+     {% if it.lang|default('') and mac_i18n_key(it.label|default(''), it.lang) %}data-lang="{{ it.lang }}"{% endif %}>{{ it.label|default('') }}</a>
+  {% endfor %}
+</nav>

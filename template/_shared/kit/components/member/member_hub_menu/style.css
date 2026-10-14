@@ -1,0 +1,65 @@
+/* member_hub_menu — 移动端菜单列表 */
+[data-component="member_hub_menu"].member-hub-menu {
+  display: block;
+}
+
+.member-hub-menu__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  background: var(--c-surface, #fff);
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid var(--c-border, rgba(0, 0, 0, 0.06));
+}
+
+.member-hub-menu__link {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 52px;
+  padding: 0 16px;
+  color: var(--c-text, #18191c);
+  text-decoration: none;
+  border-bottom: 1px solid var(--c-border, rgba(0, 0, 0, 0.06));
+}
+
+.member-hub-menu__list > li:last-child .member-hub-menu__link {
+  border-bottom: 0;
+}
+
+.member-hub-menu__ico {
+  display: inline-flex;
+  width: 22px;
+  height: 22px;
+  color: var(--c-accent);
+}
+
+.member-hub-menu__svg {
+  width: 22px;
+  height: 22px;
+}
+
+.member-hub-menu__label {
+  flex: 1 1 auto;
+  font-size: 15px;
+  font-weight: 500;
+}
+
+.member-hub-menu__arrow {
+  width: 16px;
+  height: 16px;
+  color: var(--c-text-muted, #c0c4cc);
+  opacity: 0.7;
+}
+
+.member-hub-menu__link.is-on {
+  color: var(--c-accent);
+  background: var(--c-accent-soft);
+}
+
+.member-hub-menu__link:active {
+  background: rgba(0, 0, 0, 0.03);
+}
+
+.member-hub-menu__ico--shield { color: inherit; }

@@ -1,0 +1,21 @@
+.pb-grid--auto {
+  display: grid;
+  gap: var(--sp-4, 16px);
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, var(--pb-grid-min, 280px)), 1fr));
+}
+.pb-grid--rankmods {
+  display: grid;
+  gap: var(--sp-4, 16px);
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 320px), 1fr));
+  align-items: stretch;
+}
+.pb-grid--rankmods > .bili-rankmods__item,
+.pb-grid--rankmods > .c-rankcard {
+  min-height: 100%;
+}
+
+@media (max-width: 640px) {
+  .pb-grid--rankmods {
+    grid-template-columns: 1fr !important;
+  }
+}

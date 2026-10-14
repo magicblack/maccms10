@@ -1,0 +1,9 @@
+{% import "page-builder-components/_shared/macros.twig" as pb %}
+<div class="pb-site-row" data-mid="11" data-id="{{ w.website_id }}">
+  <div class="pb-site-row__fig"><a href="{{ mac_url_website_detail(w) }}">{{ pb.lazy_img(w.website_logo|default(w.website_pic), w.website_name) }}</a></div>
+  <div class="pb-site-row__body">
+    <h4><a href="{{ mac_url_website_detail(w) }}">{{ w.website_name }}</a></h4>
+    <p>{{ mac_substring(mac_plain_text(w.website_blurb), 80) }}</p>
+    <div class="pb-site-row__meta">{{ w.website_area }}{% if w.website_hits %} · {{ w.website_hits }}{% endif %}</div>
+  </div>
+</div>

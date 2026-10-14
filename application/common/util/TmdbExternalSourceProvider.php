@@ -100,7 +100,7 @@ class TmdbExternalSourceProvider implements ExternalSourceProviderInterface
         $params['api_key'] = $this->getApiKey();
         $url = $this->getBaseUrl() . $path . '?' . http_build_query($params);
         $headers = ['Accept: application/json'];
-        $resp = HttpClient::curlPostWithTimeout($url, '', $headers, 10, false);
+        $resp = HttpClient::curlPostWithTimeout($url, '', $headers, 10, false, true);
         if ($resp === false || $resp === '') {
             return [];
         }

@@ -356,9 +356,12 @@ class Actor extends Base {
                 $res = $this->listData($where,$order,$page,$num,$start,'*',1,$totalshow);
             }
             if($GLOBALS['config']['app']['cache_core']==1 && !$use_rnd_order){
-                Cache::set($cach_name, $res, $cachetime);
+                // 打上表名标签，写路径才能定点作废这一族列表缓存（见 Base::clearListCache()）
+                Cache::tag($this->name)->set($cach_name, $res, $cachetime);
             }
         }
+        // 缓存里的 type/type_1 是建缓存时的快照，按当前分类缓存重挂（见 Base::refreshTypeRelation()）
+        $res = $this->refreshListTypeRelation($res);
         $res['pageurl'] = $pageurl;
         $res['half'] = $half;
         return $res;
@@ -393,6 +396,7 @@ class Actor extends Base {
                 Cache::set($key, $info);
             }
         }
+        $info = $this->refreshTypeRelation($info);
         $info = mac_content_lang_overlay('actor', $info);
         return ['code'=>1,'msg'=>lang('obtain_ok'),'info'=>$info];
     }
@@ -404,12 +408,7 @@ class Actor extends Base {
             return ['code'=>1001,'msg'=>lang('param_err').'：'.$validate->getError() ];
         }
 
-        $key = 'actor_detail_'.$data['actor_id'];
-        Cache::rm($key);
-        $key = 'actor_detail_'.$data['actor_en'];
-        Cache::rm($key);
-        $key = 'actor_detail_'.$data['actor_id'].'_'.$data['actor_en'];
-        Cache::rm($key);
+        $this->clearDetailCache($data['actor_id'], $data['actor_en']);
 
         $type_list = model('Type')->getCache('type_list');
         $type_info = $type_list[$data['type_id']];
@@ -494,6 +493,7 @@ class Actor extends Base {
         $ixActorId = !empty($data['actor_id']) ? intval($data['actor_id']) : intval($this->getLastInsID());
         MeilisearchSync::afterActorSave($ixActorId);
 
+        $this->clearListCache();
         return ['code'=>1,'msg'=>lang('save_ok'),'actor_id'=>$ixActorId];
     }
 
@@ -522,6 +522,7 @@ class Actor extends Base {
             return ['code'=>1001,'msg'=>lang('del_err').'：'.$this->getError() ];
         }
         \app\common\model\ContentLang::deleteByContent('actor', $delIds);
+        $this->clearListCache();
         return ['code'=>1,'msg'=>lang('del_ok')];
     }
 
@@ -538,12 +539,10 @@ class Actor extends Base {
 
         $list = $this->field('actor_id,actor_name,actor_en')->where($where)->select();
         foreach($list as $k=>$v){
-            $key = 'actor_detail_'.$v['actor_id'];
-            Cache::rm($key);
-            $key = 'actor_detail_'.$v['actor_en'];
-            Cache::rm($key);
+            $this->clearDetailCache($v['actor_id'], $v['actor_en']);
         }
 
+        $this->clearListCache();
         return ['code'=>1,'msg'=>lang('set_ok')];
     }
 

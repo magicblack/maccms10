@@ -1,0 +1,30 @@
+{
+    "id": "art_detail_novel",
+    "label_key": "admin/themedesign/pb_block_art_detail_novel",
+    "category": "detail",
+    "kind": "detail",
+    "palette": false,
+    "peer_styles": [],
+    "assets": {
+        "css": "style.css",
+        "js": "script.js"
+    },
+    "props": {
+        "show_toc": {
+            "type": "boolean",
+            "default": true,
+            "trait": "show_toc"
+        },
+        "show_intro": {
+            "type": "boolean",
+            "default": true,
+            "trait": "show_intro"
+        }
+    },
+    "context": {
+        "pageTypes": [
+            "detail"
+        ],
+        "requires": []
+    }
+}

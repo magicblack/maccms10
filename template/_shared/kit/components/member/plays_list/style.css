@@ -1,0 +1,535 @@
+/* plays_list — 播放记录列表（kit 唯一真相） */
+
+[data-component="plays_list"].plays-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-width: 0;
+}
+
+.plays-list__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  min-height: 40px;
+}
+
+.plays-list__head--desktop {
+  display: none;
+}
+
+.plays-list__title {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 650;
+  line-height: 1.3;
+  color: var(--c-text, #18191c);
+}
+
+.plays-list__clear {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: 36px;
+  min-width: 44px;
+  padding: 0 12px;
+  border: 0;
+  border-radius: 10px;
+  background: var(--c-bg-soft, #f6f7f8);
+  color: var(--c-text-muted, #61666d);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 180ms ease, color 180ms ease;
+}
+
+.plays-list__clear-ico {
+  width: 16px;
+  height: 16px;
+}
+
+.plays-list__clear:hover {
+  background: #fff1f0;
+  color: #e44;
+}
+
+.plays-list__clear:focus-visible {
+  outline: 2px solid var(--c-link, #008ac5);
+  outline-offset: 2px;
+}
+
+.plays-list__items {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.plays-list__item {
+  display: grid;
+  grid-template-columns: 80px minmax(0, 1fr);
+  gap: 12px;
+  align-items: start;
+  padding: 12px;
+  border-radius: var(--radius-lg, 12px);
+  background: var(--c-surface, #fff);
+  border: 1px solid var(--c-border, rgba(0, 0, 0, 0.04));
+  transition: background 180ms ease, box-shadow 180ms ease;
+}
+
+.plays-list__item:hover {
+  background: var(--c-surface, #fff);
+  box-shadow: 0 2px 10px rgba(15, 23, 42, 0.05);
+}
+
+.plays-list__item:active {
+  background: #fafbfc;
+}
+
+.plays-list__thumb {
+  position: relative;
+  display: block;
+  border-radius: 8px;
+  overflow: hidden;
+  background: var(--c-bg-soft, #e8eaed);
+  width: 100%;
+  aspect-ratio: 69 / 40;
+}
+
+.plays-list__item--vod .plays-list__thumb {
+  aspect-ratio: 69 / 40;
+}
+
+.plays-list__item--manga .plays-list__thumb {
+  aspect-ratio: 3 / 4;
+}
+
+/* 封面实际方向（runtime cover.orient 写 data-cover-natural）：各资源站采集的竖版封面同漫画显示为竖版；
+   分类设为竖版（inline aspect-ratio）但封面是横图时回到横版 */
+.plays-list__item--vod[data-cover-natural="v"]:not(.plays-list__item--portrait) .plays-list__thumb {
+  aspect-ratio: 3 / 4 !important;
+}
+
+.plays-list__item--vod.plays-list__item--portrait[data-cover-natural="h"] .plays-list__thumb {
+  aspect-ratio: 69 / 40 !important;
+}
+
+.plays-list__item--novel {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.plays-list__item--novel .plays-list__body {
+  grid-column: 1;
+}
+
+.plays-list .member-history__img,
+.plays-list__thumb .member-history__img,
+.plays-list__thumb .plays-list__img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+
+.plays-list__img--empty {
+  background: linear-gradient(145deg, #f3f4f6, #e3e5e8);
+}
+
+.plays-list__thumb-progress {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 6px 4px 5px;
+  background: linear-gradient(180deg, transparent, rgba(0, 0, 0, 0.62));
+  color: #fff;
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1.2;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+  pointer-events: none;
+}
+
+/* 封面只有 ~50px 高，角标贴右下会占掉大半高度、看起来偏移：与收藏列表一致居中 */
+.plays-list__play-badge {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.55);
+  color: #fff;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+
+.plays-list__play-ico {
+  width: 14px;
+  height: 14px;
+}
+
+.plays-list__body {
+  min-width: 0;
+  grid-column: 2;
+}
+
+.plays-list__name {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 650;
+  line-height: 1.4;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.plays-list__name a {
+  color: var(--c-text, #18191c);
+  text-decoration: none;
+  transition: color 180ms ease;
+}
+
+.plays-list__name a:hover {
+  color: var(--c-accent);
+}
+
+/* 分集视频的集名：跟在标题后，区分同一部视频的多条记录 */
+.plays-list__vod-ep {
+  margin-left: 6px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--c-accent);
+  white-space: nowrap;
+}
+
+.plays-list__meta {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  margin: 4px 0 0;
+  font-size: 12px;
+  color: var(--c-text-muted, #9499a0);
+}
+
+.plays-list__type {
+  display: inline-flex;
+  align-items: center;
+  min-height: 20px;
+  padding: 0 8px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--c-text-muted, #9499a0);
+  background: var(--c-bg-soft, #f6f7f8);
+}
+
+.plays-list__progress {
+  height: 4px;
+  margin-top: 8px;
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+}
+
+.plays-list__progress--sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.plays-list__bar {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: var(--gradient-brand);
+}
+
+.plays-list__actions {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 4px;
+  padding-top: 10px;
+  border-top: 1px solid var(--c-border, rgba(0, 0, 0, 0.06));
+}
+
+.plays-list__continue {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: 40px;
+  padding: 0 14px;
+  border-radius: 8px;
+  background: var(--c-bg-soft, #f6f7f8);
+  color: var(--c-accent);
+  font-size: 13px;
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background 180ms ease, color 180ms ease, transform 120ms ease;
+}
+
+.plays-list__continue-ico {
+  width: 16px;
+  height: 16px;
+  color: inherit;
+}
+
+.plays-list__continue:hover {
+  background: var(--c-accent-soft);
+}
+
+.plays-list__continue:active {
+  transform: scale(0.98);
+}
+
+.plays-list__continue:focus-visible {
+  outline: 2px solid var(--c-link, #008ac5);
+  outline-offset: 2px;
+}
+
+.plays-list__del {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: 44px;
+  min-width: 44px;
+  margin-left: auto;
+  padding: 10px 16px;
+  border: 0;
+  border-radius: 8px;
+  background: var(--c-bg-soft, #f6f7f8);
+  color: var(--c-text-muted, #9499a0);
+  font-size: 13px;
+  line-height: 1.2;
+  cursor: pointer;
+  transition: background 180ms ease, color 180ms ease;
+}
+
+.plays-list__del-ico {
+  width: 16px;
+  height: 16px;
+}
+
+.plays-list__del:hover {
+  background: #fff1f0;
+  color: #e44;
+}
+
+.plays-list__del:focus-visible {
+  outline: 2px solid var(--c-link, #008ac5);
+  outline-offset: 2px;
+}
+
+/* Empty state */
+.plays-list__empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 48px 20px 40px;
+  text-align: center;
+  border-radius: 14px;
+  background:
+    radial-gradient(120% 80% at 50% 0%, var(--c-accent-soft), transparent 55%),
+    transparent;
+}
+
+.plays-list__empty-art {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 64px;
+  height: 64px;
+  margin-bottom: 4px;
+  border-radius: 18px;
+  background: var(--c-surface, #fff);
+  color: var(--c-accent);
+  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.04);
+}
+
+.plays-list__empty-ico {
+  width: 28px;
+  height: 28px;
+}
+
+.plays-list__empty-title {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 650;
+  color: var(--c-text, #18191c);
+}
+
+.plays-list__empty-hint {
+  margin: 0;
+  max-width: 28ch;
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--c-text-muted, #9499a0);
+}
+
+.plays-list__empty-cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 40px;
+  margin-top: 8px;
+  padding: 0 18px;
+  border-radius: 999px;
+  background: var(--c-accent);
+  color: #fff;
+  font-size: 13px;
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+  transition: filter 180ms ease;
+}
+
+.plays-list__empty-cta:hover {
+  filter: brightness(1.05);
+}
+
+.plays-list__empty-cta:focus-visible {
+  outline: 2px solid var(--c-link, #008ac5);
+  outline-offset: 2px;
+}
+
+/* c.paging() 只输出无样式 <a>，这里补上胶囊按钮外观（桌面/手机共用底样，对齐 favs_list） */
+.plays-list__paging {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  margin-top: 4px;
+}
+
+.plays-list__paging a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 34px;
+  min-height: 34px;
+  padding: 0 12px;
+  border-radius: 8px;
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--c-text-muted, #9499a0);
+  font-size: 13px;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: background 180ms ease, color 180ms ease, border-color 180ms ease;
+}
+
+.plays-list__paging .plays-list__pg-nav {
+  padding: 0 14px;
+  border-color: var(--c-border, rgba(0, 0, 0, 0.06));
+  background: var(--c-bg-soft, #f6f7f8);
+}
+
+.plays-list__paging .plays-list__pg-nav:hover {
+  border-color: var(--c-accent);
+  color: var(--c-accent);
+}
+
+.plays-list__paging .plays-list__pg-num:hover {
+  background: var(--c-bg-soft, #f6f7f8);
+  color: var(--c-accent);
+}
+
+.plays-list__paging .plays-list__pg-num.on {
+  background: var(--c-accent-soft);
+  color: var(--c-accent);
+  font-weight: 700;
+}
+
+.plays-list__paging a:focus-visible {
+  outline: 2px solid var(--c-link, #008ac5);
+  outline-offset: 2px;
+}
+
+@media (min-width: 960px) {
+  .plays-list__head--desktop {
+    display: flex;
+  }
+
+  .plays-list__item {
+    grid-template-columns: 88px minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 12px 14px;
+    padding: 14px;
+  }
+
+  .plays-list__item--novel {
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+
+  .plays-list__item--manga .plays-list__thumb {
+    width: 88px;
+  }
+
+  .plays-list__item--vod .plays-list__thumb {
+    width: 88px;
+  }
+
+  .plays-list__meta {
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .plays-list__actions {
+    grid-column: auto;
+    flex-direction: column;
+    align-items: stretch;
+    margin-top: 0;
+    padding-top: 0;
+    border-top: 0;
+    min-width: 112px;
+  }
+
+  .plays-list__continue,
+  .plays-list__del {
+    width: 100%;
+    margin-left: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .plays-list__clear,
+  .plays-list__item,
+  .plays-list__name a,
+  .plays-list__continue,
+  .plays-list__del,
+  .plays-list__empty-cta {
+    transition: none;
+  }
+
+  .plays-list__continue:active {
+    transform: none;
+  }
+}

@@ -1,0 +1,8 @@
+{% import "page-builder-components/_shared/macros.twig" as pb %}
+<article class="pb-actor-card" data-mid="8" data-id="{{ vo.actor_id }}">
+  <a class="pb-actor-card__pic" href="{{ mac_url_actor_detail(vo) }}" title="{{ vo.actor_name }}">
+    {{ pb.lazy_img(vo.actor_pic, vo.actor_name) }}
+  </a>
+  <h3 class="pb-actor-card__title"><a href="{{ mac_url_actor_detail(vo) }}">{{ vo.actor_name }}</a></h3>
+  <p class="pb-actor-card__meta">{{ vo.actor_area }}{% if vo.actor_blood %} · {{ vo.actor_blood }}{% endif %}</p>
+</article>

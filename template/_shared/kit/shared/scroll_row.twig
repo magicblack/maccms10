@@ -1,0 +1,15 @@
+<div class="pb-scroll-row" data-pb-scroll-row>
+  <button type="button" class="pb-scroll-row__btn pb-scroll-row__btn--prev" data-dir="-1" aria-label="向左">
+    <span class="pb-scroll-row__btn-icon" aria-hidden="true">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+    </span>
+  </button>
+  <div class="pb-scroll-row__viewport">
+    <div class="pb-scroll-row__track">{{ content|raw }}</div>
+  </div>
+  <button type="button" class="pb-scroll-row__btn pb-scroll-row__btn--next" data-dir="1" aria-label="向右">
+    <span class="pb-scroll-row__btn-icon" aria-hidden="true">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+    </span>
+  </button>
+</div>

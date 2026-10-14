@@ -1,0 +1,38 @@
+/* 小说书封 · grid：5/3/2 列响应式（与 manga_list 一致）；条数由 props.num 控制 */
+.pb-art-list {
+  display: grid;
+  gap: 8px 6px;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+}
+
+@container pb-col (max-width: 899px) {
+  .pb-art-list {
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+    gap: 12px 10px !important;
+  }
+}
+
+@container pb-col (max-width: 560px) {
+  .pb-art-list {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+}
+
+@container pb-sec-body (min-width: 900px) {
+  .pb-art-list {
+    gap: 20px 16px !important;
+  }
+}
+
+@container pb-col (min-width: 900px) {
+  .pb-art-list {
+    gap: 20px 16px !important;
+  }
+}
+
+@media (max-width: 560px) {
+  .pb-art-list {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 12px 10px !important;
+  }
+}

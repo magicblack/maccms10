@@ -85,7 +85,23 @@ class Label extends Base
                 $file = $param['file'];
             }
             $file = str_replace('\\', '/', $file);
-            if (!file_exists($GLOBALS['MAC_ROOT_TEMPLATE'] . 'label/' . $file . '.html') || strpos($file, '/') !== false) {
+            // 副檔名跟著主題引擎走：Think 主題是 .html，Twig 主題是 .twig
+            // （由 behavior\Init 依 info.ini 的 engine 設定 template.view_suffix）。
+            // 原本硬寫死 .html，Twig 主題的 label/rank.twig 永遠過不了這個存在性檢查。
+            $suffix = (string) config('template.view_suffix');
+            if ($suffix === '') {
+                $suffix = 'html';
+            }
+            $tplRoute = 'label/' . $file;
+            $tplExists = is_file($GLOBALS['MAC_ROOT_TEMPLATE'] . 'label/' . $file . '.' . $suffix);
+            if (!$tplExists && function_exists('mac_td_preview_mode') && mac_td_preview_mode()
+                && function_exists('mac_pb_theme_has_page_tpl')) {
+                $previewTheme = function_exists('mac_pb_theme_template_dir') ? mac_pb_theme_template_dir() : '';
+                if ($previewTheme !== '') {
+                    $tplExists = mac_pb_theme_has_page_tpl($previewTheme, $tplRoute, 'html');
+                }
+            }
+            if (!$tplExists || strpos($file, '/') !== false) {
                 return $this->error(lang('illegal_request'));
             }
             if ($file === 'rank') {
@@ -108,7 +124,8 @@ class Label extends Base
                     'rank_title_suffix' => $rankTitleSuffix,
                 ]);
             }
-            echo $this->label_fetch('label/' . $file);
+            $view = function_exists('mac_page_view') ? mac_page_view($tplRoute) : $tplRoute;
+            echo $this->label_fetch($view);
         }
         exit;
     }

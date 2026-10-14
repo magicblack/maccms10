@@ -1,0 +1,59 @@
+{% import "page-builder-components/_shared/macros.twig" as pb %}
+{% set render = props.render|default('slider') %}
+{% set use_paging = props.paging|default(false) %}
+{% set num = props.num|default(12) %}
+{% if use_paging and render != 'slider' %}
+  {% set num = (pb.pb_grid_paging_num(num) ~ '') + 0 %}
+{% elseif render == 'grid' %}
+  {# 首页热门漫画等：严格按配置 num，勿用 pb_grid_section_num（vod 区块才需 LCM 末行对齐） #}
+  {% set num = (num ~ '') + 0 %}
+{% endif %}
+{% set by_raw = param.by|default('') %}
+{% set by = (by_raw is iterable) ? '' : by_raw|trim %}
+{% if by == '' %}{% set by = props.by|default('time') %}{% endif %}
+{% set order_raw = param.order|default('') %}
+{% set order = (order_raw is iterable) ? '' : order_raw|trim|lower %}
+{% if order != 'asc' and order != 'desc' %}{% set order = props.order|default('desc') %}{% endif %}
+{% set type_raw = props.type|default(0) %}
+{% set type_id = (type_raw == 'current') ? obj.type_id|default(0) : type_raw %}
+{% set _cover_cls = pb.pb_cover_classes(props) %}
+{% set _cover_style = pb.pb_cover_style(props) %}
+{% set manga_args = {num: num, type: type_id, order: order, by: by} %}
+{% if use_paging %}
+  {% set manga_args = manga_args|merge({
+    paging: true,
+    pageurl: props.pageurl|default('manga/show'),
+    class: param.class|default(''),
+    letter: param.letter|default(''),
+    wd: param.wd|default('')
+  }) %}
+{% endif %}
+{% set res = mac_manga(manga_args) %}
+{% set list = res.list|default([]) %}
+{% if use_paging %}
+  {% set pg = mac_paging(res) %}
+{% endif %}
+{% if list is not empty %}
+  {% if render == 'slider' %}
+    <div class="{{ _cover_cls }}"{% if _cover_style %} style="{{ _cover_style }}"{% endif %}>
+      {% set row_content %}{% for vo in list %}{% include "page-builder-components/_shared/manga_card.twig" %}{% endfor %}{% endset %}
+      {% include "page-builder-components/_shared/scroll_row.twig" with {content: row_content} %}
+    </div>
+  {% else %}
+    <div class="bili-grid pb-manga-list {{ _cover_cls }}"{% if _cover_style %} style="{{ _cover_style }}"{% endif %}>
+      {% for vo in list %}{% include "page-builder-components/_shared/manga_card.twig" %}{% endfor %}
+    </div>
+  {% endif %}
+{% endif %}
+{% set _empty_title = props.empty_title|default('') %}
+{% if _empty_title == '' %}
+  {% set _empty_title = use_paging ? '暂无符合条件的漫画' : '暂无内容' %}
+{% endif %}
+{% set _empty_title_lang = props.empty_title_lang|default('string_no_have') %}
+{% include "page-builder-components/_shared/list_footer.twig" with {
+  use_paging: use_paging,
+  pg: pg|default(null),
+  empty_preset: use_paging ? 'filter' : '',
+  empty_title: _empty_title,
+  empty_title_lang: _empty_title_lang
+} %}

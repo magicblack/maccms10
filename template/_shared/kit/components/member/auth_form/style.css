@@ -1,0 +1,114 @@
+/* auth_form — 登录/注册一体表单（PB 预览自包含；主题页可叠 auth-page.css） */
+[data-component="auth_form"].auth-page-form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+  max-width: 400px;
+}
+
+.auth-page-form__field {
+  display: block;
+  margin: 0;
+}
+
+.auth-page-form__input {
+  width: 100%;
+  min-height: 44px;
+  padding: 0 14px;
+  border: 1px solid var(--c-border, #e3e5e7);
+  border-radius: 10px;
+  background: var(--c-surface, #fff);
+  color: var(--c-text, #18191c);
+  font-size: 15px;
+  box-sizing: border-box;
+}
+
+.auth-page-form__input:focus {
+  outline: none;
+  border-color: var(--c-accent);
+  box-shadow: 0 0 0 3px var(--c-accent-soft, var(--c-accent-border));
+}
+
+.auth-page-form__field--pwd .auth-page-form__pwd {
+  position: relative;
+  display: block;
+}
+
+.auth-page-form__eye {
+  position: absolute;
+  top: 50%;
+  right: 8px;
+  transform: translateY(-50%);
+  width: 36px;
+  height: 36px;
+  border: 0;
+  background: transparent;
+  color: var(--c-text-muted, #9499a0);
+  cursor: pointer;
+}
+
+.auth-page-form__meta {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.auth-page-form__forgot {
+  font-size: 13px;
+  color: var(--c-text-muted, #9499a0);
+  text-decoration: none;
+}
+
+.auth-page-form__forgot:hover {
+  color: var(--c-accent);
+}
+
+.auth-page-form__error {
+  margin: 0;
+  padding: 8px 10px;
+  border-radius: 8px;
+  background: rgba(229, 77, 66, 0.08);
+  color: #e54d42;
+  font-size: 13px;
+}
+
+.auth-page-form__submit {
+  min-height: 44px;
+  border: 0;
+  border-radius: 22px;
+  background: var(--c-accent);
+  color: #fff;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.auth-page-form__submit:hover {
+  background: var(--c-accent-hover, #e85d88);
+}
+
+.auth-page-form__invite-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border: 0;
+  background: transparent;
+  color: var(--c-text-muted, #61666d);
+  font-size: 13px;
+  cursor: pointer;
+  padding: 0;
+}
+
+.auth-page-form__invite-chev {
+  width: 14px;
+  height: 14px;
+  transition: transform 0.2s ease;
+}
+
+.auth-page-form__invite.is-open .auth-page-form__invite-chev {
+  transform: rotate(180deg);
+}
+
+.auth-page-form__invite-panel {
+  margin-top: 8px;
+}

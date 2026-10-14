@@ -1,0 +1,13 @@
+{#
+  @deprecated 请改用 component_icon.twig，图标放在各组件 icons/ 目录
+  {% include "page-builder-components/_shared/component_icon.twig" with { component: 'section', name: 'star', mode: 'img' } %}
+#}
+{% if component|default('') != '' and name|default('') != '' %}
+  {% include "page-builder-components/_shared/component_icon.twig" with {
+    component: component,
+    name: name,
+    class: class|default(''),
+    label: label|default(''),
+    mode: mode|default('img')
+  } %}
+{% endif %}

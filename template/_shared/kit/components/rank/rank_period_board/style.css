@@ -1,0 +1,100 @@
+/* rank_period_board — 排行榜页日/周/月切换 */
+
+.pb-rank-period {
+  margin: 0;
+  padding: 18px 18px 10px;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  border-radius: var(--radius-lg, 12px);
+  background: var(--c-surface, #fff);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+}
+
+.pb-rank-period__title {
+  margin: 0 0 14px;
+  font-size: 20px;
+  font-weight: 650;
+  color: var(--c-text, #18191c);
+  line-height: 1.3;
+}
+
+.pb-rank-period__tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 0 0 16px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+.pb-rank-period__tab {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  min-width: 44px;
+  padding: 0 18px;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 999px;
+  background: var(--c-surface, #fff);
+  color: var(--c-text-muted, #61666d);
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+  transition: color 0.2s ease, border-color 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
+}
+
+.pb-rank-period__tab:hover {
+  color: var(--c-accent, #00aeec);
+  border-color: rgba(0, 174, 236, 0.35);
+}
+
+.pb-rank-period__tab:focus-visible {
+  outline: 2px solid var(--c-accent, #00aeec);
+  outline-offset: 2px;
+}
+
+.pb-rank-period__tab.is-on {
+  background: var(--c-accent, #00aeec);
+  border-color: var(--c-accent, #00aeec);
+  color: var(--c-accent-ink, #fff);
+  box-shadow: 0 2px 8px rgba(0, 174, 236, 0.28);
+}
+
+.pb-rank-period .pb-rank-list {
+  margin-top: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.pb-rank-period__panel[hidden] {
+  display: none !important;
+}
+
+@media (max-width: 640px) {
+  .pb-rank-period {
+    padding: 14px 12px 6px;
+    border-radius: 10px;
+  }
+
+  .pb-rank-period__tabs {
+    gap: 8px;
+    margin-bottom: 12px;
+    padding-bottom: 12px;
+  }
+
+  .pb-rank-period__tab {
+    min-height: 40px;
+    padding: 0 14px;
+    font-size: 13px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pb-rank-period__tab {
+    transition: none;
+  }
+}

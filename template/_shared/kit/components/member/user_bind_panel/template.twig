@@ -1,0 +1,54 @@
+{# 账号绑定 #}
+{% set bind_ac = ac|default('email') %}
+<header class="member-card__head">
+  <h2 class="member-card__title" data-lang="user_zhbd">账号绑定</h2>
+</header>
+<div class="bind-page-card" data-component="user_bind_panel" id="userBindRoot" data-readonly="{{ bind_readonly|default(0) }}">
+  {% if bind_readonly|default(0) %}
+  <p class="bind-tip">
+    {% if bind_ac == 'phone' %}
+    <span data-lang="user_bind_already_phone">当前账号已绑定手机。如需更换，请先在「我的资料」中解绑后再绑定新手机号。</span>
+    {% else %}
+    <span data-lang="user_bind_already_email">当前账号已绑定邮箱。如需更换，请先在「我的资料」中解绑后再绑定新邮箱。</span>
+    {% endif %}
+  </p>
+  <div class="bind-row">
+    <span class="xiang">{% if bind_ac == 'phone' %}<span data-lang="user_phone">手机</span>{% else %}<span data-lang="user_place_email1">邮箱</span>{% endif %}</span>
+    <div class="bind-row-main">
+      {% if bind_ac == 'phone' %}
+      <input type="text" class="member-form__field input" readonly aria-readonly="true" value="{{ user.user_phone|default('') }}">
+      {% else %}
+      <input type="text" class="member-form__field input" readonly aria-readonly="true" value="{{ user.user_email|default('') }}">
+      {% endif %}
+    </div>
+  </div>
+  <div class="bind-submit-wrap">
+    <a href="{{ mac_url('user/info') }}" class="member-form__submit bind-back-btn" data-lang="user_bind_go_info">返回我的资料</a>
+  </div>
+  {% else %}
+  <p class="bind-page-desc" data-lang="user_bind_intro">请填写需要绑定的账号并完成验证</p>
+  <form class="member-form" id="fm" method="post" action="{{ mac_url('user/bind') }}">
+    <input type="hidden" name="__token__" value="{{ csrf_token|default('') }}">
+    <input type="hidden" name="ac" value="{{ bind_ac }}">
+    <div class="bind-row bind-row--to">
+      <span class="xiang">{% if bind_ac == 'phone' %}<span data-lang="user_phone">手机</span>{% else %}<span data-lang="user_place_email1">邮箱</span>{% endif %}</span>
+      <div class="bind-row-main">
+        <input type="text" name="to" class="member-form__field input" autocomplete="off"
+               {% if bind_ac == 'phone' %}placeholder="请输入手机号码" data-lang-placeholder="user_place_shouji"{% else %}placeholder="请输入邮箱" data-lang-placeholder="user_place_email"{% endif %}>
+        <input type="button" class="bind-send" id="btn_bind_send" data-value="string_login_yzm" value="获取验证码">
+      </div>
+    </div>
+    <label class="member-form__field">
+      <span class="member-form__label" data-lang="user_yanzhengma">验证码</span>
+      <input type="text" name="code" placeholder="请输入您的验证码" autocomplete="one-time-code">
+    </label>
+    <label class="member-form__field">
+      <span class="member-form__label" data-lang="user_current_pwd">当前密码</span>
+      <input type="password" name="user_pwd" placeholder="请输入当前密码" autocomplete="current-password">
+    </label>
+    <div class="member-form__actions">
+      <input type="button" id="btn_submit" class="member-form__submit" data-value="confirm_binding" value="确认绑定">
+    </div>
+  </form>
+  {% endif %}
+</div>

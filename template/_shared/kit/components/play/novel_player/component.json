@@ -1,0 +1,60 @@
+{
+    "id": "novel_player",
+    "label_key": "admin/themedesign/pb_block_novel_player",
+    "category": "play",
+    "kind": "play",
+    "palette": false,
+    "palette_inject": true,
+    "peer_styles": [],
+    "assets": {
+        "css": "style.css",
+        "js": "script.js",
+        "svg": [
+            "icons/chevron-right.svg",
+            "icons/icon-settings.svg",
+            "icons/icon-share.svg",
+            "icons/icon-fav.svg",
+            "icons/channel-art.svg",
+            "icons/film.svg"
+        ]
+    },
+    "props": {
+        "show_settings": {
+            "type": "boolean",
+            "default": true,
+            "trait": "show_settings"
+        },
+        "show_share": {
+            "type": "boolean",
+            "default": true,
+            "trait": "show_share"
+        },
+        "show_catalog_btn": {
+            "type": "boolean",
+            "default": true,
+            "trait": "show_catalog_btn"
+        },
+        "show_fav": {
+            "type": "boolean",
+            "default": true,
+            "trait": "show_fav"
+        },
+        "default_theme": {
+            "type": "enum",
+            "default": "day",
+            "values": [
+                "day",
+                "sepia",
+                "night"
+            ],
+            "trait": "default_theme"
+        }
+    },
+    "context": {
+        "pageTypes": [
+            "play",
+            "read"
+        ],
+        "requires": []
+    }
+}

@@ -1,0 +1,118 @@
+{# Starter T0: site map #}
+{% extends "layout/base.twig" %}
+{% import "@shared/components.twig" as c %}
+{% import "page-builder-components/_shared/macros.twig" as pb %}
+{% block layout_mod %} list{% endblock %}
+{% block page_class %} pb-components-only page-map{% endblock %}
+{% block theme_styles %}
+<link rel="stylesheet" href="{{ maccms.path_tpl }}asset/css/tokens.css">
+{% set _pb_td_override = mac_theme_override_css_href() %}
+{% if _pb_td_override %}<link rel="stylesheet" href="{{ _pb_td_override }}">{% endif %}
+<link rel="stylesheet" href="{{ maccms.path_tpl }}asset/css/pb-shell.css">
+{% endblock %}
+{% block title %}{{ maccms.page_title|default('网站地图') }}{% endblock %}
+{% block head %}
+<link rel="stylesheet" href="{{ maccms.path_tpl }}page-builder-components/_shared/css/peers.css">
+<link rel="stylesheet" href="{{ maccms.path_tpl }}asset/css/pb-t0.css?v=4">
+
+<link rel="stylesheet" href="{{ maccms.path_tpl }}page-builder-components/site_nav/style.css">
+<script src="{{ maccms.path_tpl }}page-builder-components/site_nav/script.js" defer></script>
+<link rel="stylesheet" href="{{ maccms.path_tpl }}page-builder-components/notify_bell/style.css">
+<script src="{{ maccms.path_tpl }}page-builder-components/notify_bell/script.js" defer></script>
+<link rel="stylesheet" href="{{ maccms.path_tpl }}page-builder-components/header_decor/style.css">
+<script src="{{ maccms.path_tpl }}page-builder-components/header_decor/script.js" defer></script>
+<link rel="stylesheet" href="{{ maccms.path_tpl }}page-builder-components/channel_strip/style.css">
+<script src="{{ maccms.path_tpl }}page-builder-components/channel_strip/script.js" defer></script>
+<link rel="stylesheet" href="{{ maccms.path_tpl }}page-builder-components/site_footer/style.css">
+<link rel="stylesheet" href="{{ maccms.path_tpl }}page-builder-components/bottom_nav/style.css">
+{% endblock %}
+
+{% block site_header %}
+  {% include 'page-builder-components/site_nav/template.twig' with {props: { max: 8, show_search: true, type_ids: [] }} %}
+{% endblock %}
+{% block channel %}
+  {% include 'page-builder-components/channel_strip/template.twig' with {props: { compact: false, chip_limit: 11, show_icons: true, show_more: true, type_ids: [] }} %}
+{% endblock %}
+{% block content %}
+{# num 必须显式给：mac_type 默认只取 20 条，二级分类会被截断（#270）；vod 按一级分组展示全部二级 #}
+{% set vod_types = mac_type({mid: 1, num: 999, format: 'tree', order: 'asc', by: 'sort'}).list|default([]) %}
+{% set art_types = mac_type({mid: 2, num: 999, order: 'desc', by: 'sort'}).list|default([]) %}
+{% set manga_types = mac_type({mid: 12, num: 999, order: 'desc', by: 'sort'}).list|default([]) %}
+{% set recent = mac_vod({num: 24, order: 'desc', by: 'time'}).list|default([]) %}
+<section class="pb-t0" aria-labelledby="pb-t0-map-title">
+  <header class="pb-t0__hero">
+    <p class="pb-t0__kicker" data-lang="string_wzdt">导航</p>
+    <h1 class="pb-t0__title" id="pb-t0-map-title" data-lang="string_foot_ditu">网站地图</h1>
+    <p class="pb-t0__desc" data-lang="map_page_desc">按栏目快速浏览全站内容。</p>
+  </header>
+  <span class="is-sr-only" hidden aria-hidden="true">{{ c.lazy_img('', '') }}</span>
+  <div class="pb-t0__panel">
+    <h2 class="pb-t0__panel-title" data-lang="string_sec_movie">影视栏目</h2>
+    {% for vo in vod_types %}
+    <div class="pb-t0-map__links pb-t0-map__group">
+      <a class="pb-t0-map__link pb-t0-map__link--parent" href="{{ mac_url_type(vo) }}">{{ vo.type_name }}</a>
+      {% for sub in vo.child|default([]) %}
+      <a class="pb-t0-map__link" href="{{ mac_url_type(sub) }}">{{ sub.type_name }}</a>
+      {% endfor %}
+    </div>
+    {% else %}
+    <div class="pb-t0-map__links">
+      <p class="pb-t0__meta" data-lang="map_no_types">暂无栏目</p>
+    </div>
+    {% endfor %}
+  </div>
+  <div class="pb-t0__panel">
+    <h2 class="pb-t0__panel-title" data-lang="site_map_manga">漫画栏目</h2>
+    <div class="pb-t0-map__links">
+      <a class="pb-t0-map__link" href="{{ mac_url('manga/index') }}" data-lang="string_quanbu">全部</a>
+      {% for vo in manga_types %}
+      <a class="pb-t0-map__link" href="{{ mac_url_type(vo) }}">{{ vo.type_name }}</a>
+      {% endfor %}
+    </div>
+  </div>
+  <div class="pb-t0__panel">
+    <h2 class="pb-t0__panel-title" data-lang="site_map_novel">小说栏目</h2>
+    <div class="pb-t0-map__links">
+      <a class="pb-t0-map__link" href="{{ mac_url('art/index') }}" data-lang="string_quanbu">全部</a>
+      {% for vo in art_types %}
+      <a class="pb-t0-map__link" href="{{ mac_url_type(vo) }}">{{ vo.type_name }}</a>
+      {% endfor %}
+    </div>
+  </div>
+  <div class="pb-t0__panel">
+    <h2 class="pb-t0__panel-title" data-lang="string_sec_channels">站点导航</h2>
+    <div class="pb-t0-map__links">
+      <a class="pb-t0-map__link" href="{{ mac_url('topic/index') }}" data-lang="string_topic">专题</a>
+      <a class="pb-t0-map__link" href="{{ mac_url('actor/index') }}" data-lang="site_map_star">明星</a>
+      {# 直播入口暂隐藏（暂无直播源，#271） #}
+      {% if false %}
+      <a class="pb-t0-map__link" href="{{ mac_url('live/show') }}" data-lang="string_live">直播</a>
+      {% endif %}
+      <a class="pb-t0-map__link" href="{{ mac_url('gbook/index') }}" data-lang="string_ly">留言</a>
+      <a class="pb-t0-map__link" href="{{ mac_url('label/rank') }}" data-lang="site_map_rank">排行</a>
+    </div>
+  </div>
+  <div class="pb-t0__panel">
+    <h2 class="pb-t0__panel-title" data-lang="string_zuijingx">最近更新</h2>
+    <ul class="pb-t0-map__media-list">
+      {% for vo in recent %}
+      {# 竖屏封面（短剧等）：分类比例（type_extend.cover）做首屏提示，runtime 按封面实际尺寸写 data-cover-natural 校正 #}
+      {% set vo_cover = mac_type_cover(vo.type_id|default(0)) %}
+      <li class="pb-t0-map__media-item{% if vo_cover and vo_cover.orient == 'v' %} pb-t0-map__media-item--portrait{% endif %}" data-cover-auto="shape">
+        <a class="pb-t0-map__media-link" href="{{ mac_url_vod_detail(vo) }}" title="{{ vo.vod_name }}">
+          <span class="pb-t0-map__media-pic">{{ pb.lazy_img(vo.vod_pic, vo.vod_name, {loading: 'lazy', decoding: 'async'}) }}</span>
+          <span class="pb-t0-map__media-name">{{ vo.vod_name }}</span>
+        </a>
+      </li>
+      {% else %}
+      <li class="pb-t0-map__media-item pb-t0-map__media-item--empty"><span class="pb-t0__meta" data-lang="string_empty_default">暂无内容</span></li>
+      {% endfor %}
+    </ul>
+  </div>
+</section>
+{% endblock %}
+{% block sidebar %}{% endblock %}
+{% block footer %}
+  {% include 'page-builder-components/site_footer/template.twig' with {props: { variant: 'default', copyright: '', show_nav: true, show_friends: true, logo: '' }} %}
+  {% include 'page-builder-components/bottom_nav/template.twig' with {props: {  }} %}
+{% endblock %}

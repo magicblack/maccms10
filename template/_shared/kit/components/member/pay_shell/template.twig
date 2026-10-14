@@ -1,0 +1,51 @@
+{# 充值+VIP 收银台组合壳 #}
+{% set p = props|default({}) %}
+{% set pay_variant = p.variant|default('default') %}
+{% if pay_variant != 'minimal' %}{% set pay_variant = 'default' %}{% endif %}
+{% set pay_default_tab = p.default_tab|default(pay_default_tab|default('recharge')) %}
+{% set api_base = maccms.path|trim('/') ~ '/api.php' %}
+{% set _pb_shared_img = maccms.path_tpl|default('') ~ 'page-builder-components/_shared/img/' %}
+{% set _pay_shell_js = maccms.path_tpl|default('') ~ 'page-builder-components/pay_shell/assets/js/' %}
+<div id="mac-user-buy-root"
+  class="member-pay-root member-pay-root--{{ pay_variant }} member-wrap member-wrap--recharge member-wrap--user-upgrade"
+  data-component="pay_shell"
+  data-default-tab="{{ pay_default_tab }}"
+  data-url-login="{{ mac_url('user/login') }}"
+  data-url-user-upgrade="{{ mac_url('user/upgrade') }}"
+  data-is-login="{% if user.user_id|default(0) %}1{% else %}0{% endif %}"
+  data-url-recharge-config="{{ api_base }}/payment/get_config"
+  data-url-buy="{{ api_base }}/order/create"
+  data-url-gopay="{{ api_base }}/payment/gopay"
+  data-url-order-query="{{ api_base }}/order/check_status"
+  data-url-upgrade-data="{{ api_base }}/user/ajax_upgrade_data"
+  data-url-benefits="{{ mac_url('user/benefits') }}"
+  data-path-tpl="{{ maccms.path_tpl|default('') }}"
+  data-upgrade-img-base="{{ _pb_shared_img }}upgrade/"
+  data-recharge-img-base="{{ _pb_shared_img }}recharge/">
+  {% include "page-builder-components/_shared/pay_tabs.twig" %}
+  <nav class="member-pay-links" data-lang-aria-label="pay_shell_recharge_aria" aria-label="充值相关">
+    <a href="{{ mac_url('user/orders') }}" data-lang="user_recharge_record">充值记录</a>
+    <a href="{{ mac_url('user/cards') }}" data-lang="string_user_card">卡密充值</a>
+    <a href="{{ mac_url('user/benefits') }}" data-lang="user_my_benefits">我的权益</a>
+  </nav>
+  <div class="member-pay-panels user-buy-upgrade-panels">
+    {% include "page-builder-components/_shared/recharge_panel.twig" %}
+    {% include "page-builder-components/_shared/vip_panel.twig" %}
+  </div>
+  {% include "page-builder-components/_shared/pay_overlay.twig" %}
+  {% if tplconfig.theme.contact.url|default('') != '' %}
+  <div class="member-pay-service">
+    <a class="member-pay-service__link" href="{{ tplconfig.theme.contact.url }}" target="_blank" rel="noopener noreferrer">
+      <img class="member-pay-service__ico" src="{{ _pb_shared_img }}contact-service.png" width="22" height="22" alt="" decoding="async">
+      <span data-lang="string_user_contact_service">联系客服</span>
+    </a>
+  </div>
+  {% endif %}
+</div>
+{% include "page-builder-components/_shared/pay_icons_tpl.twig" %}
+<script src="{{ _pay_shell_js }}pay-qrcode.js" defer></script>
+<script src="{{ _pay_shell_js }}member-pay.js" defer></script>
+<script src="{{ _pay_shell_js }}coupon.js" defer></script>
+<script src="{{ _pay_shell_js }}upgrade-ajax.js" defer></script>
+<script src="{{ _pay_shell_js }}seckill.js" defer></script>
+<script src="{{ _pay_shell_js }}upgrade-submit.js" defer></script>

@@ -1,0 +1,161 @@
+/* user_bind panel — bundled from _shared/assets/css/member/bind.css */
+.page-member--bind .bind-page-desc {
+  margin: 0 0 14px;
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--c-text-muted);
+}
+
+.page-member--bind .bind-tip {
+  margin-bottom: 16px;
+  padding: 12px 14px;
+  border: 1px solid var(--c-border);
+  border-radius: var(--radius);
+  background: var(--c-surface-2);
+  font-size: 14px;
+  line-height: 1.55;
+  color: var(--c-text-muted);
+}
+
+.page-member--bind .bind-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 10px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--c-border);
+}
+
+.page-member--bind .bind-row:last-of-type {
+  border-bottom: none;
+}
+
+.page-member--bind .bind-row .xiang {
+  flex-shrink: 0;
+  width: 72px;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.page-member--bind .bind-row-main {
+  display: flex;
+  flex: 1;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.page-member--bind .bind-send {
+  flex-shrink: 0;
+  height: 40px;
+  padding: 0 12px;
+  border: 1px solid var(--c-accent);
+  border-radius: var(--radius);
+  background: var(--c-accent-soft);
+  color: var(--c-accent);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.page-member--bind .bind-send:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.page-member--bind .bind-back-btn {
+  display: block;
+  max-width: 200px;
+  height: 40px;
+  line-height: 40px;
+  text-align: center;
+  border: 1px solid var(--c-border);
+  border-radius: var(--radius);
+  background: var(--c-surface-2);
+  color: var(--c-text);
+  text-decoration: none;
+  font-weight: 600;
+}
+
+
+/* 邮箱/手机行：label + input + 验证码同一行时，input 不要被 member-form__field 拉满 100% */
+.page-member--bind .bind-row-main {
+  display: flex;
+  flex: 1 1 auto;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.page-member--bind .bind-row-main > input.input,
+.page-member--bind .bind-row-main > input.member-form__field,
+.page-member--bind .bind-row-main > .member-form__field.input,
+.page-member--bind .bind-row-main > input.member-form__field.input {
+  display: block;
+  flex: 1 1 auto;
+  width: auto;
+  min-width: 0;
+  max-width: none;
+  height: 40px;
+  min-height: 40px;
+  margin: 0;
+  padding: 0 12px;
+  box-sizing: border-box;
+  border: 1px solid var(--c-border);
+  border-radius: var(--radius);
+  background: var(--c-surface, #fff);
+  color: var(--c-text);
+  font-size: 14px;
+  line-height: 40px;
+}
+
+.page-member--bind .bind-row-main > input.input:focus,
+.page-member--bind .bind-row-main > input.member-form__field:focus,
+.page-member--bind .bind-row-main > input.member-form__field.input:focus {
+  outline: none;
+  border-color: var(--c-accent);
+  box-shadow: 0 0 0 3px var(--c-accent-soft, rgba(0, 161, 214, 0.18));
+}
+
+/* 验证码 / 密码仍走堆叠的 member-form__field label 布局，不受上行覆盖 */
+.page-member--bind form.member-form > label.member-form__field {
+  display: block;
+  width: 100%;
+  margin-bottom: 14px;
+}
+
+.page-member--bind form.member-form > label.member-form__field > input {
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+@media (max-width: 560px) {
+  .page-member--bind .bind-row--to,
+  .page-member--bind .bind-row {
+    align-items: stretch;
+  }
+
+  .page-member--bind .bind-row .xiang {
+    width: 100%;
+    flex: 1 1 100%;
+  }
+
+  .page-member--bind .bind-row-main {
+    flex: 1 1 100%;
+    width: 100%;
+  }
+
+  .page-member--bind .bind-row-main > input.input,
+  .page-member--bind .bind-row-main > input.member-form__field,
+  .page-member--bind .bind-row-main > input.member-form__field.input {
+    flex: 1 1 0;
+    min-width: 0;
+  }
+
+  .page-member--bind .bind-send {
+    flex: 0 0 auto;
+  }
+}

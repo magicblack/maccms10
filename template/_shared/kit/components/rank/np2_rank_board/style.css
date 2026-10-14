@@ -1,0 +1,88 @@
+/* np2_rank_board — 壳层样式在 np2-app.css .np2-rank-page */
+
+.np2-rank {
+  margin: 0 0 8px;
+}
+
+.np2-rank__head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 0 0 14px;
+  padding: 0 2px;
+}
+
+.np2-rank__head .np2-row__title {
+  display: inline-flex;
+  align-items: center;
+  min-width: 0;
+  margin: 0;
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 1.3;
+  color: var(--c-text, #18191c);
+}
+
+.np2-rank__head .np2-row__title-txt {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* 日/周/月 切换：胶囊分段控件，靠右对齐 */
+.np2-rank__periods {
+  flex: 0 0 auto;
+  margin-left: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  padding: 3px;
+  background: var(--c-surface-2, #f6f7f8);
+  border-radius: 999px;
+}
+
+.np2-rank__period {
+  appearance: none;
+  border: 0;
+  margin: 0;
+  padding: 6px 14px;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1.2;
+  color: var(--c-text-muted, #9499a0);
+  background: transparent;
+  border-radius: 999px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 160ms ease, color 160ms ease, box-shadow 160ms ease;
+}
+
+.np2-rank__period:hover {
+  color: var(--c-text, #18191c);
+}
+
+.np2-rank__period.is-on {
+  background: var(--c-accent, #fb7299);
+  color: var(--c-accent-ink, #fff);
+  box-shadow: 0 2px 6px var(--c-accent-glow, rgba(251, 114, 153, 0.25));
+}
+
+.np2-rank__period:focus-visible {
+  outline: 2px solid var(--c-accent, #fb7299);
+  outline-offset: 2px;
+}
+
+.np2-rank__panel[hidden] {
+  display: none !important;
+}
+
+@media (max-width: 480px) {
+  .np2-rank__head {
+    gap: 8px;
+  }
+  .np2-rank__period {
+    padding: 5px 10px;
+    font-size: 12px;
+  }
+}

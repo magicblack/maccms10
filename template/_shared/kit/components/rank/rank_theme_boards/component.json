@@ -1,0 +1,17 @@
+{
+    "id": "rank_theme_boards",
+    "label_key": "admin/themedesign/pb_block_rank_panel",
+    "category": "rank",
+    "kind": "rank",
+    "styleMode": "component",
+    "peer_styles": [],
+    "assets": {
+        "css": "style.css",
+        "js": "script.js"
+    },
+    "props": {},
+    "context": {
+        "pageTypes": ["rank"],
+        "requires": ["maccms"]
+    }
+}

@@ -86,6 +86,7 @@
             ,count: {$total}
             ,limit: {$limit}
             ,curr: {$page}
+            ,pages: {$pagecount}
             ,layout: ['count', 'prev', 'page', 'next', 'limit', 'skip']
             ,jump: function(obj,first){
                 if(!first){

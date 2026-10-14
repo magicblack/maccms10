@@ -55,6 +55,11 @@ class Manga extends Base
                     $v['manga_pic'] = mac_url_img($v['manga_pic']);
                 }
                 $v['manga_link'] = mac_url_manga_detail($v);
+                // 密码未验证：不下发章节图片地址（列表取的是整行，含 manga_chapter_url）
+                if ($this->contentPwdLocked($v['manga_pwd'] ?? '', 8, $v['manga_id'])) {
+                    unset($v['manga_chapter_url'], $v['manga_play_server'], $v['manga_play_note']);
+                }
+                $v = $this->maskContentPwd($v, 'manga');
             }
             unset($v);
         }
@@ -86,6 +91,7 @@ class Manga extends Base
             $info['manga_pic_thumb'] = mac_url_img($info['manga_pic_thumb'] ?? '');
             $info['manga_pic_slide'] = mac_url_img($info['manga_pic_slide'] ?? '');
             $info['manga_link'] = mac_url_manga_detail($info);
+            $locked = $this->contentPwdLocked($info['manga_pwd'] ?? '', 8, $info['manga_id']);
 
             // 与前台模板一致：保留 model->infoData 生成的 manga_page_list（含 sid / urls / nid）
             if (!empty($info['manga_page_list']) && is_array($info['manga_page_list'])) {
@@ -96,6 +102,10 @@ class Manga extends Base
                     foreach ($grp['urls'] as $nid => &$ep) {
                         if (is_array($ep)) {
                             $ep['play_link'] = mac_url_manga_play($info, ['sid' => (int)$sid, 'nid' => (int)$nid]);
+                            // 密码未验证：保留章节目录，去掉图片地址（与前台 detail_pwd 门一致）
+                            if ($locked) {
+                                unset($ep['url']);
+                            }
                         }
                     }
                     unset($ep);
@@ -105,6 +115,7 @@ class Manga extends Base
 
             unset($info['manga_chapter_url'], $info['manga_chapter_from']);
             unset($info['manga_play_server'], $info['manga_play_note']);
+            $info = $this->maskContentPwd($info, 'manga');
 
             $uid = (int) ($GLOBALS['user']['user_id'] ?? 0);
             $mid = (int) ($info['manga_id'] ?? 0);
@@ -151,6 +162,10 @@ class Manga extends Base
             return json(['code' => 1002, 'msg' => $data['msg'] ?? '数据不存在']);
         }
         $info = $data['info'];
+        // 与前台 Manga::play() 同一访问密码门（session 由 index.php/ajax/pwd?mid=8&type=1 写入）
+        if ($this->contentPwdLocked($info['manga_pwd'] ?? '', 8, $id)) {
+            return json(['code' => 1003, 'msg' => lang('pass_empty'), 'info' => ['need_pwd' => 1, 'manga_id' => $id]]);
+        }
 
         $popParam = ['id' => $id, 'sid' => $sid, 'nid' => $nid];
         $popedom  = $this->check_user_popedom($info['type_id'], 3, $popParam, 'manga_play', $info);
@@ -189,6 +204,7 @@ class Manga extends Base
             'points_hint'    => isset($popedom['points']) ? (int) $popedom['points'] : 0,
             'manga_id'       => $id,
             'manga_name'     => (string) ($info['manga_name'] ?? ''),
+            'manga_jumpurl'  => (string) ($info['manga_jumpurl'] ?? ''),
             'sid'            => $sid,
             'nid'            => $nid,
             'episode_name'   => $name,
@@ -216,8 +232,7 @@ class Manga extends Base
     public function get_hot(Request $request)
     {
         $param = $request->param();
-        $num = isset($param['num']) ? (int)$param['num'] : 6;
-        $start = isset($param['start']) ? (int)$param['start'] : 0;
+        list($num, $start) = $this->clampNumStart($param, 6);
         $by = isset($param['by']) ? trim($param['by']) : 'hits_month';
 
         $allowBy = ['hits', 'hits_day', 'hits_week', 'hits_month', 'time'];
@@ -241,6 +256,7 @@ class Manga extends Base
             $v['manga_link'] = mac_url_manga_detail($v);
         }
         unset($v);
+        mac_manga_rows_chapter_remarks($list);
 
         return json([
             'code' => 1,
@@ -265,8 +281,7 @@ class Manga extends Base
     public function get_latest(Request $request)
     {
         $param = $request->param();
-        $num = isset($param['num']) ? (int)$param['num'] : 24;
-        $start = isset($param['start']) ? max(0, (int)$param['start']) : 0;
+        list($num, $start) = $this->clampNumStart($param, 24);
 
         $where = [];
         $where['manga_status'] = ['eq', 1];
@@ -285,6 +300,7 @@ class Manga extends Base
         }
         unset($v);
         mac_append_type_is_vip_exclusive_for_rows($list);
+        mac_manga_rows_chapter_remarks($list);
 
         return json([
             'code' => 1,

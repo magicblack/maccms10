@@ -1,0 +1,143 @@
+{#
+  专题详情（twigspike topic/detail：头图 + 介绍 + 专题影片）
+#}
+{% import "page-builder-components/_shared/macros.twig" as pb %}
+{% set p = props|default({}) %}
+{% if obj.topic_id|default(0) %}
+{% set cover = mac_url_img(obj.topic_pic|default('')) %}
+{% set title = obj.topic_name|default('') %}
+{% set subtitle = obj.topic_sub|default('') %}
+{% set show_intro = p.show_intro is defined ? p.show_intro : true %}
+{% set num_cap = p.num|default(0) %}
+{% set vod_title = p.vod_title|default('专题影片') %}
+{% set vod_title_lang = p.vod_title_lang|default('topic_vod_title') %}
+{% set art_title = p.art_title|default('相关文章') %}
+{% set art_title_lang = p.art_title_lang|default('string_topic_arts') %}
+{% set _cover_cls = pb.pb_cover_classes(p) %}
+{% set _cover_style = pb.pb_cover_style(p) %}
+{% set vod_sort_enabled = p.vod_sort is defined ? p.vod_sort : true %}
+{% set vod_sort_default = p.vod_sort_default|default('hits') %}
+{% if vod_sort_default not in ['hits', 'time', 'duration'] %}
+  {% set vod_sort_default = 'hits' %}
+{% endif %}
+{% set rel_vod_ids = obj.topic_rel_vod|default('') %}
+
+{# obj.vod_list is pre-filled by Topic::infoData(), always sorted by vod_time desc —
+   fine as the single fallback list, but re-fetched below (scoped to the same
+   topic_rel_vod ids) whenever the sort tabs need independently-sorted lists.
+   Cards show vod_duration, so 时长 sorts by parsed duration (long → short, see
+   Vod::buildDurationOrderExpr); 最新更新 sorts by vod_time. #}
+{% set vod_sort_keys = ['hits', 'time', 'duration'] %}
+{% set vod_sort_lists = {} %}
+{% set vod_list = obj.vod_list|default([]) %}
+{% if vod_sort_enabled and rel_vod_ids %}
+  {% set fetch_num = num_cap > 0 ? num_cap : 999 %}
+  {% for k in vod_sort_keys %}
+    {% set vod_sort_lists = vod_sort_lists|merge({(k): mac_vod({num: fetch_num, ids: rel_vod_ids, order: 'desc', by: k}).list|default([])}) %}
+  {% endfor %}
+  {% set vod_list = vod_sort_lists[vod_sort_default] %}
+{% else %}
+  {% set vod_sort_enabled = false %}
+  {% if vod_list is empty and rel_vod_ids %}
+    {% set fetch_num = num_cap > 0 ? num_cap : 999 %}
+    {% set vod_list = mac_vod({num: fetch_num, ids: rel_vod_ids, order: 'desc', by: 'time'}).list|default([]) %}
+  {% elseif num_cap > 0 and vod_list|length > num_cap %}
+    {% set vod_list = vod_list|slice(0, num_cap) %}
+  {% endif %}
+{% endif %}
+{% set art_list = obj.art_list|default([]) %}
+{% if art_list is empty and obj.topic_rel_art|default('') %}
+  {% set fetch_num = num_cap > 0 ? num_cap : 999 %}
+  {% set art_list = mac_art({num: fetch_num, ids: obj.topic_rel_art, order: 'desc', by: 'time'}).list|default([]) %}
+{% elseif num_cap > 0 and art_list|length > num_cap %}
+  {% set art_list = art_list|slice(0, num_cap) %}
+{% endif %}
+{% set detail_fav_id = mac_user_fav_id(obj.topic_id, 3) %}
+
+<div class="pb-topic-detail" data-component="topic_detail">
+  <nav class="pb-topic-detail__crumb" aria-label="breadcrumb">
+    <a href="{{ maccms.path }}" data-lang="string_home">首页</a>
+    <span aria-hidden="true">›</span>
+    <a href="{{ mac_url('topic/index') }}" data-lang="string_topic">专题</a>
+    <span aria-hidden="true">›</span>
+    <span class="pb-topic-detail__crumb-cur">{{ title }}</span>
+  </nav>
+
+  <header class="pb-topic-detail__head">
+    <div class="pb-topic-detail__pic">
+      <img data-cover src="{{ cover }}" alt="{{ title }}" width="320" height="180" decoding="async" fetchpriority="high">
+    </div>
+    <div class="pb-topic-detail__body">
+      <h1 class="pb-topic-detail__title">{{ title }}</h1>
+      {% if subtitle %}
+      <p class="pb-topic-detail__sub">{{ subtitle }}</p>
+      {% endif %}
+      <ul class="pb-topic-detail__stats">
+        {% if obj.topic_hits|default(0) %}
+        <li><em>{{ obj.topic_hits }}</em><span data-lang="string_hits">人气</span></li>
+        {% endif %}
+        {% if obj.topic_up|default(0) %}
+        <li><em>{{ obj.topic_up }}</em><span data-lang="string_up">顶</span></li>
+        {% endif %}
+        {% if obj.topic_down|default(0) %}
+        <li><em>{{ obj.topic_down }}</em><span data-lang="string_hate">踩</span></li>
+        {% endif %}
+        {% if obj.topic_count|default(0) %}
+        <li><em>{{ obj.topic_count }}</em><span data-lang="admin/topic/count">收录</span></li>
+        {% endif %}
+      </ul>
+      <div class="pb-topic-detail__actions">
+        <div class="pb-topic-detail__follow mac_ulog{% if detail_fav_id %} is_fav{% endif %}"
+             data-type="2" data-mid="3" data-id="{{ obj.topic_id }}"
+             data-uid="{{ detail_fav_id ?: '' }}" role="button" tabindex="0">
+          {% if detail_fav_id %}<span data-lang="string_isfav">已收藏</span>
+          {% else %}<span data-lang="string_fav">收藏</span>{% endif %}
+        </div>
+      </div>
+    </div>
+  </header>
+
+  {% if show_intro and obj.topic_content|default('')|trim %}
+  <section class="pb-topic-detail__panel" id="topic-intro">
+    <h2 class="pb-topic-detail__panel-title" data-lang="string_topic_introduction">专题介绍</h2>
+    <div class="pb-topic-detail__panel-body prose">{{ obj.topic_content|raw }}</div>
+  </section>
+  {% endif %}
+
+  {% if vod_list is not empty %}
+  <section class="pb-topic-detail__panel pb-topic-detail__vod {{ _cover_cls }}" id="topic-vod"{% if _cover_style %} style="{{ _cover_style }}"{% endif %}{% if vod_sort_enabled %} data-vod-sort-default="{{ vod_sort_default }}"{% endif %}>
+    <div class="pb-topic-detail__vod-head">
+      <h2 class="pb-topic-detail__panel-title"{% if vod_title_lang and mac_i18n_key(vod_title, vod_title_lang) %} data-lang="{{ vod_title_lang }}"{% endif %}>{{ vod_title }}</h2>
+      {% if vod_sort_enabled %}
+      <div class="pb-topic-detail__vod-sort" role="tablist" data-lang-aria-label="string_vod_sort" aria-label="排序">
+        {% set vod_sort_labels = {hits: ['string_topic_vod_sort_hot', '热门排行'], time: ['string_topic_vod_sort_time', '最新更新'], duration: ['string_topic_vod_sort_duration', '时长排序']} %}
+        {% for k in vod_sort_keys %}
+        <button type="button" class="pb-topic-detail__vod-sort-tab{% if vod_sort_default == k %} is-on{% endif %}" data-vod-sort="{{ k }}" role="tab" aria-selected="{{ vod_sort_default == k ? 'true' : 'false' }}" data-lang="{{ vod_sort_labels[k][0] }}">{{ vod_sort_labels[k][1] }}</button>
+        {% endfor %}
+      </div>
+      {% endif %}
+    </div>
+    {% if vod_sort_enabled %}
+    {% for k in vod_sort_keys %}
+    <div class="bili-grid pb-topic-detail__grid" data-vod-sort-panel="{{ k }}"{% if vod_sort_default != k %} hidden{% endif %}>
+      {% for vo in vod_sort_lists[k] %}{% include "page-builder-components/_shared/vod_card.twig" %}{% endfor %}
+    </div>
+    {% endfor %}
+    {% else %}
+    <div class="bili-grid pb-topic-detail__grid">
+      {% for vo in vod_list %}{% include "page-builder-components/_shared/vod_card.twig" %}{% endfor %}
+    </div>
+    {% endif %}
+  </section>
+  {% endif %}
+
+  {% if art_list is not empty %}
+  <section class="pb-topic-detail__panel pb-topic-detail__art" id="topic-art">
+    <h2 class="pb-topic-detail__panel-title"{% if art_title_lang and mac_i18n_key(art_title, art_title_lang) %} data-lang="{{ art_title_lang }}"{% endif %}>{{ art_title }}</h2>
+    <div class="rows rows--art-text pb-topic-detail__art-rows">
+      {% for a in art_list %}{% include "page-builder-components/_shared/art_row.twig" with {text_only: true} %}{% endfor %}
+    </div>
+  </section>
+  {% endif %}
+</div>
+{% endif %}

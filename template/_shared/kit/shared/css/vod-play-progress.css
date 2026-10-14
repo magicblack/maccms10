@@ -1,0 +1,83 @@
+/* 续播提示（vod-play-progress.js 插入 .player_video 内） */
+.player_video {
+  position: relative;
+}
+
+.mac-play-resume {
+  position: absolute;
+  bottom: 18%;
+  left: 50%;
+  z-index: 120;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  max-width: calc(100% - 32px);
+  padding: 10px 18px;
+  border: 1px solid var(--c-border, hsla(0, 0%, 100%, 0.18));
+  border-radius: 24px;
+  background: rgba(20, 20, 24, 0.82);
+  color: var(--c-text-on-inverse, #fff);
+  font-size: 14px;
+  line-height: 1.4;
+  pointer-events: none;
+  opacity: 0;
+  transform: translateX(-50%) translateY(8px);
+  transition: opacity 0.25s ease, transform 0.25s ease;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.28);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+}
+
+.mac-play-resume.is-visible {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateX(-50%) translateY(0);
+}
+
+.mac-play-resume__btn {
+  flex-shrink: 0;
+  margin: 0;
+  padding: 6px 14px;
+  border: none;
+  border-radius: 24px;
+  background: var(--c-accent, #40cc92);
+  color: var(--c-text-on-inverse, #fff);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.mac-play-resume__btn:hover {
+  filter: brightness(0.92);
+}
+
+.mac-play-resume__btn:focus-visible {
+  outline: 2px solid var(--c-accent, #40cc92);
+  outline-offset: 2px;
+}
+
+.mac-play-resume__close {
+  flex-shrink: 0;
+  margin: 0;
+  padding: 4px;
+  border: none;
+  background: transparent;
+  color: inherit;
+  font-size: 18px;
+  line-height: 1;
+  opacity: 0.72;
+  cursor: pointer;
+}
+
+.mac-play-resume__close:hover {
+  opacity: 1;
+}
+
+@media (max-width: 819px) {
+  .mac-play-resume {
+    bottom: 14%;
+    padding: 9px 14px;
+    font-size: 13px;
+  }
+}

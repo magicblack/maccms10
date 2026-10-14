@@ -1,0 +1,50 @@
+{#
+  小说章节目录抽屉 — 与 novel_player 底栏「目录」按钮联动（data-mac-novel-catalog）
+  参数：obj, param；props.show_chapter_no
+#}
+{% set _props = props|default({}) %}
+{% set show_chapter_no = _props.show_chapter_no is not defined ? true : _props.show_chapter_no %}
+{% set pages = obj.art_page_list|default({}) %}
+{% set page_total = pages|length > 0 ? pages|length : 1 %}
+{% set req_page = param.page|default(1) %}
+{% set cur_page = req_page < 1 ? 1 : (req_page > page_total ? page_total : req_page) %}
+
+{% if pages|length > 0 %}
+<aside class="novel-player__catalog" data-component="novel_chapter_catalog" data-mac-novel-catalog hidden aria-hidden="true">
+  <div class="novel-player__catalog-mask" data-mac-novel-catalog-close tabindex="-1"></div>
+  <div class="novel-player__catalog-panel" role="dialog" aria-modal="true" data-lang-aria-label="manga_catalog_aria" aria-label="章节目录">
+    <div class="novel-player__catalog-head">
+      <div>
+        <h2 class="novel-player__catalog-title" data-lang="art_read_toc">目录</h2>
+        <p class="novel-player__catalog-sub">{{ obj.art_name }} · <span data-lang="art_read_chapter_total">共</span>{{ page_total }}<span data-lang="art_read_chapter_unit">章</span></p>
+      </div>
+      <button type="button" class="novel-player__catalog-close" data-mac-novel-catalog-close data-lang-aria-label="string_close" aria-label="关闭">×</button>
+    </div>
+    <div class="novel-player__catalog-progress" data-mac-novel-catalog-progress hidden>
+      <div class="novel-player__catalog-progress-text">
+        <span data-lang="art_read_read_to">已读到：</span>
+        <span data-mac-novel-progress-text></span>
+      </div>
+      <a class="novel-player__catalog-continue" data-mac-novel-continue href="#"><span data-lang="art_read_continue">继续</span></a>
+    </div>
+    <div class="novel-player__catalog-list">
+      {% for p in pages %}
+      <a class="novel-player__catalog-item{% if not show_chapter_no %} novel-player__catalog-item--no-num{% endif %}{% if p.page == cur_page %} is-cur{% endif %}"
+         href="{{ mac_url('art/read', {id: obj.art_id, page: p.page}) }}"
+         data-mac-novel-catalog-item
+         data-page="{{ p.page }}">
+        {% if show_chapter_no %}
+        <span class="novel-player__catalog-no">{{ p.page }}</span>
+        {% endif %}
+        <span class="novel-player__catalog-name">{{ p.title|default('第' ~ p.page ~ '章') }}</span>
+        {% if p.page == cur_page %}
+        <span class="novel-player__catalog-now" data-lang="art_read_reading">正在读</span>
+        {% else %}
+        <span class="novel-player__catalog-read" data-lang="manga_read_done">已读</span>
+        {% endif %}
+      </a>
+      {% endfor %}
+    </div>
+  </div>
+</aside>
+{% endif %}

@@ -1,0 +1,39 @@
+{# 轮播 · 紧凑横条（bind=数据源） #}
+{% set bind = props.bind|default('vod') %}
+{% set num = props.num|default(5) %}
+{% set by = props.by|default('hits_day') %}
+{% set type_id = props.type|default(0) %}
+{% set feed = mac_pb_feed({bind: bind, num: num, by: by, type: type_id}) %}
+{% set items = feed.list|default([]) %}
+
+{% if items is not empty %}
+<section class="pb-ccc"{% if bind == 'art' %} data-cover-kind="book"{% endif %} aria-label="今日推荐" data-lang-aria-label="carousel_today_pick_aria" data-pb-carousel-compact>
+  <div class="pb-ccc__root" data-pb-ccc-root>
+    <div class="pb-ccc__track">
+      {% for vo in items %}
+      {# 竖版封面（短剧 / 漫画 / 小说）：横条框里 runtime 按封面实际尺寸写 data-cover-fit="contain"，
+         完整显示并垫同图模糊底；图片载入前用 data-cover-orient（分类比例 / 漫画小说）做首屏提示 #}
+      {% set vo_orient = '' %}
+      {% if bind == 'manga' or bind == 'art' %}
+        {% set vo_orient = 'v' %}
+      {% else %}
+        {% set vo_cover = mac_type_cover(vo.type_id|default(0)) %}
+        {% if vo_cover and vo_cover.orient == 'v' %}{% set vo_orient = 'v' %}{% endif %}
+      {% endif %}
+      <a class="pb-ccc__item{% if loop.first %} is-on{% endif %}" href="{{ vo.url }}" data-i="{{ loop.index0 }}" data-cover-auto="fit"{% if vo_orient %} data-cover-orient="{{ vo_orient }}"{% endif %}>
+        <span class="pb-ccc__backdrop" data-cover-backdrop aria-hidden="true"></span>
+        <img data-cover src="{{ mac_url_img(vo.pic) }}" alt="{{ vo.name }}"{% if loop.first %} fetchpriority="high"{% endif %}>
+      </a>
+      {% endfor %}
+    </div>
+    <div class="pb-ccc__foot">
+      <p class="pb-ccc__label" data-pb-ccc-label>{{ items[0].name|default('') }}</p>
+      <div class="pb-ccc__dots">
+        {% for vo in items %}
+        <button type="button" class="pb-ccc__dot{% if loop.first %} is-on{% endif %}" data-i="{{ loop.index0 }}" data-title="{{ vo.name }}" aria-label="{{ vo.name }}"></button>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</section>
+{% endif %}

@@ -8,18 +8,15 @@
                 <div class="layui-input-inline w150">
                     <select name="status">
                         <option value="">{:lang('select_status')}</option>
-                        <option value="0" {if condition="$param['status'] eq '0'" }selected {/if}>
-                            {:lang('reviewed_not')}</option>
-                        <option value="1" {if condition="$param['status'] eq '1'" }selected {/if}>{:lang('reviewed')}
-                        </option>
+                        <option value="0" {if condition="$param['status'] eq '0'" }selected {/if}>{:lang('reviewed_not')}</option>
+                        <option value="1" {if condition="$param['status'] eq '1'" }selected {/if}>{:lang('reviewed')}</option>
                     </select>
                 </div>
                 <div class="layui-input-inline w150">
                     <select name="group">
                         <option value="">{:lang('select_group')}</option>
                         {volist name="group_list" id="vo"}
-                        <option value="{$vo.group_id}" {if condition="$param['group'] eq $vo.group_id" }selected {/if}>
-                            {$vo.group_name}</option>
+                        <option value="{$vo.group_id}" {if condition="$param['group'] eq $vo.group_id" }selected {/if}>{$vo.group_name}</option>
                         {/volist}
                     </select>
                 </div>

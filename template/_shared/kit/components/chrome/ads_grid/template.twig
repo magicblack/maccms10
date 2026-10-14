@@ -1,0 +1,98 @@
+{% set p = props|default({}) %}
+{% set _variant = p.variant|default('default')|trim %}
+{% if p.items is defined %}
+  {% set items = p.items|default([]) %}
+  {% set _items_defined = true %}
+{% else %}
+  {% set items = [] %}
+  {% set _items_defined = false %}
+{% endif %}
+{# NP2 splash：PB 未配或空数组 → 主题默认 10 宫格（lib/np2_home_ads.twig） #}
+{% if _variant == 'splash' and (not _items_defined or items is empty) %}
+  {% include 'lib/np2_home_ads.twig' %}
+{% else %}
+{% if not _items_defined %}
+  {# 未配置时给示例广告；PB 显式存成空数组则不展示（非 splash） #}
+  {# 默认仅色块 + 文案；cover 留空，站长在 PB 里填远端 URL 或本地上传路径 #}
+  {% set items = [
+    {id: 'ad_vip', label: '会员福利', href: '', cover: ''},
+    {id: 'ad_hot', label: '热播推荐', href: '', cover: ''},
+    {id: 'ad_new', label: '新片速递', href: '', cover: ''},
+    {id: 'ad_rank', label: '排行榜', href: '', cover: ''},
+    {id: 'ad_coin', label: '充值有礼', href: '', cover: ''},
+    {id: 'ad_topic', label: '精选专题', href: '', cover: ''},
+    {id: 'ad_manga', label: '漫画专区', href: '', cover: ''},
+    {id: 'ad_novel', label: '小说专区', href: '', cover: ''},
+    {id: 'ad_live', label: '限时活动', href: '', cover: ''},
+    {id: 'ad_more', label: '更多精彩', href: '', cover: ''}
+  ] %}
+{% endif %}
+{% if items %}
+{% set n = 0 %}
+{% set _variant = p.variant|default('default')|trim %}
+{% if _variant == 'splash' %}
+  {% set _splash_topics = mac_topic({num: 10, order: 'desc', by: 'time'}).list|default([]) %}
+  {% set _splash_types = mac_top_types(1, 12)|default([]) %}
+{% endif %}
+<div class="pb-ads-grid{% if _variant == 'splash' %} pb-ads-grid--splash np2-ads{% endif %}" data-component="ads_grid" aria-label="广告">
+  {% for item in items|slice(0, 10) %}
+    {% set iid = item.id|default('')|trim %}
+    {% set label = item.label|default('')|trim %}
+    {% set href = item.href|default('')|trim %}
+    {% set cover = item.cover|default('')|trim %}
+    {% if href == '/' %}{% set href = '' %}{% endif %}
+    {% if href == '' %}
+      {% if _variant == 'splash' %}
+        {% set _ti = loop.index0 %}
+        {% if _splash_topics[_ti] is defined %}
+          {% set href = mac_url_topic_detail(_splash_topics[_ti]) %}
+        {% elseif _splash_types[_ti] is defined %}
+          {% set href = mac_url_type(_splash_types[_ti], {}, 'type') %}
+        {% else %}
+          {% set href = mac_url('vod/index') %}
+        {% endif %}
+      {% elseif iid in ['ad_vip', 'vip', 'me'] %}
+        {% set href = mac_url('user/index') %}
+      {% elseif iid in ['ad_rank', 'rank'] %}
+        {% set href = mac_url('label/rank') %}
+      {% elseif iid in ['ad_manga', 'manga'] %}
+        {% set href = mac_url('manga/index') %}
+      {% elseif iid in ['ad_novel', 'novel'] %}
+        {% set href = mac_url('art/index') %}
+      {% elseif iid in ['ad_coin', 'coin', 'pay'] %}
+        {% set href = mac_url('user/buy') %}
+      {% else %}
+        {% set href = mac_url('vod/index') %}
+      {% endif %}
+    {% endif %}
+    {% if label != '' or cover != '' %}
+      {% if _variant == 'splash' %}
+        {% set cap = label %}
+      {% else %}
+        {% set cap = label %}
+        {% if cap|length > 4 %}{% set cap = cap|slice(0, 4) %}{% endif %}
+      {% endif %}
+      {% set _ext = (href|slice(0, 7) == 'http://') or (href|slice(0, 8) == 'https://') %}
+      <a class="pb-ads-grid__item" href="{{ href }}"{% if _ext %} target="_blank" rel="noopener noreferrer"{% endif %}>
+        <div class="pb-ads-grid__tile pb-ads-grid__tile--c{{ (n % 5) + 1 }}">
+          {% if cover %}
+          {% if cover matches '/^(https?:)?\\/\\//' or cover starts with '/' %}
+            {% set _cover_src = cover %}
+          {% elseif cover starts with 'asset/' or cover starts with 'page-builder-components/' %}
+            {% set _cover_src = maccms.path_tpl ~ cover %}
+          {% else %}
+            {% set _cover_src = mac_url_img(cover) %}
+          {% endif %}
+          <img src="{{ _cover_src }}" alt="{{ label }}" loading="lazy" decoding="async" onerror="this.hidden=true">
+          {% endif %}
+        </div>
+        {% if cap %}
+        <span class="pb-ads-grid__cap">{{ cap }}</span>
+        {% endif %}
+      </a>
+      {% set n = n + 1 %}
+    {% endif %}
+  {% endfor %}
+</div>
+{% endif %}
+{% endif %}

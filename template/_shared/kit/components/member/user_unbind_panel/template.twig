@@ -1,0 +1,37 @@
+{# 账号解绑 — 邮箱 / 手机 #}
+{% set u_email = user.user_email|default('')|trim %}
+{% set u_phone = user.user_phone|default('')|trim %}
+{# 邮箱/短信未配置时不给「绑定」入口（#272） #}
+{% set msg_ch = mac_msg_channels() %}
+<header class="member-card__head">
+  <h2 class="member-card__title" data-lang="user_unbind">解除绑定</h2>
+</header>
+<div class="unbind-page-card" data-component="user_unbind_panel" data-url-unbind="{{ mac_url('user/unbind') }}">
+  <p class="unbind-page-desc" data-lang="user_unbind_note">解绑后将无法用于登录或找回密码，请谨慎操作。</p>
+  <div class="unbind-rows">
+    <div class="unbind-row">
+      <span class="unbind-row__label" data-lang="user_place_email1">邮箱</span>
+      <div class="unbind-row__main">
+        {% if u_email != '' %}
+          <span class="unbind-row__value">{{ u_email }}</span>
+          <button type="button" class="member-form__linkbtn js-unbind" data-ac="email" data-lang="user_unbound">解绑</button>
+        {% else %}
+          <span class="unbind-row__empty" data-lang="string_no_have">暂无</span>
+          {% if msg_ch.email %}<a class="member-form__linkbtn" href="{{ mac_url('user/bind', {ac: 'email'}) }}" data-lang="user_binding">绑定</a>{% endif %}
+        {% endif %}
+      </div>
+    </div>
+    <div class="unbind-row">
+      <span class="unbind-row__label" data-lang="user_phone">手机</span>
+      <div class="unbind-row__main">
+        {% if u_phone != '' %}
+          <span class="unbind-row__value">{{ u_phone }}</span>
+          <button type="button" class="member-form__linkbtn js-unbind" data-ac="phone" data-lang="user_unbound">解绑</button>
+        {% else %}
+          <span class="unbind-row__empty" data-lang="string_no_have">暂无</span>
+          {% if msg_ch.phone %}<a class="member-form__linkbtn" href="{{ mac_url('user/bind', {ac: 'phone'}) }}" data-lang="user_binding">绑定</a>{% endif %}
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>

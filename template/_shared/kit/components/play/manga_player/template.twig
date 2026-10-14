@@ -1,0 +1,151 @@
+{#
+  漫画阅读器组件 — 竖向长图 + 顶栏 / 底栏 / 章节目录
+  参数：obj, param, popedom（可选）
+#}
+
+{% set _popedom = popedom|default({}) %}
+{% set cur_sid = param.sid|default(1) %}
+{% set cur_nid = param.nid|default(1) %}
+{% set manga_from = obj.manga_page_list[cur_sid]|default({}) %}
+{% set manga_ep = manga_from.urls[cur_nid]|default({}) %}
+{% set ep_total = manga_from.url_count|default(manga_from.urls|default({})|length) %}
+{% set can_read = _popedom.code|default(1) <= 1 %}
+{% set img_raw = can_read ? (manga_ep.url|default('')) : '' %}
+{% set img_list = img_raw ? img_raw|split(',') : [] %}
+{% set prev_nid = cur_nid > 1 ? cur_nid - 1 : 1 %}
+{% set next_nid = (ep_total > 0 and cur_nid < ep_total) ? cur_nid + 1 : cur_nid %}
+{% set ep_title = manga_ep.name|default('第' ~ cur_nid ~ '话') %}
+{% set has_prev = cur_nid > 1 %}
+{% set has_next = ep_total > 0 and cur_nid < ep_total %}
+{% set play_fav_id = mac_user_fav_id(obj.manga_id, 12) %}
+{% set play_url = mac_url_manga_play(obj, {sid: cur_sid, nid: cur_nid}) %}
+{% set detail_url = mac_url_manga_detail(obj) %}
+{% set _ph = maccms.path_tpl ~ 'page-builder-components/manga_player/assets/img/loading.svg' %}
+
+<div class="manga-player{% if not can_read %} is-locked{% endif %}" data-component="manga_player" data-mac-manga-player
+     data-mid="12" data-id="{{ obj.manga_id|default('') }}"
+     data-mac-manga-name="{{ obj.manga_name }}"
+     data-mac-manga-pic="{{ mac_url_img(obj.manga_pic) }}"
+     data-mac-manga-part="{{ ep_title }}"
+     data-jumpurl="{{ obj.manga_jumpurl|default('') }}"
+     data-popedom-code="{{ _popedom.code|default(1) }}"
+     data-prev-url="{{ has_prev ? mac_url_manga_play(obj, {sid: cur_sid, nid: prev_nid}) : '' }}"
+     data-next-url="{{ has_next ? mac_url_manga_play(obj, {sid: cur_sid, nid: next_nid}) : '' }}">
+  <header class="manga-player__top">
+    <a class="manga-player__back" href="{{ detail_url }}" data-lang-aria-label="manga_back_detail" data-mac-manga-back>
+      {% include "page-builder-components/_shared/component_icon.twig" with { component: 'manga_player', name: 'chevron-right', class: 'manga-player__back-ico' } %}
+    </a>
+    <div class="manga-player__head">
+      <h1 class="manga-player__ep">{{ ep_title }}</h1>
+      <p class="manga-player__sub">{{ obj.manga_name }} · <span data-lang="art_read_chapter_total">共</span>{{ ep_total }}<span data-lang="string_manga_hua">话</span></p>
+    </div>
+    <button type="button" class="manga-player__share"
+            data-mac-share-open
+            data-mac-share-url="{{ play_url }}"
+            data-mac-share-title="{{ obj.manga_name }} {{ ep_title }}"
+            data-lang-aria-label="manga_share">
+      {% include "page-builder-components/_shared/component_icon.twig" with { component: 'manga_player', name: 'icon-share', class: 'manga-player__share-ico' } %}
+    </button>
+  </header>
+
+  <div class="manga-player__stage" id="manga-player-stage">
+    {% if can_read %}
+      {% if img_list|length %}
+      <div class="manga-player__pages">
+        {% for img in img_list %}
+          {% set src = mac_url_img(img|trim) %}
+          {% if src %}
+          <figure class="manga-player__page">
+            <img src="{{ loop.first ? src : _ph }}"
+                 {% if not loop.first %}data-mac-manga-lazy="{{ src }}"{% endif %}
+                 alt="{{ obj.manga_name }} {{ ep_title }} 第{{ loop.index }}页"
+                 loading="{{ loop.first ? 'eager' : 'lazy' }}"
+                 decoding="async">
+          </figure>
+          {% endif %}
+        {% endfor %}
+      </div>
+      {% else %}
+        {% include "page-builder-components/empty_state/template.twig" with {props: {title: '本话暂无图片', title_lang: 'manga_empty_tip', preset: ''}} %}
+      {% endif %}
+    {% else %}
+    {% include "page-builder-components/_shared/player_popedom_gate.twig" with {obj: obj, param: param, popedom: _popedom, mid: 12} %}
+    {% endif %}
+  </div>
+
+  <nav class="manga-player__bar" data-lang-aria-label="manga_read_actions">
+    <a class="manga-player__bar-item" href="{{ detail_url }}">
+      {% include "page-builder-components/_shared/component_icon.twig" with { component: 'manga_player', name: 'channel-manga', class: 'manga-player__bar-ico' } %}
+      <span data-lang="manga_detail">详情</span>
+    </a>
+    {% if has_prev %}
+    <a class="manga-player__bar-item manga-player__bar-item--primary" href="{{ mac_url_manga_play(obj, {sid: cur_sid, nid: prev_nid}) }}">
+      {% include "page-builder-components/_shared/component_icon.twig" with { component: 'manga_player', name: 'chevron-right', class: 'manga-player__bar-ico manga-player__bar-ico--prev' } %}
+      <span data-lang="manga_prev">上一话</span>
+    </a>
+    {% else %}
+    <span class="manga-player__bar-item manga-player__bar-item--primary is-disabled" aria-disabled="true">
+      {% include "page-builder-components/_shared/component_icon.twig" with { component: 'manga_player', name: 'chevron-right', class: 'manga-player__bar-ico manga-player__bar-ico--prev' } %}
+      <span data-lang="manga_prev">上一话</span>
+    </span>
+    {% endif %}
+    {% if has_next %}
+    <a class="manga-player__bar-item manga-player__bar-item--primary" href="{{ mac_url_manga_play(obj, {sid: cur_sid, nid: next_nid}) }}">
+      {% include "page-builder-components/_shared/component_icon.twig" with { component: 'manga_player', name: 'chevron-right', class: 'manga-player__bar-ico manga-player__bar-ico--next' } %}
+      <span data-lang="manga_next">下一话</span>
+    </a>
+    {% else %}
+    <span class="manga-player__bar-item manga-player__bar-item--primary is-disabled" aria-disabled="true">
+      {% include "page-builder-components/_shared/component_icon.twig" with { component: 'manga_player', name: 'chevron-right', class: 'manga-player__bar-ico manga-player__bar-ico--next' } %}
+      <span data-lang="manga_next">下一话</span>
+    </span>
+    {% endif %}
+    <button type="button"
+            class="manga-player__bar-item mac_ulog{% if play_fav_id %} is_fav{% endif %}"
+            data-type="2" data-mid="12" data-id="{{ obj.manga_id }}"
+            data-uid="{{ play_fav_id ?: '' }}">
+      {% include "page-builder-components/_shared/component_icon.twig" with { component: 'manga_player', name: 'icon-fav', class: 'manga-player__bar-ico' } %}
+      <span>{% if play_fav_id %}<span data-lang="string_isfav">已收藏</span>{% else %}<span data-lang="string_fav">收藏</span>{% endif %}</span>
+    </button>
+    <button type="button" class="manga-player__bar-item" data-mac-manga-catalog-open aria-expanded="false">
+      {% include "page-builder-components/_shared/component_icon.twig" with { component: 'manga_player', name: 'film', class: 'manga-player__bar-ico' } %}
+      <span data-lang="manga_toc">目录</span>
+    </button>
+  </nav>
+
+  {% if manga_from.urls|default({})|length %}
+  <aside class="manga-player__catalog" data-mac-manga-catalog hidden aria-hidden="true">
+    <div class="manga-player__catalog-mask" data-mac-manga-catalog-close tabindex="-1"></div>
+    <div class="manga-player__catalog-panel" role="dialog" aria-modal="true" data-lang-aria-label="manga_catalog_aria">
+      <div class="manga-player__catalog-head">
+        <div>
+          <h2 class="manga-player__catalog-title" data-lang="manga_toc">目录</h2>
+          <p class="manga-player__catalog-sub">{{ obj.manga_name }} · <span data-lang="art_read_chapter_total">共</span>{{ ep_total }}<span data-lang="string_manga_hua">话</span></p>
+        </div>
+        <button type="button" class="manga-player__catalog-close" data-mac-manga-catalog-close data-lang-aria-label="string_close">×</button>
+      </div>
+      <div class="manga-player__catalog-list">
+        {% for nid, ep in manga_from.urls|default({}) %}
+        <a class="manga-player__catalog-item{% if nid == cur_nid %} is-cur{% endif %}"
+           href="{{ mac_url_manga_play(obj, {sid: cur_sid, nid: nid}) }}"
+           data-mac-manga-catalog-item
+           data-nid="{{ nid }}">
+          <span class="manga-player__catalog-no">{{ nid }}</span>
+          <span class="manga-player__catalog-name">{{ ep.name|default('第' ~ nid ~ '话') }}</span>
+          {% if nid == cur_nid %}
+          <span class="manga-player__catalog-now" data-lang="manga_reading">当前</span>
+          {% endif %}
+          <span class="manga-player__catalog-read" data-lang="manga_read_done" hidden>已读</span>
+        </a>
+        {% endfor %}
+      </div>
+    </div>
+  </aside>
+  {% endif %}
+
+  {% if can_read %}
+  <div class="mac_ulog_set hide" data-mac-manga-ulog
+       data-mid="12" data-id="{{ obj.manga_id }}"
+       data-sid="{{ cur_sid }}" data-nid="{{ cur_nid }}" data-type="4"></div>
+  {% endif %}
+</div>

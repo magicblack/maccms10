@@ -113,7 +113,7 @@ class Recommend extends Base
         $rows = Db::name('Vod')
             ->alias('c')
             ->join($pre . 'content_quality q', 'q.mid = 1 and q.content_id = c.vod_id', 'inner')
-            ->field('c.vod_id,c.vod_name,c.vod_pic,c.vod_score,c.vod_year,c.vod_area,c.vod_remarks,c.type_id')
+            ->field('c.vod_id,c.vod_name,c.vod_pic,c.vod_score,c.vod_year,c.vod_area,c.vod_remarks,c.vod_duration,c.type_id')
             ->where('c.vod_status', 1)
             ->whereIn('c.type_id', $typeIds)
             ->order('q.score_total desc')
@@ -140,7 +140,7 @@ class Recommend extends Base
         $rows = Db::name('Vod')
             ->alias('c')
             ->join($pre . 'content_quality q', 'q.mid = 1 and q.content_id = c.vod_id', 'inner')
-            ->field('c.vod_id,c.vod_name,c.vod_pic,c.vod_score,c.vod_year,c.vod_area,c.vod_remarks,c.type_id')
+            ->field('c.vod_id,c.vod_name,c.vod_pic,c.vod_score,c.vod_year,c.vod_area,c.vod_remarks,c.vod_duration,c.type_id')
             ->where('c.vod_status', 1)
             ->order('q.score_total desc')
             ->limit($limit)
@@ -156,6 +156,8 @@ class Recommend extends Base
      */
     private function formatVodRows($rows)
     {
+        $rows = is_array($rows) ? $rows : [];
+        mac_vod_rows_episode_remarks($rows);
         $items = [];
         foreach ($rows as $row) {
             $items[] = [
@@ -166,6 +168,7 @@ class Recommend extends Base
                 'vod_year'    => (string)$row['vod_year'],
                 'vod_area'    => (string)$row['vod_area'],
                 'vod_remarks' => (string)$row['vod_remarks'],
+                'vod_duration' => (string)($row['vod_duration'] ?? ''),
                 'type_id'     => intval($row['type_id']),
             ];
         }

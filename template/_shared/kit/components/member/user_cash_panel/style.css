@@ -1,0 +1,41 @@
+/* user_cash panel — bundled from _shared/assets/css/member/cash.css */
+.page-member--cash .member-tabs--cash {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.page-member--cash .member-tabs__item {
+  appearance: none;
+  display: inline-flex;
+  align-items: center;
+  min-height: 32px;
+  padding: 0 14px;
+  border: 0;
+  border-radius: 999px;
+  background: var(--c-surface-2);
+  color: var(--c-text-muted);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.page-member--cash .member-tabs__item:hover {
+  color: var(--c-accent);
+  background: var(--c-accent-soft);
+}
+
+.page-member--cash .member-tabs__item.active {
+  background: var(--c-accent);
+  color: #fff;
+  font-weight: 600;
+}
+
+.page-member--cash .noshow-content {
+  display: none;
+}
+
+.page-member--cash .show-content {
+  display: block;
+}

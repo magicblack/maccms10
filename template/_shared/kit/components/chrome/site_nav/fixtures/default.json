@@ -1,0 +1,13 @@
+{
+    "props": {
+        "max": 8,
+        "show_search": true
+    },
+    "context": {
+        "maccms": {
+            "path": "/",
+            "path_tpl": "/template/site/",
+            "site_name": "演示站点"
+        }
+    }
+}

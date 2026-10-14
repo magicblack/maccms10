@@ -44,6 +44,9 @@ class VodPlayer extends Base
                 $param['content_lang'] = [];
             }
             unset($param['content_lang'][mac_content_lang_default()]);
+            if (isset($param['parse'])) {
+                $param['parse'] = trim((string)$param['parse']);
+            }
             $list[$param['from']] = $param;
             $sort=[];
             foreach ($list as $k=>&$v){
@@ -60,8 +63,10 @@ class VodPlayer extends Base
             if($res===false){
                 return $this->ajaxErrorWithFreshToken(lang('wirte_err_codefile'));
             }
+            config($this->_pre, $list);
+            $this->_player_config_refresh();
             cache('cache_data','1');
-            return $this->success(lang('save_ok'));
+            return $this->success(lang('save_ok') . $this->playerConfigWarning($param, $code));
         }
 
         $info = $list[$param['id']] ?? [];
@@ -115,6 +120,8 @@ class VodPlayer extends Base
         if($res===false){
             return $this->error(lang('del_err'));
         }
+        config($this->_pre, $list);
+        $this->_player_config_refresh();
         cache('cache_data','1');
         return $this->success(lang('del_ok'));
     }
@@ -138,9 +145,30 @@ class VodPlayer extends Base
             if($res===false){
                 return $this->error(lang('save_err'));
             }
+            config($this->_pre, $list);
+            $this->_player_config_refresh();
             return $this->success(lang('save_ok'));
         }
         return $this->error(lang('param_err'));
+    }
+
+    /**
+     * 保存/导入后的配置提醒：前台只有 ps=1 才用解析地址，否则直接执行 static/player/{from}.js，
+     * 两者都没有时该线路什么都不渲染。
+     */
+    private function playerConfigWarning(array $info, $code)
+    {
+        if ((string)($info['ps'] ?? '0') === '1') {
+            return '';
+        }
+        $warn = [];
+        if (trim((string)($info['parse'] ?? '')) !== '') {
+            $warn[] = lang('admin/vodplayer/warn_parse_off');
+        }
+        if (trim((string)$code) === '') {
+            $warn[] = lang('admin/vodplayer/warn_code_empty');
+        }
+        return $warn ? ' ' . implode(' ', $warn) : '';
     }
 
     public function export()
@@ -173,34 +201,51 @@ class VodPlayer extends Base
             }
             unset($param['__token__']);
             $file = $this->request->file('file');
+            if (empty($file)) {
+                return $this->ajaxErrorWithFreshToken(lang('param_err'));
+            }
             $info = $file->rule('uniqid')->validate(['size' => 10240000, 'ext' => 'txt']);
             if ($info) {
-                $data = json_decode(base64_decode(file_get_contents($info->getpathName())), true);
+                $raw = trim((string)file_get_contents($info->getpathName()));
                 @unlink($info->getpathName());
-                if ($data) {
-                    if (empty($data['status']) || empty($data['from']) || empty($data['sort'])) {
-                        return $this->ajaxErrorWithFreshToken(lang('format_err'));
-                    }
-                    if (strpos($data['from'], '.') !== false || strpos($data['from'], '/') !== false || strpos($data['from'], '\\') !== false) {
-                        $this->error(lang('param_err'));
-                        return;
-                    }
-                    $code = $data['code'];
-                    unset($data['code']);
-
-                    $list = config($this->_pre);
-                    $list[$data['from']] = $data;
-                    $res = mac_arr2file(APP_PATH . 'extra/' . $this->_pre . '.php', $list);
-                    if ($res === false) {
-                        return $this->ajaxErrorWithFreshToken(lang('write_err_config'));
-                    }
-
-                    $res = fwrite(fopen('./static/player/' . $data['from'] . '.js', 'wb'), $code);
-                    if ($res === false) {
-                        return $this->ajaxErrorWithFreshToken(lang('wirte_err_codefile'));
-                    }
+                // 导出文件是 base64(json)；部分资源站直接给明文 json，两种都接受
+                $data = json_decode((string)base64_decode($raw, true), true);
+                if (!is_array($data)) {
+                    $data = json_decode($raw, true);
                 }
-                return $this->success(lang('import_ok'));
+                if (!is_array($data)) {
+                    // 以前解不开时直接返回“导入成功”，管理员以为导进去了，前台却找不到播放器
+                    return $this->ajaxErrorWithFreshToken(lang('format_err'));
+                }
+                // status 为 "0"（导出时是禁用状态）也是合法文件，只校验字段存在
+                if (!isset($data['status']) || empty($data['from']) || !isset($data['sort']) || !isset($data['code'])) {
+                    return $this->ajaxErrorWithFreshToken(lang('format_err'));
+                }
+                $data['from'] = trim((string)$data['from']);
+                if (strpos($data['from'], '.') !== false || strpos($data['from'], '/') !== false || strpos($data['from'], '\\') !== false) {
+                    return $this->ajaxErrorWithFreshToken(lang('param_err'));
+                }
+                $code = $data['code'];
+                unset($data['code']);
+                if (isset($data['parse'])) {
+                    $data['parse'] = trim((string)$data['parse']);
+                }
+
+                $list = config($this->_pre);
+                $list[$data['from']] = $data;
+                $res = mac_arr2file(APP_PATH . 'extra/' . $this->_pre . '.php', $list);
+                if ($res === false) {
+                    return $this->ajaxErrorWithFreshToken(lang('write_err_config'));
+                }
+
+                $res = fwrite(fopen('./static/player/' . $data['from'] . '.js', 'wb'), $code);
+                if ($res === false) {
+                    return $this->ajaxErrorWithFreshToken(lang('wirte_err_codefile'));
+                }
+                config($this->_pre, $list);
+                $this->_player_config_refresh();
+                cache('cache_data','1');
+                return $this->success(lang('import_ok') . $this->playerConfigWarning($data, $code));
             } else {
                 return $this->ajaxErrorWithFreshToken($file->getError());
             }

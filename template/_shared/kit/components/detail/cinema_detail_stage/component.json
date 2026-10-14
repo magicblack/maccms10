@@ -1,0 +1,18 @@
+{
+    "id": "cinema_detail_stage",
+    "label_key": "admin/themedesign/pb_block_cinema_detail_stage",
+    "category": "detail",
+    "kind": "detail",
+    "palette": false,
+    "styleMode": "component",
+    "peer_styles": [],
+    "assets": {
+        "css": "style.css",
+        "js": "script.js"
+    },
+    "props": {},
+    "context": {
+        "pageTypes": ["detail"],
+        "requires": ["obj.vod_id"]
+    }
+}

@@ -1,0 +1,80 @@
+{
+    "template": "art\/show",
+    "layout": "base",
+    "page_type": "list",
+    "layout_mod": "list",
+    "regions": {
+        "site_header": [
+            {
+                "component": "site_nav",
+                "props": {
+                    "max": 8,
+                    "show_search": true,
+                    "type_ids": []
+                }
+            }
+        ],
+        "hero": [],
+        "channel": [
+            {
+                "component": "channel_strip",
+                "props": {
+                    "compact": true,
+                    "chip_limit": 11,
+                    "show_icons": true,
+                    "show_more": true,
+                    "type_ids": []
+                }
+            }
+        ],
+        "content": [
+            {
+                "component": "filter_panel",
+                "props": {
+                    "preset": "art_show"
+                }
+            },
+            {
+                "component": "section",
+                "props": {
+                    "title": "筛选结果",
+                    "variant": "plain",
+                    "icon": "newspaper",
+                    "head_sort": "content_show",
+                    "title_key": "string_filter_results"
+                },
+                "slots": {
+                    "body": [
+                        {
+                            "component": "art_list",
+                            "props": {
+                                "num": 24,
+                                "by": "time",
+                                "order": "desc",
+                                "type": "current",
+                                "render": "grid",
+                                "card": "poster-v",
+                                "ratio": "3-4",
+                                "paging": true,
+                                "pageurl": "art\/show"
+                            }
+                        }
+                    ]
+                }
+            }
+        ],
+        "sidebar": [],
+        "footer": [
+            {
+                "component": "site_footer",
+                "props": {
+                    "variant": "default",
+                    "copyright": "",
+                    "show_nav": true,
+                    "show_friends": true,
+                    "logo": ""
+                }
+            }
+        ]
+    }
+}

@@ -3,6 +3,9 @@ namespace app\admin\controller;
 use think\Db;
 use think\Cache;
 use app\common\util\Pinyin;
+use app\common\util\ResourceHubSites;
+use app\common\util\CollectHealth;
+use app\common\util\HttpClient;
 
 /**
  * 资源站中心控制器
@@ -26,35 +29,15 @@ class ResourceHub extends Base
      */
     private function validateRemoteUrl($url)
     {
-        $parts = parse_url($url);
+        $parts = parse_url((string)$url);
         if (empty($parts['scheme']) || !in_array(strtolower($parts['scheme']), ['http', 'https'], true)) {
             return false;
         }
         if (empty($parts['host'])) {
             return false;
         }
-
-        $host = $parts['host'];
-
-        // 解析 IP（防止 DNS rebinding 需要在 curl 层面处理，这里做首次校验）
-        $ip = gethostbyname($host);
-
-        // 如果解析失败（返回原始 hostname），拒绝
-        if ($ip === $host && !filter_var($host, FILTER_VALIDATE_IP)) {
-            return false;
-        }
-
-        // 拒绝内网 IP、保留地址、回环地址
-        if (!filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE)) {
-            return false;
-        }
-
-        // 额外拒绝云元数据地址
-        if (strpos($ip, '169.254.') === 0) {
-            return false;
-        }
-
-        return true;
+        // 与内容/接口检测同一公网判定（含 CGNAT、链路本地、数字写法 IP、仅 IPv6 主机）
+        return HttpClient::resolvePublicIp($parts['host']) !== '';
     }
 
     /**
@@ -66,141 +49,18 @@ class ResourceHub extends Base
         if (!$this->validateRemoteUrl($url)) {
             return false;
         }
-        // 采集站等第三方源可能自签/过期/域名不匹配，显式关闭 TLS 校验以保兼容。
-        return mac_curl_get($url, [], '', false);
+        // 采集站等第三方源可能自签/过期/域名不匹配，显式关闭 TLS 校验以保兼容；
+        // 连接钉在已校验的公网 IP，跳转逐跳重新校验（mac_curl_get 会自动跟随 302 绕过首跳校验）
+        return HttpClient::safeGet($url, 30, false);
     }
 
-    // ─── 云端资源站目录配置 ─────────────────────────────
-    /** 云端接口地址（返回加密 JSON） */
-    const CLOUD_API_URL = 'https://api.maccms.ai/sites.json';
-    /** 加密密钥（AES-256-CBC），与云端脚本对齐 */
-    const CLOUD_ENCRYPT_KEY = 'maccms_rh_2024_s3cr3t_k3y!@#$%^&';
-    /** 本地缓存时间（秒），预设 3 小时 */
-    const CLOUD_CACHE_TTL = 10800;
-
     /**
-     * 从云端拉取资源站目录（加密传输 + 本地缓存）
-     * 增强：
-     *   1. 缓存未过期时直接返回，不请求远端
-     *   2. 缓存过期后请求远端，通过 hash 比对判断数据是否有更新，无更新则延长缓存不覆盖
-     *   3. 严格验证远端数据格式，格式错误时保留旧缓存数据
-     * @return array 资源站列表，失败返回空数组（若有旧缓存则返回旧缓存）
+     * 从云端拉取资源站目录（加密传输 + 本地缓存），逻辑见 ResourceHubSites::cloud()
+     * @return array
      */
     private function fetchCloudSites()
     {
-        $cacheKey     = 'resource_hub_cloud_sites';
-        $cacheHashKey = 'resource_hub_cloud_sites_hash';
-
-        $cached = Cache::get($cacheKey);
-
-        // 缓存有效时直接返回
-        if (!empty($cached) && is_array($cached)) {
-            return $cached;
-        }
-
-        // 缓存过期，尝试从远端拉取
-        try {
-            $raw = @file_get_contents(self::CLOUD_API_URL);
-            if (empty($raw)) {
-                // 远端无响应，返回旧缓存（若有）
-                return $this->fallbackCloudCache($cacheKey);
-            }
-
-            $payload = json_decode($raw, true);
-            if (!$payload || empty($payload['data']) || empty($payload['iv'])) {
-                // 远端格式错误（外层 JSON 结构不符），保留旧缓存
-                return $this->fallbackCloudCache($cacheKey);
-            }
-
-            // AES-256-CBC 解密
-            $decrypted = openssl_decrypt(
-                base64_decode($payload['data']),
-                'AES-256-CBC',
-                self::CLOUD_ENCRYPT_KEY,
-                OPENSSL_RAW_DATA,
-                base64_decode($payload['iv'])
-            );
-
-            if ($decrypted === false) {
-                // 解密失败（密钥不匹配或数据损毁），保留旧缓存
-                return $this->fallbackCloudCache($cacheKey);
-            }
-
-            $sites = json_decode($decrypted, true);
-
-            // ── 格式严格验证 ──
-            if (!$this->validateCloudSitesFormat($sites)) {
-                // 远端数据格式错误，不更新，保留旧缓存
-                return $this->fallbackCloudCache($cacheKey);
-            }
-
-            // ── Hash 比对：远端没更新就不覆盖 ──
-            $newHash = md5($decrypted);
-            $oldHash = Cache::get($cacheHashKey);
-            if ($oldHash === $newHash && !empty($cached)) {
-                // 数据未变化，仅延长缓存时间
-                Cache::set($cacheKey, $cached, self::CLOUD_CACHE_TTL);
-                return $cached;
-            }
-
-            // 数据有更新或首次拉取，写入缓存 + 备份缓存
-            Cache::set($cacheKey, $sites, self::CLOUD_CACHE_TTL);
-            Cache::set($cacheKey . '_backup', $sites, self::CLOUD_CACHE_TTL * 10);
-            Cache::set($cacheHashKey, $newHash, self::CLOUD_CACHE_TTL * 3);
-            return $sites;
-
-        } catch (\Exception $e) {
-            return $this->fallbackCloudCache($cacheKey);
-        }
-    }
-
-    /**
-     * 回退：尝试从持久化缓存文件读取旧数据
-     * 若完全无数据则返回空数组
-     */
-    private function fallbackCloudCache($cacheKey)
-    {
-        // 尝试读取过期但仍存在的缓存（部分缓存驱动支持）
-        $old = Cache::get($cacheKey . '_backup');
-        if (!empty($old) && is_array($old)) {
-            // 延长主缓存，避免频繁请求失败的远端
-            Cache::set($cacheKey, $old, self::CLOUD_CACHE_TTL);
-            return $old;
-        }
-        return [];
-    }
-
-    /**
-     * 严格验证云端资源站数据格式
-     * 必须是数组，每个元素都需包含必要字段
-     * @param mixed $sites
-     * @return bool
-     */
-    private function validateCloudSitesFormat($sites)
-    {
-        if (!is_array($sites) || empty($sites)) {
-            return false;
-        }
-
-        // 必要字段（每个资源站至少需要这些字段）
-        $requiredFields = ['name', 'url'];
-
-        foreach ($sites as $site) {
-            if (!is_array($site)) {
-                return false;
-            }
-            foreach ($requiredFields as $field) {
-                if (!isset($site[$field]) || $site[$field] === '') {
-                    return false;
-                }
-            }
-            // url 必须是合法的 http/https 地址
-            if (!preg_match('#^https?://#i', $site['url'])) {
-                return false;
-            }
-        }
-
-        return true;
+        return ResourceHubSites::cloud();
     }
 
     /**
@@ -209,12 +69,7 @@ class ResourceHub extends Base
      */
     private function loadCustomSites()
     {
-        $file = APP_PATH . 'extra/resource_sites_custom.php';
-        if (is_file($file)) {
-            $data = include $file;
-            return is_array($data) ? $data : [];
-        }
-        return [];
+        return ResourceHubSites::custom();
     }
 
     /**
@@ -224,7 +79,7 @@ class ResourceHub extends Base
      */
     private function saveCustomSites(array $sites)
     {
-        return mac_arr2file(APP_PATH . 'extra/resource_sites_custom.php', $sites);
+        return ResourceHubSites::saveCustom($sites);
     }
 
     /**
@@ -314,6 +169,16 @@ class ResourceHub extends Base
         foreach (['main', 'vod', 'short', 'anime', 'art', 'midnight', 'custom'] as $key) {
             if (isset($grouped[$key]) && !empty($grouped[$key]['sites'])) {
                 $ordered[$key] = $grouped[$key];
+            }
+        }
+
+        // 接口可用性状态（无记录视为启用）
+        $healthAll = CollectHealth::all();
+        foreach ($ordered as $zk => $zone) {
+            foreach ($zone['sites'] as $si => $site) {
+                $hk = CollectHealth::key($site['url']);
+                $ordered[$zk]['sites'][$si]['health_key'] = $hk;
+                $ordered[$zk]['sites'][$si]['health'] = isset($healthAll[$hk]) ? $healthAll[$hk] : null;
             }
         }
 
@@ -757,19 +622,78 @@ class ResourceHub extends Base
             return json(['code' => 0, 'msg' => lang('admin/resourcehub/get_data_fail')]);
         }
 
-        $player_froms = [];
+        $player_samples = $this->detectPlayerFroms($html, $type);
+        if (empty($player_samples)) {
+            return json(['code' => 0, 'msg' => lang('admin/resourcehub/no_player_found')]);
+        }
+
+        $res = $this->installAutoPlayers($player_samples);
+        if ($res === false) {
+            return json(['code' => 0, 'msg' => lang('write_err_config')]);
+        }
+
+        $player_froms = array_keys($player_samples);
+        $msg = sprintf(lang('admin/resourcehub/auto_player_ok'), $res['added'], count($player_froms));
+        if (!empty($res['iframe'])) {
+            $msg .= ' ' . sprintf(lang('admin/resourcehub/auto_player_iframe'), implode(', ', $res['iframe']));
+        }
+        if ($res['repaired'] > 0) {
+            $msg .= ' ' . sprintf(lang('admin/resourcehub/auto_player_repaired'), $res['repaired']);
+        }
+        return json([
+            'code' => 1,
+            'msg' => $msg,
+            'data' => ['players' => $player_froms, 'added' => $res['added'], 'repaired' => $res['repaired'], 'iframe' => $res['iframe']]
+        ]);
+    }
+
+    /**
+     * 从资源站 ac=detail 的返回里收集播放器标识，以及每个标识下的若干条样例播放地址。
+     *
+     * @return array [from => [url, ...]]，保持资源站给出的顺序
+     */
+    private function detectPlayerFroms($html, $type)
+    {
+        $samples = [];
+        $push = function ($from, $url_str) use (&$samples) {
+            $from = trim((string)$from);
+            if ($from === '') {
+                return;
+            }
+            if (!isset($samples[$from])) {
+                $samples[$from] = [];
+            }
+            foreach (explode('#', (string)$url_str) as $ep) {
+                if (count($samples[$from]) >= 5) {
+                    break;
+                }
+                $ep = trim($ep);
+                if ($ep === '') {
+                    continue;
+                }
+                $pos = strpos($ep, '$');
+                $u = trim($pos === false ? $ep : substr($ep, $pos + 1));
+                // “名称$地址$来源”三段式时只取地址
+                if (($p2 = strpos($u, '$')) !== false) {
+                    $u = substr($u, 0, $p2);
+                }
+                if ($u !== '') {
+                    $samples[$from][] = $u;
+                }
+            }
+        };
+
         if ($type == '2') {
             $json = json_decode($html, true);
             if ($json && !empty($json['list'])) {
                 foreach ($json['list'] as $item) {
-                    if (!empty($item['vod_play_from'])) {
-                        $froms = explode('$$$', $item['vod_play_from']);
-                        foreach ($froms as $from) {
-                            $from = trim($from);
-                            if (!empty($from) && !in_array($from, $player_froms)) {
-                                $player_froms[] = $from;
-                            }
-                        }
+                    if (empty($item['vod_play_from'])) {
+                        continue;
+                    }
+                    $froms = explode('$$$', $item['vod_play_from']);
+                    $urls = explode('$$$', (string)($item['vod_play_url'] ?? ''));
+                    foreach ($froms as $i => $from) {
+                        $push($from, $urls[$i] ?? '');
                     }
                 }
             }
@@ -777,86 +701,175 @@ class ResourceHub extends Base
             $xml = @simplexml_load_string($html);
             if ($xml && $xml->list->video) {
                 foreach ($xml->list->video as $video) {
-                    $dt = (string)$video->dt;
-                    if (!empty($dt)) {
-                        $froms = explode('$$$', $dt);
-                        foreach ($froms as $from) {
-                            $from = trim($from);
-                            if (!empty($from) && !in_array($from, $player_froms)) {
-                                $player_froms[] = $from;
+                    $found = false;
+                    if (isset($video->dl->dd)) {
+                        foreach ($video->dl->dd as $dd) {
+                            $flag = (string)$dd['flag'];
+                            if ($flag !== '') {
+                                $push($flag, (string)$dd);
+                                $found = true;
                             }
+                        }
+                    }
+                    if (!$found) {
+                        $dt = (string)$video->dt;
+                        foreach (explode('$$$', $dt) as $from) {
+                            $push($from, '');
                         }
                     }
                 }
             }
         }
+        return $samples;
+    }
 
-        if (empty($player_froms)) {
-            return json(['code' => 0, 'msg' => lang('admin/resourcehub/no_player_found')]);
-        }
-
-        // 获取现有播放器配置
-        $vodplayer_list = config('vodplayer') ?: [];
-        $existing_froms = array_keys($vodplayer_list);
-
-        $added = 0;
-        foreach ($player_froms as $from) {
-            if (in_array($from, $existing_froms)) {
-                continue;
+    /**
+     * 根据样例地址判断该线路应使用的播放器类型。
+     *   dplayer：直链媒体（m3u8/mp4/flv…），用本站 DPlayer 直接播放
+     *   iframe ：普通网页地址（资源站“云播/分享页”，自带播放器），只能整页嵌入
+     * 判断不出来（非 URL 的 ID 类地址等）时按 dplayer 处理，保持旧行为。
+     */
+    private function detectPlayerKind(array $urls)
+    {
+        $media = 0;
+        $page = 0;
+        foreach ($urls as $u) {
+            $path = (string)parse_url($u, PHP_URL_PATH);
+            if (preg_match('/\.(m3u8|mp4|flv|mpd|m4v|webm|mkv|mov|ts)$/i', $path)) {
+                $media++;
+            } elseif (preg_match('#^(https?:)?//#i', $u)) {
+                $page++;
             }
+        }
+        return ($page > $media) ? 'iframe' : 'dplayer';
+    }
 
+    /**
+     * 把侦测到的线路写入播放器配置（extra/vodplayer.php + static/player/{from}.js），
+     * 并立即刷新前台 playerconfig.js。
+     *
+     * 已存在的播放器配置不覆盖，但播放器 JS 会按线路类型校正：
+     *   - JS 缺失/为空且未开启解析（ps≠1）→ 前台什么都不渲染，按类型生成；
+     *   - JS 是本站自带模板（DPlayer 或 iframe 的任一版本）但类型不对 → 改写为正确模板
+     *     （例如分享页线路用了 DPlayer、或管理员复制 DPlayer 改编码给云播线路用）。
+     * 管理员自己写的 JS（非自带模板）一律不动。
+     *
+     * @param array $player_samples detectPlayerFroms() 的返回
+     * @return array|false ['added'=>int,'repaired'=>int,'iframe'=>[from...]]；写配置失败返回 false
+     */
+    private function installAutoPlayers(array $player_samples)
+    {
+        $vodplayer_list = config('vodplayer') ?: [];
+        $added = 0;
+        $repaired = 0;
+        $iframe = [];
+        $changed = false;
+
+        foreach ($player_samples as $from => $urls) {
             // 安全检查：播放器标识只允许字母/数字/下划线/短横线（防止目录穿越）
             if (!preg_match('/^[a-zA-Z0-9_-]{1,32}$/', $from)) {
                 continue;
             }
-
-            // 自动添加播放器
-            $player_data = [
-                'status' => '1',
-                'from' => $from,
-                'show' => $from . '播放器',
-                'des' => '自动添加',
-                'target' => '_self',
-                'ps' => '0',
-                'parse' => '',
-                'sort' => '800',
-                'tip' => '自动配置',
-                'id' => $from,
-            ];
-
-            $vodplayer_list[$from] = $player_data;
-            $added++;
-
-            // 创建播放器JS文件（使用DPlayer作为默认）
-            $js_content = $this->generatePlayerJs($from);
+            $kind = $this->detectPlayerKind($urls);
             $js_path = ROOT_PATH . 'static/player/' . $from . '.js';
-            if (!file_exists($js_path)) {
-                @file_put_contents($js_path, $js_content);
+            $exists = isset($vodplayer_list[$from]);
+
+            if (!$exists) {
+                $vodplayer_list[$from] = [
+                    'status' => '1',
+                    'from' => $from,
+                    'show' => sprintf(lang('admin/resourcehub/auto_player_show'), $from),
+                    'des' => lang('admin/resourcehub/auto_player_des'),
+                    'target' => '_self',
+                    'ps' => '0',
+                    'parse' => '',
+                    // 直链线路排在网页线路前面：前台按 sort 排序线路，默认播放第一条
+                    'sort' => $kind === 'iframe' ? '799' : '800',
+                    'tip' => lang('admin/resourcehub/auto_player_tip'),
+                    'id' => $from,
+                ];
+                $changed = true;
+                $added++;
+                if ($kind === 'iframe') {
+                    $iframe[] = $from;
+                }
+            } elseif ((string)($vodplayer_list[$from]['ps'] ?? '0') === '1') {
+                // 走解析接口时前台用 parse.js，不读该 JS
+                continue;
+            }
+
+            $js = is_file($js_path) ? (string)@file_get_contents($js_path) : '';
+            $current = trim($js) === '' ? '' : $this->stockPlayerJsKind($js);
+            if ($current === $kind) {
+                continue;
+            }
+            if ($current === null) {
+                // 自定义 JS，保留
+                continue;
+            }
+            if (@file_put_contents($js_path, $this->generatePlayerJs($from, $kind)) !== false && $exists) {
+                $repaired++;
+                if ($kind === 'iframe') {
+                    $iframe[] = $from;
+                }
             }
         }
 
-        if ($added > 0) {
+        if ($changed) {
             $res = mac_arr2file(APP_PATH . 'extra/vodplayer.php', $vodplayer_list);
             if ($res === false) {
-                return json(['code' => 0, 'msg' => lang('write_err_config')]);
+                return false;
             }
+            config('vodplayer', $vodplayer_list);
+            cache('cache_data', '1');
         }
+        if ($changed || $repaired > 0) {
+            $this->_player_config_refresh();
+        }
+        return ['added' => $added, 'repaired' => $repaired, 'iframe' => $iframe];
+    }
 
-        return json([
-            'code' => 1,
-            'msg' => sprintf(lang('admin/resourcehub/auto_player_ok'), $added, count($player_froms)),
-            'data' => ['players' => $player_froms, 'added' => $added]
-        ]);
+    /**
+     * 判断播放器 JS 是否为本站自带模板，返回其类型：
+     *   'dplayer' —— 嵌入 /static/player/dplayer.html 的单行模板（含历史各版本：有无 ?v=、有无 allowfullscreen）
+     *   'iframe'  —— 直接 iframe 嵌入 MacPlayer.PlayUrl 的模板（static/player/iframe.js）
+     *   null      —— 管理员自定义的 JS
+     */
+    private function stockPlayerJsKind($js)
+    {
+        $js = trim((string)$js);
+        if (strlen($js) > 1024) {
+            return null;
+        }
+        if (preg_match('#^MacPlayer\.Html\s*=\s*\'<iframe border="0" src="\'\+maccms\.path\+\'/static/player/dplayer\.html(\?v=[\w.]+)?"[^\']*></iframe>\';\s*MacPlayer\.Show\(\);?$#', $js)) {
+            return 'dplayer';
+        }
+        if (preg_match('#^MacPlayer\.Html\s*=\s*\'<iframe width="100%" height="100%" src="\'\+MacPlayer\.PlayUrl\+\'"[^\']*></iframe>\';\s*MacPlayer\.Show\(\);?$#', $js)) {
+            return 'iframe';
+        }
+        return null;
     }
 
     /**
      * 生成播放器JS文件内容
+     *   dplayer：与内置 static/player/dplayer.js 相同
+     *   iframe ：与内置 static/player/iframe.js 相同（整页嵌入资源站自带播放页）
      */
-    private function generatePlayerJs($from)
+    private function generatePlayerJs($from, $kind = 'dplayer')
     {
-        return 'MacPlayer.Html = \'<iframe border="0" src="\'+maccms.path+\'/static/player/dplayer.html" width="100%" height="100%" marginWidth="0" frameSpacing="0" marginHeight="0" frameBorder="0" scrolling="no" vspale="0" noResize></iframe>\';
+        if ($kind === 'iframe') {
+            $tpl = ROOT_PATH . 'static/player/iframe.js';
+            $fallback = 'MacPlayer.Html = \'<iframe width="100%" height="100%" src="\'+MacPlayer.PlayUrl+\'" frameborder="0" border="0" marginwidth="0" marginheight="0" scrolling="no" allowfullscreen="allowfullscreen" mozallowfullscreen="mozallowfullscreen" msallowfullscreen="msallowfullscreen" oallowfullscreen="oallowfullscreen" webkitallowfullscreen="webkitallowfullscreen" security="restricted" sandbox="allow-same-origin allow-forms allow-scripts"></iframe>\';
 MacPlayer.Show();
 ';
+        } else {
+            $tpl = ROOT_PATH . 'static/player/dplayer.js';
+            $fallback = 'MacPlayer.Html = \'<iframe border="0" src="\'+maccms.path+\'/static/player/dplayer.html" width="100%" height="100%" marginWidth="0" frameSpacing="0" marginHeight="0" frameBorder="0" scrolling="no" allowfullscreen="true" allow="fullscreen" vspale="0" noResize></iframe>\';
+MacPlayer.Show();
+';
+        }
+        $js = is_file($tpl) ? (string)@file_get_contents($tpl) : '';
+        return trim($js) !== '' ? $js : $fallback;
     }
 
     /**
@@ -864,6 +877,9 @@ MacPlayer.Show();
      */
     public function addToCollect()
     {
+        if (!$this->request->isPost()) {
+            return json(['code' => 0, 'msg' => lang('illegal_request')]);
+        }
         $param = input('post.');
         $name = $param['name'] ?? '';
         $url = $param['url'] ?? '';
@@ -872,6 +888,10 @@ MacPlayer.Show();
 
         if (empty($name) || empty($url)) {
             return json(['code' => 0, 'msg' => lang('param_err')]);
+        }
+        // 入库 / 定时任务 / 自定义站的地址后续会被服务端请求，入口处同样做 SSRF 校验
+        if (!$this->validateRemoteUrl($url)) {
+            return json(['code' => 0, 'msg' => lang('admin/resourcehub/check_fail')]);
         }
 
         // 检查是否已存在
@@ -906,6 +926,9 @@ MacPlayer.Show();
      */
     public function addTimming()
     {
+        if (!$this->request->isPost()) {
+            return json(['code' => 0, 'msg' => lang('illegal_request')]);
+        }
         $param = input('post.');
         $name = $param['name'] ?? '';
         $url = $param['url'] ?? '';
@@ -915,6 +938,10 @@ MacPlayer.Show();
 
         if (empty($name) || empty($url)) {
             return json(['code' => 0, 'msg' => lang('param_err')]);
+        }
+        // 入库 / 定时任务 / 自定义站的地址后续会被服务端请求，入口处同样做 SSRF 校验
+        if (!$this->validateRemoteUrl($url)) {
+            return json(['code' => 0, 'msg' => lang('admin/resourcehub/check_fail')]);
         }
 
         $cjflag = md5($url);
@@ -986,7 +1013,9 @@ MacPlayer.Show();
         $url = $param['url'] ?? '';
         $type = $param['type'] ?? '2';
         $mid = $param['mid'] ?? '1';
-        $h = $param['h'] ?? '24';
+        // 默认不带时间过滤（与经典采集页"进入资源库"链接、以及检测按钮拉取的 total 保持一致），
+        // 否则进入后默认只拉最近24小时数据，页数/数量会与检测结果对不上
+        $h = $param['h'] ?? '';
 
         if (empty($url)) {
             return json(['code' => 0, 'msg' => lang('param_err')]);
@@ -1108,61 +1137,10 @@ MacPlayer.Show();
         $html = $this->fetchRemote($api_url);
         if (empty($html)) return;
 
-        $player_froms = [];
-        if ($type == '2') {
-            $json = json_decode($html, true);
-            if ($json && !empty($json['list'])) {
-                foreach ($json['list'] as $item) {
-                    if (!empty($item['vod_play_from'])) {
-                        $froms = explode('$$$', $item['vod_play_from']);
-                        foreach ($froms as $from) {
-                            $from = trim($from);
-                            if (!empty($from) && !in_array($from, $player_froms)) {
-                                $player_froms[] = $from;
-                            }
-                        }
-                    }
-                }
-            }
-        }
+        $player_samples = $this->detectPlayerFroms($html, $type);
+        if (empty($player_samples)) return;
 
-        if (empty($player_froms)) return;
-
-        $vodplayer_list = config('vodplayer') ?: [];
-        $existing_froms = array_keys($vodplayer_list);
-        $changed = false;
-
-        foreach ($player_froms as $from) {
-            if (in_array($from, $existing_froms)) continue;
-
-            // 安全检查：播放器标识只允许字母/数字/下划线/短横线（防止目录穿越）
-            if (!preg_match('/^[a-zA-Z0-9_-]{1,32}$/', $from)) {
-                continue;
-            }
-
-            $vodplayer_list[$from] = [
-                'status' => '1',
-                'from' => $from,
-                'show' => $from . '播放器',
-                'des' => '自动添加',
-                'target' => '_self',
-                'ps' => '0',
-                'parse' => '',
-                'sort' => '800',
-                'tip' => '自动配置',
-                'id' => $from,
-            ];
-            $changed = true;
-
-            $js_path = ROOT_PATH . 'static/player/' . $from . '.js';
-            if (!file_exists($js_path)) {
-                @file_put_contents($js_path, $this->generatePlayerJs($from));
-            }
-        }
-
-        if ($changed) {
-            mac_arr2file(APP_PATH . 'extra/vodplayer.php', $vodplayer_list);
-        }
+        $this->installAutoPlayers($player_samples);
     }
 
     /**
@@ -1170,6 +1148,9 @@ MacPlayer.Show();
      */
     public function addCustomSite()
     {
+        if (!$this->request->isPost()) {
+            return json(['code' => 0, 'msg' => lang('illegal_request')]);
+        }
         $param = input('post.');
         $name = trim($param['name'] ?? '');
         $url = trim($param['url'] ?? '');
@@ -1179,6 +1160,10 @@ MacPlayer.Show();
 
         if (empty($name) || empty($url)) {
             return json(['code' => 0, 'msg' => lang('param_err')]);
+        }
+        // 入库 / 定时任务 / 自定义站的地址后续会被服务端请求，入口处同样做 SSRF 校验
+        if (!$this->validateRemoteUrl($url)) {
+            return json(['code' => 0, 'msg' => lang('admin/resourcehub/check_fail')]);
         }
 
         $sites = $this->loadCustomSites();
@@ -1239,7 +1224,8 @@ MacPlayer.Show();
     public function poster()
     {
         $param = input();
-        $param['page'] = intval($param['page'] ?? 1) < 1 ? 1 : intval($param['page']);
+        $page = intval(isset($param['page']) ? $param['page'] : 1);
+        $param['page'] = $page < 1 ? 1 : $page;
         $limit = intval($param['limit'] ?? 40);
         if ($limit < 1) $limit = 40;
         if ($limit > 200) $limit = 200;
@@ -1262,12 +1248,17 @@ MacPlayer.Show();
         $order = 'vod_level desc, vod_hits desc';
         $list = Db::name('vod')->where($where)->order($order)->page($param['page'])->limit($param['limit'])->select();
         $total = Db::name('vod')->where($where)->count();
+        $total_pages = $total > 0 ? (int)ceil($total / $limit) : 1;
+        if ($param['page'] > $total_pages) {
+            $param['page'] = $total_pages;
+        }
 
         // 统计已推荐数量
         $recommended_count = Db::name('vod')->where(['vod_status' => ['eq', 1], 'vod_pic' => ['neq', ''], 'vod_level' => ['gt', 0]])->count();
 
         $this->assign('list', $list);
         $this->assign('total', $total);
+        $this->assign('total_pages', $total_pages);
         $this->assign('page', $param['page']);
         $this->assign('limit', $param['limit']);
         $this->assign('filter', $filter);

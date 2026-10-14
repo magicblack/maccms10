@@ -1,0 +1,9 @@
+{
+    "props": {
+        "show_settings": true,
+        "show_share": true,
+        "show_catalog_btn": true,
+        "show_fav": true
+    },
+    "context": []
+}

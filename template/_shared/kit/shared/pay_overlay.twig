@@ -1,0 +1,49 @@
+{# 支付确认弹层 #}
+<div class="member-pay-overlay pay-overlay" id="pay-overlay">
+  <div class="member-pay-modal pay-modal">
+    <div class="member-pay-modal__hd pay-modal-hd">
+      <h3 data-lang="string_user_confirm_pay">确认支付</h3>
+      <button type="button" class="pay-modal-close member-pay-modal__close" aria-label="Close">×</button>
+    </div>
+    <div class="member-pay-modal__bd pay-modal-bd">
+      <div class="order-summary">
+        <div class="order-row">
+          <span class="order-label" data-lang="string_pay_ddbh">订单编号</span>
+          <span class="order-value" id="modal_order_code">-</span>
+        </div>
+        <div class="order-row">
+          <span class="order-label" data-lang="string_pay_ddje">订单金额</span>
+          <span class="order-value price"><span id="modal_order_price">0</span><span data-lang="user_yuan">元</span></span>
+        </div>
+      </div>
+      <div class="pay-loading-panel" id="pay_loading_panel" hidden>
+        <div class="pay-loading-qrcode-block" id="pay_loading_qrcode_block" hidden aria-hidden="true">
+          <div class="pay-loading-qrcode-host" id="pay_loading_qrcode_host"></div>
+          <p class="pay-loading-qrcode-caption" data-lang="string_mac_dkwx">打开微信，扫码支付</p>
+        </div>
+        <div class="pay-loading-spinner-wrap" id="pay_loading_spinner_wrap">
+          <div class="pay-loading-spinner"></div>
+        </div>
+        <h3 id="pay_loading_title" data-lang="pay_waiting_title">等待支付结果</h3>
+        <p id="pay_loading_hint" data-lang="pay_waiting_desc">请在新标签页完成支付，支付成功后本页将自动刷新。</p>
+        <button type="button" class="pay-loading-cancel" data-lang="pay_cancel_btn">我已取消支付</button>
+      </div>
+      <form method="post" action="{{ mac_url('user/gopay') }}" id="payForm" target="_blank">
+        <input type="hidden" name="__token__" value="{{ csrf_token|default('') }}">
+        <input type="hidden" name="order_id" id="modal_order_id" value="">
+        <input type="hidden" name="order_code" id="modal_order_code_input" value="">
+        <input type="hidden" name="payment" id="payment_input" value="">
+        <input type="hidden" name="paytype" id="paytype_input" value="">
+        <div class="pm-section-title" data-lang="string_pay_zffs">支付方式</div>
+        <div class="pm-grid" id="payment_grid">
+          <div class="pm-loading" data-lang="string_topic_feed_loading">加载中…</div>
+        </div>
+        <div id="paytype_box" hidden>
+          <div class="pm-section-title" data-lang="string_pay_zflx">支付类型</div>
+          <div class="pt-grid" id="paytype_grid"></div>
+        </div>
+        <button type="submit" class="pay-confirm-btn member-pay-submit" data-lang="string_user_confirm_pay">确认支付</button>
+      </form>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,40 @@
+{
+    "id": "site_nav",
+    "label_key": "admin/themedesign/pb_block_site_nav",
+    "category": "chrome",
+    "kind": "chrome",
+    "palette": false,
+    "styleMode": "component",
+    "peer_styles": [],
+    "assets": {
+        "css": "style.css",
+        "js": "script.js",
+        "svg": [
+            "icon-search.svg",
+            "icon-menu.svg",
+            "icon-close.svg"
+        ]
+    },
+    "props": {
+        "max": {
+            "type": "number",
+            "default": 8,
+            "min": 1,
+            "max": 20,
+            "trait": "nav_max"
+        },
+        "show_search": {
+            "type": "boolean",
+            "default": true,
+            "trait": "nav_search"
+        },
+        "logo": {
+            "type": "string",
+            "default": ""
+        }
+    },
+    "context": {
+        "pageTypes": ["home", "list", "detail", "member", "rank", "gbook", "play", "special", "gate"],
+        "requires": ["maccms"]
+    }
+}

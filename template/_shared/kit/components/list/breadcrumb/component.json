@@ -1,0 +1,31 @@
+{
+    "id": "breadcrumb",
+    "label_key": "admin/themedesign/pb_block_breadcrumb",
+    "category": "list",
+    "kind": "nav",
+    "peer_styles": [],
+    "assets": {
+        "css": "style.css",
+        "js": "script.js"
+    },
+    "props": {
+        "auto": {
+            "type": "boolean",
+            "default": true,
+            "trait": "breadcrumb_auto"
+        },
+        "sep": {
+            "type": "string",
+            "default": "›",
+            "trait": "breadcrumb_sep"
+        }
+    },
+    "context": {
+        "pageTypes": [
+            "home",
+            "list",
+            "detail"
+        ],
+        "requires": []
+    }
+}

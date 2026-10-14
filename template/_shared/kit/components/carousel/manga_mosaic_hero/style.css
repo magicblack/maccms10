@@ -1,0 +1,316 @@
+@media (min-width: 961px) {
+.manga-home-channel-mob {
+    display: none;
+  }
+}
+
+.layout.manga-home {
+  /* 必须 minmax(0,1fr)：裸 1fr = minmax(auto,1fr)，横向 max-content 子项会撑破整页 */
+  grid-template-columns: minmax(0, 1fr) !important;
+  max-width: 1160px;
+  margin: 0 auto;
+  width: 100%;
+  min-width: 0;
+  padding-top: 8px !important;
+}
+
+.layout.manga-home .pbs-main {
+  min-width: 0;
+  max-width: 100%;
+}
+
+.mc-mosaic {
+  --mc-h: clamp(380px, 44vh, 480px);
+  --mc-gap: 8px;
+  --mc-sm-w: calc((var(--mc-h) - var(--mc-gap)) / 2 * 0.68);
+  position: relative;
+  width: 100vw;
+  margin-left: calc(50% - 50vw);
+  margin-right: calc(50% - 50vw);
+  background: #0a0a0a;
+  padding: 0;
+  overflow: hidden;
+}
+
+.mc-mosaic__viewport {
+  width: 100%;
+  overflow: hidden;
+}
+
+.mc-mosaic__track {
+  display: flex;
+  align-items: flex-end;
+  gap: var(--mc-gap);
+  height: var(--mc-h);
+  padding: 10px 0 14px;
+  box-sizing: content-box;
+  transition: transform 0.55s cubic-bezier(0.25, 0.8, 0.25, 1);
+  will-change: transform;
+}
+
+.mc-mosaic__group {
+  display: flex;
+  align-items: flex-end;
+  gap: var(--mc-gap);
+  flex: 0 0 auto;
+  height: var(--mc-h);
+  opacity: 0.42;
+  filter: brightness(0.72);
+  transition: opacity 0.4s ease, filter 0.4s ease;
+}
+
+.mc-mosaic__group.is-focus {
+  opacity: 1;
+  filter: none;
+}
+
+.mc-mosaic__stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--mc-gap);
+  flex: 0 0 auto;
+  height: var(--mc-h);
+}
+
+.mc-mosaic__slot {
+  position: relative;
+  flex: 0 0 auto;
+  height: var(--mc-h);
+  align-self: flex-end;
+}
+
+.mc-mosaic__card {
+  position: relative;
+  display: block;
+  flex: 0 0 auto;
+  border-radius: 8px;
+  overflow: hidden;
+  background: #2a2d31;
+  color: #fff;
+  text-decoration: none;
+}
+
+.mc-mosaic__slot > .mc-mosaic__card--md {
+  height: 100%;
+  width: calc(var(--mc-h) * 0.72);
+}
+
+.mc-mosaic__card:hover {
+  filter: brightness(1.08);
+}
+
+.mc-mosaic__card--tall {
+  width: calc(var(--mc-h) * 0.72);
+  height: var(--mc-h);
+}
+
+.mc-mosaic__card--tall .mc-mosaic__cover {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.mc-mosaic__card--md {
+  width: calc(var(--mc-h) * 0.72);
+  height: 100%;
+}
+
+.mc-mosaic__card--md .mc-mosaic__cover {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.mc-mosaic__card--sm {
+  width: var(--mc-sm-w);
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+.mc-mosaic__card--sm .mc-mosaic__cover {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.mc-mosaic__cover {
+  display: block;
+  background: #333 center / cover no-repeat;
+}
+
+.mc-mosaic__shade {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, transparent 30%, rgba(0, 0, 0, 0.88) 100%);
+  pointer-events: none;
+}
+
+.mc-mosaic__meta {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1;
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+  padding: 14px 12px 12px;
+}
+
+.mc-mosaic__thumb {
+  flex: 0 0 auto;
+  width: 36px;
+  height: 48px;
+  border-radius: 4px;
+  background: #444 center / cover no-repeat;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.35);
+}
+
+.mc-mosaic__meta-body {
+  flex: 1;
+  min-width: 0;
+}
+
+.mc-mosaic__meta strong {
+  display: block;
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 1.35;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.mc-mosaic__meta em {
+  display: block;
+  margin-top: 4px;
+  font-size: 12px;
+  font-style: normal;
+  color: rgba(255, 255, 255, 0.72);
+  line-height: 1.45;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+.mc-mosaic__tag {
+  display: inline-block;
+  margin-top: 5px;
+  padding: 1px 7px;
+  border-radius: 3px;
+  font-size: 11px;
+  background: #e84b6a;
+  color: #fff;
+}
+
+.mc-mosaic__nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 4;
+  width: 40px;
+  height: 56px;
+  border: 0;
+  border-radius: 0;
+  background: rgba(0, 0, 0, 0.35);
+  color: #fff;
+  font-size: 26px;
+  line-height: 1;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.2s, background 0.15s;
+}
+
+.mc-mosaic:hover .mc-mosaic__nav {
+  opacity: 1;
+}
+
+.mc-mosaic__nav:hover {
+  background: rgba(0, 0, 0, 0.55);
+}
+
+.mc-mosaic__nav--prev {
+  left: 0;
+  border-radius: 0 6px 6px 0;
+}
+
+.mc-mosaic__nav--next {
+  right: 0;
+  border-radius: 6px 0 0 6px;
+}
+
+.mc-mosaic__dots {
+  position: absolute;
+  left: calc(36vw + var(--mc-h) * 0.72 + var(--mc-gap) + var(--mc-sm-w) + var(--mc-gap) + 10px);
+  bottom: 24px;
+  z-index: 5;
+  display: flex;
+  gap: 6px;
+  pointer-events: auto;
+}
+
+.mc-mosaic__dot {
+  width: 8px;
+  height: 8px;
+  border: 0;
+  border-radius: 50%;
+  padding: 0;
+  background: rgba(255, 255, 255, 0.4);
+  cursor: pointer;
+}
+
+.mc-mosaic__dot.is-on {
+  width: 18px;
+  border-radius: 4px;
+  background: #fff;
+}
+
+@media (max-width: 900px) {
+.mc-mosaic {
+    --mc-gap: 6px;
+    /* Solve for the height that makes one full group (tall + 2 stacks + md,
+       whose widths all derive from --mc-h) exactly as wide as the screen, so
+       a whole item is visible without being cropped or needing a mid-item swipe. */
+    --mc-h: calc((100vw - 2.32 * var(--mc-gap) - 2px) / 2.12);
+  }
+
+.mc-mosaic__viewport {
+    overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+    scroll-snap-type: x proximity;
+    scrollbar-width: none;
+  }
+
+.mc-mosaic__viewport::-webkit-scrollbar {
+    display: none;
+  }
+
+.mc-mosaic__group {
+    scroll-snap-align: start;
+  }
+
+.mc-mosaic__nav {
+    opacity: 0.9;
+    width: 36px;
+    height: 48px;
+    font-size: 22px;
+  }
+
+.mc-mosaic__dots {
+    left: 50%;
+    transform: translateX(-50%);
+    bottom: 12px;
+  }
+}
+
+@media (max-width: 768px) {
+.layout.manga-home {
+    padding-top: 4px !important;
+  }
+}
+

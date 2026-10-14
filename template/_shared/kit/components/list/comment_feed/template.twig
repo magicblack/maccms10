@@ -1,0 +1,59 @@
+{% import "@shared/components.twig" as c %}
+{% set p = props|default({}) %}
+{% set num = p.num|default(comment.pagesize|default(20)) %}
+{% set use_paging = p.paging is defined ? p.paging : true %}
+{% set pageurl = p.pageurl|default('comment/index') %}
+{% set args = {num: num, order: 'desc', by: 'id'} %}
+{% if use_paging %}
+  {% set args = args|merge({paging: true, pageurl: pageurl}) %}
+{% endif %}
+{% set res = mac_comment(args) %}
+{% set list = res.list|default([]) %}
+{% if use_paging %}
+  {% set pg = mac_paging(res) %}
+{% endif %}
+<div class="pb-comment-feed" data-component="comment_feed">
+  <div class="pb-comment-feed__panel">
+    {% if list %}
+    <div class="pb-comment-feed__list">
+      {% for vo in list %}
+      <article class="pb-comment-feed__item">
+        <div class="pb-comment-feed__avatar">{{ c.lazy_img(mac_get_user_portrait(vo.user_id|default(0)), vo.comment_name|default('')) }}</div>
+        <div>
+          <div class="pb-comment-feed__meta">
+            <span class="pb-comment-feed__name">{{ vo.comment_name|default('匿名') }}</span>
+            {% if vo.comment_time %}<time class="pb-comment-feed__time">{{ vo.comment_time|date('Y-m-d H:i') }}</time>{% endif %}
+          </div>
+          <div class="pb-comment-feed__body">{{ mac_em_replace(vo.comment_content|default('')) }}</div>
+          {% if vo.sub|default([]) %}
+          <div class="pb-comment-feed__replies">
+            {% for child in vo.sub %}
+            <div class="pb-comment-feed__reply">
+              <strong>{{ child.comment_name|default('') }}</strong>
+              {% if child.comment_time %}<span class="pb-comment-feed__time">{{ child.comment_time|date('Y-m-d H:i') }}</span>{% endif %}
+              <div>{{ mac_em_replace(child.comment_content|default('')) }}</div>
+            </div>
+            {% endfor %}
+          </div>
+          {% endif %}
+        </div>
+      </article>
+      {% endfor %}
+    </div>
+    {% if use_paging and pg is defined %}
+      {% include 'page-builder-components/paging/template.twig' with {props: {pg: pg}} %}
+    {% endif %}
+    {% else %}
+      {% include 'page-builder-components/empty_state/template.twig' with {
+        props: {
+          title: '还没有评论',
+          title_lang: 'comment_feed_empty_title',
+          cta_text: '去逛逛',
+          cta_text_lang: 'comment_go_browse',
+          cta_url: maccms.path|default('/'),
+          show_art: true
+        }
+      } %}
+    {% endif %}
+  </div>
+</div>

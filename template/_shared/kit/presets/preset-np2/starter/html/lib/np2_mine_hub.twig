@@ -1,0 +1,87 @@
+{# np2 H5 会员中心 / 我的 主面板（暗色 App 风） #}
+{% set _login = user.user_id|default(0) %}
+{% set _name = user.user_nick_name|default('')|trim %}
+{% if _name == '' %}{% set _name = user.user_name|default('') %}{% endif %}
+<article class="np2-page np2-mine">
+  <header class="np2-mine__hero">
+    {% if _login %}
+      {% include "page-builder-components/_shared/user_avatar.twig" with { uid: user.user_id, class: 'np2-mine__avatar', size: 64, alt: _name } %}
+    {% else %}
+      <span class="np2-mine__avatar" role="img" aria-label="未登录">
+        <svg viewBox="0 0 96 96" width="64" height="64" aria-hidden="true" focusable="false">
+          <circle cx="48" cy="48" r="48" fill="#f5a623"/>
+          <circle cx="48" cy="36" r="16" fill="#121214"/>
+          <path d="M16 84c6-18 20-28 32-28s26 10 32 28" fill="#121214"/>
+        </svg>
+      </span>
+    {% endif %}
+    <div class="np2-mine__who">
+      {% if _login %}
+      <h1>{{ _name }}</h1>
+      <p>{% if user.group is defined and user.group.group_name %}{{ user.group.group_name }}{% else %}会员{% endif %}{% if user.user_end_time|default(0) %} · {{ user.user_end_time|date('Y-m-d') }}到期{% endif %}</p>
+      {% else %}
+      <h1>未登录</h1>
+      <p>登录后同步收藏与播放记录</p>
+      {% endif %}
+    </div>
+  </header>
+
+  {% if not _login %}
+  <a class="np2-mine__login" href="#login" data-auth-open="login">登录 / 注册</a>
+  {% endif %}
+
+  <a class="np2-mine__vip" href="{{ mac_url('user/upgrade') }}">
+    <img class="np2-mine__vip-ico" src="{{ maccms.path_tpl }}asset/img/icons/vip-crown.webp" alt="" width="40" height="40" decoding="async">
+    <div>
+      <strong>开通会员</strong>
+      <span>畅看本站 VIP 片库与高清片源</span>
+    </div>
+    <em>去开通</em>
+  </a>
+
+  <div class="np2-mine__stats" aria-label="资产">
+    <a href="{{ mac_url('user/plog') }}">
+      <b>{% if _login and user.user_points is defined %}{{ user.user_points }}{% else %}--{% endif %}</b>
+      <span>金币</span>
+    </a>
+    <a href="{{ mac_url('user/favs') }}">
+      <b>收藏</b>
+      <span>片单</span>
+    </a>
+    <a href="{{ mac_url('user/plays') }}">
+      <b>足迹</b>
+      <span>记录</span>
+    </a>
+  </div>
+
+  <nav class="np2-mine__list" aria-label="会员中心功能">
+    <a href="{{ mac_url('user/favs') }}">
+      <span class="np2-mine__ico" aria-hidden="true"><img src="{{ maccms.path_tpl }}asset/img/icons/hot.webp" alt="" width="22" height="22" decoding="async"></span>
+      <span>我的收藏</span><i aria-hidden="true">›</i>
+    </a>
+    <a href="{{ mac_url('user/plays') }}">
+      <span class="np2-mine__ico" aria-hidden="true"><img src="{{ maccms.path_tpl }}asset/img/icons/newest.webp" alt="" width="22" height="22" decoding="async"></span>
+      <span>播放记录</span><i aria-hidden="true">›</i>
+    </a>
+    <a href="{{ mac_url('user/buy') }}">
+      <span class="np2-mine__ico" aria-hidden="true"><img src="{{ maccms.path_tpl }}asset/img/icons/cny.webp" alt="" width="22" height="22" decoding="async"></span>
+      <span>充值中心</span><i aria-hidden="true">›</i>
+    </a>
+    <a href="{{ mac_url('user/upgrade') }}">
+      <span class="np2-mine__ico" aria-hidden="true"><img src="{{ maccms.path_tpl }}asset/img/icons/vip-crown2.webp" alt="" width="22" height="22" decoding="async"></span>
+      <span>开通会员</span><i aria-hidden="true">›</i>
+    </a>
+    <a href="{{ mac_url('user/info') }}">
+      <span class="np2-mine__ico" aria-hidden="true"><img src="{{ maccms.path_tpl }}asset/img/icons/service.webp" alt="" width="22" height="22" decoding="async"></span>
+      <span>个人资料</span><i aria-hidden="true">›</i>
+    </a>
+    <a href="{{ mac_url('user/plog') }}">
+      <span class="np2-mine__ico" aria-hidden="true"><img src="{{ maccms.path_tpl }}asset/img/icons/coin-batch.webp" alt="" width="22" height="22" decoding="async"></span>
+      <span>金币明细</span><i aria-hidden="true">›</i>
+    </a>
+  </nav>
+
+  {% if _login %}
+  <a class="np2-mine__logout" href="{{ mac_url('user/logout') }}">退出登录</a>
+  {% endif %}
+</article>

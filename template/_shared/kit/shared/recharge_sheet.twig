@@ -1,0 +1,87 @@
+{# 全局充值 / 现金支付弹层 — recharge-sheet.js 驱动 #}
+{% import "@shared/components.twig" as c %}
+{% set api_base = maccms.path|trim('/') ~ '/api.php' %}
+{% set _pb_shared_img = maccms.path_tpl|default('') ~ 'page-builder-components/_shared/img/' %}
+<div class="member-recharge-sheet" id="recharge-overlay" data-recharge-sheet hidden role="dialog" aria-modal="true" aria-labelledby="recharge-sheet-title"
+  {{ c.member_pay_hooks(user)|raw }}
+  data-rc-img-base="{{ _pb_shared_img }}recharge/"
+  data-rc-config-url="{{ api_base }}/payment/get_config"
+  data-rc-order-create-url="{{ api_base }}/order/create"
+  data-rc-upgrade-order-create-url="{{ api_base }}/user/upgrade_order_create"
+  data-rc-gopay-url="{{ api_base }}/payment/gopay"
+  data-rc-order-query-url="{{ api_base }}/order/check_status">
+  <div class="member-recharge-sheet__backdrop" data-recharge-close tabindex="-1" aria-hidden="true"></div>
+  <div class="member-recharge-sheet__panel rc-modal">
+    <header class="member-recharge-sheet__head rc-hd">
+      <h2 class="member-recharge-sheet__title" id="recharge-sheet-title" data-lang="user_zxcz">在线充值</h2>
+      <button type="button" class="member-recharge-sheet__close rc-close" data-recharge-close aria-label="关闭" data-lang-aria-label="string_close">×</button>
+    </header>
+    <div class="member-recharge-sheet__body rc-bd">
+      <div class="rc-loading-init" id="rcInitLoading" data-lang="string_topic_feed_loading">加载中…</div>
+      <div id="rcLoginPanel" class="member-recharge-sheet__login" hidden>
+        <p data-lang="string_pay_login_first">请先登录后完成下单支付</p>
+        <a id="rcGoLogin" class="btn" href="{{ mac_url('user/login') }}" data-lang="recharge_login_link">去登录</a>
+      </div>
+      <div id="rcAmountPanel" class="rc-amount-stage" hidden>
+        <div class="rc-balance-row member-pay-balance">
+          {% set _rc_coin = _pb_shared_img ~ 'recharge/recharge-coin.png' %}
+          <img class="rc-coin-ico" src="{{ _rc_coin }}" width="22" height="22" alt="" decoding="async">
+          <p class="rc-balance-txt"><span data-lang="user_syjf">剩余金币</span>：<strong id="rcPoints">0</strong></p>
+        </div>
+        <div class="rc-card member-pay-card">
+          <div class="rc-amounts member-pay-amounts" id="rcAmountsGrid"></div>
+          <label class="rc-field-label member-pay-field__label" for="rcPriceInput" data-lang="user_czje">充值的金额</label>
+          <div class="rc-input-wrap">
+            <input type="text" maxlength="8" id="rcPriceInput" class="rc-input member-pay-field__input" placeholder="请输入金额" data-lang-placeholder="amount_placeholder" inputmode="decimal" autocomplete="off">
+          </div>
+          <div class="rc-tips member-pay-tips" id="rcTips"></div>
+          {% include "page-builder-components/_shared/coupon_mount.twig" with { id: 'mac-user-coupon-panel-modal', scene: 'recharge', mount: 'recharge-modal' } %}
+          <button type="button" class="rc-submit member-pay-submit" id="rcSubmitBtn" data-lang="recharge_confirm_btn">确认充值</button>
+        </div>
+      </div>
+      <div class="rc-pay-panel member-pay-confirm" id="rcPayPanel" hidden>
+        <div class="order-summary">
+          <div class="order-row">
+            <span class="order-label" data-lang="string_pay_ddbh">订单编号</span>
+            <span class="order-value" id="rcOrderCode">-</span>
+          </div>
+          <div class="order-row">
+            <span class="order-label" data-lang="string_pay_ddje">订单金额</span>
+            <span class="order-value price"><span id="rcOrderPrice">0</span><span data-lang="user_yuan">元</span></span>
+          </div>
+        </div>
+        <form method="post" target="_blank" id="rcPayForm">
+          <input type="hidden" name="order_id" id="rcPayOrderId">
+          <input type="hidden" name="order_code" id="rcPayOrderCode">
+          <input type="hidden" name="payment" id="rcPayment">
+          <input type="hidden" name="paytype" id="rcPaytype">
+          <div class="pm-section-title" data-lang="string_pay_zffs">支付方式</div>
+          <div class="pm-grid" id="rcPayGrid"></div>
+          <div id="rcPaytypeBox" hidden>
+            <div class="pm-section-title" data-lang="string_pay_zflx">支付类型</div>
+            <div class="pt-grid" id="rcPaytypeGrid"></div>
+          </div>
+          <button type="submit" class="pay-confirm-btn member-pay-submit" data-lang="string_user_confirm_pay">确认支付</button>
+        </form>
+      </div>
+      <div class="rc-loading-panel" id="rcLoadingPanel" hidden>
+        <div class="rc-loading-qrcode-block" id="rcLoadingQrcodeBlock" hidden aria-hidden="true">
+          <div class="rc-loading-qrcode-host" id="rcLoadingQrcodeHost"></div>
+          <p class="rc-loading-qrcode-caption" data-lang="string_mac_dkwx">打开微信，扫码支付</p>
+        </div>
+        <div class="rc-spinner-wrap" id="rcSpinnerWrap">
+          <div class="rc-spinner pay-loading-spinner"></div>
+        </div>
+        <h3 id="rcLoadingTitle" data-lang="pay_waiting_title">等待支付结果</h3>
+        <p id="rcLoadingHint" data-lang="pay_waiting_desc">请在新标签页完成支付，支付成功后本页将自动刷新。</p>
+        <button type="button" class="rc-loading-cancel" id="rcCancelPoll" data-lang="pay_cancel_btn">我已取消支付</button>
+      </div>
+    </div>
+  </div>
+</div>
+<div id="rcPayIconsTpl" hidden aria-hidden="true">
+  <div data-icon="alipay"><svg class="icon" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg"><path d="M789 610.3c-38.7-12.9-90.7-32.7-148.5-53.6 34.8-60.3 62.5-129 80.7-203.6H530.5v-68.6h233.6v-38.3H530.5V132h-95.4c-17.7 0-16.7 16.5-16.7 16.5v97.8H182.2v38.3h236.3v68.6H223.4v38.3h378.4c-13.8 47.6-32.4 92.3-54.5 132.9-122.8-40.4-253.8-73.2-336.1-53-52.6 13-86.5 36.1-106.5 60.3-91.4 111-25.9 279.6 167.2 279.6C386 811.2 496 747.6 581.2 643 708.3 704 960 808.7 960 808.7V659.4s-31.6-2.5-171-49.1z"/></svg></div>
+  <div data-icon="wechat"><svg class="icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9.5 4C5.36 4 2 6.91 2 10.5c0 1.94.98 3.68 2.53 4.88L4 18l2.53-1.39c.92.25 1.9.39 2.97.39.56 0 1.11-.04 1.64-.13-.4-.69-.64-1.48-.64-2.37 0-2.84 2.46-5.15 5.5-5.15.37 0 .74.03 1.09.1C16.3 6.3 13.2 4 9.5 4Z"/></svg></div>
+  <div data-icon="qq"><svg class="icon" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg"><path d="M824.8 613.2c-16-51.4-34.4-94.6-62.7-165.3C766.5 262.2 689.3 112 511.5 112 331.7 112 256.2 265.2 261 447.9c-28.4 70.8-46.7 113.7-62.7 165.3-34 109.5-23 154.8-14.6 155.8 18 2.2 70.1-82.4 70.1-82.4 0 49 25.2 112.9 79.8 159-26.4 8.1-85.7 29.9-71.6 53.8 11.4 19.3 196.2 12.3 249.5 6.3 53.3 6 238.1 13 249.5-6.3 14.1-23.8-45.3-45.7-71.6-53.8 54.6-46.2 79.8-110.1 79.8-159 0 0 52.1 84.6 70.1 82.4 8.5-1.1 19.5-46.4-14.5-155.8z"/></svg></div>
+  <div data-icon="wallet"><svg class="icon" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg"><path d="M880 112H144c-17.7 0-32 14.3-32 32v736c0 17.7 14.3 32 32 32h736c17.7 0 32-14.3 32-32V144c0-17.7-14.3-32-32-32zm-40 464H528V448h312v128zm0 264H184V184h656v200H496c-17.7 0-32 14.3-32 32v192c0 17.7 14.3 32 32 32h344v200zM620 512m-40 0a40 40 0 1 0 80 0 40 40 0 1 0-80 0z"/></svg></div>
+</div>

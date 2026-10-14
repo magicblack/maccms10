@@ -1,0 +1,45 @@
+{# 全站登录 / 找回密码弹窗入口 #}
+{% set _am = auth_modal|default({}) %}
+{% set _login = _am.login|default({}) %}
+{% set _find = _am.findpass|default({}) %}
+<div class="pb-auth-modals" data-component="auth_modals">
+{% include "page-builder-components/_shared/auth_modal.twig" with {
+  modal_id: 'login',
+  close_label: '关闭登录窗口',
+  close_label_lang: 'string_auth_close_login',
+  welcome: _login.welcome|default('欢迎回来'),
+  welcome_lang: 'string_auth_welcome',
+  hint: _login.hint|default('登录即可收藏、评论与同步观看记录'),
+  hint_lang: 'string_auth_hint',
+  title_id: 'auth-modal-login-title',
+  title_lang: 'user_unified_page_title',
+  title_text: _login.title_text|default('登录 / 注册'),
+  subtitle: _login.subtitle|default('新用户将自动创建账号'),
+  subtitle_lang: 'string_auth_subtitle',
+  hero_image: _login.hero_image|default(''),
+  hero_image_mobile: _login.hero_image_mobile|default(''),
+  body_partial: 'page-builder-components/auth_form/template.twig',
+  foot_mode: 'unified'
+} %}
+
+{% include "page-builder-components/_shared/auth_modal.twig" with {
+  modal_id: 'findpass',
+  close_label: '关闭找回密码窗口',
+  close_label_lang: 'string_auth_close_findpass',
+  welcome: _find.welcome|default('找回密码'),
+  welcome_lang: 'user_zhaohuimima',
+  hint: _find.hint|default('选择方式验证身份后重置'),
+  hint_lang: 'string_auth_findpass_hint',
+  title_id: 'auth-modal-findpass-title',
+  title_lang: 'user_zhaohuimima',
+  title_text: _find.title_text|default('找回密码'),
+  head_compact: true,
+  dialog_wide: true,
+  card_recovery: true,
+  hero_image: _find.hero_image|default(''),
+  hero_image_mobile: _find.hero_image_mobile|default(''),
+  body_partial: 'page-builder-components/_shared/auth_recovery.twig',
+  body_vars: { active_tab: 'security' },
+  foot_mode: 'findpass'
+} %}
+</div>

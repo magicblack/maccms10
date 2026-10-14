@@ -1,0 +1,98 @@
+/**
+ * plot_list — Flat poster grid；仅引用 tokens。
+ */
+.pb-plot-list {
+  padding: 0 var(--space-3, 12px) var(--space-6, 28px);
+  box-sizing: border-box;
+}
+
+.pb-plot-list__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(108px, 1fr));
+  gap: 14px 10px;
+}
+
+.pb-plot-list__card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2, 8px);
+  text-decoration: none;
+  color: inherit;
+  cursor: pointer;
+  border-radius: var(--radius-lg, 8px);
+  touch-action: manipulation;
+  transition: opacity var(--dur) var(--ease), transform var(--dur) var(--ease);
+}
+
+.pb-plot-list__card:hover {
+  opacity: 0.92;
+}
+
+.pb-plot-list__card:active {
+  transform: scale(0.97);
+}
+
+.pb-plot-list__card:focus-visible {
+  outline: 2px solid var(--c-accent-focus-ring);
+  outline-offset: 3px;
+}
+
+.pb-plot-list__thumb {
+  position: relative;
+  display: block;
+  aspect-ratio: 3 / 4;
+  overflow: hidden;
+  border-radius: var(--radius-lg, 8px);
+  background: var(--c-surface-2);
+}
+
+.pb-plot-list__thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.pb-plot-list__badge {
+  position: absolute;
+  right: 6px;
+  bottom: 6px;
+  max-width: calc(100% - 12px);
+  padding: 2px 6px;
+  font-size: 11px;
+  line-height: 1.3;
+  color: var(--c-on-media);
+  background: var(--c-media-scrim);
+  border-radius: var(--radius-sm, 4px);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.pb-plot-list__title {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1.35;
+  color: var(--c-text);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+@media (min-width: 768px) {
+  .pb-plot-list__grid {
+    grid-template-columns: repeat(auto-fill, minmax(132px, 1fr));
+    gap: var(--space-4, 16px) 14px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pb-plot-list__card {
+    transition: none;
+  }
+  .pb-plot-list__card:active {
+    transform: none;
+  }
+}

@@ -1,0 +1,10 @@
+{% import "page-builder-components/_shared/macros.twig" as pb %}
+{% set _ph = 'data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==' %}
+<article class="pb-manga-card" data-mid="12" data-id="{{ vo.manga_id }}">
+  <a class="pb-manga-card__pic" href="{{ mac_url_manga_detail(vo) }}" title="{{ vo.manga_name }}">
+    {{ pb.lazy_img(vo.manga_pic, vo.manga_name, {placeholder: _ph}) }}
+    {% if vo.manga_remarks %}<span class="pb-manga-card__rm">{% include "page-builder-components/_shared/chapter_remarks.twig" with {remarks: vo.manga_remarks, kind: 'manga'} only %}</span>{% endif %}
+  </a>
+  <div class="pb-manga-card__title"><a href="{{ mac_url_manga_detail(vo) }}">{{ vo.manga_name }}</a></div>
+  <div class="pb-manga-card__meta">{{ vo.manga_author }}</div>
+</article>

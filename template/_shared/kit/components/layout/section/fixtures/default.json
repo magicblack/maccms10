@@ -1,0 +1,11 @@
+{
+    "props": {
+        "title": "热门推荐",
+        "icon": "fire",
+        "variant": "plain"
+    },
+    "context": {},
+    "slots": {
+        "body": []
+    }
+}

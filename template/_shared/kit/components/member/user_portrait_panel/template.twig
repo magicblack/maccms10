@@ -1,0 +1,38 @@
+{# 会员头像上传 — 对齐 User::portrait / prism portrait；大圆预览 + 虚线拖拽区 #}
+{% set u = user|default({}) %}
+<div class="pb-user-portrait" data-component="user_portrait_panel" id="mac-user-portrait-root"
+     data-url-portrait="{{ mac_url('user/portrait') }}"
+     data-url-info="{{ mac_url('user/info') }}">
+  <header class="member-card__head">
+    <h2 class="member-card__title" data-lang="user_portrait">上传头像</h2>
+  </header>
+
+  <div class="pb-user-portrait__body">
+    <div class="pb-user-portrait__preview" id="mac-portrait-preview" aria-hidden="false">
+      {% include "page-builder-components/_shared/user_avatar.twig" with {
+        uid: u.user_id|default(0),
+        class: 'pb-user-portrait__img',
+        size: 160,
+        alt: u.user_nick_name|default(u.user_name|default(''))
+      } %}
+    </div>
+    <div class="pb-user-portrait__panel">
+      <label class="pb-user-portrait__drop" id="mac-portrait-drop" for="mac-portrait-file">
+        <span class="pb-user-portrait__drop-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 16V7"/>
+            <path d="M8.5 10.5 12 7l3.5 3.5"/>
+            <path d="M5 16.5v1A2.5 2.5 0 0 0 7.5 20h9a2.5 2.5 0 0 0 2.5-2.5v-1"/>
+          </svg>
+        </span>
+        <span class="pb-user-portrait__drop-text" data-lang="user_portrait_tip">点击或拖拽图片到此处</span>
+        <span class="pb-user-portrait__drop-hint">jpg / png / gif</span>
+      </label>
+      <input type="file" id="mac-portrait-file" name="file" accept="image/*" hidden>
+      <div class="pb-user-portrait__actions">
+        <button type="button" class="member-form__submit pb-user-portrait__submit" id="mac-portrait-submit" disabled data-lang="user_upload">上传</button>
+        <a class="member-form__linkbtn" href="{{ mac_url('user/info') }}" data-lang="user_back_to_profile">返回资料修改</a>
+      </div>
+    </div>
+  </div>
+</div>

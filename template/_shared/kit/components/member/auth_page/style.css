@@ -1,0 +1,755 @@
+/* auth_page v=8 — bundled assets; fullscreen immersive login (theme-token aware) */
+html:has(body.pbs-body--auth),
+html:has(body.page-auth) {
+  height: 100%;
+}
+body.pbs-body--auth,
+body.page-auth {
+  min-height: 100dvh;
+  height: 100%;
+  margin: 0;
+  overflow-x: hidden;
+  background: var(--c-bg, #0b1220);
+}
+body.pbs-body--auth #main,
+body.pbs-body--auth .pbs-main--auth,
+.page-auth #main {
+  min-height: 100dvh;
+  margin: 0;
+  padding: 0;
+}
+
+.auth-page {
+  min-height: 100dvh;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  background: var(--c-bg, #f3f7fb);
+}
+
+.auth-page__mnav {
+  display: none;
+}
+
+/* 整页布局无站点头尾，语言切换按钮独立固定在右上角，
+   不依赖 mnav（移动端 login 面板 pointer-events:none）或 hero（aria-hidden）容器。 */
+.auth-page__lang-switch {
+  position: fixed;
+  top: max(12px, env(safe-area-inset-top, 0));
+  right: max(12px, env(safe-area-inset-right, 0));
+  z-index: 20;
+  display: flex;
+  gap: 4px;
+  padding: 3px;
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.35);
+  backdrop-filter: blur(6px);
+}
+
+.auth-page__lang-switch button {
+  border: 0;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.72);
+  font-size: 12px;
+  line-height: 1;
+  padding: 6px 10px;
+  border-radius: 999px;
+  cursor: pointer;
+}
+
+.auth-page__lang-switch button:hover {
+  color: #fff;
+}
+
+.auth-page__layout {
+  flex: 1;
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(380px, 0.8fr);
+  min-height: 100dvh;
+}
+
+.auth-page__hero {
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-start;
+  padding: clamp(32px, 6vw, 72px);
+  min-height: 100dvh;
+  background:
+    linear-gradient(
+      155deg,
+      color-mix(in srgb, var(--c-accent, #0ea5e9) 88%, transparent) 0%,
+      color-mix(in srgb, var(--c-accent, #0ea5e9) 48%, transparent) 40%,
+      rgba(8, 12, 24, 0.55) 100%
+    ),
+    url('assets/img/auth-login-hero.png') center/cover no-repeat,
+    radial-gradient(120% 80% at 15% 10%, color-mix(in srgb, var(--c-accent, #0ea5e9) 45%, #102a43), #0b1220 72%);
+  overflow: hidden;
+}
+
+.auth-page__hero::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(8, 10, 14, 0.08) 0%, rgba(8, 10, 14, 0.42) 100%);
+  pointer-events: none;
+}
+
+.auth-page__hero-inner {
+  position: relative;
+  z-index: 1;
+  max-width: 460px;
+  color: #fff;
+  text-align: left;
+}
+
+.auth-page__hero-title {
+  margin: 0;
+  font-size: clamp(28px, 4vw, 40px);
+  font-weight: 800;
+  line-height: 1.2;
+  letter-spacing: 0.01em;
+}
+
+.auth-page__hero-desc {
+  margin: 14px 0 0;
+  max-width: 34ch;
+  font-size: 15px;
+  line-height: 1.65;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.auth-page__main {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: clamp(28px, 4vw, 56px) clamp(20px, 3vw, 48px);
+  /* 平板/横屏也会弹软键盘：留出 --auth-kb-h 滚动空间 */
+  padding-bottom: calc(clamp(28px, 4vw, 56px) + var(--auth-kb-h, 0px));
+  min-height: 100dvh;
+  box-sizing: border-box;
+  background: var(--c-surface, #fff);
+}
+
+.auth-page__mbanner {
+  display: none;
+}
+
+.auth-page__form-wrap {
+  width: 100%;
+  max-width: 400px;
+}
+
+.auth-page__sheet-head {
+  display: none;
+}
+
+.auth-page__sheet-title {
+  margin: 0 0 6px;
+  font-size: 22px;
+  font-weight: 800;
+  line-height: 1.25;
+  color: var(--c-text);
+}
+
+.auth-page__sheet-desc {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.55;
+  color: var(--c-text-muted);
+}
+
+.auth-page__head {
+  margin-bottom: 24px;
+}
+
+.auth-page__head--inline {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+
+.auth-page__inline-back {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  margin-top: 2px;
+  border: 0;
+  border-radius: 10px;
+  background: #f6f7f8;
+  color: var(--c-text);
+  cursor: pointer;
+}
+
+.auth-page__title {
+  margin: 0;
+  font-size: 28px;
+  font-weight: 800;
+  line-height: 1.25;
+  color: var(--c-text);
+}
+
+.auth-page__sub {
+  margin: 8px 0 0;
+  font-size: 14px;
+  line-height: 1.55;
+  color: var(--c-text-muted);
+}
+
+.auth-page-form__field {
+  display: block;
+  margin-bottom: 14px;
+}
+
+.auth-page-form__label {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--c-text-muted);
+}
+
+.auth-page-form__input {
+  width: 100%;
+  min-height: 48px;
+  padding: 0 14px;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 12px;
+  background: #f6f7f8;
+  color: var(--c-text);
+  font-size: 16px;
+  transition: border-color var(--dur) var(--ease), background var(--dur) var(--ease), box-shadow var(--dur) var(--ease);
+}
+
+.auth-page-form__input:focus {
+  outline: none;
+  border-color: color-mix(in srgb, var(--c-accent, #0ea5e9) 55%, transparent);
+  background: var(--c-surface, #fff);
+  box-shadow: 0 0 0 3px var(--c-accent-soft, rgba(14,165,233,.12));
+}
+
+.auth-page-form__pwd {
+  position: relative;
+  display: block;
+}
+
+.auth-page-form__pwd .auth-page-form__input {
+  padding-right: 48px;
+}
+
+.auth-page-form__eye {
+  position: absolute;
+  top: 50%;
+  right: 6px;
+  width: 40px;
+  height: 40px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 10px;
+  background: transparent;
+  color: var(--c-text-muted);
+  transform: translateY(-50%);
+  cursor: pointer;
+}
+
+.auth-page-form__eye:hover {
+  background: rgba(0, 0, 0, 0.04);
+  color: var(--c-text);
+}
+
+.auth-page-form__invite {
+  margin: 20px 0 0;
+  text-align: center;
+}
+
+.auth-page-form__invite-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  min-height: 44px;
+  padding: 8px 4px;
+  border: 0;
+  background: transparent;
+  color: var(--c-text-muted);
+  font-size: 13px;
+  cursor: pointer;
+  transition: color var(--dur) var(--ease);
+}
+
+.auth-page-form__invite-toggle:hover {
+  color: var(--c-text-muted);
+}
+
+.auth-page-form__invite-toggle:active {
+  color: var(--c-accent);
+}
+
+.auth-page-form__invite-label {
+  font-weight: 500;
+}
+
+.auth-page-form__invite.is-open .auth-page-form__invite-toggle {
+  color: var(--c-accent);
+}
+
+.auth-page-form__invite-chev {
+  width: 16px;
+  height: 16px;
+  transition: transform var(--dur) var(--ease);
+}
+
+.auth-page-form__invite.is-open .auth-page-form__invite-chev {
+  transform: rotate(180deg);
+}
+
+.auth-page-form__invite-panel {
+  margin-top: 10px;
+}
+
+.auth-page-form__field--invite {
+  margin-bottom: 0;
+}
+
+.auth-page-form__meta {
+  display: flex;
+  justify-content: flex-end;
+  margin: 2px 0 12px;
+}
+
+.auth-page-form__forgot {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--c-accent);
+}
+
+.auth-page-form__error {
+  margin: 0 0 12px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: #fff1f0;
+  color: #e44;
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+.auth-page-form__submit,
+.auth-page [data-mac-findpass-form] .auth-form__submit,
+.auth-page [data-mac-findpass-send-form] .auth-form__submit,
+.auth-page [data-mac-findpass-reset-form] .auth-form__submit,
+.auth-page .auth-findpass-msg .auth-form__submit {
+  width: 100%;
+  min-height: 50px;
+  margin-top: 4px;
+  border: 0;
+  border-radius: 999px;
+  background: var(--gradient-brand, linear-gradient(135deg, var(--c-accent, #0ea5e9), var(--c-accent-hover, #2bb0ec)));
+  color: #fff;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 8px 24px var(--c-accent-glow, rgba(14,165,233,.28));
+  transition: opacity var(--dur) var(--ease), transform var(--dur) var(--ease), box-shadow var(--dur) var(--ease);
+}
+
+.auth-page-form__submit:hover,
+.auth-page [data-mac-findpass-form] .auth-form__submit:hover,
+.auth-page [data-mac-findpass-send-form] .auth-form__submit:hover,
+.auth-page [data-mac-findpass-reset-form] .auth-form__submit:hover,
+.auth-page .auth-findpass-msg .auth-form__submit:hover {
+  opacity: 0.96;
+  box-shadow: 0 10px 28px var(--c-accent-glow, rgba(14,165,233,.34));
+}
+
+.auth-page-form__submit:active {
+  transform: scale(0.99);
+}
+
+.auth-page-form__submit:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
+.auth-page-form__hint {
+  margin: 14px 0 0;
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--c-text-muted);
+  text-align: center;
+}
+
+.auth-page__alt {
+  margin: 16px 0 0;
+  font-size: 13px;
+  color: var(--c-text-muted);
+  text-align: center;
+}
+
+.auth-page__alt a {
+  color: var(--c-accent);
+  font-weight: 500;
+}
+
+.auth-page__alt span {
+  margin: 0 8px;
+  opacity: 0.5;
+}
+
+/* SVG path 已是左向 chevron，勿再旋转 */
+
+.auth-modal .auth-page-form__field {
+  margin-bottom: 10px;
+}
+
+.auth-modal .auth-page-form__input {
+  min-height: 44px;
+  font-size: 16px;
+}
+
+.auth-modal .auth-page-form__submit {
+  min-height: 44px;
+  font-size: 15px;
+}
+
+.auth-modal .auth-page-form__hint {
+  display: none;
+}
+
+@media (max-width: 900px), (orientation: portrait) {
+  .auth-page {
+    position: relative;
+    background: var(--c-bg, #f3f7fb);
+    overscroll-behavior-y: contain;
+  }
+
+  .auth-page__layout {
+    grid-template-columns: 1fr;
+    min-height: 100dvh;
+  }
+
+  .auth-page[data-auth-panel="login"] .auth-page__hero {
+    display: none;
+  }
+
+  .auth-page__hero {
+    min-height: 220px;
+    padding: 28px 20px;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .auth-page__hero-title {
+    font-size: 24px;
+  }
+
+  .auth-page__hero-desc {
+    font-size: 13px;
+  }
+
+  .auth-page__main {
+    flex: 1;
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: flex-start;
+    padding: 0;
+    border-radius: 0;
+    margin-top: 0;
+    position: relative;
+    z-index: 1;
+    background: transparent;
+  }
+
+  .auth-page[data-auth-panel="login"] .auth-page__sheet-head {
+    display: block;
+    margin-bottom: 20px;
+  }
+
+  /* 移动端/平板不展示 hero 配图的替代 banner ——之前在窄而高的设备上会被压得
+     变形/裁切成看似"图片损坏"的窄条，直接去掉，仅保留纯表单卡片。 */
+  .auth-page__mbanner {
+    display: none;
+  }
+
+  .auth-page__form-wrap {
+    width: 100%;
+    max-width: none;
+    margin-top: 16px;
+    /* --auth-kb-h：auth_page/script.js 写入的软键盘高度，键盘弹出时留出滚动空间，邀请码框不被遮挡 */
+    padding: 20px 20px calc(max(32px, env(safe-area-inset-bottom)) + var(--auth-kb-h, 0px));
+    border-radius: 0;
+    box-shadow: none;
+    background: var(--c-surface, #fff);
+    position: relative;
+    z-index: 1;
+  }
+
+  .auth-page__mnav {
+    display: grid;
+    grid-template-columns: 44px minmax(0, 1fr) 44px;
+    align-items: center;
+    min-height: 48px;
+    padding: 0 8px;
+    padding-top: env(safe-area-inset-top, 0);
+    position: sticky;
+    top: 0;
+    background: var(--c-surface, #fff);
+    border-bottom: 1px solid var(--c-border);
+    z-index: 10;
+  }
+
+  .auth-page__back {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    border: 0;
+    border-radius: 10px;
+    background: transparent;
+    color: var(--c-text);
+    cursor: pointer;
+    transition: background var(--dur) var(--ease), color var(--dur) var(--ease);
+  }
+
+  .auth-page__mnav-title {
+    margin: 0;
+    font-size: 17px;
+    font-weight: 700;
+    text-align: center;
+    color: var(--c-text);
+  }
+
+  .auth-page[data-auth-panel="login"] .auth-page__mnav-title {
+    visibility: hidden;
+  }
+
+  .auth-page[data-auth-panel="login"] .auth-page-form__field {
+    margin-bottom: 12px;
+  }
+
+  .auth-page[data-auth-panel="login"] .auth-page-form__input {
+    min-height: 50px;
+    border-color: rgba(0, 0, 0, 0.06);
+    background: #f8f9fa;
+  }
+
+  .auth-page[data-auth-panel="login"] .auth-page-form__meta {
+    margin: -4px 0 16px;
+  }
+
+  .auth-page__head .auth-page__title {
+    font-size: 22px;
+  }
+
+  .auth-page[data-auth-panel="login"] .auth-page__head {
+    display: none;
+  }
+
+  .auth-page__head--inline .auth-page__inline-back {
+    display: inline-flex;
+  }
+
+  .auth-page[data-auth-panel="findpass"] .auth-page__hero {
+    display: none;
+  }
+
+  .auth-page[data-auth-panel="findpass"] .auth-page__main {
+    margin-top: 0;
+    border-radius: 0;
+    min-height: calc(100dvh - 48px - env(safe-area-inset-top, 0px));
+  }
+}
+
+/* 平板 / 大屏手机命中上面的堆叠布局时，卡片仍需收窄居中，
+   否则 auth_form 自身 400px 的内容宽度会被拉伸出的 sheet 甩在左侧，右侧大片空白（错位观感）。
+   440 = 内容 400px + 左右各 20px padding，与桌面分栏宽度保持一致。 */
+@media (min-width: 440px) and (max-width: 900px), (min-width: 440px) and (orientation: portrait) {
+  .auth-page__form-wrap {
+    max-width: 440px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+}
+
+/* Page Builder auth_page layout modifiers */
+.auth-page--center .auth-page__layout {
+  grid-template-columns: minmax(0, 1fr);
+  max-width: 520px;
+  margin: 0 auto;
+}
+
+.auth-page--center .auth-page__hero,
+.auth-page--minimal .auth-page__hero,
+.auth-page--no-hero .auth-page__hero {
+  display: none;
+}
+
+.auth-page--minimal .auth-page__main,
+.auth-page--center .auth-page__main {
+  margin: 0 auto;
+  width: 100%;
+}
+
+.auth-page--minimal {
+  background: var(--c-surface, #fff);
+}
+
+@media (max-width: 900px), (orientation: portrait) {
+  /* minimal：顶栏占位、标题在 sheet-head，避免绝对定位遮挡正文 */
+  .auth-page--minimal[data-auth-panel="login"] .auth-page__mnav {
+    position: sticky;
+    top: 0;
+    background: var(--c-bg, var(--c-surface, #fff));
+    border-bottom: 0;
+    pointer-events: auto;
+  }
+
+  .auth-page--minimal[data-auth-panel="login"] .auth-page__mnav-title {
+    visibility: hidden;
+  }
+
+  .auth-page--minimal[data-auth-panel="login"] .auth-page__form-wrap {
+    padding-top: 8px;
+  }
+}
+
+/* === auth fields shared (findpass / findpass_msg; also in auth_modals) === */
+/* auth_findpass_form/msg 使用 auth-field/auth-form；auth 布局不加载 auth_modals/style.css */
+.auth-page .auth-form,
+.auth-page [data-mac-findpass-form],
+.auth-page [data-mac-findpass-send-form],
+.auth-page [data-mac-findpass-reset-form] {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  width: 100%;
+  max-width: 400px;
+}
+
+.auth-page .auth-field {
+  display: block;
+  margin-bottom: 14px;
+}
+
+.auth-page .auth-field__label {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--c-text-muted, #9499a0);
+}
+
+.auth-page .auth-field__input {
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+  min-height: 44px;
+  padding: 10px 14px;
+  border: 1px solid var(--c-border, #e3e5e7);
+  border-radius: 10px;
+  background: var(--c-surface-2, #f1f2f3);
+  color: var(--c-text, #18191c);
+  font: inherit;
+  font-size: 14px;
+}
+
+.auth-page .auth-field__input:focus {
+  outline: none;
+  border-color: var(--c-accent);
+  background: #fff;
+  box-shadow: 0 0 0 3px var(--c-accent-soft, var(--c-accent-border));
+}
+
+.auth-page .auth-field--captcha .auth-captcha {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.auth-page .auth-captcha__img {
+  flex: 0 0 auto;
+  height: 44px;
+  border-radius: 8px;
+  border: 1px solid var(--c-border, #e3e5e7);
+  cursor: pointer;
+  background: #fff;
+}
+
+.auth-page .auth-form__row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px 10px;
+}
+
+.auth-page .auth-steps {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 18px;
+}
+
+.auth-page .auth-steps__item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: var(--c-text-muted, #9499a0);
+}
+
+.auth-page .auth-steps__item.is-on {
+  color: var(--c-accent);
+}
+
+.auth-page .auth-steps__num {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  border: 1px solid currentColor;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.auth-page .auth-steps__item.is-on .auth-steps__num {
+  background: var(--c-accent);
+  border-color: var(--c-accent);
+  color: #fff;
+}
+
+.auth-page .auth-steps__line {
+  width: 36px;
+  height: 1px;
+  background: var(--c-border, #e3e5e7);
+}
+
+.auth-page .auth-steps--compact {
+  margin-bottom: 12px;
+}
+
+.auth-page .auth-findpass-msg {
+  width: 100%;
+  max-width: 400px;
+}
+
+@media (max-width: 768px), (orientation: portrait) {
+  .auth-page .auth-form__row {
+    grid-template-columns: 1fr;
+  }
+
+  .auth-page[data-auth-panel="findpass_msg"] .auth-page__hero {
+    display: none;
+  }
+
+  .auth-page[data-auth-panel="findpass_msg"] .auth-page__main {
+    margin-top: 0;
+    border-radius: 0;
+    min-height: calc(100dvh - 48px - env(safe-area-inset-top, 0px));
+  }
+}

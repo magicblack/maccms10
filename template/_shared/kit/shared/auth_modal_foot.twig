@@ -1,0 +1,14 @@
+{#
+  登录 / 注册 / 找回密码弹窗底部链接（组件）
+  mode: login | reg | findpass
+#}
+{% set _mode = mode|default('login') %}
+{% if _mode == 'login' %}
+  <a class="auth-card__link" href="#" data-auth-switch="reg" data-lang="user_reg_new_account">注册新账号</a>
+  <span class="auth-card__sep" aria-hidden="true">·</span>
+  <a class="auth-card__link" href="#" data-auth-switch="findpass" data-lang="user_zhmm">忘记密码</a>
+{% elseif _mode == 'reg' %}
+  <a class="auth-card__link" href="#" data-auth-switch="login" data-lang="user_qudl">已有账号，去登录</a>
+{% elseif _mode == 'findpass' %}
+  <a class="auth-card__link" href="#" data-auth-switch="login" data-lang="user_zjdengl">直接登录</a>
+{% endif %}

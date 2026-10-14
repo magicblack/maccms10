@@ -1,0 +1,941 @@
+/* 充值中心 — VIP 升级页（对齐设计稿：统一白卡 + 紫调 token） */
+
+.page-member--upgrade .member-card {
+  padding: 0;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: var(--shadow-member-card);
+}
+
+.page-member--upgrade [data-component="pay_shell"] {
+  padding: 0;
+}
+
+/* —— 顶栏：余额 + Tab 胶囊 —— */
+.page-member--upgrade .member-pay-top {
+  padding: 18px 20px 0;
+  margin: 0;
+}
+
+.page-member--upgrade .member-pay-top__row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px 16px;
+}
+
+.page-member--upgrade .member-pay-balance {
+  margin: 0;
+  gap: 8px;
+  font-size: 15px;
+}
+
+.page-member--upgrade .member-pay-balance__txt strong {
+  font-size: 18px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.page-member--upgrade .member-pay-tabs {
+  display: inline-flex;
+  flex-wrap: nowrap;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.page-member--upgrade .member-pay-tabs__tab {
+  appearance: none;
+  border: 0;
+  background: var(--c-surface-2, #f6f7f8);
+  padding: 0 18px;
+  min-height: 40px;
+  border-radius: 999px;
+  color: var(--c-text-muted, #61666d);
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 180ms ease, color 180ms ease, box-shadow 180ms ease;
+}
+
+.page-member--upgrade .member-pay-tabs__tab.is-active {
+  background: var(--c-accent);
+  color: var(--c-accent-ink);
+  font-weight: 600;
+  box-shadow: var(--shadow-interactive);
+}
+
+.page-member--upgrade .member-pay-tabs__tab--vip.is-active::before {
+  content: "";
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  margin-right: 6px;
+  vertical-align: -2px;
+  background: currentColor;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2'%3E%3Cpath d='M12 2l2.4 7.4H22l-6 4.6 2.3 7L12 17.8 5.7 21l2.3-7-6-4.6h7.6z'/%3E%3C/svg%3E") center / contain no-repeat;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2'%3E%3Cpath d='M12 2l2.4 7.4H22l-6 4.6 2.3 7L12 17.8 5.7 21l2.3-7-6-4.6h7.6z'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+
+.page-member--upgrade .member-pay-tabs__tab:focus-visible {
+  outline: 2px solid var(--c-accent-focus-ring, rgba(79, 70, 229, 0.55));
+  outline-offset: 2px;
+}
+
+/* —— 次级链接 —— */
+.page-member--upgrade .member-pay-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 20px;
+  margin: 0;
+  padding: 14px 20px 0;
+  font-size: 14px;
+}
+
+.page-member--upgrade .member-pay-links a {
+  position: relative;
+  color: var(--c-text-muted, #61666d);
+  text-decoration: none;
+  min-height: 36px;
+  padding-bottom: 8px;
+  font-weight: 500;
+}
+
+.page-member--upgrade .member-pay-links a:hover {
+  color: var(--c-accent);
+}
+
+.page-member--upgrade .member-pay-links a[aria-current="page"],
+.page-member--upgrade .member-pay-links a.is-on {
+  color: var(--c-accent);
+  font-weight: 600;
+}
+
+.page-member--upgrade .member-pay-links a[aria-current="page"]::after,
+.page-member--upgrade .member-pay-links a.is-on::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 2px;
+  border-radius: 2px;
+  background: var(--c-accent);
+}
+
+.page-member--upgrade .member-pay-panels {
+  padding: 16px 20px 20px;
+}
+
+/* —— VIP Hero —— */
+.page-member--upgrade .member-pay-vip-hero {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-rows: auto auto;
+  gap: 14px 12px;
+  align-items: start;
+  margin: 0 0 20px;
+  padding: 20px 20px 16px;
+  overflow: hidden;
+  border-radius: 16px;
+  background: var(--gradient-vip-hero);
+  color: var(--c-vip-hero-ink);
+  box-shadow: var(--shadow-vip-hero);
+}
+
+.page-member--upgrade .member-pay-vip-hero__copy {
+  grid-column: 1;
+  grid-row: 1;
+  min-width: 0;
+  z-index: 1;
+}
+
+.page-member--upgrade .member-pay-vip-hero__title {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin: 0;
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 1.35;
+  letter-spacing: -0.02em;
+}
+
+.page-member--upgrade .member-pay-vip-hero__title-sub {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--c-vip-hero-ink-muted);
+}
+
+.page-member--upgrade .member-pay-vip-hero__art {
+  grid-column: 2;
+  grid-row: 1 / span 2;
+  align-self: center;
+  justify-self: end;
+  width: 128px;
+  height: 108px;
+  margin: -8px -4px 0 0;
+  background:
+    url("../img/upgrade/glass-crown.webp") right 8px bottom 0 / 72px auto no-repeat,
+    radial-gradient(circle at 78% 18%, rgba(255, 255, 255, 0.35) 0%, rgba(255, 255, 255, 0) 62%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.page-member--upgrade .member-pay-vip-metrics {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin: 0;
+  z-index: 1;
+}
+
+.page-member--upgrade .member-pay-vip-metric {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+  padding: 12px 14px;
+  border-radius: 12px;
+  background: var(--c-vip-metric-bg);
+  border: 1px solid var(--c-vip-metric-border);
+  backdrop-filter: blur(8px);
+}
+
+.page-member--upgrade .member-pay-vip-metric dt {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--c-vip-hero-ink-muted);
+}
+
+.page-member--upgrade .member-pay-vip-metric dt::before {
+  content: "";
+  flex: 0 0 14px;
+  width: 14px;
+  height: 14px;
+  background: var(--c-vip-metric-icon);
+  -webkit-mask: center / contain no-repeat;
+  mask: center / contain no-repeat;
+}
+
+.page-member--upgrade .member-pay-vip-metric--expire dt::before {
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='currentColor'%3E%3Cpath d='M12 2L2 7v2c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V7l-10-5z'/%3E%3C/svg%3E");
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='currentColor'%3E%3Cpath d='M12 2L2 7v2c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V7l-10-5z'/%3E%3C/svg%3E");
+}
+
+.page-member--upgrade .member-pay-vip-metric--level dt::before {
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='currentColor'%3E%3Cpath d='M12 2l2.4 7.4H22l-6 4.6 2.3 7L12 17.8 5.7 21l2.3-7-6-4.6h7.6z'/%3E%3C/svg%3E");
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='currentColor'%3E%3Cpath d='M12 2l2.4 7.4H22l-6 4.6 2.3 7L12 17.8 5.7 21l2.3-7-6-4.6h7.6z'/%3E%3C/svg%3E");
+}
+
+.page-member--upgrade .member-pay-vip-metric dd {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 650;
+  line-height: 1.35;
+  font-variant-numeric: tabular-nums;
+  word-break: break-word;
+}
+
+.page-member--upgrade .member-pay-vip-metric dd[data-loading] {
+  opacity: 0.5;
+}
+
+/* —— 套餐区 —— */
+.page-member--upgrade .member-pay-vip-section-title {
+  margin: 0 0 14px;
+  font-size: 15px;
+  font-weight: 650;
+  color: var(--c-text, #18191c);
+}
+
+.page-member--upgrade .member-pay-vip-hint {
+  display: none;
+}
+
+.page-member--upgrade .upgrade-groups {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.page-member--upgrade .group-head--vip-chip {
+  margin-bottom: 4px;
+}
+
+.page-member--upgrade .group-vip-chip {
+  display: none;
+}
+
+.page-member--upgrade .group-plans--grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+}
+
+@media (min-width: 821px) {
+  .page-member--upgrade .group-plans--grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+.page-member--upgrade .shengji-item {
+  position: relative;
+  border: 1.5px solid var(--c-border, #e3e5e7);
+  border-radius: 14px;
+  background: var(--c-surface, #fff);
+  overflow: hidden;
+  cursor: pointer;
+  transition: border-color 180ms ease, box-shadow 180ms ease, transform 150ms ease;
+}
+
+.page-member--upgrade .shengji-item:hover {
+  border-color: var(--c-accent-border-strong);
+  box-shadow: var(--shadow-card);
+}
+
+.page-member--upgrade .shengji-item:active {
+  transform: scale(0.98);
+}
+
+.page-member--upgrade .shengji-item.select-vip {
+  border-color: var(--c-accent);
+  box-shadow: var(--shadow-focus);
+}
+
+.page-member--upgrade .shengji-item:focus-within {
+  outline: 2px solid var(--c-accent-focus-ring, rgba(79, 70, 229, 0.55));
+  outline-offset: 2px;
+}
+
+.page-member--upgrade .shengji-item .grade {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  min-height: 148px;
+  height: 100%;
+  color: inherit;
+  text-decoration: none;
+}
+
+.page-member--upgrade .plan-card-head {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 14px 10px 8px;
+  text-align: center;
+  background: transparent;
+  border: 0;
+}
+
+.page-member--upgrade .plan-card-head .time {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 650;
+  color: var(--c-text, #18191c);
+}
+
+.page-member--upgrade .plan-activity-badge {
+  display: inline-flex;
+  margin-top: 2px;
+  padding: 0 8px;
+  min-height: 20px;
+  align-items: center;
+  border-radius: 999px;
+  background: var(--c-plan-promo);
+  color: var(--c-plan-promo-ink);
+  font-size: 10px;
+  font-weight: 700;
+}
+
+.page-member--upgrade .plan-countdown {
+  display: block;
+  margin-top: 4px;
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
+  color: var(--c-plan-promo);
+}
+
+.page-member--upgrade .plan-card-body {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px 8px 6px;
+}
+
+.page-member--upgrade .point-money {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 2px;
+  font-size: 26px;
+  font-weight: 800;
+  line-height: 1;
+  color: var(--c-text, #18191c);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.02em;
+}
+
+.page-member--upgrade .point-money__currency {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--c-text-muted, #61666d);
+}
+
+.page-member--upgrade .point--stack.is-free .point-money {
+  font-size: 16px;
+  color: var(--c-success);
+}
+
+.page-member--upgrade .plan-card-foot {
+  display: flex;
+  justify-content: center;
+  padding: 0 8px 14px;
+}
+
+.page-member--upgrade .point-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 5px 12px;
+  border-radius: 999px;
+  background: var(--c-surface-2, #f6f7f8);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--c-text-muted, #61666d);
+}
+
+.page-member--upgrade .point-pill::before {
+  content: "";
+  width: 14px;
+  height: 14px;
+  background: url("../img/recharge/recharge-coin.png") center / contain no-repeat;
+}
+
+.page-member--upgrade .plan-ribbon {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 22px;
+  padding: 0 8px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1;
+  /* 亮色角标底 → 深色字，保证 ≥4.5:1；勿跟 --c-accent-ink（紫主题白字）走 */
+  color: #2a1a06;
+  pointer-events: none;
+}
+
+.page-member--upgrade .plan-ribbon--hot {
+  background: var(--gradient-brand);
+  color: var(--c-accent-ink, #121214);
+}
+
+.page-member--upgrade .plan-ribbon--value {
+  background: var(--gradient-plan-value);
+  color: var(--c-plan-value-ink, #2a1a06);
+}
+
+.page-member--upgrade .js-upgrade-groups-loading,
+.page-member--upgrade .js-upgrade-empty {
+  padding: 28px 16px;
+  text-align: center;
+  color: var(--c-text-muted);
+  font-size: 13px;
+}
+
+/* —— 结算区：优惠券 + 确认支付合一 —— */
+.page-member--upgrade .member-pay-settle {
+  margin-top: 16px;
+  border-radius: 14px;
+  overflow: hidden;
+  border: 1px solid var(--c-border);
+  background: var(--c-accent-soft);
+  box-shadow: var(--shadow-card);
+}
+
+.page-member--upgrade .member-pay-settle .mac-user-coupon-panel {
+  margin: 0;
+}
+
+.page-member--upgrade .member-pay-settle .mac-coupon-summary {
+  border: 0;
+  border-radius: 0;
+  border-bottom: 1px solid var(--c-border);
+  background: var(--c-surface);
+  padding: 12px 14px;
+}
+
+.page-member--upgrade .member-pay-settle .mac-coupon-summary__label {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--c-text);
+}
+
+.page-member--upgrade .member-pay-settle .mac-coupon-summary__action {
+  background: var(--c-surface-2);
+  color: var(--c-accent);
+  border: 1px solid var(--c-border);
+  font-weight: 600;
+}
+
+.page-member--upgrade .member-pay-settle .mac-coupon-preview {
+  display: none !important;
+}
+
+/* —— 底部确认条（嵌在 settle 内） —— */
+.page-member--upgrade .member-pay-settle .member-pay-checkout {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px 16px;
+  margin: 0;
+  padding: 14px 16px;
+  border-radius: 0;
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+}
+
+.page-member--upgrade .member-pay-checkout__lead {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  min-width: 0;
+  flex: 1 1 200px;
+}
+
+.page-member--upgrade .member-pay-checkout__check {
+  flex: 0 0 22px;
+  width: 22px;
+  height: 22px;
+  margin-top: 2px;
+  border-radius: 50%;
+  background: var(--c-accent);
+  position: relative;
+}
+
+.page-member--upgrade .member-pay-checkout__check::after {
+  content: "";
+  position: absolute;
+  left: 7px;
+  top: 4px;
+  width: 5px;
+  height: 9px;
+  border: solid var(--c-accent-ink);
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+
+.page-member--upgrade .member-pay-checkout__title {
+  display: block;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--c-text, #18191c);
+}
+
+.page-member--upgrade .member-pay-checkout__desc {
+  margin: 4px 0 0;
+  font-size: 13px;
+  line-height: 1.45;
+  color: var(--c-text, #18191c);
+  font-weight: 500;
+}
+
+.page-member--upgrade .member-pay-checkout__pricing {
+  margin: 6px 0 0;
+  font-size: 13px;
+  line-height: 1.45;
+  color: var(--c-text-muted, #61666d);
+  font-variant-numeric: tabular-nums;
+}
+
+.page-member--upgrade .member-pay-checkout__hint {
+  margin: 4px 0 0;
+  font-size: 11px;
+  line-height: 1.4;
+  color: var(--c-text-muted, #9499a0);
+}
+
+.page-member--upgrade .member-pay-checkout__action {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: 0 0 auto;
+}
+
+.page-member--upgrade .member-pay-checkout__price {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.page-member--upgrade .member-pay-checkout__price-num {
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--c-accent, #4f46e5);
+  font-variant-numeric: tabular-nums;
+}
+
+.page-member--upgrade .member-pay-checkout--cash .member-pay-checkout__pricing {
+  color: var(--c-text-muted);
+}
+
+.page-member--upgrade .member-pay-checkout__btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  min-width: 120px;
+  padding: 0 22px;
+  border-radius: 12px;
+  background: var(--c-accent);
+  color: var(--c-accent-ink) !important;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: var(--shadow-interactive);
+  transition: filter 180ms ease, transform 120ms ease;
+}
+
+.page-member--upgrade .member-pay-checkout__btn:hover {
+  filter: brightness(1.05);
+}
+
+.page-member--upgrade .member-pay-checkout__btn:active {
+  transform: scale(0.98);
+}
+
+.page-member--upgrade .member-pay-submit--vip {
+  display: none;
+}
+
+/* —— 充值 Tab 卡片 —— */
+.page-member--upgrade .member-pay-panel--recharge .member-pay-card {
+  border-radius: 14px;
+  border-color: var(--c-border, #e3e5e7);
+  box-shadow: none;
+}
+
+@media (min-width: 961px) {
+  .page-member--upgrade.pb-components-only .pb-member-shell .member-card {
+    align-self: stretch;
+    width: 100%;
+  }
+}
+
+@media (max-width: 720px) {
+  .page-member--upgrade .member-pay-top,
+  .page-member--upgrade .member-pay-links,
+  .page-member--upgrade .member-pay-panels {
+    padding-left: 14px;
+    padding-right: 14px;
+  }
+
+  .page-member--upgrade .member-pay-vip-hero {
+    grid-template-columns: 1fr;
+    padding: 16px;
+  }
+
+  .page-member--upgrade .member-pay-vip-hero__art {
+    grid-column: 1;
+    grid-row: auto;
+    justify-self: center;
+    margin: 0;
+  }
+
+  .page-member--upgrade .member-pay-checkout {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .page-member--upgrade .member-pay-checkout__action {
+    justify-content: space-between;
+    width: 100%;
+  }
+
+  .page-member--upgrade .member-pay-checkout__btn {
+    flex: 1 1 auto;
+  }
+}
+
+/* —— H5 充值中心（≤960px，与 member-mobile 对齐）—— */
+@media (max-width: 960px) {
+  .page-member--upgrade .member-card {
+    border-radius: 0;
+    box-shadow: none;
+  }
+
+  .page-member--upgrade .member-pay-top {
+    padding: 12px 16px 0;
+  }
+
+  .page-member--upgrade .member-pay-top__row {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+  }
+
+  .page-member--upgrade .member-pay-balance {
+    font-size: 14px;
+  }
+
+  .page-member--upgrade .member-pay-balance__txt strong {
+    font-size: 20px;
+  }
+
+  .page-member--upgrade .member-pay-tabs {
+    display: flex;
+    width: 100%;
+  }
+
+  .page-member--upgrade .member-pay-tabs__tab {
+    flex: 1 1 0;
+    min-height: 44px;
+    padding: 0 12px;
+    text-align: center;
+  }
+
+  .page-member--upgrade .member-pay-links {
+    flex-wrap: nowrap;
+    gap: 0;
+    margin: 0;
+    padding: 10px 16px 0;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+
+  .page-member--upgrade .member-pay-links::-webkit-scrollbar {
+    display: none;
+  }
+
+  .page-member--upgrade .member-pay-links a {
+    flex: 0 0 auto;
+    white-space: nowrap;
+    padding-right: 18px;
+    min-height: 40px;
+  }
+
+  .page-member--upgrade .member-pay-panels {
+    padding: 12px 16px calc(96px + env(safe-area-inset-bottom, 0px));
+  }
+
+  .page-member--upgrade .member-pay-vip-hero {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto auto;
+    gap: 12px;
+    margin-bottom: 16px;
+    padding: 14px 14px 12px;
+  }
+
+  .page-member--upgrade .member-pay-vip-hero__copy {
+    grid-column: 1;
+    grid-row: 1;
+  }
+
+  .page-member--upgrade .member-pay-vip-hero__title {
+    font-size: 17px;
+    gap: 4px;
+  }
+
+  .page-member--upgrade .member-pay-vip-hero__title-sub {
+    font-size: 13px;
+  }
+
+  .page-member--upgrade .member-pay-vip-hero__art {
+    display: none;
+  }
+
+  .page-member--upgrade .member-pay-vip-metrics {
+    grid-column: 1;
+    gap: 8px;
+  }
+
+  .page-member--upgrade .member-pay-vip-metric {
+    padding: 10px 12px;
+  }
+
+  .page-member--upgrade .member-pay-vip-metric dd {
+    font-size: 13px;
+    line-height: 1.3;
+  }
+
+  .page-member--upgrade .member-pay-vip-section-title {
+    margin-bottom: 12px;
+    font-size: 14px;
+  }
+
+  .page-member--upgrade .group-plans--grid {
+    gap: 10px;
+  }
+
+  .page-member--upgrade .shengji-item .grade {
+    min-height: 132px;
+  }
+
+  .page-member--upgrade .plan-card-head {
+    padding: 12px 8px 6px;
+  }
+
+  .page-member--upgrade .plan-card-head .time {
+    font-size: 13px;
+  }
+
+  .page-member--upgrade .point-money {
+    font-size: 22px;
+  }
+
+  .page-member--upgrade .point-money__currency {
+    font-size: 13px;
+  }
+
+  .page-member--upgrade .plan-card-foot {
+    padding: 0 6px 12px;
+  }
+
+  .page-member--upgrade .point-pill {
+    padding: 4px 10px;
+    font-size: 11px;
+  }
+
+  .page-member--upgrade .plan-ribbon {
+    top: 8px;
+    right: 8px;
+    min-height: 20px;
+    padding: 0 7px;
+    font-size: 10px;
+  }
+
+  .page-member--upgrade .member-pay-settle {
+    margin-top: 12px;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    box-shadow: none;
+    overflow: visible;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .page-member--upgrade .member-pay-settle .mac-user-coupon-panel {
+    order: 1;
+  }
+
+  .page-member--upgrade .member-pay-settle .mac-coupon-summary {
+    border: 1px solid var(--c-border);
+    border-radius: 12px;
+    margin-bottom: 10px;
+    padding: 10px 12px;
+    background: var(--c-surface);
+  }
+
+  .page-member--upgrade .member-pay-settle .member-pay-checkout {
+    display: contents;
+  }
+
+  .page-member--upgrade .member-pay-settle .member-pay-checkout__lead {
+    order: 2;
+    flex: 0 0 auto;
+    display: block;
+    margin-top: 8px;
+    padding: 10px 12px;
+    border-radius: 12px;
+    border: 1px solid var(--c-border);
+    background: var(--c-accent-soft);
+    box-shadow: var(--shadow-card);
+  }
+
+  .page-member--upgrade .member-pay-settle .member-pay-checkout__check {
+    display: none;
+  }
+
+  .page-member--upgrade .member-pay-settle .member-pay-checkout__title {
+    display: none;
+  }
+
+  .page-member--upgrade .member-pay-settle .member-pay-checkout__desc {
+    margin: 0;
+    font-size: 13px;
+    line-height: 1.4;
+  }
+
+  .page-member--upgrade .member-pay-settle .member-pay-checkout__pricing {
+    margin: 4px 0 0;
+    font-size: 12px;
+    line-height: 1.35;
+  }
+
+  .page-member--upgrade .member-pay-settle .member-pay-checkout__hint {
+    margin: 4px 0 0;
+    font-size: 11px;
+    line-height: 1.35;
+  }
+
+  .page-member--upgrade .member-pay-settle .member-pay-checkout__action {
+    order: 3;
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 45;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin: 0;
+    padding: 10px 16px calc(10px + env(safe-area-inset-bottom, 0px));
+    background: color-mix(in srgb, var(--c-surface) 92%, transparent);
+    border-top: 1px solid var(--c-border);
+    box-shadow: 0 -8px 24px color-mix(in srgb, var(--c-bg) 55%, transparent);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+  }
+
+  .page-member--upgrade .member-pay-settle .member-pay-checkout__price-num {
+    font-size: 24px;
+    line-height: 1;
+  }
+
+  .page-member--upgrade .member-pay-settle .member-pay-checkout__btn {
+    flex: 0 0 auto;
+    min-width: 132px;
+    min-height: 46px;
+    padding: 0 20px;
+    border-radius: 999px;
+  }
+
+  .page-member--upgrade .member-pay-service {
+    margin-top: 12px;
+    padding-bottom: 8px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .page-member--upgrade .shengji-item,
+  .page-member--upgrade .member-pay-tabs__tab,
+  .page-member--upgrade .member-pay-checkout__btn {
+    transition: none;
+  }
+}

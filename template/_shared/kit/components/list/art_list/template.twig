@@ -1,0 +1,61 @@
+{% import "page-builder-components/_shared/macros.twig" as pb %}
+{% set render = props.render|default('grid') %}
+{% set use_paging = props.paging|default(false) %}
+{% set num = props.num|default(8) %}
+{% if use_paging and render != 'list' %}
+  {% set num = (pb.pb_grid_paging_num(num) ~ '') + 0 %}
+{% elseif render == 'grid' %}
+  {# 小说竖版书封网格：与 manga_list 一致，严格按配置 num（不做 LCM 上取整） #}
+  {% set num = (num ~ '') + 0 %}
+{% endif %}
+{% set by_raw = param.by|default('') %}
+{% set by = (by_raw is iterable) ? '' : by_raw|trim %}
+{% if by == '' %}{% set by = props.by|default('time') %}{% endif %}
+{% set order_raw = param.order|default('') %}
+{% set order = (order_raw is iterable) ? '' : order_raw|trim|lower %}
+{% if order != 'asc' and order != 'desc' %}{% set order = props.order|default('desc') %}{% endif %}
+{% set type_raw = props.type|default(0) %}
+{% set type_id = (type_raw == 'current') ? obj.type_id|default(0) : type_raw %}
+{% set _cover_cls = pb.pb_cover_classes(props) %}
+{% set _cover_style = pb.pb_cover_style(props) %}
+{% set art_args = {num: num, order: order, by: by, type: type_id} %}
+{% if use_paging %}
+  {% set art_args = art_args|merge({
+    paging: true,
+    pageurl: props.pageurl|default('art/show'),
+    class: param.class|default(''),
+    letter: param.letter|default(''),
+    wd: param.wd|default('')
+  }) %}
+{% endif %}
+{% set res = mac_art(art_args) %}
+{% set list = res.list|default([]) %}
+{% if use_paging %}
+  {% set pg = mac_paging(res) %}
+{% endif %}
+{% if list is not empty %}
+  {% set _text_only = props.text_only is defined ? props.text_only : (render == 'list') %}
+  {% set _use_list = render == 'list' or _text_only %}
+  {% if _use_list %}
+    {% set _novel_home = props.list_variant|default('') == 'novel-home' %}
+    <div class="rows rows--art-text{% if _novel_home %} rows--art-novel-home{% endif %}">
+      {% for a in list %}{% include "page-builder-components/_shared/art_row.twig" with {text_only: _text_only, novel_home: _novel_home} %}{% endfor %}
+    </div>
+  {% else %}
+    <div class="bili-grid pb-art-list {{ _cover_cls }}"{% if _cover_style %} style="{{ _cover_style }}"{% endif %}>
+      {% for a in list %}{% include "page-builder-components/_shared/art_book_card.twig" %}{% endfor %}
+    </div>
+  {% endif %}
+{% endif %}
+{% set _empty_title = props.empty_title|default('') %}
+{% if _empty_title == '' %}
+  {% set _empty_title = use_paging ? '暂无符合条件的文章' : '暂无内容' %}
+{% endif %}
+{% set _empty_title_lang = props.empty_title_lang|default('string_no_have') %}
+{% include "page-builder-components/_shared/list_footer.twig" with {
+  use_paging: use_paging,
+  pg: pg|default(null),
+  empty_preset: use_paging ? 'filter' : '',
+  empty_title: _empty_title,
+  empty_title_lang: _empty_title_lang
+} %}

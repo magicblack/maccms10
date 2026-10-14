@@ -1,0 +1,30 @@
+{% set _mid = mid|default(1) %}
+{% set _num = num|default(8) %}
+{% set _type = type_id|default(0) %}
+{% set _title = title|default('') %}
+{% if _title == '' and _type > 0 %}
+  {% for t in mac_type({ids: _type, mid: 1}).list|default([]) %}
+    {% set _title = t.type_name %}
+  {% endfor %}
+{% endif %}
+{% if _title == '' %}
+  {% set _title = '本周排行' %}
+{% endif %}
+<div class="pb-rank-panel">
+  <h3 class="pb-rank-panel__title">{{ _title }}</h3>
+  <ol class="pb-rank-panel__list">
+    {% if _mid == 12 %}
+      {% for vo in mac_manga({num: _num, type: _type, order: 'desc', by: 'hits_week'}).list|default([]) %}
+      <li class="pb-rank-panel__item"><a href="{{ mac_url_manga_detail(vo) }}">{{ vo.manga_name }}</a><em>{{ vo.manga_score }}</em></li>
+      {% endfor %}
+    {% elseif _mid == 2 %}
+      {% for a in mac_art({num: _num, type: _type, order: 'desc', by: 'hits_week'}).list|default([]) %}
+      <li class="pb-rank-panel__item"><a href="{{ mac_url_art_detail(a) }}">{{ a.art_name }}</a><em>{{ a.art_hits }}</em></li>
+      {% endfor %}
+    {% else %}
+      {% for vo in mac_vod({num: _num, type: _type, order: 'desc', by: 'hits_week'}).list|default([]) %}
+      <li class="pb-rank-panel__item"><a href="{{ mac_url_vod_detail(vo) }}">{{ vo.vod_name }}</a><em>{{ vo.vod_score }}</em></li>
+      {% endfor %}
+    {% endif %}
+  </ol>
+</div>

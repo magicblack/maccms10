@@ -1,0 +1,273 @@
+.share-sheet {
+  position: fixed;
+  inset: 0;
+  z-index: 12020;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  box-sizing: border-box;
+}
+
+.share-sheet[hidden] {
+  display: none !important;
+}
+
+.share-sheet__backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(15, 18, 20, 0.52);
+  backdrop-filter: blur(3px);
+}
+
+.share-sheet__panel {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 480px;
+  max-height: min(88dvh, 520px);
+  padding: 0 16px calc(16px + env(safe-area-inset-bottom, 0px));
+  background: var(--c-surface, #fff);
+  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+  box-shadow: 0 -8px 32px rgba(0, 0, 0, 0.12);
+  animation: share-sheet-in 0.28s ease-out;
+  overflow: auto;
+}
+
+.share-sheet__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 14px 0 10px;
+  border-bottom: 1px solid var(--c-border);
+}
+
+.share-sheet__title {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--c-text);
+}
+
+.share-sheet__close {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  margin: -6px -8px -6px 0;
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--c-text-muted);
+  cursor: pointer;
+  transition: color var(--dur) var(--ease), background var(--dur) var(--ease);
+}
+
+.share-sheet__close:hover {
+  color: var(--c-text);
+  background: var(--c-surface-2);
+}
+
+.share-sheet__preview {
+  margin: 12px 0 0;
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--c-text-muted);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.share-sheet__copy {
+  margin-top: 14px;
+}
+
+.share-sheet__copy-label {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.share-sheet__copy-row {
+  display: flex;
+  align-items: stretch;
+  gap: 8px;
+}
+
+.share-sheet__input {
+  flex: 1;
+  min-width: 0;
+  height: 40px;
+  padding: 0 12px;
+  border: 1px solid var(--c-border);
+  border-radius: var(--radius-sm);
+  background: var(--c-surface-2);
+  color: var(--c-text-muted);
+  font-size: 13px;
+}
+
+.share-sheet__copy-btn {
+  flex: 0 0 auto;
+  min-width: 72px;
+  height: 40px;
+  padding: 0 16px;
+  border: 0;
+  border-radius: var(--radius-sm);
+  background: var(--c-accent);
+  color: var(--c-accent-ink, #fff);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background var(--dur) var(--ease), transform 0.12s ease;
+}
+
+.share-sheet__copy-btn:hover {
+  background: var(--c-accent-hover);
+}
+
+.share-sheet__copy-btn:active {
+  transform: scale(0.97);
+}
+
+.share-sheet__grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8px 4px;
+  margin-top: 18px;
+  padding-bottom: 4px;
+}
+
+.share-channel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  min-height: 88px;
+  padding: 8px 4px;
+  border: 0;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--c-text-muted);
+  cursor: pointer;
+  transition: background var(--dur) var(--ease);
+}
+
+.share-channel:hover {
+  background: var(--c-surface-2);
+}
+
+.share-channel__icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: var(--c-surface-2);
+  border: 1px solid var(--c-border);
+  color: var(--c-text-muted);
+  transition: transform var(--dur) var(--ease), border-color var(--dur) var(--ease);
+}
+
+.share-channel__glyph {
+  width: 22px;
+  height: 22px;
+}
+
+.share-channel__icon--wechat {
+  background: #edf9f1;
+  border-color: #d4f0df;
+  color: #07c160;
+}
+
+.share-channel__icon--weibo {
+  background: #fff4eb;
+  border-color: #ffe4cc;
+  color: #ff8200;
+}
+
+.share-channel__icon--qq {
+  background: #ebf7fe;
+  border-color: #ccecfb;
+  color: #12b7f5;
+}
+
+.share-channel__icon--link {
+  background: var(--c-surface-2);
+  border-color: var(--c-border);
+  color: var(--c-text-muted);
+}
+
+.share-channel:hover .share-channel__icon {
+  transform: scale(1.04);
+}
+
+.share-channel__label {
+  font-size: 12px;
+  line-height: 1.2;
+  text-align: center;
+}
+
+body.has-share-sheet {
+  overflow: hidden;
+}
+
+.share-channel:focus-visible,
+.share-sheet__copy-btn:focus-visible,
+.share-sheet__close:focus-visible {
+  outline: 2px solid var(--c-link);
+  outline-offset: 2px;
+}
+
+@keyframes share-sheet-in {
+  from {
+    opacity: 0;
+    transform: translateY(100%);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (min-width: 641px) {
+  .share-sheet {
+    align-items: center;
+    padding: 24px;
+  }
+
+  .share-sheet__panel {
+    max-width: 420px;
+    padding: 0 20px 20px;
+    border-radius: var(--radius-lg);
+    animation: share-sheet-in-desk 0.24s ease-out;
+  }
+}
+
+@keyframes share-sheet-in-desk {
+  from {
+    opacity: 0;
+    transform: translateY(16px) scale(0.98);
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .share-sheet__panel {
+    animation: none;
+  }
+}

@@ -1,0 +1,58 @@
+{#
+  Starter T0: vod 下载页真实列表（downer 路由）。
+
+  Vod::downer() 在 vod_pwd_down 未设置，或已过 session 校验后渲染。与 down.twig
+  同源（label_vod_play('down') 装的 obj.vod_down_list），但这里不带站点头尾／导航，
+  因为 downer_pwd.twig 同款场景是内嵌在下载源对应的 iframe 里。
+#}
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="utf-8">
+<script src="{{ maccms.path_tpl }}page-builder-components/_shared/js/browser-ie-detect.js"></script>
+{# 强制 360/搜狗/QQ 等双核浏览器使用高速内核，避免下载页被兼容模式(IE内核)渲染导致前端异常 #}
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="renderer" content="webkit">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>{{ obj.vod_name|default('') }}</title>
+<link rel="stylesheet" href="{{ maccms.path_tpl }}asset/css/tokens.css">
+{% set _pb_td_override = mac_theme_override_css_href() %}
+{% if _pb_td_override %}<link rel="stylesheet" href="{{ _pb_td_override }}">{% endif %}
+<link rel="stylesheet" href="{{ maccms.path_tpl }}asset/css/pb-shell.css">
+<link rel="stylesheet" href="{{ maccms.path_tpl }}asset/css/pb-t0.css?v=3">
+{% import "@shared/components.twig" as c %}
+{{ c.jsvar(maccms, csrf_token|default(''), user.user_id|default(0)) }}
+</head>
+<body class="pbs-body pb-components-only page-vod-down-frame" data-mid="{{ maccms.mid|default(0) }}" data-aid="{{ maccms.aid|default(0) }}">
+{% set downs = obj.vod_down_list|default([]) %}
+<section class="pb-t0">
+  <div class="pb-t0__panel">
+    {% if downs %}
+      {% for src in downs %}
+      <div class="pb-t0-down__src">
+        {% set src_label = src.player_info.show|default(src.from|default('')) %}
+        <h2 class="pb-t0-down__head"{% if not src_label %} data-lang="string_play_xl"{% endif %}>{{ src_label ?: '线路' }}</h2>
+        {% for u in src.urls|default([]) %}
+        <div class="pb-t0-down__item{{ u.locked|default(0) ? ' is-locked' : '' }}">
+          <span class="pb-t0-down__name" title="{{ u.name|default('') }}"{% if not u.name|default('') %} data-lang="vod_down_resource_default"{% endif %}>{{ u.name|default('资源', true) }}</span>
+          {% if u.locked|default(0) %}
+          <span class="pb-t0-down__url" data-lang="string_down_locked">未解锁</span>
+          {% else %}
+          <span class="pb-t0-down__url" title="{{ u.url|default('') }}">{{ u.url|default('') }}</span>
+          <a class="pb-t0-down__btn" href="{{ u.url|default('#') }}" rel="nofollow" data-lang="string_down_bd">本地下载</a>
+          {% endif %}
+        </div>
+        {% endfor %}
+      </div>
+      {% endfor %}
+    {% else %}
+      <div class="pb-t0__empty">
+        <p data-lang="vod_down_empty_title">暂无下载资源</p>
+      </div>
+    {% endif %}
+  </div>
+</section>
+{{ c.runtime(maccms.path, '', '', maccms.path_tpl|default('')) }}
+</body>
+</html>

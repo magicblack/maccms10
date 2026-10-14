@@ -18,6 +18,10 @@
 .status-dot.online { background: #5FB878; }
 .status-dot.offline { background: #FF5722; }
 .status-dot.unknown { background: #FFB800; }
+.resource-card.is-disabled { background: #fafafa; }
+.resource-card.is-disabled .name { color: #999; }
+.resource-card .health { font-size: 12px; margin-bottom: 8px; display: flex; gap: 6px; align-items: center; flex-wrap: wrap; }
+.resource-card .health .reason { color: #FF5722; word-break: break-all; }
 </style>
 
 <div class="page-container p10">
@@ -35,6 +39,7 @@
             <a href="{:url('resource_hub/multiCollect')}" class="layui-btn layui-btn-primary"><i class="layui-icon">&#xe857;</i> {:lang('admin/resourcehub/btn_multi_collect')}</a>
             <a href="{:url('data_replace/index')}" class="layui-btn layui-btn-primary"><i class="layui-icon">&#xe642;</i> {:lang('admin/resourcehub/btn_data_replace')}</a>
             <a href="{:url('batch_player/index')}" class="layui-btn layui-btn-primary"><i class="layui-icon">&#xe6ed;</i> {:lang('admin/resourcehub/btn_batch_player')}</a>
+            <a href="{:url('collect/healthlog')}" class="layui-btn layui-btn-primary"><i class="layui-icon">&#xe60e;</i> {:lang('admin/collect_health/log_title')}</a>
             <button type="button" class="layui-btn layui-btn-warm" id="btnCleanDupTypes"><i class="layui-icon">&#xe640;</i> {:lang('admin/resourcehub/btn_clean_dup_types')}</button>
         </div>
     </div>
@@ -44,13 +49,23 @@
         <h3>{$zone.title}</h3>
         <div class="resource-grid">
             {volist name="$zone['sites']" id="site" key="site_idx"}
-            <div class="resource-card" data-url="{$site.url}" data-type="{$site.type}" data-mid="{$site.mid}" data-name="{$site.name}">
+            <div class="resource-card{if condition="$site['health'] && $site['health']['status'] neq '1'"} is-disabled{/if}" data-url="{$site.url}" data-type="{$site.type}" data-mid="{$site.mid}" data-name="{$site.name}">
                 <div class="name">
                     <span class="status-dot unknown" id="status_{$zone_key}_{$site_idx}"></span>
                     {$site.name}
                 </div>
                 <div class="url">{$site.url}</div>
                 <div class="desc">{$site.desc}</div>
+                <div class="health">
+                    {if condition="$site['health'] && $site['health']['status'] neq '1'"}
+                    <a class="layui-badge" href="{:url('collect/healthlog',['key'=>$site['health_key']])}">{:lang('admin/collect_health/st_disabled')}{if condition="$site['health']['disabled_by'] eq 'auto'"}({:lang('admin/collect_health/by_auto')}){/if}</a>
+                    <span class="reason">{$site['health']['reason']|mac_filter_xss}</span>
+                    {else/}
+                    <a class="layui-badge layui-bg-green" href="{:url('collect/healthlog',['key'=>$site['health_key']])}">{:lang('admin/collect_health/st_enabled')}</a>
+                    {if condition="$site['health'] && $site['health']['fail_count'] gt 0"}<span class="layui-badge layui-bg-orange" title="{$site['health']['last_error']|mac_filter_xss}">{:lang('admin/collect_health/fail_n', [$site['health']['fail_count']])}</span>{/if}
+                    {/if}
+                    {if condition="$site['health'] && $site['health']['last_check']"}<span style="color:#999">{:lang('admin/collect_health/last_check')}：{$site['health']['last_check']|date='m-d H:i',###}</span>{/if}
+                </div>
                 <div class="actions">
                     <button class="layui-btn layui-btn-xs layui-btn-normal btn-check" data-url="{$site.url}" data-status-id="status_{$zone_key}_{$site_idx}">{:lang('admin/resourcehub/btn_check')}</button>
                     <button class="layui-btn layui-btn-xs btn-quick-collect" data-url="{$site.url}" data-type="{$site.type}" data-mid="{$site.mid}" data-name="{$site.name}">{:lang('admin/resourcehub/btn_enter')}</button>
@@ -58,6 +73,11 @@
                     <button class="layui-btn layui-btn-xs layui-btn-danger btn-auto-bindplayer" data-url="{$site.url}" data-type="{$site.type}" data-name="{$site.name}">{:lang('admin/resourcehub/btn_auto_config')}</button>
                     <button class="layui-btn layui-btn-xs layui-btn-primary btn-add-collect" data-url="{$site.url}" data-type="{$site.type}" data-mid="{$site.mid}" data-name="{$site.name}">{:lang('admin/resourcehub/btn_add_collect')}</button>
                     <button class="layui-btn layui-btn-xs layui-btn-primary btn-add-timming" data-url="{$site.url}" data-type="{$site.type}" data-mid="{$site.mid}" data-name="{$site.name}">{:lang('admin/resourcehub/btn_add_timming')}</button>
+                    {if condition="$site['health'] && $site['health']['status'] neq '1'"}
+                    <button class="layui-btn layui-btn-xs layui-btn-normal j-health-toggle" data-url="{$site.url}" data-name="{$site.name}" data-source="hub" data-status="1">{:lang('admin/collect_health/btn_enable')}</button>
+                    {else/}
+                    <button class="layui-btn layui-btn-xs layui-btn-primary j-health-toggle" data-url="{$site.url}" data-name="{$site.name}" data-source="hub" data-status="0">{:lang('admin/collect_health/btn_disable')}</button>
+                    {/if}
                     {if condition="$zone_key eq 'custom'"}
                     <button class="layui-btn layui-btn-xs layui-btn-danger btn-del-custom" data-index="{$site_idx-1}">{:lang('admin/resourcehub/confirm_delete')}</button>
                     {/if}
@@ -78,6 +98,7 @@
 
 {include file="../../../application/admin/view_new/public/foot" /}
 <script type="text/javascript">
+var RH_TOKEN = '{:mac_admin_csrf_token()}';
 var RH_URLS = {
     check: '{:url("resource_hub/check")}',
     quickCollect: '{:url("resource_hub/quickCollect")}',
@@ -137,6 +158,11 @@ var RH_LANG = {
     request_fail: '{:lang("admin/resourcehub/request_fail")}'
 };
 </script>
+<script type="text/javascript">
+var CH_TOGGLE_URL = '{:url("collect/healthtoggle")}';
+var CH_LANG = {confirm_disable: '{:lang("admin/collect_health/confirm_disable")}', confirm_enable: '{:lang("admin/collect_health/confirm_enable")}'};
+</script>
+<script type="text/javascript" src="__STATIC__/js/collect_health.js?v={:time()}"></script>
 <script type="text/javascript" src="__STATIC__/js/resourcehub.js?v={:time()}"></script>
 <script type="text/javascript">
 layui.use(['jquery','layer'], function(){
@@ -213,6 +239,7 @@ layui.use(['jquery','layer'], function(){
                             url: RH_URLS.cleanDupTypes,
                             type: 'POST',
                             contentType: 'application/json',
+                            headers: {'X-CSRF-Token': RH_TOKEN},
                             data: JSON.stringify({actions: actions}),
                             dataType: 'json',
                             success: function(res2){

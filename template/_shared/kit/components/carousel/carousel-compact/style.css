@@ -1,0 +1,82 @@
+.pb-ccc { margin-bottom: 24px; }
+.pb-ccc__root {
+  border-radius: var(--radius, 8px);
+  overflow: hidden;
+  background: var(--c-surface-2, #f0f2f5);
+  border: 1px solid var(--c-border, #e5e8ee);
+}
+.pb-ccc__track {
+  position: relative;
+  width: 100%;
+  height: 160px;
+  background: #1a1a1a;
+  overflow: hidden;
+}
+.pb-ccc__item {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.35s ease;
+}
+.pb-ccc__item.is-on {
+  opacity: 1;
+  pointer-events: auto;
+  z-index: 1;
+}
+.pb-ccc__item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* 竖版封面（短剧 / 漫画 / 小说）：框不变，封面 contain 完整显示，底部垫同图模糊背景。
+   data-cover-fit 由 runtime（mac-theme-runtime.js cover.orient）按图片实际尺寸写入，横竖混杂逐条处理；
+   图片载入前用 data-cover-orient（分类比例 / 漫画小说）做首屏提示 */
+.pb-ccc__backdrop { display: none; }
+.pb-ccc__item[data-cover-fit="contain"] .pb-ccc__backdrop,
+.pb-ccc__item[data-cover-orient="v"]:not([data-cover-fit]) .pb-ccc__backdrop {
+  display: block;
+  position: absolute;
+  inset: -24px;
+  background-position: center;
+  background-size: cover;
+  filter: blur(20px) brightness(0.6);
+  pointer-events: none;
+}
+.pb-ccc__item[data-cover-fit="contain"] img,
+.pb-ccc__item[data-cover-orient="v"]:not([data-cover-fit]) img {
+  position: relative;
+  object-fit: contain;
+}
+.pb-ccc__foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 14px;
+  background: var(--c-surface, #fff);
+}
+.pb-ccc__label {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--c-text, #1a1d23);
+  flex: 1;
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.pb-ccc__dots { display: flex; gap: 6px; flex-shrink: 0; }
+.pb-ccc__dot {
+  width: 8px; height: 8px;
+  border: 0; padding: 0;
+  border-radius: 50%;
+  background: var(--c-border, #d0d5dd);
+  cursor: pointer;
+}
+.pb-ccc__dot.is-on {
+  background: var(--c-accent);
+  transform: scale(1.15);
+}

@@ -1,0 +1,36 @@
+{
+    "id": "sec_heading",
+    "label_key": "admin/themedesign/pb_block_sec_heading",
+    "category": "layout",
+    "kind": "heading",
+    "peer_styles": [],
+    "assets": {
+        "css": "style.css",
+        "js": "script.js"
+    },
+    "palette": false,
+    "props": {
+        "title": {
+            "type": "string",
+            "default": "",
+            "trait": "title"
+        },
+        "unit": {
+            "type": "string",
+            "default": "条",
+            "trait": "unit"
+        },
+        "title_lang": {
+            "type": "string",
+            "default": ""
+        }
+    },
+    "context": {
+        "pageTypes": [
+            "home",
+            "list",
+            "detail"
+        ],
+        "requires": []
+    }
+}

@@ -1,0 +1,28 @@
+{# Generic brand lockup — mark + label; colors via --c-accent / --c-text / --c-on-media #}
+{% set _label = label|default('')|trim %}
+{% if _label == '' %}
+  {% set _raw = maccms.site_name|default('')|trim %}
+  {% if ' - ' in _raw %}
+    {% set _label = _raw|split(' - ')|first|trim %}
+  {% elseif '—' in _raw %}
+    {% set _label = _raw|split('—')|first|trim %}
+  {% else %}
+    {% set _label = _raw %}
+  {% endif %}
+{% endif %}
+{% if _label|length > 12 %}
+  {% set _label = _label|slice(0, 12) %}
+{% endif %}
+{% if _label == '' %}
+  {% set _label = '站点' %}
+{% endif %}
+{% set _h = height|default(40) %}
+<span class="brand brand--lockup" style="--brand-h: {{ _h }}px;">
+  <svg class="brand__mark" viewBox="0 0 48 44" width="{{ (_h * 0.86)|round }}" height="{{ _h }}" focusable="false" aria-hidden="true">
+    <path fill="var(--c-accent)" d="M2 14.5C2 8.15 7.15 3 13.5 3h21C40.85 3 46 8.15 46 14.5v15C46 35.85 40.85 41 34.5 41h-21C7.15 41 2 35.85 2 29.5v-15z"/>
+    <circle fill="var(--c-accent)" cx="34.5" cy="5" r="3.2"/>
+    <circle fill="var(--c-accent)" cx="42.5" cy="7" r="3.2"/>
+    <path fill="var(--c-on-media, #fff)" d="M18.2 15.6c-1-.6-2.25.13-2.25 1.3v13.2c0 1.17 1.25 1.9 2.25 1.3l11.2-6.6c.96-.57.96-2.03 0-2.6l-11.2-6.6z"/>
+  </svg>
+  <span class="brand__name">{{ _label }}</span>
+</span>

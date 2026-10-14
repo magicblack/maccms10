@@ -1,0 +1,54 @@
+{# 统一内容列表：bind 决定数据源，render 决定网格/横向轮播；refresh 开启「换一换」 #}
+{% set bind = props.bind|default('vod') %}
+{% set p = props|default({}) %}
+{% set use_paging = p.paging|default(false) %}
+{% set use_relation = p.relation|default(false) %}
+{# 勿对 refresh 做与字符串 false 的松散不等比较：布尔 true 会被判关 #}
+{% set _rf = p.refresh|default(false) %}
+{% set _refresh_on = _rf is same as(true) or _rf == 1 or _rf == '1' or _rf == 'true' %}
+{% set use_refresh = _refresh_on and not use_paging and not use_relation and bind != 'gbook' %}
+{% set type_raw = p.type|default(0) %}
+{% set type_id = (type_raw == 'current') ? obj.type_id|default(0) : type_raw %}
+{% set num = p.num|default(12) %}
+{% set by = p.by|default('time') %}
+{% set _feed_body %}
+{% if bind == 'vod' %}
+  {% include "page-builder-components/vod_list/template.twig" with {props: p} %}
+{% elseif bind == 'manga' %}
+  {% include "page-builder-components/manga_list/template.twig" with {props: p} %}
+{% elseif bind == 'art' %}
+  {% include "page-builder-components/art_list/template.twig" with {props: p} %}
+{% elseif bind == 'topic' %}
+  {% include "page-builder-components/topic_list/template.twig" with {props: p} %}
+{% elseif bind == 'live' %}
+  {% include "page-builder-components/live_list/template.twig" with {props: p} %}
+{% elseif bind == 'website' %}
+  {% include "page-builder-components/website_list/template.twig" with {props: p} %}
+{% elseif bind == 'actor' %}
+  {% include "page-builder-components/actor_list/template.twig" with {props: p} %}
+{% elseif bind == 'role' %}
+  {% include "page-builder-components/role_list/template.twig" with {props: p} %}
+{% elseif bind == 'gbook' %}
+  {% include "page-builder-components/gbook_list/template.twig" with {props: p} %}
+{% endif %}
+{% endset %}
+{% if use_refresh %}
+<div class="pb-content-feed"
+     data-pb-cf-root
+     data-bind="{{ bind|e('html_attr') }}"
+     data-num="{{ num }}"
+     data-type="{{ type_id }}"
+     data-by="{{ by|e('html_attr') }}"
+     data-start="0"
+     data-span="6">
+  <div class="pb-content-feed__list" data-pb-cf-list>{{ _feed_body|raw }}</div>
+  <div class="pb-content-feed__refresh-wrap">
+    <button type="button" class="pb-content-feed__refresh" data-pb-cf-refresh>
+      <span class="pb-content-feed__refresh-ico" aria-hidden="true"></span>
+      <span data-lang="content_guess_refresh">换一换</span>
+    </button>
+  </div>
+</div>
+{% else %}
+{{ _feed_body|raw }}
+{% endif %}

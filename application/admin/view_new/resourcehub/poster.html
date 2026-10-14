@@ -1,7 +1,7 @@
 {include file="../../../application/admin/view_new/public/head" /}
 
 <style>
-.poster-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 12px; }
+.poster-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 12px; }
 .poster-item { border: 1px solid #e6e6e6; border-radius: 6px; overflow: hidden; cursor: pointer; transition: all .2s; position: relative; }
 .poster-item:hover { border-color: #1E9FFF; transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,.1); }
 .poster-item.selected { border-color: #1E9FFF; border-width: 2px; }
@@ -9,7 +9,8 @@
 .poster-item.recommended { border-color: #5FB878; border-width: 2px; }
 .poster-item.recommended .recommend-badge { display: block; }
 .poster-item .recommend-badge { display: none; position: absolute; top: 0; left: 0; background: #5FB878; color: #fff; padding: 2px 8px; font-size: 11px; border-radius: 0 0 6px 0; z-index: 1; }
-.poster-item img { width: 100%; height: 240px; object-fit: cover; }
+.poster-item__thumb { position: relative; width: 100%; aspect-ratio: 69 / 40; background: #f5f5f5; overflow: hidden; }
+.poster-item img { width: 100%; height: 100%; object-fit: cover; object-position: center; display: block; }
 .poster-item .info { padding: 8px; }
 .poster-item .info .title { font-size: 13px; color: #333; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .poster-item .info .meta { font-size: 11px; color: #999; margin-top: 3px; }
@@ -19,6 +20,9 @@
 .filter-tabs .layui-btn.active { background: #1E9FFF; color: #fff; }
 .poster-stats { margin-left: 15px; font-size: 13px; color: #666; line-height: 38px; }
 .poster-stats b { color: #5FB878; }
+.poster-pager { margin-top: 20px; text-align: center; }
+.poster-pager__jump { display: inline-flex; align-items: center; gap: 6px; margin-left: 12px; vertical-align: middle; }
+.poster-pager__jump .layui-input { width: 72px; height: 30px; line-height: 30px; display: inline-block; padding: 0 8px; text-align: center; }
 </style>
 
 <div class="page-container p10">
@@ -44,7 +48,9 @@
         {volist name="list" id="vo"}
         <div class="poster-item {if condition="$vo['vod_level'] > 0"}recommended{/if}" data-id="{$vo.vod_id}" data-level="{$vo.vod_level}">
             <span class="recommend-badge">{:lang('admin/resourcehub/badge_recommended')}</span>
+            <div class="poster-item__thumb">
             <img src="{$vo.vod_pic}" onerror="this.src='__STATIC__/images/nopic.png'" alt="{$vo.vod_name}">
+            </div>
             <div class="info">
                 <div class="title" title="{$vo.vod_name}">{$vo.vod_name}</div>
                 <div class="meta">
@@ -61,81 +67,130 @@
     </div>
 
     {if condition="$total > $limit"}
-    <div style="margin-top:20px;text-align:center;">
+    <div class="poster-pager">
         <div class="layui-btn-group">
             {if condition="$page > 1"}
             <a href="{:url('resource_hub/poster', ['page'=>$page-1, 'filter'=>$filter])}" class="layui-btn layui-btn-sm layui-btn-primary">{:lang('admin/resourcehub/prev_page')}</a>
             {/if}
-            <button class="layui-btn layui-btn-sm layui-btn-disabled">{:lang('admin/resourcehub/page_num',[$page])}</button>
+            <button type="button" class="layui-btn layui-btn-sm layui-btn-disabled">{:lang('admin/resourcehub/page_num',[$page,$total_pages])}</button>
             {if condition="$page * $limit < $total"}
             <a href="{:url('resource_hub/poster', ['page'=>$page+1, 'filter'=>$filter])}" class="layui-btn layui-btn-sm layui-btn-primary">{:lang('admin/resourcehub/next_page')}</a>
             {/if}
+        </div>
+        <div class="poster-pager__jump">
+            <input type="number" id="posterPageInput" class="layui-input" min="1" max="{$total_pages}" value="{$page}" placeholder="{:lang('admin/resourcehub/poster_page_ph')}" aria-label="{:lang('admin/resourcehub/poster_page_ph')}">
+            <button type="button" class="layui-btn layui-btn-sm" id="posterPageJump">{:lang('jump')}</button>
         </div>
     </div>
     {/if}
 </div>
 
 {include file="../../../application/admin/view_new/public/foot" /}
-<script>
-layui.use(['layer'], function(){
-    var layer = layui.layer, $ = layui.$;
-    var LANG = {
-        select_video_first: '{:lang("admin/resourcehub/select_video_first")}',
-        confirm_set_recommend: '{:lang("admin/resourcehub/confirm_set_recommend")}',
-        confirm_cancel_recommend: '{:lang("admin/resourcehub/confirm_cancel_recommend")}',
-        selected_films: '{:lang("admin/resourcehub/selected_films")}'
-    };
+<script type="text/javascript">
+(function () {
+    var layuiRef = (typeof layui !== 'undefined') ? layui : null;
+    if (!layuiRef && window.parent && window.parent !== window) {
+        try {
+            if (window.parent.layui) {
+                layuiRef = window.parent.layui;
+            }
+        } catch (e) {}
+    }
+    if (!layuiRef || !layuiRef.use) {
+        return;
+    }
+    layuiRef.use(['layer'], function () {
+        var layer = layuiRef.layer;
+        var $ = (typeof jQuery !== 'undefined') ? jQuery : layuiRef.$;
+        if (!$) {
+            return;
+        }
+        var LANG = {
+            select_video_first: '{:lang("admin/resourcehub/select_video_first")}',
+            confirm_set_recommend: '{:lang("admin/resourcehub/confirm_set_recommend")}',
+            confirm_cancel_recommend: '{:lang("admin/resourcehub/confirm_cancel_recommend")}',
+            selected_films: '{:lang("admin/resourcehub/selected_films")}',
+            poster_page_invalid: '{:lang("admin/resourcehub/poster_page_invalid",[$total_pages])}'
+        };
+        var POSTER_PAGER = {
+            base: '{:url("resource_hub/poster")}',
+            filter: '{$filter|default="all"}',
+            totalPages: parseInt('{$total_pages}', 10) || 1,
+            currentPage: parseInt('{$page}', 10) || 1
+        };
 
-    // 选择/取消选择
-    $('.poster-item').on('click', function(){
-        $(this).toggleClass('selected');
-    });
+        function buildPosterUrl(page) {
+            var url = POSTER_PAGER.base + '?page=' + encodeURIComponent(page);
+            if (POSTER_PAGER.filter && POSTER_PAGER.filter !== 'all') {
+                url += '&filter=' + encodeURIComponent(POSTER_PAGER.filter);
+            }
+            return url;
+        }
 
-    // 筛选标签
-    $('.filter-tabs .layui-btn').on('click', function(){
-        var filter = $(this).data('filter');
-        window.location.href = '{:url("resource_hub/poster")}?filter=' + filter;
-    });
+        $('#posterPageJump').on('click', function () {
+            var val = parseInt($('#posterPageInput').val(), 10);
+            if (!val || val < 1 || val > POSTER_PAGER.totalPages) {
+                layer.msg(LANG.poster_page_invalid, { icon: 0 });
+                return;
+            }
+            if (val === POSTER_PAGER.currentPage) {
+                return;
+            }
+            window.location.href = buildPosterUrl(val);
+        });
 
-    // 全选已推荐
-    $('#selectAllRecommended').on('click', function(){
-        $('.poster-item.recommended').addClass('selected');
-        layer.msg(LANG.selected_films.replace('%d', $('.poster-item.recommended').length));
-    });
+        $('#posterPageInput').on('keydown', function (e) {
+            if (e.key === 'Enter' || e.keyCode === 13) {
+                e.preventDefault();
+                $('#posterPageJump').click();
+            }
+        });
 
-    // 清除选择
-    $('#clearSelection').on('click', function(){
-        $('.poster-item').removeClass('selected');
-    });
+        $('.poster-item').on('click', function () {
+            $(this).toggleClass('selected');
+        });
 
-    // 设为推荐
-    $('#setRecommend').on('click', function(){
-        var ids = [];
-        $('.poster-item.selected').each(function(){ ids.push($(this).data('id')); });
-        if(ids.length == 0){ layer.msg(LANG.select_video_first, {icon:0}); return; }
-        layer.confirm(LANG.confirm_set_recommend.replace('%d', ids.length), function(idx){
-            layer.close(idx);
-            $.post('{:url("resource_hub/setRecommend")}', {ids: ids.join(','), level: 9}, function(res){
-                layer.msg(res.msg, {icon: res.code==1?1:2});
-                if(res.code==1) setTimeout(function(){ location.reload(); }, 800);
+        $('.filter-tabs .layui-btn').on('click', function () {
+            var filter = $(this).data('filter');
+            window.location.href = '{:url("resource_hub/poster")}?filter=' + filter;
+        });
+
+        $('#selectAllRecommended').on('click', function () {
+            $('.poster-item.recommended').addClass('selected');
+            layer.msg(LANG.selected_films.replace('%d', $('.poster-item.recommended').length));
+        });
+
+        $('#clearSelection').on('click', function () {
+            $('.poster-item').removeClass('selected');
+        });
+
+        $('#setRecommend').on('click', function () {
+            var ids = [];
+            $('.poster-item.selected').each(function () { ids.push($(this).data('id')); });
+            if (ids.length === 0) { layer.msg(LANG.select_video_first, { icon: 0 }); return; }
+            layer.confirm(LANG.confirm_set_recommend.replace('%d', ids.length), function (idx) {
+                layer.close(idx);
+                $.post('{:url("resource_hub/setRecommend")}', { ids: ids.join(','), level: 9 }, function (res) {
+                    layer.msg(res.msg, { icon: res.code == 1 ? 1 : 2 });
+                    if (res.code == 1) setTimeout(function () { location.reload(); }, 800);
+                });
+            });
+        });
+
+        $('#cancelRecommend').on('click', function () {
+            var ids = [];
+            $('.poster-item.selected').each(function () { ids.push($(this).data('id')); });
+            if (ids.length === 0) { layer.msg(LANG.select_video_first, { icon: 0 }); return; }
+            layer.confirm(LANG.confirm_cancel_recommend.replace('%d', ids.length), function (idx) {
+                layer.close(idx);
+                $.post('{:url("resource_hub/setRecommend")}', { ids: ids.join(','), level: 0 }, function (res) {
+                    layer.msg(res.msg, { icon: res.code == 1 ? 1 : 2 });
+                    if (res.code == 1) setTimeout(function () { location.reload(); }, 800);
+                });
             });
         });
     });
-
-    // 取消推荐
-    $('#cancelRecommend').on('click', function(){
-        var ids = [];
-        $('.poster-item.selected').each(function(){ ids.push($(this).data('id')); });
-        if(ids.length == 0){ layer.msg(LANG.select_video_first, {icon:0}); return; }
-        layer.confirm(LANG.confirm_cancel_recommend.replace('%d', ids.length), function(idx){
-            layer.close(idx);
-            $.post('{:url("resource_hub/setRecommend")}', {ids: ids.join(','), level: 0}, function(res){
-                layer.msg(res.msg, {icon: res.code==1?1:2});
-                if(res.code==1) setTimeout(function(){ location.reload(); }, 800);
-            });
-        });
-    });
-});
+})();
 </script>
 </body>
 </html>

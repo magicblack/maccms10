@@ -58,10 +58,28 @@ class Gbook extends Base
     {
         if (Request()->isPost()) {
             $param = input();
+
+            $notifyGbookId = 0;
+            if (!empty($param['gbook_id']) && isset($param['gbook_reply']) && trim($param['gbook_reply']) !== '') {
+                $old = Db::name('Gbook')->where('gbook_id', intval($param['gbook_id']))->find();
+                if (!empty($old) && trim((string)$old['gbook_reply']) === '') {
+                    $notifyGbookId = intval($param['gbook_id']);
+                }
+            }
+
             $res = model('Gbook')->saveData($param);
             if($res['code']>1){
                 return $this->error($res['msg']);
             }
+
+            if ($notifyGbookId > 0) {
+                try {
+                    model('Notify')->sendGbookReplyNotify($notifyGbookId);
+                } catch (\Exception $e) {
+                    \think\Log::error('Gbook reply notify id=' . $notifyGbookId . ' err=' . $e->getMessage());
+                }
+            }
+
             return $this->success($res['msg']);
         }
 

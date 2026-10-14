@@ -104,9 +104,10 @@ class Vod extends Base
             if (!empty($param['orderby'])) {
                 $order = 'vod_' . $param['orderby'] . " DESC";
             }
-            $field = 'vod_id,vod_en,vod_name,vod_sub,vod_pic,vod_actor,vod_hits,vod_hits_day,vod_hits_week,vod_hits_month,vod_time,vod_remarks,vod_score,vod_area,vod_year,vod_class,vod_lang,vod_version,vod_state,vod_blurb,vod_points_play,vod_isend,type_id,type_id_1';
+            $field = 'vod_id,vod_en,vod_name,vod_sub,vod_pic,vod_actor,vod_hits,vod_hits_day,vod_hits_week,vod_hits_month,vod_time,vod_remarks,vod_duration,vod_score,vod_area,vod_year,vod_class,vod_lang,vod_version,vod_state,vod_blurb,vod_points_play,vod_isend,type_id,type_id_1';
 //            $list = model('Vod')->getListByCond($offset, $limit, $where, $order, $field, []);
             $list = model('Vod')->getListByCond($offset, $limit, $where, $order, $field);
+            mac_vod_rows_episode_remarks($list);
 
             // 补充 vod_pic、vod_link；主题「进播放页」时补充 vod_play_link（与 mac_url_vod_play 一致，避免前端拼 URL 与伪静态不一致）
             $playlinkOn = mac_tpl_vod_playlink_on();
@@ -157,9 +158,10 @@ class Vod extends Base
             ]);
         }
 
-        $res = Db::table('mac_vod')->where(['vod_id' => $param['vod_id']])->find();
+        // 只返回已上架内容（下架 / 资源检测停用的不对外）
+        $res = Db::table('mac_vod')->where(['vod_id' => $param['vod_id'], 'vod_status' => 1, 'vod_recycle_time' => 0])->find();
         if (empty($res)) {
-            return json(['code' => 1001, 'msg' => '数据不存在']);
+            return json(['code' => 1001, 'msg' => lang('obtain_err')]);
         }
 
         // 处理图片 URL
@@ -249,6 +251,7 @@ class Vod extends Base
         $res['is_fav'] = $fav['is_fav'];
         $res['fav_ulog_id'] = $fav['fav_ulog_id'];
         $res['user_has_up'] = mac_user_has_digg(1, $vid);
+        $res = $this->maskContentPwd($res, 'vod');
 
         // 返回
         return json([
@@ -384,11 +387,7 @@ class Vod extends Base
     public function get_banner(Request $request)
     {
         $param = $request->param();
-        $num = isset($param['num']) ? (int)$param['num'] : 5;
-        $start = isset($param['start']) ? (int)$param['start'] : 0;
-        if ($start < 0) {
-            $start = 0;
-        }
+        list($num, $start) = $this->clampNumStart($param, 5);
         $level = isset($param['level']) ? trim($param['level']) : '9';
 
         $where = [];
@@ -396,11 +395,12 @@ class Vod extends Base
         $where['vod_level'] = ['in', $level];
 
         $list = Db::table('mac_vod')
-            ->field('vod_id,vod_name,vod_sub,vod_pic,vod_pic_slide,vod_actor,vod_director,vod_score,vod_content,vod_blurb,vod_remarks,vod_year,vod_area,vod_class,vod_lang,vod_version,vod_state,vod_points_play,type_id,type_id_1')
+            ->field('vod_id,vod_name,vod_sub,vod_pic,vod_pic_slide,vod_actor,vod_director,vod_score,vod_content,vod_blurb,vod_remarks,vod_duration,vod_year,vod_area,vod_class,vod_lang,vod_version,vod_state,vod_points_play,type_id,type_id_1')
             ->where($where)
             ->order('vod_time desc')
             ->limit($start, $num)
             ->select();
+        mac_vod_rows_episode_remarks($list);
 
         $userId = intval($GLOBALS['user']['user_id'] ?? 0);
         $favMap = [];
@@ -467,8 +467,7 @@ class Vod extends Base
     public function get_hot(Request $request)
     {
         $param = $request->param();
-        $num = isset($param['num']) ? (int)$param['num'] : 6;
-        $start = isset($param['start']) ? (int)$param['start'] : 0;
+        list($num, $start) = $this->clampNumStart($param, 6);
         $typeId = isset($param['type_id']) ? (int)$param['type_id'] : 0;
         $level = isset($param['level']) ? trim($param['level']) : '';
         $by = isset($param['by']) ? trim($param['by']) : 'hits_month';
@@ -490,11 +489,12 @@ class Vod extends Base
         }
 
         $list = Db::table('mac_vod')
-            ->field('vod_id,vod_name,vod_sub,vod_pic,vod_actor,vod_director,vod_score,vod_remarks,vod_year,vod_area,vod_class,vod_lang,vod_version,vod_state,vod_blurb,vod_time,vod_hits_month,type_id,type_id_1')
+            ->field('vod_id,vod_name,vod_sub,vod_pic,vod_actor,vod_director,vod_score,vod_remarks,vod_duration,vod_year,vod_area,vod_class,vod_lang,vod_version,vod_state,vod_blurb,vod_time,vod_hits_month,type_id,type_id_1')
             ->where($where)
             ->order('vod_' . $by . ' desc')
             ->limit($start, $num)
             ->select();
+        mac_vod_rows_episode_remarks($list);
 
         foreach ($list as &$v) {
             $v['vod_pic'] = mac_url_img($v['vod_pic']);
@@ -534,9 +534,7 @@ class Vod extends Base
             return json(['code' => 1001, 'msg' => '参数错误: type_id 必须']);
         }
         $typeId = (int)$param['type_id'];
-        $num = isset($param['num']) ? (int)$param['num'] : 24;
-        $num = max(1, min($num, 60));
-        $start = isset($param['start']) ? max(0, (int)$param['start']) : 0;
+        list($num, $start) = $this->clampNumStart($param, 24);
 
         $typeIds = mac_vod_type_filter_ids_for_list($typeId);
         if (empty($typeIds)) {
@@ -560,7 +558,7 @@ class Vod extends Base
         }
 
         // 仅列表所需字段；去掉 vod_director、vod_trysee 等，减轻行缓冲与 IO
-        $fields = 'vod_id,vod_name,vod_sub,vod_pic,vod_actor,vod_score,vod_remarks,vod_year,vod_area,vod_class,vod_lang,vod_version,vod_state,vod_blurb,vod_time,vod_isend,vod_points_play,type_id,type_id_1';
+        $fields = 'vod_id,vod_name,vod_sub,vod_pic,vod_actor,vod_score,vod_remarks,vod_duration,vod_year,vod_area,vod_class,vod_lang,vod_version,vod_state,vod_blurb,vod_time,vod_isend,vod_points_play,type_id,type_id_1';
 
         $list = Db::table('mac_vod')
             ->field($fields)
@@ -569,6 +567,7 @@ class Vod extends Base
             ->order('vod_time', 'desc')
             ->limit($start, $num)
             ->select();
+        mac_vod_rows_episode_remarks($list);
 
         foreach ($list as &$v) {
             $v['vod_pic'] = mac_url_img($v['vod_pic']);
@@ -624,8 +623,7 @@ class Vod extends Base
     {
         $param = $request->param();
         $typeId = isset($param['type_id']) ? (int)$param['type_id'] : 0;
-        $num = isset($param['num']) ? (int)$param['num'] : 10;
-        $start = isset($param['start']) ? max(0, (int)$param['start']) : 0;
+        list($num, $start) = $this->clampNumStart($param, 10);
         $by = isset($param['by']) ? trim($param['by']) : 'hits_month';
 
         $allowBy = ['hits', 'hits_day', 'hits_week', 'hits_month', 'score', 'time'];
@@ -640,11 +638,12 @@ class Vod extends Base
         }
 
         $list = Db::table('mac_vod')
-            ->field('vod_id,vod_name,vod_pic,vod_score,vod_remarks,vod_hits,vod_hits_day,vod_hits_week,vod_hits_month,vod_year,vod_area,vod_class,vod_lang,vod_version,vod_state,vod_isend,vod_points_play,type_id,type_id_1')
+            ->field('vod_id,vod_name,vod_pic,vod_score,vod_remarks,vod_duration,vod_hits,vod_hits_day,vod_hits_week,vod_hits_month,vod_year,vod_area,vod_class,vod_lang,vod_version,vod_state,vod_isend,vod_points_play,type_id,type_id_1')
             ->where($where)
             ->order('vod_' . $by . ' desc')
             ->limit($start, $num)
             ->select();
+        mac_vod_rows_episode_remarks($list);
 
         foreach ($list as $k => &$v) {
             $v['vod_pic'] = mac_url_img($v['vod_pic']);

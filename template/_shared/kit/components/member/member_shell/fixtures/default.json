@@ -1,0 +1,9 @@
+{
+    "props": {
+        "title": "个人中心",
+        "show_hub": true,
+        "require_login": true,
+        "active": "index"
+    },
+    "context": []
+}

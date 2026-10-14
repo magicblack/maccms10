@@ -1,0 +1,9 @@
+{
+    "props": {
+        "title": "",
+        "num": 20,
+        "paging": true,
+        "pageurl": "gbook\/index"
+    },
+    "context": []
+}

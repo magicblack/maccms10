@@ -1027,28 +1027,28 @@ return array (
       array (
         'show' => 1,
         'name' => lang('menu/vod_audit_rule'),
-        'controller' => 'vodauditrule',
+        'controller' => 'vod_audit_rule',
         'action' => 'index',
       ),
       48401 => 
       array (
         'show' => 0,
         'name' => '--'.lang('menu/vod_audit_rule_info'),
-        'controller' => 'vodauditrule',
+        'controller' => 'vod_audit_rule',
         'action' => 'info',
       ),
       48402 => 
       array (
         'show' => 0,
         'name' => '--'.lang('menu/vod_audit_rule_del'),
-        'controller' => 'vodauditrule',
+        'controller' => 'vod_audit_rule',
         'action' => 'del',
       ),
       48403 => 
       array (
         'show' => 0,
         'name' => '--'.lang('menu/vod_audit_rule_field'),
-        'controller' => 'vodauditrule',
+        'controller' => 'vod_audit_rule',
         'action' => 'field',
       ),
       4404 => 
@@ -1819,11 +1819,32 @@ return array (
         'controller' => 'theme_design',
         'action' => 'gen_image',
       ),
+      7513 =>
+      array (
+        'show' => 0,
+        'name' => '--主题设计按版式新建',
+        'controller' => 'theme_design',
+        'action' => 'create_from_preset',
+      ),
+      7514 =>
+      array (
+        'show' => 0,
+        'name' => '--主题设计启用前台模板',
+        'controller' => 'theme_design',
+        'action' => 'activate_site_theme',
+      ),
       76 =>
       array (
         'show' => 1,
         'name' => lang('menu/template_market'),
         'controller' => 'template_market',
+        'action' => 'index',
+      ),
+      77 =>
+      array (
+        'show' => 1,
+        'name' => lang('menu/theme_gen'),
+        'controller' => 'theme_gen',
         'action' => 'index',
       ),
       7601 =>
@@ -2009,6 +2030,41 @@ return array (
         'name' => '--自定义资源删除',
         'controller' => 'collect',
         'action' => 'del',
+      ),
+      9303 => 
+      array (
+        'show' => 0,
+        'name' => '--采集接口启用/停用',
+        'controller' => 'collect',
+        'action' => 'healthtoggle',
+      ),
+      9304 => 
+      array (
+        'show' => 0,
+        'name' => '--采集接口日志',
+        'controller' => 'collect',
+        'action' => 'healthlog',
+      ),
+      9305 => 
+      array (
+        'show' => 1,
+        'name' => lang('admin/content_check/log_title'),
+        'controller' => 'resource_check',
+        'action' => 'index',
+      ),
+      9306 => 
+      array (
+        'show' => 0,
+        'name' => '--资源检测恢复启用',
+        'controller' => 'resource_check',
+        'action' => 'enable',
+      ),
+      9307 => 
+      array (
+        'show' => 0,
+        'name' => '--资源检测手动停用',
+        'controller' => 'resource_check',
+        'action' => 'disable',
       ),
       94 => 
       array (

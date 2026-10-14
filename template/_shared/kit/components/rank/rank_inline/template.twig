@@ -1,0 +1,12 @@
+{% set num = props.num|default(10) %}
+{% set type_id = props.type|default(0) %}
+{% set period = props.period|default('week') %}
+{% set rby = period == 'all' ? 'hits' : 'hits_' ~ period %}
+{% set rank_list = mac_vod({num: num, type: type_id, order: 'desc', by: rby}).list|default([]) %}
+{% if rank_list is not empty %}
+<ol class="rank-list">
+  {% for vo in rank_list %}
+  <li><span class="rank-list__no">{{ loop.index }}</span><a href="{{ mac_url_vod_detail(vo) }}">{{ vo.vod_name }}</a></li>
+  {% endfor %}
+</ol>
+{% endif %}

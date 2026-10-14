@@ -1,0 +1,126 @@
+{#
+  我的收藏列表 — 消费控制器 assign 的 list / __PAGING__ / param
+#}
+{% import "@shared/components.twig" as c %}
+{% set show_clear = true %}
+{% set rows = list|default([]) %}
+{% set has_rows = rows|length > 0 %}
+{% set paging = __PAGING__|default({}) %}
+{% set cur_mid = param.mid|default(0) %}
+
+<section class="favs-list{% if not has_rows %} favs-list--empty{% endif %}" data-component="favs_list">
+  <header class="member-card__head member-card__head--toolbar member-card__head--desktop">
+    <div class="member-card__head-main">
+      <h2 class="member-card__title" data-lang="user_my_collection">我的收藏</h2>
+      {% if paging.record_total|default(0) > 0 %}
+      <p class="member-favs__count"><span data-lang="string_vod_zg">共</span> <strong>{{ paging.record_total }}</strong> <span data-lang="string_gbook_t">条</span></p>
+      {% endif %}
+    </div>
+    {% if show_clear and has_rows %}
+    <button type="button" class="member-history__clear member-history__clear--text" data-member-history-clear data-ulog-type="2" aria-label="清空全部收藏" data-lang-aria-label="favs_clear_all_aria">
+      {% include "page-builder-components/_shared/component_icon.twig" with {
+        component: 'favs_list', name: 'icon-trash', class: 'member-history__clear-ico', mode: 'current'
+      } %}
+      <span class="member-history__clear-text" data-lang="string_qk">清空</span>
+    </button>
+    {% endif %}
+  </header>
+
+  {% if paging.record_total|default(0) > 0 %}
+  <p class="member-favs__count member-favs__count--mobile" aria-live="polite"><span data-lang="string_vod_zg">共</span> <strong>{{ paging.record_total }}</strong> <span data-lang="favs_count_suffix_mobile">条收藏</span></p>
+  {% endif %}
+
+  <ul class="member-favs" data-member-history data-ulog-type="2"
+      data-confirm-del="取消后将从收藏列表移除，可随时重新收藏。"
+      data-confirm-del-lang="favs_confirm_del_msg"
+      data-confirm-del-title="取消收藏"
+      data-confirm-del-title-lang="string_qxsc"
+      data-confirm-clear="将清空全部收藏，此操作不可恢复。"
+      data-confirm-clear-lang="favs_confirm_clear_msg"
+      data-confirm-clear-title="清空收藏"
+      data-confirm-clear-title-lang="favs_confirm_clear_title">
+    {% for u in rows %}
+    {% set item = u.data|default({}) %}
+    {% set item_link = item.link|default('javascript:;') %}
+    {% set item_name = item.name|default('') %}
+    {% set item_name_lang = item_name ? '' : 'content_removed' %}
+    {% set item_name = item_name|default('内容已下架', true) %}
+    {% set item_pic = item.pic|default('') %}
+    {% set item_type = item.type|default({}) %}
+    {% set type_name = item_type.type_name|default('') %}
+    {% set type_name_lang = '' %}
+    {% if not type_name %}
+      {% if u.ulog_mid == 1 %}{% set type_name = '视频' %}{% set type_name_lang = 'string_vod' %}
+      {% elseif u.ulog_mid == 2 %}{% set _ml = mac_module_label(2) %}{% set type_name = _ml.name %}{% set type_name_lang = _ml.lang %}
+      {% elseif u.ulog_mid == 3 %}{% set type_name = '专题' %}{% set type_name_lang = 'string_topic' %}
+      {% elseif u.ulog_mid == 8 %}{% set type_name = '演员' %}{% set type_name_lang = 'site_map_actor' %}
+      {% elseif u.ulog_mid == 12 %}{% set _ml = mac_module_label(12) %}{% set type_name = _ml.name %}{% set type_name_lang = _ml.lang %}
+      {% endif %}
+    {% endif %}
+    {% if u.ulog_mid == 1 %}{% set go_text = '立即观看' %}{% set go_text_lang = 'novel_banner_cta_watch' %}
+    {% elseif u.ulog_mid == 12 %}{% set go_text = '继续阅读' %}{% set go_text_lang = 'string_continue_read' %}
+    {% elseif u.ulog_mid == 2 %}{% set go_text = '继续阅读' %}{% set go_text_lang = 'string_continue_read' %}
+    {% elseif u.ulog_mid == 3 %}{% set go_text = '查看专题' %}{% set go_text_lang = 'favs_go_view_topic' %}
+    {% elseif u.ulog_mid == 8 %}{% set go_text = '查看详情' %}{% set go_text_lang = 'vod_view_detail' %}
+    {% else %}{% set go_text = '查看内容' %}{% set go_text_lang = 'favs_go_view_content' %}
+    {% endif %}
+    {% set fav_kind = 'default' %}
+    {% if u.ulog_mid == 1 %}{% set fav_kind = 'vod' %}
+    {% elseif u.ulog_mid == 2 %}{% set fav_kind = 'novel' %}
+    {% elseif u.ulog_mid == 12 %}{% set fav_kind = 'manga' %}
+    {% endif %}
+    {# 视频分类单独设置的封面比例（竖屏短剧等，后台分类管理 type_extend.cover）；
+       data-cover-auto="shape"：runtime 再按封面实际尺寸校正（各资源站采集的竖版封面），见 member-favs.css #}
+    {% set fav_cover = u.ulog_mid == 1 ? mac_type_cover(item_type.type_id|default(0)) : [] %}
+    <li class="member-fav member-fav--{{ fav_kind }}{% if fav_cover and fav_cover.orient == 'v' %} member-fav--portrait{% endif %}"{% if u.ulog_mid == 1 %} data-cover-auto="shape"{% endif %} data-ulog-id="{{ u.ulog_id }}" data-ulog-mid="{{ u.ulog_mid }}">
+      <a class="member-fav__link" href="{{ item_link }}" title="{{ item_name }}" data-lang-title="{{ item_name_lang }}">
+        <span class="member-fav__thumb"{% if u.ulog_mid == 2 %} data-cover-kind="book"{% endif %}{% if fav_cover %} style="aspect-ratio: {{ fav_cover.w }} / {{ fav_cover.h }}"{% endif %}>
+          {# 封面為空也輸出 lazy_img：data-original="" 由 runtime cover 模組換成預設縮略圖（小說為書形占位），與其他列表一致 #}
+          {{ c.lazy_img(item_pic, item_name, {class: 'member-fav__img'}) }}
+          {% if u.ulog_mid == 1 %}
+          <span class="member-fav__shade" aria-hidden="true"></span>
+          <span class="member-fav__play" aria-hidden="true">
+            {% include "page-builder-components/_shared/component_icon.twig" with {
+              component: 'favs_list', name: 'icon-play-line', class: 'member-fav__play-ico', mode: 'current'
+            } %}
+          </span>
+          {% endif %}
+        </span>
+        <span class="member-fav__body">
+          {% if type_name %}<span class="member-fav__tag" data-lang="{{ type_name_lang }}">{{ type_name }}</span>{% endif %}
+          <span class="member-fav__title" data-lang="{{ item_name_lang }}">{{ item_name }}</span>
+          <span class="member-fav__meta">
+            <span class="member-fav__meta-label" data-lang="string_favs_at">收藏于</span>
+            <time datetime="{{ u.ulog_time|date('c') }}">{{ mac_day(u.ulog_time)|raw }}</time>
+          </span>
+        </span>
+        <span class="member-fav__go">
+          <span class="member-fav__go-text" data-lang="{{ go_text_lang }}">{{ go_text }}</span>
+          {% include "page-builder-components/_shared/component_icon.twig" with {
+            component: 'favs_list', name: 'chevron-right', class: 'member-fav__go-ico', mode: 'current'
+          } %}
+        </span>
+      </a>
+      <button type="button" class="member-fav__unfav" data-member-history-del data-ulog-id="{{ u.ulog_id }}" data-ulog-type="2" aria-label="取消收藏 {{ item_name }}">
+        {% include "page-builder-components/_shared/component_icon.twig" with {
+          component: 'favs_list', name: 'icon-fav', class: 'member-fav__unfav-ico', mode: 'current'
+        } %}
+        <span class="member-fav__unfav-text" data-lang="string_qxsc">取消收藏</span>
+      </button>
+    </li>
+    {% else %}
+    <li class="member-empty member-empty--favs" role="status">
+      <div class="member-empty__art pb-empty-state__art" aria-hidden="true">
+        {% include "page-builder-components/_shared/empty_state_art.twig" %}
+      </div>
+      <p class="member-empty__title" data-lang="string_favs_empty_title">暂无收藏</p>
+      <p class="member-empty__hint" data-lang="string_favs_empty_hint">去首页发现喜欢的内容吧</p>
+      <a class="member-empty__cta" href="{{ maccms.path|default('/') }}" data-lang="string_goto_home">去首页看看</a>
+    </li>
+    {% endfor %}
+  </ul>
+
+  {% if has_rows %}
+  {{ c.paging(paging, {class: 'pg member-pg member-pg--favs', item_class: 'member-pg__nav', num_class: 'member-pg__num', active_class: 'on'}) }}
+  {% endif %}
+</section>

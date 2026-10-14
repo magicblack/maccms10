@@ -1,0 +1,93 @@
+{% set p = props|default({}) %}
+{% set items = p.items|default([]) %}
+{% if items is empty %}
+  {% set items = [
+    {id: 'home', label: '首页', href: '', icon: 'home'},
+    {id: 'video', label: '视频', href: '', icon: 'video'},
+    {id: 'novel', label: '小说', href: '', icon: 'book'},
+    {id: 'manga', label: '漫画', href: '', icon: 'manga'},
+    {id: 'me', label: '会员', href: '', icon: 'user'}
+  ] %}
+{% endif %}
+{% set n = items|length %}
+{% if n < 1 %}{% set n = 1 %}{% endif %}
+{% if n > 6 %}{% set n = 6 %}{% endif %}
+{% set icon_by_id = {
+  home: 'home',
+  video: 'video',
+  vod: 'video',
+  catalog: 'video',
+  novel: 'book',
+  art: 'book',
+  manga: 'manga',
+  discover: 'compass',
+  me: 'user'
+} %}
+{% set allowed_icons = ['home', 'video', 'book', 'manga', 'user', 'grid', 'compass'] %}
+
+{#
+  id → [[i18n key, 该 key 的中文]]。只有标签为空、或标签正好等于某个 key 的中文时才挂 data-lang；
+  站长自定义的标签（如「片库」）不能挂 key，否则 i18n 载入后会被字典文案覆盖，出现加载前后文字不一致。
+#}
+{% set label_langs_by_id = {
+  home: [['string_home', '首页']],
+  video: [['string_vod', '视频']],
+  vod: [['string_vod', '视频']],
+  catalog: [['string_vod', '视频']],
+  novel: [['string_art', '小说']],
+  art: [['string_art', '小说']],
+  manga: [['string_manga', '漫画']],
+  me: [['string_hy', '会员'], ['string_mac_hyzx', '会员中心']]
+} %}
+
+<nav class="pb-bottom-nav" data-component="bottom_nav" data-pb-bottom-nav style="--pb-bnav-n: {{ n }}" data-lang-aria-label="string_bottom_nav">
+  {% for item in items|slice(0, 6) %}
+    {% set iid = item.id|default('custom')|trim %}
+    {% if iid == '' %}{% set iid = 'custom' %}{% endif %}
+    {% set label_raw = item.label|default('')|trim %}
+    {% set label_lang = '' %}
+    {% for pair in label_langs_by_id[iid]|default([]) %}
+      {% if label_lang == '' and (label_raw == '' or label_raw == pair[1]) %}
+        {% set label_lang = pair[0] %}
+        {% if label_raw == '' %}{% set label_raw = pair[1] %}{% endif %}
+      {% endif %}
+    {% endfor %}
+    {% if label_raw == '' %}{% set label_lang = 'bottom_nav_menu_label' %}{% set label_raw = '菜单' %}{% endif %}
+    {% set label = label_raw %}
+    {# 默认的「小说 / 漫画」入口跟随后台顶级分类改名 #}
+    {% if label_lang in ['string_art', 'string_manga'] %}
+      {% set _ml = mac_module_label(label_lang == 'string_art' ? 2 : 12) %}
+      {% set label = _ml.name %}
+      {% set label_lang = _ml.lang %}
+    {% endif %}
+    {% set icon = item.icon|default('')|trim %}
+    {% if icon == '' and icon_by_id[iid] is defined %}
+      {% set icon = icon_by_id[iid] %}
+    {% endif %}
+    {% if icon not in allowed_icons %}{% set icon = 'home' %}{% endif %}
+    {% set href_raw = item.href|default('')|trim %}
+    {# 空或仅「/」视为走 id 默认路由，避免搭建器占位看起来像全站都链到首页 #}
+    {% if href_raw == '/' %}{% set href_raw = '' %}{% endif %}
+    {% if href_raw != '' %}
+      {% set href = href_raw %}
+    {% elseif iid == 'home' %}
+      {% set href = maccms.path %}
+    {% elseif iid in ['video', 'vod', 'catalog'] %}
+      {% set href = mac_url('vod/index') %}
+    {% elseif iid in ['novel', 'art'] %}
+      {% set href = mac_url('art/index') %}
+    {% elseif iid == 'manga' %}
+      {% set href = mac_url('manga/index') %}
+    {% elseif iid == 'discover' %}
+      {% set href = mac_url('label/rank') %}
+    {% elseif iid == 'me' %}
+      {% set href = mac_url('user/index') %}
+    {% else %}
+      {% set href = '#' %}
+    {% endif %}
+  <a class="pb-bottom-nav__item" href="{{ href }}" data-pb-bottom-nav-item="{{ iid|e('html_attr') }}">
+    <span class="pb-bottom-nav__icon pb-bottom-nav__icon--{{ icon|e('html_attr') }}" aria-hidden="true"></span>
+    <span class="pb-bottom-nav__label"{% if label_lang and mac_i18n_key(label, label_lang) %} data-lang="{{ label_lang }}"{% endif %}>{{ label }}</span>
+  </a>
+  {% endfor %}
+</nav>

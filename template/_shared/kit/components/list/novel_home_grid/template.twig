@@ -1,0 +1,67 @@
+{# twigspike art/index — 猜你喜欢；可选 exclude_ids 避开轮播等同页区块 #}
+{% set p = props|default({}) %}
+{% set num = p.num|default(9) %}
+{% set by = p.by|default('hits_month') %}
+{% set title = p.title|default('猜你喜欢') %}
+{% set title_lang = p.title_lang|default('') %}
+{% if title_lang == '' and title == '猜你喜欢' %}{% set title_lang = 'vod_guess' %}{% endif %}
+{# 字标图仅 np2 页显式传 title_art:true；默认 false，避免 clean/spike 串用 feed-title.webp #}
+{% set title_art = p.title_art|default(false) %}
+{% set subtitle = p.subtitle|default('为你精选好书') %}
+{% set subtitle_lang = p.subtitle_lang|default('') %}
+{% if subtitle_lang == '' and subtitle == '为你精选好书' %}{% set subtitle_lang = 'novel_home_subtitle' %}{% endif %}
+{% set section_id = p.section_id|default('nv-guess') %}
+{% set exclude_ids = p.exclude_ids|default([]) %}
+{% set fetch_n = num + (exclude_ids|length) %}
+{% if fetch_n > 48 %}{% set fetch_n = 48 %}{% endif %}
+{% set guess_raw = mac_art({num: fetch_n, order: 'desc', by: by}).list|default([]) %}
+{% if guess_raw is empty and by != 'hits' %}
+  {% set guess_raw = mac_art({num: fetch_n, order: 'desc', by: 'hits'}).list|default([]) %}
+{% endif %}
+{% set guess_list = [] %}
+{% for a in guess_raw %}
+  {% set _aid = a.art_id|default(0) %}
+  {% if guess_list|length < num and (exclude_ids is empty or _aid not in exclude_ids) %}
+    {% set guess_list = guess_list|merge([a]) %}
+  {% endif %}
+{% endfor %}
+
+{% if guess_list is not empty %}
+<section class="nv-sec" id="{{ section_id }}" aria-labelledby="{{ section_id }}-h" data-component="novel_home_grid">
+  <header class="nv-sec__head">
+    <div class="nv-sec__intro">
+      <h2 class="nv-sec__title{% if title_art %} nv-sec__title--wordmark{% endif %}" id="{{ section_id }}-h"{% if title_lang and not title_art %} data-lang="{{ title_lang }}"{% endif %}>
+        {% if title_art %}
+        <img class="nv-sec__title-wordmark" src="{{ mac_theme_asset('img/banners/feed-title.webp') }}" alt="" width="160" height="36" decoding="async" aria-hidden="true">
+        <span class="is-sr-only">{{ title }}</span>
+        {% else %}
+        {{ title }}
+        {% endif %}
+      </h2>
+      {% if subtitle %}<p class="nv-sec__sub"{% if subtitle_lang and mac_i18n_key(subtitle, subtitle_lang) %} data-lang="{{ subtitle_lang }}"{% endif %}>{{ subtitle }}</p>{% endif %}
+    </div>
+  </header>
+  <div class="nv-grid">
+    {% for a in guess_list %}
+    <a class="nv-book nv-book--sm" href="{{ mac_url_art_detail(a) }}" title="{{ a.art_name }}">
+      <span class="nv-book__cover" data-cover-kind="book">
+        {% if a.art_pic|default('') %}
+        <img data-cover class="nv-book__img" src="{{ mac_url_img(a.art_pic) }}" alt="{{ a.art_name }}" loading="lazy" decoding="async">
+        {% else %}
+        <span class="nv-book__img nv-book__img--empty" aria-hidden="true">
+          {% include "page-builder-components/_shared/book_cover_empty.twig" %}
+        </span>
+        {% endif %}
+        {% if a.art_remarks|default('') %}
+        <i class="nv-book__badge">{% include "page-builder-components/_shared/chapter_remarks.twig" with {remarks: a.art_remarks, rm_limit: 8} only %}</i>
+        {% endif %}
+      </span>
+      <strong class="nv-book__title">{{ a.art_name }}</strong>
+      <em class="nv-book__meta">
+        {% if a.art_author|default('') %}{{ a.art_author }}{% elseif a.art_class|default('') %}{{ a.art_class|split(',')|first }}{% else %}<span{% set _ml = mac_module_label(2) %}{% if _ml.lang %} data-lang="{{ _ml.lang }}"{% endif %}>{{ _ml.name }}</span>{% endif %}
+      </em>
+    </a>
+    {% endfor %}
+  </div>
+</section>
+{% endif %}

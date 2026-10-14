@@ -1,0 +1,17 @@
+{# 全站确认弹窗（MacTheme.confirm / MemberDialog.confirm） #}
+<div class="mac-confirm mac-confirm--default" id="mac-confirm" hidden aria-hidden="true">
+  <div class="mac-confirm__backdrop" data-mac-confirm-cancel tabindex="-1" aria-hidden="true"></div>
+  <div class="mac-confirm__dialog" role="alertdialog" aria-modal="true" aria-labelledby="mac-confirm-title" aria-describedby="mac-confirm-message">
+    <div class="mac-confirm__panel">
+      <div class="mac-confirm__icon" data-mac-confirm-icon hidden aria-hidden="true">
+        <svg class="mac-confirm__icon-ico" viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path fill="currentColor" d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20Zm1 14h-2v-2h2v2Zm0-4h-2V7h2v5Z"/></svg>
+      </div>
+      <h2 class="mac-confirm__title" id="mac-confirm-title" data-mac-confirm-title></h2>
+      <p class="mac-confirm__message" id="mac-confirm-message" data-mac-confirm-message></p>
+      <div class="mac-confirm__actions">
+        <button type="button" class="mac-confirm__btn mac-confirm__btn--cancel" data-mac-confirm-cancel>取消</button>
+        <button type="button" class="mac-confirm__btn mac-confirm__btn--ok" data-mac-confirm-ok>确定</button>
+      </div>
+    </div>
+  </div>
+</div>

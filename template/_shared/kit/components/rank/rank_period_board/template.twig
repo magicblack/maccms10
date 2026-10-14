@@ -1,0 +1,32 @@
+{# 排行榜页：日/周/月切换（URL #day|#week|#month）+ rank_list #}
+{% set p = props|default({}) %}
+{% set num = p.num|default(20) %}
+{% set type_id = p.type|default(0) %}
+{% set mid = p.mid|default(1) %}
+{% set hide_title = p.hide_title|default(false) %}
+{% set default_period = p.period|default('week') %}
+{% if default_period not in ['day', 'week', 'month'] %}
+  {% set default_period = 'week' %}
+{% endif %}
+{% set period_labels = { day: '日榜', week: '周榜', month: '月榜' } %}
+{% set rank_base = mac_url('label/rank') %}
+
+<section class="pb-rank-period" data-component="rank_period_board" data-default-period="{{ default_period }}">
+  {% if not hide_title and p.title|default('') != '' %}
+  <h2 class="pb-rank-period__title">{{ p.title }}</h2>
+  {% endif %}
+  <nav class="pb-rank-period__tabs" role="tablist" aria-label="排行榜周期">
+    {% for key in ['day', 'week', 'month'] %}
+    <a class="pb-rank-period__tab{% if default_period == key %} is-on{% endif %}"
+       href="{{ rank_base }}#{{ key }}"
+       data-period="{{ key }}"
+       role="tab"
+       aria-selected="{{ default_period == key ? 'true' : 'false' }}">{{ period_labels[key] }}</a>
+    {% endfor %}
+  </nav>
+  {% for key in ['day', 'week', 'month'] %}
+  <div class="pb-rank-period__panel" data-rank-period-panel="{{ key }}"{% if key != default_period %} hidden{% endif %}>
+    {% include 'page-builder-components/rank_list/template.twig' with {props: { num: num, type: type_id, mid: mid, period: key, hide_title: true, title: '' }} %}
+  </div>
+  {% endfor %}
+</section>

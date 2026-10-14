@@ -75,6 +75,8 @@ class Vod extends Base {
         //用户组
         $group_list = model('Group')->getCache('group_list');
 
+        // 集数类备注（全N集/更新至N集）按实际播放地址集数对齐
+        mac_vod_rows_episode_remarks($list);
         $vip_exclusive = mac_get_vip_exclusive_type_ids();
         foreach($list as $k=>$v){
             $list[$k]['type_is_vip_exclusive'] = in_array($v['type_id'] ?? 0, $vip_exclusive) ? 1 : 0;
@@ -445,6 +447,7 @@ class Vod extends Base {
             $where['vod_isend'] = $isend;
         }
 
+        $wd_sql = '';
         $vod_search = model('VodSearch');
         // Meilisearch 开启时不再走 mac_vod_search 前台 ID 缓存，避免与 Meili 双写、且 _string 会阻断 applyForVod；采集侧仍可用 VodSearch::isCollectEnabled()
         $vod_search_enabled = $vod_search->isFrontendEnabled() && !MeilisearchService::enabled();
@@ -457,10 +460,11 @@ class Vod extends Base {
                 if(!empty($GLOBALS['config']['app']['search_vod_rule'])){
                     $role .= '|'.$GLOBALS['config']['app']['search_vod_rule'];
                 }
-                $where[$role] = ['like', '%' . $wd . '%'];
-                if (count($search_id_list_tmp = $vod_search->getResultIdList($wd, $role)) <= $max_id_count) {
+                // 缓存按 VodSearch::wdSql 规则计算（短英文词不在拼音/副标题里乱匹配）；超出 IN 上限时同规则直接查
+                if (count($search_id_list_tmp = $vod_search->getResultIdList($wd, VodSearch::WD_FIELD_PREFIX . $role)) <= $max_id_count) {
                     $search_id_list = array_merge($search_id_list, $search_id_list_tmp);
-                    unset($where[$role]);
+                } else {
+                    $wd_sql = VodSearch::wdSql($role, $wd);
                 }
             }
             if(!empty($name)) {
@@ -509,7 +513,13 @@ class Vod extends Base {
                 if(!empty($GLOBALS['config']['app']['search_vod_rule'])){
                     $role .= '|'.$GLOBALS['config']['app']['search_vod_rule'];
                 }
-                $where[$role] = ['like', '%' . $wd . '%'];
+                if (MeilisearchService::enabled()) {
+                    // Meilisearch 桥接按 vod_name|... 键识别并替换为全文检索，保持原样；桥接失败时下面换回 wdSql
+                    $where[$role] = ['like', '%' . $wd . '%'];
+                    $meili_wd_role = $role;
+                } else {
+                    $wd_sql = VodSearch::wdSql($role, $wd);
+                }
             }
             if(!empty($name)) {
                 $where['vod_name'] = ['like',mac_like_arr($name),'OR'];
@@ -526,6 +536,9 @@ class Vod extends Base {
             if(!empty($director)) {
                 $where['vod_director'] = ['like',mac_like_arr($director),'OR'];
             }
+        }
+        if ($wd_sql !== '') {
+            $where['_string'] = empty($where['_string']) ? $wd_sql : '(' . $where['_string'] . ') AND ' . $wd_sql;
         }
         if(in_array($plot,['0','1'])){
             $where['vod_plot'] = $plot;
@@ -613,6 +626,12 @@ class Vod extends Base {
                 $order = $meili['order'];
             }
         }
+        // Meili 已开启但不可用（服务没起 / 超时）：别退回各字段 %wd% 的老匹配，与关闭 Meili 时同规则
+        if ($meili === null && !empty($meili_wd_role) && isset($where[$meili_wd_role])) {
+            unset($where[$meili_wd_role]);
+            $wd_sql = VodSearch::wdSql($meili_wd_role, $wd);
+            $where['_string'] = empty($where['_string']) ? $wd_sql : '(' . $where['_string'] . ') AND ' . $wd_sql;
+        }
         $where_cache = $where;
         if($use_rand){
             unset($where_cache['vod_id']);
@@ -640,6 +659,8 @@ class Vod extends Base {
                 Cache::tag($this->name)->set($cach_name, $res, $cachetime);
             }
         }
+        // 缓存里的 type/type_1 是建缓存时的快照，按当前分类缓存重挂（见 Base::refreshTypeRelation()）
+        $res = $this->refreshListTypeRelation($res);
         $res['pageurl'] = $pageurl;
         $res['half'] = $half;
 
@@ -715,6 +736,9 @@ class Vod extends Base {
             if (!empty($info['vod_play_from'])) {
                 $info['vod_play_list'] = mac_play_list($info['vod_play_from'], $info['vod_play_url'], $info['vod_play_server'], $info['vod_play_note'], 'play');
             }
+            if (isset($info['vod_remarks'], $info['vod_play_url'])) {
+                $info['vod_remarks'] = mac_vod_episode_remarks($info['vod_remarks'], $info['vod_play_url']);
+            }
             if (!empty($info['vod_down_from'])) {
                 $info['vod_down_list'] = mac_play_list($info['vod_down_from'], $info['vod_down_url'], $info['vod_down_server'], $info['vod_down_note'], 'down');
             }
@@ -743,6 +767,7 @@ class Vod extends Base {
                 Cache::set($key, $info);
             }
         }
+        $info = $this->refreshTypeRelation($info);
         $info = mac_content_lang_overlay('vod', $info);
         // 线路/播放器/下载器配置的译文按当前语言覆盖。必须放在核心缓存读取「之后」，
         // 否则先建缓存的语言会把线路译文烘进不区分语言的 vod_detail 缓存里串给其它语言。

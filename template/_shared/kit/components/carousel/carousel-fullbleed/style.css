@@ -1,0 +1,126 @@
+.pb-cfb { margin-bottom: 28px; }
+.pb-cfb__root {
+  position: relative;
+  border-radius: var(--radius, 12px);
+  overflow: hidden;
+  background: #111;
+}
+.pb-cfb__slides {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 21 / 9;
+  min-height: 200px;
+  max-height: 420px;
+  overflow: hidden;
+}
+.pb-cfb__slide {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.5s ease;
+  display: block;
+  color: inherit;
+  text-decoration: none;
+}
+.pb-cfb__slide.is-on {
+  opacity: 1;
+  pointer-events: auto;
+  z-index: 1;
+}
+.pb-cfb__slide img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* 竖版封面（短剧 / 漫画 / 小说）：框不变，封面 contain 完整显示，底部垫同图模糊背景。
+   data-cover-fit 由 runtime（mac-theme-runtime.js cover.orient）按图片实际尺寸写入，横竖混杂逐条处理；
+   图片载入前用 data-cover-orient（分类比例 / 漫画小说）做首屏提示 */
+.pb-cfb__backdrop { display: none; }
+.pb-cfb__slide[data-cover-fit="contain"] .pb-cfb__backdrop,
+.pb-cfb__slide[data-cover-orient="v"]:not([data-cover-fit]) .pb-cfb__backdrop {
+  display: block;
+  position: absolute;
+  inset: -24px;
+  background-position: center;
+  background-size: cover;
+  filter: blur(20px) brightness(0.6);
+  pointer-events: none;
+}
+.pb-cfb__slide[data-cover-fit="contain"] img,
+.pb-cfb__slide[data-cover-orient="v"]:not([data-cover-fit]) img {
+  position: relative;
+  object-fit: contain;
+}
+.pb-cfb__overlay {
+  position: absolute;
+  left: 0; right: 0; bottom: 0;
+  padding: 32px 24px 56px;
+  background: linear-gradient(transparent, rgba(0, 0, 0, 0.75));
+  color: #fff;
+}
+.pb-cfb__title {
+  margin: 0 0 8px;
+  font-size: 22px;
+  font-weight: 700;
+  line-height: 1.3;
+}
+.pb-cfb__sub {
+  margin: 0;
+  font-size: 14px;
+  opacity: 0.88;
+  line-height: 1.45;
+}
+.pb-cfb__bar {
+  position: absolute;
+  left: 16px; right: 16px; bottom: 14px;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.pb-cfb__dots { display: flex; gap: 8px; }
+.pb-cfb__dot {
+  width: 10px; height: 10px;
+  border: 0; padding: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.35);
+  cursor: pointer;
+}
+.pb-cfb__dot.is-on {
+  width: 24px;
+  border-radius: 5px;
+  background: var(--c-accent);
+}
+.pb-cfb__nav { display: flex; gap: 8px; }
+.pb-cfb__btn {
+  width: 36px; height: 36px;
+  border: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.2);
+  color: #fff;
+  cursor: pointer;
+  font-size: 18px;
+}
+.pb-cfb__btn:hover { background: rgba(255, 255, 255, 0.4); }
+
+@media (max-width: 640px) {
+  .pb-cfb__slides {
+    aspect-ratio: 16 / 9;
+    min-height: 160px;
+    max-height: none;
+  }
+
+  .pb-cfb__overlay {
+    padding: 20px 16px 48px;
+  }
+
+  .pb-cfb__title {
+    font-size: 16px;
+  }
+
+  .pb-cfb__sub {
+    font-size: 12px;
+  }
+}

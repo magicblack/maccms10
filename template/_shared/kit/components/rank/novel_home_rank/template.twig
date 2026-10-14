@@ -1,0 +1,48 @@
+{# twigspike art/index — 热门榜（纯文字，PC 双列） #}
+{% set p = props|default({}) %}
+{% set num = p.num|default(10) %}
+{% set title = p.title|default('热门榜') %}
+{% set title_lang = p.title_lang|default('string_nv_hot_rank_title') %}
+{% set art_type_default = mac_top_types(2, 1)|first %}
+{% set more_href = art_type_default ? mac_url_type(art_type_default, {by: 'hits_week'}, 'show') : mac_url('art/search') %}
+{% set rank_hot = mac_art({num: num, order: 'desc', by: 'hits_week'}).list|default([]) %}
+{% if rank_hot is empty %}
+  {% set rank_hot = mac_art({num: num, order: 'desc', by: 'hits'}).list|default([]) %}
+{% endif %}
+
+{% if rank_hot is not empty %}
+<section class="nv-sec nv-sec--rank nv-sec--text-only" id="nv-rank" aria-labelledby="nv-rank-h" data-component="novel_home_rank">
+  <header class="nv-sec__head">
+    <div class="nv-sec__intro">
+      <span class="nv-sec__ico nv-sec__ico--hot" aria-hidden="true"></span>
+      <div class="nv-sec__titles">
+        <h2 class="nv-sec__title" id="nv-rank-h"{% if title_lang and mac_i18n_key(title, title_lang) %} data-lang="{{ title_lang }}"{% endif %}>{{ title }}</h2>
+        <p class="nv-sec__sub" data-lang="string_nv_hot_rank_sub">根据人气热门推荐</p>
+      </div>
+    </div>
+    <a class="nv-sec__more" href="{{ more_href }}"><span data-lang="string_more">更多</span> ›</a>
+  </header>
+  <ol class="nv-rank-list nv-rank-list--text">
+    {% for a in rank_hot %}
+    {% set rank_no = loop.index %}
+    <li>
+      <a class="nv-rank-item nv-rank-item--text" href="{{ mac_url_art_detail(a) }}" data-rank="{{ rank_no }}">
+        <span class="nv-rank-item__n" aria-hidden="true">{{ rank_no }}</span>
+        <span class="nv-rank-item__body">
+          <strong>{{ a.art_name }}</strong>
+          <em>
+            {% if a.art_author|default('') %}
+              {{ a.art_author }}
+            {% elseif a.art_class|default('') %}
+              {{ a.art_class|split(',')|first }}
+            {% else %}
+              <span{% set _ml = mac_module_label(2) %}{% if _ml.lang %} data-lang="{{ _ml.lang }}"{% endif %}>{{ _ml.name }}</span>
+            {% endif %}
+          </em>
+        </span>
+      </a>
+    </li>
+    {% endfor %}
+  </ol>
+</section>
+{% endif %}

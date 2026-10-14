@@ -1,0 +1,15 @@
+/* order_list */
+[data-component="order_list"].member-order-list {
+  min-width: 0;
+}
+
+.member-order-list__items {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.member-pay-muted {
+  color: var(--c-text-muted, #9499a0);
+  font-size: 13px;
+}

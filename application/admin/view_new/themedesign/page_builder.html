@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="mac-admin-csrf" content="{:mac_admin_csrf_token()}">
+    <title>{$title} - {:lang('admin/public/head/title')}</title>
+    <style>html,body.td-pb-body{margin:0;background:#1a1d23;color:#e8eaed}</style>
+    <link rel="stylesheet" href="__STATIC__/layui/css/layui.css">
+    <link rel="stylesheet" href="__STATIC__/vendor/grapesjs/grapes.min.css?{$MAC_VERSION}">
+    <link rel="stylesheet" href="__STATIC__/css/themedesign/page-builder.css?{$MAC_VERSION}">
+    <script type="text/javascript">var ROOT_PATH="__ROOT__", ADMIN_PATH="{$_SERVER['SCRIPT_NAME']}", MAC_VERSION="v10";</script>
+</head>
+<body class="td-pb-body">
+<header class="td-pb-header">
+    <div class="td-pb-header-left">
+        <a class="td-pb-back" id="pbBackLink" href="{$design_url}"><i class="layui-icon">&#xe65c;</i> {:lang('admin/themedesign/pb_back')}</a>
+        <span class="td-pb-title">{$title}</span>
+        <span class="td-pb-route-label" id="pb-route-label">{$route_label|default=''}</span>
+        <span class="td-pb-theme">{$cur_theme}</span>
+        <div class="td-pb-page-picker" id="pb-page-picker">
+            <span class="td-pb-page-select-label">{:lang('admin/themedesign/pb_page_select')}</span>
+            <button type="button" class="td-pb-page-picker__btn" id="pb-page-picker-btn" aria-haspopup="listbox" aria-expanded="false">
+                <span class="td-pb-page-picker__label" id="pb-page-picker-label">{$route_label|default=$current_route}</span>
+                <svg class="td-pb-page-picker__chev" width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M4 6l4 4 4-4"/></svg>
+            </button>
+            <div class="td-pb-page-picker__panel" id="pb-page-picker-panel" hidden>
+                <div class="td-pb-page-picker__list" id="pb-page-picker-list" role="listbox"></div>
+            </div>
+        </div>
+        <label class="td-pb-member-mock-wrap" id="pb-member-mock-wrap"{if condition="$page_mode neq 'member'"} hidden{/if}>
+            <span class="td-pb-page-select-label">{:lang('admin/themedesign/pb_member_mock')}</span>
+            <select id="pb-member-mock" class="td-pb-page-select">
+                <option value="guest">{:lang('admin/themedesign/pb_member_mock_guest')}</option>
+                <option value="member" selected>{:lang('admin/themedesign/pb_member_mock_member')}</option>
+                <option value="vip">{:lang('admin/themedesign/pb_member_mock_vip')}</option>
+            </select>
+        </label>
+    </div>
+    <div class="td-pb-header-center">
+        <button type="button" class="td-pb-btn" id="pbUndo" title="{:lang('admin/themedesign/pb_undo')}" disabled>
+            <svg class="td-pb-ico" width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 8h9"/><path d="M7 4.5L3.5 8 7 11.5"/></svg>
+        </button>
+        <button type="button" class="td-pb-btn" id="pbRedo" title="{:lang('admin/themedesign/pb_redo')}" disabled>
+            <svg class="td-pb-ico" width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12.5 8h-9"/><path d="M9 4.5 12.5 8 9 11.5"/></svg>
+        </button>
+        <button type="button" class="td-pb-btn" id="pbMoveUp" title="{:lang('admin/themedesign/pb_move_up')}" disabled>
+            <svg class="td-pb-ico" width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 12.5V3.5"/><path d="M4.5 7 8 3.5 11.5 7"/></svg>
+        </button>
+        <button type="button" class="td-pb-btn" id="pbMoveDown" title="{:lang('admin/themedesign/pb_move_down')}" disabled>
+            <svg class="td-pb-ico" width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 3.5v9"/><path d="M4.5 9 8 12.5 11.5 9"/></svg>
+        </button>
+        <span class="td-pb-divider"></span>
+        <button type="button" class="td-pb-btn td-pb-view active" data-view="desktop" title="{:lang('admin/themedesign/pb_viewport_pc')}">
+            <svg class="td-pb-ico" width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="1.5" y="2.5" width="13" height="9" rx="1"/><path d="M6 14h4M8 11.5V14"/></svg>
+        </button>
+        <button type="button" class="td-pb-btn td-pb-view" data-view="mobile" title="{:lang('admin/themedesign/pb_viewport_mobile')}">
+            <svg class="td-pb-ico" width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4.5" y="1.5" width="7" height="13" rx="1.5"/><path d="M7 12.7h2"/></svg>
+        </button>
+    </div>
+    <div class="td-pb-header-right">
+        <button type="button" class="td-pb-btn" id="pbInitPage" title="{:lang('admin/themedesign/pb_init_page_tip')}"><i class="layui-icon">&#xe654;</i> {:lang('admin/themedesign/pb_init_page')}</button>
+        <button type="button" class="td-pb-btn" id="pbRefresh"><i class="layui-icon">&#xe669;</i> {:lang('admin/themedesign/pb_refresh')}</button>
+        <button type="button" class="td-pb-btn td-pb-btn-primary" id="pbSave"><i class="layui-icon">&#xe605;</i> {:lang('admin/themedesign/pb_save')}</button>
+    </div>
+</header>
+
+<div class="td-pb-shell">
+    <aside class="td-pb-left">
+        <div class="td-pb-side-tabs">
+            <button type="button" class="td-pb-side-tab active" data-tab="blocks">{:lang('admin/themedesign/pb_components')}</button>
+            <button type="button" class="td-pb-side-tab" data-tab="layers">{:lang('admin/themedesign/pb_navigator')}</button>
+        </div>
+        <div class="td-pb-side-panel active" id="pb-blocks-panel"></div>
+        <div class="td-pb-side-panel" id="pb-layers-panel"></div>
+    </aside>
+
+    <main class="td-pb-center" id="pb-center">
+        <div class="td-pb-center-bar">
+            <span class="td-pb-center-hint" id="pb-center-hint">{:lang('admin/themedesign/pb_click_hint')}</span>
+            <a class="td-pb-chrome-banner" href="{$design_url}?step=1" target="_blank">{:lang('admin/themedesign/pb_edit_site_chrome')}</a>
+        </div>
+        <div class="td-pb-center-split">
+            <div class="td-pb-preview-wrap" id="pb-preview-wrap">
+                <div class="td-pb-preview-scaler" id="pb-preview-scaler">
+                    <div class="td-pb-preview-frame" id="pb-preview-frame">
+                        <iframe id="pb-preview" class="td-pb-preview td-pb-preview--idle" title="preview"></iframe>
+                        <div id="pb-preview-drag-overlay" class="td-pb-preview-drag-overlay" aria-hidden="true"></div>
+                        <div id="pb-drop-indicators" class="td-pb-drop-indicators" aria-hidden="true"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <div id="pb-gjs-dock" class="td-pb-gjs-dock" aria-hidden="true">
+        <div id="gjs-structure"></div>
+    </div>
+
+    <aside class="td-pb-right">
+        <div class="td-pb-right-head">{:lang('admin/themedesign/pb_properties')}</div>
+        <div id="pb-chrome-cats" class="pb-chrome-cats" hidden>
+            <div class="pb-chrome-cats__head">{:lang('admin/themedesign/pb_trait_nav_categories')}</div>
+            <div class="pb-chrome-cats__tools">
+                <button type="button" class="pb-chrome-cats__tool" id="pbCatsAll">{:lang('admin/themedesign/pb_cats_all')}</button>
+                <button type="button" class="pb-chrome-cats__tool" id="pbCatsNone">{:lang('admin/themedesign/pb_cats_none')}</button>
+                <button type="button" class="pb-chrome-cats__tool" id="pbCatsTops">{:lang('admin/themedesign/pb_cats_tops')}</button>
+            </div>
+            <div id="pb-chrome-cats-list" class="pb-chrome-cats__list"></div>
+        </div>
+        <div id="pb-chrome-logo" class="pb-chrome-logo" hidden>
+            <div class="pb-chrome-logo__head">{:lang('admin/themedesign/pb_trait_nav_logo')}</div>
+            <div class="pb-chrome-logo__body">
+                <img id="pbLogoPreview" class="pb-chrome-logo__preview" alt="{:lang('admin/themedesign/logo')}" hidden>
+                <div class="pb-chrome-logo__tools">
+                    <button type="button" class="pb-chrome-logo__tool" id="pbLogoUpload"><i class="layui-icon">&#xe67c;</i> {:lang('admin/themedesign/upload')}</button>
+                    <button type="button" class="pb-chrome-logo__tool" id="pbLogoClear">{:lang('admin/themedesign/clear')}</button>
+                </div>
+                <input type="text" class="pb-chrome-logo__input" id="pbLogoPath" placeholder="{:lang('admin/themedesign/image_path_ph')}">
+                <p class="pb-chrome-logo__hint">{:lang('admin/themedesign/pb_trait_nav_logo_hint')}</p>
+            </div>
+        </div>
+        <div id="pb-chrome-decor" class="pb-chrome-logo" hidden>
+            <div class="pb-chrome-logo__head">{:lang('admin/themedesign/pb_trait_decor_image')}</div>
+            <div class="pb-chrome-logo__body">
+                <img id="pbDecorPreview" class="pb-chrome-logo__preview" alt="{:lang('admin/themedesign/logo')}" hidden>
+                <div class="pb-chrome-logo__tools">
+                    <button type="button" class="pb-chrome-logo__tool" id="pbDecorUpload"><i class="layui-icon">&#xe67c;</i> {:lang('admin/themedesign/upload')}</button>
+                    <button type="button" class="pb-chrome-logo__tool" id="pbDecorClear">{:lang('admin/themedesign/clear')}</button>
+                </div>
+                <input type="text" class="pb-chrome-logo__input" id="pbDecorPath" placeholder="{:lang('admin/themedesign/image_path_ph')}">
+                <p class="pb-chrome-logo__hint">{:lang('admin/themedesign/pb_trait_decor_image_hint')}</p>
+            </div>
+        </div>
+        <div id="pb-chrome-footer-logo" class="pb-chrome-logo" hidden>
+            <div class="pb-chrome-logo__head">{:lang('admin/themedesign/pb_trait_footer_logo')}</div>
+            <div class="pb-chrome-logo__body">
+                <img id="pbFooterLogoPreview" class="pb-chrome-logo__preview" alt="{:lang('admin/themedesign/logo')}" hidden>
+                <div class="pb-chrome-logo__tools">
+                    <button type="button" class="pb-chrome-logo__tool" id="pbFooterLogoUpload"><i class="layui-icon">&#xe67c;</i> {:lang('admin/themedesign/upload')}</button>
+                    <button type="button" class="pb-chrome-logo__tool" id="pbFooterLogoClear">{:lang('admin/themedesign/clear')}</button>
+                </div>
+                <input type="text" class="pb-chrome-logo__input" id="pbFooterLogoPath" placeholder="{:lang('admin/themedesign/image_path_ph')}">
+                <p class="pb-chrome-logo__hint">{:lang('admin/themedesign/pb_trait_footer_logo_hint')}</p>
+            </div>
+        </div>
+        <div id="pb-traits-dock-hidden" class="td-pb-traits-wrap" hidden aria-hidden="true"></div>
+        <div id="pb-auth-modal-traits" class="td-pb-traits-wrap pb-auth-modal-traits" hidden></div>
+        <div id="pb-traits-panel" class="td-pb-traits-wrap"></div>
+        <div id="pb-traits-empty" class="td-pb-traits-empty">
+            <p>{:lang('admin/themedesign/pb_no_selection')}</p>
+            <span>{:lang('admin/themedesign/pb_select_hint')}</span>
+        </div>
+    </aside>
+</div>
+
+<script type="text/javascript" src="__STATIC__/js/jquery.js"></script>
+<script type="text/javascript">
+(function () {
+    var meta = document.querySelector('meta[name="mac-admin-csrf"]');
+    var t = (meta && meta.getAttribute('content')) ? meta.getAttribute('content') : '';
+    if (!t || typeof jQuery === 'undefined') {
+        return;
+    }
+    window.__MAC_ADMIN_CSRF__ = t;
+    jQuery.ajaxSetup({
+        beforeSend: function (xhr, settings) {
+            if (settings.crossDomain) {
+                return;
+            }
+            var type = (settings.type || 'GET').toUpperCase();
+            if (type === 'POST' || type === 'PUT' || type === 'PATCH' || type === 'DELETE') {
+                xhr.setRequestHeader('X-CSRF-Token', t);
+            }
+        }
+    });
+})();
+</script>
+<script type="text/javascript" src="__STATIC__/layui/layui.js"></script>
+<script src="__STATIC__/vendor/grapesjs/grapes.min.js?{$MAC_VERSION}"></script>
+<script type="text/javascript">
+window.TD_PB = {
+    theme: "{$cur_theme}",
+    embed: {$pb_embed|default=0},
+    returnStep: {$pb_return_step|default=4},
+    route: "{$current_route}",
+    pageType: "{$page_type}",
+    page_mode: "{$page_mode|default='build'}",
+    routeLabel: "{$route_label|default=''}",
+    pageRegistry: {:json_encode($page_registry, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES)},
+    authModalConfig: {:json_encode($auth_modal_config, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES)},
+    immersive: {$pb_immersive|default=0},
+    appTopChromeTheme: {$pb_app_top_chrome_theme|default=0},
+    siteHeaderChrome: {$pb_site_header_chrome|default=0},
+    regionNames: {:json_encode($region_names, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES)},
+    page: {:json_encode($page, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES)},
+    navbarTypeIds: {:json_encode($navbar_type_ids, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES)},
+    palette: {:json_encode($block_palette, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES)},
+    componentCatalog: {:json_encode($pb_component_catalog, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES)},
+    cats: {:json_encode($cats_flat, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES)},
+    catTree: {:json_encode($type_tree_full, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES)},
+    themeLogoUrl: "{$theme_logo_url}",
+    globalLogo: "{$global_logo}",
+    previewUrl: {:json_encode($preview_url, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES)},
+    urls: {
+        saveStep: "{:url('theme_design/save_step')}",
+        initPage: "{:url('theme_design/init_page')}",
+        preview: "{:url('theme_design/preview')}",
+        design: "{$design_url}",
+        pageBuilder: "{$page_builder_url}",
+        upload: "{:url('theme_design/upload')}",
+        componentCatalog: "{:url('theme_design/pb_component_catalog')}"
+    },
+    thumbBase: "__STATIC__/svg/themedesign/thumbs/",
+    lang: {
+        saved: "{:lang('admin/themedesign/pb_saved')}",
+        init_page: "{:lang('admin/themedesign/pb_init_page')}",
+        init_confirm: "{:lang('admin/themedesign/pb_init_confirm')}",
+        init_ok: "{:lang('admin/themedesign/pb_init_ok')}",
+        init_fail: "{:lang('admin/themedesign/pb_init_fail')}",
+        save_err: "{:lang('admin/themedesign/save_err')}",
+        save_err_net: "{:lang('admin/themedesign/save_err_net')}",
+        pb_chrome_locked_hint: "{:lang('admin/themedesign/pb_chrome_locked_hint')}",
+        pb_delete: "{:lang('admin/themedesign/pb_delete')}",
+        pb_decor_edit_on_home: "{:lang('admin/themedesign/pb_decor_edit_on_home')}",
+        pb_edit_site_chrome: "{:lang('admin/themedesign/pb_edit_site_chrome')}",
+        click_hint: "{:lang('admin/themedesign/pb_click_hint')}",
+        drop_here: "{:lang('admin/themedesign/pb_drop_here')}",
+        drop_invalid: "{:lang('admin/themedesign/pb_drop_invalid')}",
+        drop_list_in_section: "{:lang('admin/themedesign/pb_drop_list_in_section')}",
+        drop_can: "{:lang('admin/themedesign/pb_drop_can')}",
+        drop_cannot: "{:lang('admin/themedesign/pb_drop_cannot')}",
+        trait_title: "{:lang('admin/themedesign/pb_trait_title')}",
+        trait_more_url: "{:lang('admin/themedesign/pb_trait_more_url')}",
+        trait_variant: "{:lang('admin/themedesign/pb_trait_variant')}",
+        trait_icon: "{:lang('admin/themedesign/pb_trait_icon')}",
+        trait_icon_none: "{:lang('admin/themedesign/pb_trait_icon_none')}",
+        trait_icon_fire: "{:lang('admin/themedesign/pb_trait_icon_fire')}",
+        trait_icon_book: "{:lang('admin/themedesign/pb_trait_icon_book')}",
+        trait_icon_collection: "{:lang('admin/themedesign/pb_trait_icon_collection')}",
+        trait_icon_bar_chart: "{:lang('admin/themedesign/pb_trait_icon_bar_chart')}",
+        trait_icon_newspaper: "{:lang('admin/themedesign/pb_trait_icon_newspaper')}",
+        trait_icon_broadcast: "{:lang('admin/themedesign/pb_trait_icon_broadcast')}",
+        trait_category: "{:lang('admin/themedesign/pb_trait_category')}",
+        trait_count: "{:lang('admin/themedesign/pb_trait_count')}",
+        trait_sort: "{:lang('admin/themedesign/pb_trait_sort')}",
+        trait_layout: "{:lang('admin/themedesign/pb_trait_layout')}",
+        trait_period: "{:lang('admin/themedesign/pb_trait_period')}",
+        trait_variant_plain: "{:lang('admin/themedesign/pb_trait_variant_plain')}",
+        trait_variant_card: "{:lang('admin/themedesign/pb_trait_variant_card')}",
+        trait_member_visual: "{:lang('admin/themedesign/pb_trait_member_visual')}",
+        trait_member_visual_default: "{:lang('admin/themedesign/pb_trait_member_visual_default')}",
+        trait_member_visual_minimal: "{:lang('admin/themedesign/pb_trait_member_visual_minimal')}",
+        trait_sort_hits: "{:lang('admin/themedesign/pb_trait_sort_hits')}",
+        trait_sort_hits_month: "{:lang('admin/themedesign/pb_trait_sort_hits_month')}",
+        trait_sort_hits_week: "{:lang('admin/themedesign/pb_trait_sort_hits_week')}",
+        trait_sort_hits_day: "{:lang('admin/themedesign/pb_trait_sort_hits_day')}",
+        trait_sort_time: "{:lang('admin/themedesign/pb_trait_sort_time')}",
+        trait_sort_score: "{:lang('admin/themedesign/pb_trait_sort_score')}",
+        trait_layout_default: "{:lang('admin/themedesign/pb_trait_layout_default')}",
+        trait_layout_slider: "{:lang('admin/themedesign/pb_trait_layout_slider')}",
+        trait_layout_grid: "{:lang('admin/themedesign/pb_trait_layout_grid')}",
+        trait_layout_list: "{:lang('admin/themedesign/pb_trait_layout_list')}",
+        trait_layout_filmstrip: "{:lang('admin/themedesign/pb_trait_layout_filmstrip')}",
+        trait_paging: "{:lang('admin/themedesign/pb_trait_paging')}",
+        trait_refresh: "{:lang('admin/themedesign/pb_trait_refresh')}",
+        trait_pageurl: "{:lang('admin/themedesign/pb_trait_pageurl')}",
+        trait_pageurl_vod_show: "{:lang('admin/themedesign/pb_trait_pageurl_vod_show')}",
+        trait_pageurl_vod_search: "{:lang('admin/themedesign/pb_trait_pageurl_vod_search')}",
+        trait_pageurl_art_show: "{:lang('admin/themedesign/pb_trait_pageurl_art_show')}",
+        trait_pageurl_art_search: "{:lang('admin/themedesign/pb_trait_pageurl_art_search')}",
+        trait_pageurl_manga_show: "{:lang('admin/themedesign/pb_trait_pageurl_manga_show')}",
+        trait_relation: "{:lang('admin/themedesign/pb_trait_relation')}",
+        trait_period_day: "{:lang('admin/themedesign/pb_trait_period_day')}",
+        trait_period_week: "{:lang('admin/themedesign/pb_trait_period_week')}",
+        trait_period_month: "{:lang('admin/themedesign/pb_trait_period_month')}",
+        trait_period_all: "{:lang('admin/themedesign/pb_trait_period_all')}",
+        trait_cat_all: "{:lang('admin/themedesign/pb_trait_cat_all')}",
+        trait_bind: "{:lang('admin/themedesign/pb_trait_bind')}",
+        trait_bind_vod: "{:lang('admin/themedesign/pb_trait_bind_vod')}",
+        trait_bind_manga: "{:lang('admin/themedesign/pb_trait_bind_manga')}",
+        trait_bind_art: "{:lang('admin/themedesign/pb_trait_bind_art')}",
+        trait_bind_topic: "{:lang('admin/themedesign/pb_trait_bind_topic')}",
+        trait_bind_live: "{:lang('admin/themedesign/pb_trait_bind_live')}",
+        trait_bind_website: "{:lang('admin/themedesign/pb_trait_bind_website')}",
+        trait_bind_gbook: "{:lang('admin/themedesign/pb_trait_bind_gbook')}",
+        trait_bind_actor: "{:lang('admin/themedesign/pb_trait_bind_actor')}",
+        trait_bind_role: "{:lang('admin/themedesign/pb_trait_bind_role')}",
+        trait_card: "{:lang('admin/themedesign/pb_trait_card')}",
+        trait_cover_orient: "{:lang('admin/themedesign/pb_trait_cover_orient')}",
+        trait_cover_ratio: "{:lang('admin/themedesign/pb_trait_cover_ratio')}",
+        pb_block_site_nav: "{:lang('admin/themedesign/pb_block_site_nav')}",
+        pb_block_channel_strip: "{:lang('admin/themedesign/pb_block_channel_strip')}",
+        pb_block_header_decor: "{:lang('admin/themedesign/pb_block_header_decor')}",
+        pb_block_site_footer: "{:lang('admin/themedesign/pb_block_site_footer')}",
+        pb_block_bottom_nav: "{:lang('admin/themedesign/pb_block_bottom_nav')}",
+        pb_block_ads_grid: "{:lang('admin/themedesign/pb_block_ads_grid')}",
+        trait_decor_width: "{:lang('admin/themedesign/pb_trait_decor_width')}",
+        trait_decor_height: "{:lang('admin/themedesign/pb_trait_decor_height')}",
+        trait_decor_image: "{:lang('admin/themedesign/pb_trait_decor_image')}",
+        trait_decor_image_hint: "{:lang('admin/themedesign/pb_trait_decor_image_hint')}",
+        trait_nav_max: "{:lang('admin/themedesign/pb_trait_nav_max')}",
+        trait_nav_search: "{:lang('admin/themedesign/pb_trait_nav_search')}",
+        trait_nav_logo: "{:lang('admin/themedesign/pb_trait_nav_logo')}",
+        trait_nav_logo_hint: "{:lang('admin/themedesign/pb_trait_nav_logo_hint')}",
+        upload: "{:lang('admin/themedesign/upload')}",
+        clear: "{:lang('admin/themedesign/clear')}",
+        uploading: "{:lang('admin/themedesign/uploading')}",
+        upload_ok: "{:lang('admin/themedesign/upload_ok')}",
+        upload_err: "{:lang('admin/themedesign/upload_err')}",
+        trait_nav_categories: "{:lang('admin/themedesign/pb_trait_nav_categories')}",
+        trait_nav_categories_empty: "{:lang('admin/themedesign/pb_trait_nav_categories_empty')}",
+        pb_cats_all: "{:lang('admin/themedesign/pb_cats_all')}",
+        pb_cats_none: "{:lang('admin/themedesign/pb_cats_none')}",
+        pb_cats_tops: "{:lang('admin/themedesign/pb_cats_tops')}",
+        trait_channel_compact: "{:lang('admin/themedesign/pb_trait_channel_compact')}",
+        trait_channel_chips: "{:lang('admin/themedesign/pb_trait_channel_chips')}",
+        trait_channel_icons: "{:lang('admin/themedesign/pb_trait_channel_icons')}",
+        trait_channel_more: "{:lang('admin/themedesign/pb_trait_channel_more')}",
+        trait_channel_live: "{:lang('admin/themedesign/pb_trait_channel_live')}",
+        trait_footer_variant: "{:lang('admin/themedesign/pb_trait_footer_variant')}",
+        trait_footer_variant_default: "{:lang('admin/themedesign/pb_trait_footer_variant_default')}",
+        trait_footer_variant_compact: "{:lang('admin/themedesign/pb_trait_footer_variant_compact')}",
+        trait_footer_copyright: "{:lang('admin/themedesign/pb_trait_footer_copyright')}",
+        trait_footer_show_nav: "{:lang('admin/themedesign/pb_trait_footer_show_nav')}",
+        trait_footer_show_friends: "{:lang('admin/themedesign/pb_trait_footer_show_friends')}",
+        trait_footer_logo: "{:lang('admin/themedesign/pb_trait_footer_logo')}",
+        trait_footer_logo_hint: "{:lang('admin/themedesign/pb_trait_footer_logo_hint')}",
+        trait_bottom_nav_items: "{:lang('admin/themedesign/pb_trait_bottom_nav_items')}",
+        trait_ads_grid_items: "{:lang('admin/themedesign/pb_trait_ads_grid_items')}",
+        trait_ads_grid_item_label: "{:lang('admin/themedesign/pb_trait_ads_grid_item_label')}",
+        trait_ads_grid_item_href: "{:lang('admin/themedesign/pb_trait_ads_grid_item_href')}",
+        trait_ads_grid_href_ph: "{:lang('admin/themedesign/pb_trait_ads_grid_href_ph')}",
+        trait_ads_grid_item_cover: "{:lang('admin/themedesign/pb_trait_ads_grid_item_cover')}",
+        trait_ads_grid_cover_ph: "{:lang('admin/themedesign/pb_trait_ads_grid_cover_ph')}",
+        trait_ads_grid_add: "{:lang('admin/themedesign/pb_trait_ads_grid_add')}",
+        trait_bottom_nav_item_label: "{:lang('admin/themedesign/pb_trait_bottom_nav_item_label')}",
+        trait_bottom_nav_item_href: "{:lang('admin/themedesign/pb_trait_bottom_nav_item_href')}",
+        trait_bottom_nav_href_ph: "{:lang('admin/themedesign/pb_trait_bottom_nav_href_ph')}",
+        trait_bottom_nav_item_icon: "{:lang('admin/themedesign/pb_trait_bottom_nav_item_icon')}",
+        trait_bottom_nav_add: "{:lang('admin/themedesign/pb_trait_bottom_nav_add')}",
+        trait_bottom_nav_remove: "{:lang('admin/themedesign/pb_trait_bottom_nav_remove')}",
+        trait_bottom_nav_move_up: "{:lang('admin/themedesign/pb_trait_bottom_nav_move_up')}",
+        trait_bottom_nav_move_down: "{:lang('admin/themedesign/pb_trait_bottom_nav_move_down')}",
+        trait_ratio_default: "{:lang('admin/themedesign/pb_trait_ratio_default')}",
+        trait_ratio_16_9: "{:lang('admin/themedesign/pb_trait_ratio_16_9')}",
+        trait_ratio_4_3: "{:lang('admin/themedesign/pb_trait_ratio_4_3')}",
+        trait_ratio_3_4: "{:lang('admin/themedesign/pb_trait_ratio_3_4')}",
+        trait_ratio_2_3: "{:lang('admin/themedesign/pb_trait_ratio_2_3')}",
+        trait_ratio_69_40: "{:lang('admin/themedesign/pb_trait_ratio_69_40')}",
+        trait_ratio_20_29: "{:lang('admin/themedesign/pb_trait_ratio_20_29')}",
+        trait_ratio_1_1: "{:lang('admin/themedesign/pb_trait_ratio_1_1')}",
+        trait_ratio_w: "{:lang('admin/themedesign/pb_trait_ratio_w')}",
+        trait_ratio_h: "{:lang('admin/themedesign/pb_trait_ratio_h')}",
+        trait_ratio_custom_tip: "{:lang('admin/themedesign/pb_trait_ratio_custom_tip')}",
+        trait_card_poster_v: "{:lang('admin/themedesign/pb_trait_card_poster_v')}",
+        trait_card_poster_h: "{:lang('admin/themedesign/pb_trait_card_poster_h')}",
+        trait_rank_style: "{:lang('admin/themedesign/pb_trait_rank_style')}",
+        trait_rank_style_panel: "{:lang('admin/themedesign/pb_trait_rank_style_panel')}",
+        trait_rank_style_inline: "{:lang('admin/themedesign/pb_trait_rank_style_inline')}",
+        trait_rank_feed: "{:lang('admin/themedesign/pb_trait_rank_feed')}",
+        trait_col_left: "{:lang('admin/themedesign/pb_trait_col_left')}",
+        trait_col_right: "{:lang('admin/themedesign/pb_trait_col_right')}",
+        trait_col_width_hint: "{:lang('admin/themedesign/pb_trait_col_width_hint')}",
+        trait_stack_at: "{:lang('admin/themedesign/pb_trait_stack_at')}",
+        col_drop_left: "{:lang('admin/themedesign/pb_col_drop_left')}",
+        col_drop_right: "{:lang('admin/themedesign/pb_col_drop_right')}",
+        filmstrip_drop_banner: "{:lang('admin/themedesign/pb_filmstrip_drop_banner')}",
+        filmstrip_drop_feed: "{:lang('admin/themedesign/pb_filmstrip_drop_feed')}",
+        section_drop_hint: "{:lang('admin/themedesign/pb_section_drop_hint')}",
+        pb_page_select: "{:lang('admin/themedesign/pb_page_select')}",
+        pb_region_site_header: "{:lang('admin/themedesign/pb_region_site_header')}",
+        pb_region_hero: "{:lang('admin/themedesign/pb_region_hero')}",
+        pb_region_channel: "{:lang('admin/themedesign/pb_region_channel')}",
+        pb_region_content: "{:lang('admin/themedesign/pb_region_content')}",
+        pb_region_sidebar: "{:lang('admin/themedesign/pb_region_sidebar')}",
+        pb_region_footer: "{:lang('admin/themedesign/pb_region_footer')}",
+        pb_member_mode_hint: "{:lang('admin/themedesign/pb_member_mode_hint')}",
+        pb_auth_modal_mode_hint: "{:lang('admin/themedesign/pb_auth_modal_mode_hint')}",
+        pb_member_locked_hint: "{:lang('admin/themedesign/pb_member_locked_hint')}",
+        pb_member_select_editable_hint: "{:lang('admin/themedesign/pb_member_select_editable_hint')}",
+        pb_auth_modal_login: "{:lang('admin/themedesign/pb_auth_modal_login')}",
+        pb_auth_modal_findpass: "{:lang('admin/themedesign/pb_auth_modal_findpass')}",
+        pb_block_auth_modals: "{:lang('admin/themedesign/pb_block_auth_modals')}",
+        trait_show_hub: "{:lang('admin/themedesign/trait_show_hub')}",
+        trait_require_login: "{:lang('admin/themedesign/trait_require_login')}",
+        trait_member_active: "{:lang('admin/themedesign/trait_member_active')}",
+        trait_show_clear: "{:lang('admin/themedesign/trait_show_clear')}",
+        trait_default_tab: "{:lang('admin/themedesign/trait_default_tab')}",
+        trait_tab_upgrade: "{:lang('admin/themedesign/trait_tab_upgrade')}",
+        trait_tab_recharge: "{:lang('admin/themedesign/trait_tab_recharge')}",
+        trait_tab_buy: "{:lang('admin/themedesign/trait_tab_buy')}",
+        trait_auth_panel: "{:lang('admin/themedesign/trait_auth_panel')}",
+        trait_auth_panel_login: "{:lang('admin/themedesign/trait_auth_panel_login')}",
+        trait_auth_panel_findpass: "{:lang('admin/themedesign/trait_auth_panel_findpass')}",
+        trait_auth_panel_findpass_msg: "{:lang('admin/themedesign/trait_auth_panel_findpass_msg')}",
+        trait_expand_invite: "{:lang('admin/themedesign/trait_expand_invite')}",
+        trait_hero_title: "{:lang('admin/themedesign/trait_hero_title')}",
+        trait_hero_desc: "{:lang('admin/themedesign/trait_hero_desc')}",
+        trait_hero_image: "{:lang('admin/themedesign/trait_hero_image')}",
+        trait_hero_image_mobile: "{:lang('admin/themedesign/trait_hero_image_mobile')}",
+        image_path_ph: "{:lang('admin/themedesign/image_path_ph')}",
+        trait_show_hero: "{:lang('admin/themedesign/trait_show_hero')}",
+        trait_auth_layout: "{:lang('admin/themedesign/trait_auth_layout')}",
+        trait_auth_layout_split: "{:lang('admin/themedesign/trait_auth_layout_split')}",
+        trait_auth_layout_center: "{:lang('admin/themedesign/trait_auth_layout_center')}",
+        trait_auth_layout_minimal: "{:lang('admin/themedesign/trait_auth_layout_minimal')}",
+        trait_welcome: "{:lang('admin/themedesign/trait_welcome')}",
+        trait_hint: "{:lang('admin/themedesign/trait_hint')}",
+        trait_subtitle: "{:lang('admin/themedesign/trait_subtitle')}",
+        trait_preset: "{:lang('admin/themedesign/trait_preset')}",
+        pb_manga_row_hot: "{:lang('admin/themedesign/pb_manga_row_hot')}",
+        pb_manga_row_buzz: "{:lang('admin/themedesign/pb_manga_row_buzz')}",
+        pb_manga_row_score: "{:lang('admin/themedesign/pb_manga_row_score')}",
+        pb_novel_row_hot: "{:lang('admin/themedesign/pb_novel_row_hot')}",
+        pb_novel_row_new: "{:lang('admin/themedesign/pb_novel_row_new')}",
+        pb_novel_row_finish: "{:lang('admin/themedesign/pb_novel_row_finish')}",
+        trait_title_mode: "{:lang('admin/themedesign/trait_title_mode')}",
+        trait_title_mode_custom: "{:lang('admin/themedesign/trait_title_mode_custom')}",
+        trait_title_mode_type: "{:lang('admin/themedesign/trait_title_mode_type')}",
+        trait_type_pick: "{:lang('admin/themedesign/trait_type_pick')}",
+        trait_type_all: "{:lang('admin/themedesign/trait_type_all')}",
+        trait_type_category: "{:lang('admin/themedesign/trait_type_category')}",
+        trait_type_top_types: "{:lang('admin/themedesign/trait_type_top_types')}",
+        trait_top_types_index: "{:lang('admin/themedesign/trait_top_types_index')}",
+        trait_show_shuffle: "{:lang('admin/themedesign/trait_show_shuffle')}",
+        trait_show_more: "{:lang('admin/themedesign/trait_show_more')}",
+        trait_order: "{:lang('admin/themedesign/trait_order')}",
+        trait_order_desc: "{:lang('admin/themedesign/trait_order_desc')}",
+        trait_order_asc: "{:lang('admin/themedesign/trait_order_asc')}",
+        np2_layout_grid2: "{:lang('admin/themedesign/pb_np2_layout_grid2')}",
+        np2_layout_hscroll: "{:lang('admin/themedesign/pb_np2_layout_hscroll')}",
+        np2_layout_cols3: "{:lang('admin/themedesign/pb_np2_layout_cols3')}",
+        trait_icon_auto: "{:lang('admin/themedesign/trait_icon_auto')}",
+        trait_icon_spark: "{:lang('admin/themedesign/trait_icon_spark')}",
+        trait_icon_film: "{:lang('admin/themedesign/trait_icon_film')}",
+        trait_icon_heart: "{:lang('admin/themedesign/trait_icon_heart')}",
+        trait_icon_clapper: "{:lang('admin/themedesign/trait_icon_clapper')}",
+        trait_icon_tv: "{:lang('admin/themedesign/trait_icon_tv')}",
+        trait_icon_star: "{:lang('admin/themedesign/trait_icon_star')}",
+        trait_ads_variant_default: "{:lang('admin/themedesign/trait_ads_variant_default')}",
+        trait_ads_variant_splash: "{:lang('admin/themedesign/trait_ads_variant_splash')}"
+    }
+};
+</script>
+<script type="text/javascript" src="__STATIC__/js/themedesign/page-builder-thumbs.js?{$MAC_VERSION}"></script>
+<script type="text/javascript" src="__STATIC__/js/themedesign/page-builder.js?{$MAC_VERSION}"></script>
+<script type="text/javascript">
+(function () {
+    var pb = window.TD_PB || {};
+    if (!pb.embed) { return; }
+    document.body.classList.add('td-pb-body-embed');
+    var back = document.getElementById('pbBackLink');
+    if (!back) { return; }
+    back.addEventListener('click', function (e) {
+        e.preventDefault();
+        var closing = false;
+        var finish = function () {
+            if (closing) { return; }
+            closing = true;
+            var msg = { type: 'td-pb-close', refresh: true };
+            try {
+                if (window.parent && window.parent !== window) {
+                    window.parent.postMessage(msg, '*');
+                }
+            } catch (err) {}
+            try {
+                if (window.top && window.top !== window) {
+                    window.top.postMessage(msg, '*');
+                }
+            } catch (err2) {}
+            if (window.parent === window) {
+                window.location.href = back.getAttribute('href') || (pb.urls && pb.urls.design) || '/';
+            }
+        };
+        // 返回前先静默保存，避免改完属性未点「保存」就丢；父页再同步最新草稿，勿用旧 CFG 覆盖
+        if (typeof window.__PB_SAVE_DRAFT === 'function') {
+            try {
+                var ret = window.__PB_SAVE_DRAFT(true, false);
+                if (ret && typeof ret.always === 'function') {
+                    ret.always(finish);
+                    return;
+                }
+            } catch (err3) {}
+        }
+        finish();
+    });
+})();
+</script>
+</body>
+</html>

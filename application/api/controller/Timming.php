@@ -8,9 +8,14 @@ use app\admin\controller\AiAnnotation as AiAnnotationCtl;
 use app\common\util\AiProvider;
 use app\common\util\ContentAnnotator;
 use app\common\util\ContentQualityScorer;
+use app\common\util\CollectHealth;
+use app\common\util\ContentCheck;
 
 class Timming extends Base
 {
+    /** 当前采集任务的运行信息（供结束日志使用） */
+    private $collectRun = null;
+
     public function __construct()
     {
         parent::__construct();
@@ -25,6 +30,7 @@ class Timming extends Base
         }
 
         $list = config('timming');
+        $list = $this->ensureBuiltinTasks(is_array($list) ? $list : []);
         // enforce=1 会跳过时间窗口立即执行，属高权限操作（可被用于反复触发烧金鑰的 AI 任务）。
         // 仅在后台已登录管理员发起时才放行（后台“测试”按钮会带上管理员会话）；匿名请求忽略 enforce，
         // 任务只按自身调度窗口执行并受 runtime 节流，无法被匿名刷。
@@ -33,7 +39,20 @@ class Timming extends Base
             $adminChk = (new \app\common\model\Admin())->checkLogin();
             $enforce = is_array($adminChk) && isset($adminChk['code']) && intval($adminChk['code']) <= 1;
         }
-        foreach($list as $k=>$v){
+        // 每次请求只执行一个到期任务：按「上次执行时间」从早到晚挑选，最久没跑的优先。
+        // 若按配置顺序取第一个，排在前面的高频任务（如 push_broadcast 每 60 秒）会每分钟都抢先，
+        // 后面的采集 / 检测任务长期轮不到。$list 本身保持原顺序写回配置文件。
+        $queue = $list;
+        $pos = array_flip(array_keys($list));
+        uksort($queue, function ($a, $b) use ($list, $pos) {
+            $ra = intval(isset($list[$a]['runtime']) ? $list[$a]['runtime'] : 0);
+            $rb = intval(isset($list[$b]['runtime']) ? $list[$b]['runtime'] : 0);
+            if ($ra === $rb) {
+                return $pos[$a] - $pos[$b];
+            }
+            return $ra < $rb ? -1 : 1;
+        });
+        foreach($queue as $k=>$v){
             if(!empty($name) && $v['name'] !=$name){
                 continue;
             }
@@ -90,6 +109,11 @@ class Timming extends Base
                     die;
                 }
 
+                // 采集任务：接口被停用（自动检测或管理员）则跳过，继续检查下一个任务
+                if ($file === 'collect' && !$this->collectGate($v['name'], $param)) {
+                    continue;
+                }
+
                 $this->$file($param);
                 die;
 
@@ -107,11 +131,143 @@ class Timming extends Base
         }
     }
 
+    /**
+     * 首次运行时自动登记内置任务（默认停用），已存在则不覆盖用户的调整；删除后会以停用状态重新登记
+     *   collect_health：采集接口可用性检测（每小时）
+     *   content_check：内容资源可用性检测（每天一轮，每 5 分钟续跑一段）
+     * 登记时带 auto_disable=0：只检测、记录日志，不自动停用接口 / 下架内容。
+     * 自动停用是破坏性操作，需站长在定时任务里把参数改为 auto_disable=1 后才生效。
+     * 任务会对库内 / 采集源的第三方地址发起请求，登记为 status=0，须站长在后台定时任务里手动启用。
+     */
+    private function ensureBuiltinTasks(array $list)
+    {
+        $builtin = [
+            'collect_health' => ['des' => '采集接口可用性检测', 'interval' => 3600],
+            'content_check' => ['des' => '内容资源可用性检测（播放地址/漫画章节/封面）', 'interval' => 300],
+        ];
+        $changed = false;
+        foreach ($builtin as $name => $cfg) {
+            if (isset($list[$name])) {
+                continue;
+            }
+            $list[$name] = [
+                'id' => $name,
+                'status' => '0',
+                'name' => $name,
+                'des' => $cfg['des'],
+                'file' => $name,
+                'param' => 'auto_disable=0',
+                'weeks' => '1,2,3,4,5,6,0',
+                'hours' => '00,01,02,03,04,05,06,07,08,09,10,11,12,13,14,15,16,17,18,19,20,21,22,23',
+                'interval' => $cfg['interval'],
+                'runtime' => 0,
+            ];
+            $changed = true;
+        }
+        if ($changed) {
+            mac_arr2file(APP_PATH . 'extra/timming.php', $list);
+        }
+        return $list;
+    }
+
+    /**
+     * 采集任务前置检查 + 运行日志
+     * 停用：记录跳过原因并返回 false；启用：登记结束时的运行结果日志并返回 true
+     */
+    private function collectGate($taskName, $param)
+    {
+        @parse_str($param, $output);
+        $url = isset($output['cjurl']) ? trim($output['cjurl']) : '';
+        if ($url === '') {
+            return true;
+        }
+        $row = CollectHealth::get($url);
+        $name = $row !== null && $row['name'] !== '' ? $row['name'] : $taskName;
+        if ($row !== null && (string)$row['status'] !== '1') {
+            $msg = lang('admin/collect_health/log_skip', [$row['reason']]);
+            CollectHealth::log(CollectHealth::KIND_SKIP, $url, $name, 'skip', $msg, $taskName);
+            mac_echo($taskName . ': ' . $msg);
+            return false;
+        }
+
+        // 采集流程会 die / mac_jump 结束请求，成功结果统一在 shutdown 时落日志；失败在 collect() 中捕获
+        $this->collectRun = ['url' => $url, 'name' => $name, 'task' => $taskName, 'start' => microtime(true), 'logged' => false];
+        register_shutdown_function([$this, 'collectRunShutdown']);
+        return true;
+    }
+
+    private function logCollectRun($result, $error = '')
+    {
+        $r = $this->collectRun;
+        if (empty($r) || $r['logged']) {
+            return;
+        }
+        $this->collectRun['logged'] = true;
+        $sec = round(microtime(true) - $r['start'], 1);
+        $msg = $result === 'ok' ? lang('admin/collect_health/log_run_ok', [$sec]) : lang('admin/collect_health/log_run_fail', [$sec, $error]);
+        CollectHealth::log(CollectHealth::KIND_RUN, $r['url'], $r['name'], $result, $msg, $r['task']);
+    }
+
+    /**
+     * @internal shutdown 回调（register_shutdown_function 需 public）；非 index 动作直接访问无副作用
+     */
+    public function collectRunShutdown()
+    {
+        $err = error_get_last();
+        if ($err && in_array($err['type'], [E_ERROR, E_PARSE, E_CORE_ERROR, E_COMPILE_ERROR], true)) {
+            $this->logCollectRun('fail', $err['message']);
+            return;
+        }
+        $this->logCollectRun('ok');
+    }
+
+    protected function collect_health($param)
+    {
+        $stat = CollectHealth::runCheck($this->autoDisableParam($param));
+        if (!empty($stat['outage'])) {
+            mac_echo(lang('admin/collect_health/breaker'));
+            return;
+        }
+        mac_echo(lang('admin/collect_health/check_summary', [$stat['total'], $stat['ok'], $stat['fail'], $stat['disabled']]));
+    }
+
+    protected function content_check($param)
+    {
+        mac_echo(ContentCheck::run($this->autoDisableParam($param)));
+    }
+
+    /**
+     * 检测任务参数 auto_disable：显式 0 才关闭；未带该参数（此前已登记的任务）保持原有的自动停用行为
+     */
+    private function autoDisableParam($param)
+    {
+        @parse_str((string)$param, $output);
+        return !isset($output['auto_disable']) || (string)$output['auto_disable'] !== '0';
+    }
+
     protected function collect($param)
     {
         @parse_str($param,$output);
         $request = controller('admin/collect');
-        $request->api($output);
+        try {
+            $request->api($output);
+        } catch (\think\exception\HttpResponseException $e) {
+            // 采集控制器以 $this->error() 抛出失败原因（如接口无法访问、JSON 解析失败）
+            // json 请求时 data 为数组；html 请求时为已渲染的跳转页，从 <p class="error|success"> 中取出提示
+            $data = $e->getResponse()->getData();
+            if (is_array($data)) {
+                $ok = isset($data['code']) && $data['code'] == 1;
+                $msg = isset($data['msg']) ? $data['msg'] : '';
+            } else {
+                $ok = preg_match('#<p class="success">#', (string)$data) === 1;
+                $msg = preg_match('#<p class="(?:error|success)">(.*?)</p>#s', (string)$data, $m) ? trim(html_entity_decode(strip_tags($m[1]))) : '';
+            }
+            $this->logCollectRun($ok ? 'ok' : 'fail', $msg);
+            throw $e;
+        } catch (\Exception $e) {
+            $this->logCollectRun('fail', $e->getMessage());
+            throw $e;
+        }
     }
 
     protected function make($param)

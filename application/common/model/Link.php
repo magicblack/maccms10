@@ -78,11 +78,13 @@ class Link extends Base {
         if($GLOBALS['config']['app']['cache_core']==0 || empty($res)) {
             $res = $this->listData($where, $order, $page, $num, $start);
             if($GLOBALS['config']['app']['cache_core']==1) {
-                Cache::set($cach_name, $res, $cachetime);
+                // 打上表名标签，写路径才能定点作废这一族列表缓存（见 Base::clearListCache()）
+                Cache::tag($this->name)->set($cach_name, $res, $cachetime);
             }
         }
         return $res;
     }
+
 
     public function infoData($where,$field='*')
     {
@@ -123,6 +125,7 @@ class Link extends Base {
         if(false === $res){
             return ['code'=>1002,'msg'=>lang('save_err').'：'.$this->getError() ];
         }
+        $this->clearListCache();
         return ['code'=>1,'msg'=>lang('save_ok'),'link_id'=>$data['link_id']];
     }
 
@@ -134,6 +137,7 @@ class Link extends Base {
             return ['code'=>1001,'msg'=>lang('del_err').'：'.$this->getError() ];
         }
         \app\common\model\ContentLang::deleteByContent('link', $delIds);
+        $this->clearListCache();
         return ['code'=>1,'msg'=>lang('del_ok')];
     }
 
@@ -149,6 +153,7 @@ class Link extends Base {
         if($res===false){
             return ['code'=>1001,'msg'=>lang('set_err').'：'.$this->getError() ];
         }
+        $this->clearListCache();
         return ['code'=>1,'msg'=>lang('set_ok')];
     }
 

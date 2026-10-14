@@ -1,0 +1,1026 @@
+/* Page Builder kit 共享 peer 样式 — 仅依赖主题 tokens（--c-* / --radius / --ease / --dur） */
+
+/* ── 无主题 base 时：去掉浏览器对 <a> 的默认下划线 ── */
+.pb-block-host a,
+.pb-site-nav a,
+.pb-site-footer a,
+.bili-channel a,
+.bili-feed a,
+.bili-sec a,
+.pb-cf a,
+.c-rankcard a,
+.rank-list a,
+.pb-vod-card a,
+.pb-manga-card a,
+.pb-topic-card a,
+.pb-actor-card a,
+.pb-live-card a,
+.pb-art-book a,
+.pb-site-row a,
+.pb-gbook-wall a,
+.pb-sec-head a,
+.pb-carousel-fullbleed a {
+  text-decoration: none;
+}
+
+/* ── 封面 trait（横向默认 69:40） ── */
+.pb-cover--poster-h .pb-vod-card__pic,
+.pb-cover--poster-h .pb-manga-card__pic,
+.pb-cover--poster-h .pb-topic-card__pic,
+.pb-cover--poster-h .pb-live-card__pic {
+  aspect-ratio: var(--pb-cover-ratio, 69 / 40);
+}
+.pb-cover--poster-v .pb-vod-card__pic,
+.pb-cover--poster-v .pb-manga-card__pic,
+.pb-cover--poster-v .pb-topic-card__pic,
+.pb-cover--poster-v .pb-live-card__pic {
+  aspect-ratio: var(--pb-cover-ratio, 3 / 4);
+}
+.pb-cover--poster-h .pb-art-book__cover { aspect-ratio: var(--pb-cover-ratio, 69 / 40); }
+.pb-cover--poster-v .pb-art-book__cover { aspect-ratio: var(--pb-cover-ratio, 3 / 4); }
+.pb-cover--poster-h .pb-site-row__fig a {
+  display: block;
+  width: 72px;
+  aspect-ratio: var(--pb-cover-ratio, 69 / 40);
+}
+.pb-cover--poster-v .pb-site-row__fig a {
+  display: block;
+  width: 56px;
+  aspect-ratio: var(--pb-cover-ratio, 3 / 4);
+}
+.pb-cover--poster-h .pb-site-row__fig,
+.pb-cover--poster-v .pb-site-row__fig { flex: 0 0 auto !important; }
+.pb-cover--poster-h .pb-site-row__fig img,
+.pb-cover--poster-v .pb-site-row__fig img,
+.pb-cover .pb-site-row__fig img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.pb-cover--ratio-16-9 { --pb-cover-ratio: 16 / 9; }
+.pb-cover--ratio-4-3 { --pb-cover-ratio: 4 / 3; }
+.pb-cover--ratio-3-4 { --pb-cover-ratio: 3 / 4; }
+.pb-cover--ratio-2-3 { --pb-cover-ratio: 2 / 3; }
+.pb-cover--ratio-69-40 { --pb-cover-ratio: 69 / 40; }
+.pb-cover--ratio-20-29 { --pb-cover-ratio: 20 / 29; }
+.pb-cover--ratio-1-1 { --pb-cover-ratio: 1 / 1; }
+.pb-cf .pb-cover { display: contents; }
+
+/* ── 视频卡 ── */
+.pb-vod-card { background: transparent; padding: 0; }
+.pb-vod-card__pic {
+  position: relative;
+  display: block;
+  aspect-ratio: 69 / 40;
+  border-radius: var(--radius, 6px);
+  overflow: hidden;
+  background: var(--c-surface-2, #e3e5e7);
+}
+.pb-vod-card__pic img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  transition: transform 0.35s var(--ease, ease);
+}
+.pb-vod-card:hover .pb-vod-card__pic img { transform: scale(1.04); }
+/* ── 封面方向（竖屏短剧等）──
+   卡片封面框由区块统一（横版 69:40 / 竖版 3:4 …），方向与框不一致的封面：框不变，
+   图片 contain 完整显示，底部垫同图模糊背景。
+   data-cover-fit 由 runtime（mac-theme-runtime.js cover.orient）按图片实际尺寸写入，
+   各资源站同一分类里横竖混杂也能逐条处理；图片载入前用分类比例（type_extend.cover →
+   data-cover-orient）做首屏提示。整块同一分类时 vod_list 已把区块切到该分类比例。 */
+.pb-vod-card__backdrop { display: none; }
+.pb-vod-card[data-cover-fit="contain"] .pb-vod-card__backdrop,
+.pb-vod-card[data-cover-orient="v"]:not([data-cover-fit]) .pb-vod-card__backdrop,
+.pb-cover:not(.pb-cover--landscape) .pb-vod-card[data-cover-orient="h"]:not([data-cover-fit]) .pb-vod-card__backdrop {
+  display: block;
+  position: absolute;
+  inset: -12px;
+  background-position: center;
+  background-size: cover;
+  filter: blur(14px) brightness(0.75);
+  pointer-events: none;
+}
+.pb-vod-card[data-cover-fit="contain"] .pb-vod-card__pic img,
+.pb-vod-card[data-cover-orient="v"]:not([data-cover-fit]) .pb-vod-card__pic img,
+.pb-cover:not(.pb-cover--landscape) .pb-vod-card[data-cover-orient="h"]:not([data-cover-fit]) .pb-vod-card__pic img {
+  position: relative;
+  object-fit: contain;
+}
+/* 区块本身是竖版时，分类竖版卡片无需 contain */
+.pb-cover:not(.pb-cover--landscape) .pb-vod-card[data-cover-orient="v"]:not([data-cover-fit]) .pb-vod-card__backdrop { display: none; }
+.pb-cover:not(.pb-cover--landscape) .pb-vod-card[data-cover-orient="v"]:not([data-cover-fit]) .pb-vod-card__pic img {
+  position: static;
+  object-fit: cover;
+}
+.pb-vod-card__mask {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  min-height: 40px;
+  height: auto;
+  padding: 18px 8px 6px;
+  box-sizing: border-box;
+  background: linear-gradient(180deg, transparent 0%, rgba(0, 0, 0, 0.78) 100%);
+  color: #fff;
+  font-size: 12px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-start;
+  gap: 10px;
+  pointer-events: none;
+  z-index: 1;
+}
+/* 左下：播放量；右上备注；右下时长 */
+.pb-vod-card__duration {
+  position: absolute;
+  right: 6px;
+  bottom: 6px;
+  z-index: 2;
+  max-width: calc(100% - 12px);
+  padding: 2px 6px;
+  border-radius: 4px;
+  background: rgba(0, 0, 0, 0.65);
+  color: #fff;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.35;
+  font-variant-numeric: tabular-nums;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  pointer-events: none;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.35);
+}
+.pb-vod-card__stats {
+  display: inline-flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 8px;
+  flex: 0 1 auto;
+  min-width: 0;
+  max-width: 100%;
+  line-height: 1.2;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.45);
+}
+.pb-vod-card__stat {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+  font-weight: 500;
+}
+.pb-vod-card__stat--score {
+  opacity: 0.95;
+}
+.pb-vod-card__ico {
+  display: inline-block;
+  flex: 0 0 auto;
+  width: 12px;
+  height: 12px;
+  background: currentColor;
+  opacity: 0.95;
+}
+.pb-vod-card__ico--play {
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='black' d='M8 5v14l11-7z'/%3E%3C/svg%3E") center / contain no-repeat;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='black' d='M8 5v14l11-7z'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+.pb-vod-card__ico--score {
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='black' d='M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z'/%3E%3C/svg%3E") center / contain no-repeat;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='black' d='M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+.pb-vod-card__rm,
+.pb-manga-card__rm {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  z-index: 2;
+  max-width: calc(100% - 16px);
+  padding: 2px 6px;
+  border-radius: 4px;
+  background: rgba(0, 0, 0, 0.55);
+  color: #fff;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.35;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  pointer-events: none;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.35);
+}
+/* NP2 付费角标（金币 / VIP）：pb-vod-card 与首页 np2-card 共用 */
+.pb-vod-card__pic .np2-paytag,
+.np2-card__pic .np2-paytag,
+.np2-v3__pic .np2-paytag,
+.np2-hs__pic .np2-paytag {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  z-index: 3;
+  pointer-events: none;
+  line-height: 0;
+}
+.pb-vod-card__pic:has(.np2-paytag) .pb-vod-card__rm {
+  display: none;
+}
+.np2-paytag__vip {
+  display: flex;
+  height: 14px;
+  min-width: 30px;
+  padding: 0.5px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #fff7ec 0%, #ffb78e 100%);
+  box-sizing: border-box;
+}
+.np2-paytag__vip-inner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-width: 30px;
+  padding: 0 3px;
+  border-radius: 999px;
+  font-size: 10px;
+  font-weight: 500;
+  line-height: 12px;
+  height: 13px;
+  color: #000;
+  text-shadow: 0 1px 1px rgba(255, 255, 255, 0.25);
+  background-image: linear-gradient(to right, #fee2ba 13%, #e69167 100%);
+  box-sizing: border-box;
+}
+.np2-paytag__coin {
+  display: flex;
+  height: 14px;
+  min-width: 28px;
+  padding: 0.5px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #fb8749 0%, #ed4e2e 100%);
+  box-sizing: border-box;
+}
+.np2-paytag__coin-inner {
+  display: flex;
+  align-items: center;
+  gap: 1px;
+  height: 100%;
+  flex: 1;
+  padding: 0 3px 0 2px;
+  border-radius: 999px;
+  background-image: linear-gradient(105deg, #ff5e00 11%, #e12810 100%);
+  box-sizing: border-box;
+}
+.np2-paytag__coin-ico {
+  flex: 0 0 10px;
+  width: 10px;
+  height: 10px;
+  display: block;
+}
+.np2-paytag__amt {
+  font-size: 10px;
+  font-weight: 700;
+  line-height: 1;
+  color: #fff;
+  text-align: center;
+}
+
+.pb-vod-card__title {
+  margin-top: 8px;
+  font-size: 15px;
+  font-weight: 500;
+  line-height: 22px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  min-width: 0;
+}
+.pb-vod-card__title a { color: var(--c-text); }
+.pb-vod-card__title a:hover { color: var(--c-accent); }
+.pb-vod-card__meta {
+  margin-top: 2px;
+  font-size: 13px;
+  color: var(--c-text-muted);
+  line-height: 1.4;
+  max-height: calc(1.4em * 2);
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  word-break: break-word;
+}
+
+/* ── 漫画 / 专题 / 直播卡（结构同视频卡） ── */
+.pb-manga-card,
+.pb-topic-card,
+.pb-live-card { background: transparent; padding: 0; }
+.pb-manga-card__pic,
+.pb-topic-card__pic,
+.pb-live-card__pic {
+  position: relative;
+  display: block;
+  aspect-ratio: 3 / 4;
+  border-radius: var(--radius, 6px);
+  overflow: hidden;
+  background: var(--c-surface-2, #e3e5e7);
+}
+.pb-manga-card__pic img,
+.pb-topic-card__pic img,
+.pb-live-card__pic img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.pb-manga-card__title,
+.pb-topic-card__title,
+.pb-live-card__title {
+  margin-top: 8px;
+  font-size: 15px;
+  font-weight: 500;
+  line-height: 22px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  min-width: 0;
+}
+.pb-manga-card__title a,
+.pb-topic-card__title a,
+.pb-live-card__title a { color: var(--c-text); }
+.pb-manga-card__meta,
+.pb-topic-card__meta,
+.pb-live-card__meta {
+  margin-top: 2px;
+  font-size: 13px;
+  color: var(--c-text-muted);
+  line-height: 1.4;
+  max-height: calc(1.4em * 2);
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  word-break: break-word;
+}
+
+/* ── 演员卡（圆形头像） ── */
+.pb-actor-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 0;
+  text-align: center;
+}
+.pb-actor-card__pic {
+  display: block;
+  width: 100%;
+  max-width: 120px;
+  aspect-ratio: 1 / 1;
+  border-radius: 50%;
+  overflow: hidden;
+  background: var(--c-surface-2, #e3e5e7);
+  border: 2px solid var(--c-border);
+  transition: border-color var(--dur, 0.2s) var(--ease, ease);
+}
+.pb-actor-card__pic:hover,
+.pb-actor-card__pic:focus-visible {
+  border-color: var(--c-accent);
+  outline: none;
+}
+.pb-actor-card__pic img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.pb-actor-card__title {
+  margin: 10px 0 0;
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1.35;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  min-width: 0;
+  max-width: 100%;
+}
+.pb-actor-card__title a {
+  color: var(--c-text);
+}
+.pb-actor-card__title a:hover,
+.pb-actor-card__title a:focus-visible {
+  color: var(--c-accent);
+}
+.pb-actor-card__meta {
+  margin: 4px 0 0;
+  font-size: 12px;
+  line-height: 1.4;
+  color: var(--c-text-muted);
+  max-height: calc(1.4em * 2);
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  word-break: break-word;
+}
+
+/* ── 资讯书封 ── */
+.pb-art-book {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+  text-decoration: none;
+  color: inherit;
+}
+.pb-art-book__cover {
+  position: relative;
+  display: block;
+  width: 100%;
+  aspect-ratio: 3 / 4;
+  border-radius: 8px;
+  overflow: hidden;
+  background: var(--c-surface-2, #eceff1);
+}
+.pb-art-book__cover img,
+.pb-art-book__img {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+}
+/* 书形占位：封面为空或加载失败（.is-empty）时显示 */
+.pb-art-book__ph {
+  position: absolute;
+  inset: 0;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  color: var(--c-accent, #6366f1);
+}
+.pb-art-book__ph .nv-book__ph {
+  display: block;
+  width: 42%;
+  height: auto;
+}
+.pb-art-book__cover.is-empty .pb-art-book__ph {
+  display: flex;
+}
+.pb-art-book__cover.is-empty img {
+  display: none;
+}
+/* 备注角标（如「共185章」）：底部渐变条 */
+.pb-art-book__badge {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  padding: 18px 8px 6px;
+  background: linear-gradient(180deg, transparent, rgba(0, 0, 0, 0.72));
+  color: #fff;
+  font-size: 11px;
+  font-weight: 500;
+  font-style: normal;
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.pb-art-book__cover.is-empty .pb-art-book__badge {
+  background: none;
+  color: var(--c-text-muted);
+}
+.pb-art-book__title {
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.35;
+  color: var(--c-text);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  min-width: 0;
+}
+.pb-art-book__meta {
+  font-size: 12px;
+  color: var(--c-text-muted);
+  font-style: normal;
+  line-height: 1.4;
+  max-height: calc(1.4em * 2);
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  word-break: break-word;
+}
+
+/* ── 横滑行：track 宽于视口时须 clip 在组件内，禁止撑破整页横向滚动 ── */
+.pb-scroll-row {
+  position: relative;
+  margin: 0;
+  min-width: 0;
+  max-width: 100%;
+  overflow-x: hidden;
+  overflow-x: clip;
+}
+.pb-scroll-row__viewport {
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+  padding: 4px 0 8px;
+  margin: 0;
+  min-width: 0;
+  max-width: 100%;
+}
+.pb-scroll-row__viewport::-webkit-scrollbar { display: none; }
+.pb-scroll-row__track {
+  display: flex;
+  gap: 16px;
+  width: max-content;
+}
+.pb-scroll-row__track > .pb-vod-card,
+.pb-scroll-row__track > .pb-manga-card {
+  flex: 0 0 auto;
+  width: 168px;
+  scroll-snap-align: start;
+}
+/* 横版封面横滑：桌面加宽，约一屏 4～5 张 */
+.pb-cover--poster-h .pb-scroll-row__track > .pb-vod-card,
+.pb-cover--poster-h .pb-scroll-row__track > .pb-manga-card {
+  width: min(280px, 22vw);
+}
+.pb-cover--poster-h .pb-scroll-row__track {
+  gap: 18px;
+}
+/* 不使用左右渐变遮罩：矩形遮罩会越过圆角封面盖到标题区，悬停/触摸时左下、右下出现黑色直角阴影 */
+.pb-scroll-row__btn {
+  position: absolute;
+  top: 40%;
+  z-index: 3;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  padding: 0;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-radius: 50%;
+  background: rgba(15, 15, 20, 0.52);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+  box-shadow:
+    0 6px 20px rgba(0, 0, 0, 0.28),
+    inset 0 1px 0 rgba(255, 255, 255, 0.12);
+  color: #fff;
+  cursor: pointer;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(-50%) scale(0.92);
+  transition:
+    opacity 0.22s ease,
+    transform 0.22s ease,
+    background 0.15s ease,
+    border-color 0.15s ease,
+    box-shadow 0.15s ease;
+}
+.pb-scroll-row__btn-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+}
+.pb-scroll-row__btn-icon svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+.pb-scroll-row:hover .pb-scroll-row__btn,
+.pb-scroll-row:focus-within .pb-scroll-row__btn {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(-50%) scale(1);
+}
+.pb-scroll-row__btn--prev {
+  left: 12px;
+}
+.pb-scroll-row__btn--next {
+  right: 12px;
+}
+.pb-scroll-row__btn:hover {
+  background: rgba(15, 15, 20, 0.72);
+  border-color: rgba(255, 255, 255, 0.38);
+  box-shadow:
+    0 8px 24px rgba(0, 0, 0, 0.34),
+    inset 0 1px 0 rgba(255, 255, 255, 0.16);
+}
+.pb-scroll-row__btn:active {
+  transform: translateY(-50%) scale(0.94);
+}
+
+@media (min-width: 768px) {
+  .pb-cover--poster-h .pb-scroll-row__btn {
+    top: 36%;
+  }
+}
+
+/* ── 资讯行 / 网址行 ── */
+.pb-art-row,
+.pb-site-row {
+  display: flex;
+  gap: 12px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--c-border, #e3e5e7);
+}
+.pb-art-row__fig,
+.pb-site-row__fig { flex: 0 0 72px; }
+.pb-art-row__fig img,
+.pb-site-row__fig img {
+  width: 72px;
+  height: 48px;
+  object-fit: cover;
+  border-radius: var(--radius-sm, 4px);
+}
+/* 小说行：竖版书封缩略图（3:4），失效时书形占位 */
+.pb-art-row__fig { flex: 0 0 60px; }
+.pb-art-row__cover {
+  position: relative;
+  display: block;
+  width: 100%;
+  aspect-ratio: 3 / 4;
+  border-radius: var(--radius-sm, 4px);
+  overflow: hidden;
+  background: var(--c-surface-2, #eceff1);
+}
+.pb-art-row__fig .pb-art-row__cover img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 0;
+}
+.pb-art-row__ph {
+  position: absolute;
+  inset: 0;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  color: var(--c-accent, #6366f1);
+}
+.pb-art-row__ph .nv-book__ph { width: 55%; height: auto; }
+.pb-art-row__cover.is-empty .pb-art-row__ph { display: flex; }
+.pb-art-row__cover.is-empty img { display: none; }
+.pb-art-row__body h4,
+.pb-site-row__body h4 {
+  margin: 0 0 4px;
+  font-size: 15px;
+}
+.pb-art-row__meta,
+.pb-site-row__meta {
+  font-size: 12px;
+  color: var(--c-text-muted);
+}
+
+/* 小说无封面：纯标题 + 分类 */
+.pb-art-row--text-only {
+  gap: 0;
+  padding: 12px 0;
+}
+.pb-art-row--text-only .pb-art-row__body h4 {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1.45;
+}
+.pb-art-row--text-only .pb-art-row__body h4 a {
+  color: var(--c-text);
+  text-decoration: none;
+}
+.pb-art-row--text-only .pb-art-row__body h4 a:hover {
+  color: var(--c-accent);
+}
+.pb-art-row--text-only .pb-art-row__meta {
+  margin-top: 4px;
+}
+.rows--art-text .pb-art-row--text-only:last-child {
+  border-bottom: 0;
+}
+
+/* 小说首页「最新」列表：书形占位 + 箭头 */
+.rows--art-novel-home .pb-art-row--novel-home {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--c-border, rgba(0, 0, 0, 0.06));
+  text-decoration: none;
+  color: inherit;
+  transition: background var(--dur, 0.2s) var(--ease, ease);
+}
+
+.rows--art-novel-home .pb-art-row--novel-home:last-child {
+  border-bottom: 0;
+}
+
+.rows--art-novel-home .pb-art-row--novel-home:hover {
+  background: rgba(15, 23, 42, 0.02);
+}
+
+.rows--art-novel-home .pb-art-row--novel-home:focus-visible {
+  outline: 2px solid var(--c-accent);
+  outline-offset: 2px;
+  border-radius: 8px;
+}
+
+.rows--art-novel-home .pb-art-row__book {
+  flex: 0 0 44px;
+  width: 44px;
+  height: 44px;
+  border-radius: 10px;
+  background-color: #f3e8ff;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%237c4dff' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 4h9a3 3 0 0 1 3 3v15l-4-2-4 2-4-2-4 2V7a3 3 0 0 1 3-3z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 22px 22px;
+}
+
+.rows--art-novel-home .pb-art-row__body {
+  flex: 1 1 auto;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.rows--art-novel-home .pb-art-row__title {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 650;
+  line-height: 1.45;
+  color: var(--c-text, #18191c);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.rows--art-novel-home .pb-art-row__meta {
+  margin: 0;
+  font-size: 13px;
+  font-style: normal;
+  line-height: 1.4;
+  color: var(--c-text-muted, #9499a0);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.rows--art-novel-home .pb-art-row__chev {
+  flex: 0 0 16px;
+  width: 16px;
+  height: 16px;
+  opacity: 0.4;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2361666d' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M9 6l6 6-6 6'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+
+/* ── 侧栏 / 通用排行面板 ── */
+.pb-rank-panel {
+  background: var(--c-surface, #fff);
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  border-radius: var(--radius-lg, 8px);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+  padding: 14px 14px 8px;
+}
+.pb-rank-panel__title {
+  margin: 0 0 10px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+  font-size: 15px;
+  font-weight: 650;
+  color: var(--c-text);
+}
+.pb-rank-panel__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  counter-reset: pb-rank;
+}
+.pb-rank-panel__item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 40px;
+  padding: 8px 0;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+  font-size: 14px;
+}
+.pb-rank-panel__item:last-child {
+  border-bottom: 0;
+}
+.pb-rank-panel__item::before {
+  counter-increment: pb-rank;
+  content: counter(pb-rank);
+  flex: 0 0 22px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 6px;
+  background: #c9ccd0;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+}
+.pb-rank-panel__item:nth-child(1)::before { background: #f85a5a; }
+.pb-rank-panel__item:nth-child(2)::before { background: #ff9212; }
+.pb-rank-panel__item:nth-child(3)::before { background: #ffc85c; color: #333; }
+.pb-rank-panel__item a {
+  flex: 1;
+  min-width: 0;
+  color: var(--c-text);
+  text-decoration: none;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: color var(--dur, 0.2s) var(--ease, ease);
+}
+.pb-rank-panel__item a:hover { color: var(--c-accent); }
+.pb-rank-panel__item a:focus-visible {
+  outline: 2px solid var(--c-accent);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+.pb-rank-panel__item em {
+  flex: 0 0 auto;
+  min-width: 2.2em;
+  text-align: right;
+  font-style: normal;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  color: var(--c-accent);
+}
+
+/* ── 留言墙 ── */
+.pb-gbook-wall {
+  display: grid;
+  gap: 12px;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 280px), 1fr));
+}
+.pb-gbook-card {
+  background: var(--c-surface, #fff);
+  border: 1px solid var(--c-border, #e3e5e7);
+  border-radius: var(--radius, 6px);
+  padding: 12px;
+}
+.pb-gbook-card__head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+.pb-gbook-card__avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--pb-gbook-avatar-bg, var(--c-accent));
+  color: #fff;
+  font-weight: 600;
+}
+.pb-gbook-card__avatar--img img {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+.pb-gbook-card__name { font-size: 14px; color: var(--c-text); }
+.pb-gbook-card__time { font-size: 12px; color: var(--c-text-muted); }
+.pb-gbook-card__text {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--c-text);
+}
+.pb-gbook-card__reply {
+  margin: 8px 0 0;
+  font-size: 13px;
+  color: var(--c-text-muted);
+  background: var(--c-surface-2, #f6f7f8);
+  padding: 8px;
+  border-radius: var(--radius-sm, 4px);
+}
+.pb-gbook-card__reply-tag {
+  color: var(--c-accent);
+  font-weight: 600;
+  margin-right: 6px;
+}
+
+@media (max-width: 767px) {
+  .pb-scroll-row__btn { display: none; }
+  /* 竖版横滑：保持紧凑 */
+  .pb-scroll-row__track > .pb-vod-card,
+  .pb-scroll-row__track > .pb-manga-card { width: 112px; }
+  /* 横版封面：约一屏 2 张 + 露出下一张，标题可读 */
+  .pb-cover--poster-h .pb-scroll-row__track > .pb-vod-card,
+  .pb-cover--poster-h .pb-scroll-row__track > .pb-manga-card {
+    width: min(72vw, 260px);
+  }
+  .pb-cover--poster-h .pb-scroll-row__track {
+    gap: 12px;
+  }
+  /* 负 margin 会把横滑视口撑出页面，真机可左右晃 */
+  .pb-scroll-row__viewport {
+    margin: 0;
+    max-width: 100%;
+    padding-left: 0;
+    padding-right: 0;
+  }
+  .pb-vod-card__mask {
+    padding: 16px 7px 5px;
+    font-size: 11px;
+    gap: 8px;
+  }
+  .pb-vod-card__stats { max-width: 100%; }
+  .pb-vod-card__rm,
+  .pb-manga-card__rm { max-width: calc(100% - 12px); }
+}
+
+
+/* 分区标题 SVG 图标（img 渲染，描边 SVG 在 mask 下易不可见） */
+.ts-icon {
+  display: inline-block;
+  flex: 0 0 auto;
+  width: 1em;
+  height: 1em;
+  vertical-align: -0.125em;
+  pointer-events: none;
+}
+.ts-icon--img {
+  object-fit: contain;
+  background: none;
+  -webkit-mask: none;
+  mask: none;
+}
+.ts-icon--current {
+  background-color: currentColor;
+  -webkit-mask: var(--ts-icon) center / contain no-repeat;
+  mask: var(--ts-icon) center / contain no-repeat;
+}
+.bili-channel__ico-bg .ts-icon--img,
+.bili-sec__ico .ts-icon--img,
+.media-hero__play .ts-icon--img {
+  filter: brightness(0) invert(1);
+}
+.bili-paging__arrow-ico.ts-icon--img,
+.bili-paging__arrow-ico.ts-icon--current,
+.bili-channel__tab-toggle-ico.ts-icon--img,
+.bili-channel__tab-toggle-ico.ts-icon--current {
+  filter: none;
+}
+
+/* ── 横滑行整页显示：卡片宽度按视口宽度等分，一屏恰好 N 张，末尾不露半张 ──
+   viewport 作为容器，100cqw = 可视宽度；不支持 cqw 的浏览器回落到上方固定宽度 */
+.pb-scroll-row__viewport {
+  container-type: inline-size;
+}
+.pb-scroll-row__track {
+  --pb-row-n: 6;
+  --pb-row-gap: 16px;
+  gap: var(--pb-row-gap);
+}
+.pb-cover--poster-h .pb-scroll-row__track {
+  --pb-row-n: 5;
+  --pb-row-gap: 18px;
+  /* 与宽度公式使用同一间距，覆盖上方 @media (max-width:767px) 的固定 gap */
+  gap: var(--pb-row-gap);
+}
+.pb-scroll-row__track > .pb-vod-card,
+.pb-scroll-row__track > .pb-manga-card,
+.pb-cover--poster-h .pb-scroll-row__track > .pb-vod-card,
+.pb-cover--poster-h .pb-scroll-row__track > .pb-manga-card {
+  width: calc((100cqw - (var(--pb-row-n) - 1) * var(--pb-row-gap)) / var(--pb-row-n));
+}
+@container (max-width: 1099px) {
+  .pb-cover--poster-h .pb-scroll-row__track { --pb-row-n: 4; }
+}
+@container (max-width: 899px) {
+  .pb-scroll-row__track { --pb-row-n: 5; }
+}
+@container (max-width: 799px) {
+  .pb-cover--poster-h .pb-scroll-row__track { --pb-row-n: 3; }
+}
+@container (max-width: 639px) {
+  .pb-scroll-row__track { --pb-row-n: 4; --pb-row-gap: 12px; }
+  .pb-cover--poster-h .pb-scroll-row__track { --pb-row-gap: 12px; }
+}
+@container (max-width: 559px) {
+  .pb-cover--poster-h .pb-scroll-row__track { --pb-row-n: 2; }
+}
+@container (max-width: 419px) {
+  .pb-scroll-row__track { --pb-row-n: 3; }
+}

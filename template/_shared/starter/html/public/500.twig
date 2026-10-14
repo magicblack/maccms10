@@ -1,0 +1,4 @@
+{% extends "public/_status.twig" %}
+{% block status_code %}500{% endblock %}
+{% block status_msg %}{{ msg|default('服务器错误') }}{% endblock %}
+{% block status_sub %}<span data-lang="string_500">服务器开小差了，请稍后重试</span>{% endblock %}

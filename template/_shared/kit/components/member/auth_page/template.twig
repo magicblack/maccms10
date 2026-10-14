@@ -1,0 +1,123 @@
+{#
+  登录 / 注册 / 找回密码 一体页（整页布局，无站点头尾）
+  props.panel: login | findpass | findpass_msg
+  props.expand_invite: bool
+  props.hero_title / hero_desc / hero_image / show_hero / layout
+#}
+{% set p = props|default({}) %}
+{% set _panel = p.panel|default('login') %}
+{% set _expand_invite = p.expand_invite|default(false) %}
+{% set _hero_title = p.hero_title|default('') %}
+{% set _hero_desc = p.hero_desc|default('') %}
+{% set _show_hero = p.show_hero is defined ? p.show_hero : true %}
+{% set _layout = p.layout|default('split') %}
+{% set _asset_base = maccms.path_tpl ~ 'page-builder-components/auth_page/assets/img/' %}
+{% set _hero_img = p.hero_image|default('') %}
+{% set _hero_img_m = p.hero_image_mobile|default('') %}
+{% set _banner_src = _hero_img != '' ? _hero_img : (_asset_base ~ 'auth-login-banner.png') %}
+{% set _banner_src_m = _hero_img_m != '' ? _hero_img_m : _banner_src %}
+{% set _hero_title_lang = p.hero_title_lang|default('') %}
+{% set _hero_desc_lang = p.hero_desc_lang|default('') %}
+{% if _hero_title != '' %}
+{% set _page_title = _hero_title %}
+{% set _page_title_lang = _hero_title_lang %}
+{% elseif _panel == 'findpass' or _panel == 'findpass_msg' %}
+{% set _page_title = '找回密码' %}
+{% set _page_title_lang = 'user_ylwtzhmm' %}
+{% else %}
+{% set _page_title = '登录' %}
+{% set _page_title_lang = 'string_login' %}
+{% endif %}
+{% if _hero_desc != '' %}
+{% set _page_desc = _hero_desc %}
+{% set _page_desc_lang = _hero_desc_lang %}
+{% elseif _panel == 'findpass' or _panel == 'findpass_msg' %}
+{% set _page_desc = '选择方式验证身份后重置' %}
+{% set _page_desc_lang = 'string_auth_findpass_hint' %}
+{% else %}
+{% set _page_desc = '登录即可收藏、评论与同步观看记录' %}
+{% set _page_desc_lang = 'string_auth_hint' %}
+{% endif %}
+
+<div class="auth-page auth-page--{{ _layout }}{% if not _show_hero %} auth-page--no-hero{% endif %}" data-auth-page data-auth-panel="{{ _panel }}">
+  <header class="auth-page__mnav" data-lang-aria-label="auth_nav_aria" aria-label="认证导航">
+    <button type="button" class="auth-page__back" data-auth-page-back data-lang-aria-label="auth_back" aria-label="返回">
+      <svg class="auth-page__back-ico" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg>
+    </button>
+    <h1 class="auth-page__mnav-title" data-auth-page-title data-lang="user_unified_page_title">登录 / 注册</h1>
+  </header>
+
+  <div class="auth-page__lang-switch" role="group" aria-label="Language">
+    <button type="button" data-mac-lang="zh" data-lang="string_lang_zh">中文</button>
+    <button type="button" data-mac-lang="en" data-lang="string_lang_en_short">EN</button>
+  </div>
+
+  <div class="auth-page__layout">
+    {% if _show_hero and _layout == 'split' %}
+    <aside class="auth-page__hero" aria-hidden="true">
+      <div class="auth-page__hero-inner">
+        <h2 class="auth-page__hero-title"{% if _page_title_lang and mac_i18n_key(_page_title, _page_title_lang) %} data-lang="{{ _page_title_lang }}"{% endif %}>{{ _page_title }}</h2>
+        <p class="auth-page__hero-desc"{% if _page_desc_lang and mac_i18n_key(_page_desc, _page_desc_lang) %} data-lang="{{ _page_desc_lang }}"{% endif %}>{{ _page_desc }}</p>
+      </div>
+    </aside>
+    {% endif %}
+
+    <div class="auth-page__main">
+      <div class="auth-page__mbanner" aria-hidden="true">
+        <img class="auth-page__mbanner-img" src="{{ _banner_src_m }}" alt="" width="1920" height="400" decoding="async">
+      </div>
+      <div class="auth-page__form-wrap">
+        <div class="auth-page__panel" data-auth-page-panel="login"{% if _panel != 'login' %} hidden{% endif %}>
+          <div class="auth-page__sheet-head">
+            <h2 class="auth-page__sheet-title" data-lang="user_unified_page_title">登录 / 注册</h2>
+            <p class="auth-page__sheet-desc" {% if _page_desc_lang and mac_i18n_key(_page_desc, _page_desc_lang) %} data-lang="{{ _page_desc_lang }}"{% endif %}>{{ _page_desc }}</p>
+          </div>
+          <header class="auth-page__head">
+            <h2 class="auth-page__title" data-lang="user_unified_page_title">登录 / 注册</h2>
+          </header>
+          {% include "page-builder-components/auth_form/template.twig" with {props: { expand_invite: _expand_invite }} %}
+        </div>
+
+        <div class="auth-page__panel" data-auth-page-panel="findpass"{% if _panel != 'findpass' %} hidden{% endif %}>
+          <header class="auth-page__head auth-page__head--inline">
+            <button type="button" class="auth-page__inline-back" data-auth-switch-login data-lang-aria-label="user_hy_dl" aria-label="返回登录">
+              <svg class="auth-page__back-ico" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg>
+            </button>
+            <div>
+              <h2 class="auth-page__title" data-lang="user_ylwtzhmm">找回密码</h2>
+              <p class="auth-page__sub" data-lang="string_auth_findpass_hint">选择方式验证身份后重置</p>
+            </div>
+          </header>
+          {% include "page-builder-components/_shared/auth_findpass_form.twig" %}
+          {# 邮箱/短信未配置时隐藏对应找回方式（#272） #}
+          {% set msg_ch = mac_msg_channels() %}
+          {% if msg_ch.email or msg_ch.phone %}
+          <p class="auth-page__alt">
+            {% if msg_ch.email %}<a href="{{ mac_url('user/findpass_msg', {ac: 'email'}) }}" data-lang="user_youxzh">邮箱找回</a>{% endif %}
+            {% if msg_ch.email and msg_ch.phone %}<span aria-hidden="true">·</span>{% endif %}
+            {% if msg_ch.phone %}<a href="{{ mac_url('user/findpass_msg', {ac: 'phone'}) }}" data-lang="user_shoujizh">用手机找回</a>{% endif %}
+          </p>
+          {% endif %}
+        </div>
+
+        <div class="auth-page__panel" data-auth-page-panel="findpass_msg"{% if _panel != 'findpass_msg' %} hidden{% endif %}>
+          <header class="auth-page__head auth-page__head--inline">
+            <button type="button" class="auth-page__inline-back" data-auth-switch-login data-lang-aria-label="user_hy_dl" aria-label="返回登录">
+              <svg class="auth-page__back-ico" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg>
+            </button>
+            <div>
+              <h2 class="auth-page__title" data-lang="user_ylwtzhmm">找回密码</h2>
+              <p class="auth-page__sub" data-lang="string_auth_findpass_msg_hint">通过邮箱或手机验证码重置密码</p>
+            </div>
+          </header>
+          {% include "page-builder-components/_shared/auth_findpass_msg.twig" %}
+          <p class="auth-page__alt">
+            <a href="{{ mac_url('user/findpass') }}" data-lang="user_ybbzh">用密保找回</a>
+            <span aria-hidden="true">·</span>
+            <a href="{{ mac_url('user/login') }}" data-lang="user_hy_dl">返回登录</a>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

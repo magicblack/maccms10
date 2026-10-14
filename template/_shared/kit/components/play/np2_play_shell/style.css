@@ -1,0 +1,4 @@
+/* NP2 播放页壳层样式在主题 np2-app.css */
+
+/* 英文下拆开的两段文案之间补一个空格（中文不需要） */
+body.en .np2-play__preview-copy-tail::before { content: " "; }

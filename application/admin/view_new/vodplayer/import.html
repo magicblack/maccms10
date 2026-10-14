@@ -29,9 +29,13 @@
             , upload = layui.upload
             ,element = layui.element;
 
+        // __token__ 必须放进表单体（data），不能只拼在 URL 上：head.html 的 CSRF ajaxPrefilter
+        // 只看 FormData 里有没有 __token__，没有就追加会话级 admin_csrf 令牌，而 PHP 的 input()
+        // 里 POST 覆盖 GET，控制器的 Token 校验拿到的就成了 admin_csrf，永远报“请不要重复提交表单”。
         upload.render({
             elem: '.layui-upload'
-            ,url: "{:url('vodplayer/import')}?__token__=" + $('#token').val()
+            ,url: "{:url('vodplayer/import')}"
+            ,data: { __token__: $('#token').val() }
             ,method: 'post'
             ,exts:'txt'
             ,before: function(input) {

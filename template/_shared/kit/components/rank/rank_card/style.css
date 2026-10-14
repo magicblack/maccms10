@@ -1,0 +1,239 @@
+.c-rankcard {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  width: 100%;
+  min-height: 320px;
+  background: var(--c-surface, #fff);
+  border: 1px solid var(--c-border);
+  border-radius: var(--radius-lg);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+  padding: 14px 14px 10px;
+  min-width: 0;
+  box-sizing: border-box;
+}
+
+.c-rankcard__head {
+  font-size: 15px;
+  font-weight: 700;
+  text-align: center;
+  padding-bottom: 10px;
+  margin: 0 0 6px;
+  border-bottom: 1px solid var(--c-border);
+}
+
+.c-rankcard__list {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+}
+
+.c-rankcard__feat {
+  display: flex;
+  gap: 12px;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--c-border);
+  text-decoration: none;
+  color: inherit;
+}
+
+.c-rankcard__poster {
+  position: relative;
+  flex: none;
+  width: 80px;
+  aspect-ratio: 3 / 4;
+  border-radius: var(--radius-sm, 6px);
+  overflow: hidden;
+  background: #eceff1;
+}
+
+.c-rankcard__poster-empty {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  padding: 6px;
+  box-sizing: border-box;
+  opacity: 0.92;
+}
+
+.c-rankcard__poster img:not(.c-rankcard__poster-empty) {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.c-rankcard__poster img[src*="loading"],
+.c-rankcard__poster img[src^="data:image/gif"] {
+  opacity: 0.35;
+}
+
+.c-rankcard__poster img[src*="empty-state"] {
+  object-fit: contain;
+  padding: 6px;
+  box-sizing: border-box;
+  opacity: 0.92;
+}
+
+.c-rankcard__cat {
+  position: absolute;
+  top: 3px;
+  right: 3px;
+  font-size: 10px;
+  line-height: 1;
+  padding: 0.28em 0.42em;
+  border-radius: var(--radius-sm, 6px);
+  background: var(--c-accent);
+  color: var(--c-accent-ink, #fff);
+}
+
+.c-rankcard__state {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  font-size: 10px;
+  line-height: 1;
+  padding: 0.32em 0.4em;
+  text-align: center;
+  background: rgba(0, 0, 0, 0.62);
+  color: #fff;
+}
+
+.c-rankcard__meta {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 0.34em;
+}
+
+.c-rankcard__row1 {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.6em;
+}
+
+.c-rankcard__feat-name {
+  flex: 1;
+  min-width: 0;
+  font-size: 13px;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.c-rankcard__feat:hover .c-rankcard__feat-name {
+  color: var(--c-accent);
+}
+
+.c-rankcard__sub {
+  font-size: 12px;
+  color: var(--c-text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.c-rankcard__item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0.62em 0;
+  border-bottom: 1px solid var(--c-border);
+  text-decoration: none;
+  color: inherit;
+}
+
+.c-rankcard__item:last-child {
+  border-bottom: 0;
+}
+
+.c-rankcard__name {
+  flex: 1;
+  min-width: 0;
+  font-size: 13px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.c-rankcard__item:hover .c-rankcard__name {
+  color: var(--c-accent);
+}
+
+.c-rankcard__no {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  color: #fff;
+}
+
+.c-rankcard__poster .c-rankcard__no--1 {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 22px;
+  height: 22px;
+  font-size: 12px;
+  background: linear-gradient(135deg, var(--c-accent-hover), var(--c-accent));
+  color: var(--c-accent-ink, #fff);
+  border-bottom-right-radius: var(--radius-sm, 6px);
+}
+
+.c-rankcard__item .c-rankcard__no {
+  flex: none;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  font-size: 12px;
+  background: var(--c-accent-tint);
+  color: var(--c-accent);
+}
+
+.c-rankcard__no--2,
+.c-rankcard__no--3 {
+  background: var(--c-accent) !important;
+  color: var(--c-accent-ink, #fff) !important;
+}
+
+.c-rankcard__score {
+  flex: none;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--c-accent);
+}
+
+.c-rankcard__score small {
+  font-size: 0.78em;
+  font-weight: 400;
+}
+
+.c-rankcard__empty {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 16px 0 8px;
+  min-height: 260px;
+  color: var(--c-text-muted);
+}
+
+.c-rankcard__empty-art {
+  width: 88px;
+  height: 88px;
+  opacity: 0.92;
+}
+
+.c-rankcard__empty-text {
+  font-size: 13px;
+}
+
+.c-rankcard:has(.c-rankcard__feat) .c-rankcard__empty {
+  display: none;
+}

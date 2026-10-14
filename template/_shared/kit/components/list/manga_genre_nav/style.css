@@ -1,0 +1,140 @@
+.mc-genre {
+  width: 100vw;
+  margin-left: calc(50% - 50vw);
+  margin-right: calc(50% - 50vw);
+  background: #000;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.mc-genre__inner {
+  max-width: 1160px;
+  margin: 0 auto;
+  padding: 14px 20px;
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 12px;
+  align-items: center;
+  justify-content: flex-start;
+  min-width: 0;
+}
+
+.mc-genre__scroll {
+  flex: 1 1 auto;
+  min-width: 0;
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 8px;
+  align-items: center;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+}
+
+.mc-genre__scroll::-webkit-scrollbar {
+  display: none;
+}
+
+.mc-genre__pill {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 36px;
+  min-width: 56px;
+  padding: 0 16px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: rgba(255, 255, 255, 0.06);
+  color: rgba(255, 255, 255, 0.92);
+  font-size: 15px;
+  font-weight: 500;
+  line-height: 1.2;
+  letter-spacing: 0.02em;
+  text-decoration: none;
+  white-space: nowrap;
+  touch-action: manipulation;
+  transition:
+    background var(--dur, 0.2s) var(--ease, ease),
+    border-color var(--dur, 0.2s) var(--ease, ease),
+    color var(--dur, 0.2s) var(--ease, ease),
+    box-shadow var(--dur, 0.2s) var(--ease, ease);
+}
+
+.mc-genre__pill:hover {
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 255, 255, 0.22);
+  color: #fff;
+}
+
+.mc-genre__pill:focus-visible {
+  outline: 2px solid var(--c-accent, #4f46e5);
+  outline-offset: 2px;
+}
+
+.mc-genre__pill.is-on,
+.mc-genre__pill[aria-current="page"] {
+  background: #fff;
+  border-color: #fff;
+  color: var(--c-accent, #4f46e5);
+  font-weight: 600;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.24);
+}
+
+.mc-genre__pill--more {
+  flex: 0 0 auto;
+  margin-left: auto;
+  background: transparent;
+  border-color: rgba(255, 255, 255, 0.18);
+  color: rgba(255, 255, 255, 0.62);
+  font-size: 14px;
+}
+
+.mc-genre__pill--more:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.28);
+  color: #fff;
+}
+
+/* 题材条紧贴下方内容，去掉壳层多余顶距 */
+.page-manga-home .pbs-wrap {
+  padding-top: 0;
+}
+
+.page-manga-home .pbs-wrap > .layout.manga-home {
+  padding-top: 0 !important;
+}
+
+@media (max-width: 900px) {
+.mc-genre__inner {
+    padding: 12px 16px;
+    gap: 10px;
+  }
+}
+
+@media (max-width: 768px) {
+.mc-genre__inner {
+    padding: 10px 12px;
+    gap: 8px;
+  }
+
+.mc-genre__scroll {
+    gap: 8px;
+  }
+
+.mc-genre__pill {
+    min-height: 44px;
+    padding: 0 14px;
+    font-size: 14px;
+  }
+
+.mc-genre__pill--more {
+    font-size: 13px;
+  }
+}
+
+@media (max-width: 560px) {
+.mc-genre__pill--more {
+    margin-left: 0;
+  }
+}

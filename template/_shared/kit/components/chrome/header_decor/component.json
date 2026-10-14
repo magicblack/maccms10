@@ -1,0 +1,38 @@
+{
+    "id": "header_decor",
+    "label_key": "admin/themedesign/pb_block_header_decor",
+    "category": "chrome",
+    "kind": "chrome",
+    "palette": false,
+    "peer_styles": [],
+    "assets": {
+        "css": "style.css",
+        "js": "script.js"
+    },
+    "props": {
+        "width": {
+            "type": "string",
+            "default": "100%",
+            "trait": "decor_width"
+        },
+        "height": {
+            "type": "number",
+            "default": 72,
+            "min": 0,
+            "max": 800,
+            "trait": "decor_height"
+        },
+        "image": {
+            "type": "string",
+            "default": ""
+        }
+    },
+    "context": {
+        "pageTypes": [
+            "home",
+            "list",
+            "detail"
+        ],
+        "requires": []
+    }
+}

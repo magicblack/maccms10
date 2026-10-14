@@ -1,0 +1,10 @@
+{
+    "props": {
+        "title": "",
+        "style": "panel",
+        "type": 0,
+        "num": 10,
+        "period": "week"
+    },
+    "context": {}
+}

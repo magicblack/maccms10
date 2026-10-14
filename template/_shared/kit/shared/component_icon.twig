@@ -1,0 +1,28 @@
+{#
+  组件内嵌 SVG 图标（page-builder-components/{component}/icons/）
+  mode: img = 彩色底上的白色图标；current = 跟随 color/currentColor
+  {% include "page-builder-components/_shared/component_icon.twig" with { component: 'channel_strip', name: 'channel-hot', class: 'bili-channel__ico-svg', mode: 'img' } %}
+#}
+{% set _comp = component|default('') %}
+{% set _name = name|default('') %}
+{% set _label = label|default('') %}
+{% set _class = class|default('') %}
+{% set _mode = mode|default('current') %}
+{% if _comp and _name %}
+{% set _icon_url = maccms.path_tpl ~ 'page-builder-components/' ~ _comp ~ '/icons/' ~ _name ~ '.svg' %}
+{% if _mode == 'img' %}
+<img
+  class="ts-icon ts-icon--img ts-icon--{{ _name }} {{ _class }}"
+  src="{{ _icon_url }}"
+  alt=""
+  {% if _label %}role="img" aria-label="{{ _label }}"{% else %}aria-hidden="true"{% endif %}
+  decoding="async"
+/>
+{% else %}
+<span
+  class="ts-icon ts-icon--current ts-icon--{{ _name }} {{ _class }}"
+  style="--ts-icon: url('{{ _icon_url }}')"
+  {% if _label %}role="img" aria-label="{{ _label }}"{% else %}aria-hidden="true"{% endif %}
+></span>
+{% endif %}
+{% endif %}

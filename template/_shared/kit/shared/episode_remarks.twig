@@ -1,0 +1,9 @@
+{# 视频备注：集数类（全/共/更新至/连载至 [第]N集，后端已按实际播放地址集数改写）走多语文案，其余原样输出。
+   入参 remarks；rm_limit 选填，非集数备注的截断长度。 #}
+{% set _rm = remarks|default('')|trim %}
+{% set _key = '' %}
+{% if _rm matches '/^(全|共|更新至|连载至)第?\\d+集$/u' %}
+{% set _p = _rm starts with '全' ? 'all' : (_rm starts with '共' ? 'total' : (_rm starts with '更新至' ? 'upto' : 'serial')) %}
+{% set _key = 'vod_remarks_ep_' ~ _p ~ ('第' in _rm ? '_nth' : '') %}
+{% endif %}
+{% if _key %}{% set _n = _rm|replace({'全': '', '共': '', '更新至': '', '连载至': '', '第': '', '集': ''}) %}<span data-lang="{{ _key }}" data-lang-arg="{{ _n }}">{{ _rm }}</span>{% elseif rm_limit|default(0) > 0 %}{{ _rm|slice(0, rm_limit) }}{% else %}{{ _rm }}{% endif %}

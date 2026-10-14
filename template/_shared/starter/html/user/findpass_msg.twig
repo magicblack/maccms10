@@ -1,0 +1,40 @@
+{# Starter T0: user findpass_msg #}
+{% extends "layout/auth.twig" %}
+{% block layout_mod %} auth{% endblock %}
+{% block page_class %} pb-components-only page-auth{% endblock %}
+{% block theme_styles %}
+<link rel="stylesheet" href="{{ maccms.path_tpl }}asset/css/tokens.css">
+{% set _pb_td_override = mac_theme_override_css_href() %}
+{% if _pb_td_override %}<link rel="stylesheet" href="{{ _pb_td_override }}">
+{% endif %}
+<link rel="stylesheet" href="{{ maccms.path_tpl }}asset/css/pb-shell.css">
+{% endblock %}
+
+{% block title %}{{ maccms.page_title|default(maccms.site_name) }}{% endblock %}
+{% block head %}
+<link rel="stylesheet" href="{{ maccms.path_tpl }}page-builder-components/_shared/css/peers.css">
+<link rel="stylesheet" href="{{ maccms.path_tpl }}page-builder-components/_shared/css/comment.css">
+<script src="{{ maccms.path_tpl }}page-builder-components/_shared/js/scroll-row.js" defer></script>
+<link rel="stylesheet" href="{{ maccms.path_tpl }}page-builder-components/site_nav/style.css">
+<script src="{{ maccms.path_tpl }}page-builder-components/site_nav/script.js" defer></script>
+<link rel="stylesheet" href="{{ maccms.path_tpl }}page-builder-components/notify_bell/style.css">
+<script src="{{ maccms.path_tpl }}page-builder-components/notify_bell/script.js" defer></script>
+<link rel="stylesheet" href="{{ maccms.path_tpl }}page-builder-components/header_decor/style.css">
+<script src="{{ maccms.path_tpl }}page-builder-components/header_decor/script.js" defer></script>
+<link rel="stylesheet" href="{{ maccms.path_tpl }}page-builder-components/channel_strip/style.css">
+<script src="{{ maccms.path_tpl }}page-builder-components/channel_strip/script.js" defer></script>
+<link rel="stylesheet" href="{{ maccms.path_tpl }}page-builder-components/auth_page/style.css">
+<script src="{{ maccms.path_tpl }}page-builder-components/auth_page/script.js" defer></script>
+<link rel="stylesheet" href="{{ maccms.path_tpl }}page-builder-components/site_footer/style.css">
+<script src="{{ maccms.path_tpl }}page-builder-components/site_footer/script.js" defer></script>
+<link rel="stylesheet" href="{{ maccms.path_tpl }}page-builder-components/bottom_nav/style.css">
+<script src="{{ maccms.path_tpl }}page-builder-components/bottom_nav/script.js" defer></script>
+{% endblock %}
+
+{% block content %}
+{% include 'page-builder-components/auth_page/template.twig' with {props: { panel: 'findpass_msg', expand_invite: false, hero_title: '', hero_desc: '', hero_image: '', hero_image_mobile: '', show_hero: true, layout: 'split' }} %}
+{% endblock %}
+
+{% block sidebar %}
+{% endblock %}
+

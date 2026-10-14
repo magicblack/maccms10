@@ -1,0 +1,32 @@
+{
+    "id": "spacer",
+    "label_key": "admin/themedesign/pb_block_spacer",
+    "category": "layout",
+    "kind": "spacer",
+    "styleMode": "component",
+    "peer_styles": [],
+    "assets": {
+        "css": "style.css",
+        "js": "script.js"
+    },
+    "props": {
+        "size": {
+            "type": "enum",
+            "default": "md",
+            "values": [
+                "sm",
+                "md",
+                "lg"
+            ],
+            "trait": "spacer_size"
+        }
+    },
+    "context": {
+        "pageTypes": [
+            "home",
+            "list",
+            "detail"
+        ],
+        "requires": []
+    }
+}

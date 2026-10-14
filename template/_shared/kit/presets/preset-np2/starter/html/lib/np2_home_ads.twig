@@ -1,0 +1,46 @@
+{# 广告宫格：对标 splash 10 入口；各页共用，首页可覆盖 np2_splash_ads #}
+{% set items = np2_splash_ads|default([]) %}
+{% if items is empty %}
+  {% set items = [
+    {id: 'ad_1', label: '电影', cover: ''},
+    {id: 'ad_2', label: '连续剧', cover: ''},
+    {id: 'ad_3', label: '综艺', cover: ''},
+    {id: 'ad_4', label: '动漫', cover: ''},
+    {id: 'ad_5', label: '短剧', cover: ''},
+    {id: 'ad_6', label: '纪录片', cover: ''},
+    {id: 'ad_7', label: '排行', cover: ''},
+    {id: 'ad_8', label: '专题', cover: ''},
+    {id: 'ad_9', label: '更新', cover: ''},
+    {id: 'ad_10', label: '搜索', cover: ''}
+  ] %}
+{% endif %}
+{% set topics = mac_topic({num: 10, order: 'desc', by: 'time'}).list|default([]) %}
+{% set types = mac_top_types(1, 12)|default([]) %}
+<div class="pb-ads-grid np2-ads" data-component="ads_grid" aria-label="快捷入口">
+  {% for item in items|slice(0, 10) %}
+    {% set label = item.label|default('')|trim %}
+    {% set cover = item.cover|default('')|trim %}
+    {% set _tile_mod = (loop.index0 % 5) + 1 %}
+    {% set href = item.href|default('')|trim %}
+    {% if href == '' %}
+      {% set _ti = loop.index0 %}
+      {% if topics[_ti] is defined %}
+        {% set href = mac_url_topic_detail(topics[_ti]) %}
+      {% elseif types[_ti] is defined %}
+        {% set href = mac_url_type(types[_ti], {}, 'type') %}
+      {% else %}
+        {% set href = mac_url('vod/index') %}
+      {% endif %}
+    {% endif %}
+    <a class="pb-ads-grid__item" href="{{ href }}">
+      <div class="pb-ads-grid__tile pb-ads-grid__tile--c{{ _tile_mod }}">
+        {% if cover %}
+        <img src="{{ cover }}" alt="{{ label }}" loading="{% if loop.index <= 5 %}eager{% else %}lazy{% endif %}" decoding="async">
+        {% endif %}
+      </div>
+      {% if label %}
+      <span class="pb-ads-grid__cap">{{ label }}</span>
+      {% endif %}
+    </a>
+  {% endfor %}
+</div>

@@ -1,0 +1,30 @@
+{# 邮箱/短信未配置时不输出对应找回方式；只剩密保时连 tab 栏一起隐藏（#272） #}
+{% set msg_ch = mac_msg_channels() %}
+{% set active = active_tab|default('security') %}
+{% if (active == 'email' and not msg_ch.email) or (active == 'phone' and not msg_ch.phone) %}{% set active = 'security' %}{% endif %}
+<div class="auth-recovery" data-auth-recovery data-active-tab="{{ active }}">
+  {% if msg_ch.email or msg_ch.phone %}
+  <div class="auth-recovery__tabs" role="tablist" aria-label="找回密码方式" data-lang-aria-label="auth_recovery_method_aria">
+    <button type="button" class="auth-recovery__tab{% if active == 'security' %} is-on{% endif %}" role="tab" data-auth-recovery-tab="security" aria-selected="{{ active == 'security' ? 'true' : 'false' }}" data-lang="user_ybbzh">用密保找回</button>
+    {% if msg_ch.email %}
+    <button type="button" class="auth-recovery__tab{% if active == 'email' %} is-on{% endif %}" role="tab" data-auth-recovery-tab="email" aria-selected="{{ active == 'email' ? 'true' : 'false' }}" data-lang="user_youxzh">邮箱找回</button>
+    {% endif %}
+    {% if msg_ch.phone %}
+    <button type="button" class="auth-recovery__tab{% if active == 'phone' %} is-on{% endif %}" role="tab" data-auth-recovery-tab="phone" aria-selected="{{ active == 'phone' ? 'true' : 'false' }}" data-lang="user_shoujizh">用手机找回</button>
+    {% endif %}
+  </div>
+  {% endif %}
+  <div class="auth-recovery__panel{% if active == 'security' %} is-on{% endif %}" data-auth-recovery-panel="security" role="tabpanel"{% if active != 'security' %} hidden{% endif %}>
+    {% include "page-builder-components/_shared/auth_findpass_form.twig" %}
+  </div>
+  {% if msg_ch.email %}
+  <div class="auth-recovery__panel{% if active == 'email' %} is-on{% endif %}" data-auth-recovery-panel="email" role="tabpanel"{% if active != 'email' %} hidden{% endif %}>
+    {% include "page-builder-components/_shared/auth_findpass_msg.twig" with { param: { ac: 'email', ac_text: '邮箱' } } %}
+  </div>
+  {% endif %}
+  {% if msg_ch.phone %}
+  <div class="auth-recovery__panel{% if active == 'phone' %} is-on{% endif %}" data-auth-recovery-panel="phone" role="tabpanel"{% if active != 'phone' %} hidden{% endif %}>
+    {% include "page-builder-components/_shared/auth_findpass_msg.twig" with { param: { ac: 'phone', ac_text: '手机' } } %}
+  </div>
+  {% endif %}
+</div>

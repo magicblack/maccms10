@@ -1,0 +1,689 @@
+{#
+  maccms Theme Contract v1 —— 共用 Twig 元件庫
+
+  設計取向：**保證行為契約正確，不規定長相**。
+  每個 macro 只負責把 docs/theme-contract-v1.md 要求的 hook（data-lang / data-original /
+  .mac_ulog / .digg_link / data-mac-*-form / player_data 位置 …）輸出對，
+  class 與結構一律由主題透過 opts 決定。
+  所以兩套用同一份元件庫的主題，長相可以完全不同。
+
+  分層原則（決定一個東西該不該進這個檔案）：
+    進來 —— 寫錯就「功能壞掉」的：行為 hook、播放器掛載點、選集連結的
+            sid/nid 語義、篩選 URL 的參數合併、分頁 URL、表單欄位名。
+    不進 —— 寫錯只是「不好看」的：版面、卡片、導覽、排版、配色。
+            那些留在各主題自己的模板裡，才有「結構級不同」可言。
+
+  用法：
+    {% import "@shared/components.twig" as c %}
+    {{ c.runtime(maccms.path) }}
+    {{ c.lazy_img(vo.vod_pic, vo.vod_name, {class: 'my-thumb'}) }}
+    {{ c.fav_button(1, vo.vod_id, {class: 'my-fav', on_class: 'my-fav--on'}) }}
+#}
+
+{# ============================================================
+   1. 執行期
+   ============================================================ #}
+
+{# 全域啟動變數。**必須放在 <head>，且早於任何 player_js 輸出。**
+
+   為什麼是契約的一部分：static/js/player.js 與 static/player/*.js 是**核心資產**，
+   三套主題共用同一份，主題無權改。它們對宿主頁面有兩個硬依賴：
+     · MacPlayer.Init() 讀全域 maccms.path 組 this.Path；
+       static/player/dplayer.js 也讀 maccms.path，
+       static/player/dplayer.html 讀 parent.maccms.path / path_assets。
+     · MacPlayer.Play() 用 $('.MacPlayer')、$('#playleft')、$('#buffer')。
+   任一個缺席就丟例外，緊接著那句 document.write('<script src=…/<from>.js>')
+   不會執行 —— 播放器連 DOM 節點都不會出現，頁面看起來就是「視頻不能播放」。
+
+   default 主題靠 public/jsvar.html 與 asset/js/jquery.js 供給這兩樣；Twig 主題
+   沒有那些資產，所以統一由本 macro 補齊，主題只要在 <head> 呼叫一次即可。
+
+   jQuery：player.js 全部只用到 attr / get / show / hide 四個方法，這裡給等價
+   shim，不引第三方（_shared 的原則是零依賴，見 mac-theme-runtime.js 檔頭）。
+   主題若自行載入真 jQuery，jQuery 會覆寫 window.$，行為不變。
+
+   m    = maccms（控制器指派的站點變數陣列）
+   csrf = csrf_token
+   uid  = 當前登入會員 user_id（0 = 未登入）。runtime 用它判斷「需登入」操作要不要
+          先攔下來彈登入框；不傳的話所有訪客都會被當成未登入，收藏／評論會多繞一趟
+          伺服器往返才發現沒登入。 #}
+{% macro jsvar(m, csrf, uid) %}
+<script>
+window.maccms = {
+    "path": (function(){var p="{{ m.path|default('/')|e('js') }}".replace(/\/+$/,''); return (p==='/'||p==='') ? '' : p;})(),
+    "path_assets": "{{ m.path|default('/')|e('js') }}",
+    "path_tpl": "{{ m.path_tpl|default('')|e('js') }}",
+    "base_url": "{{ m.http_type|default('')|e('js') }}{{ m.site_url|default('')|e('js') }}",
+    "mid": "{{ m.mid|default('')|e('js') }}",
+    "aid": "{{ m.aid|default('')|e('js') }}",
+    "url": "{{ m.site_url|default('')|e('js') }}",
+    "wapurl": "{{ m.site_wapurl|default('')|e('js') }}",
+    "mob_status": "{{ m.mob_status|default('')|e('js') }}",
+    "site_name": "{{ m.site_name|default('')|e('js') }}",
+    "csrfToken": "{{ csrf|default('')|e('js') }}",
+    "userId": "{{ uid|default(0)|e('js') }}"
+};
+window.MAC_PATH = window.maccms.path;
+if (typeof window.$ === 'undefined') {
+    window.$ = function (sel) {
+        var els = typeof sel === 'string' ? document.querySelectorAll(sel) : (sel ? [sel] : []);
+        return {
+            get: function (i) { return els[i]; },
+            attr: function (k, v) {
+                if (v === undefined) { return els[0] ? els[0].getAttribute(k) : undefined; }
+                for (var i = 0; i < els.length; i++) { els[i].setAttribute(k, v); }
+                return this;
+            },
+            show: function () { for (var i = 0; i < els.length; i++) { els[i].style.display = ''; } return this; },
+            hide: function () { for (var i = 0; i < els.length; i++) { els[i].style.display = 'none'; } return this; }
+        };
+    };
+}
+</script>
+{% endmacro %}
+
+{# 引入行為 runtime。放在 </body> 前。
+
+   base         = maccms.path（站點根）
+   lang_path    = 選填。語言檔目錄；預設隨載入分支。
+   tpl_path     = 選填，**opt-out**。非空 → <tpl_path>asset/js/mac-theme-runtime.js
+                  （存量 twigspike / phub 自帶副本）。
+   pb_path_tpl  = 選填。PB 主題傳 maccms.path_tpl（宏無調用方 context，不可在宏內讀 maccms）。
+
+   載入優先：tpl_path → 主題 asset；pb_path_tpl → page-builder-components/_shared；
+   否則 → kit/shared 源碼路徑。 #}
+{% macro runtime(base, lang_path, tpl_path, pb_path_tpl) %}
+{% set root = base|default('/') %}
+{% set tpl = tpl_path|default('') %}
+{% set pb_tpl = pb_path_tpl|default('') %}
+{% if tpl != '' %}
+<script src="{{ tpl }}asset/js/mac-theme-runtime.js"
+        data-base="{{ root }}"
+        data-lang-path="{{ lang_path|default(tpl ~ 'asset/language/') }}"></script>
+{% elseif pb_tpl != '' %}
+<script src="{{ pb_tpl }}page-builder-components/_shared/js/mac-theme-runtime.js"
+        data-base="{{ root }}"
+        data-lang-path="{{ lang_path|default(pb_tpl ~ 'page-builder-components/_shared/language/') }}"></script>
+{% else %}
+<script src="{{ root }}template/_shared/kit/shared/js/mac-theme-runtime.js"
+        data-base="{{ root }}"
+        data-lang-path="{{ lang_path|default(root ~ 'template/_shared/kit/shared/language/') }}"></script>
+{% endif %}
+{% endmacro %}
+
+{# 薄壳 / PB 主题：顶栏交互 + 登录弹窗开关（与 runtime 分离，避免存量主题重复绑定）。
+   放在 </body> 前、runtime 之后。 #}
+{% macro member_pay_hooks(user) %}
+{% set api_base = maccms.path|trim('/') ~ '/api.php' %}
+data-url-login="{{ mac_url('user/login') }}"
+data-url-user-upgrade="{{ mac_url('user/upgrade') }}"
+data-is-login="{% if user.user_id|default(0) %}1{% else %}0{% endif %}"
+data-url-recharge-config="{{ api_base }}/payment/get_config"
+data-url-buy="{{ api_base }}/order/create"
+data-url-gopay="{{ api_base }}/payment/gopay"
+data-url-order-query="{{ api_base }}/order/check_status"
+data-url-upgrade-data="{{ api_base }}/user/ajax_upgrade_data"
+data-url-benefits="{{ mac_url('user/benefits') }}"
+data-path-tpl="{{ maccms.path_tpl|default('') }}"
+data-recharge-img-base="{{ maccms.path_tpl|default('') }}page-builder-components/_shared/img/recharge/"
+{% endmacro %}
+
+{# path_tpl 须由调用方传入：Twig 宏隔离 context，读不到 maccms.path_tpl #}
+{% macro chrome(base, path_tpl) %}
+{% set root = base|default('/') %}
+{% set tpl = path_tpl|default('') %}
+{% if tpl != '' %}
+<link rel="stylesheet" href="{{ tpl }}page-builder-components/_shared/css/dialogs.css">
+<link rel="stylesheet" href="{{ tpl }}page-builder-components/_shared/css/pay.css?v=np2-pay-2">
+<link rel="stylesheet" href="{{ tpl }}page-builder-components/_shared/css/coupon.css?v=np2-coupon-1">
+<script src="{{ tpl }}page-builder-components/_shared/js/member-dialog.js" defer></script>
+<script src="{{ tpl }}page-builder-components/_shared/js/list-utils.js" defer></script>
+<script src="{{ tpl }}page-builder-components/pay_shell/assets/js/pay-qrcode.js" defer></script>
+<script src="{{ tpl }}page-builder-components/pay_shell/assets/js/coupon.js" defer></script>
+<script src="{{ tpl }}page-builder-components/_shared/js/recharge-sheet.js" defer></script>
+<script src="{{ tpl }}page-builder-components/_shared/js/popedom.js" defer></script>
+<script src="{{ tpl }}page-builder-components/notify_bell/script.js" defer></script>
+<script src="{{ tpl }}page-builder-components/auth_page/script.js" defer></script>
+<script src="{{ tpl }}page-builder-components/_shared/js/mac-theme-chrome.js" defer></script>
+<script src="{{ tpl }}page-builder-components/_shared/js/share-sheet.js" defer></script>
+<script src="{{ tpl }}page-builder-components/_shared/js/hits-tracker.js" defer></script>
+{% endif %}
+{% endmacro %}
+
+{# ============================================================
+   2. 媒體
+   ============================================================ #}
+
+{# 懶載入圖片。只輸出 data-original，不綁任何樣式 class。
+   注意 src 一律給透明佔位圖：直接把真圖塞 src 會讓懶載入失去意義，
+   且 vod_pic 為空時瀏覽器顯示破圖圖示。 #}
+{% macro lazy_img(src, alt, opts) %}
+{% set o = opts|default({}) %}
+<img class="{{ o.class|default('') }}"
+     data-original="{{ mac_url_img(src) }}"
+     src="{{ o.placeholder|default('data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==') }}"
+     alt="{{ alt|default('') }}"{% if o.loading|default('') %} loading="{{ o.loading }}"{% endif %}>
+{% endmacro %}
+
+{# ============================================================
+   3. 使用者行為 hook
+   ============================================================ #}
+
+{# 收藏按鈕。fav_id 由 mac_user_fav_id() 取得（0 = 未收藏）。
+   runtime 會在點擊後自行加減 on_class 與更新 data-uid。
+   ⚠ 別手寫這段 —— 漏掉 data-uid 或 is_fav 會讓「已收藏」的內容刷新後顯示成未收藏。 #}
+{% macro fav_button(mid, id, opts) %}
+{% set o = opts|default({}) %}
+{% set fav_id = mac_user_fav_id(id, mid) %}
+{# 用陣列 join 而不是字串串接：沒傳 opts 時串接會留下 class="mac_ulog "
+   這種尾隨空白，讓精確比對的檢查與下游選擇器意外落空。 #}
+{% set cls = ['mac_ulog'] %}
+{% if o.class|default('') %}{% set cls = cls|merge([o.class]) %}{% endif %}
+{% if fav_id %}{% set cls = cls|merge(['is_fav']) %}{% endif %}
+{% if fav_id and o.on_class|default('') %}{% set cls = cls|merge([o.on_class]) %}{% endif %}
+<div class="{{ cls|join(' ') }}"
+     data-type="{{ o.type|default(2) }}" data-mid="{{ mid }}" data-id="{{ id }}"
+     data-uid="{{ fav_id ?: '' }}" role="button" tabindex="0">
+    {% if fav_id %}<span{% if not o.on_text|default('') %} data-lang="string_isfav"{% endif %}>{{ o.on_text|default('已收藏') }}</span>
+    {% else %}<span{% if not o.off_text|default('') %} data-lang="string_fav"{% endif %}>{{ o.off_text|default('收藏') }}</span>{% endif %}
+</div>
+{% endmacro %}
+
+{# 頂 / 踩。runtime 會把回傳計數寫進 .digg_num。
+
+   up_icon / down_icon 收的是主題自己的 SVG 標記（多數主題不想用 ▲▼ 這兩個字元），
+   所以必須 |raw。這是主題作者寫死在模板裡的標記，不是任何使用者輸入。
+   @raw-slot: o.up_icon, o.down_icon #}
+{% macro digg(mid, id, up, down, opts) %}
+{% set o = opts|default({}) %}
+{% set cls = (o.class|default('') ? 'digg_link ' ~ o.class : 'digg_link') %}
+<a class="{{ cls }}" href="javascript:;"
+   data-id="{{ id }}" data-mid="{{ mid }}" data-type="up" aria-label="赞" data-lang-aria-label="string_art_zan">
+    {{ o.up_icon|default('▲')|raw }}<em class="digg_num">{{ up|default(0) }}</em>
+</a>
+<a class="{{ cls }}" href="javascript:;"
+   data-id="{{ id }}" data-mid="{{ mid }}" data-type="down" aria-label="踩" data-lang-aria-label="string_hate">
+    {{ o.down_icon|default('▼')|raw }}<em class="digg_num">{{ down|default(0) }}</em>
+</a>
+{% endmacro %}
+
+{# 中英切換。runtime 認 data-mac-lang。 #}
+{% macro lang_switch(opts) %}
+{% set o = opts|default({}) %}
+<span class="{{ o.class|default('') }}">
+    <a href="javascript:;" class="{{ o.item_class|default('') }}" data-mac-lang="zh">中文</a>
+    <a href="javascript:;" class="{{ o.item_class|default('') }}" data-mac-lang="en">EN</a>
+</span>
+{% endmacro %}
+
+{# ============================================================
+   4. 分頁
+   ============================================================ #}
+
+{#
+  分頁。pg 來自 mac_paging()（或控制器直接 assign 的 __PAGING__）。
+
+  結構可調到什麼程度：這個 macro 要能長出各主題實際需要的 markup，否則主題就會
+  自己複製一份改寫 —— 那正是共用層被繞開的起點。所以外層標籤、外層屬性、
+  內層包裹層、「翻頁鈕」與「頁碼」兩種 class，全部開放。
+
+  opts：
+    tag           外層標籤，預設 div。要語意化就傳 'nav'
+    class         外層 class，預設 mac-paging
+    attrs         外層額外屬性，map 形式：{'data-x': '', 'aria-label': '分页'}
+                  值為空字串時輸出成布林屬性（data-x），不會變成 data-x=""
+    row_tag       內層包裹標籤，預設 div
+    row_class     內層包裹 class。**留空則完全不輸出包裹層**，維持扁平結構
+    item_class    首頁／上一頁／下一頁／尾頁四個翻頁鈕的 class
+    num_class     頁碼的 class。不傳則沿用 item_class（多數主題兩者同一套樣式）
+    active_class  當前頁碼的附加 class，預設 active
+
+  data-page-url / data-page-sp 一律輸出：主題的「跳頁」腳本要靠它們自己拼 URL，
+  少了就只能硬解析 href，換一套偽靜態規則就壞。
+#}
+{% macro paging(pg, opts) %}
+{% set o = opts|default({}) %}
+{% if pg.record_total|default(0) > 0 and pg.page_total|default(0) > 1 %}
+{% set tag = o.tag|default('div') %}
+{% set row_class = o.row_class|default('') %}
+{% set num_class = o.num_class|default(o.item_class|default('')) %}
+<{{ tag }} class="{{ o.class|default('mac-paging') }}"
+    data-page-total="{{ pg.page_total }}" data-page-current="{{ pg.page_current }}"
+    data-page-url="{{ pg.page_url|default('') }}" data-page-sp="{{ pg.page_sp|default('') }}"
+    {%- for k, v in o.attrs|default({}) %} {{ k }}{% if v != '' %}="{{ v }}"{% endif %}{% endfor %}>
+{% if row_class != '' %}<{{ o.row_tag|default('div') }} class="{{ row_class }}">{% endif %}
+    <a class="{{ o.item_class|default('') }}" href="{{ mac_url_page(pg.page_url, 1) }}" data-lang="string_home">首页</a>
+    {% if pg.page_prev|default(0) %}
+    <a class="{{ o.item_class|default('') }}" href="{{ mac_url_page(pg.page_url, pg.page_prev) }}" data-lang="string_syy">上一页</a>
+    {% endif %}
+    {% for num in pg.page_num %}
+    <a class="{{ num_class }}{{ pg.page_current == num ? ' ' ~ o.active_class|default('active') : '' }}"
+       href="{{ mac_url_page(pg.page_url, num) }}">{{ num }}</a>
+    {% endfor %}
+    {% if pg.page_next|default(0) %}
+    <a class="{{ o.item_class|default('') }}" href="{{ mac_url_page(pg.page_url, pg.page_next) }}" data-lang="string_xyy">下一页</a>
+    {% endif %}
+    <a class="{{ o.item_class|default('') }}" href="{{ mac_url_page(pg.page_url, pg.page_total) }}" data-lang="string_last_page">尾页</a>
+{% if row_class != '' %}</{{ o.row_tag|default('div') }}>{% endif %}
+</{{ tag }}>
+{% endif %}
+{% endmacro %}
+
+{# `__PAGING__` 版本：topic/index 這類控制器直接 assign 好分頁陣列的頁面用。 #}
+{% macro paging_raw(pg, opts) %}
+{% import _self as self %}
+{{ self.paging(pg, opts) }}
+{% endmacro %}
+
+{# ============================================================
+   5. 表單（欄位名即契約，改名等於壞掉）
+   ============================================================ #}
+
+{# 評論表單。runtime 攔截 submit 走 AJAX → comment/saveData。 #}
+{% macro comment_form(mid, rid, csrf_token, opts) %}
+{% set o = opts|default({}) %}
+<form data-mac-comment-form class="{{ o.class|default('') }}" method="post" action="">
+    <input type="hidden" name="mid" value="{{ mid }}">
+    <input type="hidden" name="rid" value="{{ rid }}">
+    <input type="hidden" name="__token__" value="{{ csrf_token }}">
+    <textarea name="comment_content" class="{{ o.input_class|default('') }}"
+              data-placeholder="string_comment_input" placeholder="{{ o.placeholder|default('说点什么…') }}"></textarea>
+    {{ _self.captcha('comment', o.captcha|default({})) }}
+    <button type="submit" class="{{ o.button_class|default('') }}" data-lang="string_tj">提交</button>
+</form>
+{% endmacro %}
+
+{# 登入表單。runtime 攔截 submit → user/login，成功後 reload。 #}
+{# 驗證碼欄位 + 可點擊換一張的圖。scope = comment | gbook | login | reg。
+   後台把該項驗證碼關掉時整組不輸出。
+
+   為什麼由元件庫自己判斷而不是讓主題傳旗標：站長在後台打開驗證碼、主題卻沒渲染
+   欄位的話，提交一律回「验证码错误」，而且頁面看起來完全正常 —— 屬於契約說的
+   「靜默失效」，最難查。主題根本不該知道有這回事。 #}
+{% macro captcha(scope, opts) %}
+{% if mac_verify_on(scope) %}
+{% set o = opts|default({}) %}
+<span class="{{ o.wrap_class|default('') }}">
+    <input type="text" name="verify" class="{{ o.input_class|default('') }}"
+           data-placeholder="string_yzm" placeholder="{{ o.placeholder|default('验证码') }}" autocomplete="off">
+    <img class="{{ o.img_class|default('') }}" src="{{ mac_url('verify/index') }}"
+         alt="{{ o.alt|default('验证码') }}" data-lang-title="string_click_refresh"
+         title="单击刷新" style="cursor:pointer;vertical-align:middle"
+         onclick="this.src=this.src.split('?')[0]+'?v='+(new Date()).getTime()">
+</span>
+{% endif %}
+{% endmacro %}
+
+{% macro login_form(csrf_token, opts) %}
+{% set o = opts|default({}) %}
+<form data-mac-login-form class="{{ o.class|default('') }}" method="post" action="">
+    <input type="hidden" name="__token__" value="{{ csrf_token }}">
+    <input type="text" name="user_name" class="{{ o.input_class|default('') }}"
+           data-placeholder="string_user_name" placeholder="{{ o.name_placeholder|default('用户名') }}" autocomplete="username">
+    <input type="password" name="user_pwd" class="{{ o.input_class|default('') }}"
+           data-placeholder="user_mima" placeholder="{{ o.pwd_placeholder|default('密码') }}" autocomplete="current-password">
+    {{ _self.captcha('login', o.captcha|default({})) }}
+    <button type="submit" class="{{ o.button_class|default('') }}" data-lang="user_btn_dl">登录</button>
+</form>
+{% endmacro %}
+
+{# 註冊表單。欄位名對齊 index/controller/User.php::register 的 input('post.')。 #}
+{% macro reg_form(csrf_token, opts) %}
+{% set o = opts|default({}) %}
+<form data-mac-reg-form class="{{ o.class|default('') }}" method="post" action="">
+    <input type="hidden" name="__token__" value="{{ csrf_token }}">
+    <input type="text" name="user_name" class="{{ o.input_class|default('') }}"
+           data-placeholder="string_user_name" placeholder="用户名" autocomplete="username">
+    <input type="password" name="user_pwd" class="{{ o.input_class|default('') }}"
+           data-placeholder="user_mima" placeholder="密码" autocomplete="new-password">
+    <input type="password" name="user_pwd2" class="{{ o.input_class|default('') }}"
+           data-placeholder="user_qrmm" placeholder="确认密码" autocomplete="new-password">
+    {{ _self.captcha('reg', o.captcha|default({})) }}
+    <button type="submit" class="{{ o.button_class|default('') }}" data-lang="user_btn_zc">注册</button>
+</form>
+{% endmacro %}
+
+{# 留言表單。runtime 攔截 submit 走 AJAX → gbook/saveData。hook: data-mac-gbook-form
+
+   為什麼不留原生 POST：Gbook::saveData() 回的是 JSON，原生表單提交會把使用者
+   丟到一個滿版的 JSON 白頁。
+
+   為什麼沒有 gbook_name 欄位：Gbook::saveData() 自己依登入態決定稱呼
+   （未登入用 lang('controller/visitor')，登入用 cookie 或暱稱，見 Gbook.php:80-91），
+   前端送上去的值會被覆蓋，留著只會讓使用者以為自己能改。
+
+   opts.login_required = 1 時輸出 data-gbook-login，runtime 會在未登入時先擋下並彈登入框。 #}
+{% macro gbook_form(csrf_token, opts) %}
+{% set o = opts|default({}) %}
+<form data-mac-gbook-form class="{{ o.class|default('') }}" method="post"
+      action="{{ mac_url('gbook/index') }}"
+      {% if o.login_required|default(0) %}data-gbook-login="1"{% endif %}>
+    <input type="hidden" name="__token__" value="{{ csrf_token }}">
+    <textarea name="gbook_content" class="{{ o.input_class|default('') }}"
+              data-placeholder="gbook_content_label" placeholder="留言内容"></textarea>
+    {{ _self.captcha('gbook', o.captcha|default({})) }}
+    <button type="submit" class="{{ o.button_class|default('') }}" data-lang="string_tj">提交</button>
+</form>
+{% endmacro %}
+
+{#
+  訪問密碼表單（影片／文章／漫畫的 vod_pwd / vod_pwd_play / vod_pwd_down / art_pwd / manga_pwd）。
+
+  mid  = 1 影片 / 2 文章 / 8 漫畫
+  type = 1 詳情頁 / 4 播放頁 / 5 下載頁（對應 Ajax::pwd() 的 session key `mid-type-id`；漫畫目前只有詳情頁的 manga_pwd，恆為 type=1）
+  opts.tip_url  = 站長設的「點此取得密碼」連結（obj.vod_pwd_url）
+
+  為什麼不做原生 POST：端點 ajax/pwd 回的是 JSON，原生提交會把使用者丟到 JSON 白頁。
+  驗證通過後由 runtime reload 當前頁 —— session 已寫上，控制器就不再攔。
+#}
+{% macro pwd_form(mid, id, type, opts) %}
+{% set o = opts|default({}) %}
+<form data-mac-pwd-form class="{{ o.class|default('') }}" method="post" action=""
+      data-mid="{{ mid }}" data-id="{{ id }}" data-type="{{ type }}">
+    <input type="password" name="pwd" class="{{ o.input_class|default('') }}"
+           data-placeholder="password_here" placeholder="{{ o.placeholder|default('请在此输入访问密码…') }}"
+           autocomplete="off">
+    <button type="submit" class="{{ o.button_class|default('') }}" data-lang="click_to_confirm">点击确认</button>
+    {% if o.tip_url|default('') %}
+    <a class="{{ o.tip_class|default('') }}" href="{{ o.tip_url }}" target="_blank" rel="nofollow"
+       data-lang="click_to_get_password">点击获取密码</a>
+    {% endif %}
+</form>
+{% endmacro %}
+
+{# 搜尋框。GET 到 vod/search，欄位名 wd —— 與 mac_param_url() 讀取的鍵一致。 #}
+{% macro search_form(opts) %}
+{% set o = opts|default({}) %}
+<form class="{{ o.class|default('') }}" method="get" action="{{ mac_url('vod/search') }}" role="search">
+    <input type="text" name="wd" value="{{ o.value|default('') }}" class="{{ o.input_class|default('') }}"
+           data-placeholder="string_search_input" placeholder="{{ o.placeholder|default('搜索影片、演员…') }}"
+           autocomplete="off" aria-label="search">
+    <button type="submit" class="{{ o.button_class|default('') }}" data-lang="string_search">搜索</button>
+</form>
+{% endmacro %}
+
+{# ============================================================
+   6. 播放
+   ============================================================ #}
+
+{#
+  播放器掛載點。
+
+  契約：player_data 是 `<script>var player_aaaa={...}</script>`，
+  player_js 是 playerconfig.js + player.js 兩個 <script>。
+  player.js 內部以 document.write 就地輸出播放器，**所以這兩段必須原樣、
+  依序、放在希望播放器出現的那個容器裡**，不能搬到 </body> 前，
+  也不能拆開或加 defer —— 這是 static/js/player.js（混淆過）的既有行為。
+
+  無權限 / 版權關閉時控制器會把 player_data 給空字串，由 gate 參數接手。
+#}
+{% macro player(player_data, player_js, opts) %}
+{% set o = opts|default({}) %}
+{# isolation：player.js 的 #buffer iframe 带 z-index:99998，加载失败时不隐藏，须困在本容器内 #}
+<div class="{{ o.class|default('mac-player') }}" style="isolation:isolate">
+{% if player_data|default('') or player_js|default('') %}
+{{ player_data|raw }}
+{{ player_js|raw }}
+{% else %}
+<div class="{{ o.empty_class|default('') }}" data-lang="string_play_wfgk">因特殊原因，该视频暂时无法观看</div>
+{% endif %}
+</div>
+{% endmacro %}
+
+{#
+  選集清單。
+
+  契約在 sid/nid 的語義：sid = 播放組索引，nid = 該組內第幾集（1 起算）。
+  連結一律用 mac_url_*_play / mac_url_vod_down(obj, {sid, nid}) 產生，不要自己拼字串 ——
+  偽靜態規則與 encode_id 設定會讓手拼的 URL 在部分站點失效。
+
+  groups = obj.vod_play_list / obj.vod_down_list / obj.manga_page_list
+  flag   = 'play' | 'down' | 'manga'
+
+  只有一組來源時預設不輸出組標題（「HD國語」那行）—— 單組站點顯示一個孤零零的
+  來源名沒有意義。要一律顯示就傳 always_show_group_title: true。
+#}
+{% macro episodes(obj, groups, flag, param, opts) %}
+{% set o = opts|default({}) %}
+{% set cur_sid = param.sid|default(0) %}
+{% set cur_nid = param.nid|default(0) %}
+{% set multi_group = groups|default([])|length > 1 %}
+<div class="{{ o.class|default('mac-episodes') }}" data-group-count="{{ groups|default([])|length }}">
+{% for sid, group in groups|default([]) %}
+    <div class="{{ o.group_class|default('') }}{{ cur_sid == sid ? ' ' ~ o.group_active_class|default('is-cur') : '' }}"
+         data-sid="{{ sid }}">
+        {% if multi_group or o.always_show_group_title|default(false) %}
+        <div class="{{ o.group_title_class|default('') }}">{{ group.from_name|default(group.from) }}{% if group.note %} <em>{{ group.note }}</em>{% endif %}</div>
+        {% endif %}
+        <ul class="{{ o.list_class|default('') }}">
+        {% for nid, ep in group.urls|default([]) %}
+            <li class="{{ o.item_class|default('') }}{{ (cur_sid == sid and cur_nid == nid) ? ' ' ~ o.active_class|default('is-cur') : '' }}">
+                {% if flag == 'down' %}
+                {# 走下载页模板（vod/down）：下载权限/积分门控在那里生效；直链会让 m3u8/mp4 被浏览器直接打开播放 #}
+                <a href="{{ mac_url_vod_down(obj, {sid: sid, nid: nid}) }}" rel="nofollow" data-nid="{{ nid }}">{{ ep.name }}</a>
+                {% elseif flag == 'manga' %}
+                <a href="{{ mac_url_manga_play(obj, {sid: sid, nid: nid}) }}" data-nid="{{ nid }}">{{ ep.name }}</a>
+                {% else %}
+                <a href="{{ mac_url_vod_play(obj, {sid: sid, nid: nid}) }}" data-nid="{{ nid }}">{{ ep.name }}</a>
+                {% endif %}
+            </li>
+        {% endfor %}
+        </ul>
+    </div>
+{% else %}
+    <p data-lang="string_no_have">暂无</p>
+{% endfor %}
+</div>
+{% endmacro %}
+
+{#
+  上一集 / 下一集。link_pre / link_next 由控制器算好放在 obj.player_info，
+  無權限時也會算（各集仍受權限門控），所以直接用即可。 #}
+{% macro episode_nav(pi, opts) %}
+{% set o = opts|default({}) %}
+<div class="{{ o.class|default('mac-ep-nav') }}">
+    {% if pi.link_pre|default('') %}<a class="{{ o.item_class|default('') }}" href="{{ pi.link_pre }}" data-lang="string_syj">上一集</a>{% endif %}
+    {% if pi.link_next|default('') %}<a class="{{ o.item_class|default('') }}" href="{{ pi.link_next }}" data-lang="string_xyj">下一集</a>{% endif %}
+</div>
+{% endmacro %}
+
+{#
+  權限門檻提示。popedom.code > 1 表示沒權限；confirm=1 表示可用積分購買。
+  只負責把「該說什麼、連去哪」講對，長相由主題決定。 #}
+{% macro popedom_gate(popedom, opts) %}
+{% set o = opts|default({}) %}
+{% if popedom.code|default(1) > 1 %}
+<div class="{{ o.class|default('mac-gate') }}" data-gate-code="{{ popedom.code }}">
+    <p class="{{ o.msg_class|default('') }}">{{ popedom.msg|default('') }}</p>
+    {% if popedom.points|default(0) %}
+    <p class="{{ o.points_class|default('') }}">
+        <span data-lang="play_wzhf">完整观看本影片需要花费</span>
+        <b>{{ popedom.points }}</b>
+        <span data-lang="play_zfgk">金币，请支付后观看</span>
+    </p>
+    {% endif %}
+    <p>
+        <a class="{{ o.link_class|default('') }}" href="{{ mac_url('user/upgrade') }}" data-lang="play_mssj">马上升级</a>
+        <a class="{{ o.link_class|default('') }}" href="{{ mac_url('user/index') }}" data-lang="string_mac_hyzx">会员中心</a>
+    </p>
+</div>
+{% endif %}
+{% endmacro %}
+
+{# ============================================================
+   7. 篩選
+   ============================================================ #}
+
+{#
+  分類篩選列。
+
+  與 template/default 的差異，必須說明白：default 那版是 **JS 驅動**的
+  （data-mac-f + 前端打 API 拿選項再拼 URL），依賴 default 自己的 catalog-filter.js。
+  共用元件庫不能綁某套主題的 JS，所以這裡改成 **伺服器直出連結** ——
+  少一次往返、無 JS 也能用、對 SEO 更好，篩選結果完全一致（同樣是走
+  mac_url_type 的 area/year/lang/class/letter/by 參數）。
+
+  obj   = 當前分類（label_type 的回傳）
+  param = mac_param_url() 的結果，用來標出目前選中項並保留其它已選條件
+  field = 'area' | 'year' | 'lang' | 'class' | 'letter' | 'by'
+  items = 該欄位的可選值。直接把 mac_area() / mac_year() / mac_class() … 的
+          回傳丟進來即可 —— 它們回的是 {code, msg, list: […]} 包裝，本 macro 會自己
+          取 .list。（早期版本沒取，整列篩選永遠空白，是最容易踩到的一個坑。）
+#}
+{% macro filter_row(obj, param, field, items, opts) %}
+{% set o = opts|default({}) %}
+{% set cur = attribute(param, field)|default('') %}
+{# 只帶當前欄位會把使用者已選的其它條件洗掉（選了「大陆」再點年份就掉回全地區）。
+   先把 mac_param_url() 認得的篩選鍵原樣帶上，再覆蓋本欄位。 #}
+{% set carry = {
+    state:  param.state|default(''),  area:   param.area|default(''),
+    year:   param.year|default(''),   lang:   param.lang|default(''),
+    letter: param.letter|default(''), class:  param.class|default(''),
+    version: param.version|default(''), by:   param.by|default(''),
+    order:  param.order|default(''),  wd:     param.wd|default('')
+} %}
+{# 資料函式回的是 {code,msg,list:[…]} 包，純陣列也接受（主題自己組的清單）。 #}
+{% set item_list = items.list is defined ? items.list : (items|default([])) %}
+{# 每個擴充欄位的項目鍵名都不一樣：class_name / area_name / lang_name / year_name /
+   version_name / letter_name，Extend model 有些還直接回純字串。逐一退讓到純值。 #}
+<div class="{{ o.class|default('mac-filter-row') }}" data-filter="{{ field }}">
+    {% if o.label|default('') %}<span class="{{ o.label_class|default('') }}"{% if o.label_lang|default('') %} data-lang="{{ o.label_lang }}"{% endif %}>{{ o.label }}</span>{% endif %}
+    {% if o.chips_class|default('') %}<div class="{{ o.chips_class }}">{% endif %}
+    <a class="{{ o.item_class|default('') }}{{ cur == '' ? ' ' ~ o.active_class|default('is-cur') : '' }}"
+       href="{{ mac_url_type(obj, carry|merge({(field): '', page: 1}), o.flag|default('show')) }}" data-lang="string_show_all">全部</a>
+    {% for it in item_list %}
+    {% set val = it.class_name|default(it.area_name|default(it.lang_name|default(it.year_name|default(it.version_name|default(it.letter_name|default(it.letter|default(it.name|default(it)))))))) %}
+    {% if val is not iterable and val != '' %}
+    <a class="{{ o.item_class|default('') }}{{ cur == val ? ' ' ~ o.active_class|default('is-cur') : '' }}"
+       href="{{ mac_url_type(obj, carry|merge({(field): val, page: 1}), o.flag|default('show')) }}">{{ val }}</a>
+    {% endif %}
+    {% endfor %}
+    {% if o.chips_class|default('') %}</div>{% endif %}
+</div>
+{% endmacro %}
+
+{# 子分類列。以 obj 的父分類為範圍列出兄弟分類。 #}
+{% macro filter_subtypes(obj, opts) %}
+{% set o = opts|default({}) %}
+{% set parent = obj.type_pid|default(0) > 0 ? obj.type_pid : obj.type_id %}
+<div class="{{ o.class|default('mac-filter-row') }}" data-filter="subtype">
+    {% if o.label|default('') %}<span class="{{ o.label_class|default('') }}" data-lang="string_show_zfl">分类</span>{% endif %}
+    {% for t in mac_type({parent: parent, mid: obj.type_mid|default(1), order: 'asc', by: 'sort'}).list|default([]) %}
+    <a class="{{ o.item_class|default('') }}{{ t.type_id == obj.type_id ? ' ' ~ o.active_class|default('is-cur') : '' }}"
+       href="{{ mac_url_type(t, {}, o.flag|default('show')) }}">{{ t.type_name }}</a>
+    {% endfor %}
+</div>
+{% endmacro %}
+
+{# ============================================================
+   8. 評論
+   ============================================================ #}
+
+{# 評論列表。mac_comment() 未給 mid/rid 時會自動用控制器 assign 的 comment_mid/comment_rid。 #}
+{% macro comment_list(args, opts) %}
+{% set o = opts|default({}) %}
+{% set res = mac_comment(args|default({num: 10, paging: true})) %}
+<div class="{{ o.class|default('mac-comments') }}" data-comment-total="{{ res.total|default(0) }}">
+{% for c in res.list|default([]) %}
+    <div class="{{ o.item_class|default('') }}" data-comment-id="{{ c.comment_id }}">
+        <img class="{{ o.avatar_class|default('') }}" src="{{ mac_get_user_portrait(c.user_id) }}" alt="">
+        <div class="{{ o.body_class|default('') }}">
+            <span class="{{ o.name_class|default('') }}">{{ c.comment_name }}</span>
+            <span class="{{ o.time_class|default('') }}">{{ mac_day(c.comment_time)|raw }}</span>
+            <p>{{ c.comment_content }}</p>
+        </div>
+    </div>
+{% else %}
+    <p data-lang="string_no_comment">暂无评论</p>
+{% endfor %}
+</div>
+{% endmacro %}
+
+{# ============================================================
+   9. 導覽輔助
+   ============================================================ #}
+
+{# 麵包屑。items = [{name, url}]，最後一項不給 url 即為當前頁。 #}
+{% macro breadcrumb(items, opts) %}
+{% set o = opts|default({}) %}
+<nav class="{{ o.class|default('mac-crumb') }}" aria-label="breadcrumb">
+    {% for it in items|default([]) %}
+        {% if it.url|default('') %}<a class="{{ o.item_class|default('') }}" href="{{ it.url }}"{% if it.lang|default('') %} data-lang="{{ it.lang }}"{% endif %}>{{ it.name }}</a>
+        {% else %}<span class="{{ o.current_class|default('') }}">{{ it.name }}</span>{% endif %}
+        {% if not loop.last %}<span class="{{ o.sep_class|default('') }}">{{ o.sep|default('/') }}</span>{% endif %}
+    {% endfor %}
+</nav>
+{% endmacro %}
+
+{#
+  空狀態／異常態。
+
+  刻意不做成「引入一張插畫元件」：那會讓共用元件庫依賴某套主題的檔案。
+  這裡只輸出**帶語意 class 的骨架**，插畫、留白、配色全部由主題 CSS 決定 ——
+  想放插圖就對 .mac-status__art 設 background-image，不必改模板。
+
+  opts：
+    tone        語意，預設 empty。另可 error / offline / forbidden / loading，
+                輸出成 data-tone，主題用 [data-tone="error"] 換色即可
+    size        尺寸提示，輸出成 data-size，預設 md
+    code        HTTP 狀態碼一類的補充資訊，輸出成 data-code
+    text/lang   主標題與其 i18n key（沿用舊參數名，維持相容）
+    title/title_lang  同上的別名，兩組擇一
+    hint/hint_lang    副標題
+    show_art    是否輸出插畫節點，預設 true
+    cta_text / cta_lang / cta_href      主行動按鈕；沒有 href 就輸出 <button>
+    secondary_text / secondary_lang / secondary_href  次要連結
+#}
+{% macro empty(opts) %}
+{% set o = opts|default({}) %}
+{% set title = o.text|default(o.title|default('暂无内容')) %}
+{# 调用方给了自定义文案却没给 key 时不能套默认 key，否则 i18n 载入后会把自定义文案覆盖成「暂无内容」 #}
+{% set _custom_title = o.text|default('') != '' or o.title|default('') != '' %}
+{% set title_lang = o.lang|default(o.title_lang|default(_custom_title ? '' : 'string_empty_default')) %}
+<div class="{{ o.class|default('mac-status') }}"
+     data-tone="{{ o.tone|default('empty') }}" data-size="{{ o.size|default('md') }}"
+     {%- if o.code|default('') %} data-code="{{ o.code }}"{% endif %}>
+    {% if o.show_art is not defined or o.show_art %}
+    <div class="{{ o.art_class|default('mac-status__art') }}" aria-hidden="true"></div>
+    {% endif %}
+    <p class="{{ o.title_class|default('mac-status__title') }}"{% if title_lang %} data-lang="{{ title_lang }}"{% endif %}>{{ title }}</p>
+    {% if o.hint|default('') %}
+    <p class="{{ o.hint_class|default('mac-status__hint') }}"{% if o.hint_lang|default('') %} data-lang="{{ o.hint_lang }}"{% endif %}>{{ o.hint }}</p>
+    {% endif %}
+    {% if o.cta_text|default('') %}
+        {% if o.cta_href|default('') %}
+        <a class="{{ o.cta_class|default('mac-status__cta') }}" href="{{ o.cta_href }}"{% if o.cta_lang|default('') %} data-lang="{{ o.cta_lang }}"{% endif %}>{{ o.cta_text }}</a>
+        {% else %}
+        <button type="button" class="{{ o.cta_class|default('mac-status__cta') }}"{% if o.cta_lang|default('') %} data-lang="{{ o.cta_lang }}"{% endif %}>{{ o.cta_text }}</button>
+        {% endif %}
+    {% endif %}
+    {% if o.secondary_text|default('') %}
+    <a class="{{ o.secondary_class|default('mac-status__link') }}" href="{{ o.secondary_href|default('#') }}"{% if o.secondary_lang|default('') %} data-lang="{{ o.secondary_lang }}"{% endif %}>{{ o.secondary_text }}</a>
+    {% endif %}
+</div>
+{% endmacro %}
+
+{# 空態／異常態，語義更明確的別名。與 empty 完全等價。 #}
+{% macro status(opts) %}
+{% import _self as self %}
+{{ self.empty(opts) }}
+{% endmacro %}
+
+{# ============================================================
+   10. 相容用示範卡片
+   —— 主題應該自己畫卡片（那才是「結構級不同」的來源）。
+      這個 macro 只留給最小可用的情境。
+   ============================================================ #}
+{% macro vod_card(vo, opts) %}
+{% set o = opts|default({}) %}
+{% set href = mac_url_vod_detail(vo) %}
+<div class="{{ o.class|default('') }}" data-mid="1" data-id="{{ vo.vod_id }}">
+    <a href="{{ href }}" title="{{ vo.vod_name }}" class="{{ o.link_class|default('') }}">
+        <img class="{{ o.img_class|default('') }}" data-original="{{ mac_url_img(vo.vod_pic) }}"
+             src="{{ o.placeholder|default('data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==') }}"
+             alt="{{ vo.vod_name }}">
+    </a>
+    <div class="{{ o.title_class|default('') }}"><a href="{{ href }}">{{ vo.vod_name }}</a></div>
+    {% if vo.vod_remarks %}<div class="{{ o.note_class|default('') }}">{% include "page-builder-components/_shared/episode_remarks.twig" with {remarks: vo.vod_remarks} only %}</div>{% endif %}
+</div>
+{% endmacro %}

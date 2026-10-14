@@ -146,8 +146,56 @@
                 </blockquote>
 
                 <script>
+                    // 分页内容编辑器按需初始化：章节多时一次性创建几百个编辑器(iframe)会让页面卡死，
+                    // 这里只在分页滚动到可视区附近(或获得焦点)时才创建编辑器，未创建前内容保存在原 textarea 中照常提交
+                    // ueArrayMap[lang][i] = {ta: 原textarea, ed: 编辑器实例或null}
                     var ueArrayMap = {};
                     var contentArrLenMap = {};
+                    var artEditorObserver = ('IntersectionObserver' in window) ? new IntersectionObserver(function (entries) {
+                        for (var k = 0; k < entries.length; k++) {
+                            if (entries[k].isIntersecting && entries[k].target._artSlot) {
+                                artEditorInit(entries[k].target._artSlot);
+                            }
+                        }
+                    }, {rootMargin: '600px 0px'}) : null;
+                    function artEditorInit(slot) {
+                        if (!slot.ed) {
+                            if (artEditorObserver) { artEditorObserver.unobserve(slot.ta); }
+                            slot.ta._artSlot = null;
+                            slot.ed = editor_getEditor(slot.ta.id);
+                        }
+                        return slot.ed;
+                    }
+                    function artEditorRegister(lang, i, id) {
+                        var ta = document.getElementById(id);
+                        var slot = {ta: ta, ed: null};
+                        ueArrayMap[lang][i] = slot;
+                        if (!artEditorObserver) { artEditorInit(slot); return; }
+                        ta._artSlot = slot;
+                        ta.addEventListener('focus', function () { if (ta._artSlot) { artEditorInit(slot); } });
+                        artEditorObserver.observe(ta);
+                    }
+                    function artEditorUnregister(lang, i) {
+                        var slot = ueArrayMap[lang][i];
+                        if (slot && !slot.ed && artEditorObserver) { artEditorObserver.unobserve(slot.ta); }
+                        delete ueArrayMap[lang][i];
+                    }
+                    function artEditorGet(lang, i) {
+                        var slot = ueArrayMap[lang][i];
+                        if (!slot) { return ''; }
+                        if (slot.ed) {
+                            try { return editor_getContent(slot.ed); } catch (e) {}
+                        }
+                        return slot.ta.value;
+                    }
+                    function artEditorSet(lang, i, html) {
+                        var slot = ueArrayMap[lang][i];
+                        if (!slot) { return; }
+                        if (slot.ed) {
+                            try { editor_setContent(slot.ed, html); return; } catch (e) {}
+                        }
+                        slot.ta.value = html;
+                    }
                     {volist name="content_lang_enabled" id="lc"}
                     ueArrayMap['{$lc}'] = [];
                     contentArrLenMap['{$lc}'] = {if condition="$lc eq $content_lang_default"}{$art_page_list|count}{else /}{$content_lang_page_list[$lc]|count|default="0"}{/if};
@@ -280,7 +328,7 @@
                                         <div class="layui-input-inline w200"><a href="javascript:void(0)" class="j-editor-clear">{:lang('clear')}</a>&nbsp;<a href="javascript:void(0)" class="j-editor-remove">{:lang('del')}</a>&nbsp;<a href="javascript:void(0)" class="j-editor-up">上移</a>&nbsp;<a href="javascript:void(0)" class="j-editor-down">下移</a>&nbsp;<br></div>
                                         <div class="p10 m20"></div>
                                         <div class="layui-input-block"><textarea id="art_content{$key}" name="art_content[]" type="text/plain" style="width:100%;height:250px">{$vo.content|mac_url_content_img}</textarea></div>
-                                        <script>ueArrayMap['{$content_lang_default}'][{$key}] = editor_getEditor('art_content{$key}');</script>
+                                        <script>artEditorRegister('{$content_lang_default}', {$key}, 'art_content{$key}');</script>
                                     </div>
                                     {/volist}
                                 </div>
@@ -295,7 +343,7 @@
                                         <div class="layui-input-inline w200"><a href="javascript:void(0)" class="j-editor-clear">{:lang('clear')}</a>&nbsp;<a href="javascript:void(0)" class="j-editor-remove">{:lang('del')}</a>&nbsp;<a href="javascript:void(0)" class="j-editor-up">上移</a>&nbsp;<a href="javascript:void(0)" class="j-editor-down">下移</a>&nbsp;<br></div>
                                         <div class="p10 m20"></div>
                                         <div class="layui-input-block"><textarea id="cl_{$lc}_art_content{$key}" name="content_lang[{$lc}][art_content][]" type="text/plain" style="width:100%;height:250px">{$vo.content|mac_url_content_img}</textarea></div>
-                                        <script>ueArrayMap['{$lc}'][{$key}] = editor_getEditor('cl_{$lc}_art_content{$key}');</script>
+                                        <script>artEditorRegister('{$lc}', {$key}, 'cl_{$lc}_art_content{$key}');</script>
                                     </div>
                                     {/volist}
                                 </div>
@@ -370,7 +418,7 @@
                             <div class="layui-input-inline w200"><a href="javascript:void(0)" class="j-editor-clear">{:lang('clear')}</a>&nbsp;<a href="javascript:void(0)" class="j-editor-remove">{:lang('del')}</a>&nbsp;<a href="javascript:void(0)" class="j-editor-up">上移</a>&nbsp;<a href="javascript:void(0)" class="j-editor-down">下移</a>&nbsp;<br></div>
                             <div class="p10 m20"></div>
                             <div class="layui-input-block"><textarea id="art_content{$key}" name="art_content[]" type="text/plain" style="width:100%;height:250px">{$vo.content|mac_url_content_img}</textarea></div>
-                            <script>ueArrayMap['{$content_lang_default}'][{$key}] = editor_getEditor('art_content{$key}');</script>
+                            <script>artEditorRegister('{$content_lang_default}', {$key}, 'art_content{$key}');</script>
                         </div>
                         {/volist}
                     </div>
@@ -657,14 +705,14 @@
             var $item = $(this).closest('[data-i]');
             var lang = $item.closest('.contents').data('lang');
             var datai = $item.attr('data-i');
-            editor_setContent(ueArrayMap[lang][datai],'');
+            artEditorSet(lang, datai, '');
         });
         $('.contents').on('click','.j-editor-remove',function(){
             var $item = $(this).closest('[data-i]');
             var lang = $item.closest('.contents').data('lang');
             var datai = $item.attr('data-i');
             $item.remove();
-            delete ueArrayMap[lang][datai];
+            artEditorUnregister(lang, datai);
         });
         $('.contents').on('click','.j-editor-up',function(){
             var current = $(this).closest('[data-i]');
@@ -674,10 +722,10 @@
             var prev = current.prev();
             var prev_i = prev.attr('data-i');
             if(current_index>0){
-                var current_txt = editor_getContent(ueArrayMap[lang][current_i]);
-                var prev_txt = editor_getContent(ueArrayMap[lang][prev_i]);
-                editor_setContent(ueArrayMap[lang][current_i],prev_txt);
-                editor_setContent(ueArrayMap[lang][prev_i],current_txt);
+                var current_txt = artEditorGet(lang, current_i);
+                var prev_txt = artEditorGet(lang, prev_i);
+                artEditorSet(lang, current_i, prev_txt);
+                artEditorSet(lang, prev_i, current_txt);
             }
         });
         $('.contents').on('click','.j-editor-down',function(){
@@ -689,11 +737,11 @@
             var next_i = next.attr('data-i');
 
             if(next.length>0){
-                var current_txt = editor_getContent(ueArrayMap[lang][current_i]);
-                var next_txt = editor_getContent(ueArrayMap[lang][next_i]);
+                var current_txt = artEditorGet(lang, current_i);
+                var next_txt = artEditorGet(lang, next_i);
 
-                editor_setContent(ueArrayMap[lang][current_i],next_txt);
-                editor_setContent(ueArrayMap[lang][next_i],current_txt);
+                artEditorSet(lang, current_i, next_txt);
+                artEditorSet(lang, next_i, current_txt);
             }
         });
 
@@ -705,7 +753,7 @@
             var contentName = isDefault ? 'art_content[]' : ('content_lang[' + lang + '][art_content][]');
             var tpl='<div class="layui-form-item" data-i="'+n+'"><label class="layui-form-label">{:lang('page_content')}'+n+'：</label><div class="layui-input-inline w200"><input type="text" name="'+titleName+'" class="layui-input" placeholder="{:lang('page_title')}"></div><div class="layui-input-inline w200"><input type="text" name="'+noteName+'" class="layui-input" placeholder="{:lang('页备注')}"></div><div class="layui-input-inline w200 p10"><a href="javascript:void(0)" class="j-editor-clear">{:lang('clear')}</a>&nbsp;<a href="javascript:void(0)" class="j-editor-remove">{:lang('del')}</a>&nbsp;<a href="javascript:void(0)" class="j-editor-up">上移</a>&nbsp;<a href="javascript:void(0)" class="j-editor-down">下移</a>&nbsp;<br></div><div class="p10 m20"></div><div class="layui-input-block"><textarea id="'+idPrefix+n+'" name="'+contentName+'" type="text/plain" style="width:100%;height:250px"></textarea></div></div>';
             $('.contents[data-lang="'+lang+'"]').append(tpl);
-            ueArrayMap[lang][n] = editor_getEditor( idPrefix+n );
+            artEditorRegister(lang, n, idPrefix+n);
             contentArrLenMap[lang] = n;
         }
 

@@ -1,0 +1,17 @@
+{# NP2 短视频页：顶栏 + np2_short_feed 组件 #}
+{% extends "layout/base.twig" %}
+{% set np2_tab = 'short' %}
+{% block title %}短视频 - {{ maccms.site_name }}{% endblock %}
+{% block page_class %} np2-short-page{% endblock %}
+{% block site_header %}
+  {% include "lib/np2_home_header.twig" %}
+{% endblock %}
+{% block head %}
+<link rel="stylesheet" href="{{ maccms.path_tpl }}page-builder-components/np2_short_feed/style.css">
+<script src="{{ maccms.path_tpl }}page-builder-components/np2_short_feed/script.js" defer></script>
+{% endblock %}
+{% block content %}
+{% include 'page-builder-components/np2_short_feed/template.twig' with {props: { num: 24, by: 'hits', order: 'desc' }} %}
+{% endblock %}
+{% block sidebar %}{% endblock %}
+{% block footer %}{% endblock %}
