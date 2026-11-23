@@ -1,5 +1,6 @@
 <?php
 namespace app\admin\controller;
+use app\common\util\TimmingConfig;
 use think\Db;
 use think\Cache;
 use app\common\util\Pinyin;
@@ -482,8 +483,17 @@ class ResourceHub extends Base
 
         // 仅当确实新增了绑定时才写回文件，避免无意义的整文件覆盖
         if ($changed) {
-            $res = mac_arr2file(APP_PATH . 'extra/bind.php', $bind_config);
-            if ($res === false) {
+            $res = TimmingConfig::update(APP_PATH . 'extra/timming.php', function (&$list) use ($task_name, $task) {
+            if (isset($list[$task_name])) {
+                return false;
+            }
+            $list[$task_name] = $task;
+            return true;
+        });
+        if ($res === null) {
+            return json(['code' => 0, 'msg' => lang('admin/resourcehub/timming_exists')]);
+        }
+        if ($res === false) {
                 return json(['code' => 0, 'msg' => lang('write_err_config')]);
             }
         }
@@ -966,18 +976,11 @@ MacPlayer.Show();
             'param' => '',
         ]);
 
-        $timming_list = config('timming') ?: [];
-
-        // 检测同名任务是否已存在，防止静默覆盖用户已调整的配置
-        if (isset($timming_list[$task_name])) {
-            return json(['code' => 0, 'msg' => lang('admin/resourcehub/timming_exists')]);
-        }
-
         // 注意：定时任务结构需与 api/Timming 控制器对齐
         //   file  -> 调度时要调用的方法名（如 collect/make/cj 等）
         //   param -> 传给该方法的查询字符串（parse_str 解析）
         // 早期版本误用 type/url 字段，导致 api/Timming 中 $v['file'] 为空
-        $timming_list[$task_name] = [
+        $task = [
             'id' => $task_name,
             'status' => '1',
             'name' => $task_name,

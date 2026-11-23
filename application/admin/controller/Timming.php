@@ -1,5 +1,6 @@
 <?php
 namespace app\admin\controller;
+use app\common\util\TimmingConfig;
 use think\Db;
 
 class Timming extends Base
@@ -21,11 +22,15 @@ class Timming extends Base
     public function info()
     {
         $param = input();
-        $list = config('timming');
         if (Request()->isPost()) {
             $validate = \think\Loader::validate('Token');
             if(!$validate->check($param)){
                 return $this->ajaxErrorWithFreshToken($validate->getError());
+            }
+
+            $name = isset($param['name']) ? $param['name'] : '';
+            if (!is_string($name) || trim($name) === '') {
+                return $this->ajaxErrorWithFreshToken(lang('name_empty'));
             }
 
             $param['weeks'] = isset($param['weeks']) ? join(',',$param['weeks']) : '';
@@ -34,17 +39,31 @@ class Timming extends Base
             $param['interval'] = isset($param['interval']) ? intval($param['interval']) : 0;
             // 不把 CSRF token 写进配置文件
             unset($param['__token__']);
-            // 合并保留旧配置中表单未提交的字段（如 runtime、id），避免整表覆盖导致丢失
-            $old = isset($list[$param['name']]) && is_array($list[$param['name']]) ? $list[$param['name']] : [];
-            $list[$param['name']] = array_merge($old, $param);
-            $res = mac_arr2file( APP_PATH .'extra/timming.php', $list);
+            $res = TimmingConfig::update(APP_PATH . 'extra/timming.php', function (&$list) use ($param) {
+                $name = $param['name'];
+                $old = isset($list[$name]) && is_array($list[$name]) ? $list[$name] : [];
+                $list[$name] = array_merge($old, $param);
+                return true;
+            });
             if($res===false){
                 return $this->ajaxErrorWithFreshToken(lang('write_err_config'));
             }
 
             return $this->success(lang('save_ok'));
         }
-        $info = $list[$param['id']];
+        $list = config('timming');
+        $id = isset($param['id']) ? $param['id'] : '';
+        $info = (is_string($id) || is_int($id)) && isset($list[$id]) && is_array($list[$id]) ? $list[$id] : [];
+        $info += [
+            'status' => '0',
+            'name' => '',
+            'des' => '',
+            'file' => 'collect',
+            'param' => '',
+            'weeks' => '',
+            'hours' => '',
+            'interval' => 0,
+        ];
 
         $this->assign('info',$info);
         $this->assign('title',lang('admin/timming/title'));
@@ -54,9 +73,10 @@ class Timming extends Base
     public function del()
     {
         $param = input();
-        $list = config('timming');
-        unset($list[$param['ids']]);
-        $res = mac_arr2file(APP_PATH. 'extra/timming.php', $list);
+        $res = TimmingConfig::update(APP_PATH . 'extra/timming.php', function (&$list) use ($param) {
+            unset($list[$param['ids']]);
+            return true;
+        });
         if($res===false){
             return $this->error(lang('del_err'));
         }
@@ -72,14 +92,15 @@ class Timming extends Base
         $val = $param['val'];
 
         if(!empty($ids) && in_array($col,['status'])){
-            $list = config('timming');
-            $ids = explode(',',$ids);
-            foreach($list as $k=>&$v){
-                if(in_array($k,$ids)){
-                    $v[$col] = $val;
+            $ids = explode(',', $ids);
+            $res = TimmingConfig::update(APP_PATH . 'extra/timming.php', function (&$list) use ($ids, $col, $val) {
+                foreach ($list as $key => &$task) {
+                    if (in_array($key, $ids)) {
+                        $task[$col] = $val;
+                    }
                 }
-            }
-            $res = mac_arr2file(APP_PATH. 'extra/timming.php', $list);
+                return true;
+            });
             if($res===false){
                 return $this->error(lang('save_err'));
             }
