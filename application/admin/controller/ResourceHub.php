@@ -483,17 +483,8 @@ class ResourceHub extends Base
 
         // 仅当确实新增了绑定时才写回文件，避免无意义的整文件覆盖
         if ($changed) {
-            $res = TimmingConfig::update(APP_PATH . 'extra/timming.php', function (&$list) use ($task_name, $task) {
-            if (isset($list[$task_name])) {
-                return false;
-            }
-            $list[$task_name] = $task;
-            return true;
-        });
-        if ($res === null) {
-            return json(['code' => 0, 'msg' => lang('admin/resourcehub/timming_exists')]);
-        }
-        if ($res === false) {
+            $res = mac_arr2file(APP_PATH . 'extra/bind.php', $bind_config);
+            if ($res === false) {
                 return json(['code' => 0, 'msg' => lang('write_err_config')]);
             }
         }
@@ -993,7 +984,16 @@ MacPlayer.Show();
         ];
 
 
-        $res = mac_arr2file(APP_PATH . 'extra/timming.php', $timming_list);
+        $res = TimmingConfig::update(APP_PATH . 'extra/timming.php', function (&$list) use ($task_name, $task) {
+            if (isset($list[$task_name])) {
+                return false;
+            }
+            $list[$task_name] = $task;
+            return true;
+        });
+        if ($res === null) {
+            return json(['code' => 0, 'msg' => lang('admin/resourcehub/timming_exists')]);
+        }
         if ($res === false) {
             return json(['code' => 0, 'msg' => lang('write_err_config')]);
         }
