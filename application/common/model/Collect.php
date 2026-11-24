@@ -4,6 +4,7 @@ use think\Db;
 use think\Cache;
 use app\common\util\Pinyin;
 use app\common\util\Dir;
+use app\common\util\HttpClient;
 use think\Request;
 use app\common\validate\Vod as VodValidate;
 
@@ -227,7 +228,7 @@ class Collect extends Base {
         if ($result['code'] > 1) {
             return $result;
         }
-        $html = mac_curl_get($url, [], '', false);
+        $html = HttpClient::safeGet($url, 30, false, 3, true);
         if(empty($html)){
             return ['code'=>1001, 'msg'=>lang('model/collect/get_html_err') . ', url: ' . $url];
         }
@@ -376,7 +377,7 @@ class Collect extends Base {
         if ($result['code'] > 1) {
             return $result;
         }
-        $html = mac_curl_get($url, [], '', false);
+        $html = HttpClient::safeGet($url, 30, false, 3, true);
         if(empty($html)){
             return ['code'=>1001, 'msg'=>lang('model/collect/get_html_err') . ', url: ' . $url];
         }
@@ -1376,7 +1377,7 @@ class Collect extends Base {
         if ($result['code'] > 1) {
             return $result;
         }
-        $html = mac_curl_get($url, [], '', false);
+        $html = HttpClient::safeGet($url, 30, false, 3, true);
         if(empty($html)){
             return ['code'=>1001, 'msg'=>lang('model/collect/get_html_err') . ', url: ' . $url];
         }
@@ -1451,7 +1452,7 @@ class Collect extends Base {
         if ($result['code'] > 1) {
             return $result;
         }
-        $html = mac_curl_get($url, [], '', false);
+        $html = HttpClient::safeGet($url, 30, false, 3, true);
         if(empty($html)){
             return ['code'=>1001, 'msg'=>lang('model/collect/get_html_err') . ', url: ' . $url];
         }
@@ -1798,7 +1799,7 @@ class Collect extends Base {
         if ($result['code'] > 1) {
             return $result;
         }
-        $html = mac_curl_get($url, [], '', false);
+        $html = HttpClient::safeGet($url, 30, false, 3, true);
         if(empty($html)){
             return ['code'=>1001, 'msg'=>lang('model/collect/get_html_err') . ', url: ' . $url];
         }
@@ -2091,7 +2092,7 @@ class Collect extends Base {
         if ($result['code'] > 1) {
             return $result;
         }
-        $html = mac_curl_get($url, [], '', false);
+        $html = HttpClient::safeGet($url, 30, false, 3, true);
         if(empty($html)){
             return ['code'=>1001, 'msg'=>lang('model/collect/get_html_err') . ', url: ' . $url];
         }
@@ -2393,7 +2394,7 @@ class Collect extends Base {
         if ($result['code'] > 1) {
             return $result;
         }
-        $html = mac_curl_get($url, [], '', false);
+        $html = HttpClient::safeGet($url, 30, false, 3, true);
         if(empty($html)){
             return ['code'=>1001, 'msg'=>lang('model/collect/get_html_err') . ', url: ' . $url];
         }
@@ -2689,7 +2690,7 @@ class Collect extends Base {
         if ($result['code'] > 1) {
             return $result;
         }
-        $html = mac_curl_get($url, [], '', false);
+        $html = HttpClient::safeGet($url, 30, false, 3, true);
         if(empty($html)){
             return ['code'=>1001, 'msg'=>lang('model/collect/get_html_err') . ', url: ' . $url];
         }
@@ -2977,7 +2978,7 @@ class Collect extends Base {
         if ($result['code'] > 1) {
             return $result;
         }
-        $html = mac_curl_get($url, [], '', false);
+        $html = HttpClient::safeGet($url, 30, false, 3, true);
         if(empty($html)){
             return ['code'=>1001, 'msg'=>lang('model/collect/get_html_err') . ', url: ' . $url];
         }

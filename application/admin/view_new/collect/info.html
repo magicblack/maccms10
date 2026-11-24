@@ -119,7 +119,7 @@
 
         $('#btnTest').click(function() {
             var that = $(this);
-            var data = 'cjurl='+ $('#collect_url').val() + '&cjflag='+ '&ac=list';
+            var data = {cjurl: $('#collect_url').val(), cjflag: '', ac: 'list'};
 
             $.post("{:url('test')}",data,function(r){
                 if(r.code==1){
