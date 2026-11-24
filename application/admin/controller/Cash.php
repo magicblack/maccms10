@@ -44,9 +44,15 @@ class Cash extends Base
 
     public function del()
     {
+        if (Request()->method(true) !== 'POST') {
+            return $this->error(lang('illegal_request'));
+        }
+        if (!$this->adminCsrfOk()) {
+            return $this->error(lang('token_err'));
+        }
         $param = input();
         $ids = $param['ids'];
-        $all = $param['all'];
+        $all = $param['all'] ?? 0;
         if(!empty($ids)){
             $where=[];
             $where['cash_id'] = ['in',$ids];
@@ -64,6 +70,12 @@ class Cash extends Base
 
     public function audit()
     {
+        if (Request()->method(true) !== 'POST') {
+            return $this->error(lang('illegal_request'));
+        }
+        if (!$this->adminCsrfOk()) {
+            return $this->error(lang('token_err'));
+        }
         $param = input();
         $ids = $param['ids'];
         if(!empty($ids)){
