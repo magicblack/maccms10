@@ -365,14 +365,8 @@ class Index extends Controller
 		}
 
 		// 定时任务幂等注入（通知中心 VIP 到期提醒 + 视频定时上架）：仅在缺失时补写，不覆盖用户调整。
-		// install/upgrade 路径均自包含：不依赖 common.php 的 mac_inject_timming_task / mac_arr2file，
-		// 只用 ThinkPHP 核心 config() 与 PHP 内建函数，与 application/data/update/database.php 保持一致。
+		// 安装与运行时使用同一个配置写入器。
 		{
-			$_timming_file = APP_PATH . 'extra/timming.php';
-			$_timming = config('timming');
-			if (!is_array($_timming)) {
-				$_timming = [];
-			}
 			$_timming_defaults = [
 				// 运营统计聚合，与 application/data/update/database.php 的注入块保持一致。
 				// analytics_day 产出的 mac_analytics_day_overview 是后台首页近七日访问的
@@ -493,21 +487,9 @@ class Index extends Controller
 					'runtime'  => 0,
 				],
 			];
-			$_timming_changed = false;
-			foreach ($_timming_defaults as $_k => $_task) {
-				if (!isset($_timming[$_k])) {
-					$_timming[$_k] = $_task;
-					$_timming_changed = true;
-				}
-			}
-			if ($_timming_changed) {
-				@chmod($_timming_file, 0644);
-				file_put_contents($_timming_file, "<?php\nreturn " . var_export($_timming, true) . ';');
-				if (function_exists('opcache_invalidate')) {
-					@opcache_invalidate($_timming_file, true);
-				}
-			}
-			unset($_timming_file, $_timming, $_timming_defaults, $_timming_changed, $_k, $_task);
+			require_once APP_PATH . 'common/util/TimmingConfig.php';
+			\app\common\util\TimmingConfig::addDefaults(APP_PATH . 'extra/timming.php', $_timming_defaults);
+			unset($_timming_defaults);
 		}
 
 		// content_ai_annotate / content_quality[_art] / user_profile 定时任务已并入上方自包含 $_timming_defaults 块统一幂等注入，不依赖 common.php。
