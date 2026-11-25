@@ -20,7 +20,7 @@
 
         <div class="flex gap-5 overflow-x-auto overflow-y-hidden">
             <a data-href="{:url('del')}" class="layui-btn layui-btn-primary j-page-btns confirm"><i class="layui-icon">&#xe640;</i>{:lang('del')}</a>
-            <a data-href="{:url('del')}?ids=1&all=1" class="layui-btn layui-btn-primary j-ajax" confirm="{:lang('clear_confirm')}"><i class="layui-icon">&#xe640;</i>{:lang('clear')}</a>
+            <a data-href="{:url('del')}?ids=1&all=1" class="layui-btn layui-btn-primary j-ajax" data-method="post" confirm="{:lang('clear_confirm')}"><i class="layui-icon">&#xe640;</i>{:lang('clear')}</a>
             <a data-href="{:url('audit')}" class="layui-btn layui-btn-primary j-page-btns confirm" confirm="{:lang('audit_confirm')}"><i class="layui-icon">&#xe640;</i>{:lang('audit')}</a>
         </div>
     </div>
@@ -60,9 +60,9 @@
                 <td>{$vo.cash_time|mac_day='color'}</td>
                 <td>{$vo.cash_time_audit|mac_day='color'}</td>
                 <td>
-                    <a class="layui-badge-rim j-tr-del" data-href="{:url('del?ids='.$vo['cash_id'])}" href="javascript:;" title="{:lang('del')}">{:lang('del')}</a>
+                    <a class="layui-badge-rim j-tr-del" data-method="post" data-href="{:url('del?ids='.$vo['cash_id'])}" href="javascript:;" title="{:lang('del')}">{:lang('del')}</a>
                     {if condition="$vo.cash_status neq '1'"}
-                    <a class="layui-badge-rim j-ajax" confirm="{:lang('audit_confirm')}" data-href="{:url('audit?ids='.$vo['cash_id'])}" href="javascript:;" title="{:lang('audit')}">{:lang('audit')}</a>
+                    <a class="layui-badge-rim j-ajax" data-method="post" confirm="{:lang('audit_confirm')}" data-href="{:url('audit?ids='.$vo['cash_id'])}" href="javascript:;" title="{:lang('audit')}">{:lang('audit')}</a>
                     {/if}
                 </td>
             </tr>

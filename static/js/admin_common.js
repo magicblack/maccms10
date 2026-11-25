@@ -219,7 +219,8 @@ layui.define(['element', 'form'], function(exports) {
         if (this.checked) {
             status = 1;
         }
-        $.get(that.attr('data-href'), {val:status}, function(res) {
+        var request = that.attr('data-method') === 'post' ? $.post : $.get;
+        request(that.attr('data-href'), {val:status}, function(res) {
             layer.msg(res.msg);
             if (res.code == 0) {
                 that.trigger('click');
@@ -294,7 +295,8 @@ layui.define(['element', 'form'], function(exports) {
                 layer.msg('请设置data-href参数');
                 return false;
             }
-            $.get(href, function(res){
+            var request = that.attr('data-method') === 'post' ? $.post : $.get;
+            request(href, function(res){
                 layer.msg(res.msg);
                 if (res.code == 1) {
                     that.parents('tr').remove();
@@ -316,9 +318,10 @@ layui.define(['element', 'form'], function(exports) {
             return false;
         }
 
+        var request = that.attr('data-method') === 'post' ? $.post : $.get;
         if (!that.attr('confirm')) {
             layer.msg('数据提交中...', {time:500000});
-            $.get(href, {}, function(res) {
+            request(href, {}, function(res) {
                 layer.msg(res.msg, {}, function() {
                     if (refresh == 'yes') {
                         if (typeof(res.url) != 'undefined' && res.url != null && res.url != '') {
@@ -334,7 +337,7 @@ layui.define(['element', 'form'], function(exports) {
         else {
             layer.confirm(that.attr('confirm'), {title:false, closeBtn:0}, function(index){
                 layer.msg('数据提交中...', {time:500000});
-                $.get(href, {}, function(res) {
+                request(href, {}, function(res) {
                     layer.msg(res.msg, {}, function() {
                         if (refresh == 'yes') {
                             if (typeof(res.url) != 'undefined' && res.url != null && res.url != '') {

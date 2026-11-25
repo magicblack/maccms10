@@ -256,6 +256,12 @@ class User extends Base
 
     public function del()
     {
+        if (Request()->method(true) !== 'POST') {
+            return $this->error(lang('illegal_request'));
+        }
+        if (!$this->adminCsrfOk()) {
+            return $this->error(lang('token_err'));
+        }
         $param = input();
         $ids = $param['ids'];
 
@@ -273,6 +279,12 @@ class User extends Base
 
     public function field()
     {
+        if (Request()->method(true) !== 'POST') {
+            return $this->error(lang('illegal_request'));
+        }
+        if (!$this->adminCsrfOk()) {
+            return $this->error(lang('token_err'));
+        }
         $param = input();
         $ids = $param['ids'];
         $col = $param['col'];
