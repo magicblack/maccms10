@@ -89,7 +89,13 @@ class Collect extends Base
 
     public function test()
     {
-        $param = input();
+        if (Request()->method(true) !== 'POST') {
+            return json(['code' => 0, 'msg' => lang('illegal_request')]);
+        }
+        if (!$this->adminCsrfOk()) {
+            return json(['code' => 0, 'msg' => lang('token_err')]);
+        }
+        $param = input('post.');
         $res = model('Collect')->vod($param);
         return json($res);
     }

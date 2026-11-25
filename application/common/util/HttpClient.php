@@ -51,21 +51,35 @@ class HttpClient
      * @param bool $verifySsl 第三方采集站常见自签 / 过期证书，调用方可显式关闭（连接仍钉在已校验公网 IP）
      * @return string|false 响应体；地址不合规 / 非公网 / 请求失败返回 false
      */
-    public static function safeGet($url, $timeout = 20, $verifySsl = true, $maxRedirects = 3)
+    public static function safeGet($url, $timeout = 20, $verifySsl = true, $maxRedirects = 3, $collection = false)
     {
         $url = (string)$url;
+        $privateOrigin = $collection ? self::configuredCollectOrigin($url, getenv('MACCMS_PRIVATE_COLLECT_ORIGINS')) : '';
         for ($hop = 0; $hop <= $maxRedirects; $hop++) {
             $parts = parse_url($url);
             if (empty($parts['scheme']) || !in_array(strtolower($parts['scheme']), array('http', 'https'), true) || empty($parts['host'])) {
                 return false;
             }
+            $origin = $collection ? self::collectOrigin($url) : '';
+            if ($collection && $origin === '') {
+                return false;
+            }
             $ip = self::resolvePublicIp($parts['host']);
+            if ($ip === '' && $privateOrigin !== '' && $origin === $privateOrigin) {
+                $candidate = @gethostbyname($parts['host']);
+                if (self::isPrivateCollectIp($candidate)) {
+                    $ip = $candidate;
+                }
+            }
             if ($ip === '') {
                 return false;
             }
             $ch = @curl_init();
             curl_setopt($ch, CURLOPT_USERAGENT, 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/45.0.2454.101 Safari/537.36');
             curl_setopt($ch, CURLOPT_URL, $url);
+            if ($collection) {
+                curl_setopt($ch, CURLOPT_PROXY, '');
+            }
             curl_setopt($ch, CURLOPT_RESOLVE, self::pinResolve($url, $ip));
             curl_setopt($ch, CURLOPT_PROTOCOLS, CURLPROTO_HTTP | CURLPROTO_HTTPS);
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
@@ -85,6 +99,46 @@ class HttpClient
             $url = $next;
         }
         return false;
+    }
+
+    public static function configuredCollectOrigin($url, $configured)
+    {
+        $origin = self::collectOrigin($url);
+        foreach (explode(',', (string)$configured) as $entry) {
+            if ($origin !== '' && self::collectOrigin(trim($entry)) === $origin) {
+                return $origin;
+            }
+        }
+        return '';
+    }
+
+    private static function collectOrigin($url)
+    {
+        $url = (string)$url;
+        if (preg_match('/[\x00-\x20\x7f]/', $url) || strpos($url, chr(92)) !== false) {
+            return '';
+        }
+        $parts = parse_url($url);
+        if (empty($parts['scheme']) || empty($parts['host']) || isset($parts['user']) || isset($parts['pass'])) {
+            return '';
+        }
+        $scheme = strtolower($parts['scheme']);
+        $host = strtolower($parts['host']);
+        if (!in_array($scheme, ['http', 'https'], true) || !preg_match('/\A[a-z0-9][a-z0-9.-]*\z/', $host)) {
+            return '';
+        }
+        $port = isset($parts['port']) ? $parts['port'] : ($scheme === 'https' ? 443 : 80);
+        return $port > 0 ? $scheme . '://' . $host . ':' . $port : '';
+    }
+
+    public static function isPrivateCollectIp($ip)
+    {
+        if (!filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4)) {
+            return false;
+        }
+        $octets = array_map('intval', explode('.', $ip));
+        return $octets[0] === 10 || ($octets[0] === 172 && $octets[1] >= 16 && $octets[1] <= 31)
+            || ($octets[0] === 192 && $octets[1] === 168);
     }
 
     /**
