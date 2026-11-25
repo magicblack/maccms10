@@ -7,15 +7,15 @@
 <div class="layui-form-item upload_mode mode_Uomg" {if condition="$config['upload']['mode'] neq 'Uomg'"}style="display:none;" {/if}>
 <label class="layui-form-label">OPENID：</label>
 <div class="layui-input-inline w200">
-    <input type="text" name="upload[api][uomg][openid]" placeholder="" value="{$config['upload']['api']['uomg']['openid']}" class="layui-input"  >
+    <input type="text" name="upload[api][uomg][openid]" form="form_config_upload" placeholder="" value="{$config['upload']['api']['uomg']['openid']}" class="layui-input"  >
 </div>
 <label class="layui-form-label">操作员名：</label>
 <div class="layui-input-inline w200">
-    <input type="text" name="upload[api][uomg][key]" placeholder="" value="{$config['upload']['api']['uomg']['key']}" class="layui-input"  >
+    <input type="text" name="upload[api][uomg][key]" form="form_config_upload" placeholder="" value="{$config['upload']['api']['uomg']['key']}" class="layui-input"  >
 </div>
 <label class="layui-form-label">类型：</label>
 <div class="layui-input-inline w200">
-    <select class="w150" name="upload[api][uomg][type]">
+    <select class="w150" name="upload[api][uomg][type]" form="form_config_upload">
         <option value="ali" {if condition="$config['upload']['api']['uomg']['type'] eq 'ali'"}selected {/if}>阿里巴巴</option>
         <option value="baidu" {if condition="$config['upload']['api']['uomg']['type'] eq 'baidu'"}selected {/if}>百度识图</option>
         <option value="sina" {if condition="$config['upload']['api']['uomg']['type'] eq 'sina'"}selected {/if}>新浪微博</option>

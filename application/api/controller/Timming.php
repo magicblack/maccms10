@@ -1,5 +1,6 @@
 <?php
 namespace app\api\controller;
+use app\common\util\TimmingConfig;
 use app\common\util\ExternalSyncRunner;
 use think\Controller;
 use think\Db;
@@ -57,6 +58,8 @@ class Timming extends Base
                 continue;
             }
 
+            $oldweek = '';
+            $oldhours = '';
             if(!empty($v['runtime'])) { $oldweek= date('w',$v['runtime']); $oldhours= date('H',$v['runtime']); }
             $curweek= date('w',time()) ;	$curhours= date("H",time());
             if(strlen($oldhours)==1 && intval($oldhours) <10){ $oldhours= '0'.$oldhours; }
@@ -86,13 +89,14 @@ class Timming extends Base
 
             if( $shouldRun ) {
 
-                mac_echo( lang('api/task_tip_exec',[$v['name'] ,$status,$last]));
-                $list[$k]['runtime'] = time();
-
-                $res = mac_arr2file( APP_PATH .'extra/timming.php', $list);
-                if($res===false){
+                $res = TimmingConfig::recordRuntime(APP_PATH . 'extra/timming.php', $k, $v, time());
+                if ($res === false) {
                     return $this->error(lang('write_err_config'));
                 }
+                if ($res === null) {
+                    continue;
+                }
+                mac_echo(lang('api/task_tip_exec', [$v['name'], $status, $last]));
                 $this->reset();
 
                 // 兼容旧数据：早期资源站中心写入的任务使用 type/url 字段
@@ -145,12 +149,12 @@ class Timming extends Base
             'collect_health' => ['des' => '采集接口可用性检测', 'interval' => 3600],
             'content_check' => ['des' => '内容资源可用性检测（播放地址/漫画章节/封面）', 'interval' => 300],
         ];
-        $changed = false;
+        $defaults = [];
         foreach ($builtin as $name => $cfg) {
             if (isset($list[$name])) {
                 continue;
             }
-            $list[$name] = [
+            $defaults[$name] = [
                 'id' => $name,
                 'status' => '0',
                 'name' => $name,
@@ -162,10 +166,9 @@ class Timming extends Base
                 'interval' => $cfg['interval'],
                 'runtime' => 0,
             ];
-            $changed = true;
         }
-        if ($changed) {
-            mac_arr2file(APP_PATH . 'extra/timming.php', $list);
+        if ($defaults && TimmingConfig::addDefaults(APP_PATH . 'extra/timming.php', $defaults) !== false) {
+            $list += $defaults;
         }
         return $list;
     }

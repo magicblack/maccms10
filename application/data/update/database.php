@@ -205,15 +205,8 @@ if(empty($col_list[$pre.'seckill_user'])){
     }
 }
 // 定时任务幂等注入（通知中心 VIP 到期提醒 + 视频定时上架）：仅在缺失时补写，不覆盖用户调整。
-// 升级流程必须自包含：step1 解压覆盖后，本请求已加载的 common.php 可能仍是旧版（磁盘未被
-// 覆盖，或站长设备 opcache 仍缓存旧版），不能依赖 common.php 的 mac_inject_timming_task /
-// mac_arr2file。这里只用 ThinkPHP 核心 config() 与 PHP 内建函数，确保所有站长设备都能执行 step2。
+// 升级与运行时使用同一个配置写入器，保留站长已有任务。
 {
-    $_timming_file = APP_PATH . 'extra/timming.php';
-    $_timming = config('timming');
-    if (!is_array($_timming)) {
-        $_timming = [];
-    }
     $_timming_defaults = [
         // 运营统计聚合。这两条此前只存在于版本库的 extra/timming.php，而升级不覆盖该文件，
         // 所以存量站升级后一直没有这两个任务：analytics_day_overview 恒空，后台首页的
@@ -336,21 +329,9 @@ if(empty($col_list[$pre.'seckill_user'])){
             'runtime'  => 0,
         ],
     ];
-    $_timming_changed = false;
-    foreach ($_timming_defaults as $_k => $_task) {
-        if (!isset($_timming[$_k])) {
-            $_timming[$_k] = $_task;
-            $_timming_changed = true;
-        }
-    }
-    if ($_timming_changed) {
-        @chmod($_timming_file, 0644);
-        file_put_contents($_timming_file, "<?php\nreturn " . var_export($_timming, true) . ';');
-        if (function_exists('opcache_invalidate')) {
-            @opcache_invalidate($_timming_file, true);
-        }
-    }
-    unset($_timming_file, $_timming, $_timming_defaults, $_timming_changed, $_k, $_task);
+    require_once APP_PATH . 'common/util/TimmingConfig.php';
+    \app\common\util\TimmingConfig::addDefaults(APP_PATH . 'extra/timming.php', $_timming_defaults);
+    unset($_timming_defaults);
 }
 // PWA Web Push：推送订阅表（feat-pwa）
 if(empty($col_list[$pre.'push_subscription'])){

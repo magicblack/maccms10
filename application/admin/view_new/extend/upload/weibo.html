@@ -7,15 +7,15 @@
 <div class="layui-form-item upload_mode mode_Weibo" {if condition="$config['upload']['mode'] neq 'Weibo'"}style="display:none;" {/if}>
 <label class="layui-form-label">账号：</label>
 <div class="layui-input-inline w200">
-    <input type="text" name="upload[api][weibo][user]" placeholder="微博登录账号" value="{$config['upload']['api']['weibo']['user']}" class="layui-input"  >
+    <input type="text" name="upload[api][weibo][user]" form="form_config_upload" placeholder="微博登录账号" value="{$config['upload']['api']['weibo']['user']}" class="layui-input"  >
 </div>
 <label class="layui-form-label">密码：</label>
 <div class="layui-input-inline w200">
-    <input type="text" name="upload[api][weibo][pwd]" placeholder="微博登录密码" value="{$config['upload']['api']['weibo']['pwd']}" class="layui-input"  >
+    <input type="text" name="upload[api][weibo][pwd]" form="form_config_upload" placeholder="微博登录密码" value="{$config['upload']['api']['weibo']['pwd']}" class="layui-input"  >
 </div>
 <label class="layui-form-label">获取尺寸：</label>
 <div class="layui-input-inline">
-    <select class="w150" name="upload[api][weibo][size]">
+    <select class="w150" name="upload[api][weibo][size]" form="form_config_upload">
         <option value="large" {if condition="$config['upload']['api']['weibo']['size'] eq 'large'"}selected {/if}>large</option>
         <option value="bmiddle" {if condition="$config['upload']['api']['weibo']['size'] eq 'bmiddle'"}selected {/if}>bmiddle</option>
         <option value="small" {if condition="$config['upload']['api']['weibo']['size'] eq 'small'"}selected {/if}>small</option>
@@ -30,8 +30,8 @@
 </div>
 <label class="layui-form-label">cookie：</label>
 <div class="layui-input-inline w200">
-    <input type="text" name="upload[api][weibo][cookie]" placeholder="登录cookie-会自动读取" value="{$config['upload']['api']['weibo']['cookie']}" class="layui-input"  >
-    <input type="hidden" name="upload[api][weibo][time]" placeholder="登录时间-不用设置" value="{$config['upload']['api']['weibo']['time']}" class="layui-input"  >
+    <input type="text" name="upload[api][weibo][cookie]" form="form_config_upload" placeholder="登录cookie-会自动读取" value="{$config['upload']['api']['weibo']['cookie']}" class="layui-input"  >
+    <input type="hidden" name="upload[api][weibo][time]" form="form_config_upload" placeholder="登录时间-不用设置" value="{$config['upload']['api']['weibo']['time']}" class="layui-input"  >
 </div>
 
 </div>
