@@ -1,5 +1,6 @@
 <?php
 namespace app\admin\controller;
+use app\common\util\EditableTemplateSyntax;
 use think\Db;
 
 class Template extends Base
@@ -174,8 +175,7 @@ class Template extends Base
             }
         }
 
-        $filter = '<\?|php|eval|server|assert|get|post|request|cookie|session|input|env|config|call|global|dump|print|phpinfo|fputs|fopen|global|chr|strtr|pack|system|gzuncompress|shell|base64|file|proc|preg|call|ini|exec\s*\(|passthru\s*\(|popen\s*\(|show_source\s*\(|create_function\s*\(|register_shutdown_function\s*\(|register_tick_function\s*\(|error_log\s*\(|{:|{$|{~|{-|{+|{/';
-        $this->assign('filter',$filter);
+        $this->assign('filter', lang('admin/template/php_safe_tip'));
 
         if (Request()->isPost()) {
             $validate = \think\Loader::validate('Token');
@@ -189,8 +189,7 @@ class Template extends Base
             }
 
             $fcontent = $param['fcontent'];
-            $r = mac_reg_replace($fcontent,$filter,"*");
-            if($fcontent !== $r){
+            if (!EditableTemplateSyntax::accepts($fcontent)) {
                 $this->error(lang('admin/template/php_safe_tip'));
                 return;
             }
