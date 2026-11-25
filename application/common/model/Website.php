@@ -32,7 +32,7 @@ class Website extends Base {
         return $total;
     }
 
-    public function listData($where,$order,$page=1,$limit=20,$start=0,$field='*',$addition=1,$totalshow=1)
+    public function listData($where,$order,$page=1,$limit=20,$start=0,$field='*',$addition=1,$totalshow=1,array $orderBind=[])
     {
         $page = $page > 0 ? (int)$page : 1;
         $limit = $limit ? (int)$limit : 20;
@@ -51,7 +51,7 @@ class Website extends Base {
         if($totalshow==1) {
             $total = $this->where($where)->count();
         }
-        $list = Db::name('Website')->field($field)->where($where)->where($where2)->orderRaw($order)->limit($limit_str)->select();
+        $list = Db::name('Website')->field($field)->where($where)->where($where2)->orderRaw($order, $orderBind)->limit($limit_str)->select();
         //分类
         $type_list = model('Type')->getCache('type_list');
         //用户组
@@ -398,10 +398,12 @@ class Website extends Base {
             $order = 'desc';
         }
 
+        $orderBind = [];
         if ($use_rnd_order) {
             $order = ['[rand]' => '[rand]'];
         } elseif ($by == 'in' && !empty($name)) {
-            $order = ' find_in_set(website_name, \'' . $name . '\'  ) ';
+            $order = 'FIND_IN_SET(website_name, :website_order_names)';
+            $orderBind['website_order_names'] = [$name, \PDO::PARAM_STR];
         } else {
             if ($by == 'in' && empty($name)) {
                 $by = 'time';
@@ -424,6 +426,9 @@ class Website extends Base {
             );
             if ($meili !== null) {
                 $where = $meili['where'];
+                if ($meili['order'] !== $order) {
+                    $orderBind = [];
+                }
                 $order = $meili['order'];
             }
         }
@@ -434,20 +439,20 @@ class Website extends Base {
         }
         $order_cache_key = ($meili !== null) ? 'meilisearch_relevance' : (is_array($order) ? 'sql_rand' : $order);
 
-        $cach_name = $GLOBALS['config']['app']['cache_flag']. '_' .md5('website_listcache_'.http_build_query($where_cache).'_'.$order_cache_key.'_'.$page.'_'.$num.'_'.$start.'_'.$pageurl);
+        $cach_name = $GLOBALS['config']['app']['cache_flag']. '_' .md5('website_listcache_'.http_build_query($where_cache).'_'.$order_cache_key.'_'.http_build_query($orderBind).'_'.$page.'_'.$num.'_'.$start.'_'.$pageurl);
         $res = $use_rnd_order ? null : Cache::get($cach_name);
         if(empty($cachetime)){
             $cachetime = $GLOBALS['config']['app']['cache_time'];
         }
         if($GLOBALS['config']['app']['cache_core']==0 || empty($res)) {
             if ($meili !== null) {
-                $res = $this->listData($where, $order, $page, $num, $start, '*', 1, 0);
+                $res = $this->listData($where, $order, $page, $num, $start, '*', 1, 0, $orderBind);
                 if ($totalshow == 1) {
                     $res['total'] = $meili['total'];
                     $res['pagecount'] = $num > 0 ? (int)ceil($meili['total'] / $num) : 0;
                 }
             } else {
-                $res = $this->listData($where,$order,$page,$num,$start,'*',1,$totalshow);
+                $res = $this->listData($where,$order,$page,$num,$start,'*',1,$totalshow,$orderBind);
             }
             if($GLOBALS['config']['app']['cache_core']==1 && !$use_rnd_order){
                 // 打上表名标签，写路径才能定点作废这一族列表缓存（见 Base::clearListCache()）
