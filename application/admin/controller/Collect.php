@@ -301,6 +301,11 @@ class Collect extends Base
      */
     private function collectWatchdog($param, $res)
     {
+        // API 入口由采集模型在服务端翻页。浏览器重试会把相对 api 地址解析成 timming/api。
+        if (ENTRANCE === 'api') {
+            return;
+        }
+
         $sec = (int)$GLOBALS['config']['app']['collect_timespan'];
         if ($sec <= 0) {
             $sec = 3;
